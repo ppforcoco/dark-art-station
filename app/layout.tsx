@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Cinzel_Decorative, Cormorant_Garamond, Space_Mono } from "next/font/google";
 import "./globals.css";
+import Cursor from "@/components/Cursor"; // Import Cursor
 
 const cinzel = Cinzel_Decorative({ 
   weight: ["400", "700", "900"],
@@ -30,6 +31,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className="dark">
       <body className={`${cormorant.variable} ${cinzel.variable} ${spaceMono.variable} font-body bg-[#070710] text-[#d4cde8] min-h-screen flex flex-col`}>
+        <Cursor />
         {children}
       </body>
     </html>
