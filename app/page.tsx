@@ -1,4 +1,5 @@
 import Header from "@/components/Header";
+import Link from "next/link"; // ADD THIS LINE
 
 export default function Home() {
   return (
@@ -65,7 +66,3 @@ export default function Home() {
     </>
   );
 }
-
-// Add this to your global.css for the ticker
-// @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-// .animate-marquee { display: inline-block; animation: marquee 20s linear infinite; }
