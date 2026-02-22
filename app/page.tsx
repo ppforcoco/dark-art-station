@@ -4,35 +4,68 @@ export default function Home() {
   return (
     <>
       <Header />
-      <main className="flex-1 container mx-auto px-4 py-20">
-        <div className="text-center max-w-4xl mx-auto mb-20">
-          <h1 className="text-6xl md:text-8xl font-black tracking-tighter mb-6 text-white uppercase italic">
-            Embrace the <span className="text-red-700">Darkness</span>
+      
+      {/* HERO SECTION */}
+      <section className="relative min-h-screen grid grid-cols-1 lg:grid-cols-2 pt-24 overflow-hidden">
+        <div className="flex flex-col justify-center px-6 md:px-16 py-12">
+          <div className="flex items-center gap-4 mb-8">
+            <div className="w-10 h-[1px] bg-crimson"></div>
+            <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-crimson">Dark Digital Sanctum</span>
+          </div>
+          
+          <h1 className="font-display text-5xl md:text-7xl leading-tight mb-4 text-white">
+            Art Born <br /> 
+            From <span className="text-crimson italic">The</span> <br />
+            <span className="text-gold italic">Abyss</span>
           </h1>
-          <p className="text-xl text-zinc-500 mb-10 tracking-wide max-w-2xl mx-auto font-light">
-            High-resolution AI art collections for the wicked. Goddesses, Tarot, Devils, and Fantasy.
+          
+          <p className="font-body text-xl italic text-zinc-500 max-w-md mb-12 leading-relaxed">
+            Premium dark fantasy wallpapers, tarot art, and occult designs for those who dwell beyond the veil.
           </p>
-          <div className="flex justify-center gap-4">
-            <div className="h-px w-20 bg-red-900 self-center"></div>
-            <span className="text-red-700 font-bold uppercase tracking-[0.3em] text-sm">Vault Open</span>
-            <div className="h-px w-20 bg-red-900 self-center"></div>
+          
+          <div className="flex flex-wrap gap-6">
+            <Link href="/shop" className="bg-crimson text-white font-mono text-[10px] uppercase tracking-[0.2em] px-10 py-5 hover:bg-red-600 transition-all">
+              Enter the Grimoire
+            </Link>
+            <Link href="/free" className="border border-zinc-800 text-zinc-400 font-mono text-[10px] uppercase tracking-[0.2em] px-10 py-5 hover:border-white hover:text-white transition-all">
+              Free Downloads
+            </Link>
+          </div>
+
+          <div className="mt-16 pt-8 border-t border-zinc-900 flex gap-12">
+            <div>
+              <span className="font-display text-2xl text-gold block">500+</span>
+              <span className="font-mono text-[9px] uppercase tracking-widest text-zinc-600">Artworks</span>
+            </div>
+            <div>
+              <span className="font-display text-2xl text-gold block">Infinite</span>
+              <span className="font-mono text-[9px] uppercase tracking-widest text-zinc-600">Darkness</span>
+            </div>
           </div>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-           {[1, 2, 3].map((i) => (
-             <div key={i} className="aspect-[2/3] bg-zinc-900 border border-zinc-800 rounded-sm flex flex-col items-center justify-center group cursor-pointer hover:border-red-900 transition-all overflow-hidden relative">
-                <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-60"></div>
-                <span className="relative z-10 text-zinc-800 font-bold text-4xl group-hover:text-red-900/40 transition-colors uppercase tracking-tighter italic text-center px-4">Art Station</span>
-                <span className="relative z-10 text-zinc-600 text-[10px] mt-4 group-hover:text-red-700 uppercase tracking-[0.4em] font-bold">Summoning Soon</span>
-             </div>
-           ))}
+
+        {/* MOSAIC PREVIEW (Right side) */}
+        <div className="hidden lg:grid grid-cols-2 grid-rows-3 gap-1 p-4 bg-zinc-900/20">
+          <div className="row-span-2 bg-zinc-900 flex items-center justify-center text-4xl grayscale hover:grayscale-0 transition-all cursor-pointer border border-white/5">🌙</div>
+          <div className="bg-zinc-800 flex items-center justify-center text-4xl grayscale hover:grayscale-0 transition-all cursor-pointer border border-white/5">🔱</div>
+          <div className="bg-zinc-800 flex items-center justify-center text-4xl grayscale hover:grayscale-0 transition-all cursor-pointer border border-white/5">💀</div>
+          <div className="col-span-2 bg-zinc-900 flex items-center justify-center text-4xl grayscale hover:grayscale-0 transition-all cursor-pointer border border-white/5">🃏</div>
         </div>
-      </main>
-      <footer className="py-10 border-t border-zinc-900 text-center">
-        <p className="text-zinc-700 text-[10px] tracking-[0.5em] uppercase italic font-bold">
-          © 2025 Freemium Wallpapers - AI Powered Evil
-        </p>
-      </footer>
+      </section>
+
+      {/* MARQUEE TICKER */}
+      <div className="py-6 border-y border-crimson/30 bg-black overflow-hidden whitespace-nowrap">
+        <div className="inline-block animate-marquee font-mono text-[10px] uppercase tracking-[0.5em] text-zinc-700">
+          DARK FANTASY ✦ OCCULT ART ✦ TAROT DECKS ✦ GOTHIC GODDESSES ✦ DARK HUMOR ✦ DEMON ART ✦ 4K WALLPAPERS ✦&nbsp;
+        </div>
+        <div className="inline-block animate-marquee font-mono text-[10px] uppercase tracking-[0.5em] text-zinc-700">
+          DARK FANTASY ✦ OCCULT ART ✦ TAROT DECKS ✦ GOTHIC GODDESSES ✦ DARK HUMOR ✦ DEMON ART ✦ 4K WALLPAPERS ✦&nbsp;
+        </div>
+      </div>
     </>
   );
 }
+
+// Add this to your global.css for the ticker
+// @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+// .animate-marquee { display: inline-block; animation: marquee 20s linear infinite; }
