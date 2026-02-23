@@ -4,6 +4,7 @@ import CategoryCard from "@/components/CategoryCard";
 import ProductCard from "@/components/ProductCard";
 import MarqueeTicker from "@/components/MarqueeTicker";
 import AdSlot from "@/components/AdSlot";
+import NewsletterForm from "@/components/NewsletterForm";
 import Link from "next/link";
 
 // ── Data ────────────────────────────────────────────────────────
@@ -241,22 +242,7 @@ export default function Home() {
           New arrivals, free downloads, and cursed deals — delivered to your crypt.
         </p>
 
-        <form
-          className="flex max-w-[480px] mx-auto relative"
-          onSubmit={(e) => e.preventDefault()}
-        >
-          <input
-            type="email"
-            placeholder="your.soul@email.com"
-            className="flex-1 bg-ash border border-smoke border-r-0 text-[#f0ecff] font-mono text-[0.8rem] px-5 py-4 outline-none focus:border-blood placeholder:text-smoke transition-colors"
-          />
-          <button
-            type="submit"
-            className="bg-blood border border-blood text-[#f0ecff] font-mono text-[0.7rem] tracking-[0.15em] uppercase px-7 py-4 hover:bg-ember hover:border-ember transition-all"
-          >
-            Summon
-          </button>
-        </form>
+        <NewsletterForm />
       </div>
 
       <Footer />
