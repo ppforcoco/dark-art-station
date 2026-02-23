@@ -4,16 +4,15 @@ import { getSignedDownloadUrl } from "@/lib/r2";
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params;
+    const { id } = await params;
 
     if (!id) {
       return NextResponse.json({ error: "Missing collection ID" }, { status: 400 });
     }
 
-    // Fetch the collection record to get the R2 object key
     const collection = await db.collection.findUnique({
       where: { id },
       select: { id: true, title: true, downloadUrl: true, isFree: true },
@@ -27,22 +26,15 @@ export async function GET(
       return NextResponse.json({ error: "No download available" }, { status: 404 });
     }
 
-    // Generate a 5-minute signed URL — user gets redirected directly to R2
-    // This means zero bandwidth cost on your server for large ZIP files
     const signedUrl = await getSignedDownloadUrl(collection.downloadUrl);
 
-    // Log the download event (fire-and-forget, don't block the response)
     const ipHeader = req.headers.get("x-forwarded-for") ?? req.headers.get("x-real-ip") ?? "";
     const ipHash = await hashIp(ipHeader.split(",")[0].trim());
 
     db.download.create({
-      data: {
-        collectionId: collection.id,
-        ipHash,
-      },
-    }).catch(() => {}); // non-blocking, silent fail
+      data: { collectionId: collection.id, ipHash },
+    }).catch(() => {});
 
-    // Redirect the browser to the signed R2 URL
     return NextResponse.redirect(signedUrl);
 
   } catch (err) {
@@ -51,7 +43,6 @@ export async function GET(
   }
 }
 
-// Hash the IP so we store no PII — GDPR-friendly approach
 async function hashIp(ip: string): Promise<string> {
   if (!ip) return "";
   const encoder = new TextEncoder();
