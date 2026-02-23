@@ -3,43 +3,101 @@
 @tailwind utilities;
 
 :root {
-  --void: #070710;
+  --void:    #070710;
+  --black:   #0a0a0a;
+  --deep:    #0e0c14;
   --crimson: #8b0000;
-  --blood: #c0001a;
-  --gold: #c9a84c;
-  --pale: #d4cde8;
-  --white: #f0ecff;
+  --blood:   #c0001a;
+  --ember:   #ff3c00;
+  --gold:    #c9a84c;
+  --ash:     #2a2535;
+  --smoke:   #4a445a;
+  --ghost:   #8a8099;
+  --pale:    #d4cde8;
+  --white:   #f0ecff;
 }
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
   background: var(--void);
   color: var(--pale);
-  cursor: none; /* We will build a custom cursor */
+  font-family: var(--font-cormorant), serif;
+  font-size: 18px;
   overflow-x: hidden;
+  cursor: none;
 }
 
-/* The Noise Texture Overlay */
+/* ── Noise Texture Overlay ─────────────────────────────────── */
 body::before {
   content: '';
   position: fixed;
   inset: 0;
   opacity: 0.04;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-size: 128px 128px;
   pointer-events: none;
   z-index: 1000;
 }
 
-/* Custom Scrollbar */
-::-webkit-scrollbar { width: 4px; }
-::-webkit-scrollbar-track { background: #0a0a0a; }
-::-webkit-scrollbar-thumb { background: var(--blood); }
+/* ── Custom Scrollbar ──────────────────────────────────────── */
+::-webkit-scrollbar        { width: 4px; }
+::-webkit-scrollbar-track  { background: var(--black); }
+::-webkit-scrollbar-thumb  { background: var(--blood); }
 
+/* ── Marquee ───────────────────────────────────────────────── */
 @keyframes marquee {
   from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
+  to   { transform: translateX(-50%); }
 }
 
 .animate-marquee {
   display: inline-block;
   animation: marquee 25s linear infinite;
 }
+
+/* ── FadeUp ────────────────────────────────────────────────── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.fade-up-1 { animation: fadeUp 0.8s ease 0.2s both; }
+.fade-up-2 { animation: fadeUp 0.8s ease 0.4s both; }
+.fade-up-3 { animation: fadeUp 0.8s ease 0.6s both; }
+.fade-up-4 { animation: fadeUp 0.8s ease 0.8s both; }
+.fade-up-5 { animation: fadeUp 0.8s ease 1.0s both; }
+
+/* ── Category card BG gradients ───────────────────────────── */
+.cat-bg-goddess  { background: radial-gradient(ellipse at 60% 30%, #3d0a3a, #1a0820, #07070f); }
+.cat-bg-demon    { background: radial-gradient(ellipse at 40% 60%, #4a0000, #2a0010, #07070f); }
+.cat-bg-tarot    { background: radial-gradient(ellipse at 50% 40%, #1a3a0a, #0a1a08, #07070f); }
+.cat-bg-skeleton { background: radial-gradient(ellipse at 50% 20%, #1a1a3a, #0a0a2a, #07070f); }
+.cat-bg-humor    { background: radial-gradient(ellipse at 60% 70%, #3a2a0a, #1a1808, #07070f); }
+.cat-bg-arnold   { background: radial-gradient(ellipse at 40% 40%, #2a0a2a, #1a0010, #07070f); }
+
+/* ── Product card BG gradients ────────────────────────────── */
+.p-bg-1 { background: radial-gradient(at 60% 30%, #2d0838, #0e0820); }
+.p-bg-2 { background: radial-gradient(at 40% 60%, #380808, #0e0808); }
+.p-bg-3 { background: radial-gradient(at 50% 40%, #083808, #080e08); }
+.p-bg-4 { background: radial-gradient(at 60% 70%, #38340a, #0e0e08); }
+.p-bg-5 { background: radial-gradient(at 40% 40%, #08083a, #08080e); }
+.p-bg-6 { background: radial-gradient(at 50% 30%, #3a0838, #0e0820); }
+.p-bg-7 { background: radial-gradient(at 60% 60%, #3a0808, #0e0808); }
+.p-bg-8 { background: radial-gradient(at 40% 40%, #0a3838, #080e0e); }
+
+/* ── Primary button shine effect ──────────────────────────── */
+.btn-primary {
+  position: relative;
+  overflow: hidden;
+}
+.btn-primary::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--ember);
+  transform: translateX(-100%);
+  transition: transform 0.3s ease;
+}
+.btn-primary:hover::before { transform: translateX(0); }
+.btn-primary > span { position: relative; z-index: 1; }
