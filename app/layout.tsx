@@ -33,10 +33,8 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className="dark">
-      <body
-        className={`${cormorant.variable} ${cinzel.variable} ${spaceMono.variable} font-body bg-void text-pale min-h-screen flex flex-col`}
-      >
+    <html lang="en">
+      <body className={`${cormorant.variable} ${cinzel.variable} ${spaceMono.variable}`}>
         <Cursor />
         {children}
       </body>

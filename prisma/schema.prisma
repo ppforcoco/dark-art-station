@@ -12,7 +12,31 @@ model Collection {
   title       String
   description String
   category    String
-  thumbnail   String
-  downloadUrl String
+  thumbnail   String   // R2 object key, e.g. "thumbnails/hecate.webp"
+  downloadUrl String   // R2 object key for the ZIP/file, e.g. "files/hecate-pack.zip"
+
+  // ── UI / display fields ──────────────────────────────
+  price       Float    @default(0)
+  isFree      Boolean  @default(false)
+  badge       String?  // "New" | "Hot" | "Free" | null
+  icon        String   @default("🌙")   // emoji used as placeholder thumbnail
+  bgClass     String   @default("p-bg-1") // CSS gradient class
+  tag         String   @default("Collection") // e.g. "Featured", "Viral", "Popular"
+  featured    Boolean  @default(false)
+
+  // ── Relations ────────────────────────────────────────
+  downloads   Download[]
+
   createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// Tracks download events (useful for analytics + gating free downloads)
+model Download {
+  id           String     @id @default(uuid())
+  collection   Collection @relation(fields: [collectionId], references: [id])
+  collectionId String
+  email        String?    // captured if user subscribed before downloading
+  ipHash       String?    // hashed IP for abuse tracking (not stored raw)
+  createdAt    DateTime   @default(now())
 }
