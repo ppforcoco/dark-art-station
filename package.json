@@ -9,9 +9,6 @@
     "lint": "eslint",
     "ingest": "ts-node --compiler-options {\"module\":\"CommonJS\"} scripts/import-collections.ts"
   },
-  "prisma": {
-    "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
-  },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.995.0",
     "@aws-sdk/s3-request-presigner": "^3.995.0",
