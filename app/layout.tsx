@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Cinzel_Decorative, Cormorant_Garamond, Space_Mono } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 import Cursor from "@/components/Cursor";
 
@@ -37,6 +38,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className={`${cormorant.variable} ${cinzel.variable} ${spaceMono.variable}`}>
         <Cursor />
         {children}
+        {process.env.NEXT_PUBLIC_ADSENSE_PID && (
+          <Script
+            async
+            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${process.env.NEXT_PUBLIC_ADSENSE_PID}`}
+            crossOrigin="anonymous"
+            strategy="afterInteractive"
+          />
+        )}
       </body>
     </html>
   );
