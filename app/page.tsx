@@ -4,6 +4,8 @@ import Footer from "@/components/Footer";
 import MarqueeTicker from "@/components/MarqueeTicker";
 import NewsletterForm from "@/components/NewsletterForm";
 import Link from "next/link";
+import ProductCard from "@/components/ProductCard";
+import AdSlot from "@/components/AdSlot";
 
 // ISR — revalidate every 60s so edits in Prisma Studio go live quickly
 export const revalidate = 60;
@@ -25,9 +27,9 @@ export default async function Home() {
     orderBy: { createdAt: "desc" },
     take: 8,
     select: {
-      id: true, title: true, category: true,
+      id: true, slug: true, title: true, category: true,
       price: true, isFree: true, badge: true,
-      icon: true, bgClass: true,
+      icon: true, bgClass: true, thumbnail: true,
     },
   });
 
@@ -118,13 +120,7 @@ export default async function Home() {
       </section>
 
       {/* ════════════════════════════ AD SLOT */}
-      <div className="ad-banner">
-        <span className="ad-label">Sponsored</span>
-        <div className="ad-content">
-          <span className="ad-slot-text">[ Google Ad Unit — 728×90 leaderboard ]</span>
-        </div>
-        <span className="ad-label">Advertisement</span>
-      </div>
+      <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_MAIN} width={728} height={90} />
 
       {/* ════════════════════════════ PRODUCTS */}
       <section className="section-pad products-bg">
@@ -138,27 +134,18 @@ export default async function Home() {
 
         <div className="product-grid">
           {products.length > 0 ? products.map((p) => (
-            <div key={p.id} className="product-card">
-              <div className="product-thumb-wrap">
-                <div className={`product-thumb-inner ${p.bgClass}`}>{p.icon}</div>
-                {p.badge && (
-                  <span className={`product-badge badge-${p.badge.toLowerCase()}`}>
-                    {p.badge}
-                  </span>
-                )}
-                <div className="product-quick-view">Quick View</div>
-              </div>
-              <div className="product-info">
-                <span className="product-category">{p.category}</span>
-                <div className="product-name">{p.title}</div>
-                <div className="product-price">
-                  <span className={`price-amount${p.isFree ? " price-free" : ""}`}>
-                    {p.isFree ? "Free" : `$${p.price.toFixed(2)}`}
-                  </span>
-                  <a href={`/api/download/${p.id}`} className="add-btn" title="Download">+</a>
-                </div>
-              </div>
-            </div>
+            <ProductCard
+              key={p.id}
+              slug={p.slug}
+              name={p.title}
+              category={p.category}
+              price={p.price}
+              isFree={p.isFree}
+              badge={p.badge ?? undefined}
+              icon={p.icon}
+              bgClass={p.bgClass}
+              thumbnail={p.thumbnail ? `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/${p.thumbnail}` : null}
+            />
           )) : (
             <p style={{ color:"#4a445a", fontFamily:"var(--font-space)", fontSize:"0.75rem",
               gridColumn:"1/-1", padding:"60px 0", textAlign:"center" }}>

@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "ingest": "ts-node --compiler-options {\"module\":\"CommonJS\"} scripts/import-collections.ts"
+    "ingest": "ts-node -O '{\"module\":\"CommonJS\"}' scripts/import-collections.ts"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.995.0",

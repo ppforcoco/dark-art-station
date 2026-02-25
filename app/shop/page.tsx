@@ -2,6 +2,7 @@ import { db } from "@/lib/db";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Link from "next/link";
+import ProductCard from "@/components/ProductCard";
 
 export const revalidate = 60;
 
@@ -23,9 +24,9 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
       where,
       orderBy: { createdAt: "desc" },
       select: {
-        id: true, title: true, category: true,
+        id: true, slug: true, title: true, category: true,
         price: true, isFree: true, badge: true,
-        icon: true, bgClass: true, description: true,
+        icon: true, bgClass: true, description: true, thumbnail: true,
       },
     }),
     // Get distinct categories for the filter bar
@@ -83,40 +84,18 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
           {collections.length > 0 ? (
             <div className="product-grid">
               {collections.map((p) => (
-                <div key={p.id} className="product-card">
-                  <div className="product-thumb-wrap">
-                    <div className={`product-thumb-inner ${p.bgClass}`}>{p.icon}</div>
-                    {p.badge && (
-                      <span className={`product-badge badge-${p.badge.toLowerCase()}`}>
-                        {p.badge}
-                      </span>
-                    )}
-                    <div className="product-quick-view">Quick View</div>
-                  </div>
-                  <div className="product-info">
-                    <span className="product-category">{p.category}</span>
-                    <div className="product-name">{p.title}</div>
-                    {p.description && (
-                      <p style={{ fontFamily: "var(--font-cormorant)", fontStyle: "italic",
-                        fontSize: "0.9rem", color: "#4a445a", marginBottom: "14px",
-                        lineHeight: "1.5" }}>
-                        {p.description}
-                      </p>
-                    )}
-                    <div className="product-price">
-                      <span className={`price-amount${p.isFree ? " price-free" : ""}`}>
-                        {p.isFree ? "Free" : `$${p.price.toFixed(2)}`}
-                      </span>
-                      <a
-                        href={`/api/download/${p.id}`}
-                        className="add-btn"
-                        title={p.isFree ? "Download Free" : "Add to Cart"}
-                      >
-                        {p.isFree ? "↓" : "+"}
-                      </a>
-                    </div>
-                  </div>
-                </div>
+                <ProductCard
+                  key={p.id}
+                  slug={p.slug}
+                  name={p.title}
+                  category={p.category}
+                  price={p.price}
+                  isFree={p.isFree}
+                  badge={p.badge ?? undefined}
+                  icon={p.icon}
+                  bgClass={p.bgClass}
+                  thumbnail={p.thumbnail ? `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/${p.thumbnail}` : null}
+                />
               ))}
             </div>
           ) : (

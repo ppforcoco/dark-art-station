@@ -1,4 +1,8 @@
+import Image from "next/image";
+import Link from "next/link";
+
 interface ProductCardProps {
+  slug: string;
   name: string;
   category: string;
   price: string | number;
@@ -6,9 +10,11 @@ interface ProductCardProps {
   badge?: "New" | "Hot" | "Free";
   icon: string;
   bgClass?: string;
+  thumbnail?: string | null; // Full URL from R2, e.g. https://assets.hauntedwallpapers.com/thumbnails/dark-goddesses.webp
 }
 
 export default function ProductCard({
+  slug,
   name,
   category,
   price,
@@ -16,6 +22,7 @@ export default function ProductCard({
   badge,
   icon,
   bgClass = "p-bg-1",
+  thumbnail,
 }: ProductCardProps) {
   const badgeStyles = {
     New: "bg-[#c0001a] text-[#f0ecff]",
@@ -26,11 +33,23 @@ export default function ProductCard({
   return (
     <div className="group bg-[#2a2535] relative transition-transform duration-300 hover:-translate-y-2">
       {/* Image Container */}
-      <div className={`aspect-[3/4] relative overflow-hidden ${bgClass}`}>
-        {/* Thumbnail */}
-        <div className="w-full h-full flex items-center justify-center text-[3rem] transition-transform duration-500 group-hover:scale-105 select-none">
-          {icon}
-        </div>
+      <div className={`aspect-[3/4] relative overflow-hidden ${!thumbnail ? bgClass : ""}`}>
+
+        {thumbnail ? (
+          // Real R2 thumbnail
+          <Image
+            src={thumbnail}
+            alt={name}
+            fill
+            className="object-cover transition-transform duration-500 group-hover:scale-105"
+            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+          />
+        ) : (
+          // Emoji fallback while thumbnail isn't uploaded yet
+          <div className="w-full h-full flex items-center justify-center text-[3rem] transition-transform duration-500 group-hover:scale-105 select-none">
+            {icon}
+          </div>
+        )}
 
         {/* Badge */}
         {badge && (
@@ -39,10 +58,13 @@ export default function ProductCard({
           </span>
         )}
 
-        {/* Quick View */}
-        <div className="absolute bottom-[-40px] group-hover:bottom-0 left-0 right-0 bg-[rgba(7,7,16,0.9)] backdrop-blur-[10px] text-center py-3 font-mono text-[0.65rem] tracking-[0.15em] uppercase text-[#c9a84c] transition-all duration-300 z-10">
+        {/* Quick View — links to collection page */}
+        <Link
+          href={`/shop/${slug}`}
+          className="absolute bottom-[-40px] group-hover:bottom-0 left-0 right-0 bg-[rgba(7,7,16,0.9)] backdrop-blur-[10px] text-center py-3 font-mono text-[0.65rem] tracking-[0.15em] uppercase text-[#c9a84c] transition-all duration-300 z-10"
+        >
           Quick View
-        </div>
+        </Link>
       </div>
 
       {/* Info */}
@@ -53,9 +75,13 @@ export default function ProductCard({
           <span className={`font-mono text-[0.9rem] ${isFree ? "text-[#ff3c00]" : "text-[#c9a84c]"}`}>
             {isFree ? "Free" : typeof price === "number" ? `$${price.toFixed(2)}` : price}
           </span>
-          <button className="w-8 h-8 bg-transparent border border-[#c0001a] text-[#c0001a] text-[1.2rem] flex items-center justify-center hover:bg-[#c0001a] hover:text-[#f0ecff] transition-all">
+          <Link
+            href={`/shop/${slug}`}
+            className="w-8 h-8 bg-transparent border border-[#c0001a] text-[#c0001a] text-[1.2rem] flex items-center justify-center hover:bg-[#c0001a] hover:text-[#f0ecff] transition-all"
+            aria-label={`View ${name}`}
+          >
             +
-          </button>
+          </Link>
         </div>
       </div>
     </div>
