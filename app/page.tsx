@@ -10,6 +10,12 @@ import AdSlot from "@/components/AdSlot";
 // ISR — revalidate every 60s so edits in Prisma Studio go live quickly
 export const revalidate = 60;
 
+const VALID_BADGES = ["New", "Hot", "Free"] as const;
+type Badge = (typeof VALID_BADGES)[number];
+function parseBadge(b: string | null | undefined): Badge | undefined {
+  return VALID_BADGES.includes(b as Badge) ? (b as Badge) : undefined;
+}
+
 export default async function Home() {
   // Featured categories for the grid
   const categories = await db.collection.findMany({
@@ -141,7 +147,7 @@ export default async function Home() {
               category={p.category}
               price={p.price}
               isFree={p.isFree}
-              badge={p.badge ?? undefined}
+              badge={parseBadge(p.badge)}
               icon={p.icon}
               bgClass={p.bgClass}
               thumbnail={p.thumbnail ? `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/${p.thumbnail}` : null}
