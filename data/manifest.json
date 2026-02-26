@@ -13,5 +13,20 @@
     "bgClass": "cat-bg-goddess",
     "tag": "Featured",
     "featured": true
+  },
+  {
+    "slug": "pixel-parlour-tarot-vol1",
+    "title": "Pixel Parlour Tarot Cards Vol 1",
+    "description": "A fresh, new style of tarot cards crafted for the modern occultist. High-resolution digital prints.",
+    "category": "Tarot Cards",
+    "thumbnailR2Key": "thumbnails/pixel-parlour-tarot-vol1.webp",
+    "fullResR2Key": "files/pixel-parlour-tarot-vol1.zip",
+    "price": 4.99,
+    "isFree": false,
+    "badge": "Hot",
+    "icon": "🃏",
+    "bgClass": "cat-bg-tarot",
+    "tag": "Collection",
+    "featured": false
   }
 ]
