@@ -9,6 +9,12 @@ const nextConfig: NextConfig = {
         port: "",
         pathname: "/thumbnails/**",
       },
+      {
+        protocol: "https",
+        hostname: "assets.hauntedwallpapers.com",
+        port: "",
+        pathname: "/high-res/**",
+      },
     ],
   },
 };

@@ -18,16 +18,18 @@ export const CollectionSchema = z.object({
 
   thumbnailR2Key: z
     .string()
-    .refine((val) => val.startsWith("thumbnails/") && val.endsWith(".webp"), {
-      message: "thumbnailR2Key must be 'thumbnails/<slug>.webp'",
-    }),
+    .refine(
+      (val) => val.startsWith("thumbnails/") && /\.(webp|jpg|jpeg|png)$/.test(val),
+      { message: "thumbnailR2Key must start with 'thumbnails/' and end in .webp/.jpg/.jpeg/.png" }
+    ),
 
   // Now optional — collections may not have a bundle ZIP
   fullResR2Key: z
     .string()
-    .refine((val) => val.startsWith("files/") && val.endsWith(".zip"), {
-      message: "fullResR2Key must be 'files/<slug>.zip'",
-    })
+    .refine(
+      (val) => val.startsWith("files/") && /\.(zip|webp|jpg|jpeg|png)$/.test(val),
+      { message: "fullResR2Key must be 'files/<slug>.(zip|webp|jpg|jpeg|png)'" }
+    )
     .optional(),
 
   price: z.number().min(0).optional().default(0),
@@ -51,22 +53,23 @@ export const CollectionSchema = z.object({
   })).optional().default([]),
 
 }).superRefine((data, ctx) => {
-  const expectedThumb = `thumbnails/${data.slug}.webp`;
-  if (data.thumbnailR2Key !== expectedThumb) {
+  // Extract just the filename (after last slash), strip extension, compare to slug
+  const thumbFilename = data.thumbnailR2Key.split("/").pop()?.replace(/\.[^.]+$/, "") ?? "";
+  if (thumbFilename !== data.slug) {
     ctx.addIssue({
       code: z.ZodIssueCode.custom,
       path: ["thumbnailR2Key"],
-      message: `Expected "${expectedThumb}", got "${data.thumbnailR2Key}"`,
+      message: `Cover filename must match slug: expected "${data.slug}.<ext>", got "${thumbFilename}.<ext>"`,
     });
   }
 
   if (data.fullResR2Key) {
-    const expectedFile = `files/${data.slug}.zip`;
-    if (data.fullResR2Key !== expectedFile) {
+    const fileBasename = data.fullResR2Key.replace(/^files\//, "").replace(/\.[^.]+$/, "");
+    if (fileBasename !== data.slug) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         path: ["fullResR2Key"],
-        message: `Expected "${expectedFile}", got "${data.fullResR2Key}"`,
+        message: `Filename must match slug: expected "${data.slug}.<ext>", got "${fileBasename}.<ext>"`,
       });
     }
   }

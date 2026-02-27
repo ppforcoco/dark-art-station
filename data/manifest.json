@@ -4,87 +4,105 @@
     "title": "Skeleton Rebellion Collection",
     "description": "A bold series of 16 edgy skeleton illustrations featuring attitude, cigars, and street style aesthetics.",
     "category": "Character Illustrations",
+    "thumbnailR2Key": "thumbnails/skeleton-rebellion-collection/skeleton-rebellion-collection.webp",
     "tag": "Featured",
+    "featured": true,
     "images": [
       {
         "slug": "hoodie-skeleton-middle-finger-green-smoke",
         "title": "Hoodie Skeleton: Green Smoke Attitude",
-        "description": "A skeleton in a torn black hoodie with red eyes, smoking a cigar with green mystical smoke and flipping the bird."
+        "description": "A skeleton in a torn black hoodie with red eyes, smoking a cigar with green mystical smoke and flipping the bird.",
+        "sortOrder": 1
       },
       {
         "slug": "crossbones-skeleton-cigar",
         "title": "Crossbones Cigar Skeleton",
-        "description": "Classic skull and crossbones arrangement with a lit cigar and dark smoke trails against black."
+        "description": "Classic skull and crossbones arrangement with a lit cigar and dark smoke trails against black.",
+        "sortOrder": 2
       },
       {
         "slug": "hoodie-skeleton-reclining-gold-chain",
         "title": "Hoodie Skeleton: Gold Chain Recline",
-        "description": "A relaxed skeleton in a hooded sweatshirt with a thick gold chain, smoking and gesturing."
+        "description": "A relaxed skeleton in a hooded sweatshirt with a thick gold chain, smoking and gesturing.",
+        "sortOrder": 3
       },
       {
         "slug": "gangster-skeleton-pinstripe-suit",
         "title": "Gangster Skeleton: Pinstripe Elegance",
-        "description": "A sophisticated skeleton in a pinstripe suit and fedora with glowing green eyes and mystical smoke."
+        "description": "A sophisticated skeleton in a pinstripe suit and fedora with glowing green eyes and mystical smoke.",
+        "sortOrder": 4
       },
       {
         "slug": "hoodie-skeleton-fedora-intense",
         "title": "Hoodie Skeleton: Fedora Intensity",
-        "description": "An intense skeleton wearing both hoodie and fedora, surrounded by swirling smoke."
+        "description": "An intense skeleton wearing both hoodie and fedora, surrounded by swirling smoke.",
+        "sortOrder": 5
       },
       {
         "slug": "hoodie-skeleton-vertical-gold-chain",
         "title": "Hoodie Skeleton: Vertical Stance",
-        "description": "A standing skeleton in a torn hoodie with gold chain, holding a cigar and making a hand gesture."
+        "description": "A standing skeleton in a torn hoodie with gold chain, holding a cigar and making a hand gesture.",
+        "sortOrder": 6
       },
       {
         "slug": "hoodie-skeleton-chill-recline",
         "title": "Hoodie Skeleton: Chill Mode",
-        "description": "A laid-back skeleton in a hoodie with silver chain, reclining with cigar and attitude."
+        "description": "A laid-back skeleton in a hoodie with silver chain, reclining with cigar and attitude.",
+        "sortOrder": 7
       },
       {
         "slug": "gangster-skeleton-pinstripe-recline",
         "title": "Gangster Skeleton: Pinstripe Lounger",
-        "description": "A relaxed skeleton in a full pinstripe suit and fedora, reclining with cigar and hand on hat."
+        "description": "A relaxed skeleton in a full pinstripe suit and fedora, reclining with cigar and hand on hat.",
+        "sortOrder": 8
       },
       {
         "slug": "leather-jacket-skeleton-fedora",
         "title": "Leather Jacket Skeleton: Fedora Cool",
-        "description": "A rugged skeleton in a leather jacket and fedora with red eyes, reclining with cigar."
+        "description": "A rugged skeleton in a leather jacket and fedora with red eyes, reclining with cigar.",
+        "sortOrder": 9
       },
       {
         "slug": "grim-reaper-skeleton-hooded",
         "title": "Grim Reaper: Hooded Lounger",
-        "description": "A skeleton in dark hooded robes, reclining with cigar and glowing red eyes."
+        "description": "A skeleton in dark hooded robes, reclining with cigar and glowing red eyes.",
+        "sortOrder": 10
       },
       {
         "slug": "leather-jacket-skeleton-fedora-alt",
         "title": "Leather Jacket Skeleton: Fedora Attitude",
-        "description": "A skeleton in a brown leather trench coat and fedora, one gold tooth visible, smoking with style."
+        "description": "A skeleton in a brown leather trench coat and fedora, one gold tooth visible, smoking with style.",
+        "sortOrder": 11
       },
       {
         "slug": "gangster-skeleton-pinstripe-relax",
         "title": "Gangster Skeleton: Pinstripe Relax",
-        "description": "A relaxed skeleton in a pinstripe suit and fedora, reclining with legs crossed and cigar."
+        "description": "A relaxed skeleton in a pinstripe suit and fedora, reclining with legs crossed and cigar.",
+        "sortOrder": 12
       },
       {
         "slug": "hoodie-skeleton-green-smoke-skull-chain",
         "title": "Hoodie Skeleton: Toxic Green",
-        "description": "A skeleton in a torn hoodie with skull pendant gold chain, exhaling thick green smoke."
+        "description": "A skeleton in a torn hoodie with skull pendant gold chain, exhaling thick green smoke.",
+        "sortOrder": 13
       },
       {
         "slug": "gangster-skeleton-black-suit-red-shirt",
         "title": "Gangster Skeleton: Red Accent",
-        "description": "A stylish skeleton in a black suit with red shirt and fedora, reclining with cigar and smoke."
+        "description": "A stylish skeleton in a black suit with red shirt and fedora, reclining with cigar and smoke.",
+        "sortOrder": 14
       },
       {
         "slug": "hoodie-skeleton-monochrome",
         "title": "Hoodie Skeleton: Monochrome Edge",
-        "description": "A stark black and white skeleton in a hoodie and jeans, smoking with clean line art style."
+        "description": "A stark black and white skeleton in a hoodie and jeans, smoking with clean line art style.",
+        "sortOrder": 15
       },
       {
         "slug": "bare-skeleton-classic-recline",
         "title": "Bare Skeleton: Classic Recline",
-        "description": "A pure skeleton without clothing, reclining in classic pose with cigar and attitude."
+        "description": "A pure skeleton without clothing, reclining in classic pose with cigar and attitude.",
+        "sortOrder": 16
       }
     ]
   }
