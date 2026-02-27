@@ -1,61 +1,42 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Image from "next/image";
+import Link from "next/link";
 import { db } from "@/lib/db";
-import { getSignedDownloadUrl } from "@/lib/r2";
+import { getPublicUrl } from "@/lib/r2";
 import AdSlot from "@/components/AdSlot";
-
-// ─── Types ─────────────────────────────────────────────────────────────────
 
 interface PageProps {
   params: Promise<{ slug: string }>;
 }
 
-// ─── SEO: generateMetadata ──────────────────────────────────────────────────
+// ─── SEO ─────────────────────────────────────────────────────────────────────
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
-  const r2PublicUrl = process.env.R2_PUBLIC_URL ?? "";
 
   const collection = await db.collection.findUnique({
     where: { slug },
     select: { title: true, description: true, thumbnail: true, category: true },
   });
 
-  if (!collection) {
-    return { title: "Not Found | VOIDCANVAS" };
-  }
+  if (!collection) return { title: "Not Found | VOIDCANVAS" };
 
   const ogImage = collection.thumbnail
-    ? `${r2PublicUrl}/${collection.thumbnail}`
+    ? getPublicUrl(collection.thumbnail)
     : `${siteUrl}/og-default.jpg`;
 
   return {
     title: `${collection.title} | VOIDCANVAS Dark Art`,
     description: collection.description,
-    keywords: [
-      collection.category,
-      "dark wallpaper",
-      "occult art",
-      "dark fantasy",
-      "AI art",
-      "desktop wallpaper",
-      collection.title,
-    ],
+    keywords: [collection.category, "dark wallpaper", "occult art", "dark fantasy", "AI art", collection.title],
     openGraph: {
       title: `${collection.title} | VOIDCANVAS`,
       description: collection.description,
       url: `${siteUrl}/shop/${slug}`,
       siteName: "VOIDCANVAS",
-      images: [
-        {
-          url: ogImage,
-          width: 1200,
-          height: 630,
-          alt: collection.title,
-        },
-      ],
+      images: [{ url: ogImage, width: 1200, height: 630, alt: collection.title }],
       type: "website",
     },
     twitter: {
@@ -64,46 +45,40 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       description: collection.description,
       images: [ogImage],
     },
-    alternates: {
-      canonical: `${siteUrl}/shop/${slug}`,
-    },
+    alternates: { canonical: `${siteUrl}/shop/${slug}` },
   };
 }
-
-// ─── Static params for ISR/SSG ──────────────────────────────────────────────
 
 export async function generateStaticParams() {
   const collections = await db.collection.findMany({ select: { slug: true } });
   return collections.map((c) => ({ slug: c.slug }));
 }
 
-// ─── Page Component ─────────────────────────────────────────────────────────
+// ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default async function CollectionPage({ params }: PageProps) {
   const { slug } = await params;
-  const r2PublicUrl = process.env.R2_PUBLIC_URL ?? "";
 
   const collection = await db.collection.findUnique({
     where: { slug },
+    include: {
+      images: { orderBy: { sortOrder: "asc" } },
+      _count: { select: { downloads: true } },
+    },
   });
 
   if (!collection) notFound();
 
-  const thumbnailUrl = collection.thumbnail
-    ? `${r2PublicUrl}/${collection.thumbnail}`
-    : null;
-
-  const downloadHref = `/api/download/${collection.id}`;
+  const thumbnailUrl = collection.thumbnail ? getPublicUrl(collection.thumbnail) : null;
+  const hasImages = collection.images.length > 0;
 
   return (
     <main className="min-h-screen bg-[#050505] text-white">
 
-      {/* ── Hero / Product Section ─────────────────────────────────────── */}
-      <section className="max-w-6xl mx-auto px-6 md:px-[60px] pt-16 pb-12">
-
+      {/* ── Collection Header ───────────────────────────────────────────── */}
+      <section className="max-w-7xl mx-auto px-6 md:px-[60px] pt-16 pb-10">
         <div className="grid md:grid-cols-2 gap-12 items-start">
 
-          {/* Thumbnail */}
           <div className="relative aspect-[4/3] rounded-sm overflow-hidden border border-[rgba(139,0,0,0.3)] bg-[#0a0a0a]">
             {thumbnailUrl ? (
               <Image
@@ -119,7 +94,6 @@ export default async function CollectionPage({ params }: PageProps) {
                 {collection.icon}
               </div>
             )}
-
             {collection.badge && (
               <span className="absolute top-4 left-4 font-mono text-[0.6rem] tracking-[0.2em] uppercase bg-[#8b0000] text-white px-3 py-1">
                 {collection.badge}
@@ -127,9 +101,7 @@ export default async function CollectionPage({ params }: PageProps) {
             )}
           </div>
 
-          {/* Details */}
           <div className="flex flex-col gap-6 pt-4">
-
             <div>
               <span className="font-mono text-[0.6rem] tracking-[0.25em] uppercase text-[#8b0000]">
                 {collection.category}
@@ -138,49 +110,76 @@ export default async function CollectionPage({ params }: PageProps) {
                 {collection.title}
               </h1>
             </div>
-
             <p className="font-body text-[1.05rem] text-[#a89bc0] leading-relaxed">
               {collection.description}
             </p>
-
-            {/* Tag */}
-            <span className="font-mono text-[0.6rem] tracking-[0.2em] uppercase text-[#4a445a] border border-[#2a2535] px-3 py-1 w-fit">
-              {collection.tag}
-            </span>
-
-            {/* Price + CTA */}
+            <div className="flex items-center gap-4 flex-wrap">
+              <span className="font-mono text-[0.6rem] tracking-[0.2em] uppercase text-[#4a445a] border border-[#2a2535] px-3 py-1">
+                {collection.tag}
+              </span>
+              {hasImages && (
+                <span className="font-mono text-[0.6rem] tracking-[0.2em] uppercase text-[#4a445a]">
+                  {collection.images.length} images
+                </span>
+              )}
+            </div>
             <div className="flex items-center gap-6 mt-2">
               <span className="font-display text-3xl font-bold text-[#c9a84c]">
                 {collection.isFree ? "FREE" : `$${collection.price.toFixed(2)}`}
               </span>
-
-              <a
-                href={downloadHref}
-                className="font-mono text-[0.7rem] tracking-[0.2em] uppercase bg-[#8b0000] hover:bg-[#a80000] text-white px-8 py-3 transition-colors duration-200 border border-[#8b0000]"
-              >
-                {collection.isFree ? "Download Free" : "Buy & Download"}
-              </a>
+              {collection.downloadUrl && (
+                <a
+                  href={`/api/download/${collection.id}`}
+                  className="font-mono text-[0.7rem] tracking-[0.2em] uppercase bg-[#8b0000] hover:bg-[#a80000] text-white px-8 py-3 transition-colors duration-200 border border-[#8b0000]"
+                >
+                  {collection.isFree ? "Download Bundle Free" : "Buy Bundle ZIP"}
+                </a>
+              )}
             </div>
-
-            {collection.isFree && (
-              <p className="font-mono text-[0.55rem] tracking-[0.1em] text-[#4a445a]">
-                No account required. Direct download.
-              </p>
-            )}
-
           </div>
         </div>
       </section>
 
-      {/* ── Sidebar Ad ─────────────────────────────────────────────────── */}
-      <AdSlot
-        slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_SIDEBAR}
-        width={300}
-        height={250}
-        className="my-4"
-      />
+      {/* ── Ad between header and gallery ──────────────────────────────── */}
+      <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_MAIN} width={728} height={90} />
 
-      {/* ── JSON-LD Structured Data ─────────────────────────────────────── */}
+      {/* ── Image Gallery Grid ──────────────────────────────────────────── */}
+      {hasImages && (
+        <section className="max-w-7xl mx-auto px-6 md:px-[60px] py-12">
+          <h2 className="font-mono text-[0.7rem] tracking-[0.3em] uppercase text-[#4a445a] mb-8">
+            — {collection.images.length} Works in this Collection
+          </h2>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {collection.images.map((img) => (
+              <Link
+                key={img.id}
+                href={`/shop/${slug}/${img.slug}`}
+                className="group relative aspect-[3/4] overflow-hidden bg-[#0a0a0a] border border-[#2a2535] hover:border-[rgba(139,0,0,0.6)] transition-colors duration-300"
+              >
+                <Image
+                  src={getPublicUrl(img.r2Key)}
+                  alt={img.title}
+                  fill
+                  className="object-cover transition-transform duration-500 group-hover:scale-105"
+                  sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[rgba(5,5,5,0.9)] via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
+                  <div>
+                    <p className="font-body italic text-[0.9rem] text-white leading-tight">{img.title}</p>
+                    <span className="font-mono text-[0.55rem] tracking-[0.15em] uppercase text-[#c9a84c] mt-1 block">
+                      View & Download →
+                    </span>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* ── Footer Ad ───────────────────────────────────────────────────── */}
+      <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_FOOTER} width={728} height={90} className="mt-8" />
+
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{

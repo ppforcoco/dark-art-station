@@ -2,65 +2,14 @@
   {
     "slug": "char-hundred-goddesses-tarot-deck-vol1",
     "title": "Char Hundred Goddesses Tarot Deck Vol 1",
-    "description": "Explore the mystical and powerful world of 100 goddesses through this Tarot deck. Perfect for divination, meditation, and spiritual guidance.",
+    "description": "Explore the mystical world of 100 goddesses.",
     "category": "Tarot Cards",
     "thumbnailR2Key": "thumbnails/char-hundred-goddesses-tarot-deck-vol1.webp",
-    "fullResR2Key": "files/char-hundred-goddesses-tarot-deck-vol1.zip",
     "price": 4.99,
     "isFree": false,
-    "badge": "New",
-    "icon": "🌙",
-    "bgClass": "cat-bg-goddess",
-    "tag": "Featured",
-    "featured": true,
     "images": [
-      {
-        "slug": "hecate-moonrise",
-        "title": "Hecate Moonrise",
-        "description": "The triple goddess of the moon, night, and magic.",
-        "sortOrder": 1
-      },
-      {
-        "slug": "kali-the-destroyer",
-        "title": "Kali the Destroyer",
-        "description": "Dark mother of time and transformation.",
-        "sortOrder": 2
-      },
-      {
-        "slug": "lilith-the-first",
-        "title": "Lilith the First",
-        "description": "The first woman, untamed and sovereign.",
-        "sortOrder": 3
-      }
-    ]
-  },
-  {
-    "slug": "pixel-parlour-tarot-vol1",
-    "title": "Pixel Parlour Tarot Cards Vol 1",
-    "description": "A fresh, new style of tarot cards crafted for the modern occultist. High-resolution digital prints.",
-    "category": "Tarot Cards",
-    "thumbnailR2Key": "thumbnails/pixel-parlour-tarot-vol1.webp",
-    "fullResR2Key": "files/pixel-parlour-tarot-vol1.zip",
-    "price": 4.99,
-    "isFree": false,
-    "badge": "Hot",
-    "icon": "🃏",
-    "bgClass": "cat-bg-tarot",
-    "tag": "Collection",
-    "featured": false,
-    "images": [
-      {
-        "slug": "pixel-fool",
-        "title": "The Fool",
-        "description": "Beginnings, spontaneity, and a free spirit.",
-        "sortOrder": 1
-      },
-      {
-        "slug": "pixel-high-priestess",
-        "title": "The High Priestess",
-        "description": "Intuition, the subconscious mind, and inner knowledge.",
-        "sortOrder": 2
-      }
+      { "slug": "goddess-1", "title": "Goddess of the Moon", "sortOrder": 1 },
+      { "slug": "goddess-2", "title": "Goddess of the Sun", "sortOrder": 2 }
     ]
   }
 ]
