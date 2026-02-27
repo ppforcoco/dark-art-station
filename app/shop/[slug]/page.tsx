@@ -124,15 +124,15 @@ export default async function CollectionPage({ params }: PageProps) {
               )}
             </div>
             <div className="flex items-center gap-6 mt-2">
-              <span className="font-display text-3xl font-bold text-[#c9a84c]">
-                {collection.isFree ? "FREE" : `$${collection.price.toFixed(2)}`}
+              <span className="font-mono text-[0.6rem] tracking-[0.25em] uppercase text-[#c9a84c] border border-[#c9a84c] px-3 py-1">
+                Free Download
               </span>
               {collection.downloadUrl && (
                 <a
                   href={`/api/download/${collection.id}`}
                   className="font-mono text-[0.7rem] tracking-[0.2em] uppercase bg-[#8b0000] hover:bg-[#a80000] text-white px-8 py-3 transition-colors duration-200 border border-[#8b0000]"
                 >
-                  {collection.isFree ? "Download Bundle Free" : "Buy Bundle ZIP"}
+                  Download 4K Bundle (Free)
                 </a>
               )}
             </div>
@@ -186,14 +186,58 @@ export default async function CollectionPage({ params }: PageProps) {
           __html: JSON.stringify({
             "@context": "https://schema.org",
             "@type": "Product",
+            "@id": `${process.env.NEXT_PUBLIC_SITE_URL}/shop/${slug}#product`,
             name: collection.title,
             description: collection.description,
-            image: thumbnailUrl,
+            url: `${process.env.NEXT_PUBLIC_SITE_URL}/shop/${slug}`,
+            category: `Digital Products > ${collection.category}`,
+            brand: { "@type": "Brand", "name": "VOIDCANVAS" },
+            image: thumbnailUrl ? [{
+              "@type": "ImageObject",
+              url: thumbnailUrl,
+              contentUrl: thumbnailUrl,
+              caption: collection.title,
+            }] : undefined,
+            additionalProperty: [
+              { "@type": "PropertyValue", name: "Format", value: "Digital Download (WebP + PNG)" },
+              { "@type": "PropertyValue", name: "License", value: "Personal Use License Included" },
+              { "@type": "PropertyValue", name: "Instant Download", value: "Yes" },
+              { "@type": "PropertyValue", name: "Number of Images", value: String(collection.images.length) },
+            ],
             offers: {
               "@type": "Offer",
-              price: collection.price,
+              "@id": `${process.env.NEXT_PUBLIC_SITE_URL}/shop/${slug}#offer`,
+              url: `${process.env.NEXT_PUBLIC_SITE_URL}/shop/${slug}`,
+              price: "0.00",
               priceCurrency: "USD",
               availability: "https://schema.org/InStock",
+              itemCondition: "https://schema.org/NewCondition",
+              category: "Digital Download",
+              eligibleRegion: { "@type": "Country", name: "Worldwide" },
+              shippingDetails: {
+                "@type": "OfferShippingDetails",
+                shippingRate: { "@type": "MonetaryAmount", value: "0.00", currency: "USD" },
+                shippingDestination: { "@type": "DefinedRegion", addressCountry: "Worldwide" },
+                deliveryTime: {
+                  "@type": "ShippingDeliveryTime",
+                  handlingTime: { "@type": "QuantitativeValue", minValue: 0, maxValue: 0, unitCode: "HUR" },
+                  transitTime: { "@type": "QuantitativeValue", minValue: 0, maxValue: 0, unitCode: "HUR" },
+                },
+              },
+              hasMerchantReturnPolicy: {
+                "@type": "MerchantReturnPolicy",
+                returnPolicyCategory: "https://schema.org/MerchantReturnNotPermitted",
+                applicableCountry: "Worldwide",
+              },
+              seller: { "@type": "Organization", name: "VOIDCANVAS", url: process.env.NEXT_PUBLIC_SITE_URL },
+            },
+            potentialAction: {
+              "@type": "DownloadAction",
+              target: `${process.env.NEXT_PUBLIC_SITE_URL}/api/download/${collection.id}`,
+            },
+            audience: {
+              "@type": "Audience",
+              audienceType: `${collection.category} enthusiasts, dark fantasy art lovers, digital wallpaper collectors`,
             },
           }),
         }}

@@ -30,8 +30,8 @@ export const CollectionSchema = z.object({
     })
     .optional(),
 
-  price: z.number().min(0),
-  isFree: z.boolean(),
+  price: z.number().min(0).optional().default(0),
+  isFree: z.boolean().optional().default(true),
   badge: z.enum(["New", "Hot", "Free"]).nullable().optional(),
   icon: z.string().default("🌙"),
   bgClass: z.string().default("p-bg-1"),
@@ -69,22 +69,6 @@ export const CollectionSchema = z.object({
         message: `Expected "${expectedFile}", got "${data.fullResR2Key}"`,
       });
     }
-  }
-
-  if (data.isFree && data.price !== 0) {
-    ctx.addIssue({
-      code: z.ZodIssueCode.custom,
-      path: ["price"],
-      message: "Free collections must have price 0",
-    });
-  }
-
-  if (!data.isFree && data.price <= 0) {
-    ctx.addIssue({
-      code: z.ZodIssueCode.custom,
-      path: ["price"],
-      message: "Paid collections must have price > 0",
-    });
   }
 });
 

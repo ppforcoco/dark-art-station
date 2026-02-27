@@ -2,14 +2,15 @@
   {
     "slug": "char-hundred-goddesses-tarot-deck-vol1",
     "title": "Char Hundred Goddesses Tarot Deck Vol 1",
-    "description": "Explore the mystical world of 100 goddesses.",
+    "description": "A mystical collection of 100 divine feminine tarot illustrations.",
     "category": "Tarot Cards",
-    "thumbnailR2Key": "thumbnails/char-hundred-goddesses-tarot-deck-vol1.webp",
-    "price": 4.99,
-    "isFree": false,
+    "tag": "Featured",
     "images": [
-      { "slug": "goddess-1", "title": "Goddess of the Moon", "sortOrder": 1 },
-      { "slug": "goddess-2", "title": "Goddess of the Sun", "sortOrder": 2 }
+      {
+        "slug": "hecate-goddess-of-magic",
+        "title": "Hecate: Goddess of Magic and Crossroads",
+        "description": "An atmospheric portrait of Hecate in the moonlight."
+      }
     ]
   }
 ]

@@ -181,18 +181,15 @@ export default async function ImagePage({ params }: PageProps) {
 
             {/* Download CTA */}
             <div className="flex flex-col gap-3 mt-2">
-              <span className="font-display text-2xl font-bold text-[#c9a84c]">
-                {image.collection.isFree ? "FREE" : `$${image.collection.price.toFixed(2)}`}
-              </span>
               <a
                 href={signedUrl}
                 download
-                className="font-mono text-[0.7rem] tracking-[0.2em] uppercase bg-[#8b0000] hover:bg-[#a80000] text-white px-8 py-3 transition-colors duration-200 border border-[#8b0000] text-center"
+                className="font-mono text-[0.7rem] tracking-[0.2em] uppercase bg-[#8b0000] hover:bg-[#a80000] text-white px-8 py-4 transition-colors duration-200 border border-[#8b0000] text-center"
               >
-                {image.collection.isFree ? "Download Free (High-Res)" : "Download High-Res"}
+                ↓ Download 4K Wallpaper (Free)
               </a>
               <p className="font-mono text-[0.5rem] tracking-[0.1em] text-[#4a445a]">
-                PNG format · Link expires in 5 minutes
+                PNG · 4K resolution · No account required · Link expires in 5 min
               </p>
             </div>
 
@@ -251,12 +248,71 @@ export default async function ImagePage({ params }: PageProps) {
         dangerouslySetInnerHTML={{
           __html: JSON.stringify({
             "@context": "https://schema.org",
-            "@type": "ImageObject",
+            "@type": "Product",
+            "@id": `${siteUrl}/shop/${slug}/${imageSlug}#product`,
             name: image.title,
-            description: image.description,
-            contentUrl: thumbUrl,
+            alternateName: `${image.title} — ${image.collection.title}`,
+            description: image.description ?? `${image.title} from the ${image.collection.title} collection. Free 4K dark fantasy wallpaper for download.`,
             url: `${siteUrl}/shop/${slug}/${imageSlug}`,
-            author: { "@type": "Organization", name: "VOIDCANVAS" },
+            mainEntityOfPage: {
+              "@type": "WebPage",
+              "@id": `${siteUrl}/shop/${slug}/${imageSlug}`,
+            },
+            brand: { "@type": "Brand", name: "VOIDCANVAS", url: siteUrl },
+            category: `Digital Products > Wallpapers > ${image.collection.category}`,
+            image: [{
+              "@type": "ImageObject",
+              url: thumbUrl,
+              contentUrl: thumbUrl,
+              caption: image.title,
+              description: image.description ?? `${image.title} — dark fantasy wallpaper`,
+            }],
+            additionalProperty: [
+              { "@type": "PropertyValue", name: "Format", value: "PNG (4K High Resolution)" },
+              { "@type": "PropertyValue", name: "License", value: "Personal Use License Included" },
+              { "@type": "PropertyValue", name: "Instant Download", value: "Yes" },
+              { "@type": "PropertyValue", name: "Resolution", value: "4K Ultra HD" },
+            ],
+            offers: {
+              "@type": "Offer",
+              "@id": `${siteUrl}/shop/${slug}/${imageSlug}#offer`,
+              url: `${siteUrl}/shop/${slug}/${imageSlug}`,
+              price: "0.00",
+              priceCurrency: "USD",
+              availability: "https://schema.org/InStock",
+              itemCondition: "https://schema.org/NewCondition",
+              category: "Digital Download",
+              eligibleRegion: { "@type": "Country", name: "Worldwide" },
+              shippingDetails: {
+                "@type": "OfferShippingDetails",
+                shippingRate: { "@type": "MonetaryAmount", value: "0.00", currency: "USD" },
+                shippingDestination: { "@type": "DefinedRegion", addressCountry: "Worldwide" },
+                deliveryTime: {
+                  "@type": "ShippingDeliveryTime",
+                  handlingTime: { "@type": "QuantitativeValue", minValue: 0, maxValue: 0, unitCode: "HUR" },
+                  transitTime: { "@type": "QuantitativeValue", minValue: 0, maxValue: 0, unitCode: "HUR" },
+                },
+              },
+              hasMerchantReturnPolicy: {
+                "@type": "MerchantReturnPolicy",
+                returnPolicyCategory: "https://schema.org/MerchantReturnNotPermitted",
+                applicableCountry: "Worldwide",
+              },
+              seller: { "@type": "Organization", name: "VOIDCANVAS", url: siteUrl },
+            },
+            isPartOf: {
+              "@type": "CollectionPage",
+              name: image.collection.title,
+              url: `${siteUrl}/shop/${slug}`,
+            },
+            potentialAction: {
+              "@type": "DownloadAction",
+              target: signedUrl,
+            },
+            audience: {
+              "@type": "Audience",
+              audienceType: `${image.collection.category} enthusiasts, dark fantasy art lovers, digital wallpaper collectors`,
+            },
           }),
         }}
       />
