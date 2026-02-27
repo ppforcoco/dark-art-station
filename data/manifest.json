@@ -12,7 +12,27 @@
     "icon": "🌙",
     "bgClass": "cat-bg-goddess",
     "tag": "Featured",
-    "featured": true
+    "featured": true,
+    "images": [
+      {
+        "slug": "hecate-moonrise",
+        "title": "Hecate Moonrise",
+        "description": "The triple goddess of the moon, night, and magic.",
+        "sortOrder": 1
+      },
+      {
+        "slug": "kali-the-destroyer",
+        "title": "Kali the Destroyer",
+        "description": "Dark mother of time and transformation.",
+        "sortOrder": 2
+      },
+      {
+        "slug": "lilith-the-first",
+        "title": "Lilith the First",
+        "description": "The first woman, untamed and sovereign.",
+        "sortOrder": 3
+      }
+    ]
   },
   {
     "slug": "pixel-parlour-tarot-vol1",
@@ -27,6 +47,20 @@
     "icon": "🃏",
     "bgClass": "cat-bg-tarot",
     "tag": "Collection",
-    "featured": false
+    "featured": false,
+    "images": [
+      {
+        "slug": "pixel-fool",
+        "title": "The Fool",
+        "description": "Beginnings, spontaneity, and a free spirit.",
+        "sortOrder": 1
+      },
+      {
+        "slug": "pixel-high-priestess",
+        "title": "The High Priestess",
+        "description": "Intuition, the subconscious mind, and inner knowledge.",
+        "sortOrder": 2
+      }
+    ]
   }
 ]

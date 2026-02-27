@@ -9,35 +9,59 @@ datasource db {
 
 model Collection {
   id          String   @id @default(uuid())
-  slug        String   @unique  // URL-safe identifier, e.g. "dark-goddess-hecate"
+  slug        String   @unique
   title       String
   description String
   category    String
-  thumbnail   String   // R2 object key, e.g. "thumbnails/hecate.webp"
-  downloadUrl String   // R2 object key for the ZIP/file, e.g. "files/hecate-pack.zip"
+  thumbnail   String   // R2 key: thumbnails/<slug>.webp  (collection cover)
+  downloadUrl String?  // R2 key: files/<slug>.zip  (optional bundle ZIP)
 
   // ── UI / display fields ──────────────────────────────
   price       Float    @default(0)
   isFree      Boolean  @default(false)
-  badge       String?  // "New" | "Hot" | "Free" | null
-  icon        String   @default("🌙")   // emoji used as placeholder thumbnail
-  bgClass     String   @default("p-bg-1") // CSS gradient class
-  tag         String   @default("Collection") // e.g. "Featured", "Viral", "Popular"
+  badge       String?
+  icon        String   @default("🌙")
+  bgClass     String   @default("p-bg-1")
+  tag         String   @default("Collection")
   featured    Boolean  @default(false)
 
   // ── Relations ────────────────────────────────────────
+  images      Image[]
   downloads   Download[]
 
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
 
-// Tracks download events (useful for analytics + gating free downloads)
+model Image {
+  id            String     @id @default(uuid())
+  slug          String     @unique   // e.g. "hecate-moonrise" — unique across all images
+  title         String
+  description   String?
+  r2Key         String     // thumbnails/<collection-slug>/<image-slug>.webp
+  highResKey    String     // high-res/<collection-slug>/<image-slug>.png
+  viewCount     Int        @default(0)
+  sortOrder     Int        @default(0)   // controls display order within collection
+
+  collection    Collection @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+  collectionId  String
+
+  downloads     Download[]
+
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+
+  @@index([collectionId])
+}
+
+// Tracks download events — works for both collection ZIPs and individual images
 model Download {
-  id           String     @id @default(uuid())
-  collection   Collection @relation(fields: [collectionId], references: [id])
-  collectionId String
-  email        String?    // captured if user subscribed before downloading
-  ipHash       String?    // hashed IP for abuse tracking (not stored raw)
-  createdAt    DateTime   @default(now())
+  id           String      @id @default(uuid())
+  collection   Collection? @relation(fields: [collectionId], references: [id])
+  collectionId String?
+  image        Image?      @relation(fields: [imageId], references: [id])
+  imageId      String?
+  email        String?
+  ipHash       String?
+  createdAt    DateTime    @default(now())
 }

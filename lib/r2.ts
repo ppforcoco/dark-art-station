@@ -1,10 +1,9 @@
 import { S3Client, GetObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
-// Cloudflare R2 is S3-compatible — we use the AWS SDK pointed at R2's endpoint
 export const r2 = new S3Client({
   region: "auto",
-  endpoint: process.env.R2_ENDPOINT, // https://<account_id>.r2.cloudflarestorage.com
+  endpoint: process.env.R2_ENDPOINT,
   credentials: {
     accessKeyId:     process.env.R2_ACCESS_KEY_ID!,
     secretAccessKey: process.env.R2_SECRET_ACCESS_KEY!,
@@ -14,12 +13,12 @@ export const r2 = new S3Client({
 export const BUCKET = process.env.R2_BUCKET_NAME ?? "haunted-wallpapers-assets";
 
 /**
- * Generate a time-limited signed URL for a private R2 object.
- * Used by the download API route — never expose the raw key to the client.
+ * Generate a time-limited signed URL for any private R2 object.
+ * Used for both collection ZIPs and individual image high-res downloads.
  */
 export async function getSignedDownloadUrl(
   objectKey: string,
-  expiresInSeconds = 60 * 5 // 5 minutes — short enough to prevent link sharing
+  expiresInSeconds = 60 * 5
 ): Promise<string> {
   const command = new GetObjectCommand({
     Bucket: BUCKET,
@@ -29,10 +28,26 @@ export async function getSignedDownloadUrl(
 }
 
 /**
- * Build a public CDN URL for thumbnails (R2 public bucket / custom domain).
- * Thumbnails are public; ZIP files are private (signed URLs only).
+ * Build a public CDN URL for any public R2 asset.
+ * Works for both flat keys (thumbnails/slug.webp)
+ * and nested keys (thumbnails/collection-slug/image-slug.webp).
  */
-export function getThumbnailUrl(objectKey: string): string {
-  const base = process.env.R2_PUBLIC_URL?.replace(/\/$/, "");
+export function getPublicUrl(objectKey: string): string {
+  const base = (process.env.R2_PUBLIC_URL ?? "").replace(/\/$/, "");
   return `${base}/${objectKey}`;
+}
+
+// Convenience wrappers — keeps consumers clean
+
+export function getCollectionThumbnailUrl(collectionSlug: string): string {
+  return getPublicUrl(`thumbnails/${collectionSlug}.webp`);
+}
+
+export function getImageThumbnailUrl(collectionSlug: string, imageSlug: string): string {
+  return getPublicUrl(`thumbnails/${collectionSlug}/${imageSlug}.webp`);
+}
+
+// highResKey is PRIVATE — always use getSignedDownloadUrl for these
+export function buildHighResKey(collectionSlug: string, imageSlug: string): string {
+  return `high-res/${collectionSlug}/${imageSlug}.png`;
 }

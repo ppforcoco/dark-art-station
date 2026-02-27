@@ -1,6 +1,7 @@
 /**
  * scripts/import-collections.ts
  * Syncs data/manifest.json → PostgreSQL via Prisma upsert.
+ * Handles both Collection metadata and nested Image records.
  *
  * Run with: npm run ingest
  */
@@ -8,7 +9,12 @@
 import path from "path";
 import fs from "fs";
 import { PrismaClient } from "@prisma/client";
-import { CollectionSchema, CollectionInput } from "../lib/schemas";
+import {
+  CollectionSchema,
+  CollectionInput,
+  imageThumbKey,
+  imageHighResKey,
+} from "../lib/schemas";
 
 const prisma = new PrismaClient();
 
@@ -23,16 +29,18 @@ async function main() {
   const raw: unknown[] = JSON.parse(fs.readFileSync(manifestPath, "utf-8"));
 
   console.log(`\n🕯️  VOIDCANVAS Ingestion Pipeline`);
-  console.log(`   Found ${raw.length} entries in manifest.json\n`);
+  console.log(`   Found ${raw.length} collections in manifest.json\n`);
 
-  let passed = 0;
-  let failed = 0;
+  let collectionsPassed = 0;
+  let collectionsFailed = 0;
+  let imagesPassed = 0;
+  let imagesFailed = 0;
 
   for (const entry of raw) {
     const result = CollectionSchema.safeParse(entry);
 
     if (!result.success) {
-      failed++;
+      collectionsFailed++;
       const slugGuess = (entry as Record<string, unknown>).slug ?? "(unknown)";
       console.error(`  ✗ [${slugGuess}] Validation failed:`);
       for (const issue of result.error.issues) {
@@ -43,14 +51,14 @@ async function main() {
 
     const data: CollectionInput = result.data;
 
-    // Map manifest fields → Prisma Collection model fields
-    const prismaPayload = {
+    // ── Upsert Collection ──────────────────────────────────────────────────
+    const collectionPayload = {
       slug:        data.slug,
       title:       data.title,
       description: data.description,
       category:    data.category,
-      thumbnail:   data.thumbnailR2Key,   // stored as R2 key in DB
-      downloadUrl: data.fullResR2Key,      // stored as R2 key in DB
+      thumbnail:   data.thumbnailR2Key,
+      downloadUrl: data.fullResR2Key ?? null,
       price:       data.price,
       isFree:      data.isFree,
       badge:       data.badge ?? null,
@@ -60,30 +68,66 @@ async function main() {
       featured:    data.featured,
     };
 
-    try {
-      await prisma.collection.upsert({
-        where: { slug: data.slug },
-        update: prismaPayload,
-        create: prismaPayload,
-      });
+    let collectionId: string;
 
-      console.log(`  ✓ [${data.slug}] "${data.title}" — upserted`);
-      passed++;
+    try {
+      const upserted = await prisma.collection.upsert({
+        where:  { slug: data.slug },
+        update: collectionPayload,
+        create: collectionPayload,
+        select: { id: true },
+      });
+      collectionId = upserted.id;
+      collectionsPassed++;
+      console.log(`  ✓ [${data.slug}] "${data.title}" — collection upserted`);
     } catch (err) {
-      failed++;
-      console.error(`  ✗ [${data.slug}] DB error:`, err);
+      collectionsFailed++;
+      console.error(`  ✗ [${data.slug}] Collection DB error:`, err);
+      continue;
+    }
+
+    // ── Upsert Images ──────────────────────────────────────────────────────
+    if (!data.images || data.images.length === 0) {
+      console.log(`      ↳ No images defined`);
+      continue;
+    }
+
+    for (const img of data.images) {
+      const imagePayload = {
+        slug:         img.slug,
+        title:        img.title,
+        description:  img.description ?? null,
+        r2Key:        imageThumbKey(data.slug, img.slug),
+        highResKey:   imageHighResKey(data.slug, img.slug),
+        sortOrder:    img.sortOrder,
+        collectionId,
+      };
+
+      try {
+        await prisma.image.upsert({
+          where:  { slug: img.slug },
+          update: imagePayload,
+          create: imagePayload,
+        });
+        imagesPassed++;
+        console.log(`      ↳ ✓ [${img.slug}] "${img.title}"`);
+      } catch (err) {
+        imagesFailed++;
+        console.error(`      ↳ ✗ [${img.slug}] Image DB error:`, err);
+      }
     }
   }
 
-  console.log(`\n─────────────────────────────────────`);
-  console.log(`  ✅ ${passed} upserted  |  ❌ ${failed} failed`);
+  console.log(`\n─────────────────────────────────────────────────`);
+  console.log(`  Collections: ✅ ${collectionsPassed}  |  ❌ ${collectionsFailed}`);
+  console.log(`  Images:      ✅ ${imagesPassed}  |  ❌ ${imagesFailed}`);
 
-  if (failed > 0) {
-    console.log(`\n  Fix the errors above and re-run: npm run ingest`);
+  if (collectionsFailed > 0 || imagesFailed > 0) {
+    console.log(`\n  Fix errors above and re-run: npm run ingest`);
     process.exit(1);
   }
 
-  console.log(`\n  All done. Run: npx prisma studio  to verify.\n`);
+  console.log(`\n  All done. npx prisma studio to verify.\n`);
 }
 
 main()
