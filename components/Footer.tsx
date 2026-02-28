@@ -6,7 +6,7 @@ export default function Footer() {
       <div className="footer-grid">
         <div>
           <Link href="/" className="nav-logo">
-            VOID<span className="logo-red">CANVAS</span>
+            HAUNTED<span className="logo-red">WALLPAPERS</span>
           </Link>
           <p className="footer-brand-desc">
             Premium dark art for the damned, the divine, and everyone gloriously
@@ -44,7 +44,7 @@ export default function Footer() {
 
       <div className="footer-bottom">
         <span className="footer-copy">
-          © 2025 VoidCanvas. All rights reserved. Souls collected daily.
+          © 2025 HauntedWallpapers. All rights reserved. Souls collected daily.
         </span>
         <div className="footer-socials">
           {["Instagram","Pinterest","TikTok","ArtStation"].map(s => (

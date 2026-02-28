@@ -27,9 +27,9 @@ const spaceMono = Space_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "VOIDCANVAS | Art Born From The Abyss",
+  title: "Haunted Wallpapers | Dark Fantasy Art & Occult Wallpapers",
   description:
-    "Premium dark fantasy wallpapers, tarot art, and occult designs. Download high-resolution AI art collections.",
+    "Free dark fantasy wallpapers, tarot art, and occult designs. Download high-resolution AI art collections. Skeletons, demons, goddesses and more.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

@@ -1,18 +1,18 @@
 import Link from "next/link";
 
 const NAV_LINKS = [
-  { label: "Grimoire",    href: "/shop" },
+  { label: "Grimoire",    href: "/shop"        },
   { label: "Collections", href: "/collections" },
-  { label: "Free Souls",  href: "/free" },
-  { label: "The Ritual",  href: "/ritual" },
-  { label: "Lore",        href: "/lore" },
+  { label: "Free Souls",  href: "/free"        },
+  { label: "The Ritual",  href: "/ritual"      },
+  { label: "Lore",        href: "/lore"        },
 ];
 
 export default function Header() {
   return (
     <nav className="site-nav">
       <Link href="/" className="nav-logo">
-        VOID<span className="logo-red">CANVAS</span>
+        HAUNTED<span className="logo-red">WALLPAPERS</span>
       </Link>
 
       <ul className="nav-links">
