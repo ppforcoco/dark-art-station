@@ -2,6 +2,8 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   images: {
+    // Allow all standard image formats from the R2 CDN
+    formats: ["image/webp", "image/avif"],
     remotePatterns: [
       {
         protocol: "https",
