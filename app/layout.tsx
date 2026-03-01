@@ -32,13 +32,14 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
+  const adsPid = process.env.NEXT_PUBLIC_ADSENSE_PID;
   return (
     <html lang="en">
       <head>
-        {process.env.NEXT_PUBLIC_ADSENSE_PID && (
+        {adsPid && (
           <script
             async
-            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${process.env.NEXT_PUBLIC_ADSENSE_PID}`}
+            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsPid}`}
             crossOrigin="anonymous"
           />
         )}

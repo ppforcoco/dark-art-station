@@ -3,6 +3,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import MarqueeTicker from "@/components/MarqueeTicker";
 import NewsletterForm from "@/components/NewsletterForm";
+import Image from "next/image";
 import Link from "next/link";
 import ProductCard from "@/components/ProductCard";
 import AdSlot from "@/components/AdSlot";
@@ -22,8 +23,8 @@ export default async function Home() {
     orderBy: [{ featured: "desc" }, { createdAt: "desc" }],
     take: 5,
     select: {
-      id: true, title: true, icon: true, bgClass: true,
-      tag: true, featured: true,
+      id: true, slug: true, title: true, icon: true, bgClass: true,
+      tag: true, featured: true, thumbnail: true,
       _count: { select: { downloads: true } },
     },
   });
@@ -104,11 +105,23 @@ export default async function Home() {
           {categories.length > 0 ? categories.map((cat) => (
             <Link
               key={cat.id}
-              href={`/shop?category=${encodeURIComponent(cat.title)}`}
+              href={`/shop/${cat.slug}`}
               className={`cat-card${cat.featured ? " featured" : ""}`}
             >
-              <div className={`cat-bg-layer ${cat.bgClass}`} />
-              <div className="cat-icon-el">{cat.icon}</div>
+              {cat.thumbnail ? (
+                <Image
+                  src={`${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/${cat.thumbnail}`}
+                  alt={cat.title}
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 20vw"
+                />
+              ) : (
+                <>
+                  <div className={`cat-bg-layer ${cat.bgClass}`} />
+                  <div className="cat-icon-el">{cat.icon}</div>
+                </>
+              )}
               <div className="cat-overlay" />
               <div className="cat-content">
                 <span className="cat-tag">{cat.tag}</span>

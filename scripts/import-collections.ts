@@ -97,7 +97,7 @@ async function main() {
         slug:         img.slug,
         title:        img.title,
         description:  img.description ?? null,
-        r2Key:        imageThumbKey(data.slug, img.slug, img.thumbExt ?? "jpeg"),
+        r2Key:        imageHighResKey(data.slug, img.slug, img.highResExt ?? "jpeg"),
         highResKey:   imageHighResKey(data.slug, img.slug, img.highResExt ?? "jpeg"),
         sortOrder:    img.sortOrder,
         collectionId,
