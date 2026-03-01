@@ -40,14 +40,13 @@ export function getPublicUrl(objectKey: string): string {
 // Convenience wrappers — keeps consumers clean
 
 export function getCollectionThumbnailUrl(collectionSlug: string): string {
-  return getPublicUrl(`thumbnails/${collectionSlug}.webp`);
+  return getPublicUrl(`thumbnails/${collectionSlug}/${collectionSlug}.jpeg`);
 }
 
 export function getImageThumbnailUrl(collectionSlug: string, imageSlug: string): string {
-  return getPublicUrl(`thumbnails/${collectionSlug}/${imageSlug}.webp`);
+  return getPublicUrl(`thumbnails/${collectionSlug}/${imageSlug}.jpeg`);
 }
 
-// highResKey is PRIVATE — always use getSignedDownloadUrl for these
 export function buildHighResKey(collectionSlug: string, imageSlug: string): string {
-  return `high-res/${collectionSlug}/${imageSlug}.png`;
+  return `high-res/${collectionSlug}/${imageSlug}.jpeg`;
 }

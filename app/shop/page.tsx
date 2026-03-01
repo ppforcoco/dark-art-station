@@ -13,11 +13,11 @@ function parseBadge(b: string | null | undefined): Badge | undefined {
 }
 
 interface ShopPageProps {
-  searchParams: { category?: string; filter?: string };
+  searchParams: Promise<{ category?: string; filter?: string }>;
 }
 
 export default async function ShopPage({ searchParams }: ShopPageProps) {
-  const { category, filter } = searchParams;
+  const { category, filter } = await searchParams;
 
   // Build dynamic where clause
   const where = {

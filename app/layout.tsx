@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Cinzel_Decorative, Cormorant_Garamond, Space_Mono } from "next/font/google";
-import Script from "next/script";
 import "./globals.css";
 import Cursor from "@/components/Cursor";
 
@@ -35,17 +34,18 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body className={`${cormorant.variable} ${cinzel.variable} ${spaceMono.variable}`}>
-        <Cursor />
-        {children}
+      <head>
         {process.env.NEXT_PUBLIC_ADSENSE_PID && (
-          <Script
+          <script
             async
             src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${process.env.NEXT_PUBLIC_ADSENSE_PID}`}
             crossOrigin="anonymous"
-            strategy="afterInteractive"
           />
         )}
+      </head>
+      <body className={`${cormorant.variable} ${cinzel.variable} ${spaceMono.variable}`}>
+        <Cursor />
+        {children}
       </body>
     </html>
   );

@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { db } from "@/lib/db";
-import { getPublicUrl, getSignedDownloadUrl } from "@/lib/r2";
+import { getPublicUrl } from "@/lib/r2";
 import AdSlot from "@/components/AdSlot";
 
 interface PageProps {
@@ -107,7 +107,6 @@ export default async function ImagePage({ params }: PageProps) {
   }).catch(() => {});
 
   const thumbUrl  = getPublicUrl(image.r2Key);
-  const signedUrl = await getSignedDownloadUrl(image.highResKey);
 
   // Sibling navigation
   const siblings  = image.collection.images;
@@ -182,14 +181,13 @@ export default async function ImagePage({ params }: PageProps) {
             {/* Download CTA */}
             <div className="flex flex-col gap-3 mt-2">
               <a
-                href={signedUrl}
-                download
+                href={`/api/download/image/${image.id}`}
                 className="font-mono text-[0.7rem] tracking-[0.2em] uppercase bg-[#8b0000] hover:bg-[#a80000] text-white px-8 py-4 transition-colors duration-200 border border-[#8b0000] text-center"
               >
                 ↓ Download 4K Wallpaper (Free)
               </a>
               <p className="font-mono text-[0.5rem] tracking-[0.1em] text-[#4a445a]">
-                PNG · 4K resolution · No account required · Link expires in 5 min
+                PNG · 4K resolution · No account required
               </p>
             </div>
 
@@ -307,7 +305,7 @@ export default async function ImagePage({ params }: PageProps) {
             },
             potentialAction: {
               "@type": "DownloadAction",
-              target: signedUrl,
+              target: `${siteUrl}/api/download/image/${image.id}`,
             },
             audience: {
               "@type": "Audience",
