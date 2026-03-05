@@ -269,5 +269,176 @@
         "highResExt": "jpeg"
       }
     ]
-  }
+  },
+  {
+  "slug": "skeleton-card-collection",
+  "title": "Skeleton Card Collection",
+  "description": "A striking series of 20 dark fantasy card illustrations featuring skeleton sorcerers, armored bone warriors, and cloaked undead figures channeling arcane energy, wielding glowing staves, and commanding swirling dark forces across ornate card frames.",
+  "category": "Character Illustrations",
+  "thumbnailR2Key": "thumbnails/skeleton-card-collection/skeleton-card-collection.jpeg",
+  "tag": "Featured",
+  "featured": true,
+  "images": [
+    {
+      "slug": "skeleton-mage-purple-orb-staff-rune-circle",
+      "title": "Skeleton Mage with Purple Orb and Rune Circle",
+      "description": "A robed skeleton with glowing red eyes holds a swirling purple energy orb in one hand and a spiked arcane staff in the other, surrounded by a glowing rune circle and smoke wisps on a dark ornate card numbered II.",
+      "sortOrder": 1,
+      "thumbExt": "jpeg",
+      "highResExt": "jpeg"
+    },
+    {
+      "slug": "armored-skull-warrior-purple-flame-skull-staff",
+      "title": "Armored Skull Warrior — Card XIII Death",
+      "description": "A heavily armored skull-faced warrior in dark plate mail charges a swirling purple energy ball in one gauntleted hand while gripping a staff topped with a glowing skull, framed by a thorn-bordered card labeled Death XIII.",
+      "sortOrder": 2,
+      "thumbExt": "jpeg",
+      "highResExt": "jpeg"
+    },
+    {
+      "slug": "skeleton-green-purple-orb-sigil-card",
+      "title": "Skeleton Channeler with Green and Purple Energy",
+      "description": "A bare-ribbed skeleton in a dark cloak with spiked pauldrons channels green and purple glowing orbs, surrounded by floating arcane sigils and a glowing green chest emblem on a dark card marked A and II.",
+      "sortOrder": 3,
+      "thumbExt": "jpeg",
+      "highResExt": "jpeg"
+    },
+    {
+      "slug": "hooded-skeleton-purple-swirl-card-xiii-death",
+      "title": "Hooded Skeleton — Death Card XIII",
+      "description": "A hooded skeleton with glowing purple eyes clutches a swirling purple energy mass in ringed bony fingers, seated against a dark starfield on an ornately bordered card labeled Death XIII with skull corner accents.",
+      "sortOrder": 4,
+      "thumbExt": "jpeg",
+      "highResExt": "jpeg"
+    },
+    {
+      "slug": "hooded-skeleton-blue-arcane-orb-card-10",
+      "title": "Hooded Skeleton with Blue Arcane Orb — Card 10",
+      "description": "A hooded skeleton with glowing blue eyes cradles a blazing blue energy orb between both skeletal hands, surrounded by floating arcane circle glyphs on a detailed dark card numbered 10.",
+      "sortOrder": 5,
+      "thumbExt": "jpeg",
+      "highResExt": "jpeg"
+    },
+    {
+      "slug": "skeleton-spiked-armor-three-sigil-circles-xi",
+      "title": "Skeleton in Spiked Armor — Card XI",
+      "description": "A dynamic skeleton in jagged spiked armor poses with three floating white arcane circles in its bony hands against billowing dark smoke on a minimalist ornate card numbered XI, labeled Inord Parwe.",
+      "sortOrder": 6,
+      "thumbExt": "jpeg",
+      "highResExt": "jpeg"
+    },
+    {
+      "slug": "crowned-skeleton-purple-vortex-skulls",
+      "title": "Crowned Skeleton with Purple Vortex and Skulls",
+      "description": "A spiked-crown skeleton in a layered dark robe raises one hand with a swirling purple vortex and the other clutching a cluster of floating skulls, with crescent moons and star symbols glowing overhead.",
+      "sortOrder": 7,
+      "thumbExt": "jpeg",
+      "highResExt": "jpeg"
+    },
+    {
+      "slug": "necromancer-blue-orb-staff-rune-halo-xiii",
+      "title": "The Necromancer — Card XIII",
+      "description": "A hooded skeleton necromancer with dark hollow eyes holds a glowing orb-tipped staff, encircled by a glowing blue rune ring halo and floating arcane marks on a gothic card titled The Necromancer, numbered XIII.",
+      "sortOrder": 8,
+      "thumbExt": "jpeg",
+      "highResExt": "jpeg"
+    },
+    {
+      "slug": "necromancer-purple-crystal-staff-lightning",
+      "title": "The Necromancer with Crystal Staff and Lightning",
+      "description": "A purple-eyed skeleton necromancer in dark armor charges a crackling purple lightning vortex in one hand while raising a staff topped with glowing purple crystals, set against swirling dark energy on a card titled The Necromancer.",
+      "sortOrder": 9,
+      "thumbExt": "jpeg",
+      "highResExt": "jpeg"
+    },
+    {
+      "slug": "necromancer-purple-dark-orb-close-up-xiii",
+      "title": "The Necromancer — Dark Orb Close-Up, Card XIII",
+      "description": "A hooded skeleton with glowing purple eyes cradles a dark exploding energy orb in both hands, surrounded by swirling purple smoke and red embers on a skull-cornered card labeled The Necromancer, numbered XIII.",
+      "sortOrder": 10,
+      "thumbExt": "jpeg",
+      "highResExt": "jpeg"
+    },
+    {
+      "slug": "winged-skeleton-raven-crescent-moons-staff",
+      "title": "Winged Skeleton with Ravens and Crescent Moons",
+      "description": "A winged skeleton in a dark feathered cloak holds a glowing staff and a swirling white energy orb, flanked by black ravens and triple crescent moons, surrounded by spiral smoke and arcane circle markings.",
+      "sortOrder": 11,
+      "thumbExt": "jpeg",
+      "highResExt": "jpeg"
+    },
+    {
+      "slug": "shadow-binder-skeleton-purple-staff-xiv",
+      "title": "The Shadow Binder — Card XIV",
+      "description": "A robed skeleton in a dark hood grips a flaming purple-tipped staff while wisps of purple smoke coil around its figure on an ornate gold-bordered card labeled The Shadow Binder, numbered III and XIV.",
+      "sortOrder": 12,
+      "thumbExt": "jpeg",
+      "highResExt": "jpeg"
+    },
+    {
+      "slug": "shadow-mage-antler-crown-purple-green-staff",
+      "title": "Shadow Mage with Antler Crown",
+      "description": "A skeleton in a dark hooded cloak and jagged antler crown grips a tall twisted staff topped with a swirling purple and green flame, surrounded by flowing purple smoke and an arcane glyph ring backdrop, labeled Shadow Mage.",
+      "sortOrder": 13,
+      "thumbExt": "jpeg",
+      "highResExt": "jpeg"
+    },
+    {
+      "slug": "shadow-sentry-skeleton-blue-energy-spinning",
+      "title": "Shadow Sentry — Card III",
+      "description": "A bare skeleton leaps dynamically with two hands channeling swirling blue-green energy orbs, wrapped in spiraling blue light streams on a dark detailed card labeled Shadow Sentry, numbered III.",
+      "sortOrder": 14,
+      "thumbExt": "jpeg",
+      "highResExt": "jpeg"
+    },
+    {
+      "slug": "shadow-servant-dual-purple-orbs-hooded",
+      "title": "The Shadow Servant — Card XV",
+      "description": "A hooded skeleton with glowing red eyes sprints forward while channeling two swirling purple energy orbs in its outstretched clawed hands, trailing dark purple smoke on an ornate card labeled The Shadow Servant, numbered XV.",
+      "sortOrder": 15,
+      "thumbExt": "jpeg",
+      "highResExt": "jpeg"
+    },
+    {
+      "slug": "shadow-weaver-skeleton-glyph-ring-smoke",
+      "title": "Shadow Weaver — Card II",
+      "description": "A bare skeleton with arcane markings etched on its skull dances within a floating ring of dark sigil medallions, holding a glowing orb in one hand while dark smoke billows around it on a gold-bordered card labeled Shadow Weaver, numbered II.",
+      "sortOrder": 16,
+      "thumbExt": "jpeg",
+      "highResExt": "jpeg"
+    },
+    {
+      "slug": "shadow-wielder-armored-scythe-purple-sigils",
+      "title": "The Shadow Wielder — Armored with Scythe, Card XIII",
+      "description": "A fully armored skeleton with a spiked dark crown wields a glowing purple scythe blade in one hand while projecting purple arcane sigils and a crescent from the other, on a card labeled The Shadow Wielder, numbered XIII.",
+      "sortOrder": 17,
+      "thumbExt": "jpeg",
+      "highResExt": "jpeg"
+    },
+    {
+      "slug": "shadow-wielder-crystal-staff-purple-smoke-xi",
+      "title": "The Shadow Wielder — Crystal Staff, Card XI",
+      "description": "A hooded skeleton in dark armor grips a tall staff topped with a glowing purple crystal while channeling purple flame energy in the other hand, surrounded by swirling purple smoke on a card labeled The Shadow Wielder, numbered XI.",
+      "sortOrder": 18,
+      "thumbExt": "jpeg",
+      "highResExt": "jpeg"
+    },
+    {
+      "slug": "shadow-wielder-purple-green-vortex-crystal-xiii",
+      "title": "The Shadow Wielder — Vortex Portal, Card XIII",
+      "description": "An armored skeleton with exposed ribs charges a dark purple energy mass in one hand and holds a purple crystal-tipped staff in the other, standing before a swirling green and purple vortex portal on a card labeled The Shadow Wielder, numbered XIII.",
+      "sortOrder": 19,
+      "thumbExt": "jpeg",
+      "highResExt": "jpeg"
+    },
+    {
+      "slug": "the-shadow-scythe-sigil-coins-xiii",
+      "title": "The Shadow — Scythe Bearer, Card XIII",
+      "description": "A skeletal figure adorned with arcane coin medallions and a rune-marked skull wields a large scythe over one shoulder while projecting a swirling dark purple energy orb from the other hand, wrapped in dark smoke on a card labeled The Shadow, numbered XIII.",
+      "sortOrder": 20,
+      "thumbExt": "jpeg",
+      "highResExt": "jpeg"
+    }
+  ]
+}
 ]
