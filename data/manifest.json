@@ -138,4 +138,136 @@
       }
     ]
   }
+
+  {
+    "slug": "dark-sorceress-collection",
+    "title": "Dark Sorceress Collection",
+    "description": "A striking series of 16 dark fantasy illustrations featuring powerful sorceresses, witches, and shadowy enchantresses surrounded by thorns, moons, ravens, skulls, and arcane energy in a hauntingly atmospheric black aesthetic.",
+    "category": "Character Illustrations",
+    "thumbnailR2Key": "thumbnails/dark-sorceress-collection/dark-sorceress-collection.jpeg",
+    "tag": "Featured",
+    "featured": true,
+    "images": [
+      {
+        "slug": "witch-purple-thorn-crescent-spell",
+        "title": "Witch of the Thorn Circle",
+        "description": "A dark witch in a pointed hat channels swirling purple energy from both hands, standing within a glowing green thorn circle beneath a crescent moon, flanked by dead trees and hanging chains.",
+        "sortOrder": 1,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "shadow-demon-queen-red-glow",
+        "title": "Shadow Demon Queen",
+        "description": "A monstrous dark queen with writhing tentacle hair, glowing red eyes and a sinister grin rises against a crimson and purple backdrop, flanked by blood moons, bats, and grasping clawed hands.",
+        "sortOrder": 2,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "red-eye-sorceress-black-moon",
+        "title": "Red-Eyed Sorceress of the Dark Moon",
+        "description": "A pale sorceress with glowing red star-marked eyes and flowing black hair raises her clawed hands against a background of twisted trees and a crescent moon with a sleeping face.",
+        "sortOrder": 3,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "witch-red-eyes-full-moon-bats",
+        "title": "Moonlit Witch with Red Eyes",
+        "description": "A menacing witch in a tall decorated hat with glowing red eyes spreads her claw-like hands before a glowing full moon, surrounded by bats, crescent moons, stars, and bare skeletal trees.",
+        "sortOrder": 4,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "paper-cut-witch-red-backdrop-staff",
+        "title": "Paper-Cut Witch with Staff",
+        "description": "A paper-cut style dark witch wielding a gnarled staff and glowing red eyes stands before a crimson circle, surrounded by layered black cutout symbols including pentacles, moons, and arcane glyphs.",
+        "sortOrder": 5,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "dark-fairy-skulls-bats-claws",
+        "title": "Dark Fairy of the Skull Grove",
+        "description": "A graceful dark enchantress with ornate feathered crown and swirling fairy-like wings drifts among skulls and bats, her long clawed hand reaching downward in an eerie black-and-white composition.",
+        "sortOrder": 6,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "dark-sorceress-swirl-crescent-bats",
+        "title": "Sorceress of the Swirling Night",
+        "description": "A hauntingly beautiful sorceress with cracked face markings and wild flowing hair stands amid layered swirling dark energy, bats, and bare branches under a crescent moon in a paper-cut style.",
+        "sortOrder": 7,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "witch-full-moon-red-sparks-forest",
+        "title": "Witch Beneath the Blood-Sparked Moon",
+        "description": "A witch in a wide-brimmed hat raises her hands in a dark forest, red glowing sparks and floating eyes surrounding her as a massive full moon illuminates bats and twisted branches overhead.",
+        "sortOrder": 8,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "witch-witch-hat-evil-moons-skeletons",
+        "title": "Witch of the Evil Moons",
+        "description": "A pale witch with glowing red eyes in a tall hat walks amid swirling thorned vines, skeleton hands, snarling crescent moon faces, and red-eyed bats in a dramatic paper-cut dark fantasy style.",
+        "sortOrder": 9,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "rune-sorceress-ravens-thorns",
+        "title": "Rune Sorceress and the Ravens",
+        "description": "A ghostly sorceress with wild white hair and skeleton hands channels swirling energy within a rune-inscribed circle, surrounded by four red-eyed ravens and coiling thorned vines.",
+        "sortOrder": 10,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "shadow-queen-wolves-bats-crescent",
+        "title": "Shadow Queen of Wolves and Bats",
+        "description": "A dark silhouetted queen with glowing eyes commands wolves, bats, and grasping shadow hands within a richly layered deep crimson and purple night scene framed by swirling ornamental borders.",
+        "sortOrder": 11,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "dark-queen-antlers-skulls-roses",
+        "title": "Dark Queen of Skulls and Roses",
+        "description": "A dramatic dark queen with antler-like raised arms, star eye markings, and an elaborate feathered gown stands amid skulls, dark roses, and bats under a sinister grinning moon.",
+        "sortOrder": 12,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "witch-skull-vines-bats-hat",
+        "title": "Witch of the Skull Vines",
+        "description": "A witch with a bent hat and flowing hair conjures floating skulls from swirling thorned vines with both hands, surrounded by bats and spiraling dark tendrils in a black-and-white illustration.",
+        "sortOrder": 13,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "white-hair-sorceress-shadow-spirits",
+        "title": "White-Haired Sorceress and Shadow Spirits",
+        "description": "A striking sorceress with flowing white hair and a jagged feathered gown channels faint energy from both hands, surrounded by lurking shadow creatures with glowing eyes in a dark swirling background.",
+        "sortOrder": 14,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "witch-staff-watching-eyes-forest",
+        "title": "Witch of the Watching Forest",
+        "description": "A solitary witch in a buckled hat carries a spiraling staff through a dark forest, her long hair swept by wind while glowing brown eyes peer from the branches and shadows around her.",
+        "sortOrder": 15,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      }
+    ]
+  }
 ]
