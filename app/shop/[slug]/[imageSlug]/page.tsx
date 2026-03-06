@@ -26,12 +26,14 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     },
   });
 
-  if (!image || image.collection.slug !== slug) return { title: "Not Found | VOIDCANVAS" };
+  if (!image || !image.collection || image.collection.slug !== slug) {
+    return { title: "Not Found | HAUNTED WALLPAPERS" };
+  }
 
   const ogImage = getPublicUrl(image.r2Key);
 
   return {
-    title: `${image.title} — ${image.collection.title} | VOIDCANVAS`,
+    title: `${image.title} — ${image.collection.title} | HAUNTED WALLPAPERS`,
     description: image.description ?? `${image.title} from the ${image.collection.title} collection. Dark fantasy art for download.`,
     keywords: [
       image.collection.category,
@@ -43,16 +45,16 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       "desktop wallpaper",
     ],
     openGraph: {
-      title: `${image.title} | VOIDCANVAS`,
+      title: `${image.title} | HAUNTED WALLPAPERS`,
       description: image.description ?? `Dark fantasy art: ${image.title}`,
       url: `${siteUrl}/shop/${slug}/${imageSlug}`,
-      siteName: "VOIDCANVAS",
+      siteName: "HAUNTED WALLPAPERS",
       images: [{ url: ogImage, width: 1200, height: 630, alt: image.title }],
       type: "website",
     },
     twitter: {
       card: "summary_large_image",
-      title: `${image.title} | VOIDCANVAS`,
+      title: `${image.title} | HAUNTED WALLPAPERS`,
       description: image.description ?? `Dark fantasy art: ${image.title}`,
       images: [ogImage],
     },
@@ -98,7 +100,7 @@ export default async function ImagePage({ params }: PageProps) {
   });
 
   // Guard: image must exist AND belong to the correct collection slug
-  if (!image || image.collection.slug !== slug) notFound();
+  if (!image || !image.collection || image.collection.slug !== slug) notFound();
 
   // Increment view count — fire and forget
   db.image.update({
@@ -156,7 +158,7 @@ export default async function ImagePage({ params }: PageProps) {
                 href={`/shop/${slug}`}
                 className="font-mono text-[0.6rem] tracking-[0.25em] uppercase text-[#8b0000] hover:text-[#c0001a] transition-colors"
               >
-                ← {image.collection.title}
+                ← {image.collection!.title}
               </Link>
               <h1 className="font-display text-2xl md:text-3xl font-bold mt-3 leading-tight">
                 {image.title}
@@ -256,8 +258,8 @@ export default async function ImagePage({ params }: PageProps) {
               "@type": "WebPage",
               "@id": `${siteUrl}/shop/${slug}/${imageSlug}`,
             },
-            brand: { "@type": "Brand", name: "VOIDCANVAS", url: siteUrl },
-            category: `Digital Products > Wallpapers > ${image.collection.category}`,
+            brand: { "@type": "Brand", name: "HAUNTED WALLPAPERS", url: siteUrl },
+            category: `Digital Products > Wallpapers > ${image.collection!.category}`,
             image: [{
               "@type": "ImageObject",
               url: thumbUrl,
@@ -296,11 +298,11 @@ export default async function ImagePage({ params }: PageProps) {
                 returnPolicyCategory: "https://schema.org/MerchantReturnNotPermitted",
                 applicableCountry: "Worldwide",
               },
-              seller: { "@type": "Organization", name: "VOIDCANVAS", url: siteUrl },
+              seller: { "@type": "Organization", name: "HAUNTED WALLPAPERS", url: siteUrl },
             },
             isPartOf: {
               "@type": "CollectionPage",
-              name: image.collection.title,
+              name: image.collection!.title,
               url: `${siteUrl}/shop/${slug}`,
             },
             potentialAction: {
@@ -309,7 +311,7 @@ export default async function ImagePage({ params }: PageProps) {
             },
             audience: {
               "@type": "Audience",
-              audienceType: `${image.collection.category} enthusiasts, dark fantasy art lovers, digital wallpaper collectors`,
+              audienceType: `${image.collection!.category} enthusiasts, dark fantasy art lovers, digital wallpaper collectors`,
             },
           }),
         }}

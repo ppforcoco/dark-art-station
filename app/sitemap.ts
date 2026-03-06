@@ -34,12 +34,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     orderBy: { updatedAt: "desc" },
   });
 
-  const imageRoutes: MetadataRoute.Sitemap = images.map((img) => ({
-    url: `${siteUrl}/shop/${img.collection!.slug}/${img.slug}`,
-    lastModified: img.updatedAt,
-    changeFrequency: "monthly" as const,
-    priority: 0.6,
-  }));
+  const imageRoutes: MetadataRoute.Sitemap = images
+    .filter((img) => img.collection?.slug)
+    .map((img) => ({
+      url: `${siteUrl}/shop/${img.collection?.slug}/${img.slug}`,
+      lastModified: img.updatedAt,
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
+    }));
 
   // Device landing pages — static but crawlable with high priority
   const deviceRoutes: MetadataRoute.Sitemap = [

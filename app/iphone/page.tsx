@@ -19,8 +19,8 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
 
   const title = tag
-    ? `Trending Dark #${tag} Wallpapers for iPhone | VOIDCANVAS`
-    : "Free Dark iPhone Wallpapers 4K | VOIDCANVAS";
+    ? `Trending Dark #${tag} Wallpapers for iPhone | HAUNTED WALLPAPERS`
+    : "Free Dark iPhone Wallpapers 4K | HAUNTED WALLPAPERS";
 
   const description = tag
     ? `Browse free 4K dark fantasy iPhone wallpapers tagged #${tag}. Download instantly, no account required.`
@@ -34,7 +34,7 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
       title,
       description,
       url: tag ? `${siteUrl}/iphone?tag=${tag}` : `${siteUrl}/iphone`,
-      siteName: "VOIDCANVAS",
+      siteName: "HAUNTED WALLPAPERS",
       type: "website",
     },
     twitter: { card: "summary_large_image", title, description },
