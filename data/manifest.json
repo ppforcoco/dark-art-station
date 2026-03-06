@@ -783,5 +783,137 @@
         "highResExt": "jpeg"
       }
     ]
+  },
+
+  {
+    "slug": "horror-eyes-collection",
+    "title": "Horror Eyes Collection",
+    "description": "A chilling series of 15 dark horror wallpapers featuring glowing eyes emerging from the void, paired with ominous typographic phrases.",
+    "category": "Horror Illustrations",
+    "thumbnailR2Key": "thumbnails/horror-eyes-collection/horror-eyes-collection.jpeg",
+    "tag": "Featured",
+    "featured": true,
+    "images": [
+      {
+        "slug": "fear-the-void-it-sees-you",
+        "title": "Fear The Void: It Sees You",
+        "description": "Two glowing red eyes with bleeding streaks emerge from pure darkness, with 'Fear The Void' at the top and 'It Sees You' at the bottom in dripping red horror font.",
+        "sortOrder": 1,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "fear-me-nightmare-awaits",
+        "title": "Fear Me: Your Nightmare Awaits",
+        "description": "Bloodshot red eyes peer through a dark shadowy figure with claw scratch marks beneath 'Fear Me' text, subtitled 'Your Nightmare Awaits' in red below.",
+        "sortOrder": 2,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "they-watch-always-watching",
+        "title": "They Watch: Always Watching",
+        "description": "Wide cracked green glowing eyes with long lashes stare out from darkness, topped with blood-dripping red 'They Watch' title and 'Always Watching' in white below.",
+        "sortOrder": 3,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "they-watch-you-sleep",
+        "title": "They Watch You Sleep",
+        "description": "Minimalist white glowing eyes float in total blackness with 'They Watch' in white scratchy text above and 'You Sleep' below, evoking a stark and eerie presence.",
+        "sortOrder": 4,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "can-you-see-me-red-glow",
+        "title": "Can You See Me?",
+        "description": "Fiery red-orange glowing eyes burn through a dark textured background streaked with red, with 'Can You See Me?' repeated both at the top in grey and bottom in red.",
+        "sortOrder": 5,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "whispers-in-the-void",
+        "title": "Whispers In The Void",
+        "description": "Sinister red slit-pupil eyes glow within a swirling dark vortex, surrounded by jagged red lettering spelling 'Whispers' above and 'In The Void' below.",
+        "sortOrder": 6,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "eternal-gaze-red-eyes",
+        "title": "Eternal Gaze",
+        "description": "Intense red glowing eyes peer from beneath a shadowy cavern-like brow, with 'Eternal Gaze' written in subtle dark red horror font centered above.",
+        "sortOrder": 7,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "the-night-has-eyes",
+        "title": "The Night Has Eyes",
+        "description": "Narrow red glowing eyes pierce through darkness with wisps of smoke rising from them, titled 'The Night Has Eyes' in red jagged lettering at the top.",
+        "sortOrder": 8,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "fear-me-smoke-tendrils",
+        "title": "Fear Me: Smoke Tendrils",
+        "description": "Bulging bloodshot red eyes surrounded by dark swirling tendrils and wisps of white smoke, with bold red 'Fear Me' text centered at the bottom.",
+        "sortOrder": 9,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "they-watch-you",
+        "title": "They Watch You",
+        "description": "Narrow red glowing eyes cut through a dark silhouetted figure, with 'They Watch' in large red dripping text at the top and a lone 'You' in white at the bottom.",
+        "sortOrder": 10,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "your-own-serpent-eyes",
+        "title": "Your Own",
+        "description": "Glowing amber serpentine eyes with slit pupils radiate heat and smoke against a starry black void, paired with 'Your Own' in dripping red metallic horror font below.",
+        "sortOrder": 11,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "the-eyes-never-lie",
+        "title": "The Eyes Never Lie",
+        "description": "Photorealistic red glowing eyes stare coldly from near-total darkness with 'The Eyes Never Lie' in red scratched lettering at the bottom.",
+        "sortOrder": 12,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "they-watch-with-smoke",
+        "title": "They Watch: Smoke Rising",
+        "description": "Red glowing eyes emit thin wisps of white smoke upward against a black background, with 'They Watch' in white distressed brush font at the bottom.",
+        "sortOrder": 13,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "shadows-are-watching",
+        "title": "The Shadows Are Watching: You Can't Hide",
+        "description": "Cracked red glowing eyes burn through a shadowy beast-like figure with dark claw patterns, topped with bold red 'The Shadows Are Watching' and 'You Can't Hide' in white below.",
+        "sortOrder": 14,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "lost-in-the-shadows",
+        "title": "Lost In The Shadows",
+        "description": "Dull red glowing eyes barely visible in near-total darkness hover above a faint reflection, with 'Lost In The Shadows' in red dripping font at the bottom.",
+        "sortOrder": 15,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      }
+    ]
   }
 ]
