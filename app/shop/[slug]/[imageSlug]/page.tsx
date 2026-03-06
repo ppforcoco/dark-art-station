@@ -66,8 +66,10 @@ export async function generateStaticParams() {
   const images = await db.image.findMany({
     select: { slug: true, collection: { select: { slug: true } } },
   });
-  return images.map((img) => ({
-    slug: img.collection.slug,
+  return images
+  .filter((img) => img.collection?.slug)
+  .map((img) => ({
+    slug: img.collection?.slug,
     imageSlug: img.slug,
   }));
 }
