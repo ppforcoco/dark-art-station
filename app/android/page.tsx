@@ -58,7 +58,7 @@ export async function generateStaticParams() {
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
-export default async function IphoneImagePage({ params }: PageProps) {
+export default async function AndroidImagePage({ params }: PageProps) {
   const { imageSlug } = await params;
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
 

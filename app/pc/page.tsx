@@ -29,10 +29,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   return {
     title: `${image.title} — Free PC Desktop Wallpaper | HAUNTED WALLPAPERS`,
     description: image.description ?? `${image.title} — free 4K dark fantasy PC desktop wallpaper. ${tagLine}. Download instantly, no account required.`,
-    keywords: ["pc wallpaper", "dark wallpaper pc", "4k pc wallpaper", image.title, ...image.tags],
+    keywords: ["pc wallpaper", "desktop wallpaper dark", "4k desktop wallpaper", image.title, ...image.tags],
     openGraph: {
       title: `${image.title} | HAUNTED WALLPAPERS`,
-      description: image.description ?? `Free 4K iPhone wallpaper: ${image.title}`,
+      description: image.description ?? `Free 4K PC desktop wallpaper: ${image.title}`,
       url: `${siteUrl}/pc/${imageSlug}`,
       siteName: "HAUNTED WALLPAPERS",
       images: [{ url: ogImage, width: 1200, height: 630, alt: image.title }],
@@ -41,7 +41,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     twitter: {
       card: "summary_large_image",
       title: `${image.title} | HAUNTED WALLPAPERS`,
-      description: image.description ?? `Free 4K iPhone wallpaper: ${image.title}`,
+      description: image.description ?? `Free 4K PC desktop wallpaper: ${image.title}`,
       images: [ogImage],
     },
     alternates: { canonical: `${siteUrl}/pc/${imageSlug}` },
@@ -148,7 +148,7 @@ export default async function PcImagePage({ params }: PageProps) {
                 {image.tags.map((tag) => (
                   <Link
                     key={tag}
-                    href={`/iphone?tag=${tag}`}
+                    href={`/pc?tag=${tag}`}
                     className="font-mono text-[0.55rem] tracking-[0.15em] uppercase border border-[#2a2535] px-3 py-1 text-[#8a8099] hover:border-[#c0001a] hover:text-[#f0ecff] transition-colors"
                   >
                     #{tag}
@@ -240,7 +240,7 @@ export default async function PcImagePage({ params }: PageProps) {
             description: image.description ?? `${image.title} — free 4K dark fantasy PC desktop wallpaper.`,
             url: `${siteUrl}/pc/${imageSlug}`,
             brand: { "@type": "Brand", name: "HAUNTED WALLPAPERS", url: siteUrl },
-            category: "Digital Products > Wallpapers > iPhone",
+            category: "Digital Products > Wallpapers > PC",
             image: [{ "@type": "ImageObject", url: thumbUrl, contentUrl: thumbUrl, caption: image.title }],
             additionalProperty: [
               { "@type": "PropertyValue", name: "Format", value: "JPEG (4K High Resolution)" },
