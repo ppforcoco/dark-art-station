@@ -14,6 +14,10 @@ import {
   CollectionInput,
   imageThumbKey,
   imageHighResKey,
+  StandaloneSchema,
+  StandaloneInput,
+  standaloneHighResKey,
+  standaloneThumbnailKey,
 } from "../lib/schemas";
 
 const prisma = new PrismaClient();
@@ -26,17 +30,26 @@ async function main() {
     process.exit(1);
   }
 
-  const raw: unknown[] = JSON.parse(fs.readFileSync(manifestPath, "utf-8"));
+  const raw: { collections?: unknown[]; standalones?: unknown[] } = JSON.parse(
+    fs.readFileSync(manifestPath, "utf-8")
+  );
+
+  // Support both legacy flat array format and new split format
+  const collectionsRaw: unknown[] = Array.isArray(raw)
+    ? (raw as unknown[])
+    : (raw.collections ?? []);
+  const standalonesRaw: unknown[] = Array.isArray(raw) ? [] : (raw.standalones ?? []);
 
   console.log(`\n🕯️  VOIDCANVAS Ingestion Pipeline`);
-  console.log(`   Found ${raw.length} collections in manifest.json\n`);
+  console.log(`   Found ${collectionsRaw.length} collections in manifest.json`);
+  console.log(`   Found ${standalonesRaw.length} standalones in manifest.json\n`);
 
   let collectionsPassed = 0;
   let collectionsFailed = 0;
   let imagesPassed = 0;
   let imagesFailed = 0;
 
-  for (const entry of raw) {
+  for (const entry of collectionsRaw) {
     const result = CollectionSchema.safeParse(entry);
 
     if (!result.success) {
@@ -119,10 +132,59 @@ async function main() {
   }
 
   console.log(`\n─────────────────────────────────────────────────`);
+  console.log(`  ⬇  Processing ${standalonesRaw.length} standalone images...\n`);
+
+  let standalonesPassed = 0;
+  let standalonesFailed = 0;
+
+  for (const entry of standalonesRaw) {
+    const result = StandaloneSchema.safeParse(entry);
+
+    if (!result.success) {
+      standalonesFailed++;
+      const slugGuess = (entry as Record<string, unknown>).slug ?? "(unknown)";
+      console.error(`  ✗ [${slugGuess}] Standalone validation failed:`);
+      for (const issue of result.error.issues) {
+        console.error(`      → ${issue.path.join(".")}: ${issue.message}`);
+      }
+      continue;
+    }
+
+    const data: StandaloneInput = result.data;
+    const ext = data.ext ?? "jpeg";
+
+    const imagePayload = {
+      slug:        data.slug,
+      title:       data.title,
+      description: data.description ?? null,
+      r2Key:       standaloneThumbnailKey(data.deviceType, data.slug, ext),
+      highResKey:  standaloneHighResKey(data.deviceType, data.slug, ext),
+      deviceType:  data.deviceType,
+      tags:        data.tags,
+      sortOrder:   data.sortOrder,
+      // collectionId intentionally omitted — standalone image
+    };
+
+    try {
+      await prisma.image.upsert({
+        where:  { slug: data.slug },
+        update: imagePayload,
+        create: imagePayload,
+      });
+      standalonesPassed++;
+      console.log(`  ✓ [${data.slug}] "${data.title}" [${data.deviceType}] — standalone upserted`);
+    } catch (err) {
+      standalonesFailed++;
+      console.error(`  ✗ [${data.slug}] Standalone DB error:`, err);
+    }
+  }
+
+  console.log(`\n─────────────────────────────────────────────────`);
   console.log(`  Collections: ✅ ${collectionsPassed}  |  ❌ ${collectionsFailed}`);
   console.log(`  Images:      ✅ ${imagesPassed}  |  ❌ ${imagesFailed}`);
+  console.log(`  Standalones: ✅ ${standalonesPassed}  |  ❌ ${standalonesFailed}`);
 
-  if (collectionsFailed > 0 || imagesFailed > 0) {
+  if (collectionsFailed > 0 || imagesFailed > 0 || standalonesFailed > 0) {
     console.log(`\n  Fix errors above and re-run: npm run ingest`);
     process.exit(1);
   }

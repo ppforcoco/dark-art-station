@@ -15,7 +15,8 @@ module.exports = {
         mono:    ["var(--font-space)", "monospace"],
       },
       aspectRatio: {
-        portrait: "9 / 16",
+        portrait:  "9 / 16",
+        landscape: "16 / 9",
       },
     },
   },

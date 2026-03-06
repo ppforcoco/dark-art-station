@@ -110,3 +110,39 @@ export function imageHighResKey(collectionSlug: string, imageSlug: string, ext =
 export function collectionZipKey(collectionSlug: string) {
   return `files/${collectionSlug}.zip`;
 }
+
+// ─── Standalone Schema ────────────────────────────────────────────────────────
+
+export const DeviceTypeValues = ["IPHONE", "ANDROID", "PC"] as const;
+export type DeviceType = typeof DeviceTypeValues[number];
+
+export const StandaloneSchema = z.object({
+  slug: z
+    .string()
+    .min(3)
+    .max(80)
+    .regex(slugRegex, "Slug must be lowercase and hyphenated (e.g. neon-city-iphone)"),
+
+  title: z.string().min(3).max(120),
+  description: z.string().max(500).optional(),
+
+  deviceType: z.enum(DeviceTypeValues),
+  tags: z.array(z.string().min(1).max(40)).min(1, "At least one tag required"),
+
+  // ext defaults to jpeg, override per image as needed
+  ext: z.enum(["webp", "jpg", "jpeg", "png"]).optional().default("jpeg"),
+
+  sortOrder: z.number().int().min(0).default(0),
+});
+
+export type StandaloneInput = z.infer<typeof StandaloneSchema>;
+
+/** Standalone image high-res key: high-res/standalone/[deviceType]/[slug].[ext] */
+export function standaloneHighResKey(deviceType: DeviceType, slug: string, ext = "jpeg") {
+  return `high-res/standalone/${deviceType.toLowerCase()}/${slug}.${ext}`;
+}
+
+/** Standalone image thumbnail key: thumbnails/standalone/[deviceType]/[slug].[ext] */
+export function standaloneThumbnailKey(deviceType: DeviceType, slug: string, ext = "jpeg") {
+  return `thumbnails/standalone/${deviceType.toLowerCase()}/${slug}.${ext}`;
+}
