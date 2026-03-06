@@ -611,5 +611,177 @@
       "highResExt": "jpeg"
     }
   ]
-}
+},
+
+  {
+    "slug": "dark-humor-wallpaper-collection",
+    "title": "Dark Humor Wallpaper Collection",
+    "description": "A bold series of 20 dark humor phone wallpapers featuring edgy skulls, ghosts, skeletons, and creepy characters delivering snarky, threatening, and funny messages perfect for lock screens and wallpapers.",
+    "category": "Character Illustrations",
+    "thumbnailR2Key": "thumbnails/dark-humor-wallpaper-collection/dark-humor-wallpaper-collection.jpeg",
+    "tag": "Featured",
+    "featured": true,
+    "images": [
+      {
+        "slug": "get-lost-hooded-skull-stay-out",
+        "title": "Get Lost — Hooded Skull Stay Out",
+        "description": "A small hooded skull figure with clawed hands stands among bare branches and shadowy ghosts on a black background, with bold text reading 'Get Lost. You're Not Welcome Here. Stay Out.'",
+        "sortOrder": 1,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "get-out-angry-ghost-leave-dark",
+        "title": "Get Out — Angry Ghost Leave Before Dark",
+        "description": "A snarling cartoon ghost with jagged teeth and white glowing eyes floats beside bold horror text reading 'Get Out. We Don't Want You Here. Leave Before Dark.' on a black bordered background.",
+        "sortOrder": 2,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "dark-monster-absolutely-worthless",
+        "title": "Dark Monster — You Are Absolutely Worthless",
+        "description": "A jagged black monster creature with glowing white eyes and a massive fanged grin lunges forward with clawed hands against a dark cracked background, with bold white text reading 'You Are Absolutely Worthless'.",
+        "sortOrder": 3,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "hoodie-skull-double-finger-locked",
+        "title": "Locked For a Reason — Hoodie Skull Double Finger",
+        "description": "A cartoon skull in a black hoodie with yellow glowing eyes raises both middle fingers defiantly, with spiderweb corner accents and bold text reading 'Locked For A Reason. Stupid.'",
+        "sortOrder": 4,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "chained-door-locked-reason-stupid",
+        "title": "Chained Door — Locked For A Reason Stupid",
+        "description": "A sketch-style illustration of a double door wrapped in heavy chains and a padlock on a pure black background, with white horror text reading 'It's Locked For A Reason Stupid'.",
+        "sortOrder": 5,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "grumpy-ghost-ugh-you-again",
+        "title": "Grumpy Ghost — Ugh You Again",
+        "description": "A flat white ghost with a deeply displeased frowning expression floats center-frame against a dark background, with simple text below reading 'Ugh You Again'.",
+        "sortOrder": 6,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "dark-cat-put-phone-down-loser",
+        "title": "Dark Cat — Put The Phone Down Loser",
+        "description": "A sinister dark cat silhouette with glowing white eyes and a sharp jagged grin looms against a scratched black background, with dripping horror text reading 'Put The Phone Down, Loser. Seriously, Get A Life.'",
+        "sortOrder": 7,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "angry-ghost-stop-looking-nightmare",
+        "title": "Stop Looking At Me — Angry Pointing Ghost",
+        "description": "A large pale ghost with glowing red eyes points an accusing bony finger directly forward against a black background, with bold text reading 'Stop Looking At Me. Unless You Want A Nightmare.' and a cracked lock icon below.",
+        "sortOrder": 8,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "horned-ghost-still-stalking-watching",
+        "title": "Still Stalking Me? — Horned Ghost Watching",
+        "description": "A small horned ghost with a menacing jagged grin and narrowed eyes floats on a dark background, with text below reading 'Still Stalking Me? (Yeah, I'm Watching)'.",
+        "sortOrder": 9,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "dark-ghost-not-invited-seriously-leave",
+        "title": "You're Not Invited — Dark Ghost Seriously Leave",
+        "description": "A dark shaggy ghost with glowing white eyes and a stern frown floats against a near-black background, with text below reading 'You're Not Invited. (Seriously, Leave.)'",
+        "sortOrder": 10,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "haunted-house-get-off-phone-loser",
+        "title": "Get Off My Phone — Haunted House Loser",
+        "description": "A cartoon haunted mansion with purple rooftops and a small angry ghost floating beside it sits against a dark background, with bold text reading 'Get Off My Phone, Loser. I'm Haunted, Okay?'",
+        "sortOrder": 11,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "skull-get-lost-no-one-wants-you",
+        "title": "Get Lost — Skull No One Wants You Here",
+        "description": "A stark white detailed skull floats above bold cracked text reading 'Get Lost. No One Wants You Here.' with a barbed wire divider and smaller text reading 'This Is Not Your Phone. (Don't Touch)'.",
+        "sortOrder": 12,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "grinning-ghost-what-are-you-looking",
+        "title": "What Are You Looking At — Grinning Ghost",
+        "description": "A smooth white ghost with large dark eyes and a sharp fanged grin peeks up from the bottom of a dark background, with bold white text below reading 'What Are You Looking At?'",
+        "sortOrder": 13,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "skeleton-still-staring-get-life-ghost",
+        "title": "Still Staring — Skeleton Get A Life Ghost",
+        "description": "A cute cartoon skeleton rests its face in both bony hands with a grumpy expression at the bottom, surrounded by floating bones and spiderwebs, with dripping horror text reading 'Still Staring? Get A Life, Ghost. (Before You End Up Like Me)'.",
+        "sortOrder": 14,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "hoodie-skull-obsessed-one-is-back",
+        "title": "Oh Look The Obsessed One Is Back — Hoodie Skull",
+        "description": "A cartoon skeleton in a black hoodie with glowing eyes points a bony finger forward accusingly, with bold text above reading 'Oh, Look. The Obsessed One Is Back. Seriously, Don't You Have Anything Better To Do?'",
+        "sortOrder": 15,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "skeleton-pointing-hey-jerk-get-off",
+        "title": "Hey Jerk Get Off My Phone — Pointing Skeleton",
+        "description": "A stocky skeleton with an angry expression points a bony finger directly at the viewer against a dark textured background with a spiderweb corner, and bold text reading 'Hey, Jerk! Get Off My Phone! Scram!'",
+        "sortOrder": 16,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "skeleton-waving-ugh-you-again",
+        "title": "Ugh You Again — Skeleton Waving Dismissal",
+        "description": "A grumpy cartoon skeleton with a scowling expression raises one bony hand in a dismissive wave gesture against a pure black background, with large bold text above reading 'Ugh You Again'.",
+        "sortOrder": 17,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "hooded-skull-hey-you-put-down",
+        "title": "Hey You Put It Down Or Else — Hooded Skull",
+        "description": "A hooded skull figure leans on a surface and raises a warning bony finger against a dark background with lightning cracks and smoke, with bold text above reading 'Hey You. Put It Down. Or Else.'",
+        "sortOrder": 18,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "hoodie-skeleton-get-out-spiderweb",
+        "title": "Get Out — Hoodie Skeleton With Spiderwebs",
+        "description": "A cartoon skeleton in a torn black hoodie looks upward with a grumpy expression against a black background with spiderweb corners, with large dripping white text at the top reading 'Get Out.'",
+        "sortOrder": 19,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "skeleton-dont-unlock-go-away-spiders",
+        "title": "Don't Even Think About Unlocking This — Skeleton Go Away",
+        "description": "A tired-looking skeleton sits with arms crossed and a bored expression at a surface, surrounded by hanging spiders and spiderweb corners, with bold text reading 'Don't Even Think About Unlocking This. Go Away. You're Not Worth The Battery Life.'",
+        "sortOrder": 20,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      }
+    ]
+  }
 ]
