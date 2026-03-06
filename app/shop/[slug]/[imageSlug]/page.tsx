@@ -137,8 +137,8 @@ export default async function ImagePage({ params }: PageProps) {
       <section className="max-w-7xl mx-auto px-6 md:px-[60px] py-10">
         <div className="grid md:grid-cols-[1fr_360px] gap-10 items-start">
 
-          {/* Full image */}
-          <div className="relative aspect-[3/4] overflow-hidden border border-[rgba(139,0,0,0.3)] bg-[#0a0a0a]">
+          {/* Full image — aspect-portrait + max-h-[80vh] keeps CTA visible */}
+          <div className="relative aspect-portrait max-h-[80vh] overflow-hidden border border-[rgba(139,0,0,0.3)] bg-[#0a0a0a]">
             <Image
               src={thumbUrl}
               alt={image.title}

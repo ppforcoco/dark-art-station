@@ -33,7 +33,7 @@ export default function ProductCard({
   return (
     <div className="group bg-[#2a2535] relative transition-transform duration-300 hover:-translate-y-2">
       {/* Image Container */}
-      <div className={`aspect-[3/4] relative overflow-hidden ${!thumbnail ? bgClass : ""}`}>
+      <div className={`aspect-portrait relative overflow-hidden ${!thumbnail ? bgClass : ""}`}>
 
         {thumbnail ? (
           // Real R2 thumbnail

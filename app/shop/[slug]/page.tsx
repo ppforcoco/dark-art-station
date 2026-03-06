@@ -154,7 +154,7 @@ export default async function CollectionPage({ params }: PageProps) {
               <Link
                 key={img.id}
                 href={`/shop/${slug}/${img.slug}`}
-                className="group relative aspect-[3/4] overflow-hidden bg-[#0a0a0a] border border-[#2a2535] hover:border-[rgba(139,0,0,0.6)] transition-colors duration-300"
+                className="group relative aspect-portrait overflow-hidden bg-[#0a0a0a] border border-[#2a2535] hover:border-[rgba(139,0,0,0.6)] transition-colors duration-300"
               >
                 <Image
                   src={getPublicUrl(img.r2Key)}

@@ -14,6 +14,9 @@ module.exports = {
         body:    ["var(--font-cormorant)", "serif"],
         mono:    ["var(--font-space)", "monospace"],
       },
+      aspectRatio: {
+        portrait: "9 / 16",
+      },
     },
   },
   plugins: [require("tailwindcss-animate")],
