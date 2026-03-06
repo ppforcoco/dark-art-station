@@ -18,7 +18,6 @@ interface PageProps {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { imageSlug } = await params;
-  if (!imageSlug) return { title: "Not Found | HAUNTED WALLPAPERS" };
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
 
@@ -66,7 +65,6 @@ export async function generateStaticParams() {
 
 export default async function PcImagePage({ params }: PageProps) {
   const { imageSlug } = await params;
-  if (!imageSlug) return { title: "Not Found | HAUNTED WALLPAPERS" };
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
 
