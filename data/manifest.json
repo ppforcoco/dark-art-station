@@ -915,5 +915,137 @@
         "highResExt": "jpeg"
       }
     ]
+  },
+
+  {
+    "slug": "bone-street-collection",
+    "title": "Bone Street Collection",
+    "description": "A bold series of 15 edgy skeleton illustrations featuring attitude, cigars, and street style aesthetics set against dark backgrounds with aggressive horror typography.",
+    "category": "Character Illustrations",
+    "thumbnailR2Key": "thumbnails/bone-street-collection/bone-street-collection.jpeg",
+    "tag": "Featured",
+    "featured": true,
+    "images": [
+      {
+        "slug": "no-escape-hoodie-skeleton",
+        "title": "No Escape: Hoodie Skeleton",
+        "description": "A skeleton in a torn black hoodie and cap holds up bone fingers while smoking a cigarette with curling smoke, under bold red 'No Escape' text.",
+        "sortOrder": 1,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "reap-what-you-sow-skeleton",
+        "title": "Reap What You Sow",
+        "description": "A cracked bare skeleton smoking a cigarette flips the middle finger beside bold white slashed 'Reap What You Sow' typography on a dark red-glow background.",
+        "sortOrder": 2,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "deaths-greeting-coat-skeleton",
+        "title": "Death's Greeting",
+        "description": "A 3D rendered skeleton in a black open coat holds a lit cigarette in one hand while throwing up fingers with the other, topped with dripping red 'Death's Greeting' text.",
+        "sortOrder": 3,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "reapers-due-beanie-skeleton",
+        "title": "Reaper's Due",
+        "description": "A street-style skeleton in a black beanie and oversized jacket sits casually with a gold chain, smoking and throwing up a peace sign under 'Reaper's Due' drip font.",
+        "sortOrder": 4,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "nightmare-city-hooded-skull",
+        "title": "Nightmare City",
+        "description": "A hooded skull figure with a stitched face holds up a lit cigarette against a dark urban backdrop, under dripping red 'Nightmare City' horror lettering.",
+        "sortOrder": 5,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "death-dealer-cracked-skull",
+        "title": "Death Dealer",
+        "description": "A cracked skull with glowing red eyes in a dark coat raises one middle finger while holding a smoking cigarette in the other, under jagged red 'Death Dealer' text.",
+        "sortOrder": 6,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "fear-the-bone-crusher-streetwear",
+        "title": "Fear The Bone Crusher",
+        "description": "A full-body street skeleton in a hoodie, baggy jeans, sneakers, and gold chain holds a cigarette and throws a peace sign under red dripping 'Fear The Bone Crusher' title.",
+        "sortOrder": 7,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "fear-the-bone-seated-hoodie",
+        "title": "Fear The Bone: Seated",
+        "description": "A red-eyed skeleton in a torn black hoodie sits cross-legged with ripped jeans, holding a lit cigarette in one hand and raising fingers with the other, under red 'Fear The Bone' text.",
+        "sortOrder": 8,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "nightmare-chain-hoodie-skeleton",
+        "title": "Nightmare",
+        "description": "A cracked skull in a black hoodie with a gold chain raises a middle finger and holds a burning cigarette against a dark urban alley, beneath large dripping red 'Nightmare' text.",
+        "sortOrder": 9,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "fear-the-bone-suit-no-remorse",
+        "title": "Fear The Bone: No Remorse",
+        "description": "A cracked skull in a black suit and red tie smokes a cigarette and raises a middle finger, framed by blood-drip 'Fear The Bone' at the top and 'No Remorse' at the bottom.",
+        "sortOrder": 10,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "fear-the-bone-thug-chain",
+        "title": "Fear The Bone: Thug",
+        "description": "A hooded skeleton with a silver 'THUG' chain pendant smokes a cigarette and raises a middle finger against a red-glow city backdrop, with 'Fear The Bone' drip text at the bottom right.",
+        "sortOrder": 11,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "death-is-the-new-cool-mobster",
+        "title": "Death Is The New Cool",
+        "description": "A fedora-wearing skeleton in a pinstripe suit blows smoke while making hand gestures, surrounded by swirling smoke clouds under the title 'Death Is The New Cool' in horror font.",
+        "sortOrder": 12,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "deaths-grasp-coat-skeleton",
+        "title": "Death's Grasp",
+        "description": "A grinning skull in a tattered black coat raises a middle finger while holding a burning cigarette, under dripping red 'Death's Grasp' typography on a dark grey background.",
+        "sortOrder": 13,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "rest-in-pieces-mobster-hat",
+        "title": "Rest In Pieces",
+        "description": "A sharp skeleton in a black fedora and coat smokes a cigarette and raises a middle finger against a dark red-glow background, with 'Rest In Pieces' in white and red drip text below.",
+        "sortOrder": 14,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "bone-chiller-hoodie-gold-chain",
+        "title": "Bone Chiller",
+        "description": "A grinning hooded skeleton with a gold chain holds a cigarette with smoke curling upward and gestures with the other hand, above bold 'Bone Chiller' drip-style text at the bottom.",
+        "sortOrder": 15,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      }
+    ]
   }
 ]
