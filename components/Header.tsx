@@ -1,11 +1,10 @@
 import Link from "next/link";
 
 const NAV_LINKS = [
-  { label: "Grimoire",    href: "/shop"        },
+  { label: "iPhone",      href: "/iphone"      },
+  { label: "Android",     href: "/android"     },
+  { label: "PC",          href: "/pc"          },
   { label: "Collections", href: "/collections" },
-  { label: "Free Souls",  href: "/free"        },
-  { label: "The Ritual",  href: "/ritual"      },
-  { label: "Lore",        href: "/lore"        },
 ];
 
 export default function Header() {
