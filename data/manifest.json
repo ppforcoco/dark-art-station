@@ -837,6 +837,7 @@
           "title": "Whispers In The Void",
           "description": "Sinister red slit-pupil eyes glow within a swirling dark vortex, surrounded by jagged red lettering spelling 'Whispers' above and 'In The Void' below.",
           "sortOrder": 6,
+          "thumbExt": "jpeg",
           "highResExt": "jpeg"
         },
         {
@@ -1261,6 +1262,169 @@
           "title": "Double Smoking Hands: Skull Ring",
           "description": "Two skeleton hands raise middle fingers with wispy smoke rising from the fingertips, one hand wearing a skull ring, illustrated in scratchy black and white on a black background.",
           "sortOrder": 10,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        }
+      ]
+    },
+    {
+      "slug": "goth-witch-collection",
+      "title": "Goth Witch & Vampire Badass Female Characters Collection",
+      "description": "A bold series of 19 edgy goth witch and punk vampire illustrations featuring attitude, dark magic, and street style aesthetics. Perfect for dark fantasy fans and alternative art lovers.",
+      "category": "Character Illustrations",
+      "thumbnailR2Key": "thumbnails/goth-witch-collection/goth-witch-collection.jpeg",
+      "tag": "Featured",
+      "featured": true,
+      "images": [
+        {
+          "slug": "goth-witch-midnight-coven",
+          "title": "Goth Witch – Midnight Coven Do Not Cross The Circle",
+          "description": "A badass goth witch in a rune-covered leather jacket stands inside a glowing summoning circle, gripping a crystal-tipped wooden staff. Purple-streaked hair and dark attitude. Text reads: The Midnight Coven – Do Not Cross The Circle.",
+          "sortOrder": 1,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "punk-goth-girl-sitting",
+          "title": "Punk Goth Girl Sitting Against Dark Wall",
+          "description": "A dark punk goth girl with black and white streaked hair sits cross-legged on a wooden floor, smoking a cigarette, wearing a leather jacket and ripped jeans. Moody and edgy alternative aesthetic.",
+          "sortOrder": 2,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "haunted-goth-girl-smoking",
+          "title": "Haunted Goth Girl Smoking – Dark Alt Character Art",
+          "description": "A haunted goth girl in a leather jacket sits on a wooden floor with a cigarette, smoke curling into glowing text that reads HAUNTED. Dark fantasy badass female character illustration.",
+          "sortOrder": 3,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "haunted-witch-staff-circle",
+          "title": "Haunted Dark Witch With Staff Standing on Runic Circle",
+          "description": "A hooded dark witch in a long tattered coat holds a twisted crystal staff, standing on a glowing runic floor circle inside a gothic room. Text reads: HAUNTED. Powerful badass female fantasy character.",
+          "sortOrder": 4,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "vampire-haunted-dangerous",
+          "title": "Haunted and Dangerous Forever Sassy Vampire Girl",
+          "description": "A red-haired vampire woman in a long dark Victorian coat turns back with a smirk, smoking a cigarette while shadowy ghosts loom behind her. Text reads: Haunted & Dangerous – Forever Sassy.",
+          "sortOrder": 5,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "vampire-eternal-night",
+          "title": "Eternal Night Tease The Darkness Punk Vampire Girl",
+          "description": "A pale vampire woman in a red corset and black leather jacket stands boldly, smoking a cigarette with fangs visible and glowing red eyes. Text reads: Eternal Night. Tease The Darkness.",
+          "sortOrder": 6,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "vampire-feeling-thirsty",
+          "title": "Feeling Thirsty Badass Vampire Girl Character Art",
+          "description": "A sultry dark vampire in a long black coat stands confidently in a stone arch, smoking and smirking with fangs on display. Smoke swirls around her feet. Text reads: Feeling Thirsty?",
+          "sortOrder": 7,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "vampire-badass-bitten",
+          "title": "NightHaunted Badass and Bitten Vampire Female Art",
+          "description": "A pale vampire girl in a black corset and long dark coat stands with a cigarette, smiling with fangs showing. Spiked bracelet, choker necklace, ripped jeans. Text reads: NightHaunted – Badass & Bitten.",
+          "sortOrder": 8,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "goth-vampire-ankh-coat",
+          "title": "Goth Vampire Girl With Ankh Necklace and Long Coat",
+          "description": "A dark goth vampire with black and red hair wears a long black coat and holds a cigarette, sporting an ankh pendant and fingerless gloves. Edgy badass female alternative character illustration.",
+          "sortOrder": 9,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "vampire-not-babysitter",
+          "title": "Vampire Not a Babysitter Punk Female Character Art",
+          "description": "A punk vampire girl in a studded leather jacket with enamel pins gives the rock hand gesture while holding a cigarette. Fangs and attitude on full display. Text reads: Vampire, Not a Babysitter.",
+          "sortOrder": 10,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "vampire-not-rude",
+          "title": "I'm Not Rude I'm Just a Vampire Punk Girl Art",
+          "description": "A pale punk vampire girl in a ripped leather jacket with a bat graphic tee gives the finger while smoking a cigarette. Dark humor badass vampire female character. Text reads: I'm Not Rude. I'm Just a Vampire.",
+          "sortOrder": 11,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "vampire-bite-me",
+          "title": "Bite Me Badass Punk Vampire Girl Middle Finger Art",
+          "description": "A ghastly pale vampire in a black leather jacket with a flannel tied at the waist flips the bird while smoking, fangs bared and smirking in a dark gothic arch setting. Text reads: Bite Me.",
+          "sortOrder": 12,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "vampire-forever-bored",
+          "title": "Forever Is a Long Time to Be Bored Vampire Throne Art",
+          "description": "A bored dark vampire girl lounges on a gothic stone throne, smoking and holding a glass of red wine, wearing a spiked leather jacket and ripped jeans. Text reads: Forever is a Long Time to Be Bored. NightHaunted.",
+          "sortOrder": 13,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "vampire-haunted-unfazed",
+          "title": "Haunted and Unfazed Badass Vampire Girl on Chair",
+          "description": "A red-haired vampire girl sits casually on a wooden gothic chair, smoking with a smirk, ripped jeans and leather jacket in dark gritty surroundings. Text reads: Haunted & Unfazed.",
+          "sortOrder": 14,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "vampire-dont-wait-up",
+          "title": "Don't Wait Up I'm Just Getting Started Dark Vampire Art",
+          "description": "A fanged vampire woman in a leather jacket and tattered dark red dress leans against a crumbling gothic stone wall at night, smoking under a gas lamp. Text reads: Don't Wait Up. I'm Just Getting Started.",
+          "sortOrder": 15,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "goth-witch-purple-hair",
+          "title": "Goth Witch Purple Teal Hair Fishnet Tattoo Character Art",
+          "description": "A smirking goth witch with purple and teal hair leans against a stone arch in a hooded coat, fishnet stockings, and a pentagram necklace, with glowing green cigarette smoke and tattoos on her arms.",
+          "sortOrder": 16,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "goth-girl-ghost-friends",
+          "title": "My Ghosts Are Cooler Than Your Friends Goth Girl Art",
+          "description": "A goth girl with dark purple-streaked hair in a ripped black hoodie gives the middle finger while holding a cigarette, ghost tattoos on her arm. Text reads: My ghosts are cooler than your friends.",
+          "sortOrder": 17,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "witch-hat-bench-moonlight",
+          "title": "Dark Witch in Hat Sitting on Bench Under Moonlight",
+          "description": "A mysterious dark witch with a wide-brim hat and flowing cloak sits on a weathered bench, smoking a long cigarette and gesturing with her fingers under a full moon and bare twisted trees.",
+          "sortOrder": 18,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "goth-girl-purple-chair",
+          "title": "Goth Girl Purple Hair Sitting on Chair Smoking Art",
+          "description": "A goth girl with messy purple and grey hair sits in a worn armchair, smoking and giving the finger, wearing a dark green sweater, skull necklace, and cargo pants with combat boots.",
+          "sortOrder": 19,
           "thumbExt": "jpeg",
           "highResExt": "jpeg"
         }
