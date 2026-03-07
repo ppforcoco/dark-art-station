@@ -1222,6 +1222,97 @@
       ],
       "ext": "jpeg",
       "sortOrder": 1
+    },
+    {
+      "slug": "bone-hands-collection",
+      "title": "Bone Hands Collection",
+      "description": "A bold series of 10 dark skeleton hand illustrations featuring spiked cuffs, chains, skull rings, and defiant gestures against black backgrounds.",
+      "category": "Character Illustrations",
+      "thumbnailR2Key": "thumbnails/bone-hands-collection/bone-hands-collection.jpeg",
+      "tag": "Featured",
+      "featured": true,
+      "images": [
+        {
+          "slug": "skeleton-hand-spiked-cuff",
+          "title": "Skeleton Hand: Spiked Cuff",
+          "description": "A detailed dark grey skeleton hand raises a middle finger with all other fingers splayed, wearing a spiked cuff bracelet with a chain wrapped around the wrist on a pure black background.",
+          "sortOrder": 1,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "skeleton-hand-skull-barbed",
+          "title": "Skeleton Hand: Skull and Barbed Ring",
+          "description": "A high-contrast black and white skeleton hand raises a middle finger with a small skull on the knuckle and a barbed wire ring on an adjacent finger, with a spiked cuff on a black background.",
+          "sortOrder": 2,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "rock-hand-skull-spiked",
+          "title": "Rock Hand: Skull Knuckle",
+          "description": "A grey skeleton hand throws the rock-on gesture with index and pinky extended, featuring a tiny skull on the knuckle and a spiked leather cuff on a dark textured background.",
+          "sortOrder": 3,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "fist-skull-rings-torn",
+          "title": "Skull Ring Fist",
+          "description": "A dark skeleton fist with two miniature skulls on the knuckles emerges from a torn black cloth sleeve, presented on a pure black background.",
+          "sortOrder": 4,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "middle-finger-chain-cuff",
+          "title": "Middle Finger: Chain Cuff",
+          "description": "A dark grey skeleton hand raises a middle finger with a spiked leather cuff and chain wrapped at the wrist, centered on a dark gradient background.",
+          "sortOrder": 5,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "double-hands-skull-chain",
+          "title": "Double Hands: Skull Ring and Chain",
+          "description": "Two white skeleton hands both raise middle fingers side by side — the left wearing a small skull ring and the right wearing a chunky chain bracelet — on a solid black background.",
+          "sortOrder": 6,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "double-rock-hands-graffiti",
+          "title": "Double Rock Hands: Graffiti Wall",
+          "description": "Two skeleton hands with rings throw mirrored rock-on gestures in front of a dark graffiti wall with a large skull illustration, creating an intense street art composition.",
+          "sortOrder": 7,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "crossed-hands-watch-rock",
+          "title": "Crossed Hands: Watch and Rock Sign",
+          "description": "Two skeleton hands cross at the wrists with fingers interlocked — one wearing a watch — while the top finger forms a rock-on gesture, illustrated in black and white on a black background.",
+          "sortOrder": 8,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "double-hands-skull-spikes",
+          "title": "Double Hands: Skull Rings and Spikes",
+          "description": "Two white skeleton hands raise middle fingers symmetrically, each wearing spiked cuffs at the wrist and one hand featuring tiny skull rings on the knuckles, on a pure black background.",
+          "sortOrder": 9,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "double-smoking-hands-skull",
+          "title": "Double Smoking Hands: Skull Ring",
+          "description": "Two skeleton hands raise middle fingers with wispy smoke rising from the fingertips, one hand wearing a skull ring, illustrated in scratchy black and white on a black background.",
+          "sortOrder": 10,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        }
+      ]
     }
   ]
 }
