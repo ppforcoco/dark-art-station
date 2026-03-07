@@ -1,1194 +1,1195 @@
 {
   "collections": [
-  {
-    "slug": "skeleton-rebellion-collection",
-    "title": "Skeleton Rebellion Collection",
-    "description": "A bold series of 16 edgy skeleton illustrations featuring attitude, cigars, and street style aesthetics.",
-    "category": "Character Illustrations",
-    "thumbnailR2Key": "thumbnails/skeleton-rebellion-collection/skeleton-rebellion-collection.jpeg",
-    "tag": "Featured",
-    "featured": true,
-    "images": [
-      {
-        "slug": "hoodie-skeleton-middle-finger-green-smoke",
-        "title": "Hoodie Skeleton: Green Smoke Attitude",
-        "description": "A skeleton in a torn black hoodie with red eyes, smoking a cigar with green mystical smoke and flipping the bird.",
-        "sortOrder": 1,
-        "thumbExt": "jpeg",
-        "highResExt": "jpeg"
-      },
-      {
-        "slug": "crossbones-skeleton-cigar",
-        "title": "Crossbones Cigar Skeleton",
-        "description": "Classic skull and crossbones arrangement with a lit cigar and dark smoke trails against black.",
-        "sortOrder": 2,
-        "thumbExt": "jpeg",
-        "highResExt": "jpeg"
-      },
-      {
-        "slug": "hoodie-skeleton-reclining-gold-chain",
-        "title": "Hoodie Skeleton: Gold Chain Recline",
-        "description": "A relaxed skeleton in a hooded sweatshirt with a thick gold chain, smoking and gesturing.",
-        "sortOrder": 3,
-        "thumbExt": "jpeg",
-        "highResExt": "jpeg"
-      },
-      {
-        "slug": "gangster-skeleton-pinstripe-suit",
-        "title": "Gangster Skeleton: Pinstripe Elegance",
-        "description": "A sophisticated skeleton in a pinstripe suit and fedora with glowing green eyes and mystical smoke.",
-        "sortOrder": 4,
-        "thumbExt": "jpeg",
-        "highResExt": "jpeg"
-      },
-      {
-        "slug": "hoodie-skeleton-fedora-intense",
-        "title": "Hoodie Skeleton: Fedora Intensity",
-        "description": "An intense skeleton wearing both hoodie and fedora, surrounded by swirling smoke.",
-        "sortOrder": 5,
-        "thumbExt": "jpeg",
-        "highResExt": "jpeg"
-      },
-      {
-        "slug": "hoodie-skeleton-vertical-gold-chain",
-        "title": "Hoodie Skeleton: Vertical Stance",
-        "description": "A standing skeleton in a torn hoodie with gold chain, holding a cigar and making a hand gesture.",
-        "sortOrder": 6,
-        "thumbExt": "jpeg",
-        "highResExt": "jpeg"
-      },
-      {
-        "slug": "hoodie-skeleton-chill-recline",
-        "title": "Hoodie Skeleton: Chill Mode",
-        "description": "A laid-back skeleton in a hoodie with silver chain, reclining with cigar and attitude.",
-        "sortOrder": 7,
-        "thumbExt": "jpeg",
-        "highResExt": "jpeg"
-      },
-      {
-        "slug": "gangster-skeleton-pinstripe-recline",
-        "title": "Gangster Skeleton: Pinstripe Lounger",
-        "description": "A relaxed skeleton in a full pinstripe suit and fedora, reclining with cigar and hand on hat.",
-        "sortOrder": 8,
-        "thumbExt": "jpeg",
-        "highResExt": "jpeg"
-      },
-      {
-        "slug": "leather-jacket-skeleton-fedora",
-        "title": "Leather Jacket Skeleton: Fedora Cool",
-        "description": "A rugged skeleton in a leather jacket and fedora with red eyes, reclining with cigar.",
-        "sortOrder": 9,
-        "thumbExt": "jpeg",
-        "highResExt": "jpeg"
-      },
-      {
-        "slug": "grim-reaper-skeleton-hooded",
-        "title": "Grim Reaper: Hooded Lounger",
-        "description": "A skeleton in dark hooded robes, reclining with cigar and glowing red eyes.",
-        "sortOrder": 10,
-        "thumbExt": "jpeg",
-        "highResExt": "jpeg"
-      },
-      {
-        "slug": "leather-jacket-skeleton-fedora-alt",
-        "title": "Leather Jacket Skeleton: Fedora Attitude",
-        "description": "A skeleton in a brown leather trench coat and fedora, one gold tooth visible, smoking with style.",
-        "sortOrder": 11,
-        "thumbExt": "jpeg",
-        "highResExt": "jpeg"
-      },
-      {
-        "slug": "gangster-skeleton-pinstripe-relax",
-        "title": "Gangster Skeleton: Pinstripe Relax",
-        "description": "A relaxed skeleton in a pinstripe suit and fedora, reclining with legs crossed and cigar.",
-        "sortOrder": 12,
-        "thumbExt": "jpeg",
-        "highResExt": "jpeg"
-      },
-      {
-        "slug": "hoodie-skeleton-green-smoke-skull-chain",
-        "title": "Hoodie Skeleton: Toxic Green",
-        "description": "A skeleton in a torn hoodie with skull pendant gold chain, exhaling thick green smoke.",
-        "sortOrder": 13,
-        "thumbExt": "jpeg",
-        "highResExt": "jpeg"
-      },
-      {
-        "slug": "gangster-skeleton-black-suit-red-shirt",
-        "title": "Gangster Skeleton: Red Accent",
-        "description": "A stylish skeleton in a black suit with red shirt and fedora, reclining with cigar and smoke.",
-        "sortOrder": 14,
-        "thumbExt": "jpeg",
-        "highResExt": "jpeg"
-      },
-      {
-        "slug": "hoodie-skeleton-monochrome",
-        "title": "Hoodie Skeleton: Monochrome Edge",
-        "description": "A stark black and white skeleton in a hoodie and jeans, smoking with clean line art style.",
-        "sortOrder": 15,
-        "thumbExt": "jpeg",
-        "highResExt": "jpeg"
-      },
-      {
-        "slug": "bare-skeleton-classic-recline",
-        "title": "Bare Skeleton: Classic Recline",
-        "description": "A pure skeleton without clothing, reclining in classic pose with cigar and attitude.",
-        "sortOrder": 16,
-        "thumbExt": "jpeg",
-        "highResExt": "jpeg"
-      }
-    ]
-  },
-
-  {
-    "slug": "dark-sorceress-collection",
-    "title": "Dark Sorceress Collection",
-    "description": "A striking series of 15 dark fantasy illustrations featuring powerful sorceresses, witches, and shadowy enchantresses surrounded by thorns, moons, ravens, skulls, and arcane energy in a hauntingly atmospheric black aesthetic.",
-    "category": "Character Illustrations",
-    "thumbnailR2Key": "thumbnails/dark-sorceress-collection/dark-sorceress-collection.jpeg",
-    "tag": "Featured",
-    "featured": true,
-    "images": [
-      {
-        "slug": "witch-purple-thorn-crescent-spell",
-        "title": "Witch of the Thorn Circle",
-        "description": "A dark witch in a pointed hat channels swirling purple energy from both hands, standing within a glowing green thorn circle beneath a crescent moon, flanked by dead trees and hanging chains.",
-        "sortOrder": 1,
-        "thumbExt": "jpeg",
-        "highResExt": "jpeg"
-      },
-      {
-        "slug": "shadow-demon-queen-red-glow",
-        "title": "Shadow Demon Queen",
-        "description": "A monstrous dark queen with writhing tentacle hair, glowing red eyes and a sinister grin rises against a crimson and purple backdrop, flanked by blood moons, bats, and grasping clawed hands.",
-        "sortOrder": 2,
-        "thumbExt": "jpeg",
-        "highResExt": "jpeg"
-      },
-      {
-        "slug": "red-eye-sorceress-black-moon",
-        "title": "Red-Eyed Sorceress of the Dark Moon",
-        "description": "A pale sorceress with glowing red star-marked eyes and flowing black hair raises her clawed hands against a background of twisted trees and a crescent moon with a sleeping face.",
-        "sortOrder": 3,
-        "thumbExt": "jpeg",
-        "highResExt": "jpeg"
-      },
-      {
-        "slug": "witch-red-eyes-full-moon-bats",
-        "title": "Moonlit Witch with Red Eyes",
-        "description": "A menacing witch in a tall decorated hat with glowing red eyes spreads her claw-like hands before a glowing full moon, surrounded by bats, crescent moons, stars, and bare skeletal trees.",
-        "sortOrder": 4,
-        "thumbExt": "jpeg",
-        "highResExt": "jpeg"
-      },
-      {
-        "slug": "paper-cut-witch-red-backdrop-staff",
-        "title": "Paper-Cut Witch with Staff",
-        "description": "A paper-cut style dark witch wielding a gnarled staff and glowing red eyes stands before a crimson circle, surrounded by layered black cutout symbols including pentacles, moons, and arcane glyphs.",
-        "sortOrder": 5,
-        "thumbExt": "jpeg",
-        "highResExt": "jpeg"
-      },
-      {
-        "slug": "dark-fairy-skulls-bats-claws",
-        "title": "Dark Fairy of the Skull Grove",
-        "description": "A graceful dark enchantress with ornate feathered crown and swirling fairy-like wings drifts among skulls and bats, her long clawed hand reaching downward in an eerie black-and-white composition.",
-        "sortOrder": 6,
-        "thumbExt": "jpeg",
-        "highResExt": "jpeg"
-      },
-      {
-        "slug": "dark-sorceress-swirl-crescent-bats",
-        "title": "Sorceress of the Swirling Night",
-        "description": "A hauntingly beautiful sorceress with cracked face markings and wild flowing hair stands amid layered swirling dark energy, bats, and bare branches under a crescent moon in a paper-cut style.",
-        "sortOrder": 7,
-        "thumbExt": "jpeg",
-        "highResExt": "jpeg"
-      },
-      {
-        "slug": "witch-full-moon-red-sparks-forest",
-        "title": "Witch Beneath the Blood-Sparked Moon",
-        "description": "A witch in a wide-brimmed hat raises her hands in a dark forest, red glowing sparks and floating eyes surrounding her as a massive full moon illuminates bats and twisted branches overhead.",
-        "sortOrder": 8,
-        "thumbExt": "jpeg",
-        "highResExt": "jpeg"
-      },
-      {
-        "slug": "witch-witch-hat-evil-moons-skeletons",
-        "title": "Witch of the Evil Moons",
-        "description": "A pale witch with glowing red eyes in a tall hat walks amid swirling thorned vines, skeleton hands, snarling crescent moon faces, and red-eyed bats in a dramatic paper-cut dark fantasy style.",
-        "sortOrder": 9,
-        "thumbExt": "jpeg",
-        "highResExt": "jpeg"
-      },
-      {
-        "slug": "rune-sorceress-ravens-thorns",
-        "title": "Rune Sorceress and the Ravens",
-        "description": "A ghostly sorceress with wild white hair and skeleton hands channels swirling energy within a rune-inscribed circle, surrounded by four red-eyed ravens and coiling thorned vines.",
-        "sortOrder": 10,
-        "thumbExt": "jpeg",
-        "highResExt": "jpeg"
-      },
-      {
-        "slug": "shadow-queen-wolves-bats-crescent",
-        "title": "Shadow Queen of Wolves and Bats",
-        "description": "A dark silhouetted queen with glowing eyes commands wolves, bats, and grasping shadow hands within a richly layered deep crimson and purple night scene framed by swirling ornamental borders.",
-        "sortOrder": 11,
-        "thumbExt": "jpeg",
-        "highResExt": "jpeg"
-      },
-      {
-        "slug": "dark-queen-antlers-skulls-roses",
-        "title": "Dark Queen of Skulls and Roses",
-        "description": "A dramatic dark queen with antler-like raised arms, star eye markings, and an elaborate feathered gown stands amid skulls, dark roses, and bats under a sinister grinning moon.",
-        "sortOrder": 12,
-        "thumbExt": "jpeg",
-        "highResExt": "jpeg"
-      },
-      {
-        "slug": "witch-skull-vines-bats-hat",
-        "title": "Witch of the Skull Vines",
-        "description": "A witch with a bent hat and flowing hair conjures floating skulls from swirling thorned vines with both hands, surrounded by bats and spiraling dark tendrils in a black-and-white illustration.",
-        "sortOrder": 13,
-        "thumbExt": "jpeg",
-        "highResExt": "jpeg"
-      },
-      {
-        "slug": "white-hair-sorceress-shadow-spirits",
-        "title": "White-Haired Sorceress and Shadow Spirits",
-        "description": "A striking sorceress with flowing white hair and a jagged feathered gown channels faint energy from both hands, surrounded by lurking shadow creatures with glowing eyes in a dark swirling background.",
-        "sortOrder": 14,
-        "thumbExt": "jpeg",
-        "highResExt": "jpeg"
-      },
-      {
-        "slug": "witch-staff-watching-eyes-forest",
-        "title": "Witch of the Watching Forest",
-        "description": "A solitary witch in a buckled hat carries a spiraling staff through a dark forest, her long hair swept by wind while glowing brown eyes peer from the branches and shadows around her.",
-        "sortOrder": 15,
-        "thumbExt": "jpeg",
-        "highResExt": "jpeg"
-      }
-    ]
-  },
-  {
-  "slug": "skeleton-card-collection",
-  "title": "Skeleton Card Collection",
-  "description": "A striking series of 20 dark fantasy card illustrations featuring skeleton sorcerers, armored bone warriors, and cloaked undead figures channeling arcane energy, wielding glowing staves, and commanding swirling dark forces across ornate card frames.",
-  "category": "Character Illustrations",
-  "thumbnailR2Key": "thumbnails/skeleton-card-collection/skeleton-card-collection.jpeg",
-  "tag": "Featured",
-  "featured": true,
-  "images": [
     {
-      "slug": "skeleton-mage-purple-orb-staff-rune-circle",
-      "title": "Skeleton Mage with Purple Orb and Rune Circle",
-      "description": "A robed skeleton with glowing red eyes holds a swirling purple energy orb in one hand and a spiked arcane staff in the other, surrounded by a glowing rune circle and smoke wisps on a dark ornate card numbered II.",
-      "sortOrder": 1,
-      "thumbExt": "jpeg",
-      "highResExt": "jpeg"
+      "slug": "skeleton-rebellion-collection",
+      "title": "Skeleton Rebellion Collection",
+      "description": "A bold series of 16 edgy skeleton illustrations featuring attitude, cigars, and street style aesthetics.",
+      "category": "Character Illustrations",
+      "thumbnailR2Key": "thumbnails/skeleton-rebellion-collection/skeleton-rebellion-collection.jpeg",
+      "tag": "Featured",
+      "featured": true,
+      "images": [
+        {
+          "slug": "hoodie-skeleton-middle-finger-green-smoke",
+          "title": "Hoodie Skeleton: Green Smoke Attitude",
+          "description": "A skeleton in a torn black hoodie with red eyes, smoking a cigar with green mystical smoke and flipping the bird.",
+          "sortOrder": 1,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "crossbones-skeleton-cigar",
+          "title": "Crossbones Cigar Skeleton",
+          "description": "Classic skull and crossbones arrangement with a lit cigar and dark smoke trails against black.",
+          "sortOrder": 2,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "hoodie-skeleton-reclining-gold-chain",
+          "title": "Hoodie Skeleton: Gold Chain Recline",
+          "description": "A relaxed skeleton in a hooded sweatshirt with a thick gold chain, smoking and gesturing.",
+          "sortOrder": 3,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "gangster-skeleton-pinstripe-suit",
+          "title": "Gangster Skeleton: Pinstripe Elegance",
+          "description": "A sophisticated skeleton in a pinstripe suit and fedora with glowing green eyes and mystical smoke.",
+          "sortOrder": 4,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "hoodie-skeleton-fedora-intense",
+          "title": "Hoodie Skeleton: Fedora Intensity",
+          "description": "An intense skeleton wearing both hoodie and fedora, surrounded by swirling smoke.",
+          "sortOrder": 5,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "hoodie-skeleton-vertical-gold-chain",
+          "title": "Hoodie Skeleton: Vertical Stance",
+          "description": "A standing skeleton in a torn hoodie with gold chain, holding a cigar and making a hand gesture.",
+          "sortOrder": 6,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "hoodie-skeleton-chill-recline",
+          "title": "Hoodie Skeleton: Chill Mode",
+          "description": "A laid-back skeleton in a hoodie with silver chain, reclining with cigar and attitude.",
+          "sortOrder": 7,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "gangster-skeleton-pinstripe-recline",
+          "title": "Gangster Skeleton: Pinstripe Lounger",
+          "description": "A relaxed skeleton in a full pinstripe suit and fedora, reclining with cigar and hand on hat.",
+          "sortOrder": 8,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "leather-jacket-skeleton-fedora",
+          "title": "Leather Jacket Skeleton: Fedora Cool",
+          "description": "A rugged skeleton in a leather jacket and fedora with red eyes, reclining with cigar.",
+          "sortOrder": 9,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "grim-reaper-skeleton-hooded",
+          "title": "Grim Reaper: Hooded Lounger",
+          "description": "A skeleton in dark hooded robes, reclining with cigar and glowing red eyes.",
+          "sortOrder": 10,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "leather-jacket-skeleton-fedora-alt",
+          "title": "Leather Jacket Skeleton: Fedora Attitude",
+          "description": "A skeleton in a brown leather trench coat and fedora, one gold tooth visible, smoking with style.",
+          "sortOrder": 11,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "gangster-skeleton-pinstripe-relax",
+          "title": "Gangster Skeleton: Pinstripe Relax",
+          "description": "A relaxed skeleton in a pinstripe suit and fedora, reclining with legs crossed and cigar.",
+          "sortOrder": 12,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "hoodie-skeleton-green-smoke-skull-chain",
+          "title": "Hoodie Skeleton: Toxic Green",
+          "description": "A skeleton in a torn hoodie with skull pendant gold chain, exhaling thick green smoke.",
+          "sortOrder": 13,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "gangster-skeleton-black-suit-red-shirt",
+          "title": "Gangster Skeleton: Red Accent",
+          "description": "A stylish skeleton in a black suit with red shirt and fedora, reclining with cigar and smoke.",
+          "sortOrder": 14,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "hoodie-skeleton-monochrome",
+          "title": "Hoodie Skeleton: Monochrome Edge",
+          "description": "A stark black and white skeleton in a hoodie and jeans, smoking with clean line art style.",
+          "sortOrder": 15,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "bare-skeleton-classic-recline",
+          "title": "Bare Skeleton: Classic Recline",
+          "description": "A pure skeleton without clothing, reclining in classic pose with cigar and attitude.",
+          "sortOrder": 16,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        }
+      ]
     },
     {
-      "slug": "armored-skull-warrior-purple-flame-skull-staff",
-      "title": "Armored Skull Warrior — Card XIII Death",
-      "description": "A heavily armored skull-faced warrior in dark plate mail charges a swirling purple energy ball in one gauntleted hand while gripping a staff topped with a glowing skull, framed by a thorn-bordered card labeled Death XIII.",
-      "sortOrder": 2,
-      "thumbExt": "jpeg",
-      "highResExt": "jpeg"
+      "slug": "dark-sorceress-collection",
+      "title": "Dark Sorceress Collection",
+      "description": "A striking series of 15 dark fantasy illustrations featuring powerful sorceresses, witches, and shadowy enchantresses surrounded by thorns, moons, ravens, skulls, and arcane energy in a hauntingly atmospheric black aesthetic.",
+      "category": "Character Illustrations",
+      "thumbnailR2Key": "thumbnails/dark-sorceress-collection/dark-sorceress-collection.jpeg",
+      "tag": "Featured",
+      "featured": true,
+      "images": [
+        {
+          "slug": "witch-purple-thorn-crescent-spell",
+          "title": "Witch of the Thorn Circle",
+          "description": "A dark witch in a pointed hat channels swirling purple energy from both hands, standing within a glowing green thorn circle beneath a crescent moon, flanked by dead trees and hanging chains.",
+          "sortOrder": 1,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "shadow-demon-queen-red-glow",
+          "title": "Shadow Demon Queen",
+          "description": "A monstrous dark queen with writhing tentacle hair, glowing red eyes and a sinister grin rises against a crimson and purple backdrop, flanked by blood moons, bats, and grasping clawed hands.",
+          "sortOrder": 2,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "red-eye-sorceress-black-moon",
+          "title": "Red-Eyed Sorceress of the Dark Moon",
+          "description": "A pale sorceress with glowing red star-marked eyes and flowing black hair raises her clawed hands against a background of twisted trees and a crescent moon with a sleeping face.",
+          "sortOrder": 3,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "witch-red-eyes-full-moon-bats",
+          "title": "Moonlit Witch with Red Eyes",
+          "description": "A menacing witch in a tall decorated hat with glowing red eyes spreads her claw-like hands before a glowing full moon, surrounded by bats, crescent moons, stars, and bare skeletal trees.",
+          "sortOrder": 4,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "paper-cut-witch-red-backdrop-staff",
+          "title": "Paper-Cut Witch with Staff",
+          "description": "A paper-cut style dark witch wielding a gnarled staff and glowing red eyes stands before a crimson circle, surrounded by layered black cutout symbols including pentacles, moons, and arcane glyphs.",
+          "sortOrder": 5,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "dark-fairy-skulls-bats-claws",
+          "title": "Dark Fairy of the Skull Grove",
+          "description": "A graceful dark enchantress with ornate feathered crown and swirling fairy-like wings drifts among skulls and bats, her long clawed hand reaching downward in an eerie black-and-white composition.",
+          "sortOrder": 6,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "dark-sorceress-swirl-crescent-bats",
+          "title": "Sorceress of the Swirling Night",
+          "description": "A hauntingly beautiful sorceress with cracked face markings and wild flowing hair stands amid layered swirling dark energy, bats, and bare branches under a crescent moon in a paper-cut style.",
+          "sortOrder": 7,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "witch-full-moon-red-sparks-forest",
+          "title": "Witch Beneath the Blood-Sparked Moon",
+          "description": "A witch in a wide-brimmed hat raises her hands in a dark forest, red glowing sparks and floating eyes surrounding her as a massive full moon illuminates bats and twisted branches overhead.",
+          "sortOrder": 8,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "witch-witch-hat-evil-moons-skeletons",
+          "title": "Witch of the Evil Moons",
+          "description": "A pale witch with glowing red eyes in a tall hat walks amid swirling thorned vines, skeleton hands, snarling crescent moon faces, and red-eyed bats in a dramatic paper-cut dark fantasy style.",
+          "sortOrder": 9,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "rune-sorceress-ravens-thorns",
+          "title": "Rune Sorceress and the Ravens",
+          "description": "A ghostly sorceress with wild white hair and skeleton hands channels swirling energy within a rune-inscribed circle, surrounded by four red-eyed ravens and coiling thorned vines.",
+          "sortOrder": 10,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "shadow-queen-wolves-bats-crescent",
+          "title": "Shadow Queen of Wolves and Bats",
+          "description": "A dark silhouetted queen with glowing eyes commands wolves, bats, and grasping shadow hands within a richly layered deep crimson and purple night scene framed by swirling ornamental borders.",
+          "sortOrder": 11,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "dark-queen-antlers-skulls-roses",
+          "title": "Dark Queen of Skulls and Roses",
+          "description": "A dramatic dark queen with antler-like raised arms, star eye markings, and an elaborate feathered gown stands amid skulls, dark roses, and bats under a sinister grinning moon.",
+          "sortOrder": 12,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "witch-skull-vines-bats-hat",
+          "title": "Witch of the Skull Vines",
+          "description": "A witch with a bent hat and flowing hair conjures floating skulls from swirling thorned vines with both hands, surrounded by bats and spiraling dark tendrils in a black-and-white illustration.",
+          "sortOrder": 13,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "white-hair-sorceress-shadow-spirits",
+          "title": "White-Haired Sorceress and Shadow Spirits",
+          "description": "A striking sorceress with flowing white hair and a jagged feathered gown channels faint energy from both hands, surrounded by lurking shadow creatures with glowing eyes in a dark swirling background.",
+          "sortOrder": 14,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "witch-staff-watching-eyes-forest",
+          "title": "Witch of the Watching Forest",
+          "description": "A solitary witch in a buckled hat carries a spiraling staff through a dark forest, her long hair swept by wind while glowing brown eyes peer from the branches and shadows around her.",
+          "sortOrder": 15,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        }
+      ]
     },
     {
-      "slug": "skeleton-green-purple-orb-sigil-card",
-      "title": "Skeleton Channeler with Green and Purple Energy",
-      "description": "A bare-ribbed skeleton in a dark cloak with spiked pauldrons channels green and purple glowing orbs, surrounded by floating arcane sigils and a glowing green chest emblem on a dark card marked A and II.",
-      "sortOrder": 3,
-      "thumbExt": "jpeg",
-      "highResExt": "jpeg"
+      "slug": "skeleton-card-collection",
+      "title": "Skeleton Card Collection",
+      "description": "A striking series of 20 dark fantasy card illustrations featuring skeleton sorcerers, armored bone warriors, and cloaked undead figures channeling arcane energy, wielding glowing staves, and commanding swirling dark forces across ornate card frames.",
+      "category": "Character Illustrations",
+      "thumbnailR2Key": "thumbnails/skeleton-card-collection/skeleton-card-collection.jpeg",
+      "tag": "Featured",
+      "featured": true,
+      "images": [
+        {
+          "slug": "skeleton-mage-purple-orb-staff-rune-circle",
+          "title": "Skeleton Mage with Purple Orb and Rune Circle",
+          "description": "A robed skeleton with glowing red eyes holds a swirling purple energy orb in one hand and a spiked arcane staff in the other, surrounded by a glowing rune circle and smoke wisps on a dark ornate card numbered II.",
+          "sortOrder": 1,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "armored-skull-warrior-purple-flame-skull-staff",
+          "title": "Armored Skull Warrior — Card XIII Death",
+          "description": "A heavily armored skull-faced warrior in dark plate mail charges a swirling purple energy ball in one gauntleted hand while gripping a staff topped with a glowing skull, framed by a thorn-bordered card labeled Death XIII.",
+          "sortOrder": 2,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "skeleton-green-purple-orb-sigil-card",
+          "title": "Skeleton Channeler with Green and Purple Energy",
+          "description": "A bare-ribbed skeleton in a dark cloak with spiked pauldrons channels green and purple glowing orbs, surrounded by floating arcane sigils and a glowing green chest emblem on a dark card marked A and II.",
+          "sortOrder": 3,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "hooded-skeleton-purple-swirl-card-xiii-death",
+          "title": "Hooded Skeleton — Death Card XIII",
+          "description": "A hooded skeleton with glowing purple eyes clutches a swirling purple energy mass in ringed bony fingers, seated against a dark starfield on an ornately bordered card labeled Death XIII with skull corner accents.",
+          "sortOrder": 4,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "hooded-skeleton-blue-arcane-orb-card-10",
+          "title": "Hooded Skeleton with Blue Arcane Orb — Card 10",
+          "description": "A hooded skeleton with glowing blue eyes cradles a blazing blue energy orb between both skeletal hands, surrounded by floating arcane circle glyphs on a detailed dark card numbered 10.",
+          "sortOrder": 5,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "skeleton-spiked-armor-three-sigil-circles-xi",
+          "title": "Skeleton in Spiked Armor — Card XI",
+          "description": "A dynamic skeleton in jagged spiked armor poses with three floating white arcane circles in its bony hands against billowing dark smoke on a minimalist ornate card numbered XI, labeled Inord Parwe.",
+          "sortOrder": 6,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "crowned-skeleton-purple-vortex-skulls",
+          "title": "Crowned Skeleton with Purple Vortex and Skulls",
+          "description": "A spiked-crown skeleton in a layered dark robe raises one hand with a swirling purple vortex and the other clutching a cluster of floating skulls, with crescent moons and star symbols glowing overhead.",
+          "sortOrder": 7,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "necromancer-blue-orb-staff-rune-halo-xiii",
+          "title": "The Necromancer — Card XIII",
+          "description": "A hooded skeleton necromancer with dark hollow eyes holds a glowing orb-tipped staff, encircled by a glowing blue rune ring halo and floating arcane marks on a gothic card titled The Necromancer, numbered XIII.",
+          "sortOrder": 8,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "necromancer-purple-crystal-staff-lightning",
+          "title": "The Necromancer with Crystal Staff and Lightning",
+          "description": "A purple-eyed skeleton necromancer in dark armor charges a crackling purple lightning vortex in one hand while raising a staff topped with glowing purple crystals, set against swirling dark energy on a card titled The Necromancer.",
+          "sortOrder": 9,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "necromancer-purple-dark-orb-close-up-xiii",
+          "title": "The Necromancer — Dark Orb Close-Up, Card XIII",
+          "description": "A hooded skeleton with glowing purple eyes cradles a dark exploding energy orb in both hands, surrounded by swirling purple smoke and red embers on a skull-cornered card labeled The Necromancer, numbered XIII.",
+          "sortOrder": 10,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "winged-skeleton-raven-crescent-moons-staff",
+          "title": "Winged Skeleton with Ravens and Crescent Moons",
+          "description": "A winged skeleton in a dark feathered cloak holds a glowing staff and a swirling white energy orb, flanked by black ravens and triple crescent moons, surrounded by spiral smoke and arcane circle markings.",
+          "sortOrder": 11,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "shadow-binder-skeleton-purple-staff-xiv",
+          "title": "The Shadow Binder — Card XIV",
+          "description": "A robed skeleton in a dark hood grips a flaming purple-tipped staff while wisps of purple smoke coil around its figure on an ornate gold-bordered card labeled The Shadow Binder, numbered III and XIV.",
+          "sortOrder": 12,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "shadow-mage-antler-crown-purple-green-staff",
+          "title": "Shadow Mage with Antler Crown",
+          "description": "A skeleton in a dark hooded cloak and jagged antler crown grips a tall twisted staff topped with a swirling purple and green flame, surrounded by flowing purple smoke and an arcane glyph ring backdrop, labeled Shadow Mage.",
+          "sortOrder": 13,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "shadow-sentry-skeleton-blue-energy-spinning",
+          "title": "Shadow Sentry — Card III",
+          "description": "A bare skeleton leaps dynamically with two hands channeling swirling blue-green energy orbs, wrapped in spiraling blue light streams on a dark detailed card labeled Shadow Sentry, numbered III.",
+          "sortOrder": 14,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "shadow-servant-dual-purple-orbs-hooded",
+          "title": "The Shadow Servant — Card XV",
+          "description": "A hooded skeleton with glowing red eyes sprints forward while channeling two swirling purple energy orbs in its outstretched clawed hands, trailing dark purple smoke on an ornate card labeled The Shadow Servant, numbered XV.",
+          "sortOrder": 15,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "shadow-weaver-skeleton-glyph-ring-smoke",
+          "title": "Shadow Weaver — Card II",
+          "description": "A bare skeleton with arcane markings etched on its skull dances within a floating ring of dark sigil medallions, holding a glowing orb in one hand while dark smoke billows around it on a gold-bordered card labeled Shadow Weaver, numbered II.",
+          "sortOrder": 16,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "shadow-wielder-armored-scythe-purple-sigils",
+          "title": "The Shadow Wielder — Armored with Scythe, Card XIII",
+          "description": "A fully armored skeleton with a spiked dark crown wields a glowing purple scythe blade in one hand while projecting purple arcane sigils and a crescent from the other, on a card labeled The Shadow Wielder, numbered XIII.",
+          "sortOrder": 17,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "shadow-wielder-crystal-staff-purple-smoke-xi",
+          "title": "The Shadow Wielder — Crystal Staff, Card XI",
+          "description": "A hooded skeleton in dark armor grips a tall staff topped with a glowing purple crystal while channeling purple flame energy in the other hand, surrounded by swirling purple smoke on a card labeled The Shadow Wielder, numbered XI.",
+          "sortOrder": 18,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "shadow-wielder-purple-green-vortex-crystal-xiii",
+          "title": "The Shadow Wielder — Vortex Portal, Card XIII",
+          "description": "An armored skeleton with exposed ribs charges a dark purple energy mass in one hand and holds a purple crystal-tipped staff in the other, standing before a swirling green and purple vortex portal on a card labeled The Shadow Wielder, numbered XIII.",
+          "sortOrder": 19,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "the-shadow-scythe-sigil-coins-xiii",
+          "title": "The Shadow — Scythe Bearer, Card XIII",
+          "description": "A skeletal figure adorned with arcane coin medallions and a rune-marked skull wields a large scythe over one shoulder while projecting a swirling dark purple energy orb from the other hand, wrapped in dark smoke on a card labeled The Shadow, numbered XIII.",
+          "sortOrder": 20,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        }
+      ]
     },
     {
-      "slug": "hooded-skeleton-purple-swirl-card-xiii-death",
-      "title": "Hooded Skeleton — Death Card XIII",
-      "description": "A hooded skeleton with glowing purple eyes clutches a swirling purple energy mass in ringed bony fingers, seated against a dark starfield on an ornately bordered card labeled Death XIII with skull corner accents.",
-      "sortOrder": 4,
-      "thumbExt": "jpeg",
-      "highResExt": "jpeg"
+      "slug": "incognito-mode-collection",
+      "title": "Incognito Mode Collection",
+      "description": "A bold series of 20 dark humor illustrations featuring shadowy figures, skulls, and cloaked characters themed around incognito browsing, secrecy, and digital anonymity with eerie typography and glowing eyes.",
+      "category": "Character Illustrations",
+      "thumbnailR2Key": "thumbnails/incognito-mode-collection/incognito-mode-collection.jpeg",
+      "tag": "Featured",
+      "featured": true,
+      "images": [
+        {
+          "slug": "incognito-mode-green-eyes-shadow-figure",
+          "title": "Incognito Mode — Green-Eyed Shadow Figure",
+          "description": "A shadowy cloaked figure with glowing green eyes and a fedora hat centered against a dark purple-tinted background, with the text 'Incognito Mode — What Happens in the Shadows... (Or Does It?)'",
+          "sortOrder": 1,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "stay-hidden-incognito-hooded-creature-lantern",
+          "title": "Stay Hidden — Hooded Creature with Lantern",
+          "description": "A small chibi-style hooded creature with glowing yellow eyes holds a flickering lantern against a dark background, with the text 'Stay Hidden — Incognito Mode — Darkness Requires Secrecy'.",
+          "sortOrder": 2,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "incognito-mode-engaged-spy-flashlight-ghosts",
+          "title": "Incognito Mode: Engaged — Spy with Flashlight",
+          "description": "A cute cartoon spy in a fedora and trench coat shines a flashlight revealing small ghosts on a dark patterned background with spider webs and eyes, with the text 'Incognito Mode: Engaged. They'll never know... or will they?'",
+          "sortOrder": 3,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "incognito-mode-skull-peeking-triangle",
+          "title": "Incognito Mode — Skull Peeking Through Triangle",
+          "description": "A grinning skull wearing a dark fedora peeks out from a cracked triangular dark panel against a black background, with the bold white text 'Incognito Mode' beside it.",
+          "sortOrder": 4,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "going-dark-skull-fedora-sunglasses",
+          "title": "Going Dark — Skull with Fedora and Sunglasses",
+          "description": "A glowing white skull wearing a dark fedora and black sunglasses floats against a near-black background with soft white glow, with the text 'Going Dark. Incognito Mode Active.'",
+          "sortOrder": 5,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "incognito-darkness-watching-skull-red-eyes",
+          "title": "Incognito Can't Save You — Darkness Is Watching",
+          "description": "A hooded skull figure with glowing red eyes crouches in the lower corner of a cracked dark stone wall, with large red glowing text reading 'Incognito Can't Save You — Darkness Is Watching You.'",
+          "sortOrder": 6,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "incognito-skull-fedora-red-eyes-smoke",
+          "title": "Incognito — Skull Phantom with Red Eyes",
+          "description": "A skull-faced phantom in a wide fedora and round red-glowing glasses emerges from swirling dark smoke and cracks against a grungy dark background, with large weathered text reading 'Incognito — Your Secret Browsing... The Darkness Watches.'",
+          "sortOrder": 7,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "darkness-browsing-cracked-hat-red-eyes",
+          "title": "The Darkness Is Browsing With You",
+          "description": "A cracked stone fedora and dark glasses with glowing red eyes float above wisps of dark smoke on a pure black background, with the text 'The Darkness Is Browsing With You — Incognito mode doesn't hide everything.'",
+          "sortOrder": 8,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "shhh-incognito-skull-peeking-wall",
+          "title": "Shhh I'm Incognito — Skull Peeking Around Wall",
+          "description": "A cartoon skull in a fedora and dark sunglasses peeks around a cracked brick wall corner with a knowing grin, with the text 'Shhh... I'm Incognito. (Don't Tell The Living).'",
+          "sortOrder": 9,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "incognito-mode-skull-shushing-door",
+          "title": "Incognito Mode — Skull Shushing at the Door",
+          "description": "A green-tinted skull in a fedora and dark coat presses a bony finger to its mouth in a shushing gesture while gripping a dark doorframe, with the caption 'Shhh... The Ghosts Are Watching' and large handwritten 'incognito mode' text below.",
+          "sortOrder": 10,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "incognito-mode-shield-skeleton-stay-hidden",
+          "title": "Incognito Mode Shield — Skeleton Stay Hidden",
+          "description": "A cartoon skeleton in a hoodie stands beside a glowing purple shield badge displaying 'Incognito Mode' with a crossed-eye icon and the text 'Shh... Skeleton's Watching. (But You're Not)', with 'Stay Hidden.' in orange below.",
+          "sortOrder": 11,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "shhh-incognito-skeleton-peeking-crack",
+          "title": "Shhh I Am Incognito — Skeleton Peeking Through Crack",
+          "description": "A glowing white cartoon skeleton peeks around a cracked stone wall with a finger to its teeth in a hushing pose, with the text 'Shhh I Am Incognito. Don't Tell Anyone That I Am Here.'",
+          "sortOrder": 12,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "incognito-skeleton-app-icon-you-cant-hide",
+          "title": "Incognito — Skeleton with App Icon, You Can't Hide",
+          "description": "A detailed skeleton in a dark fedora and coat peers over a rounded square incognito app icon while holding its face with skeletal hands, with the text 'Incognito — You Can Run, But You Can't Hide'.",
+          "sortOrder": 13,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "incognito-hat-skull-glasses-not-alone-dark",
+          "title": "You Are Not Alone in the Dark — Hat and Skull Glasses",
+          "description": "A minimalist dark illustration showing a floating fedora above faceless dark sunglasses with skull reflections and a wispy tail, on a near-black background with the subtle text 'You Are Not Alone In The Dark'.",
+          "sortOrder": 14,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "incognito-white-skull-hat-no-one-safe",
+          "title": "You Are Now Incognito — No One Is Safe",
+          "description": "A stark minimal white skull icon with a wide fedora, fanged mouth, and glowing red eyes displayed against a near-black background with bold text reading 'You Are Now Incognito. No One Is Safe.'",
+          "sortOrder": 15,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "incognito-red-eye-figure-app-icon-not-safe",
+          "title": "You Are Not Safe — Red-Eyed Incognito Figure",
+          "description": "A shadowy figure in a dark trench coat and fedora with glowing red circular glasses is displayed within a rounded app-style icon frame against a black background, with the text 'You Are Not Safe' below.",
+          "sortOrder": 16,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "incognito-ghost-red-eyes-no-one-hears-screams",
+          "title": "Incognito Mode — Ghost, No One Can Hear Your Screams",
+          "description": "A soft translucent floating ghost shape with two glowing red dot eyes hovers against a dark gray gradient background, with the text 'You are now in Incognito Mode — No one can hear your screams'.",
+          "sortOrder": 17,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "incognito-skull-neon-hat-shushing-trench",
+          "title": "You Are Incognito — Neon Hat Skull Shushing",
+          "description": "A photorealistic skull wearing a wide-brimmed black fedora and a dark trench coat presses a bony finger to its lips in a shushing gesture, with a glowing neon incognito icon outline above, and the text 'You Are Incognito' in dripping horror font below.",
+          "sortOrder": 18,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "incognito-skull-peeking-app-screen",
+          "title": "Incognito — Skull Peeking Beside App Screen",
+          "description": "A red-eyed skull in a dark fedora and trench coat peers around the left edge of a dark screen mockup displaying a skull icon, the word 'incognito', and the message 'You're incognito now.' in a browser-style layout.",
+          "sortOrder": 19,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "incognito-red-glow-suit-browsing-history",
+          "title": "You Are Now Incognito — Red Glow Suit Figure",
+          "description": "A minimalist silhouetted figure in a suit and fedora with white goggle-like eyes glows with a subtle red aura against a dark background, with the text 'You are now incognito — None of your browsing history will be saved'.",
+          "sortOrder": 20,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        }
+      ]
     },
     {
-      "slug": "hooded-skeleton-blue-arcane-orb-card-10",
-      "title": "Hooded Skeleton with Blue Arcane Orb — Card 10",
-      "description": "A hooded skeleton with glowing blue eyes cradles a blazing blue energy orb between both skeletal hands, surrounded by floating arcane circle glyphs on a detailed dark card numbered 10.",
-      "sortOrder": 5,
-      "thumbExt": "jpeg",
-      "highResExt": "jpeg"
+      "slug": "dark-humor-wallpaper-collection",
+      "title": "Dark Humor Wallpaper Collection",
+      "description": "A bold series of 20 dark humor phone wallpapers featuring edgy skulls, ghosts, skeletons, and creepy characters delivering snarky, threatening, and funny messages perfect for lock screens and wallpapers.",
+      "category": "Character Illustrations",
+      "thumbnailR2Key": "thumbnails/dark-humor-wallpaper-collection/dark-humor-wallpaper-collection.jpeg",
+      "tag": "Featured",
+      "featured": true,
+      "images": [
+        {
+          "slug": "get-lost-hooded-skull-stay-out",
+          "title": "Get Lost — Hooded Skull Stay Out",
+          "description": "A small hooded skull figure with clawed hands stands among bare branches and shadowy ghosts on a black background, with bold text reading 'Get Lost. You're Not Welcome Here. Stay Out.'",
+          "sortOrder": 1,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "get-out-angry-ghost-leave-dark",
+          "title": "Get Out — Angry Ghost Leave Before Dark",
+          "description": "A snarling cartoon ghost with jagged teeth and white glowing eyes floats beside bold horror text reading 'Get Out. We Don't Want You Here. Leave Before Dark.' on a black bordered background.",
+          "sortOrder": 2,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "dark-monster-absolutely-worthless",
+          "title": "Dark Monster — You Are Absolutely Worthless",
+          "description": "A jagged black monster creature with glowing white eyes and a massive fanged grin lunges forward with clawed hands against a dark cracked background, with bold white text reading 'You Are Absolutely Worthless'.",
+          "sortOrder": 3,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "hoodie-skull-double-finger-locked",
+          "title": "Locked For a Reason — Hoodie Skull Double Finger",
+          "description": "A cartoon skull in a black hoodie with yellow glowing eyes raises both middle fingers defiantly, with spiderweb corner accents and bold text reading 'Locked For A Reason. Stupid.'",
+          "sortOrder": 4,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "chained-door-locked-reason-stupid",
+          "title": "Chained Door — Locked For A Reason Stupid",
+          "description": "A sketch-style illustration of a double door wrapped in heavy chains and a padlock on a pure black background, with white horror text reading 'It's Locked For A Reason Stupid'.",
+          "sortOrder": 5,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "grumpy-ghost-ugh-you-again",
+          "title": "Grumpy Ghost — Ugh You Again",
+          "description": "A flat white ghost with a deeply displeased frowning expression floats center-frame against a dark background, with simple text below reading 'Ugh You Again'.",
+          "sortOrder": 6,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "dark-cat-put-phone-down-loser",
+          "title": "Dark Cat — Put The Phone Down Loser",
+          "description": "A sinister dark cat silhouette with glowing white eyes and a sharp jagged grin looms against a scratched black background, with dripping horror text reading 'Put The Phone Down, Loser. Seriously, Get A Life.'",
+          "sortOrder": 7,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "angry-ghost-stop-looking-nightmare",
+          "title": "Stop Looking At Me — Angry Pointing Ghost",
+          "description": "A large pale ghost with glowing red eyes points an accusing bony finger directly forward against a black background, with bold text reading 'Stop Looking At Me. Unless You Want A Nightmare.' and a cracked lock icon below.",
+          "sortOrder": 8,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "horned-ghost-still-stalking-watching",
+          "title": "Still Stalking Me? — Horned Ghost Watching",
+          "description": "A small horned ghost with a menacing jagged grin and narrowed eyes floats on a dark background, with text below reading 'Still Stalking Me? (Yeah, I'm Watching)'.",
+          "sortOrder": 9,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "dark-ghost-not-invited-seriously-leave",
+          "title": "You're Not Invited — Dark Ghost Seriously Leave",
+          "description": "A dark shaggy ghost with glowing white eyes and a stern frown floats against a near-black background, with text below reading 'You're Not Invited. (Seriously, Leave.)'",
+          "sortOrder": 10,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "haunted-house-get-off-phone-loser",
+          "title": "Get Off My Phone — Haunted House Loser",
+          "description": "A cartoon haunted mansion with purple rooftops and a small angry ghost floating beside it sits against a dark background, with bold text reading 'Get Off My Phone, Loser. I'm Haunted, Okay?'",
+          "sortOrder": 11,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "skull-get-lost-no-one-wants-you",
+          "title": "Get Lost — Skull No One Wants You Here",
+          "description": "A stark white detailed skull floats above bold cracked text reading 'Get Lost. No One Wants You Here.' with a barbed wire divider and smaller text reading 'This Is Not Your Phone. (Don't Touch)'.",
+          "sortOrder": 12,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "grinning-ghost-what-are-you-looking",
+          "title": "What Are You Looking At — Grinning Ghost",
+          "description": "A smooth white ghost with large dark eyes and a sharp fanged grin peeks up from the bottom of a dark background, with bold white text below reading 'What Are You Looking At?'",
+          "sortOrder": 13,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "skeleton-still-staring-get-life-ghost",
+          "title": "Still Staring — Skeleton Get A Life Ghost",
+          "description": "A cute cartoon skeleton rests its face in both bony hands with a grumpy expression at the bottom, surrounded by floating bones and spiderwebs, with dripping horror text reading 'Still Staring? Get A Life, Ghost. (Before You End Up Like Me)'.",
+          "sortOrder": 14,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "hoodie-skull-obsessed-one-is-back",
+          "title": "Oh Look The Obsessed One Is Back — Hoodie Skull",
+          "description": "A cartoon skeleton in a black hoodie with glowing eyes points a bony finger forward accusingly, with bold text above reading 'Oh, Look. The Obsessed One Is Back. Seriously, Don't You Have Anything Better To Do?'",
+          "sortOrder": 15,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "skeleton-pointing-hey-jerk-get-off",
+          "title": "Hey Jerk Get Off My Phone — Pointing Skeleton",
+          "description": "A stocky skeleton with an angry expression points a bony finger directly at the viewer against a dark textured background with a spiderweb corner, and bold text reading 'Hey, Jerk! Get Off My Phone! Scram!'",
+          "sortOrder": 16,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "skeleton-waving-ugh-you-again",
+          "title": "Ugh You Again — Skeleton Waving Dismissal",
+          "description": "A grumpy cartoon skeleton with a scowling expression raises one bony hand in a dismissive wave gesture against a pure black background, with large bold text above reading 'Ugh You Again'.",
+          "sortOrder": 17,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "hooded-skull-hey-you-put-down",
+          "title": "Hey You Put It Down Or Else — Hooded Skull",
+          "description": "A hooded skull figure leans on a surface and raises a warning bony finger against a dark background with lightning cracks and smoke, with bold text above reading 'Hey You. Put It Down. Or Else.'",
+          "sortOrder": 18,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "hoodie-skeleton-get-out-spiderweb",
+          "title": "Get Out — Hoodie Skeleton With Spiderwebs",
+          "description": "A cartoon skeleton in a torn black hoodie looks upward with a grumpy expression against a black background with spiderweb corners, with large dripping white text at the top reading 'Get Out.'",
+          "sortOrder": 19,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "skeleton-dont-unlock-go-away-spiders",
+          "title": "Don't Even Think About Unlocking This — Skeleton Go Away",
+          "description": "A tired-looking skeleton sits with arms crossed and a bored expression at a surface, surrounded by hanging spiders and spiderweb corners, with bold text reading 'Don't Even Think About Unlocking This. Go Away. You're Not Worth The Battery Life.'",
+          "sortOrder": 20,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        }
+      ]
     },
     {
-      "slug": "skeleton-spiked-armor-three-sigil-circles-xi",
-      "title": "Skeleton in Spiked Armor — Card XI",
-      "description": "A dynamic skeleton in jagged spiked armor poses with three floating white arcane circles in its bony hands against billowing dark smoke on a minimalist ornate card numbered XI, labeled Inord Parwe.",
-      "sortOrder": 6,
-      "thumbExt": "jpeg",
-      "highResExt": "jpeg"
+      "slug": "horror-eyes-collection",
+      "title": "Horror Eyes Collection",
+      "description": "A chilling series of 15 dark horror wallpapers featuring glowing eyes emerging from the void, paired with ominous typographic phrases.",
+      "category": "Horror Illustrations",
+      "thumbnailR2Key": "thumbnails/horror-eyes-collection/horror-eyes-collection.jpeg",
+      "tag": "Featured",
+      "featured": true,
+      "images": [
+        {
+          "slug": "fear-the-void-it-sees-you",
+          "title": "Fear The Void: It Sees You",
+          "description": "Two glowing red eyes with bleeding streaks emerge from pure darkness, with 'Fear The Void' at the top and 'It Sees You' at the bottom in dripping red horror font.",
+          "sortOrder": 1,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "fear-me-nightmare-awaits",
+          "title": "Fear Me: Your Nightmare Awaits",
+          "description": "Bloodshot red eyes peer through a dark shadowy figure with claw scratch marks beneath 'Fear Me' text, subtitled 'Your Nightmare Awaits' in red below.",
+          "sortOrder": 2,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "they-watch-always-watching",
+          "title": "They Watch: Always Watching",
+          "description": "Wide cracked green glowing eyes with long lashes stare out from darkness, topped with blood-dripping red 'They Watch' title and 'Always Watching' in white below.",
+          "sortOrder": 3,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "they-watch-you-sleep",
+          "title": "They Watch You Sleep",
+          "description": "Minimalist white glowing eyes float in total blackness with 'They Watch' in white scratchy text above and 'You Sleep' below, evoking a stark and eerie presence.",
+          "sortOrder": 4,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "can-you-see-me-red-glow",
+          "title": "Can You See Me?",
+          "description": "Fiery red-orange glowing eyes burn through a dark textured background streaked with red, with 'Can You See Me?' repeated both at the top in grey and bottom in red.",
+          "sortOrder": 5,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "whispers-in-the-void",
+          "title": "Whispers In The Void",
+          "description": "Sinister red slit-pupil eyes glow within a swirling dark vortex, surrounded by jagged red lettering spelling 'Whispers' above and 'In The Void' below.",
+          "sortOrder": 6,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "eternal-gaze-red-eyes",
+          "title": "Eternal Gaze",
+          "description": "Intense red glowing eyes peer from beneath a shadowy cavern-like brow, with 'Eternal Gaze' written in subtle dark red horror font centered above.",
+          "sortOrder": 7,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "the-night-has-eyes",
+          "title": "The Night Has Eyes",
+          "description": "Narrow red glowing eyes pierce through darkness with wisps of smoke rising from them, titled 'The Night Has Eyes' in red jagged lettering at the top.",
+          "sortOrder": 8,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "fear-me-smoke-tendrils",
+          "title": "Fear Me: Smoke Tendrils",
+          "description": "Bulging bloodshot red eyes surrounded by dark swirling tendrils and wisps of white smoke, with bold red 'Fear Me' text centered at the bottom.",
+          "sortOrder": 9,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "they-watch-you",
+          "title": "They Watch You",
+          "description": "Narrow red glowing eyes cut through a dark silhouetted figure, with 'They Watch' in large red dripping text at the top and a lone 'You' in white at the bottom.",
+          "sortOrder": 10,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "your-own-serpent-eyes",
+          "title": "Your Own",
+          "description": "Glowing amber serpentine eyes with slit pupils radiate heat and smoke against a starry black void, paired with 'Your Own' in dripping red metallic horror font below.",
+          "sortOrder": 11,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "the-eyes-never-lie",
+          "title": "The Eyes Never Lie",
+          "description": "Photorealistic red glowing eyes stare coldly from near-total darkness with 'The Eyes Never Lie' in red scratched lettering at the bottom.",
+          "sortOrder": 12,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "they-watch-with-smoke",
+          "title": "They Watch: Smoke Rising",
+          "description": "Red glowing eyes emit thin wisps of white smoke upward against a black background, with 'They Watch' in white distressed brush font at the bottom.",
+          "sortOrder": 13,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "shadows-are-watching",
+          "title": "The Shadows Are Watching: You Can't Hide",
+          "description": "Cracked red glowing eyes burn through a shadowy beast-like figure with dark claw patterns, topped with bold red 'The Shadows Are Watching' and 'You Can't Hide' in white below.",
+          "sortOrder": 14,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "lost-in-the-shadows",
+          "title": "Lost In The Shadows",
+          "description": "Dull red glowing eyes barely visible in near-total darkness hover above a faint reflection, with 'Lost In The Shadows' in red dripping font at the bottom.",
+          "sortOrder": 15,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        }
+      ]
     },
     {
-      "slug": "crowned-skeleton-purple-vortex-skulls",
-      "title": "Crowned Skeleton with Purple Vortex and Skulls",
-      "description": "A spiked-crown skeleton in a layered dark robe raises one hand with a swirling purple vortex and the other clutching a cluster of floating skulls, with crescent moons and star symbols glowing overhead.",
-      "sortOrder": 7,
-      "thumbExt": "jpeg",
-      "highResExt": "jpeg"
+      "slug": "bone-street-collection",
+      "title": "Bone Street Collection",
+      "description": "A bold series of 15 edgy skeleton illustrations featuring attitude, cigars, and street style aesthetics set against dark backgrounds with aggressive horror typography.",
+      "category": "Character Illustrations",
+      "thumbnailR2Key": "thumbnails/bone-street-collection/bone-street-collection.jpeg",
+      "tag": "Featured",
+      "featured": true,
+      "images": [
+        {
+          "slug": "no-escape-hoodie-skeleton",
+          "title": "No Escape: Hoodie Skeleton",
+          "description": "A skeleton in a torn black hoodie and cap holds up bone fingers while smoking a cigarette with curling smoke, under bold red 'No Escape' text.",
+          "sortOrder": 1,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "reap-what-you-sow-skeleton",
+          "title": "Reap What You Sow",
+          "description": "A cracked bare skeleton smoking a cigarette flips the middle finger beside bold white slashed 'Reap What You Sow' typography on a dark red-glow background.",
+          "sortOrder": 2,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "deaths-greeting-coat-skeleton",
+          "title": "Death's Greeting",
+          "description": "A 3D rendered skeleton in a black open coat holds a lit cigarette in one hand while throwing up fingers with the other, topped with dripping red 'Death's Greeting' text.",
+          "sortOrder": 3,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "reapers-due-beanie-skeleton",
+          "title": "Reaper's Due",
+          "description": "A street-style skeleton in a black beanie and oversized jacket sits casually with a gold chain, smoking and throwing up a peace sign under 'Reaper's Due' drip font.",
+          "sortOrder": 4,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "nightmare-city-hooded-skull",
+          "title": "Nightmare City",
+          "description": "A hooded skull figure with a stitched face holds up a lit cigarette against a dark urban backdrop, under dripping red 'Nightmare City' horror lettering.",
+          "sortOrder": 5,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "death-dealer-cracked-skull",
+          "title": "Death Dealer",
+          "description": "A cracked skull with glowing red eyes in a dark coat raises one middle finger while holding a smoking cigarette in the other, under jagged red 'Death Dealer' text.",
+          "sortOrder": 6,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "fear-the-bone-crusher-streetwear",
+          "title": "Fear The Bone Crusher",
+          "description": "A full-body street skeleton in a hoodie, baggy jeans, sneakers, and gold chain holds a cigarette and throws a peace sign under red dripping 'Fear The Bone Crusher' title.",
+          "sortOrder": 7,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "fear-the-bone-seated-hoodie",
+          "title": "Fear The Bone: Seated",
+          "description": "A red-eyed skeleton in a torn black hoodie sits cross-legged with ripped jeans, holding a lit cigarette in one hand and raising fingers with the other, under red 'Fear The Bone' text.",
+          "sortOrder": 8,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "nightmare-chain-hoodie-skeleton",
+          "title": "Nightmare",
+          "description": "A cracked skull in a black hoodie with a gold chain raises a middle finger and holds a burning cigarette against a dark urban alley, beneath large dripping red 'Nightmare' text.",
+          "sortOrder": 9,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "fear-the-bone-suit-no-remorse",
+          "title": "Fear The Bone: No Remorse",
+          "description": "A cracked skull in a black suit and red tie smokes a cigarette and raises a middle finger, framed by blood-drip 'Fear The Bone' at the top and 'No Remorse' at the bottom.",
+          "sortOrder": 10,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "fear-the-bone-thug-chain",
+          "title": "Fear The Bone: Thug",
+          "description": "A hooded skeleton with a silver 'THUG' chain pendant smokes a cigarette and raises a middle finger against a red-glow city backdrop, with 'Fear The Bone' drip text at the bottom right.",
+          "sortOrder": 11,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "death-is-the-new-cool-mobster",
+          "title": "Death Is The New Cool",
+          "description": "A fedora-wearing skeleton in a pinstripe suit blows smoke while making hand gestures, surrounded by swirling smoke clouds under the title 'Death Is The New Cool' in horror font.",
+          "sortOrder": 12,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "deaths-grasp-coat-skeleton",
+          "title": "Death's Grasp",
+          "description": "A grinning skull in a tattered black coat raises a middle finger while holding a burning cigarette, under dripping red 'Death's Grasp' typography on a dark grey background.",
+          "sortOrder": 13,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "rest-in-pieces-mobster-hat",
+          "title": "Rest In Pieces",
+          "description": "A sharp skeleton in a black fedora and coat smokes a cigarette and raises a middle finger against a dark red-glow background, with 'Rest In Pieces' in white and red drip text below.",
+          "sortOrder": 14,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "bone-chiller-hoodie-gold-chain",
+          "title": "Bone Chiller",
+          "description": "A grinning hooded skeleton with a gold chain holds a cigarette with smoke curling upward and gestures with the other hand, above bold 'Bone Chiller' drip-style text at the bottom.",
+          "sortOrder": 15,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        }
+      ]
     },
     {
-      "slug": "necromancer-blue-orb-staff-rune-halo-xiii",
-      "title": "The Necromancer — Card XIII",
-      "description": "A hooded skeleton necromancer with dark hollow eyes holds a glowing orb-tipped staff, encircled by a glowing blue rune ring halo and floating arcane marks on a gothic card titled The Necromancer, numbered XIII.",
-      "sortOrder": 8,
-      "thumbExt": "jpeg",
-      "highResExt": "jpeg"
-    },
-    {
-      "slug": "necromancer-purple-crystal-staff-lightning",
-      "title": "The Necromancer with Crystal Staff and Lightning",
-      "description": "A purple-eyed skeleton necromancer in dark armor charges a crackling purple lightning vortex in one hand while raising a staff topped with glowing purple crystals, set against swirling dark energy on a card titled The Necromancer.",
-      "sortOrder": 9,
-      "thumbExt": "jpeg",
-      "highResExt": "jpeg"
-    },
-    {
-      "slug": "necromancer-purple-dark-orb-close-up-xiii",
-      "title": "The Necromancer — Dark Orb Close-Up, Card XIII",
-      "description": "A hooded skeleton with glowing purple eyes cradles a dark exploding energy orb in both hands, surrounded by swirling purple smoke and red embers on a skull-cornered card labeled The Necromancer, numbered XIII.",
-      "sortOrder": 10,
-      "thumbExt": "jpeg",
-      "highResExt": "jpeg"
-    },
-    {
-      "slug": "winged-skeleton-raven-crescent-moons-staff",
-      "title": "Winged Skeleton with Ravens and Crescent Moons",
-      "description": "A winged skeleton in a dark feathered cloak holds a glowing staff and a swirling white energy orb, flanked by black ravens and triple crescent moons, surrounded by spiral smoke and arcane circle markings.",
-      "sortOrder": 11,
-      "thumbExt": "jpeg",
-      "highResExt": "jpeg"
-    },
-    {
-      "slug": "shadow-binder-skeleton-purple-staff-xiv",
-      "title": "The Shadow Binder — Card XIV",
-      "description": "A robed skeleton in a dark hood grips a flaming purple-tipped staff while wisps of purple smoke coil around its figure on an ornate gold-bordered card labeled The Shadow Binder, numbered III and XIV.",
-      "sortOrder": 12,
-      "thumbExt": "jpeg",
-      "highResExt": "jpeg"
-    },
-    {
-      "slug": "shadow-mage-antler-crown-purple-green-staff",
-      "title": "Shadow Mage with Antler Crown",
-      "description": "A skeleton in a dark hooded cloak and jagged antler crown grips a tall twisted staff topped with a swirling purple and green flame, surrounded by flowing purple smoke and an arcane glyph ring backdrop, labeled Shadow Mage.",
-      "sortOrder": 13,
-      "thumbExt": "jpeg",
-      "highResExt": "jpeg"
-    },
-    {
-      "slug": "shadow-sentry-skeleton-blue-energy-spinning",
-      "title": "Shadow Sentry — Card III",
-      "description": "A bare skeleton leaps dynamically with two hands channeling swirling blue-green energy orbs, wrapped in spiraling blue light streams on a dark detailed card labeled Shadow Sentry, numbered III.",
-      "sortOrder": 14,
-      "thumbExt": "jpeg",
-      "highResExt": "jpeg"
-    },
-    {
-      "slug": "shadow-servant-dual-purple-orbs-hooded",
-      "title": "The Shadow Servant — Card XV",
-      "description": "A hooded skeleton with glowing red eyes sprints forward while channeling two swirling purple energy orbs in its outstretched clawed hands, trailing dark purple smoke on an ornate card labeled The Shadow Servant, numbered XV.",
-      "sortOrder": 15,
-      "thumbExt": "jpeg",
-      "highResExt": "jpeg"
-    },
-    {
-      "slug": "shadow-weaver-skeleton-glyph-ring-smoke",
-      "title": "Shadow Weaver — Card II",
-      "description": "A bare skeleton with arcane markings etched on its skull dances within a floating ring of dark sigil medallions, holding a glowing orb in one hand while dark smoke billows around it on a gold-bordered card labeled Shadow Weaver, numbered II.",
-      "sortOrder": 16,
-      "thumbExt": "jpeg",
-      "highResExt": "jpeg"
-    },
-    {
-      "slug": "shadow-wielder-armored-scythe-purple-sigils",
-      "title": "The Shadow Wielder — Armored with Scythe, Card XIII",
-      "description": "A fully armored skeleton with a spiked dark crown wields a glowing purple scythe blade in one hand while projecting purple arcane sigils and a crescent from the other, on a card labeled The Shadow Wielder, numbered XIII.",
-      "sortOrder": 17,
-      "thumbExt": "jpeg",
-      "highResExt": "jpeg"
-    },
-    {
-      "slug": "shadow-wielder-crystal-staff-purple-smoke-xi",
-      "title": "The Shadow Wielder — Crystal Staff, Card XI",
-      "description": "A hooded skeleton in dark armor grips a tall staff topped with a glowing purple crystal while channeling purple flame energy in the other hand, surrounded by swirling purple smoke on a card labeled The Shadow Wielder, numbered XI.",
-      "sortOrder": 18,
-      "thumbExt": "jpeg",
-      "highResExt": "jpeg"
-    },
-    {
-      "slug": "shadow-wielder-purple-green-vortex-crystal-xiii",
-      "title": "The Shadow Wielder — Vortex Portal, Card XIII",
-      "description": "An armored skeleton with exposed ribs charges a dark purple energy mass in one hand and holds a purple crystal-tipped staff in the other, standing before a swirling green and purple vortex portal on a card labeled The Shadow Wielder, numbered XIII.",
-      "sortOrder": 19,
-      "thumbExt": "jpeg",
-      "highResExt": "jpeg"
-    },
-    {
-      "slug": "the-shadow-scythe-sigil-coins-xiii",
-      "title": "The Shadow — Scythe Bearer, Card XIII",
-      "description": "A skeletal figure adorned with arcane coin medallions and a rune-marked skull wields a large scythe over one shoulder while projecting a swirling dark purple energy orb from the other hand, wrapped in dark smoke on a card labeled The Shadow, numbered XIII.",
-      "sortOrder": 20,
-      "thumbExt": "jpeg",
-      "highResExt": "jpeg"
+      "slug": "skull-street-collection",
+      "title": "Skull Street Collection",
+      "description": "A bold series of 15 edgy skeleton illustrations featuring street style, graffiti walls, chains, smoke, and unapologetic attitude across dark urban backgrounds.",
+      "category": "Character Illustrations",
+      "thumbnailR2Key": "thumbnails/skull-street-collection/skull-street-collection.jpeg",
+      "tag": "Featured",
+      "featured": true,
+      "images": [
+        {
+          "slug": "snapback-skeleton-graffiti",
+          "title": "Snapback Skeleton: Graffiti Wall",
+          "description": "A skeleton in a black snapback, torn hoodie, and skull pendant chain raises a middle finger against a dark wall covered in graffiti tags.",
+          "sortOrder": 1,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "beanie-puffer-skeleton-smoking",
+          "title": "Beanie Puffer Skeleton Smoking",
+          "description": "A grumpy skeleton in a grey beanie and patched puffer jacket with chain holds a lit cigarette in one hand and taps its temple with the other against a black background.",
+          "sortOrder": 2,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "doom-beanie-skeleton-seated",
+          "title": "Doom Beanie Skeleton: Seated",
+          "description": "A full-body skeleton wearing a 'DOOM' beanie, zip hoodie, cargo pants, and gold chain sits on a wooden crate holding a glowing cigarette in the dark.",
+          "sortOrder": 3,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "urgh-nope-skeleton",
+          "title": "Urgh. Nope.",
+          "description": "A skeleton in a black beanie and bandana hoodie rests a bone hand on its face while holding a cigarette, beside the white brush-text 'Urgh. Nope.' on a dark background.",
+          "sortOrder": 4,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "stay-away-alley-skeleton",
+          "title": "Stay Away: Alley Wall",
+          "description": "A full-body skeleton in a beanie, black hoodie, cargo pants, and sneakers leans on a brick wall smoking a cigarette and flashing fingers beside large 'Stay Away You Are A Loser' graffiti text.",
+          "sortOrder": 5,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "thug-life-snapback-skeleton",
+          "title": "Thug Life Snapback Skeleton",
+          "description": "A full-body skeleton in a snapback, 'Thug Life' hoodie, cargo pants, and sneakers holds a smoking cigarette in one hand and raises a middle finger with the other against pure black.",
+          "sortOrder": 6,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "beanie-skull-pendant-smoking",
+          "title": "Beanie Skeleton: Skull Pendant",
+          "description": "A side-profile skeleton in a black beanie and grey hoodie with a skull pendant chain holds a lit cigarette with rising smoke against a dark textured wall.",
+          "sortOrder": 7,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "parental-advisory-hoodie-skeleton",
+          "title": "Parental Advisory Skeleton",
+          "description": "A hooded skeleton with red glowing eyes, double silver chains, and a Parental Advisory patch flips the middle finger against a grey concrete wall covered in faint graffiti.",
+          "sortOrder": 8,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "grim-beanie-spiked-collar",
+          "title": "Grim: Spiked Collar Skeleton",
+          "description": "A side-view skeleton in a black knit beanie and 'GRIM' hoodie with a spiked collar and chain holds a lit cigarette with a large cloud of smoke curling upward on a black background.",
+          "sortOrder": 9,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "stay-away-ugh-whatever",
+          "title": "Stay Away: Ugh. Whatever.",
+          "description": "A grumpy skeleton in a backwards snapback and dark hoodie with a skull pendant holds a cigarette and pushes a bone hand outward, framed by 'Stay Away' and 'Ugh. Whatever.' drip text.",
+          "sortOrder": 10,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "stay-away-loser-green-smoke",
+          "title": "Stay Away: Green Smoke Loser",
+          "description": "A scowling skeleton in a dark green beanie and torn hoodie with gold chain gestures with both hands amid green smoke wisps, above bold grunge text 'Stay Away You Are A Loser'.",
+          "sortOrder": 11,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "no-thanks-skeleton-snapback",
+          "title": "No Thanks",
+          "description": "A stern skeleton in a backwards snapback and grey hoodie with a chain holds a cigarette in one hand and raises an open palm with the other under bold 'No Thanks.' text.",
+          "sortOrder": 12,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "stay-away-loser-beanie-chain",
+          "title": "Stay Away You Are A Loser: Beanie",
+          "description": "A grinning skeleton in a black beanie and hoodie with skull logo and chain holds two cigarettes and throws a finger gesture beside bold white 'Stay Away You Are A Loser' lettering.",
+          "sortOrder": 13,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "stay-away-loser-full-body",
+          "title": "Stay Away You Are A Loser: Full Body",
+          "description": "A full-body skeleton in a hooded snapback cap, hoodie, jeans, and sneakers poses with one leg raised and a cigarette in hand beside large dripping 'Stay Away You Are A Loser' text on grey.",
+          "sortOrder": 14,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "gold-teeth-beanie-skeleton",
+          "title": "Gold Teeth Beanie Skeleton",
+          "description": "A full-body skeleton with gold teeth in a black beanie, skull-logo hoodie, ripped jeans, and chain holds a glowing cigarette in one hand and throws a rock-on gesture with the other on a black background.",
+          "sortOrder": 15,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        }
+      ]
     }
-  ]
-},
-{
-  "slug": "incognito-mode-collection",
-  "title": "Incognito Mode Collection",
-  "description": "A bold series of 20 dark humor illustrations featuring shadowy figures, skulls, and cloaked characters themed around incognito browsing, secrecy, and digital anonymity with eerie typography and glowing eyes.",
-  "category": "Character Illustrations",
-  "thumbnailR2Key": "thumbnails/incognito-mode-collection/incognito-mode-collection.jpeg",
-  "tag": "Featured",
-  "featured": true,
-  "images": [
-    {
-      "slug": "incognito-mode-green-eyes-shadow-figure",
-      "title": "Incognito Mode — Green-Eyed Shadow Figure",
-      "description": "A shadowy cloaked figure with glowing green eyes and a fedora hat centered against a dark purple-tinted background, with the text 'Incognito Mode — What Happens in the Shadows... (Or Does It?)'",
-      "sortOrder": 1,
-      "thumbExt": "jpeg",
-      "highResExt": "jpeg"
-    },
-    {
-      "slug": "stay-hidden-incognito-hooded-creature-lantern",
-      "title": "Stay Hidden — Hooded Creature with Lantern",
-      "description": "A small chibi-style hooded creature with glowing yellow eyes holds a flickering lantern against a dark background, with the text 'Stay Hidden — Incognito Mode — Darkness Requires Secrecy'.",
-      "sortOrder": 2,
-      "thumbExt": "jpeg",
-      "highResExt": "jpeg"
-    },
-    {
-      "slug": "incognito-mode-engaged-spy-flashlight-ghosts",
-      "title": "Incognito Mode: Engaged — Spy with Flashlight",
-      "description": "A cute cartoon spy in a fedora and trench coat shines a flashlight revealing small ghosts on a dark patterned background with spider webs and eyes, with the text 'Incognito Mode: Engaged. They'll never know... or will they?'",
-      "sortOrder": 3,
-      "thumbExt": "jpeg",
-      "highResExt": "jpeg"
-    },
-    {
-      "slug": "incognito-mode-skull-peeking-triangle",
-      "title": "Incognito Mode — Skull Peeking Through Triangle",
-      "description": "A grinning skull wearing a dark fedora peeks out from a cracked triangular dark panel against a black background, with the bold white text 'Incognito Mode' beside it.",
-      "sortOrder": 4,
-      "thumbExt": "jpeg",
-      "highResExt": "jpeg"
-    },
-    {
-      "slug": "going-dark-skull-fedora-sunglasses",
-      "title": "Going Dark — Skull with Fedora and Sunglasses",
-      "description": "A glowing white skull wearing a dark fedora and black sunglasses floats against a near-black background with soft white glow, with the text 'Going Dark. Incognito Mode Active.'",
-      "sortOrder": 5,
-      "thumbExt": "jpeg",
-      "highResExt": "jpeg"
-    },
-    {
-      "slug": "incognito-darkness-watching-skull-red-eyes",
-      "title": "Incognito Can't Save You — Darkness Is Watching",
-      "description": "A hooded skull figure with glowing red eyes crouches in the lower corner of a cracked dark stone wall, with large red glowing text reading 'Incognito Can't Save You — Darkness Is Watching You.'",
-      "sortOrder": 6,
-      "thumbExt": "jpeg",
-      "highResExt": "jpeg"
-    },
-    {
-      "slug": "incognito-skull-fedora-red-eyes-smoke",
-      "title": "Incognito — Skull Phantom with Red Eyes",
-      "description": "A skull-faced phantom in a wide fedora and round red-glowing glasses emerges from swirling dark smoke and cracks against a grungy dark background, with large weathered text reading 'Incognito — Your Secret Browsing... The Darkness Watches.'",
-      "sortOrder": 7,
-      "thumbExt": "jpeg",
-      "highResExt": "jpeg"
-    },
-    {
-      "slug": "darkness-browsing-cracked-hat-red-eyes",
-      "title": "The Darkness Is Browsing With You",
-      "description": "A cracked stone fedora and dark glasses with glowing red eyes float above wisps of dark smoke on a pure black background, with the text 'The Darkness Is Browsing With You — Incognito mode doesn't hide everything.'",
-      "sortOrder": 8,
-      "thumbExt": "jpeg",
-      "highResExt": "jpeg"
-    },
-    {
-      "slug": "shhh-incognito-skull-peeking-wall",
-      "title": "Shhh I'm Incognito — Skull Peeking Around Wall",
-      "description": "A cartoon skull in a fedora and dark sunglasses peeks around a cracked brick wall corner with a knowing grin, with the text 'Shhh... I'm Incognito. (Don't Tell The Living).'",
-      "sortOrder": 9,
-      "thumbExt": "jpeg",
-      "highResExt": "jpeg"
-    },
-    {
-      "slug": "incognito-mode-skull-shushing-door",
-      "title": "Incognito Mode — Skull Shushing at the Door",
-      "description": "A green-tinted skull in a fedora and dark coat presses a bony finger to its mouth in a shushing gesture while gripping a dark doorframe, with the caption 'Shhh... The Ghosts Are Watching' and large handwritten 'incognito mode' text below.",
-      "sortOrder": 10,
-      "thumbExt": "jpeg",
-      "highResExt": "jpeg"
-    },
-    {
-      "slug": "incognito-mode-shield-skeleton-stay-hidden",
-      "title": "Incognito Mode Shield — Skeleton Stay Hidden",
-      "description": "A cartoon skeleton in a hoodie stands beside a glowing purple shield badge displaying 'Incognito Mode' with a crossed-eye icon and the text 'Shh... Skeleton's Watching. (But You're Not)', with 'Stay Hidden.' in orange below.",
-      "sortOrder": 11,
-      "thumbExt": "jpeg",
-      "highResExt": "jpeg"
-    },
-    {
-      "slug": "shhh-incognito-skeleton-peeking-crack",
-      "title": "Shhh I Am Incognito — Skeleton Peeking Through Crack",
-      "description": "A glowing white cartoon skeleton peeks around a cracked stone wall with a finger to its teeth in a hushing pose, with the text 'Shhh I Am Incognito. Don't Tell Anyone That I Am Here.'",
-      "sortOrder": 12,
-      "thumbExt": "jpeg",
-      "highResExt": "jpeg"
-    },
-    {
-      "slug": "incognito-skeleton-app-icon-you-cant-hide",
-      "title": "Incognito — Skeleton with App Icon, You Can't Hide",
-      "description": "A detailed skeleton in a dark fedora and coat peers over a rounded square incognito app icon while holding its face with skeletal hands, with the text 'Incognito — You Can Run, But You Can't Hide'.",
-      "sortOrder": 13,
-      "thumbExt": "jpeg",
-      "highResExt": "jpeg"
-    },
-    {
-      "slug": "incognito-hat-skull-glasses-not-alone-dark",
-      "title": "You Are Not Alone in the Dark — Hat and Skull Glasses",
-      "description": "A minimalist dark illustration showing a floating fedora above faceless dark sunglasses with skull reflections and a wispy tail, on a near-black background with the subtle text 'You Are Not Alone In The Dark'.",
-      "sortOrder": 14,
-      "thumbExt": "jpeg",
-      "highResExt": "jpeg"
-    },
-    {
-      "slug": "incognito-white-skull-hat-no-one-safe",
-      "title": "You Are Now Incognito — No One Is Safe",
-      "description": "A stark minimal white skull icon with a wide fedora, fanged mouth, and glowing red eyes displayed against a near-black background with bold text reading 'You Are Now Incognito. No One Is Safe.'",
-      "sortOrder": 15,
-      "thumbExt": "jpeg",
-      "highResExt": "jpeg"
-    },
-    {
-      "slug": "incognito-red-eye-figure-app-icon-not-safe",
-      "title": "You Are Not Safe — Red-Eyed Incognito Figure",
-      "description": "A shadowy figure in a dark trench coat and fedora with glowing red circular glasses is displayed within a rounded app-style icon frame against a black background, with the text 'You Are Not Safe' below.",
-      "sortOrder": 16,
-      "thumbExt": "jpeg",
-      "highResExt": "jpeg"
-    },
-    {
-      "slug": "incognito-ghost-red-eyes-no-one-hears-screams",
-      "title": "Incognito Mode — Ghost, No One Can Hear Your Screams",
-      "description": "A soft translucent floating ghost shape with two glowing red dot eyes hovers against a dark gray gradient background, with the text 'You are now in Incognito Mode — No one can hear your screams'.",
-      "sortOrder": 17,
-      "thumbExt": "jpeg",
-      "highResExt": "jpeg"
-    },
-    {
-      "slug": "incognito-skull-neon-hat-shushing-trench",
-      "title": "You Are Incognito — Neon Hat Skull Shushing",
-      "description": "A photorealistic skull wearing a wide-brimmed black fedora and a dark trench coat presses a bony finger to its lips in a shushing gesture, with a glowing neon incognito icon outline above, and the text 'You Are Incognito' in dripping horror font below.",
-      "sortOrder": 18,
-      "thumbExt": "jpeg",
-      "highResExt": "jpeg"
-    },
-    {
-      "slug": "incognito-skull-peeking-app-screen",
-      "title": "Incognito — Skull Peeking Beside App Screen",
-      "description": "A red-eyed skull in a dark fedora and trench coat peers around the left edge of a dark screen mockup displaying a skull icon, the word 'incognito', and the message 'You're incognito now.' in a browser-style layout.",
-      "sortOrder": 19,
-      "thumbExt": "jpeg",
-      "highResExt": "jpeg"
-    },
-    {
-      "slug": "incognito-red-glow-suit-browsing-history",
-      "title": "You Are Now Incognito — Red Glow Suit Figure",
-      "description": "A minimalist silhouetted figure in a suit and fedora with white goggle-like eyes glows with a subtle red aura against a dark background, with the text 'You are now incognito — None of your browsing history will be saved'.",
-      "sortOrder": 20,
-      "thumbExt": "jpeg",
-      "highResExt": "jpeg"
-    }
-  ]
-},
-
-  {
-    "slug": "dark-humor-wallpaper-collection",
-    "title": "Dark Humor Wallpaper Collection",
-    "description": "A bold series of 20 dark humor phone wallpapers featuring edgy skulls, ghosts, skeletons, and creepy characters delivering snarky, threatening, and funny messages perfect for lock screens and wallpapers.",
-    "category": "Character Illustrations",
-    "thumbnailR2Key": "thumbnails/dark-humor-wallpaper-collection/dark-humor-wallpaper-collection.jpeg",
-    "tag": "Featured",
-    "featured": true,
-    "images": [
-      {
-        "slug": "get-lost-hooded-skull-stay-out",
-        "title": "Get Lost — Hooded Skull Stay Out",
-        "description": "A small hooded skull figure with clawed hands stands among bare branches and shadowy ghosts on a black background, with bold text reading 'Get Lost. You're Not Welcome Here. Stay Out.'",
-        "sortOrder": 1,
-        "thumbExt": "jpeg",
-        "highResExt": "jpeg"
-      },
-      {
-        "slug": "get-out-angry-ghost-leave-dark",
-        "title": "Get Out — Angry Ghost Leave Before Dark",
-        "description": "A snarling cartoon ghost with jagged teeth and white glowing eyes floats beside bold horror text reading 'Get Out. We Don't Want You Here. Leave Before Dark.' on a black bordered background.",
-        "sortOrder": 2,
-        "thumbExt": "jpeg",
-        "highResExt": "jpeg"
-      },
-      {
-        "slug": "dark-monster-absolutely-worthless",
-        "title": "Dark Monster — You Are Absolutely Worthless",
-        "description": "A jagged black monster creature with glowing white eyes and a massive fanged grin lunges forward with clawed hands against a dark cracked background, with bold white text reading 'You Are Absolutely Worthless'.",
-        "sortOrder": 3,
-        "thumbExt": "jpeg",
-        "highResExt": "jpeg"
-      },
-      {
-        "slug": "hoodie-skull-double-finger-locked",
-        "title": "Locked For a Reason — Hoodie Skull Double Finger",
-        "description": "A cartoon skull in a black hoodie with yellow glowing eyes raises both middle fingers defiantly, with spiderweb corner accents and bold text reading 'Locked For A Reason. Stupid.'",
-        "sortOrder": 4,
-        "thumbExt": "jpeg",
-        "highResExt": "jpeg"
-      },
-      {
-        "slug": "chained-door-locked-reason-stupid",
-        "title": "Chained Door — Locked For A Reason Stupid",
-        "description": "A sketch-style illustration of a double door wrapped in heavy chains and a padlock on a pure black background, with white horror text reading 'It's Locked For A Reason Stupid'.",
-        "sortOrder": 5,
-        "thumbExt": "jpeg",
-        "highResExt": "jpeg"
-      },
-      {
-        "slug": "grumpy-ghost-ugh-you-again",
-        "title": "Grumpy Ghost — Ugh You Again",
-        "description": "A flat white ghost with a deeply displeased frowning expression floats center-frame against a dark background, with simple text below reading 'Ugh You Again'.",
-        "sortOrder": 6,
-        "thumbExt": "jpeg",
-        "highResExt": "jpeg"
-      },
-      {
-        "slug": "dark-cat-put-phone-down-loser",
-        "title": "Dark Cat — Put The Phone Down Loser",
-        "description": "A sinister dark cat silhouette with glowing white eyes and a sharp jagged grin looms against a scratched black background, with dripping horror text reading 'Put The Phone Down, Loser. Seriously, Get A Life.'",
-        "sortOrder": 7,
-        "thumbExt": "jpeg",
-        "highResExt": "jpeg"
-      },
-      {
-        "slug": "angry-ghost-stop-looking-nightmare",
-        "title": "Stop Looking At Me — Angry Pointing Ghost",
-        "description": "A large pale ghost with glowing red eyes points an accusing bony finger directly forward against a black background, with bold text reading 'Stop Looking At Me. Unless You Want A Nightmare.' and a cracked lock icon below.",
-        "sortOrder": 8,
-        "thumbExt": "jpeg",
-        "highResExt": "jpeg"
-      },
-      {
-        "slug": "horned-ghost-still-stalking-watching",
-        "title": "Still Stalking Me? — Horned Ghost Watching",
-        "description": "A small horned ghost with a menacing jagged grin and narrowed eyes floats on a dark background, with text below reading 'Still Stalking Me? (Yeah, I'm Watching)'.",
-        "sortOrder": 9,
-        "thumbExt": "jpeg",
-        "highResExt": "jpeg"
-      },
-      {
-        "slug": "dark-ghost-not-invited-seriously-leave",
-        "title": "You're Not Invited — Dark Ghost Seriously Leave",
-        "description": "A dark shaggy ghost with glowing white eyes and a stern frown floats against a near-black background, with text below reading 'You're Not Invited. (Seriously, Leave.)'",
-        "sortOrder": 10,
-        "thumbExt": "jpeg",
-        "highResExt": "jpeg"
-      },
-      {
-        "slug": "haunted-house-get-off-phone-loser",
-        "title": "Get Off My Phone — Haunted House Loser",
-        "description": "A cartoon haunted mansion with purple rooftops and a small angry ghost floating beside it sits against a dark background, with bold text reading 'Get Off My Phone, Loser. I'm Haunted, Okay?'",
-        "sortOrder": 11,
-        "thumbExt": "jpeg",
-        "highResExt": "jpeg"
-      },
-      {
-        "slug": "skull-get-lost-no-one-wants-you",
-        "title": "Get Lost — Skull No One Wants You Here",
-        "description": "A stark white detailed skull floats above bold cracked text reading 'Get Lost. No One Wants You Here.' with a barbed wire divider and smaller text reading 'This Is Not Your Phone. (Don't Touch)'.",
-        "sortOrder": 12,
-        "thumbExt": "jpeg",
-        "highResExt": "jpeg"
-      },
-      {
-        "slug": "grinning-ghost-what-are-you-looking",
-        "title": "What Are You Looking At — Grinning Ghost",
-        "description": "A smooth white ghost with large dark eyes and a sharp fanged grin peeks up from the bottom of a dark background, with bold white text below reading 'What Are You Looking At?'",
-        "sortOrder": 13,
-        "thumbExt": "jpeg",
-        "highResExt": "jpeg"
-      },
-      {
-        "slug": "skeleton-still-staring-get-life-ghost",
-        "title": "Still Staring — Skeleton Get A Life Ghost",
-        "description": "A cute cartoon skeleton rests its face in both bony hands with a grumpy expression at the bottom, surrounded by floating bones and spiderwebs, with dripping horror text reading 'Still Staring? Get A Life, Ghost. (Before You End Up Like Me)'.",
-        "sortOrder": 14,
-        "thumbExt": "jpeg",
-        "highResExt": "jpeg"
-      },
-      {
-        "slug": "hoodie-skull-obsessed-one-is-back",
-        "title": "Oh Look The Obsessed One Is Back — Hoodie Skull",
-        "description": "A cartoon skeleton in a black hoodie with glowing eyes points a bony finger forward accusingly, with bold text above reading 'Oh, Look. The Obsessed One Is Back. Seriously, Don't You Have Anything Better To Do?'",
-        "sortOrder": 15,
-        "thumbExt": "jpeg",
-        "highResExt": "jpeg"
-      },
-      {
-        "slug": "skeleton-pointing-hey-jerk-get-off",
-        "title": "Hey Jerk Get Off My Phone — Pointing Skeleton",
-        "description": "A stocky skeleton with an angry expression points a bony finger directly at the viewer against a dark textured background with a spiderweb corner, and bold text reading 'Hey, Jerk! Get Off My Phone! Scram!'",
-        "sortOrder": 16,
-        "thumbExt": "jpeg",
-        "highResExt": "jpeg"
-      },
-      {
-        "slug": "skeleton-waving-ugh-you-again",
-        "title": "Ugh You Again — Skeleton Waving Dismissal",
-        "description": "A grumpy cartoon skeleton with a scowling expression raises one bony hand in a dismissive wave gesture against a pure black background, with large bold text above reading 'Ugh You Again'.",
-        "sortOrder": 17,
-        "thumbExt": "jpeg",
-        "highResExt": "jpeg"
-      },
-      {
-        "slug": "hooded-skull-hey-you-put-down",
-        "title": "Hey You Put It Down Or Else — Hooded Skull",
-        "description": "A hooded skull figure leans on a surface and raises a warning bony finger against a dark background with lightning cracks and smoke, with bold text above reading 'Hey You. Put It Down. Or Else.'",
-        "sortOrder": 18,
-        "thumbExt": "jpeg",
-        "highResExt": "jpeg"
-      },
-      {
-        "slug": "hoodie-skeleton-get-out-spiderweb",
-        "title": "Get Out — Hoodie Skeleton With Spiderwebs",
-        "description": "A cartoon skeleton in a torn black hoodie looks upward with a grumpy expression against a black background with spiderweb corners, with large dripping white text at the top reading 'Get Out.'",
-        "sortOrder": 19,
-        "thumbExt": "jpeg",
-        "highResExt": "jpeg"
-      },
-      {
-        "slug": "skeleton-dont-unlock-go-away-spiders",
-        "title": "Don't Even Think About Unlocking This — Skeleton Go Away",
-        "description": "A tired-looking skeleton sits with arms crossed and a bored expression at a surface, surrounded by hanging spiders and spiderweb corners, with bold text reading 'Don't Even Think About Unlocking This. Go Away. You're Not Worth The Battery Life.'",
-        "sortOrder": 20,
-        "thumbExt": "jpeg",
-        "highResExt": "jpeg"
-      }
-    ]
-  },
-
-  {
-    "slug": "horror-eyes-collection",
-    "title": "Horror Eyes Collection",
-    "description": "A chilling series of 15 dark horror wallpapers featuring glowing eyes emerging from the void, paired with ominous typographic phrases.",
-    "category": "Horror Illustrations",
-    "thumbnailR2Key": "thumbnails/horror-eyes-collection/horror-eyes-collection.jpeg",
-    "tag": "Featured",
-    "featured": true,
-    "images": [
-      {
-        "slug": "fear-the-void-it-sees-you",
-        "title": "Fear The Void: It Sees You",
-        "description": "Two glowing red eyes with bleeding streaks emerge from pure darkness, with 'Fear The Void' at the top and 'It Sees You' at the bottom in dripping red horror font.",
-        "sortOrder": 1,
-        "thumbExt": "jpeg",
-        "highResExt": "jpeg"
-      },
-      {
-        "slug": "fear-me-nightmare-awaits",
-        "title": "Fear Me: Your Nightmare Awaits",
-        "description": "Bloodshot red eyes peer through a dark shadowy figure with claw scratch marks beneath 'Fear Me' text, subtitled 'Your Nightmare Awaits' in red below.",
-        "sortOrder": 2,
-        "thumbExt": "jpeg",
-        "highResExt": "jpeg"
-      },
-      {
-        "slug": "they-watch-always-watching",
-        "title": "They Watch: Always Watching",
-        "description": "Wide cracked green glowing eyes with long lashes stare out from darkness, topped with blood-dripping red 'They Watch' title and 'Always Watching' in white below.",
-        "sortOrder": 3,
-        "thumbExt": "jpeg",
-        "highResExt": "jpeg"
-      },
-      {
-        "slug": "they-watch-you-sleep",
-        "title": "They Watch You Sleep",
-        "description": "Minimalist white glowing eyes float in total blackness with 'They Watch' in white scratchy text above and 'You Sleep' below, evoking a stark and eerie presence.",
-        "sortOrder": 4,
-        "thumbExt": "jpeg",
-        "highResExt": "jpeg"
-      },
-      {
-        "slug": "can-you-see-me-red-glow",
-        "title": "Can You See Me?",
-        "description": "Fiery red-orange glowing eyes burn through a dark textured background streaked with red, with 'Can You See Me?' repeated both at the top in grey and bottom in red.",
-        "sortOrder": 5,
-        "thumbExt": "jpeg",
-        "highResExt": "jpeg"
-      },
-      {
-        "slug": "whispers-in-the-void",
-        "title": "Whispers In The Void",
-        "description": "Sinister red slit-pupil eyes glow within a swirling dark vortex, surrounded by jagged red lettering spelling 'Whispers' above and 'In The Void' below.",
-        "sortOrder": 6,
-        "thumbExt": "jpeg",
-        "highResExt": "jpeg"
-      },
-      {
-        "slug": "eternal-gaze-red-eyes",
-        "title": "Eternal Gaze",
-        "description": "Intense red glowing eyes peer from beneath a shadowy cavern-like brow, with 'Eternal Gaze' written in subtle dark red horror font centered above.",
-        "sortOrder": 7,
-        "thumbExt": "jpeg",
-        "highResExt": "jpeg"
-      },
-      {
-        "slug": "the-night-has-eyes",
-        "title": "The Night Has Eyes",
-        "description": "Narrow red glowing eyes pierce through darkness with wisps of smoke rising from them, titled 'The Night Has Eyes' in red jagged lettering at the top.",
-        "sortOrder": 8,
-        "thumbExt": "jpeg",
-        "highResExt": "jpeg"
-      },
-      {
-        "slug": "fear-me-smoke-tendrils",
-        "title": "Fear Me: Smoke Tendrils",
-        "description": "Bulging bloodshot red eyes surrounded by dark swirling tendrils and wisps of white smoke, with bold red 'Fear Me' text centered at the bottom.",
-        "sortOrder": 9,
-        "thumbExt": "jpeg",
-        "highResExt": "jpeg"
-      },
-      {
-        "slug": "they-watch-you",
-        "title": "They Watch You",
-        "description": "Narrow red glowing eyes cut through a dark silhouetted figure, with 'They Watch' in large red dripping text at the top and a lone 'You' in white at the bottom.",
-        "sortOrder": 10,
-        "thumbExt": "jpeg",
-        "highResExt": "jpeg"
-      },
-      {
-        "slug": "your-own-serpent-eyes",
-        "title": "Your Own",
-        "description": "Glowing amber serpentine eyes with slit pupils radiate heat and smoke against a starry black void, paired with 'Your Own' in dripping red metallic horror font below.",
-        "sortOrder": 11,
-        "thumbExt": "jpeg",
-        "highResExt": "jpeg"
-      },
-      {
-        "slug": "the-eyes-never-lie",
-        "title": "The Eyes Never Lie",
-        "description": "Photorealistic red glowing eyes stare coldly from near-total darkness with 'The Eyes Never Lie' in red scratched lettering at the bottom.",
-        "sortOrder": 12,
-        "thumbExt": "jpeg",
-        "highResExt": "jpeg"
-      },
-      {
-        "slug": "they-watch-with-smoke",
-        "title": "They Watch: Smoke Rising",
-        "description": "Red glowing eyes emit thin wisps of white smoke upward against a black background, with 'They Watch' in white distressed brush font at the bottom.",
-        "sortOrder": 13,
-        "thumbExt": "jpeg",
-        "highResExt": "jpeg"
-      },
-      {
-        "slug": "shadows-are-watching",
-        "title": "The Shadows Are Watching: You Can't Hide",
-        "description": "Cracked red glowing eyes burn through a shadowy beast-like figure with dark claw patterns, topped with bold red 'The Shadows Are Watching' and 'You Can't Hide' in white below.",
-        "sortOrder": 14,
-        "thumbExt": "jpeg",
-        "highResExt": "jpeg"
-      },
-      {
-        "slug": "lost-in-the-shadows",
-        "title": "Lost In The Shadows",
-        "description": "Dull red glowing eyes barely visible in near-total darkness hover above a faint reflection, with 'Lost In The Shadows' in red dripping font at the bottom.",
-        "sortOrder": 15,
-        "thumbExt": "jpeg",
-        "highResExt": "jpeg"
-      }
-    ]
-  },
-
-  {
-    "slug": "bone-street-collection",
-    "title": "Bone Street Collection",
-    "description": "A bold series of 15 edgy skeleton illustrations featuring attitude, cigars, and street style aesthetics set against dark backgrounds with aggressive horror typography.",
-    "category": "Character Illustrations",
-    "thumbnailR2Key": "thumbnails/bone-street-collection/bone-street-collection.jpeg",
-    "tag": "Featured",
-    "featured": true,
-    "images": [
-      {
-        "slug": "no-escape-hoodie-skeleton",
-        "title": "No Escape: Hoodie Skeleton",
-        "description": "A skeleton in a torn black hoodie and cap holds up bone fingers while smoking a cigarette with curling smoke, under bold red 'No Escape' text.",
-        "sortOrder": 1,
-        "thumbExt": "jpeg",
-        "highResExt": "jpeg"
-      },
-      {
-        "slug": "reap-what-you-sow-skeleton",
-        "title": "Reap What You Sow",
-        "description": "A cracked bare skeleton smoking a cigarette flips the middle finger beside bold white slashed 'Reap What You Sow' typography on a dark red-glow background.",
-        "sortOrder": 2,
-        "thumbExt": "jpeg",
-        "highResExt": "jpeg"
-      },
-      {
-        "slug": "deaths-greeting-coat-skeleton",
-        "title": "Death's Greeting",
-        "description": "A 3D rendered skeleton in a black open coat holds a lit cigarette in one hand while throwing up fingers with the other, topped with dripping red 'Death's Greeting' text.",
-        "sortOrder": 3,
-        "thumbExt": "jpeg",
-        "highResExt": "jpeg"
-      },
-      {
-        "slug": "reapers-due-beanie-skeleton",
-        "title": "Reaper's Due",
-        "description": "A street-style skeleton in a black beanie and oversized jacket sits casually with a gold chain, smoking and throwing up a peace sign under 'Reaper's Due' drip font.",
-        "sortOrder": 4,
-        "thumbExt": "jpeg",
-        "highResExt": "jpeg"
-      },
-      {
-        "slug": "nightmare-city-hooded-skull",
-        "title": "Nightmare City",
-        "description": "A hooded skull figure with a stitched face holds up a lit cigarette against a dark urban backdrop, under dripping red 'Nightmare City' horror lettering.",
-        "sortOrder": 5,
-        "thumbExt": "jpeg",
-        "highResExt": "jpeg"
-      },
-      {
-        "slug": "death-dealer-cracked-skull",
-        "title": "Death Dealer",
-        "description": "A cracked skull with glowing red eyes in a dark coat raises one middle finger while holding a smoking cigarette in the other, under jagged red 'Death Dealer' text.",
-        "sortOrder": 6,
-        "thumbExt": "jpeg",
-        "highResExt": "jpeg"
-      },
-      {
-        "slug": "fear-the-bone-crusher-streetwear",
-        "title": "Fear The Bone Crusher",
-        "description": "A full-body street skeleton in a hoodie, baggy jeans, sneakers, and gold chain holds a cigarette and throws a peace sign under red dripping 'Fear The Bone Crusher' title.",
-        "sortOrder": 7,
-        "thumbExt": "jpeg",
-        "highResExt": "jpeg"
-      },
-      {
-        "slug": "fear-the-bone-seated-hoodie",
-        "title": "Fear The Bone: Seated",
-        "description": "A red-eyed skeleton in a torn black hoodie sits cross-legged with ripped jeans, holding a lit cigarette in one hand and raising fingers with the other, under red 'Fear The Bone' text.",
-        "sortOrder": 8,
-        "thumbExt": "jpeg",
-        "highResExt": "jpeg"
-      },
-      {
-        "slug": "nightmare-chain-hoodie-skeleton",
-        "title": "Nightmare",
-        "description": "A cracked skull in a black hoodie with a gold chain raises a middle finger and holds a burning cigarette against a dark urban alley, beneath large dripping red 'Nightmare' text.",
-        "sortOrder": 9,
-        "thumbExt": "jpeg",
-        "highResExt": "jpeg"
-      },
-      {
-        "slug": "fear-the-bone-suit-no-remorse",
-        "title": "Fear The Bone: No Remorse",
-        "description": "A cracked skull in a black suit and red tie smokes a cigarette and raises a middle finger, framed by blood-drip 'Fear The Bone' at the top and 'No Remorse' at the bottom.",
-        "sortOrder": 10,
-        "thumbExt": "jpeg",
-        "highResExt": "jpeg"
-      },
-      {
-        "slug": "fear-the-bone-thug-chain",
-        "title": "Fear The Bone: Thug",
-        "description": "A hooded skeleton with a silver 'THUG' chain pendant smokes a cigarette and raises a middle finger against a red-glow city backdrop, with 'Fear The Bone' drip text at the bottom right.",
-        "sortOrder": 11,
-        "thumbExt": "jpeg",
-        "highResExt": "jpeg"
-      },
-      {
-        "slug": "death-is-the-new-cool-mobster",
-        "title": "Death Is The New Cool",
-        "description": "A fedora-wearing skeleton in a pinstripe suit blows smoke while making hand gestures, surrounded by swirling smoke clouds under the title 'Death Is The New Cool' in horror font.",
-        "sortOrder": 12,
-        "thumbExt": "jpeg",
-        "highResExt": "jpeg"
-      },
-      {
-        "slug": "deaths-grasp-coat-skeleton",
-        "title": "Death's Grasp",
-        "description": "A grinning skull in a tattered black coat raises a middle finger while holding a burning cigarette, under dripping red 'Death's Grasp' typography on a dark grey background.",
-        "sortOrder": 13,
-        "thumbExt": "jpeg",
-        "highResExt": "jpeg"
-      },
-      {
-        "slug": "rest-in-pieces-mobster-hat",
-        "title": "Rest In Pieces",
-        "description": "A sharp skeleton in a black fedora and coat smokes a cigarette and raises a middle finger against a dark red-glow background, with 'Rest In Pieces' in white and red drip text below.",
-        "sortOrder": 14,
-        "thumbExt": "jpeg",
-        "highResExt": "jpeg"
-      },
-      {
-        "slug": "bone-chiller-hoodie-gold-chain",
-        "title": "Bone Chiller",
-        "description": "A grinning hooded skeleton with a gold chain holds a cigarette with smoke curling upward and gestures with the other hand, above bold 'Bone Chiller' drip-style text at the bottom.",
-        "sortOrder": 15,
-        "thumbExt": "jpeg",
-        "highResExt": "jpeg"
-      },
-
-  {
-    "slug": "skull-street-collection",
-    "title": "Skull Street Collection",
-    "description": "A bold series of 15 edgy skeleton illustrations featuring street style, graffiti walls, chains, smoke, and unapologetic attitude across dark urban backgrounds.",
-    "category": "Character Illustrations",
-    "thumbnailR2Key": "thumbnails/skull-street-collection/skull-street-collection.jpeg",
-    "tag": "Featured",
-    "featured": true,
-    "images": [
-      {
-        "slug": "snapback-skeleton-graffiti",
-        "title": "Snapback Skeleton: Graffiti Wall",
-        "description": "A skeleton in a black snapback, torn hoodie, and skull pendant chain raises a middle finger against a dark wall covered in graffiti tags.",
-        "sortOrder": 1,
-        "thumbExt": "jpeg",
-        "highResExt": "jpeg"
-      },
-      {
-        "slug": "beanie-puffer-skeleton-smoking",
-        "title": "Beanie Puffer Skeleton Smoking",
-        "description": "A grumpy skeleton in a grey beanie and patched puffer jacket with chain holds a lit cigarette in one hand and taps its temple with the other against a black background.",
-        "sortOrder": 2,
-        "thumbExt": "jpeg",
-        "highResExt": "jpeg"
-      },
-      {
-        "slug": "doom-beanie-skeleton-seated",
-        "title": "Doom Beanie Skeleton: Seated",
-        "description": "A full-body skeleton wearing a 'DOOM' beanie, zip hoodie, cargo pants, and gold chain sits on a wooden crate holding a glowing cigarette in the dark.",
-        "sortOrder": 3,
-        "thumbExt": "jpeg",
-        "highResExt": "jpeg"
-      },
-      {
-        "slug": "urgh-nope-skeleton",
-        "title": "Urgh. Nope.",
-        "description": "A skeleton in a black beanie and bandana hoodie rests a bone hand on its face while holding a cigarette, beside the white brush-text 'Urgh. Nope.' on a dark background.",
-        "sortOrder": 4,
-        "thumbExt": "jpeg",
-        "highResExt": "jpeg"
-      },
-      {
-        "slug": "stay-away-alley-skeleton",
-        "title": "Stay Away: Alley Wall",
-        "description": "A full-body skeleton in a beanie, black hoodie, cargo pants, and sneakers leans on a brick wall smoking a cigarette and flashing fingers beside large 'Stay Away You Are A Loser' graffiti text.",
-        "sortOrder": 5,
-        "thumbExt": "jpeg",
-        "highResExt": "jpeg"
-      },
-      {
-        "slug": "thug-life-snapback-skeleton",
-        "title": "Thug Life Snapback Skeleton",
-        "description": "A full-body skeleton in a snapback, 'Thug Life' hoodie, cargo pants, and sneakers holds a smoking cigarette in one hand and raises a middle finger with the other against pure black.",
-        "sortOrder": 6,
-        "thumbExt": "jpeg",
-        "highResExt": "jpeg"
-      },
-      {
-        "slug": "beanie-skull-pendant-smoking",
-        "title": "Beanie Skeleton: Skull Pendant",
-        "description": "A side-profile skeleton in a black beanie and grey hoodie with a skull pendant chain holds a lit cigarette with rising smoke against a dark textured wall.",
-        "sortOrder": 7,
-        "thumbExt": "jpeg",
-        "highResExt": "jpeg"
-      },
-      {
-        "slug": "parental-advisory-hoodie-skeleton",
-        "title": "Parental Advisory Skeleton",
-        "description": "A hooded skeleton with red glowing eyes, double silver chains, and a Parental Advisory patch flips the middle finger against a grey concrete wall covered in faint graffiti.",
-        "sortOrder": 8,
-        "thumbExt": "jpeg",
-        "highResExt": "jpeg"
-      },
-      {
-        "slug": "grim-beanie-spiked-collar",
-        "title": "Grim: Spiked Collar Skeleton",
-        "description": "A side-view skeleton in a black knit beanie and 'GRIM' hoodie with a spiked collar and chain holds a lit cigarette with a large cloud of smoke curling upward on a black background.",
-        "sortOrder": 9,
-        "thumbExt": "jpeg",
-        "highResExt": "jpeg"
-      },
-      {
-        "slug": "stay-away-ugh-whatever",
-        "title": "Stay Away: Ugh. Whatever.",
-        "description": "A grumpy skeleton in a backwards snapback and dark hoodie with a skull pendant holds a cigarette and pushes a bone hand outward, framed by 'Stay Away' and 'Ugh. Whatever.' drip text.",
-        "sortOrder": 10,
-        "thumbExt": "jpeg",
-        "highResExt": "jpeg"
-      },
-      {
-        "slug": "stay-away-loser-green-smoke",
-        "title": "Stay Away: Green Smoke Loser",
-        "description": "A scowling skeleton in a dark green beanie and torn hoodie with gold chain gestures with both hands amid green smoke wisps, above bold grunge text 'Stay Away You Are A Loser'.",
-        "sortOrder": 11,
-        "thumbExt": "jpeg",
-        "highResExt": "jpeg"
-      },
-      {
-        "slug": "no-thanks-skeleton-snapback",
-        "title": "No Thanks",
-        "description": "A stern skeleton in a backwards snapback and grey hoodie with a chain holds a cigarette in one hand and raises an open palm with the other under bold 'No Thanks.' text.",
-        "sortOrder": 12,
-        "thumbExt": "jpeg",
-        "highResExt": "jpeg"
-      },
-      {
-        "slug": "stay-away-loser-beanie-chain",
-        "title": "Stay Away You Are A Loser: Beanie",
-        "description": "A grinning skeleton in a black beanie and hoodie with skull logo and chain holds two cigarettes and throws a finger gesture beside bold white 'Stay Away You Are A Loser' lettering.",
-        "sortOrder": 13,
-        "thumbExt": "jpeg",
-        "highResExt": "jpeg"
-      },
-      {
-        "slug": "stay-away-loser-full-body",
-        "title": "Stay Away You Are A Loser: Full Body",
-        "description": "A full-body skeleton in a hooded snapback cap, hoodie, jeans, and sneakers poses with one leg raised and a cigarette in hand beside large dripping 'Stay Away You Are A Loser' text on grey.",
-        "sortOrder": 14,
-        "thumbExt": "jpeg",
-        "highResExt": "jpeg"
-      },
-      {
-        "slug": "gold-teeth-beanie-skeleton",
-        "title": "Gold Teeth Beanie Skeleton",
-        "description": "A full-body skeleton with gold teeth in a black beanie, skull-logo hoodie, ripped jeans, and chain holds a glowing cigarette in one hand and throws a rock-on gesture with the other on a black background.",
-        "sortOrder": 15,
-        "thumbExt": "jpeg",
-        "highResExt": "jpeg"
-      }
-    ]
-  }
-    ]
-  }
-],
-"standalones": [
+  ],
+  "standalones": [
     {
       "slug": "dark-creature-iphone",
       "title": "Dark Creature",
       "description": "Eerie skeletal monster with hollow eyes and sharp claws emerging from darkness.",
       "deviceType": "IPHONE",
-      "tags": ["skeleton", "creature", "horror", "dark", "claws"],
+      "tags": [
+        "skeleton",
+        "creature",
+        "horror",
+        "dark",
+        "claws"
+      ],
       "ext": "jpeg",
       "sortOrder": 1
     },
@@ -1197,7 +1198,13 @@
       "title": "Haunted History",
       "description": "Mysterious figure in a hat and sunglasses surrounded by ghosts with the caption don't check my history it's haunted.",
       "deviceType": "ANDROID",
-      "tags": ["ghost", "mysterious", "spooky", "halloween", "dark"],
+      "tags": [
+        "ghost",
+        "mysterious",
+        "spooky",
+        "halloween",
+        "dark"
+      ],
       "ext": "jpeg",
       "sortOrder": 1
     },
@@ -1206,7 +1213,13 @@
       "title": "Gangster Skull",
       "description": "Cartoon skeleton in a suit lounging with a cigar, gold chain, and awesome attitude.",
       "deviceType": "PC",
-      "tags": ["skeleton", "gangster", "cartoon", "cigar", "dark"],
+      "tags": [
+        "skeleton",
+        "gangster",
+        "cartoon",
+        "cigar",
+        "dark"
+      ],
       "ext": "jpeg",
       "sortOrder": 1
     }
