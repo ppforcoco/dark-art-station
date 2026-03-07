@@ -1429,6 +1429,268 @@
           "highResExt": "jpeg"
         }
       ]
+    },
+    {
+      "slug": "what-time-skeleton",
+      "title": "What Time Skeleton Collection",
+      "description": "A bold series of 15 edgy skeleton illustrations featuring street style, attitude, and hip-hop aesthetics on dark backgrounds.",
+      "category": "Character Illustrations",
+      "thumbnailR2Key": "thumbnails/what-time-skeleton/what-time-skeleton.jpeg",
+      "tag": "Featured",
+      "featured": true,
+      "images": [
+        {
+          "slug": "houston-snapback-skeleton",
+          "title": "Houston Snapback Skeleton",
+          "description": "A street-style skeleton wearing a Houston snapback cap, gold chain, dark hoodie, leaning forward with bony hands and glowing red eye. Bold 'What Time Is It?' text below.",
+          "sortOrder": 1,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "reaper-hoodie-skeleton",
+          "title": "Reaper Hoodie Skeleton",
+          "description": "A menacing skeleton in a dark hooded sweatshirt with skull beanie, glowing red eyes, chain necklace, reaching forward with skeletal hands. Large 'What Time Is It?' text.",
+          "sortOrder": 2,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "shrug-beanie-skeleton",
+          "title": "Shrug Beanie Skeleton",
+          "description": "A full-body skeleton in a grey hoodie and black beanie, shrugging both skeletal hands outward with an angry expression. 'What Time Is It?' text to the side.",
+          "sortOrder": 3,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "point-up-beanie-skeleton",
+          "title": "Point Up Beanie Skeleton",
+          "description": "A skeleton in a dark hoodie and beanie, raising one skeletal finger upward toward the 'What Time Is It?' text above in a dark minimal composition.",
+          "sortOrder": 4,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "blue-hoodie-chain-skeleton",
+          "title": "Blue Hoodie Chain Skeleton",
+          "description": "A colorful skeleton in a blue hoodie with glowing red eyes, skull rings, heavy chains, skull pendant, tactical gloves, and a watch. 'What Time Is It?' at the bottom.",
+          "sortOrder": 5,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "earring-point-skeleton",
+          "title": "Earring Point Skeleton",
+          "description": "A gritty black-and-white skeleton with an earring and beanie, raising a skeletal arm up high with one finger pointing. 'What Time Is It?' text in scratchy lettering.",
+          "sortOrder": 6,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "bandana-peace-skeleton",
+          "title": "Bandana Peace Skeleton",
+          "description": "A street skeleton in a grey hoodie and beanie with a red bandana tied around the neck, flashing a peace sign with glowing red eye. 'What Time Is It?' beside it.",
+          "sortOrder": 7,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "knuckles-chain-skeleton",
+          "title": "Knuckles Chain Skeleton",
+          "description": "A fierce skeleton in a grey beanie and dark hoodie, holding up four skeletal fingers with red eyes. Brass knuckle pendant chain. 'What Time Is It?' in bold grunge text.",
+          "sortOrder": 8,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "thug-beanie-skeleton",
+          "title": "Thug Beanie Skeleton",
+          "description": "A raw black-and-white skeleton wearing a 'THUG' labeled beanie, both arms raised with one finger pointing up. Chain around neck, dark jacket. 'What Time Is It?' above.",
+          "sortOrder": 9,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "dark-point-hoodie-skeleton",
+          "title": "Dark Point Hoodie Skeleton",
+          "description": "A moody black-and-white skeleton in a dark hoodie and beanie, raising one arm and pointing a single bony finger upward against a pure black background.",
+          "sortOrder": 10,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "skull-pendant-hooded-skeleton",
+          "title": "Skull Pendant Hooded Skeleton",
+          "description": "A skeleton in a dark hoodie over a beanie with red eyes, bandana around neck, skull pendant chain, pointing one finger upward against a near-black background.",
+          "sortOrder": 11,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "snapback-seated-skeleton",
+          "title": "Snapback Seated Skeleton",
+          "description": "A gritty seated skeleton in a backwards snapback and dark zip-up hoodie, holding up three bony fingers with a padlock chain pendant and a watch.",
+          "sortOrder": 12,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "peek-point-skeleton",
+          "title": "Peek Point Skeleton",
+          "description": "A bold skeleton in a dark beanie peeking up from the bottom edge, raising one bony arm high with a single finger pointing. 'Got The Time?' text above in clean minimal font.",
+          "sortOrder": 13,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "minimal-peek-skeleton",
+          "title": "Minimal Peek Skeleton",
+          "description": "A minimalist flat-style skeleton with red eyes peeking just above the bottom edge, one skeletal finger raised beside it. 'What Time Is It?' in large brush lettering above.",
+          "sortOrder": 14,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "leather-watch-skeleton",
+          "title": "Leather Watch Skeleton",
+          "description": "A detailed skeleton in a leather jacket and beanie hoodie combo, red eyes, chain necklace, luxury watch on wrist, skull ring on finger, pointing upward with attitude.",
+          "sortOrder": 15,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        }
+      ]
+    },
+    {
+      "slug": "skull-peeking-collection",
+      "title": "Skull Peeking Collection – Badass Street Style Skeleton Art",
+      "description": "A bold series of 15 edgy street-style skull and skeleton illustrations featuring attitude, gold chains, bandanas, and dark urban aesthetics. Perfect for streetwear fans and dark art lovers.",
+      "category": "Character Illustrations",
+      "thumbnailR2Key": "thumbnails/skull-peeking-collection/skull-peeking-collection.jpeg",
+      "tag": "Featured",
+      "featured": true,
+      "images": [
+        {
+          "slug": "skull-peeking-hoodie",
+          "title": "Skull Peeking in Black Hoodie with Red Eyes Dark Art",
+          "description": "A menacing skull in a dark hoodie peeks from behind a black surface, gripping the edge with skeleton fingers and glowing red eyes. Minimal dark background aesthetic.",
+          "sortOrder": 1,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "skull-upside-gold-chain",
+          "title": "Upside Down Skull with Gold Chain and Cap Street Art",
+          "description": "An inverted skull face wearing a backwards cap with a gold chain pendant hangs upside down against a pure black background. Bold streetwear skull illustration with glowing dark eyes.",
+          "sortOrder": 2,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "skull-beanie-gold-lock",
+          "title": "Badass Skull in Beanie with Gold Lock Chain Peeking Up",
+          "description": "A fierce skull wearing a black beanie with a gold padlock chain necklace peeks up from the bottom edge, skeleton hand gripping the ledge with glowing red eyes.",
+          "sortOrder": 3,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "skeleton-hanging-rope",
+          "title": "Skeleton Hanging Upside Down on Rope Dark Illustration",
+          "description": "A skeleton in a red beanie and dark robe hangs upside down from a thick rope, gripping it with bone hands. Dramatic dark red background with a sinister grin and glowing red eyes.",
+          "sortOrder": 4,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "skull-peeking-bandana",
+          "title": "Cute Badass Skull Peeking with Bandana Face Cover",
+          "description": "A cute but edgy skull with a bandana covering its face peeks over a dark ledge gripping with skeleton fingers. Heart marking on forehead with intense dark eyes. Minimal black background.",
+          "sortOrder": 5,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "skull-hiding-wall",
+          "title": "Street Skull Hiding Behind Wall with Bandana and Chain",
+          "description": "A street-style skull in a black beanie and bandana peers around a cracked concrete wall, skeleton hand gripping the edge, chain necklace visible. One glowing red eye staring forward.",
+          "sortOrder": 6,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "skeleton-snapback-peeking",
+          "title": "Skeleton Peeking Around Corner in Snapback Cap and Chain",
+          "description": "A skeleton wearing a backwards snapback cap leans around a dark vertical edge with a smirk, chain necklace hanging, skeleton fingers wrapped around the corner. Cool street art style.",
+          "sortOrder": 7,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "skull-beanie-bandana-gold",
+          "title": "Skull with Beanie Bandana and Gold Teeth Peeking Dark Art",
+          "description": "A sinister skull in a dark beanie and bandana with gold teeth peeks around a shadowy edge, skeleton claws gripping the wall. One glowing red eye and intense gaze. Street urban aesthetic.",
+          "sortOrder": 8,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "skull-hoodie-chain-lurking",
+          "title": "Lurking Street Skull in Hoodie and Gold Chain Dark Wall",
+          "description": "A skull in a grey hoodie and beanie with a gold chain lurks behind a dark door frame, peeking with one glowing red eye and skeleton fingers gripping the edge. Urban dark art style.",
+          "sortOrder": 9,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "skull-beanie-bandana-peeking",
+          "title": "Skeleton Peeking with Beanie and Paisley Bandana Dark Art",
+          "description": "A detailed skeleton in a grey knit beanie and paisley bandana peers around a dark wall, holding a bone, with one glowing red eye showing intense attitude. Minimal black background.",
+          "sortOrder": 10,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "skeleton-hoodie-lurking",
+          "title": "Dark Skeleton Lurking in Hoodie and Beanie Creepy Art",
+          "description": "A skull in a grey hooded sweatshirt and black beanie with a gold chain peeks around a dark edge, skeleton hand gripping the wall with glowing orange-red eyes. Dark moody illustration.",
+          "sortOrder": 11,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "skull-peeking-fence",
+          "title": "Creepy Skull Peeking Over Fence in Hoodie Grunge Art",
+          "description": "A grinning skull in a dark hoodie and beanie with a chain necklace leans over a cracked fence or wall edge, skeleton hands gripping the top. Red eyes glowing with splatter grunge background.",
+          "sortOrder": 12,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "skull-snapback-hoodie",
+          "title": "Small Skull in Snapback Hoodie Peeking Corner Street Style",
+          "description": "A tiny but fierce skull character in a backwards snapback and hoodie peeks around a dark wall corner, skeleton fingers wrapped around the edge. Minimalist dark background street art.",
+          "sortOrder": 13,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "skull-snapback-peeking-bottom",
+          "title": "Angry Skull in Snapback Peeking from Bottom Dark Art",
+          "description": "An aggressive skull in a backwards snapback and bandana rises from the bottom of frame, both skeleton hands gripping the ledge with intense blue-red glowing eyes. Minimalist black background.",
+          "sortOrder": 14,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        },
+        {
+          "slug": "skeleton-peeking-wall",
+          "title": "Peeking Skeleton in Hoodie and Beanie with Skull Pendant",
+          "description": "A battle-worn skeleton in a dark hoodie and beanie with a skull pendant chain peers around a cracked dark wall. Glowing red eyes, stitched face markings, and intense street attitude. Text reads: PEEKING.",
+          "sortOrder": 15,
+          "thumbExt": "jpeg",
+          "highResExt": "jpeg"
+        }
+      ]
     }
   ],
   "standalones": [
