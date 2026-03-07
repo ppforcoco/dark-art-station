@@ -837,7 +837,6 @@
           "title": "Whispers In The Void",
           "description": "Sinister red slit-pupil eyes glow within a swirling dark vortex, surrounded by jagged red lettering spelling 'Whispers' above and 'In The Void' below.",
           "sortOrder": 6,
-          "thumbExt": "jpeg",
           "highResExt": "jpeg"
         },
         {
@@ -1175,53 +1174,6 @@
           "highResExt": "jpeg"
         }
       ]
-    }
-  ],
-  "standalones": [
-    {
-      "slug": "dark-creature-iphone",
-      "title": "Dark Creature",
-      "description": "Eerie skeletal monster with hollow eyes and sharp claws emerging from darkness.",
-      "deviceType": "IPHONE",
-      "tags": [
-        "skeleton",
-        "creature",
-        "horror",
-        "dark",
-        "claws"
-      ],
-      "ext": "jpeg",
-      "sortOrder": 1
-    },
-    {
-      "slug": "haunted-history-android",
-      "title": "Haunted History",
-      "description": "Mysterious figure in a hat and sunglasses surrounded by ghosts with the caption don't check my history it's haunted.",
-      "deviceType": "ANDROID",
-      "tags": [
-        "ghost",
-        "mysterious",
-        "spooky",
-        "halloween",
-        "dark"
-      ],
-      "ext": "jpeg",
-      "sortOrder": 1
-    },
-    {
-      "slug": "gangster-skull-pc",
-      "title": "Gangster Skull",
-      "description": "Cartoon skeleton in a suit lounging with a cigar, gold chain, and awesome attitude.",
-      "deviceType": "PC",
-      "tags": [
-        "skeleton",
-        "gangster",
-        "cartoon",
-        "cigar",
-        "dark"
-      ],
-      "ext": "jpeg",
-      "sortOrder": 1
     },
     {
       "slug": "bone-hands-collection",
@@ -1313,6 +1265,53 @@
           "highResExt": "jpeg"
         }
       ]
+    }
+  ],
+  "standalones": [
+    {
+      "slug": "dark-creature-iphone",
+      "title": "Dark Creature",
+      "description": "Eerie skeletal monster with hollow eyes and sharp claws emerging from darkness.",
+      "deviceType": "IPHONE",
+      "tags": [
+        "skeleton",
+        "creature",
+        "horror",
+        "dark",
+        "claws"
+      ],
+      "ext": "jpeg",
+      "sortOrder": 1
+    },
+    {
+      "slug": "haunted-history-android",
+      "title": "Haunted History",
+      "description": "Mysterious figure in a hat and sunglasses surrounded by ghosts with the caption don't check my history it's haunted.",
+      "deviceType": "ANDROID",
+      "tags": [
+        "ghost",
+        "mysterious",
+        "spooky",
+        "halloween",
+        "dark"
+      ],
+      "ext": "jpeg",
+      "sortOrder": 1
+    },
+    {
+      "slug": "gangster-skull-pc",
+      "title": "Gangster Skull",
+      "description": "Cartoon skeleton in a suit lounging with a cigar, gold chain, and awesome attitude.",
+      "deviceType": "PC",
+      "tags": [
+        "skeleton",
+        "gangster",
+        "cartoon",
+        "cigar",
+        "dark"
+      ],
+      "ext": "jpeg",
+      "sortOrder": 1
     }
   ]
 }
