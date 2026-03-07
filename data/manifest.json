@@ -1046,7 +1046,139 @@
         "sortOrder": 15,
         "thumbExt": "jpeg",
         "highResExt": "jpeg"
+      },
+
+  {
+    "slug": "skull-street-collection",
+    "title": "Skull Street Collection",
+    "description": "A bold series of 15 edgy skeleton illustrations featuring street style, graffiti walls, chains, smoke, and unapologetic attitude across dark urban backgrounds.",
+    "category": "Character Illustrations",
+    "thumbnailR2Key": "thumbnails/skull-street-collection/skull-street-collection.jpeg",
+    "tag": "Featured",
+    "featured": true,
+    "images": [
+      {
+        "slug": "snapback-skeleton-graffiti",
+        "title": "Snapback Skeleton: Graffiti Wall",
+        "description": "A skeleton in a black snapback, torn hoodie, and skull pendant chain raises a middle finger against a dark wall covered in graffiti tags.",
+        "sortOrder": 1,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "beanie-puffer-skeleton-smoking",
+        "title": "Beanie Puffer Skeleton Smoking",
+        "description": "A grumpy skeleton in a grey beanie and patched puffer jacket with chain holds a lit cigarette in one hand and taps its temple with the other against a black background.",
+        "sortOrder": 2,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "doom-beanie-skeleton-seated",
+        "title": "Doom Beanie Skeleton: Seated",
+        "description": "A full-body skeleton wearing a 'DOOM' beanie, zip hoodie, cargo pants, and gold chain sits on a wooden crate holding a glowing cigarette in the dark.",
+        "sortOrder": 3,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "urgh-nope-skeleton",
+        "title": "Urgh. Nope.",
+        "description": "A skeleton in a black beanie and bandana hoodie rests a bone hand on its face while holding a cigarette, beside the white brush-text 'Urgh. Nope.' on a dark background.",
+        "sortOrder": 4,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "stay-away-alley-skeleton",
+        "title": "Stay Away: Alley Wall",
+        "description": "A full-body skeleton in a beanie, black hoodie, cargo pants, and sneakers leans on a brick wall smoking a cigarette and flashing fingers beside large 'Stay Away You Are A Loser' graffiti text.",
+        "sortOrder": 5,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "thug-life-snapback-skeleton",
+        "title": "Thug Life Snapback Skeleton",
+        "description": "A full-body skeleton in a snapback, 'Thug Life' hoodie, cargo pants, and sneakers holds a smoking cigarette in one hand and raises a middle finger with the other against pure black.",
+        "sortOrder": 6,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "beanie-skull-pendant-smoking",
+        "title": "Beanie Skeleton: Skull Pendant",
+        "description": "A side-profile skeleton in a black beanie and grey hoodie with a skull pendant chain holds a lit cigarette with rising smoke against a dark textured wall.",
+        "sortOrder": 7,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "parental-advisory-hoodie-skeleton",
+        "title": "Parental Advisory Skeleton",
+        "description": "A hooded skeleton with red glowing eyes, double silver chains, and a Parental Advisory patch flips the middle finger against a grey concrete wall covered in faint graffiti.",
+        "sortOrder": 8,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "grim-beanie-spiked-collar",
+        "title": "Grim: Spiked Collar Skeleton",
+        "description": "A side-view skeleton in a black knit beanie and 'GRIM' hoodie with a spiked collar and chain holds a lit cigarette with a large cloud of smoke curling upward on a black background.",
+        "sortOrder": 9,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "stay-away-ugh-whatever",
+        "title": "Stay Away: Ugh. Whatever.",
+        "description": "A grumpy skeleton in a backwards snapback and dark hoodie with a skull pendant holds a cigarette and pushes a bone hand outward, framed by 'Stay Away' and 'Ugh. Whatever.' drip text.",
+        "sortOrder": 10,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "stay-away-loser-green-smoke",
+        "title": "Stay Away: Green Smoke Loser",
+        "description": "A scowling skeleton in a dark green beanie and torn hoodie with gold chain gestures with both hands amid green smoke wisps, above bold grunge text 'Stay Away You Are A Loser'.",
+        "sortOrder": 11,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "no-thanks-skeleton-snapback",
+        "title": "No Thanks",
+        "description": "A stern skeleton in a backwards snapback and grey hoodie with a chain holds a cigarette in one hand and raises an open palm with the other under bold 'No Thanks.' text.",
+        "sortOrder": 12,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "stay-away-loser-beanie-chain",
+        "title": "Stay Away You Are A Loser: Beanie",
+        "description": "A grinning skeleton in a black beanie and hoodie with skull logo and chain holds two cigarettes and throws a finger gesture beside bold white 'Stay Away You Are A Loser' lettering.",
+        "sortOrder": 13,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "stay-away-loser-full-body",
+        "title": "Stay Away You Are A Loser: Full Body",
+        "description": "A full-body skeleton in a hooded snapback cap, hoodie, jeans, and sneakers poses with one leg raised and a cigarette in hand beside large dripping 'Stay Away You Are A Loser' text on grey.",
+        "sortOrder": 14,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "gold-teeth-beanie-skeleton",
+        "title": "Gold Teeth Beanie Skeleton",
+        "description": "A full-body skeleton with gold teeth in a black beanie, skull-logo hoodie, ripped jeans, and chain holds a glowing cigarette in one hand and throws a rock-on gesture with the other on a black background.",
+        "sortOrder": 15,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
       }
+    ]
+  }
     ]
   }
 ],
