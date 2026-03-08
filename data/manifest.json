@@ -1993,6 +1993,268 @@
         "highResExt": "jpeg"
       }
     ]
+  },
+  {
+    "slug": "dark-fantasy-card-collection",
+    "title": "Dark Fantasy Battle Card Collection",
+    "description": "A premium series of 15 dark fantasy trading cards featuring undead warriors, elemental monsters, cyber demons, and cursed knights. Each card includes unique ATK and DEF stats with powerful battle abilities for strategic gameplay.",
+    "category": "Trading Card Illustrations",
+    "thumbnailR2Key": "thumbnails/dark-fantasy-card-collection/dark-fantasy-card-collection.jpeg",
+    "tag": "Featured",
+    "featured": true,
+    "images": [
+      {
+        "slug": "digital-apparition-card",
+        "title": "Digital Apparition Dark Fantasy Battle Card ATK 8 DEF 4",
+        "description": "A cyberpunk skeleton warrior in dark armor wielding a glowing blue energy sword and a hexagonal circuit shield with skull emblem. Glowing teal eyes and neon blue chest circuits. ATK 8 DEF 4. Ability forces opponent to reveal hand and discard one card on entry.",
+        "sortOrder": 1,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "death-knight-card",
+        "title": "Death Knight Undead Warrior Battle Card ATK 7 DEF 5",
+        "description": "A fearsome skeleton warrior in tattered chainmail armor wielding a bloodied sword and a dark skull-embossed shield. Glowing red eyes in a menacing battle stance. ATK 7 DEF 5. Ability forces opponent to discard one card on entry.",
+        "sortOrder": 2,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "bone-golem-card",
+        "title": "Bone Golem Rune Skeleton Monster Card ATK 6 DEF 8",
+        "description": "A massive hulking creature fused from multiple skeletons with rune-carved bones and extra skulls protruding from its body. Purple dark energy surrounds this unstoppable bone construct. ATK 6 DEF 8. Immune to spells and spawns two Skeleton Tokens when destroyed.",
+        "sortOrder": 3,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "frost-giant-juggernaut",
+        "title": "Frost Giant Juggernaut Ice Warrior Card ATK 8 DEF 6",
+        "description": "A colossal armored ice giant wielding a massive frozen warhammer with skull decorations on his belt amid a blizzard landscape. Blue crystalline armor and fierce beard define this unstoppable frozen war machine. ATK 8 DEF 6. Avalanche ability deals 2 damage to all creatures on entry.",
+        "sortOrder": 4,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "ice-elemental-frostmage",
+        "title": "Ice Elemental Frostmage Crystal Monster Card ATK 6 DEF 4",
+        "description": "A terrifying translucent ice elemental creature with jagged crystal spikes across its body wielding a glowing ice staff. Spawned from glacial silence in a frozen tundra setting. ATK 6 DEF 4. Frostbite Nova ability freezes all enemy creatures when it dies.",
+        "sortOrder": 5,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "soul-reaver-card",
+        "title": "Soul Reaver Dark Knight Fantasy Card ATK 7 DEF 5",
+        "description": "A powerful armored dark knight with a skull face helmet wielding a long rune-etched sword crackling with blue soul energy. Swirling blue ethereal flames engulf this haunted warrior in ancient ruins. ATK 7 DEF 5. Soul Drain restores 2 DEF for every enemy defeated and ignores armor.",
+        "sortOrder": 6,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "fire-elemental-pyromancer",
+        "title": "Fire Elemental Pyromancer Lava Monster Card ATK 8 DEF 2",
+        "description": "A towering fire elemental creature with a molten lava body, blazing head, and glowing magma veins wielding a flaming orb staff above an erupting volcanic landscape. ATK 8 DEF 2. Inferno Blast deals 3 damage to all enemies when destroyed but cannot block.",
+        "sortOrder": 7,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "spectral-knight-card",
+        "title": "Spectral Knight Ghost Warrior Fantasy Card ATK 6 DEF 6",
+        "description": "A glowing blue spectral knight in full plate armor wreathed in ethereal ghost flames wielding a translucent energy sword. An ancient warrior spirit eternally bound to battle. ATK 6 DEF 6. Gains plus 1 DEF per Spectral ally on field and cannot be blocked by non-magical creatures.",
+        "sortOrder": 8,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "frost-giant-hunter",
+        "title": "Frost Giant Hunter Ice Archer Card ATK 6 DEF 4",
+        "description": "A massive frost giant archer in spiked ice armor drawing a crystalline ice bow in a frozen tundra blizzard. This relentless tracker of the frozen wastes fires arrows with the chill of eternal winter. ATK 6 DEF 4. Glacial Snipe deals 4 damage to target creature on entry.",
+        "sortOrder": 9,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "bloodbound-berserker",
+        "title": "Bloodbound Berserker Dark Warrior Card ATK 9 DEF 3",
+        "description": "A fearsome crimson armored berserker with horned helmet engulfed in swirling fire and rage wielding a blood-soaked battle axe in a ruined hellscape. ATK 9 DEF 3. Frenzy ability grants plus 2 ATK per damage taken but loses 1 DEF each turn.",
+        "sortOrder": 10,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "skeleton-token-card",
+        "title": "Skeleton Token Dual Undead Warriors Card ATK 2 DEF 2",
+        "description": "Two animated skeleton warriors with red glowing eyes, wooden shields, and rusted swords surrounded by purple dark flames. A brittle bone construct summoned only by the Bone Golem. ATK 2 DEF 2. Removed from play permanently when destroyed.",
+        "sortOrder": 11,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "plague-behemoth-card",
+        "title": "Plague Behemoth Toxic Monster Fantasy Card ATK 7 DEF 5",
+        "description": "A grotesque swamp-born giant monster covered in toxic green boils and oozing plague sores swinging a spiked mace dripping with poison. Green toxic miasma fills the air around this walking contagion. ATK 7 DEF 5. Poisons all adjacent creatures when attacking and weakens enemies hit.",
+        "sortOrder": 12,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "gloom-stalker-card",
+        "title": "Gloom Stalker Dark Rogue Assassin Card ATK 5 DEF 3",
+        "description": "A hooded shadow assassin with glowing red eyes wielding twin curved daggers surrounded by swirling purple dark mist in a moonlit dead forest. ATK 5 DEF 3. Ambush ability deals double damage from concealment and ignores enemy DEF on first turn.",
+        "sortOrder": 13,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "network-parasite-card",
+        "title": "Network Parasite Cyber Horror Monster Card ATK 5 DEF 7",
+        "description": "A terrifying mechanical parasite creature with circuit board body segments, scorpion-like claws, and toxic green energy tendrils corrupting computer servers in a dark data center environment. ATK 5 DEF 7. Permanently reduces target enemy ATK by 3 and deals 1 unpreventable damage per turn.",
+        "sortOrder": 14,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "glitch-stalker-card",
+        "title": "Glitch Stalker Cyber Skeleton Spider Card ATK 10 DEF 2",
+        "description": "A horrifying cyberpunk skeleton spider hybrid with monitor screens fused to its skull, holographic glitch effects, and razor mechanical limbs in a corrupted digital environment. ATK 10 DEF 2. Targets a card in opponent hand and punishes them with 5 damage if played or forces discard.",
+        "sortOrder": 15,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      }
+    ]
+  },
+  {
+    "slug": "dont-touch-phone-wallpaper",
+    "title": "Don't Touch My Phone Dark Mustache Monster Wallpaper Collection",
+    "description": "A bold series of 15 dark aesthetic phone wallpapers featuring angry monster faces with glowing fire eyes, evil mustaches, and sharp vampire fangs. Perfect lock screen wallpapers with the warning message Don't Touch My Phone on pure black backgrounds.",
+    "category": "Phone Wallpapers",
+    "thumbnailR2Key": "thumbnails/dont-touch-phone-wallpaper/dont-touch-phone-wallpaper.jpeg",
+    "tag": "Featured",
+    "featured": true,
+    "images": [
+      {
+        "slug": "fire-eyes-mustache-fangs",
+        "title": "Fire Eyes Mustache Monster Don't Touch My Phone Wallpaper",
+        "description": "A menacing dark face with blazing orange fire eyes, a large curling black mustache with orange fire tips, and dripping vampire fangs baring a full set of teeth. Red blood drip text at the bottom reads Don't Touch My Phone on a pure black background.",
+        "sortOrder": 1,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "red-eyes-dark-mustache",
+        "title": "Red Glowing Eyes Dark Mustache Vampire Wallpaper",
+        "description": "A minimal dark monster face with glowing red eyes, a sweeping black mustache with subtle curl ends, and sharp gray vampire fangs with small front teeth. Clean white text at the bottom reads Don't Touch My Phone on a pure black background.",
+        "sortOrder": 2,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "thorn-eyes-text-mustache",
+        "title": "Thorn Brow Monster Mustache Warning Phone Wallpaper",
+        "description": "A dark creature face with glowing amber eyes framed by thorny branch-like brows, a sweeping dark mustache with curled tips, and sharp ivory fangs. The warning text Don't Touch My Phone is curved along the mustache on a near-black background.",
+        "sortOrder": 3,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "bleeding-eyes-sabertooth",
+        "title": "Bleeding Eyes Sabertooth Mustache Dark Wallpaper",
+        "description": "A stark black and white monster face with bloodshot eyes dripping red tears, a thick swooping mustache, and massive elongated sabertooth fangs. Bold white drip-style text below reads Dont Touch My Phone on a solid black background.",
+        "sortOrder": 4,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "dark-red-eyes-fangs",
+        "title": "Dark Red Eyes Monster Fangs Minimal Phone Wallpaper",
+        "description": "A dark minimal monster face with glowing red eyes with sharp angular lids, a black swooping mustache with red-tinted roots, and multiple sharp gray fangs on a dark charcoal background. Clean white text below reads Don't Touch My Phone.",
+        "sortOrder": 5,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "fire-eyes-brown-mustache",
+        "title": "Fire Eyes Brown Mustache Vampire Fangs Wallpaper",
+        "description": "A dark monster face with twin flaming orange eyes with fire bursting upward, a warm brown curled mustache, and a mouth full of white vampire fangs including prominent side canines. Clean white bold text below reads Dont Touch My Phone.",
+        "sortOrder": 6,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "claw-red-eyes-mustache",
+        "title": "Monster Claw Red Eyes Mustache Warning Wallpaper",
+        "description": "A dark monster face with glowing red eyes and a thick black mustache showing sharp fangs, with a dramatic gray skeletal clawed hand reaching from the left side. Red horror font at the bottom reads Dont Touch My Phone on a solid black background.",
+        "sortOrder": 7,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "angry-red-eyes-dark",
+        "title": "Angry Red Eyes Dark Mustache Fang Wallpaper",
+        "description": "A dark charcoal monster face with intense glowing red eyes with angular brows, a thick black mustache with white highlights, and large protruding ivory sabertooth fangs. Bold white horror font below reads Dont Touch My Phone.",
+        "sortOrder": 8,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "flame-eyes-curled-mustache",
+        "title": "Flame Eyes Curled Mustache Triple Fang Wallpaper",
+        "description": "A close-up dark monster face with blazing red and orange flame eyes with thick curled brows, a wide sweeping black mustache with orange-lit curl ends, and three long sharp gray fangs. Bold white text below reads Don't Touch My Phone.",
+        "sortOrder": 9,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "pink-red-eyes-vampire",
+        "title": "Pink Red Eyes Vampire Mustache Dark Wallpaper",
+        "description": "A minimal dark monster face with softly glowing pinkish-red eyes with spiral pupils, a large thick black sweeping mustache, and four white vampire fangs. Small red dripping text at the bottom reads don't touch my phone on a near-black background.",
+        "sortOrder": 10,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "angry-brow-red-eyes",
+        "title": "Angry Brow Red Eyes Mustache Fang Phone Wallpaper",
+        "description": "A close-up dark monster face with angled glowing red eyes framed by arched dark brows, a swooping black mustache with curled tips, and a full mouth of vampire fangs with exposed gums. Red horror text at the top reads Don't Touch My Phone.",
+        "sortOrder": 11,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "fire-tribal-mustache",
+        "title": "Fire Tribal Eyes Mustache Monster Dark Wallpaper",
+        "description": "A dark gray monster face with blazing orange fire eyes with tribal-style markings above each eye, a large black curled mustache with orange glow at the roots, and sharp white fangs. Red text at the bottom reads Don't Touch My Phone.",
+        "sortOrder": 12,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "sharp-red-eyes-fangs",
+        "title": "Sharp Red Eyes Vampire Mustache Black Wallpaper",
+        "description": "A minimal monster face on pure black with glowing white-centered red eyes, a large thick black mustache with swept curl ends, and four sharp white vampire fangs with a red mouth interior. White drip font below reads Dont Touch My Phone.",
+        "sortOrder": 13,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "fire-eyes-open-mouth",
+        "title": "Fire Eyes Open Mouth Roaring Monster Wallpaper",
+        "description": "A dark monster face with glowing red eyes with small flame wisps at the corners, thick black curved brows, a dark mustache, and a wide open roaring mouth with exposed fangs and dark lips. Bold white text at the top reads Don't Touch My Phone.",
+        "sortOrder": 14,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "yellow-eyes-sabertooth",
+        "title": "Yellow Eyes Sabertooth Mustache Monster Wallpaper",
+        "description": "A close-up dark monster face with vivid yellow glowing eyes and sharp angular brows, a thick black mustache with subtle gold roots, and massive elongated white sabertooth fangs. Bold red blood drip text at the top reads Dont Touch My Phone.",
+        "sortOrder": 15,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      }
+    ]
   }
   ],
   "standalones": [
