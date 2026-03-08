@@ -2648,6 +2648,137 @@
         "highResExt": "jpeg"
       }
     ]
+  },
+  {
+    "slug": "horror-movie-posters",
+    "title": "Horror Movie Poster Collection",
+    "description": "A bold series of 15 vintage-style horror movie posters featuring terrifying monsters, dark creatures, and chilling taglines with retro VHS aesthetic.",
+    "category": "Horror Illustrations",
+    "thumbnailR2Key": "thumbnails/horror-movie-posters/horror-movie-posters.jpeg",
+    "tag": "Featured",
+    "featured": true,
+    "images": [
+      {
+        "slug": "night-hallowed-evil",
+        "title": "Night Hallowed Evil Demon Horror Poster",
+        "description": "A vintage horror movie poster featuring a demonic creature with glowing red eyes and bloody claws advancing through darkness. Bold red grunge text reads 'The Night Hallowed' with tagline 'Evil Has A New Face'.",
+        "sortOrder": 1,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "stalking-shadow-horror",
+        "title": "Stalking Shadow Dark Figure Horror Poster",
+        "description": "A retro horror poster showing a cloaked hooded figure standing on a rocky cliff edge surrounded by twisted bare trees in deep red and black tones. Bold orange text reads 'The Stalking Shadow'.",
+        "sortOrder": 2,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "silent-house-haunted",
+        "title": "Silent House Haunted Mansion Horror Poster",
+        "description": "A classic haunted house horror poster featuring a gothic Victorian mansion with a glowing red face visible in an upstairs window, surrounded by dead trees. Text reads 'The Silent House' with tagline 'A Nightmare In Every Room'.",
+        "sortOrder": 3,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "howling-night-werewolf",
+        "title": "Howling Night Werewolf Monster Horror Poster",
+        "description": "A dark horror poster featuring a snarling werewolf beast with glowing red eyes rearing up against a ruined gothic backdrop. Bold red distressed text reads 'The Howling Night' with tagline 'Hear The Screams In The Dark'.",
+        "sortOrder": 4,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "blackwood-hall-curse",
+        "title": "Blackwood Hall Curse Grim Reaper Horror Poster",
+        "description": "A vintage horror movie poster featuring a skull-faced grim reaper with glowing red eyes reaching toward the viewer, with a haunted mansion under a crescent moon in the background. Text reads 'The Curse Of Blackwood Hall' with tagline 'A Nightmare You Cannot Escape'.",
+        "sortOrder": 5,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "night-crawler-monster",
+        "title": "Night Crawler Dark Monster Horror Poster",
+        "description": "A minimalist dark horror poster featuring a scaly reptilian creature with glowing yellow eyes emerging from total darkness, clawed hands reaching forward. Bold white grunge text reads 'The Night Crawler' with tagline 'It Doesn't Just Watch. It Hunts.'",
+        "sortOrder": 6,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "unseen-shadow-voices",
+        "title": "Unseen Shadow Voices Horror Poster",
+        "description": "A black and white horror poster featuring a hooded ghoulish figure in tattered robes with glowing eyes reaching out with clawed hands. Bold white distressed text reads 'The Unseen: Voices From The Shadows'.",
+        "sortOrder": 7,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "hollow-reach-skull",
+        "title": "Hollow Reach Skull Claw Horror Poster",
+        "description": "A dramatic horror poster featuring a monstrous clawed hand crushing a cracked human skull with blood red fractures glowing from within. Bold red and white gothic text reads 'The Hollow Reach'.",
+        "sortOrder": 8,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "whispering-dark-eye",
+        "title": "Whispering Dark Giant Eye Horror Poster",
+        "description": "A surreal horror poster dominated by a massive bloodshot eye with a shadowy hooded figure reflected in the pupil. Bold dark red hand-lettered text reads 'The Whispering Dark'.",
+        "sortOrder": 9,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "nighthaunt-skull-darkness",
+        "title": "Nighthaunt Skull Creature Horror Poster",
+        "description": "A bold horror poster featuring a skeletal hooded creature with glowing orange eyes and sharp fangs reaching a clawed hand toward the viewer from total darkness. Dual-tone title text reads 'NightHaunt' with tagline 'The Darkness Finds You'.",
+        "sortOrder": 10,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "witching-hour-dark",
+        "title": "Witching Hour Dark Forest Horror Poster",
+        "description": "A detailed horror poster featuring a gaunt robed figure carrying a glowing lantern through a twisted dark forest under a crescent moon. Bold red dripping text reads 'The Witching Hour' with tagline 'A Nightmare Of Ancient Evil'.",
+        "sortOrder": 11,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "hollow-reaper-fire",
+        "title": "Hollow Fire Reaper Horror Poster",
+        "description": "A vivid horror poster featuring a skull-faced reaper with glowing red eyes and fiery orange clawed hands looming over a tiny haunted castle scene below. Bold red weathered text reads 'The Hollow'.",
+        "sortOrder": 12,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "nightmare-within-graveyard",
+        "title": "Nightmare Within Graveyard Blood Moon Horror Poster",
+        "description": "A grunge horror poster featuring a skeletal clawed hand bursting from a graveyard ground beneath a massive blood red moon with tombstones silhouetted against the sky. Bold red and white torn text reads 'Nightmare Within'.",
+        "sortOrder": 13,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "unseen-deep-darkness",
+        "title": "Unseen Deep Darkness Skull Reaper Horror Poster",
+        "description": "A dark horror poster featuring a skeletal robed figure with glowing yellow eyes holding a star pendant, advancing through a foggy night scene with a haunted house in the background. Bold cream and red text reads 'The Unseen: Deep In Darkness'.",
+        "sortOrder": 14,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "nightstream-skull-reaper",
+        "title": "Nightstream Skull Reaper Horror Poster",
+        "description": "A cinematic horror poster featuring a towering skull-faced reaper with glowing red eyes and tattered black robes advancing through dark fog and dead trees. Bold red and white grunge text reads 'The Nightstream'.",
+        "sortOrder": 15,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      }
+    ]
   }
   ],
   "standalones": [
