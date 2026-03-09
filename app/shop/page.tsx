@@ -132,8 +132,6 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
           <Pagination currentPage={page} totalPages={totalPages} baseUrl={baseUrl} />
         )}
 
-      </main>
-
       {/* Filter pill styles */}
       <style>{`
         .filter-pill {
