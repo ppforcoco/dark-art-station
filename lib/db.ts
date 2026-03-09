@@ -11,6 +11,62 @@ export const db =
 
 if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = db;
 
+// ─── Wallpaper of the Day ─────────────────────────────────────────────────────
+//
+// Deterministic daily selection — no randomness per-request, no extra columns.
+// Algorithm:
+//   1. Fetch all standalone image IDs (collectionId = null, deviceType set).
+//   2. Derive a numeric seed from today's UTC date string (YYYY-MM-DD).
+//   3. Pick index = seed % total — same result for every visitor, every server
+//      instance, all day long. Changes at UTC midnight automatically.
+//   4. Fetch the full record for that image.
+//
+// Returns null if no standalone images exist yet.
+
+export type WotdImage = {
+  id:         string;
+  slug:       string;
+  title:      string;
+  description: string | null;
+  r2Key:      string;
+  deviceType: string | null;
+  tags:       string[];
+  viewCount:  number;
+};
+
+export async function getWallpaperOfTheDay(): Promise<WotdImage | null> {
+  // Step 1 — get IDs only (cheap query, no image data yet)
+  const ids = await db.image.findMany({
+    where: { collectionId: null, deviceType: { not: null } },
+    select: { id: true },
+    orderBy: { createdAt: "asc" }, // stable order across calls
+  });
+
+  if (ids.length === 0) return null;
+
+  // Step 2 — date seed: "2025-06-15" → sum of char codes → integer
+  const today = new Date().toISOString().slice(0, 10); // "YYYY-MM-DD"
+  const seed  = today.split("").reduce((acc, ch) => acc + ch.charCodeAt(0), 0);
+
+  // Step 3 — deterministic index
+  const index = seed % ids.length;
+
+  // Step 4 — fetch full record
+  return db.image.findUnique({
+    where: { id: ids[index].id },
+    select: {
+      id:          true,
+      slug:        true,
+      title:       true,
+      description: true,
+      r2Key:       true,
+      deviceType:  true,
+      tags:        true,
+      viewCount:   true,
+    },
+  });
+}
+
 // ─── Search Types ─────────────────────────────────────────────────────────────
 
 export type SearchResultItem = {

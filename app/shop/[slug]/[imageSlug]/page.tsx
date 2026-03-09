@@ -5,6 +5,7 @@ import Link from "next/link";
 import { db } from "@/lib/db";
 import { getPublicUrl } from "@/lib/r2";
 import AdSlot from "@/components/AdSlot";
+import SocialShare from "@/components/SocialShare";
 
 interface PageProps {
   params: Promise<{ slug: string; imageSlug: string }>;
@@ -194,6 +195,13 @@ export default async function ImagePage({ params }: PageProps) {
                 PNG · 4K resolution · No account required
               </p>
             </div>
+
+            {/* Social Share */}
+            <SocialShare
+              title={image.title}
+              imageUrl={thumbUrl}
+              pageUrl={`${siteUrl}/shop/${slug}/${imageSlug}`}
+            />
 
             {/* Sidebar Ad */}
             <AdSlot

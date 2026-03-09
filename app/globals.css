@@ -1647,3 +1647,179 @@ body::before {
   text-transform: uppercase;
   color: #8a8099;
 }
+
+/* ──────────────────────────────────────────────────────────── */
+/*  WALLPAPER OF THE DAY — DAILY SANCTUM                        */
+/* ──────────────────────────────────────────────────────────── */
+.wotd-section {
+  background: #070710;
+  border-top: 1px solid rgba(139,0,0,0.2);
+  border-bottom: 1px solid rgba(139,0,0,0.2);
+  padding: 80px 60px;
+}
+.wotd-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 64px;
+  align-items: center;
+}
+.wotd-label-block {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 20px;
+}
+.wotd-eyebrow {
+  font-family: var(--font-space), monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: #c0001a;
+}
+.wotd-date {
+  font-family: var(--font-space), monospace;
+  font-size: 0.55rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #2a2535;
+}
+.wotd-title {
+  font-family: var(--font-cinzel), cursive;
+  font-size: clamp(1.6rem, 3vw, 2.8rem);
+  font-weight: 700;
+  color: #f0ecff;
+  line-height: 1.15;
+  margin: 0 0 16px;
+}
+.wotd-desc {
+  font-family: var(--font-cormorant), serif;
+  font-style: italic;
+  font-size: 1.05rem;
+  color: #8a8099;
+  line-height: 1.7;
+  margin: 0 0 24px;
+  max-width: 460px;
+}
+.wotd-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 32px;
+}
+.wotd-tag {
+  font-family: var(--font-space), monospace;
+  font-size: 0.52rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #c9a84c;
+  border: 1px solid rgba(201,168,76,0.25);
+  padding: 4px 10px;
+}
+.wotd-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-space), monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #f0ecff;
+  background: transparent;
+  border: 1px solid #c0001a;
+  padding: 14px 32px;
+  text-decoration: none;
+  transition: background 0.2s, color 0.2s;
+}
+.wotd-cta:hover { background: #c0001a; }
+.wotd-image-wrap {
+  position: relative;
+  aspect-ratio: 9 / 16;
+  max-height: 600px;
+  overflow: hidden;
+  border: 1px solid rgba(139,0,0,0.25);
+}
+.wotd-image-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s cubic-bezier(0.16,1,0.3,1);
+}
+.wotd-image-wrap:hover img { transform: scale(1.04); }
+.wotd-device-badge {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  font-family: var(--font-space), monospace;
+  font-size: 0.5rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #f0ecff;
+  background: rgba(7,7,16,0.85);
+  border: 1px solid rgba(139,0,0,0.4);
+  padding: 5px 10px;
+  backdrop-filter: blur(8px);
+}
+@media (max-width: 900px) {
+  .wotd-section { padding: 60px 24px; }
+  .wotd-inner { grid-template-columns: 1fr; gap: 40px; }
+  .wotd-image-wrap { max-height: 480px; aspect-ratio: 3/4; order: -1; }
+}
+@media (max-width: 479px) {
+  .wotd-section { padding: 48px 20px; }
+  .wotd-image-wrap { max-height: 380px; }
+}
+
+/* ──────────────────────────────────────────────────────────── */
+/*  SOCIAL SHARE                                                 */
+/* ──────────────────────────────────────────────────────────── */
+.social-share {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 4px;
+}
+.social-share-label {
+  font-family: var(--font-space), monospace;
+  font-size: 0.52rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #2a2535;
+}
+.social-share-btns {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.social-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-family: var(--font-space), monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: #4a445a;
+  border: 1px solid #2a2535;
+  padding: 10px 16px;
+  min-height: 44px;           /* thumb-friendly minimum */
+  background: transparent;
+  transition: color 0.2s, border-color 0.2s, background 0.2s;
+  white-space: nowrap;
+}
+.social-btn svg {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  fill: currentColor;
+}
+/* Platform hover colours */
+.social-btn--pinterest:hover { color: #e60023; border-color: #e60023; background: rgba(230,0,35,0.08); }
+.social-btn--x:hover          { color: #f0ecff; border-color: #555; background: rgba(255,255,255,0.05); }
+.social-btn--whatsapp:hover   { color: #25d366; border-color: #25d366; background: rgba(37,211,102,0.08); }
+@media (max-width: 479px) {
+  .social-share-btns { gap: 6px; }
+  .social-btn { padding: 10px 12px; font-size: 0.55rem; }
+}

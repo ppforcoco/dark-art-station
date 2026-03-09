@@ -1,12 +1,11 @@
-import { db } from "@/lib/db";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
+import { db, getWallpaperOfTheDay } from "@/lib/db";
 import MarqueeTicker from "@/components/MarqueeTicker";
 import NewsletterForm from "@/components/NewsletterForm";
 import Image from "next/image";
 import Link from "next/link";
 import ProductCard from "@/components/ProductCard";
 import AdSlot from "@/components/AdSlot";
+import { getPublicUrl } from "@/lib/r2";
 
 // ISR — revalidate every 60s so edits in Prisma Studio go live quickly
 export const revalidate = 60;
@@ -18,6 +17,9 @@ function parseBadge(b: string | null | undefined): Badge | undefined {
 }
 
 export default async function Home() {
+  // Wallpaper of the Day — deterministic daily rotation
+  const wotd = await getWallpaperOfTheDay();
+
   // Featured categories for the grid
   const categories = await db.collection.findMany({
     orderBy: [{ featured: "desc" }, { createdAt: "desc" }],
@@ -42,7 +44,6 @@ export default async function Home() {
 
   return (
     <>
-      <Header />
 
       {/* ════════════════════════════ HERO */}
       <section className="hero-section">
@@ -90,6 +91,62 @@ export default async function Home() {
 
       {/* ════════════════════════════ MARQUEE */}
       <MarqueeTicker />
+
+      {/* ════════════════════════════ DAILY SANCTUM */}
+      {wotd && (() => {
+        const devicePath = wotd.deviceType === "IPHONE"
+          ? "iphone"
+          : wotd.deviceType === "ANDROID"
+          ? "android"
+          : "pc";
+        const wotdUrl  = getPublicUrl(wotd.r2Key);
+        const wotdHref = `/${devicePath}/${wotd.slug}`;
+        const todayStr = new Date().toLocaleDateString("en-US", {
+          weekday: "long", month: "long", day: "numeric",
+        });
+        return (
+          <section className="wotd-section">
+            <div className="wotd-inner">
+              {/* Left — text */}
+              <div>
+                <div className="wotd-label-block">
+                  <span className="wotd-eyebrow">Daily Sanctum</span>
+                  <span className="wotd-date">{todayStr}</span>
+                </div>
+                <h2 className="wotd-title">{wotd.title}</h2>
+                {wotd.description && (
+                  <p className="wotd-desc">{wotd.description}</p>
+                )}
+                {wotd.tags.length > 0 && (
+                  <div className="wotd-tags">
+                    {wotd.tags.slice(0, 5).map(t => (
+                      <span key={t} className="wotd-tag">#{t}</span>
+                    ))}
+                  </div>
+                )}
+                <Link href={wotdHref} className="wotd-cta">
+                  View Today&apos;s Wallpaper →
+                </Link>
+              </div>
+              {/* Right — image */}
+              <Link href={wotdHref} className="wotd-image-wrap" aria-label={wotd.title}>
+                <Image
+                  src={wotdUrl}
+                  alt={wotd.title}
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 900px) 100vw, 50vw"
+                />
+                {wotd.deviceType && (
+                  <span className="wotd-device-badge">
+                    {wotd.deviceType.charAt(0) + wotd.deviceType.slice(1).toLowerCase()}
+                  </span>
+                )}
+              </Link>
+            </div>
+          </section>
+        );
+      })()}
 
       {/* ════════════════════════════ CATEGORIES */}
       <section className="section-pad" style={{ backgroundColor: "#070710" }}>
@@ -199,8 +256,6 @@ export default async function Home() {
         </p>
         <NewsletterForm />
       </div>
-
-      <Footer />
     </>
   );
 }
