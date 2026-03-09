@@ -1,0 +1,30 @@
+// app/not-found.tsx
+// Shown whenever Next.js can't match a route or notFound() is called.
+// No 'use client' needed — this is a Server Component.
+
+import Link from "next/link";
+
+export default function NotFound() {
+  return (
+    <main className="error-page">
+      <div className="error-inner">
+
+        {/* Decorative sigil */}
+        <div className="error-sigil" aria-hidden="true">☽ ✦ ☾</div>
+
+        <span className="error-code">404</span>
+        <h1 className="error-title">The Veil Has Folded</h1>
+        <p className="error-desc">
+          This page wandered beyond the sanctum and was swallowed by the void.
+          The ritual you seek does not exist — or was never summoned.
+        </p>
+
+        <div className="error-actions">
+          <Link href="/" className="error-btn-primary">Return to the Sanctum →</Link>
+          <Link href="/shop" className="error-btn-secondary">Browse the Grimoire</Link>
+        </div>
+
+      </div>
+    </main>
+  );
+}

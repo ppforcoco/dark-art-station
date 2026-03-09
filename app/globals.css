@@ -2192,3 +2192,198 @@ body::before {
   .lb-arrow { display: none; }
   .lb-thumbs { padding: 0 8px 12px; }
 }
+
+/* ──────────────────────────────────────────────────────────── */
+/*  SHOP PAGE                                                    */
+/* ──────────────────────────────────────────────────────────── */
+
+.shop-page {
+  background-color: #070710;
+  min-height: 100vh;
+  padding-top: 100px;   /* clears fixed nav + topbar */
+}
+
+/* ── Page header ── */
+.shop-header {
+  padding: 60px 60px 24px;
+  border-bottom: 1px solid #2a2535;
+}
+
+.shop-page-title {
+  font-size: clamp(2rem, 4vw, 3.5rem);
+}
+
+.shop-page-num {
+  font-size: 1.5rem;
+  color: #4a445a;
+}
+
+.shop-page-count {
+  font-family: var(--font-cormorant), Georgia, serif;
+  font-style: italic;
+  font-size: 1.05rem;
+  color: #8a8099;
+  margin-top: 12px;
+}
+
+/* ── Filter bar ── */
+.shop-filter-bar {
+  padding: 24px 60px;
+  border-bottom: 1px solid #2a2535;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.filter-pill {
+  font-family: var(--font-space), monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #8a8099;
+  text-decoration: none;
+  border: 1px solid #2a2535;
+  padding: 8px 16px;
+  transition: color 0.2s, border-color 0.2s, background 0.2s;
+}
+.filter-pill:hover,
+.filter-pill[data-active="true"] {
+  color: #f0ecff;
+  border-color: #c0001a;
+  background: rgba(192, 0, 26, 0.1);
+}
+
+/* ── Product grid wrapper ── */
+.shop-grid-wrap {
+  padding: 60px 60px 0;
+}
+
+/* ── Empty state ── */
+.shop-empty {
+  text-align: center;
+  padding: 120px 0;
+}
+.shop-empty-msg {
+  font-family: var(--font-cinzel), cursive;
+  font-size: 1.5rem;
+  color: #2a2535;
+  margin-bottom: 16px;
+}
+
+/* ── Mobile responsive ── */
+@media (max-width: 767px) {
+  .shop-header    { padding: 40px 24px 20px; }
+  .shop-filter-bar { padding: 16px 24px; }
+  .shop-grid-wrap  { padding: 32px 24px 0; }
+  .filter-pill     { padding: 6px 12px; }
+}
+
+/* ──────────────────────────────────────────────────────────── */
+/*  ERROR PAGES  (404 not-found + 500 error)                    */
+/* ──────────────────────────────────────────────────────────── */
+
+.error-page {
+  background: #070710;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px;
+  text-align: center;
+}
+
+.error-inner {
+  max-width: 560px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+/* Decorative ritual sigil */
+.error-sigil {
+  font-size: 1.4rem;
+  letter-spacing: 0.5em;
+  color: #2a1525;
+  margin-bottom: 4px;
+}
+
+.error-code {
+  font-family: var(--font-space), monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: #c0001a;
+  border: 1px solid rgba(192, 0, 26, 0.3);
+  padding: 6px 18px;
+}
+
+.error-title {
+  font-family: var(--font-cinzel), cursive;
+  font-size: clamp(1.8rem, 5vw, 3rem);
+  font-weight: 700;
+  color: #d4cde8;
+  line-height: 1.2;
+  margin: 0;
+}
+
+.error-desc {
+  font-family: var(--font-cormorant), Georgia, serif;
+  font-style: italic;
+  font-size: 1.1rem;
+  color: #6a6080;
+  line-height: 1.7;
+  max-width: 440px;
+}
+
+.error-digest {
+  font-family: var(--font-space), monospace;
+  font-size: 0.5rem;
+  letter-spacing: 0.1em;
+  color: #2a2535;
+  background: #0e0c18;
+  padding: 6px 14px;
+  border: 1px solid #1a1727;
+}
+
+.error-actions {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 8px;
+}
+
+.error-btn-primary {
+  font-family: var(--font-space), monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #f0ecff;
+  background: #c0001a;
+  border: 1px solid #c0001a;
+  padding: 14px 28px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+.error-btn-primary:hover { background: #a00016; border-color: #a00016; }
+
+.error-btn-secondary {
+  font-family: var(--font-space), monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #c9a84c;
+  background: transparent;
+  border: 1px solid rgba(201, 168, 76, 0.4);
+  padding: 14px 28px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+.error-btn-secondary:hover {
+  background: rgba(201, 168, 76, 0.1);
+  border-color: #c9a84c;
+}

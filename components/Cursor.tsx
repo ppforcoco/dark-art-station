@@ -4,22 +4,22 @@ import { useEffect, useRef, useState } from "react";
 export default function Cursor() {
   const ringRef = useRef<HTMLDivElement>(null);
   const dotRef  = useRef<HTMLDivElement>(null);
-  const mx = useRef(0);
-  const my = useRef(0);
+  const mx  = useRef(0);
+  const my  = useRef(0);
   const raf = useRef<number>(0);
   const [hovered, setHovered] = useState(false);
 
   useEffect(() => {
-    // Only activate on true pointer devices (mouse/trackpad).
-    // Touch-only devices (phones/tablets) keep native cursor behaviour,
-    // saving CPU/battery and avoiding phantom cursor artefacts.
+    // Only activate on true pointer (mouse/trackpad) devices.
+    // Touch-only phones/tablets keep native behaviour — zero CPU waste.
     const isPointerFine = window.matchMedia("(pointer: fine)").matches;
     if (!isPointerFine) return;
 
-    // Show the cursor elements (hidden via CSS until JS confirms mouse device)
+    // Reveal cursor elements (start hidden to prevent flash on touch devices)
     if (ringRef.current) ringRef.current.style.display = "block";
     if (dotRef.current)  dotRef.current.style.display  = "block";
 
+    // ── Position tracking ─────────────────────────────────────────────────────
     const onMove = (e: MouseEvent) => {
       mx.current = e.clientX;
       my.current = e.clientY;
@@ -29,6 +29,7 @@ export default function Cursor() {
       }
     };
 
+    // rAF loop for the lagging ring — gives the "trailing" feel
     const loop = () => {
       if (ringRef.current) {
         ringRef.current.style.left = `${mx.current}px`;
@@ -38,21 +39,25 @@ export default function Cursor() {
     };
     raf.current = requestAnimationFrame(loop);
 
-    const bindHover = () => {
-      document.querySelectorAll("a, button, [data-hover]").forEach((el) => {
-        el.addEventListener("mouseenter", () => setHovered(true));
-        el.addEventListener("mouseleave", () => setHovered(false));
-      });
+    // ── Event delegation — ONE listener on document, no MutationObserver ─────
+    // Instead of attaching mouseenter/mouseleave to every a/button on the page
+    // (which needed a MutationObserver to catch dynamically added elements),
+    // we use a single mouseover on document and walk up the DOM to check if
+    // the cursor is over an interactive element. O(1) listeners regardless of
+    // how many links/buttons are on the page.
+    const onOver = (e: MouseEvent) => {
+      const target = e.target as Element | null;
+      const interactive = target?.closest("a, button, [data-hover]");
+      setHovered(!!interactive);
     };
-    bindHover();
-    const obs = new MutationObserver(bindHover);
-    obs.observe(document.body, { childList: true, subtree: true });
 
-    document.addEventListener("mousemove", onMove);
+    document.addEventListener("mousemove",  onMove);
+    document.addEventListener("mouseover",  onOver);
+
     return () => {
       document.removeEventListener("mousemove", onMove);
+      document.removeEventListener("mouseover", onOver);
       cancelAnimationFrame(raf.current);
-      obs.disconnect();
     };
   }, []);
 
@@ -62,14 +67,14 @@ export default function Cursor() {
     border: "1px solid #c0001a", borderRadius: "50%",
     transform: `translate(-50%, -50%) scale(${hovered ? 2 : 1})`,
     transition: "transform 0.15s ease",
-    display: "none",   // hidden until pointer:fine check passes in useEffect
+    display: "none",  // hidden until pointer:fine confirmed in useEffect
   };
   const dotStyle: React.CSSProperties = {
     position: "fixed", pointerEvents: "none", zIndex: 9999,
     width: 4, height: 4,
     background: "#ff3c00", borderRadius: "50%",
     transform: "translate(-50%, -50%)",
-    display: "none",   // hidden until pointer:fine check passes in useEffect
+    display: "none",  // hidden until pointer:fine confirmed in useEffect
   };
 
   return (

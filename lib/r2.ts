@@ -14,14 +14,19 @@ export const BUCKET = process.env.R2_BUCKET_NAME ?? "haunted-wallpapers-assets";
 
 /**
  * Generate a time-limited signed URL for any private R2 object.
+ * ResponseContentDisposition forces the browser to show a "Save As" dialog
+ * instead of rendering the file inline. fileName is sanitised before use.
  */
 export async function getSignedDownloadUrl(
   objectKey: string,
-  expiresInSeconds = 60 * 15
+  expiresInSeconds = 60 * 15,
+  fileName = "haunted-wallpaper.jpg"
 ): Promise<string> {
+  const safeFileName = fileName.replace(/[^a-zA-Z0-9._-]/g, "-");
   const command = new GetObjectCommand({
     Bucket: BUCKET,
-    Key: objectKey,
+    Key:    objectKey,
+    ResponseContentDisposition: `attachment; filename="${safeFileName}"`,
   });
   return getSignedUrl(r2, command, { expiresIn: expiresInSeconds });
 }
