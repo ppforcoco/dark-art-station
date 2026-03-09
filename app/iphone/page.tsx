@@ -7,66 +7,76 @@ import { getPublicUrl } from "@/lib/r2";
 import { getRankedTags } from "@/lib/tags";
 import TagCloud from "@/components/TagCloud";
 import AdSlot from "@/components/AdSlot";
+import Pagination from "@/components/Pagination";
 
-// Force dynamic rendering — this page uses searchParams (tag filter)
 export const dynamic = "force-dynamic";
 
+const PAGE_SIZE = 24;
+
 interface PageProps {
-  searchParams: Promise<{ tag?: string }>;
+  searchParams: Promise<{ tag?: string; page?: string }>;
 }
 
 // ─── SEO ─────────────────────────────────────────────────────────────────────
 
 export async function generateMetadata({ searchParams }: PageProps): Promise<Metadata> {
-  const { tag } = await searchParams;
+  const { tag, page: rawPage } = await searchParams;
+  const page    = Math.max(1, parseInt(rawPage ?? "1", 10) || 1);
+  const pageLabel = page > 1 ? ` — Page ${page}` : "";
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
 
   const title = tag
-    ? `Trending Dark #${tag} Wallpapers for iPhone | HAUNTED WALLPAPERS`
-    : "Free Dark iPhone Wallpapers 4K | HAUNTED WALLPAPERS";
+    ? `Trending Dark #${tag} Wallpapers for iPhone${pageLabel} | HAUNTED WALLPAPERS`
+    : `Free Dark iPhone Wallpapers 4K${pageLabel} | HAUNTED WALLPAPERS`;
 
   const description = tag
     ? `Browse free 4K dark fantasy iPhone wallpapers tagged #${tag}. Download instantly, no account required.`
     : "Free 4K dark fantasy & occult wallpapers for iPhone. Portrait 9:16 optimised. New drops daily. No account required.";
 
+  const canonical = tag ? `${siteUrl}/iphone?tag=${tag}` : `${siteUrl}/iphone`;
+
   return {
     title,
     description,
     keywords: ["iphone wallpaper", "dark wallpaper iphone", "4k iphone wallpaper", "free iphone wallpaper", tag ?? "occult", "dark fantasy"].filter(Boolean),
-    openGraph: {
-      title,
-      description,
-      url: tag ? `${siteUrl}/iphone?tag=${tag}` : `${siteUrl}/iphone`,
-      siteName: "HAUNTED WALLPAPERS",
-      type: "website",
-    },
+    openGraph: { title, description, url: canonical, siteName: "HAUNTED WALLPAPERS", type: "website" },
     twitter: { card: "summary_large_image", title, description },
-    alternates: { canonical: tag ? `${siteUrl}/iphone?tag=${tag}` : `${siteUrl}/iphone` },
+    alternates: { canonical },
   };
 }
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default async function IphonePage({ searchParams }: PageProps) {
-  const { tag } = await searchParams;
+  const { tag, page: rawPage } = await searchParams;
+  const page = Math.max(1, parseInt(rawPage ?? "1", 10) || 1);
+  const skip = (page - 1) * PAGE_SIZE;
 
-  const [images, rankedTags] = await Promise.all([
+  const where = {
+    collectionId: null,
+    deviceType: "IPHONE" as const,
+    ...(tag ? { tags: { has: tag } } : {}),
+  };
+
+  const [images, total, rankedTags] = await Promise.all([
     db.image.findMany({
-      where: {
-        collectionId: null,
-        deviceType: "IPHONE",
-        ...(tag ? { tags: { has: tag } } : {}),
-      },
+      where,
       orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
       select: { id: true, slug: true, title: true, r2Key: true, viewCount: true, tags: true },
+      take: PAGE_SIZE,
+      skip,
     }),
+    db.image.count({ where }),
     getRankedTags("IPHONE"),
   ]);
+
+  const totalPages = Math.ceil(total / PAGE_SIZE);
+  const baseUrl    = tag ? `/iphone?tag=${encodeURIComponent(tag)}` : "/iphone";
 
   return (
     <main className="min-h-screen bg-[#050505] text-white">
 
-      {/* ── Header ──────────────────────────────────────────────────────── */}
+      {/* ── Header ── */}
       <section className="max-w-7xl mx-auto px-6 md:px-[60px] pt-16 pb-8">
         <span className="font-mono text-[0.6rem] tracking-[0.25em] uppercase text-[#c0001a] block mb-3">
           The Sanctum — iPhone
@@ -77,21 +87,20 @@ export default async function IphonePage({ searchParams }: PageProps) {
           ) : (
             <>Free Dark iPhone <span className="text-[#c9a84c] italic">Wallpapers</span></>
           )}
+          {page > 1 && <span className="text-[#4a445a] text-2xl"> — Page {page}</span>}
         </h1>
         <p className="font-body text-[1rem] text-[#8a8099] italic mb-8 max-w-xl">
           Portrait 9:16 · 4K resolution · Instant download · No account required
         </p>
-
-        {/* Tag Cloud */}
         <Suspense fallback={null}>
           <TagCloud tags={rankedTags} />
         </Suspense>
       </section>
 
-      {/* ── Top Ad ──────────────────────────────────────────────────────── */}
+      {/* ── Top Ad ── */}
       <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_MAIN} width={728} height={90} />
 
-      {/* ── Grid ────────────────────────────────────────────────────────── */}
+      {/* ── Grid ── */}
       <section className="max-w-7xl mx-auto px-6 md:px-[60px] py-10">
         {images.length === 0 ? (
           <p className="font-mono text-[0.65rem] tracking-[0.2em] uppercase text-[#4a445a] py-20 text-center">
@@ -100,7 +109,7 @@ export default async function IphonePage({ searchParams }: PageProps) {
         ) : (
           <>
             <p className="font-mono text-[0.6rem] tracking-[0.2em] uppercase text-[#4a445a] mb-6">
-              — {images.length} wallpapers
+              — {total} wallpapers · page {page} of {totalPages}
             </p>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
               {images.map((img) => (
@@ -129,11 +138,13 @@ export default async function IphonePage({ searchParams }: PageProps) {
                 </Link>
               ))}
             </div>
+
+            <Pagination currentPage={page} totalPages={totalPages} baseUrl={baseUrl} />
           </>
         )}
       </section>
 
-      {/* ── Footer Ad ───────────────────────────────────────────────────── */}
+      {/* ── Footer Ad ── */}
       <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_FOOTER} width={728} height={90} className="mt-8" />
     </main>
   );

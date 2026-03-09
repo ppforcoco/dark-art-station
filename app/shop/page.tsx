@@ -3,8 +3,11 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Link from "next/link";
 import ProductCard from "@/components/ProductCard";
+import Pagination from "@/components/Pagination";
 
-export const revalidate = 60;
+export const dynamic = "force-dynamic";
+
+const PAGE_SIZE = 24;
 
 const VALID_BADGES = ["New", "Hot", "Free"] as const;
 type Badge = (typeof VALID_BADGES)[number];
@@ -13,19 +16,20 @@ function parseBadge(b: string | null | undefined): Badge | undefined {
 }
 
 interface ShopPageProps {
-  searchParams: Promise<{ category?: string; filter?: string }>;
+  searchParams: Promise<{ category?: string; filter?: string; page?: string }>;
 }
 
 export default async function ShopPage({ searchParams }: ShopPageProps) {
-  const { category, filter } = await searchParams;
+  const { category, filter, page: rawPage } = await searchParams;
+  const page = Math.max(1, parseInt(rawPage ?? "1", 10) || 1);
+  const skip = (page - 1) * PAGE_SIZE;
 
-  // Build dynamic where clause
   const where = {
     ...(category ? { category: { contains: category, mode: "insensitive" as const } } : {}),
     ...(filter === "free" ? { isFree: true } : {}),
   };
 
-  const [collections, allCategories] = await Promise.all([
+  const [collections, total, allCategories] = await Promise.all([
     db.collection.findMany({
       where,
       orderBy: { createdAt: "desc" },
@@ -34,8 +38,10 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
         price: true, isFree: true, badge: true,
         icon: true, bgClass: true, description: true, thumbnail: true,
       },
+      take: PAGE_SIZE,
+      skip,
     }),
-    // Get distinct categories for the filter bar
+    db.collection.count({ where }),
     db.collection.findMany({
       select: { category: true },
       distinct: ["category"],
@@ -43,7 +49,15 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
     }),
   ]);
 
+  const totalPages  = Math.ceil(total / PAGE_SIZE);
   const activeLabel = filter === "free" ? "Free Downloads" : category ?? "All Collections";
+
+  // Build base URL preserving current filters for pagination links
+  const baseUrl = filter === "free"
+    ? "/shop?filter=free"
+    : category
+      ? `/shop?category=${encodeURIComponent(category)}`
+      : "/shop";
 
   return (
     <>
@@ -51,28 +65,24 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
 
       <main style={{ backgroundColor: "#070710", minHeight: "100vh", paddingTop: "100px" }}>
 
-        {/* ── Page Header ─────────────────────────────── */}
+        {/* ── Page Header ── */}
         <div style={{ padding: "60px 60px 40px", borderBottom: "1px solid #2a2535" }}>
           <span className="section-eyebrow">The Grimoire</span>
           <h1 className="section-title" style={{ fontSize: "clamp(2rem, 4vw, 3.5rem)" }}>
             {activeLabel}
+            {page > 1 && <span style={{ fontSize: "1.5rem", color: "#4a445a" }}> — Page {page}</span>}
           </h1>
           <p style={{ fontFamily: "var(--font-cormorant)", fontStyle: "italic",
             fontSize: "1.05rem", color: "#8a8099", marginTop: "12px" }}>
-            {collections.length} {collections.length === 1 ? "work" : "works"} found in the abyss
+            {total} {total === 1 ? "work" : "works"} found in the abyss
           </p>
         </div>
 
-        {/* ── Filter Bar ──────────────────────────────── */}
+        {/* ── Filter Bar ── */}
         <div style={{ padding: "24px 60px", borderBottom: "1px solid #2a2535",
           display: "flex", gap: "12px", flexWrap: "wrap", alignItems: "center" }}>
-
-          <Link href="/shop" className="filter-pill" data-active={!category && !filter}>
-            All
-          </Link>
-          <Link href="/shop?filter=free" className="filter-pill" data-active={filter === "free"}>
-            Free
-          </Link>
+          <Link href="/shop" className="filter-pill" data-active={!category && !filter}>All</Link>
+          <Link href="/shop?filter=free" className="filter-pill" data-active={filter === "free"}>Free</Link>
           {allCategories.map((c) => (
             <Link
               key={c.category}
@@ -85,8 +95,8 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
           ))}
         </div>
 
-        {/* ── Grid ────────────────────────────────────── */}
-        <div style={{ padding: "60px" }}>
+        {/* ── Grid ── */}
+        <div style={{ padding: "60px 60px 0" }}>
           {collections.length > 0 ? (
             <div className="product-grid">
               {collections.map((p) => (
@@ -114,9 +124,15 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
             </div>
           )}
         </div>
+
+        {/* ── Pagination ── */}
+        {totalPages > 1 && (
+          <Pagination currentPage={page} totalPages={totalPages} baseUrl={baseUrl} />
+        )}
+
       </main>
 
-      {/* Filter pill styles — scoped inline to avoid globals bloat */}
+      {/* Filter pill styles */}
       <style>{`
         .filter-pill {
           font-family: var(--font-space), monospace;

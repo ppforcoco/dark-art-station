@@ -1,17 +1,22 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { searchWallpapers, type SearchResultItem } from "@/lib/db";
+import Pagination from "@/components/Pagination";
+
+const PAGE_SIZE = 24;
 
 // ─── Metadata (dynamic for SEO) ───────────────────────────────────────────────
 
 export async function generateMetadata(
-  { searchParams }: { searchParams: Promise<{ q?: string }> }
+  { searchParams }: { searchParams: Promise<{ q?: string; page?: string }> }
 ): Promise<Metadata> {
-  const { q: rawQ } = await searchParams;
-  const q = rawQ?.trim() ?? "";
+  const { q: rawQ, page: rawPage } = await searchParams;
+  const q    = rawQ?.trim() ?? "";
+  const page = Math.max(1, parseInt(rawPage ?? "1", 10) || 1);
+  const pageLabel = page > 1 ? ` — Page ${page}` : "";
   return {
     title: q
-      ? `"${q}" — Search Results | HauntedWallpapers`
+      ? `"${q}" — Search Results${pageLabel} | HauntedWallpapers`
       : "Search | HauntedWallpapers",
     description: q
       ? `Discover dark, occult wallpapers matching "${q}". Curated for iPhone, Android & PC.`
@@ -151,12 +156,18 @@ function EmptyState({ query }: { query: string }) {
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default async function SearchPage(
-  { searchParams }: { searchParams: Promise<{ q?: string }> }
+  { searchParams }: { searchParams: Promise<{ q?: string; page?: string }> }
 ) {
-  const { q: rawQ } = await searchParams;
-  const query   = rawQ?.trim() ?? "";
-  const results = query ? await searchWallpapers(query) : [];
-  const hasResults = results.length > 0;
+  const { q: rawQ, page: rawPage } = await searchParams;
+  const query      = rawQ?.trim() ?? "";
+  const page       = Math.max(1, parseInt(rawPage ?? "1", 10) || 1);
+  const { items: results, total } = query
+    ? await searchWallpapers(query, page, PAGE_SIZE)
+    : { items: [], total: 0 };
+  const hasResults  = results.length > 0;
+  const totalPages  = Math.ceil(total / PAGE_SIZE);
+  // Base URL preserves the ?q= param so pagination links are correct
+  const baseUrl     = query ? `/search?q=${encodeURIComponent(query)}` : "/search";
 
   return (
     <main className="search-page">
@@ -178,7 +189,8 @@ export default async function SearchPage(
         )}
         {hasResults && (
           <p className="search-header-count">
-            {results.length} vision{results.length !== 1 ? "s" : ""} surfaced
+            {total} vision{total !== 1 ? "s" : ""} surfaced
+            {totalPages > 1 && ` — page ${page} of ${totalPages}`}
           </p>
         )}
       </header>
@@ -200,6 +212,15 @@ export default async function SearchPage(
                 <ResultCard key={item.id} item={item} />
               ))}
             </div>
+          )}
+
+          {/* Pagination */}
+          {hasResults && totalPages > 1 && (
+            <Pagination
+              currentPage={page}
+              totalPages={totalPages}
+              baseUrl={baseUrl}
+            />
           )}
         </section>
 
