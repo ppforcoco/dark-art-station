@@ -76,7 +76,7 @@ body::before {
 /* ──────────────────────────────────────────────────────────── */
 .site-nav {
   position: fixed;
-  top: 0; width: 100%; z-index: 600;
+  top: var(--topbar-h, 0px); width: 100%; z-index: 600;
   padding: 24px 60px;
   display: flex; align-items: center; justify-content: space-between;
   border-bottom: 1px solid rgba(139,0,0,0.2);
@@ -1822,4 +1822,104 @@ body::before {
 @media (max-width: 479px) {
   .social-share-btns { gap: 6px; }
   .social-btn { padding: 10px 12px; font-size: 0.55rem; }
+}
+
+/* ──────────────────────────────────────────────────────────── */
+/*  HALLOWEEN COUNTDOWN TOPBAR                                   */
+/* ──────────────────────────────────────────────────────────── */
+
+/* Single source of truth for topbar height.
+   HalloweenCountdown.tsx sets this on :root via inline style.
+   site-nav reads it via top: var(--topbar-h, 0px).
+   When the bar is hidden, JS sets --topbar-h: 0px automatically. */
+
+.halloween-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: var(--topbar-h, 36px);
+  z-index: 700;                        /* above site-nav (600) */
+  background: #070710;
+  border-bottom: 1px solid rgba(192,0,26,0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  overflow: hidden;
+}
+
+/* Subtle ember glow behind the bar */
+.halloween-bar::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 60% 100% at 50% 100%,
+    rgba(192,0,26,0.12) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+/* ── Countdown segment ── */
+.hc-segment {
+  display: flex;
+  align-items: baseline;
+  gap: 3px;
+}
+.hc-num {
+  font-family: var(--font-cinzel), cursive;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: #c0001a;
+  /* Pulsing ember effect */
+  animation: hc-ember 3s ease-in-out infinite;
+  min-width: 1.8ch;
+  text-align: right;
+}
+.hc-label {
+  font-family: var(--font-space), monospace;
+  font-size: 0.42rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #3a2535;
+}
+.hc-sep {
+  font-family: var(--font-cinzel), cursive;
+  font-size: 0.65rem;
+  color: #2a1525;
+  margin: 0 4px;
+  align-self: center;
+}
+.hc-prefix {
+  font-family: var(--font-space), monospace;
+  font-size: 0.5rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #3a2535;
+  margin-right: 4px;
+}
+
+/* ── Halloween Active ("zero state") message ── */
+.hc-active {
+  font-family: var(--font-cinzel), cursive;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #c9a84c;
+  animation: hc-ember 1.5s ease-in-out infinite;
+  text-decoration: none;
+}
+.hc-active:hover { color: #f0ecff; }
+
+@keyframes hc-ember {
+  0%, 100% { opacity: 1;    text-shadow: 0 0 8px rgba(192,0,26,0.5); }
+  50%       { opacity: 0.75; text-shadow: 0 0 18px rgba(192,0,26,0.9); }
+}
+
+/* ── Mobile: hide Hours + Minutes + Seconds, show days only ── */
+@media (max-width: 479px) {
+  .hc-hide-mobile { display: none; }
+  .halloween-bar  { gap: 10px; }
+  .hc-prefix      { display: none; }
 }
