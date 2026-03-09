@@ -21,29 +21,29 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     select: { title: true, description: true, thumbnail: true, category: true },
   });
 
-  if (!collection) return { title: "Not Found | VOIDCANVAS" };
+  if (!collection) return { title: "Not Found | Haunted Wallpapers" };
 
   const ogImage = collection.thumbnail
     ? getPublicUrl(collection.thumbnail)
     : `${siteUrl}/og-default.jpg`;
 
   return {
-    title: `${collection.title} | VOIDCANVAS Dark Art`,
+    title: `${collection.title} | Haunted Wallpapers`,
     description: collection.description,
     keywords: [collection.category, "dark wallpaper", "occult art", "dark fantasy", "AI art", collection.title],
     openGraph: {
-      title: `${collection.title} | VOIDCANVAS`,
+      title:       `${collection.title} | Haunted Wallpapers`,
       description: collection.description,
-      url: `${siteUrl}/shop/${slug}`,
-      siteName: "VOIDCANVAS",
+      url:         `${siteUrl}/shop/${slug}`,
+      siteName:    "Haunted Wallpapers",
       images: [{ url: ogImage, width: 1200, height: 630, alt: collection.title }],
       type: "website",
     },
     twitter: {
-      card: "summary_large_image",
-      title: `${collection.title} | VOIDCANVAS`,
+      card:        "summary_large_image",
+      title:       `${collection.title} | Haunted Wallpapers`,
       description: collection.description,
-      images: [ogImage],
+      images:      [ogImage],
     },
     alternates: { canonical: `${siteUrl}/shop/${slug}` },
   };
@@ -175,7 +175,7 @@ export default async function CollectionPage({ params }: PageProps) {
             description: collection.description,
             url: `${process.env.NEXT_PUBLIC_SITE_URL}/shop/${slug}`,
             category: `Digital Products > ${collection.category}`,
-            brand: { "@type": "Brand", "name": "VOIDCANVAS" },
+            brand: { "@type": "Brand", "name": "Haunted Wallpapers" },
             image: thumbnailUrl ? [{
               "@type": "ImageObject",
               url: thumbnailUrl,
@@ -213,7 +213,7 @@ export default async function CollectionPage({ params }: PageProps) {
                 returnPolicyCategory: "https://schema.org/MerchantReturnNotPermitted",
                 applicableCountry: "Worldwide",
               },
-              seller: { "@type": "Organization", name: "VOIDCANVAS", url: process.env.NEXT_PUBLIC_SITE_URL },
+              seller: { "@type": "Organization", name: "Haunted Wallpapers", url: process.env.NEXT_PUBLIC_SITE_URL },
             },
             potentialAction: {
               "@type": "DownloadAction",

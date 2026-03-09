@@ -28,10 +28,37 @@ const spaceMono = Space_Mono({
   display: "swap",
 });
 
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
+const SITE_NAME = "Haunted Wallpapers";
+const OG_IMAGE  = `${SITE_URL}/og-image.jpg`;   // Place your best 1200×630 artwork at /public/og-image.jpg
+
 export const metadata: Metadata = {
-  title: "Haunted Wallpapers | Dark Fantasy Art & Occult Wallpapers",
+  title: "Haunted Wallpapers | Free Dark Fantasy & Occult Wallpapers",
   description:
     "Free dark fantasy wallpapers, tarot art, and occult designs. Download high-resolution AI art collections. Skeletons, demons, goddesses and more.",
+  metadataBase: new URL(SITE_URL),
+  openGraph: {
+    title:       "Haunted Wallpapers | Free Dark Fantasy & Occult Wallpapers",
+    description: "Free dark fantasy wallpapers, tarot art, and occult designs. Download high-resolution AI art collections.",
+    url:         SITE_URL,
+    siteName:    SITE_NAME,
+    type:        "website",
+    images: [
+      {
+        url:    OG_IMAGE,
+        width:  1200,
+        height: 630,
+        alt:    "Haunted Wallpapers — Dark Fantasy & Occult Art",
+      },
+    ],
+  },
+  twitter: {
+    card:        "summary_large_image",
+    title:       "Haunted Wallpapers | Free Dark Fantasy & Occult Wallpapers",
+    description: "Free dark fantasy wallpapers, tarot art, and occult designs. Download high-resolution AI art collections.",
+    images:      [OG_IMAGE],
+  },
+  alternates: { canonical: SITE_URL },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
