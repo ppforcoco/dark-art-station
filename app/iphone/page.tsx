@@ -8,6 +8,7 @@ import { getRankedTags } from "@/lib/tags";
 import TagCloud from "@/components/TagCloud";
 import AdSlot from "@/components/AdSlot";
 import Pagination from "@/components/Pagination";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 export const dynamic = "force-dynamic";
 
@@ -78,6 +79,11 @@ export default async function IphonePage({ searchParams }: PageProps) {
 
       {/* ── Header ── */}
       <section className="max-w-7xl mx-auto px-6 md:px-[60px] pt-16 pb-8">
+        <Breadcrumbs items={[
+          { label: "Home",   href: "/"       },
+          { label: "iPhone", href: "/iphone" },
+          ...(tag ? [{ label: `#${tag}` }] : []),
+        ]} />
         <span className="font-mono text-[0.6rem] tracking-[0.25em] uppercase text-[#c0001a] block mb-3">
           The Sanctum — iPhone
         </span>

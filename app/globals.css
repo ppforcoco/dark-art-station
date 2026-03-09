@@ -1607,3 +1607,43 @@ body::before {
   .pagination { gap: 4px; }
   .pagination-btn { min-width: 36px; height: 36px; font-size: 0.6rem; }
 }
+
+/* ──────────────────────────────────────────────────────────── */
+/*  BREADCRUMBS                                                  */
+/* ──────────────────────────────────────────────────────────── */
+.breadcrumbs {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0;
+  margin-bottom: 20px;
+  list-style: none;
+}
+.breadcrumb-item {
+  display: flex;
+  align-items: center;
+}
+.breadcrumb-link {
+  font-family: var(--font-space), monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #4a445a;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.breadcrumb-link:hover { color: #c0001a; }
+.breadcrumb-sep {
+  font-family: var(--font-space), monospace;
+  font-size: 0.55rem;
+  color: #2a2535;
+  margin: 0 8px;
+  user-select: none;
+}
+.breadcrumb-current {
+  font-family: var(--font-space), monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #8a8099;
+}

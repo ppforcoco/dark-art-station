@@ -1,9 +1,8 @@
 import { db } from "@/lib/db";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 import Link from "next/link";
 import ProductCard from "@/components/ProductCard";
 import Pagination from "@/components/Pagination";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 export const dynamic = "force-dynamic";
 
@@ -60,14 +59,17 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
       : "/shop";
 
   return (
-    <>
-      <Header />
+    <main style={{ backgroundColor: "#070710", minHeight: "100vh", paddingTop: "100px" }}>
 
-      <main style={{ backgroundColor: "#070710", minHeight: "100vh", paddingTop: "100px" }}>
-
-        {/* ── Page Header ── */}
-        <div style={{ padding: "60px 60px 40px", borderBottom: "1px solid #2a2535" }}>
-          <span className="section-eyebrow">The Grimoire</span>
+      {/* ── Page Header ── */}
+      <div style={{ padding: "60px 60px 24px", borderBottom: "1px solid #2a2535" }}>
+        <Breadcrumbs items={[
+          { label: "Home",        href: "/"     },
+          { label: "Collections", href: "/shop" },
+          ...(category ? [{ label: category }] : []),
+          ...(filter === "free" ? [{ label: "Free Downloads" }] : []),
+        ]} />
+        <span className="section-eyebrow">The Grimoire</span>
           <h1 className="section-title" style={{ fontSize: "clamp(2rem, 4vw, 3.5rem)" }}>
             {activeLabel}
             {page > 1 && <span style={{ fontSize: "1.5rem", color: "#4a445a" }}> — Page {page}</span>}
@@ -156,7 +158,6 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
         }
       `}</style>
 
-      <Footer />
-    </>
+    </main>
   );
 }
