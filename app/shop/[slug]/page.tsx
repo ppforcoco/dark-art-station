@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Image from "next/image";
-import Link from "next/link";
 import { db } from "@/lib/db";
 import { getPublicUrl } from "@/lib/r2";
 import AdSlot from "@/components/AdSlot";
+import LightboxGallery from "@/components/LightboxGallery";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -149,31 +149,15 @@ export default async function CollectionPage({ params }: PageProps) {
           <h2 className="font-mono text-[0.7rem] tracking-[0.3em] uppercase text-[#4a445a] mb-8">
             — {collection.images.length} Works in this Collection
           </h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {collection.images.map((img) => (
-              <Link
-                key={img.id}
-                href={`/shop/${slug}/${img.slug}`}
-                className="group relative aspect-portrait overflow-hidden bg-[#0a0a0a] border border-[#2a2535] hover:border-[rgba(139,0,0,0.6)] transition-colors duration-300"
-              >
-                <Image
-                  src={getPublicUrl(img.r2Key)}
-                  alt={img.title}
-                  fill
-                  className="object-cover transition-transform duration-500 group-hover:scale-105"
-                  sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-[rgba(5,5,5,0.9)] via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
-                  <div>
-                    <p className="font-body italic text-[0.9rem] text-white leading-tight">{img.title}</p>
-                    <span className="font-mono text-[0.55rem] tracking-[0.15em] uppercase text-[#c9a84c] mt-1 block">
-                      View & Download →
-                    </span>
-                  </div>
-                </div>
-              </Link>
-            ))}
-          </div>
+          <LightboxGallery
+            images={collection.images.map((img) => ({
+              id:    img.id,
+              src:   getPublicUrl(img.r2Key),
+              alt:   img.title,
+              title: img.title,
+              href:  `/shop/${slug}/${img.slug}`,
+            }))}
+          />
         </section>
       )}
 

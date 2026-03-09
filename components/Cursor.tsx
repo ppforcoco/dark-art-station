@@ -10,6 +10,16 @@ export default function Cursor() {
   const [hovered, setHovered] = useState(false);
 
   useEffect(() => {
+    // Only activate on true pointer devices (mouse/trackpad).
+    // Touch-only devices (phones/tablets) keep native cursor behaviour,
+    // saving CPU/battery and avoiding phantom cursor artefacts.
+    const isPointerFine = window.matchMedia("(pointer: fine)").matches;
+    if (!isPointerFine) return;
+
+    // Show the cursor elements (hidden via CSS until JS confirms mouse device)
+    if (ringRef.current) ringRef.current.style.display = "block";
+    if (dotRef.current)  dotRef.current.style.display  = "block";
+
     const onMove = (e: MouseEvent) => {
       mx.current = e.clientX;
       my.current = e.clientY;
@@ -52,12 +62,14 @@ export default function Cursor() {
     border: "1px solid #c0001a", borderRadius: "50%",
     transform: `translate(-50%, -50%) scale(${hovered ? 2 : 1})`,
     transition: "transform 0.15s ease",
+    display: "none",   // hidden until pointer:fine check passes in useEffect
   };
   const dotStyle: React.CSSProperties = {
     position: "fixed", pointerEvents: "none", zIndex: 9999,
     width: 4, height: 4,
     background: "#ff3c00", borderRadius: "50%",
     transform: "translate(-50%, -50%)",
+    display: "none",   // hidden until pointer:fine check passes in useEffect
   };
 
   return (
