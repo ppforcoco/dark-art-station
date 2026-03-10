@@ -3076,6 +3076,177 @@
         "highResExt": "jpeg"
       }
     ]
+  },
+  {
+    "slug": "dark-minimal-horror",
+    "title": "Dark Minimal Horror Wallpaper Collection",
+    "description": "A bold series of 20 dark minimalist horror wallpapers featuring glowing eyes, shadowy creatures, skeleton hands, and eerie scenes designed for AMOLED screens.",
+    "category": "Dark Minimal Wallpapers",
+    "thumbnailR2Key": "thumbnails/dark-minimal-horror/dark-minimal-horror.jpeg",
+    "tag": "Featured",
+    "featured": true,
+    "images": [
+      {
+        "slug": "dragon-eye-red",
+        "title": "Red Dragon Eye Dark Minimal Horror Wallpaper",
+        "description": "A single glowing red reptilian eye with a slit pupil tears through the darkness with claw marks surrounding it. Represents the feeling of being watched by something ancient and predatory — the eye that never closes, never blinks, never forgives. Best for AMOLED screens.",
+        "sortOrder": 1,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "demon-shadow-eyes",
+        "title": "Shadow Demon Glowing Eyes Dark Minimal Wallpaper",
+        "description": "A dark horned shadow demon with glowing yellow eyes barely visible against a charcoal background. Symbolizes the evil that hides in plain sight — present, patient, and waiting. The less you see it, the more it sees you.",
+        "sortOrder": 2,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "skull-minimal-dark",
+        "title": "Minimal Skull Red Crack Dark Art Wallpaper",
+        "description": "A stark white skull with angry brow markings floats above a fading skeleton body with red lightning cracks spreading beneath it against a near-black background. Represents mortality dressed in rage — death is not peaceful, it is furious.",
+        "sortOrder": 3,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "skull-wings-awake",
+        "title": "Skull Bat Wings Stay Awake Dark Minimal Wallpaper",
+        "description": "A winged skull with glowing red eyes, a crown, and thorned branches forms a dark emblem with the words 'Stay Awake' beneath it. A reminder that the moment you close your eyes, something takes over — stay sharp, stay dangerous.",
+        "sortOrder": 4,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "claw-hand-rise",
+        "title": "Claw Hand Rising Never Wake Up Dark Wallpaper",
+        "description": "A pale sharp-clawed hand rises from the ground with the words 'Never Wake Up' below it. The story of something buried that refuses to stay down — a warning that some things should never be disturbed.",
+        "sortOrder": 5,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "ghost-hand-crack",
+        "title": "Ghost Hand Cracking Ground Dark Forest Wallpaper",
+        "description": "A pale elongated clawed hand breaks through cracked ground surrounded by dark shadowy trees. Tells the story of something clawing its way back from wherever it was buried — slow, inevitable, unstoppable.",
+        "sortOrder": 6,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "hooded-stay-alone",
+        "title": "Hooded Figure Stay Alone Red Eyes Dark Wallpaper",
+        "description": "A small hooded silhouette with glowing red eyes floats on a cracked dark grey wall with the words 'Stay Alone' in red beneath it. The wallpaper for those who prefer their own darkness over anyone else's light.",
+        "sortOrder": 7,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "red-skeleton-rise",
+        "title": "Red Skeleton Hand Rising Dark Minimal Art Wallpaper",
+        "description": "A bold red skeleton hand bursts from cracked ground against a pure black background with dark geometric shapes behind it. Raw power, unburied — the kind of energy that refuses to stay contained.",
+        "sortOrder": 8,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "skull-bats-moon",
+        "title": "Skull Glowing Eyes Bats Moon Dark Minimal Wallpaper",
+        "description": "A dark geometric skull with glowing yellow eyes floats in front of a large moon with bats flying above and ghost wisps drifting below among dark trees. The classic halloween nightmare rendered in a clean modern style — timeless dread.",
+        "sortOrder": 9,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "skull-hand-forest",
+        "title": "Skull Hand Red Sky Dark Forest Minimal Wallpaper",
+        "description": "A dark claw hand reaches upward toward a floating tiny red-eyed skull above a crimson horizon silhouetted against a dark pine forest. A story of a soul reaching for the darkness it belongs to — finally going home.",
+        "sortOrder": 10,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "watcher-forest-silent",
+        "title": "They Watch Stay Silent Dark Forest Hooded Wallpaper",
+        "description": "A hooded figure with white glowing eyes stands between twisted dark trees with three lines of text — 'They Watch', 'Stay Silent', 'Don't Turn Around'. The wallpaper that makes your screen feel like a survival warning. You are never truly alone.",
+        "sortOrder": 11,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "reaper-red-glow",
+        "title": "Dark Reaper Red Glow Cracked Ground Minimal Wallpaper",
+        "description": "A tattered dark reaper with glowing red eyes floats above cracked ground with red light burning beneath its robes and shattered pieces floating around it. Represents something that was contained for too long — now free, now furious.",
+        "sortOrder": 12,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "villain-watching-red",
+        "title": "Villain Face Red Claw Watching Dark Art Wallpaper",
+        "description": "A shadowy villain face with cold grey eyes looms behind a bold red geometric claw symbol with the word 'Watching' below it. Inspired by the feeling of a final boss who has already won before the fight begins — calm, calculating, omnipresent.",
+        "sortOrder": 13,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "eyeball-skeleton-unlock",
+        "title": "Skeleton Hand Eyeball Watching You Dark Wallpaper",
+        "description": "A glowing skeleton hand holds up a bloodshot eyeball with the words 'Watching You — Don't Unlock' beneath it on a black background with thorned spiral patterns. The wallpaper that stares back at whoever picks up your phone.",
+        "sortOrder": 14,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "horror-wall-break",
+        "title": "Horror Do Not Awaken Skull Breaking Wall Wallpaper",
+        "description": "A glowing red skull creature with claws tears through a cracked wall with the words 'Horror' above and 'Do Not Awaken' below against a dark grey background. The story of something sealed away for good reason — and the price of breaking that seal.",
+        "sortOrder": 15,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "skull-thorn-emblem",
+        "title": "White Skull Red Thorn Emblem Dark Minimal Wallpaper",
+        "description": "A clean white skull centered inside a dark emblem of crossed bones and red thorned branches against a near-black background. Minimal, bold, and timeless — the mark of someone who lives by their own code with no apologies.",
+        "sortOrder": 16,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "mask-red-eyes",
+        "title": "Dark Mask Glowing Red Eyes Minimal Horror Wallpaper",
+        "description": "A dark angular mask with jagged teeth and blazing red eyes sits centered in total darkness. Represents the face we wear when we want no one to know what we are truly thinking — pure menace behind a minimal facade.",
+        "sortOrder": 17,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "haunted-house-moon",
+        "title": "Haunted House Red Moon Zombie Hand Dark Wallpaper",
+        "description": "A minimal haunted house glowing with warm light sits under a large red crescent moon while a dark zombie hand claws up from the ground below with the words 'Nightmare Awakes'. The moment the night officially belongs to the dead.",
+        "sortOrder": 18,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "red-reaper-moon",
+        "title": "Red Hooded Reaper Crescent Moon Dark Minimal Wallpaper",
+        "description": "A bold geometric red and black hooded figure with glowing red eyes stands in a dead forest under a white crescent moon. The reaper who does not run, does not hide, does not rush — it simply arrives when it is time.",
+        "sortOrder": 19,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "skeleton-red-moon",
+        "title": "Skeleton Hand Holding Red Moon Dark Art Wallpaper",
+        "description": "A white skeleton hand delicately holds a glowing red crescent moon with a skull embedded in it, surrounded by bare branch lines on a pure black background. Represents owning the darkness — not fearing it, but cradling it like something precious.",
+        "sortOrder": 20,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      }
+    ]
   }
   ],
   "standalones": [
