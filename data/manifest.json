@@ -2779,6 +2779,188 @@
         "highResExt": "jpeg"
       }
     ]
+  },
+  {
+    "slug": "dark-fantasy-art",
+    "title": "Dark Fantasy Art Collection",
+    "description": "A stunning series of 10 dark fantasy digital artworks featuring gothic castles, powerful warriors, fearsome dragons, and mystical creatures set against dramatic moonlit landscapes.",
+    "category": "Dark Fantasy Illustrations",
+    "thumbnailR2Key": "thumbnails/dark-fantasy-art/dark-fantasy-art.jpeg",
+    "tag": "Featured",
+    "featured": true,
+    "images": [
+      {
+        "slug": "gothic-castle-moonlight",
+        "title": "Gothic Castle on Rocky Cliff Moonlit Night Fantasy Art",
+        "description": "A towering gothic castle perched on a jagged mountain cliff illuminated by glowing blue and purple windows under a crescent moon. A winding torch-lit path leads up the rocky mountainside through dark mist and pine forests.",
+        "sortOrder": 1,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "ancient-tree-night",
+        "title": "Ancient Twisted Tree Glowing Mushrooms Dark Forest Night Art",
+        "description": "A massive ancient gnarled tree with twisted branches reaching toward a starry crescent moon sky, surrounded by glowing bioluminescent mushrooms and mystical blue flora in a dark enchanted forest.",
+        "sortOrder": 2,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "horned-skull-dark",
+        "title": "Horned Demon Skull Glowing Eyes Dark Fantasy Art",
+        "description": "A carved stone demon skull with massive curved horns and glowing blue eyes resting on a mossy altar stone, featuring engraved rune markings and a serpent sword emblem under a crescent moon with a ruined castle in the background.",
+        "sortOrder": 3,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "dark-ranger-cliff",
+        "title": "Dark Fantasy Ranger Cliff Edge Gothic Castle Wallpaper",
+        "description": "A mysterious hooded ranger with glowing blue eyes stands on a rocky cliff edge wearing tattered dark armor and cloak, overlooking a winding river valley with a gothic castle silhouetted under a crescent moon and stormy purple sky.",
+        "sortOrder": 4,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "dark-castle-stars",
+        "title": "Dark Gothic Castle Starry Night Milky Way Fantasy Wallpaper",
+        "description": "A dramatic silhouette of a gothic castle with sharp spires atop a rocky mountain cliff under a breathtaking starry night sky with a glowing crescent moon and milky way galaxy, surrounded by misty dark forest and dead trees.",
+        "sortOrder": 5,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "dark-mage-forest",
+        "title": "Dark Mage Rune Cloak Purple Staff Dead Forest Fantasy Art",
+        "description": "A cloaked dark mage with rune-inscribed robes carrying a staff topped with a glowing purple crystal and a perched raven, walking away through a twisted dead forest path toward a distant dark tower under a crescent moon.",
+        "sortOrder": 6,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "viking-vs-bear",
+        "title": "Viking Warrior vs Giant Bear Dark Fantasy Battle Art",
+        "description": "An armored viking warrior wielding a gleaming sword and bear-emblem shield faces off against a massive roaring grizzly bear with glowing orange eyes in a snow-covered dark forest battlefield under a crescent moon.",
+        "sortOrder": 7,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "knight-vs-dragon",
+        "title": "Knight vs Fire Dragon Epic Fantasy Battle Cliff Art",
+        "description": "A lone armored knight holds a glowing sword and shield against a colossal fire-breathing dragon with glowing orange eyes and massive wings on a rocky mountain cliff, surrounded by flames and dark stormy clouds.",
+        "sortOrder": 8,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "warrior-dragon-storm",
+        "title": "Warrior vs Flying Dragon Lightning Storm Dark Fantasy Art",
+        "description": "An armored warrior with a glowing blue sword and shield braces against a massive winged dragon breathing a massive stream of fire from above, set against a dramatic stormy sky with lightning bolts and burning ruins.",
+        "sortOrder": 9,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "knight-vs-demon",
+        "title": "Knight vs Giant Horned Demon Monster Epic Dark Fantasy Art",
+        "description": "A lone armored knight wielding a glowing fiery sword and shield stands his ground against a towering horned stone demon with glowing red eyes and massive claws on a crumbling cliff edge amid lightning, fire, and dark mountains.",
+        "sortOrder": 10,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      }
+    ]
+  },
+  {
+    "slug": "skeleton-night-art",
+    "title": "Skeleton Night Art Collection",
+    "description": "A bold series of 10 edgy skeleton illustrations featuring attitude, street style, glowing bones, and dark humor set against spooky graveyard and moonlit night aesthetics.",
+    "category": "Character Illustrations",
+    "thumbnailR2Key": "thumbnails/skeleton-night-art/skeleton-night-art.jpeg",
+    "tag": "Featured",
+    "featured": true,
+    "images": [
+      {
+        "slug": "skeleton-graveyard-walk",
+        "title": "Skeleton Walking Graveyard Night Starry Sky Dark Art",
+        "description": "A cartoon skeleton wearing a black beanie hat, dark cloak, and boots strides confidently through a spooky graveyard with a walking stick under a crescent moon and star-filled night sky with tombstones and bare trees in the background.",
+        "sortOrder": 1,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "glowing-skeleton-forest",
+        "title": "Glowing Green Skeleton Dark Forest Night Wallpaper",
+        "description": "A neon green glowing skeleton stands alone on a dark forest path surrounded by twisted bare trees and eerie mist under a faint moonlit sky, emitting a ghostly bioluminescent green light in total darkness.",
+        "sortOrder": 2,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "skeleton-hand-phone",
+        "title": "Skeleton Hand Holding Phone Glowing Graveyard Night Art",
+        "description": "A glowing cyan blue skeleton hand holding a brightly lit smartphone emerges in a spooky dark forest graveyard scene with tombstones, a flying bat, crescent moon, and a haunted castle silhouette in the background.",
+        "sortOrder": 3,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "skeleton-lantern-graveyard",
+        "title": "Glowing Skeleton Lantern Graveyard Moonlit Night Art",
+        "description": "A hooded glowing teal skeleton in tattered robes carries a warm oil lantern while walking through a foggy moonlit graveyard with ivy-covered tombstones, dead trees, and a gothic building silhouette under a crescent moon.",
+        "sortOrder": 4,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "skeleton-band-tee",
+        "title": "Skeleton Sitting Tree Branch Wearing Band Shirt Night Art",
+        "description": "A laid-back skeleton wearing black pants and a dark band graphic tee sits casually on a tree branch in a dark forest under a crescent moon and starry night sky, legs dangling with bare bone feet.",
+        "sortOrder": 5,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "skeleton-night-lantern",
+        "title": "Glowing Skeleton Holding Lantern Dark Night Forest Wallpaper",
+        "description": "A full-body glowing white skeleton with blue glowing eyes stands upright on rocky ground in a pitch-black forest, holding a small old lantern in one hand under a crescent moon with dark bare trees surrounding the scene.",
+        "sortOrder": 6,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "skeleton-phone-tombstone",
+        "title": "Skeleton Scrolling Phone Sitting Tombstone Graveyard Art",
+        "description": "A glowing teal hooded skeleton sits cross-legged on a moss-covered tombstone engraved with Memento Mori, casually scrolling through a smartphone in a dark graveyard under a crescent moon and starry night sky.",
+        "sortOrder": 7,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "skull-call-me-dare",
+        "title": "Scary Skull Call Me If You Dare Phone Dark Humor Art",
+        "description": "A menacing skull with glowing red eyes holds up a black smartphone showing the message 'Call Me If You Dare - Dial 666' with smoke rising in the background against a dark gray minimal backdrop.",
+        "sortOrder": 8,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "skeleton-rock-hand",
+        "title": "Skeleton Rock On Hand Sign Dark Smoke Minimalist Art",
+        "description": "A detailed skeleton hand making the rock-on horns gesture rises from darkness against a dramatic smoky gray background with floating red sparks, rendered in a bold graphic illustration style.",
+        "sortOrder": 9,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      },
+      {
+        "slug": "skeleton-phone-moon",
+        "title": "Skeleton Hand Holding Phone Full Moon Night Sky Wallpaper",
+        "description": "A white skeleton hand grips a black smartphone upright against a dramatic full moon glowing through dark clouds in a starry night sky, creating a striking minimalist dark aesthetic wallpaper illustration.",
+        "sortOrder": 10,
+        "thumbExt": "jpeg",
+        "highResExt": "jpeg"
+      }
+    ]
   }
   ],
   "standalones": [
