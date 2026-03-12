@@ -36,8 +36,12 @@ export type WotdImage = {
 
 export async function getWallpaperOfTheDay(): Promise<WotdImage | null> {
   // Step 1 — get IDs only (cheap query, no image data yet)
+  // PC wallpapers excluded — WOTD is for phone/tablet visuals only.
   const ids = await db.image.findMany({
-    where: { collectionId: null, deviceType: { not: null } },
+    where: {
+      collectionId: null,
+      deviceType: { in: ["IPHONE", "ANDROID"] },
+    },
     select: { id: true },
     orderBy: { createdAt: "asc" }, // stable order across calls
   });
@@ -224,4 +228,127 @@ export async function searchWallpapers(
   });
 
   return { items: sorted, total };
+}
+// ─── Related Images ───────────────────────────────────────────────────────────
+//
+// Returns up to `limit` images that share AT LEAST 2 tags with the source
+// image, sorted by viewCount descending (most popular first).
+//
+// Works for both standalone images (collectionId = null) and
+// collection images (collectionId set) — pass whichever field applies.
+// The source image itself is excluded via the `id` filter.
+//
+// Tag matching uses Prisma hasSome (Postgres && array overlap operator).
+// We then post-filter in JS for the ≥2 overlap requirement, because
+// Prisma doesn't expose a "count of matching elements" predicate.
+
+export type RelatedImage = {
+  id:         string;
+  slug:       string;
+  title:      string;
+  r2Key:      string;
+  tags:       string[];
+  viewCount:  number;
+  deviceType: string | null;
+  collectionSlug: string | null;
+};
+
+export async function getRelatedImages(
+  sourceId:   string,
+  sourceTags: string[],
+  limit = 6,
+): Promise<RelatedImage[]> {
+  if (sourceTags.length === 0) return [];
+
+  // Fetch candidates — any image sharing ≥1 tag (broad net), not the source
+  const candidates = await db.image.findMany({
+    where: {
+      id:   { not: sourceId },
+      tags: { hasSome: sourceTags },
+    },
+    select: {
+      id:         true,
+      slug:       true,
+      title:      true,
+      r2Key:      true,
+      tags:       true,
+      viewCount:  true,
+      deviceType: true,
+      collection: { select: { slug: true } },
+    },
+    orderBy: { viewCount: "desc" },
+    take:    limit * 4, // over-fetch so post-filter has enough candidates
+  });
+
+  // Post-filter: require ≥2 matching tags for true "related" quality
+  const sourceSet = new Set(sourceTags.map(t => t.toLowerCase()));
+  const qualified = candidates.filter((img) => {
+    const overlap = img.tags.filter(t => sourceSet.has(t.toLowerCase())).length;
+    return overlap >= 2;
+  });
+
+  // Fall back to ≥1 overlap if we couldn't find enough ≥2 matches
+  const pool = qualified.length >= 2 ? qualified : candidates;
+
+  return pool.slice(0, limit).map(img => ({
+    id:             img.id,
+    slug:           img.slug,
+    title:          img.title,
+    r2Key:          img.r2Key,
+    tags:           img.tags,
+    viewCount:      img.viewCount,
+    deviceType:     img.deviceType,
+    collectionSlug: img.collection?.slug ?? null,
+  }));
+}
+
+// ─── Seasonal / Event Page Query ──────────────────────────────────────────────
+//
+// Returns all images (standalone + collection-based) tagged with a given
+// seasonal keyword, sorted by viewCount desc. Used by app/[eventSlug]/page.tsx.
+// No pagination — limit is generous; seasonal pages are curated not infinite.
+
+export type SeasonalImage = {
+  id:             string;
+  slug:           string;
+  title:          string;
+  r2Key:          string;
+  tags:           string[];
+  viewCount:      number;
+  deviceType:     string | null;
+  collectionSlug: string | null;
+};
+
+export async function getSeasonalImages(
+  tag:   string,
+  limit = 48,
+): Promise<SeasonalImage[]> {
+  const images = await db.image.findMany({
+    where: {
+      tags: { hasSome: [tag.toLowerCase()] },
+    },
+    select: {
+      id:         true,
+      slug:       true,
+      title:      true,
+      r2Key:      true,
+      tags:       true,
+      viewCount:  true,
+      deviceType: true,
+      collection: { select: { slug: true } },
+    },
+    orderBy: { viewCount: "desc" },
+    take:    limit,
+  });
+
+  return images.map(img => ({
+    id:             img.id,
+    slug:           img.slug,
+    title:          img.title,
+    r2Key:          img.r2Key,
+    tags:           img.tags,
+    viewCount:      img.viewCount,
+    deviceType:     img.deviceType,
+    collectionSlug: img.collection?.slug ?? null,
+  }));
 }

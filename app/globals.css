@@ -2387,3 +2387,411 @@ body::before {
   background: rgba(201, 168, 76, 0.1);
   border-color: #c9a84c;
 }
+
+/* ──────────────────────────────────────────────────────────── */
+/*  DEVICE MOCKUP                                               */
+/* ──────────────────────────────────────────────────────────── */
+
+/* ── Phone frame (IPHONE / ANDROID) ── */
+.mockup-phone {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 340px;
+  margin: 0 auto;
+}
+
+.mockup-phone-shell {
+  position: relative;
+  width: 100%;
+  /* 9:19.5 approx iPhone aspect */
+  aspect-ratio: 9 / 19.5;
+  background: linear-gradient(145deg, #1a1a2e 0%, #0d0d1a 60%, #050510 100%);
+  border-radius: 44px;
+  border: 2px solid rgba(201,168,76,0.25);
+  box-shadow:
+    0 0 0 1px rgba(0,0,0,0.8),
+    inset 0 0 0 1px rgba(255,255,255,0.04),
+    0 32px 80px rgba(0,0,0,0.7),
+    0 0 40px rgba(192,0,26,0.06);
+  overflow: hidden;
+  padding: 14px 6px;
+}
+
+/* Notch / dynamic island */
+.mockup-phone-notch {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90px;
+  height: 26px;
+  background: #070710;
+  border-radius: 20px;
+  z-index: 10;
+  border: 1px solid rgba(255,255,255,0.04);
+}
+
+/* Side buttons — pure CSS, decorative */
+.mockup-phone-shell::before {
+  content: "";
+  position: absolute;
+  right: -4px;
+  top: 28%;
+  width: 3px;
+  height: 12%;
+  background: rgba(201,168,76,0.2);
+  border-radius: 2px;
+  box-shadow: 0 20px 0 rgba(201,168,76,0.2), 0 36px 0 rgba(201,168,76,0.2);
+}
+.mockup-phone-shell::after {
+  content: "";
+  position: absolute;
+  left: -4px;
+  top: 22%;
+  width: 3px;
+  height: 8%;
+  background: rgba(201,168,76,0.2);
+  border-radius: 2px;
+  box-shadow: 0 18px 0 rgba(201,168,76,0.2);
+}
+
+/* Screen area inside the phone */
+.mockup-phone-screen {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 34px;
+  background: #050505;
+}
+
+/* ── Monitor frame (PC) ── */
+.mockup-monitor {
+  position: relative;
+  width: 100%;
+  max-width: 620px;
+  margin: 0 auto;
+}
+
+.mockup-monitor-bezel {
+  position: relative;
+  background: linear-gradient(160deg, #1a1a2e, #0a0a1a);
+  border-radius: 12px 12px 4px 4px;
+  border: 2px solid rgba(201,168,76,0.2);
+  padding: 16px 16px 12px;
+  box-shadow:
+    0 0 0 1px rgba(0,0,0,0.9),
+    0 24px 60px rgba(0,0,0,0.7),
+    0 0 30px rgba(192,0,26,0.05);
+}
+
+/* Webcam dot */
+.mockup-monitor-cam {
+  width: 6px;
+  height: 6px;
+  background: rgba(201,168,76,0.3);
+  border-radius: 50%;
+  margin: 0 auto 10px;
+}
+
+.mockup-monitor-screen {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  border-radius: 4px;
+  background: #050505;
+}
+
+/* Stand */
+.mockup-monitor-stand {
+  width: 60px;
+  height: 18px;
+  background: linear-gradient(to bottom, #1a1a2e, #0d0d18);
+  border: 1px solid rgba(201,168,76,0.15);
+  margin: 0 auto;
+  border-radius: 0 0 6px 6px;
+}
+.mockup-monitor-base {
+  width: 120px;
+  height: 8px;
+  background: linear-gradient(to right, transparent, rgba(201,168,76,0.1), transparent);
+  border-bottom: 1px solid rgba(201,168,76,0.15);
+  margin: 0 auto;
+  border-radius: 0 0 6px 6px;
+}
+
+/* ── Plain frame (no device context — collection images) ── */
+.mockup-plain {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  max-height: 80vh;
+  overflow: hidden;
+  border: 1px solid rgba(139,0,0,0.3);
+  background: #0a0a0a;
+}
+
+/* ── Responsive ── */
+@media (max-width: 767px) {
+  .mockup-phone { max-width: 240px; }
+  .mockup-monitor { max-width: 100%; }
+}
+
+/* ──────────────────────────────────────────────────────────── */
+/*  RELATED WALLPAPERS                                          */
+/* ──────────────────────────────────────────────────────────── */
+
+.related-section {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 48px 60px 24px;
+  border-top: 1px solid #1a1727;
+}
+
+.related-header {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.related-eyebrow {
+  font-family: var(--font-space), monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: #c0001a;
+}
+
+.related-title {
+  font-family: var(--font-cinzel), cursive;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #d4cde8;
+}
+
+/* Horizontal scroll on mobile, grid on desktop */
+.related-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 12px;
+}
+
+@media (max-width: 1023px) {
+  .related-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 639px) {
+  .related-section { padding: 32px 24px 16px; }
+  .related-grid {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding-bottom: 8px;
+  }
+  .related-grid::-webkit-scrollbar { display: none; }
+}
+
+/* Each related card */
+.related-card {
+  position: relative;
+  display: block;
+  text-decoration: none;
+  overflow: hidden;
+  border: 1px solid #1a1727;
+  background: #0a0a0a;
+  transition: border-color 0.25s;
+  flex-shrink: 0;     /* for mobile horizontal scroll */
+  min-width: 120px;   /* minimum thumb width on mobile */
+}
+
+.related-card:hover { border-color: rgba(192,0,26,0.55); }
+
+/* 9:16 portrait image */
+.related-card-img {
+  position: relative;
+  width: 100%;
+  padding-top: 177.78%;  /* 16/9 */
+}
+.related-card-img img {
+  position: absolute;
+  inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  transition: transform 0.45s ease;
+}
+.related-card:hover .related-card-img img { transform: scale(1.06); }
+
+/* Caption on hover */
+.related-card-cap {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  padding: 10px 10px 8px;
+  background: linear-gradient(to top, rgba(5,5,16,0.94) 0%, transparent 100%);
+  opacity: 0;
+  transition: opacity 0.25s;
+}
+.related-card:hover .related-card-cap { opacity: 1; }
+
+.related-card-cap-title {
+  font-family: var(--font-cormorant), Georgia, serif;
+  font-style: italic;
+  font-size: 0.75rem;
+  color: #f0ecff;
+  line-height: 1.3;
+  display: block;
+}
+
+/* ──────────────────────────────────────────────────────────── */
+/*  SEASONAL / EVENT PAGES                                      */
+/* ──────────────────────────────────────────────────────────── */
+
+.seasonal-page {
+  background: #070710;
+  min-height: 100vh;
+  padding-top: calc(var(--topbar-h, 0px) + 80px);
+}
+
+.seasonal-hero {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 60px 60px 32px;
+  border-bottom: 1px solid #1a1727;
+}
+
+.seasonal-tag-badge {
+  display: inline-block;
+  font-family: var(--font-space), monospace;
+  font-size: 0.55rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: #c0001a;
+  border: 1px solid rgba(192,0,26,0.35);
+  padding: 5px 14px;
+  margin-bottom: 20px;
+}
+
+.seasonal-title {
+  font-family: var(--font-cinzel), cursive;
+  font-size: clamp(2rem, 5vw, 4rem);
+  font-weight: 900;
+  color: #d4cde8;
+  line-height: 1.1;
+  margin-bottom: 16px;
+}
+
+.seasonal-desc {
+  font-family: var(--font-cormorant), Georgia, serif;
+  font-style: italic;
+  font-size: 1.1rem;
+  color: #6a6080;
+  max-width: 520px;
+  line-height: 1.7;
+}
+
+.seasonal-count {
+  font-family: var(--font-space), monospace;
+  font-size: 0.55rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #3a2535;
+  margin-top: 16px;
+}
+
+.seasonal-grid-wrap {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 48px 60px 80px;
+}
+
+.seasonal-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+@media (min-width: 640px)  { .seasonal-grid { grid-template-columns: repeat(3, 1fr); } }
+@media (min-width: 1024px) { .seasonal-grid { grid-template-columns: repeat(4, 1fr); } }
+@media (min-width: 1280px) { .seasonal-grid { grid-template-columns: repeat(6, 1fr); } }
+
+/* Seasonal card — reuses same pattern as lb-grid-item */
+.seasonal-card {
+  position: relative;
+  display: block;
+  text-decoration: none;
+  overflow: hidden;
+  border: 1px solid #1a1727;
+  background: #0a0a0a;
+  cursor: pointer;
+  transition: border-color 0.25s;
+}
+.seasonal-card:hover { border-color: rgba(192,0,26,0.55); }
+
+.seasonal-card-inner {
+  position: relative;
+  width: 100%;
+  padding-top: 177.78%;
+}
+.seasonal-card-inner img {
+  position: absolute;
+  inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+.seasonal-card:hover .seasonal-card-inner img { transform: scale(1.05); }
+
+.seasonal-card-info {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  padding: 14px 12px 10px;
+  background: linear-gradient(to top, rgba(5,5,16,0.94) 0%, transparent 100%);
+  opacity: 0;
+  transition: opacity 0.25s;
+}
+.seasonal-card:hover .seasonal-card-info { opacity: 1; }
+
+.seasonal-card-title {
+  font-family: var(--font-cormorant), Georgia, serif;
+  font-style: italic;
+  font-size: 0.85rem;
+  color: #f0ecff;
+  display: block;
+  margin-bottom: 4px;
+}
+.seasonal-card-link-label {
+  font-family: var(--font-space), monospace;
+  font-size: 0.45rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #c9a84c;
+}
+
+/* Empty state */
+.seasonal-empty {
+  text-align: center;
+  padding: 100px 24px;
+}
+.seasonal-empty-msg {
+  font-family: var(--font-cinzel), cursive;
+  font-size: 1.3rem;
+  color: #2a2535;
+  margin-bottom: 16px;
+}
+
+/* Mobile padding */
+@media (max-width: 767px) {
+  .seasonal-hero      { padding: 40px 24px 24px; }
+  .seasonal-grid-wrap { padding: 32px 24px 60px; }
+}
+
+/* ── Footer grid — add column for seasonal ── */
+/* The footer-grid already uses auto columns; adding a 5th column
+   via CSS grid repeat is handled by the existing footer-grid rule.
+   No change needed — the new <div> auto-flows into the grid. */

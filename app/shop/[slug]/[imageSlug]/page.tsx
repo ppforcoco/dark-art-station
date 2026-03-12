@@ -6,6 +6,9 @@ import { db } from "@/lib/db";
 import { getPublicUrl } from "@/lib/r2";
 import AdSlot from "@/components/AdSlot";
 import SocialShare from "@/components/SocialShare";
+import DeviceMockup from "@/components/DeviceMockup";
+import RelatedWallpapers from "@/components/RelatedWallpapers";
+import { getRelatedImages } from "@/lib/db";
 
 interface PageProps {
   params: Promise<{ slug: string; imageSlug: string }>;
@@ -113,6 +116,11 @@ export default async function ImagePage({ params }: PageProps) {
 
   const thumbUrl  = getPublicUrl(image.r2Key);
 
+  // Related images — parallel fetch with siblings
+  const [related] = await Promise.all([
+    getRelatedImages(image.id, image.tags ?? [], 6),
+  ]);
+
   // Sibling navigation
   const siblings  = image.collection.images;
   const currentIdx = siblings.findIndex((s) => s.slug === imageSlug);
@@ -142,17 +150,19 @@ export default async function ImagePage({ params }: PageProps) {
       <section className="max-w-7xl mx-auto px-6 md:px-[60px] py-10">
         <div className="grid md:grid-cols-[1fr_360px] gap-10 items-start">
 
-          {/* Full image — aspect-portrait + max-h-[80vh] keeps CTA visible */}
-          <div className="relative aspect-portrait max-h-[80vh] overflow-hidden border border-[rgba(139,0,0,0.3)] bg-[#0a0a0a]">
-            <Image
-              src={thumbUrl}
-              alt={image.title}
-              fill
-              className="object-cover"
-              priority
-              sizes="(max-width: 768px) 100vw, 65vw"
-            />
-          </div>
+          {/* Full image inside device mockup */}
+          <DeviceMockup deviceType={null}>
+            <div className="relative w-full h-full">
+              <Image
+                src={thumbUrl}
+                alt={image.title}
+                fill
+                className="object-cover"
+                priority
+                sizes="(max-width: 768px) 100vw, 65vw"
+              />
+            </div>
+          </DeviceMockup>
 
           {/* Details panel */}
           <div className="flex flex-col gap-6 sticky top-8">
@@ -247,6 +257,11 @@ export default async function ImagePage({ params }: PageProps) {
             </Link>
           )}
         </nav>
+      )}
+
+      {/* ── Related Wallpapers ─────────────────────────────────────────── */}
+      {related.length > 0 && (
+        <RelatedWallpapers images={related} />
       )}
 
       {/* ── Footer Ad ───────────────────────────────────────────────────── */}

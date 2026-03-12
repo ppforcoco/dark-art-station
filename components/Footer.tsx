@@ -49,6 +49,18 @@ export default function Footer() {
           </ul>
         </div>
 
+        {/* ── Seasonal ── */}
+        <div className="footer-col">
+          <h4 className="footer-col-title">Seasonal</h4>
+          <ul>
+            <li><Link href="/halloween">Halloween Wallpapers</Link></li>
+            <li><Link href="/dark">Dark &amp; Gothic</Link></li>
+            <li><Link href="/skeleton">Skeleton Art</Link></li>
+            <li><Link href="/goddess">Goddess &amp; Divine</Link></li>
+            <li><Link href="/demon">Demon &amp; Occult</Link></li>
+          </ul>
+        </div>
+
         {/* ── Legal ── */}
         <div className="footer-col">
           <h4 className="footer-col-title">Legal</h4>
