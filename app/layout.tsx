@@ -66,6 +66,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <head>
+        {/* ── Preconnect: establish SSL to R2 CDN before first image request ── */}
+        <link rel="preconnect" href="https://assets.hauntedwallpapers.com" />
+        <link rel="dns-prefetch" href="https://assets.hauntedwallpapers.com" />
+
         {adsPid && (
           <script
             async
@@ -75,6 +79,56 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         )}
       </head>
       <body className={`${cormorant.variable} ${cinzel.variable} ${spaceMono.variable}`}>
+
+        {/* ── Global Structured Data — Organization + WebSite ────────────
+            Injected once at root level. Tells Google Search exactly who
+            owns this content and enables the Sitelinks Searchbox feature.
+            Also activates Knowledge Panel eligibility over time.          ── */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify([
+              {
+                "@context": "https://schema.org",
+                "@type": "Organization",
+                "@id": `${SITE_URL}/#organization`,
+                name: SITE_NAME,
+                url: SITE_URL,
+                logo: {
+                  "@type": "ImageObject",
+                  url: OG_IMAGE,
+                  width: 1200,
+                  height: 630,
+                },
+                sameAs: [
+                  "https://instagram.com/hauntedwallpapers",
+                  "https://pinterest.com/hauntedwallpapers",
+                ],
+                description:
+                  "Free dark fantasy wallpapers, tarot art, and occult designs for iPhone, Android and PC. AI-generated 4K art, instant download.",
+              },
+              {
+                "@context": "https://schema.org",
+                "@type": "WebSite",
+                "@id": `${SITE_URL}/#website`,
+                url: SITE_URL,
+                name: SITE_NAME,
+                description:
+                  "Free dark fantasy wallpapers and occult art. Download 4K wallpapers for iPhone, Android and PC.",
+                publisher: { "@id": `${SITE_URL}/#organization` },
+                potentialAction: {
+                  "@type": "SearchAction",
+                  target: {
+                    "@type": "EntryPoint",
+                    urlTemplate: `${SITE_URL}/search?q={search_term_string}`,
+                  },
+                  "query-input": "required name=search_term_string",
+                },
+              },
+            ]),
+          }}
+        />
+
         <Cursor />
         <HalloweenCountdown />
         <Header />

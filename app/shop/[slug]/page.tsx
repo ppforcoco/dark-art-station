@@ -167,7 +167,7 @@ export default async function CollectionPage({ params }: PageProps) {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
+          __html: [JSON.stringify({
             "@context": "https://schema.org",
             "@type": "Product",
             "@id": `${process.env.NEXT_PUBLIC_SITE_URL}/shop/${slug}#product`,
@@ -224,6 +224,23 @@ export default async function CollectionPage({ params }: PageProps) {
               audienceType: `${collection.category} enthusiasts, dark fantasy art lovers, digital wallpaper collectors`,
             },
           }),
+          // ── ItemList schema: maps every image in the gallery ──────────────
+          // Enables Google Visual Gallery rich results in mobile search.
+          JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "ItemList",
+            name: collection.title,
+            description: collection.description,
+            url: `${process.env.NEXT_PUBLIC_SITE_URL}/shop/${slug}`,
+            numberOfItems: collection.images.length,
+            itemListElement: collection.images.slice(0, 20).map((img, i) => ({
+              "@type": "ListItem",
+              position: i + 1,
+              url: `${process.env.NEXT_PUBLIC_SITE_URL}/shop/${slug}/${img.slug}`,
+              name: img.title,
+              image: getPublicUrl(img.r2Key),
+            })),
+          })].join("")
         }}
       />
     </main>

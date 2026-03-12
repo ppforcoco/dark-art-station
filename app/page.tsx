@@ -256,6 +256,30 @@ export default async function Home() {
         </p>
         <NewsletterForm />
       </div>
+
+      {/* ── ItemList JSON-LD: featured collections for Google Visual Gallery ── */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "ItemList",
+            name: "Haunted Wallpapers — Featured Dark Art Collections",
+            description: "Free dark fantasy wallpaper collections for iPhone, Android and PC.",
+            url: process.env.NEXT_PUBLIC_SITE_URL,
+            numberOfItems: categories.length,
+            itemListElement: categories.map((cat, i) => ({
+              "@type": "ListItem",
+              position: i + 1,
+              url: `${process.env.NEXT_PUBLIC_SITE_URL}/shop/${cat.slug}`,
+              name: cat.title,
+              image: cat.thumbnail
+                ? `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/${cat.thumbnail}`
+                : undefined,
+            })),
+          }),
+        }}
+      />
     </>
   );
 }

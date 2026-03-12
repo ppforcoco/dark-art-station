@@ -152,6 +152,31 @@ export default async function AndroidPage({ searchParams }: PageProps) {
 
       {/* ── Footer Ad ── */}
       <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_FOOTER} width={728} height={90} className="mt-8" />
+
+      {/* ── ItemList JSON-LD ── */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "ItemList",
+            name: tag
+              ? `Dark #${tag} Android Wallpapers | Haunted Wallpapers`
+              : "Free Dark Android Wallpapers 4K | Haunted Wallpapers",
+            url: tag
+              ? `${process.env.NEXT_PUBLIC_SITE_URL}/android?tag=${tag}`
+              : `${process.env.NEXT_PUBLIC_SITE_URL}/android`,
+            numberOfItems: total,
+            itemListElement: images.map((img, i) => ({
+              "@type": "ListItem",
+              position: skip + i + 1,
+              url: `${process.env.NEXT_PUBLIC_SITE_URL}/android/${img.slug}`,
+              name: img.title,
+              image: getPublicUrl(img.r2Key),
+            })),
+          }),
+        }}
+      />
     </main>
   );
 }
