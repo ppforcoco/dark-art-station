@@ -1,3 +1,4 @@
+// components/Pagination.tsx
 import Link from "next/link";
 
 interface PaginationProps {
@@ -47,6 +48,7 @@ export default function Pagination({ currentPage, totalPages, baseUrl }: Paginat
           href={pageUrl(baseUrl, currentPage - 1)}
           className="pagination-btn"
           aria-label="Previous page"
+          style={{ touchAction: "manipulation" }}
         >
           ← Prev
         </Link>
@@ -79,6 +81,7 @@ export default function Pagination({ currentPage, totalPages, baseUrl }: Paginat
           href={pageUrl(baseUrl, currentPage + 1)}
           className="pagination-btn"
           aria-label="Next page"
+          style={{ touchAction: "manipulation" }}
         >
           Next →
         </Link>

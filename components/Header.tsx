@@ -86,8 +86,9 @@ export default function Header() {
   return (
     <>
       <nav className="site-nav">
-        <Link href="/" className="nav-logo" onClick={closeMenu}>
-          HAUNTED<span className="logo-red">WALLPAPERS</span>
+        <Link href="/" className="nav-logo" onClick={closeMenu} style={{ touchAction: "manipulation" }}>
+          <span className="logo-full">HAUNTED<span className="logo-red">WALLPAPERS</span></span>
+          <span className="logo-compact">H<span className="logo-red">W</span></span>
         </Link>
 
         {/* ── Desktop Nav ── */}
@@ -131,10 +132,11 @@ export default function Header() {
             onClick={toggleTheme}
             aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
             title={theme === "dark" ? "Light mode" : "Dark mode"}
+            style={{ touchAction: "manipulation" }}
           >
             <span style={{ fontSize: "1rem", lineHeight: 1 }}>{theme === "dark" ? "☀" : "☽"}</span>
           </button>
-          <button className="btn-cart nav-cart-desktop">Cart (0)</button>
+          <button className="btn-cart nav-cart-desktop" style={{ touchAction: "manipulation" }}>Cart (0)</button>
         </div>
 
         {/* ── Mobile Controls ── */}
@@ -143,6 +145,7 @@ export default function Header() {
             className="btn-hamburger btn-search-mobile"
             onClick={openSearch}
             aria-label="Search"
+            style={{ touchAction: "manipulation" }}
           >
             <Search size={18} strokeWidth={1.5} />
           </button>
@@ -151,6 +154,7 @@ export default function Header() {
             onClick={toggleMenu}
             aria-label={menuOpen ? "Close menu" : "Open menu"}
             aria-expanded={menuOpen}
+            style={{ touchAction: "manipulation" }}
           >
             {menuOpen ? <X size={22} strokeWidth={1.5} /> : <Menu size={22} strokeWidth={1.5} />}
           </button>

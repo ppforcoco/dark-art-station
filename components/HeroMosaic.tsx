@@ -177,13 +177,16 @@ export default function HeroMosaic() {
           href={season.href}
           className={`mosaic-card ${SLOT_CLASSES[slotIndex]} mosaic-card--animated`}
           style={{
-            background: season.bg,
-            opacity:    visible ? 1 : 0,
-            transform:  visible ? "translateY(0) scale(1)" : "translateY(12px) scale(0.98)",
-            transition: `opacity 0.4s ease ${slotIndex * 0.07}s, transform 0.4s cubic-bezier(0.16,1,0.3,1) ${slotIndex * 0.07}s`,
+            background:  season.bg,
+            opacity:     visible ? 1 : 0,
+            transform:   visible ? "translateY(0) scale(1)" : "translateY(12px) scale(0.98)",
+            transition:  `opacity 0.4s ease ${slotIndex * 0.07}s, transform 0.4s cubic-bezier(0.16,1,0.3,1) ${slotIndex * 0.07}s`,
+            touchAction: "manipulation",
           }}
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
+          onTouchStart={handleMouseEnter}
+          onTouchEnd={handleMouseLeave}
         >
           <div className="mosaic-icon">{season.icon}</div>
           <div className="mosaic-labels">

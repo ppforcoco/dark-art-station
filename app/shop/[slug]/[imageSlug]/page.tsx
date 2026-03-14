@@ -130,7 +130,7 @@ export default async function ImagePage({ params }: PageProps) {
   const nextImage  = currentIdx < siblings.length - 1 ? siblings[currentIdx + 1] : null;
 
   return (
-    <main className="min-h-screen" style={{ backgroundColor: "var(--bg-primary)", color: "var(--text-primary)" }}>
+    <main className="min-h-screen" style={{ backgroundColor: "var(--bg-primary)", color: "var(--text-primary)" }} id="image-detail-page">
 
       {/* ── Breadcrumb path bar ── */}
       <Breadcrumbs items={[
@@ -259,8 +259,22 @@ export default async function ImagePage({ params }: PageProps) {
         <RelatedWallpapers images={related} />
       )}
 
+      {/* ── Mobile spacer so sticky CTA doesn't cover content ────────── */}
+      <div className="mobile-cta-spacer" aria-hidden="true" />
+
       {/* ── Footer Ad ───────────────────────────────────────────────────── */}
       <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_FOOTER} width={728} height={90} />
+
+      {/* ── Sticky Mobile Download CTA ──────────────────────────────────── */}
+      <div className="mobile-sticky-cta">
+        
+          href={`/api/download/image/${image.id}`}
+          className="font-mono text-[0.72rem] tracking-[0.18em] uppercase bg-[#8b0000] hover:bg-[#a80000] text-white px-6 py-4 transition-colors duration-200 border border-[#8b0000] text-center flex items-center justify-center gap-2"
+          style={{ touchAction: "manipulation" }}
+        >
+          ↓ Download Free 4K
+        </a>
+      </div>
 
       {/* ── JSON-LD ─────────────────────────────────────────────────────── */}
       <script

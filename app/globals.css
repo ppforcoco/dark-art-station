@@ -354,7 +354,28 @@
 
 /* ── Global Reset ──────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
+
+html {
+  scroll-behavior: smooth;
+  /* Prevent horizontal overflow on all mobile devices */
+  overflow-x: hidden;
+  /* Use device width — prevents iOS zoom bugs */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  /* Already defined below — these are added to the existing body rule */
+}
+
+/* ── Mobile tap highlight removal ──────────────────────────── */
+* {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+}
+
+/* Allow text selection on content areas */
+p, h1, h2, h3, h4, h5, h6, span, a { -webkit-touch-callout: default; }
 
 body {
   background-color: var(--bg-primary) !important;
@@ -364,7 +385,11 @@ body {
   overflow-x: hidden;
   cursor: none;
   min-height: 100vh;
+  min-height: 100dvh; /* Dynamic viewport height — fixes iOS address bar bug */
   transition: background-color 0.3s ease, color 0.3s ease;
+  /* Safe area support for notched phones */
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
 }
 
 /* ── Global Typography Scale & Contrast ────────────────────── */
@@ -570,7 +595,10 @@ body::before {
   cursor: none;
   transition: background 0.2s, color 0.2s;
 }
-.btn-cart:hover { background: #c0001a; color: #f0ecff; }
+.btn-cart:hover  { background: #c0001a; color: #f0ecff; }
+.btn-cart:active { transform: scale(0.96); }
+
+.btn-secondary:active { opacity: 0.75; transform: scale(0.97); }
 
 /* ── Theme Toggle Button ── */
 .btn-theme-toggle {
@@ -730,10 +758,12 @@ body::before {
   border-left: 1px solid rgba(139,0,0,0.25);
   display: flex;
   flex-direction: column;
-  padding: 80px 40px 48px;
+  padding: 80px 40px calc(48px + env(safe-area-inset-bottom));
   transform: translateX(100%);
   transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   overflow-y: auto;
+  overscroll-behavior: contain; /* prevents double-scroll bug */
+  -webkit-overflow-scrolling: touch;
 }
 .mobile-menu-open .mobile-menu-panel {
   transform: translateX(0);
@@ -852,6 +882,7 @@ body::before {
   align-items: flex-start;
   justify-content: center;
   padding-top: 120px;
+  overscroll-behavior: none;
 }
 .search-overlay-backdrop {
   position: absolute;
@@ -1007,6 +1038,7 @@ body::before {
   transition: transform 0.3s ease;
 }
 .btn-primary:hover::before { transform: translateX(0); }
+.btn-primary:active { transform: scale(0.97); }
 .btn-primary > span { position: relative; z-index: 1; }
 
 .btn-secondary {
@@ -2180,9 +2212,9 @@ body::before {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 40px;
-  height: 40px;
-  padding: 0 12px;
+  min-width: 44px;
+  height: 44px;
+  padding: 0 14px;
   font-family: var(--font-space), monospace;
   font-size: 0.65rem;
   letter-spacing: 0.12em;
@@ -2191,9 +2223,11 @@ body::before {
   color: #4a445a;
   border: 1px solid #2a2535;
   background: transparent;
-  transition: color 0.2s, border-color 0.2s, background 0.2s;
+  transition: color 0.2s, border-color 0.2s, background 0.2s, transform 0.15s;
   cursor: pointer;
+  touch-action: manipulation;
 }
+.pagination-btn:active { transform: scale(0.94); }
 .pagination-btn:hover {
   color: #f0ecff;
   border-color: rgba(139,0,0,0.5);
@@ -2430,12 +2464,15 @@ body::before {
   text-decoration: none;
   color: #4a445a;
   border: 1px solid #2a2535;
-  padding: 10px 16px;
-  min-height: 44px;           /* thumb-friendly minimum */
+  padding: 12px 18px;
+  min-height: 44px;
+  min-width: 44px;
   background: transparent;
-  transition: color 0.2s, border-color 0.2s, background 0.2s;
+  transition: color 0.2s, border-color 0.2s, background 0.2s, transform 0.15s;
   white-space: nowrap;
+  touch-action: manipulation;
 }
+.social-btn:active { transform: scale(0.96); }
 .social-btn svg {
   width: 14px;
   height: 14px;
@@ -2886,8 +2923,12 @@ body::before {
   text-decoration: none;
   border: 1px solid #2a2535;
   padding: 8px 16px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
   transition: color 0.2s, border-color 0.2s, background 0.2s;
 }
+.filter-pill:active { transform: scale(0.96); }
 .filter-pill:hover,
 .filter-pill[data-active="true"] {
   color: #f0ecff;
@@ -3481,3 +3522,154 @@ body::before {
 /* The footer-grid already uses auto columns; adding a 5th column
    via CSS grid repeat is handled by the existing footer-grid rule.
    No change needed — the new <div> auto-flows into the grid. */
+
+/* ──────────────────────────────────────────────────────────── */
+/*  MOBILE SANCTUM — Phase 32 additions                         */
+/* ──────────────────────────────────────────────────────────── */
+
+/* ── Sticky mobile download CTA ────────────────────────────── */
+.mobile-sticky-cta {
+  display: none; /* hidden on desktop */
+}
+
+@media (max-width: 767px) {
+  .mobile-sticky-cta {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 450;
+    padding: 12px 20px calc(12px + env(safe-area-inset-bottom));
+    background: linear-gradient(to top, var(--bg-primary) 80%, transparent);
+    border-top: 1px solid rgba(139,0,0,0.2);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    gap: 10px;
+    align-items: center;
+  }
+
+  .mobile-sticky-cta a,
+  .mobile-sticky-cta button {
+    flex: 1;
+    justify-content: center;
+    min-height: 52px;
+    font-size: 0.72rem;
+    touch-action: manipulation;
+  }
+
+  /* Push page content above sticky CTA */
+  .mobile-cta-spacer {
+    height: calc(80px + env(safe-area-inset-bottom));
+    display: block;
+  }
+}
+
+/* ── Mosaic cards — touch optimization ─────────────────────── */
+.mosaic-card {
+  touch-action: manipulation;
+}
+.mosaic-card:active {
+  transform: scale(0.98) !important;
+}
+
+/* ── Product card touch feedback ───────────────────────────── */
+@media (max-width: 1023px) {
+  .group:active {
+    transform: scale(0.98) translateY(0) !important;
+  }
+}
+
+/* ── Nav compact on very small phones (SE size) ─────────────── */
+@media (max-width: 374px) {
+  .site-nav { padding: 16px 16px; }
+  .nav-logo  { font-size: 0.9rem; }
+}
+
+/* ── Fix hero section on mobile — prevent overflow ──────────── */
+@media (max-width: 1023px) {
+  .hero-section {
+    overflow-x: hidden;
+  }
+  .hero-left {
+    padding: 100px 24px 60px;
+  }
+}
+
+/* ── Image detail page — grid to single column on mobile ────── */
+@media (max-width: 767px) {
+  /* Ensure grid collapses cleanly */
+  .grid.md\:grid-cols-\[1fr_360px\] {
+    grid-template-columns: 1fr !important;
+  }
+  /* Unstick the details panel on mobile */
+  .sticky.top-8 {
+    position: static !important;
+  }
+}
+
+/* ── Shop grid — 2 columns on small phones, not 1 ──────────── */
+@media (max-width: 639px) {
+  .product-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 12px !important;
+  }
+}
+
+/* ── Category grid — single column stacks cleanly ──────────── */
+@media (max-width: 639px) {
+  .category-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .cat-card { aspect-ratio: 16/7 !important; }
+  .cat-card.featured { aspect-ratio: 16/9 !important; }
+}
+
+/* ── Related wallpapers — better mobile spacing ─────────────── */
+@media (max-width: 639px) {
+  .related-section { padding: 32px 20px 16px; }
+}
+
+/* ── Footer — stack on mobile ───────────────────────────────── */
+@media (max-width: 639px) {
+  .footer-grid {
+    grid-template-columns: 1fr !important;
+    gap: 32px !important;
+  }
+  .site-footer {
+    padding-bottom: calc(40px + env(safe-area-inset-bottom));
+  }
+}
+
+/* ── Compact logo on tiny screens ──────────────────────────── */
+.logo-compact { display: none; }
+.logo-full    { display: inline; }
+
+@media (max-width: 374px) {
+  .logo-compact { display: inline; font-size: 1.1rem; }
+  .logo-full    { display: none; }
+}
+
+/* ── Halloween bar — safe area ──────────────────────────────── */
+@media (max-width: 479px) {
+  .halloween-bar {
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+}
+
+/* ── Content wrapper — account for safe area ────────────────── */
+@media (max-width: 767px) {
+  .content-wrapper {
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+
+/* ── Section padding on mobile ──────────────────────────────── */
+@media (max-width: 479px) {
+  .section-pad { padding: 60px 20px !important; }
+  .manifesto-section { padding: 60px 20px !important; }
+  .newsletter-section { padding: 60px 20px !important; }
+  .wotd-section { padding: 48px 20px !important; }
+}

@@ -1,3 +1,4 @@
+// components/SocialShare.tsx
 'use client';
 
 /**
@@ -75,6 +76,7 @@ export default function SocialShare({ title, imageUrl, pageUrl }: SocialSharePro
           rel="noopener noreferrer"
           className="social-btn social-btn--pinterest"
           aria-label="Pin on Pinterest"
+          style={{ touchAction: "manipulation" }}
         >
           <PinterestIcon />
           Pinterest
@@ -86,6 +88,7 @@ export default function SocialShare({ title, imageUrl, pageUrl }: SocialSharePro
           rel="noopener noreferrer"
           className="social-btn social-btn--x"
           aria-label="Share on X"
+          style={{ touchAction: "manipulation" }}
         >
           <XIcon />
           Post on X
@@ -97,6 +100,7 @@ export default function SocialShare({ title, imageUrl, pageUrl }: SocialSharePro
           rel="noopener noreferrer"
           className="social-btn social-btn--whatsapp"
           aria-label="Share on WhatsApp"
+          style={{ touchAction: "manipulation" }}
         >
           <WhatsAppIcon />
           WhatsApp
