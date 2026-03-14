@@ -132,7 +132,7 @@ export default function Header() {
             aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
             title={theme === "dark" ? "Light mode" : "Dark mode"}
           >
-            {theme === "dark" ? "☀" : "☽"}
+            <span style={{ fontSize: "1rem", lineHeight: 1 }}>{theme === "dark" ? "☀" : "☽"}</span>
           </button>
           <button className="btn-cart nav-cart-desktop">Cart (0)</button>
         </div>

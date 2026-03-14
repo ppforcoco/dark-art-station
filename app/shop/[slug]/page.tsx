@@ -88,7 +88,7 @@ export default async function CollectionPage({ params }: PageProps) {
       <section className="max-w-7xl mx-auto px-6 md:px-[60px] pt-10 pb-10">
         <div className="grid md:grid-cols-2 gap-12 items-start">
 
-          <div className="relative aspect-[4/3] rounded-sm overflow-hidden border border-[rgba(139,0,0,0.3)] bg-[#0a0a0a]">
+          <div className="relative rounded-sm overflow-hidden border border-[rgba(139,0,0,0.3)] bg-[#0a0a0a]" style={{ aspectRatio: "9/16" }}>
             {thumbnailUrl ? (
               <Image
                 src={thumbnailUrl}

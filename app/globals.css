@@ -48,14 +48,309 @@
   --text-primary: #1a1814;
   --text-muted:   #5a5450;
   --border-dim:   #cdc8bc;
-  --nav-bg:       rgba(244,241,234,0.95);
+  --nav-bg:       rgba(244,241,234,0.96);
 
-  /* Keep accent colors vivid in light mode */
   --crimson: #8b0000;
   --blood:   #c0001a;
   --ember:   #cc3000;
   --gold:    #a07828;
 }
+
+/* ── Light Theme — Full Site Override ───────────────────────────
+   Overrides every hardcoded Tailwind inline color used across
+   all page files so the entire site responds to the theme toggle.
+   Specificity: [data-theme="light"] beats any single class.      */
+
+/* Global page background & text */
+[data-theme="light"] body,
+[data-theme="light"] main,
+[data-theme="light"] .shop-page,
+[data-theme="light"] .search-page,
+[data-theme="light"] .static-page,
+[data-theme="light"] .hero-section,
+[data-theme="light"] .products-bg,
+[data-theme="light"] .manifesto-section,
+[data-theme="light"] .newsletter-section,
+[data-theme="light"] .wotd-section,
+[data-theme="light"] .seasonal-page,
+[data-theme="light"] .error-page {
+  background-color: var(--bg-primary) !important;
+  color: var(--text-primary) !important;
+}
+
+/* Section backgrounds */
+[data-theme="light"] [style*="background-color: #070710"],
+[data-theme="light"] [style*="backgroundColor: #070710"],
+[data-theme="light"] [style*="background-color: #050505"],
+[data-theme="light"] [style*="backgroundColor: #050505"] {
+  background-color: var(--bg-primary) !important;
+}
+[data-theme="light"] [style*="background-color: #0a0a0a"],
+[data-theme="light"] [style*="backgroundColor: #0a0a0a"],
+[data-theme="light"] [style*="background-color: #0e0c14"],
+[data-theme="light"] [style*="backgroundColor: #0e0c14"] {
+  background-color: var(--bg-secondary) !important;
+}
+
+/* ── Tailwind hardcoded bg classes ── */
+[data-theme="light"] .bg-\[\#050505\],
+[data-theme="light"] .bg-\[\#070710\],
+[data-theme="light"] .bg-\[\#0a0a0a\],
+[data-theme="light"] .bg-\[\#0e0c14\],
+[data-theme="light"] .bg-\[\#0c0b14\] {
+  background-color: var(--bg-primary) !important;
+}
+[data-theme="light"] .bg-\[\#2a2535\] {
+  background-color: #e0dbd0 !important;
+}
+[data-theme="light"] .bg-\[\#1a1727\] {
+  background-color: #d8d2c8 !important;
+}
+
+/* ── Tailwind hardcoded text classes ── */
+[data-theme="light"] .text-white {
+  color: var(--text-primary) !important;
+}
+[data-theme="light"] .text-\[\#f0ecff\] {
+  color: #1a1814 !important;
+}
+[data-theme="light"] .text-\[\#d4cde8\] {
+  color: #2a2520 !important;
+}
+[data-theme="light"] .text-\[\#a89bc0\] {
+  color: #4a4540 !important;
+}
+[data-theme="light"] .text-\[\#8a8099\] {
+  color: #5a5450 !important;
+}
+[data-theme="light"] .text-\[\#4a445a\] {
+  color: #7a7468 !important;
+}
+
+/* ── Borders ── */
+[data-theme="light"] .border-\[\#2a2535\] {
+  border-color: #cdc8bc !important;
+}
+[data-theme="light"] .border-\[\#1a1727\] {
+  border-color: #d0ccc0 !important;
+}
+
+/* ── Product cards / search cards / related cards ── */
+[data-theme="light"] .group.bg-\[\#2a2535\],
+[data-theme="light"] .search-card,
+[data-theme="light"] .related-card,
+[data-theme="light"] .seasonal-card {
+  background-color: #e8e3d8 !important;
+}
+
+/* ── Nav ── */
+[data-theme="light"] .site-nav {
+  border-bottom-color: rgba(139,0,0,0.15) !important;
+}
+[data-theme="light"] .nav-links a {
+  color: #5a5450 !important;
+}
+[data-theme="light"] .nav-links a:hover {
+  color: #1a1814 !important;
+}
+[data-theme="light"] .nav-logo {
+  color: #a07828 !important;
+}
+
+/* ── Path bar / breadcrumbs ── */
+[data-theme="light"] .path-bar {
+  background: #ece8df !important;
+  border-bottom-color: #cdc8bc !important;
+}
+
+/* ── Footer ── */
+[data-theme="light"] .site-footer {
+  background: #ece8df !important;
+  border-top-color: #cdc8bc !important;
+}
+[data-theme="light"] .footer-bottom {
+  border-top-color: #cdc8bc !important;
+}
+[data-theme="light"] .footer-col-title { color: #5a5450 !important; }
+[data-theme="light"] .footer-col a     { color: #7a7468 !important; }
+[data-theme="light"] .footer-col a:hover { color: #1a1814 !important; }
+[data-theme="light"] .footer-copy      { color: #7a7468 !important; }
+[data-theme="light"] .footer-brand-desc { color: #7a7468 !important; }
+
+/* ── Buttons ── */
+[data-theme="light"] .btn-secondary {
+  color: #2a2520 !important;
+  border-color: #cdc8bc !important;
+}
+[data-theme="light"] .btn-secondary:hover {
+  background: rgba(139,0,0,0.06) !important;
+  border-color: #c0001a !important;
+}
+[data-theme="light"] .btn-cart {
+  color: #2a2520 !important;
+  border-color: #c0001a !important;
+}
+[data-theme="light"] .btn-hamburger {
+  color: #2a2520 !important;
+  border-color: rgba(139,0,0,0.3) !important;
+}
+
+/* ── Shop page ── */
+[data-theme="light"] .shop-header {
+  border-bottom-color: #cdc8bc !important;
+}
+[data-theme="light"] .shop-filter-bar {
+  border-bottom-color: #cdc8bc !important;
+}
+[data-theme="light"] .filter-pill {
+  color: #5a5450 !important;
+  border-color: #cdc8bc !important;
+}
+[data-theme="light"] .section-title { color: #1a1814 !important; }
+[data-theme="light"] .section-eyebrow { color: #c0001a !important; }
+[data-theme="light"] .section-link { color: #5a5450 !important; border-bottom-color: #7a7468 !important; }
+
+/* ── Collection / image detail panels ── */
+[data-theme="light"] .flex.flex-col.gap-6 .font-mono,
+[data-theme="light"] p.font-mono {
+  color: #7a7468 !important;
+}
+[data-theme="light"] h1.font-display,
+[data-theme="light"] h1[class*="font-display"] {
+  color: #1a1814 !important;
+}
+
+/* ── Inline border cards (prev/next nav, tag pills) ── */
+[data-theme="light"] [class*="border-\[\#2a2535\]"] {
+  border-color: #cdc8bc !important;
+}
+[data-theme="light"] [class*="text-\[\#f0ecff\]"] {
+  color: #1a1814 !important;
+}
+[data-theme="light"] [class*="text-\[\#4a445a\]"] {
+  color: #7a7468 !important;
+}
+
+/* ── Marquee, ad slots, section dividers ── */
+[data-theme="light"] .marquee-section {
+  background: #ece8df !important;
+  border-color: rgba(139,0,0,0.15) !important;
+}
+[data-theme="light"] .marquee-item { color: #7a7468 !important; }
+[data-theme="light"] .ad-banner {
+  background: #ece8df !important;
+  border-color: rgba(139,0,0,0.2) !important;
+}
+[data-theme="light"] .ad-slot-text { color: #a07828 !important; }
+
+/* ── Category grid ── */
+[data-theme="light"] .cat-card {
+  border-color: rgba(0,0,0,0.06) !important;
+}
+[data-theme="light"] .cat-name { color: #f0ecff !important; }
+
+/* ── WOTD section ── */
+[data-theme="light"] .wotd-section {
+  border-color: rgba(139,0,0,0.1) !important;
+}
+[data-theme="light"] .wotd-title  { color: #1a1814 !important; }
+[data-theme="light"] .wotd-desc   { color: #5a5450 !important; }
+
+/* ── Hero section text ── */
+[data-theme="light"] .hero-title  { color: #1a1814 !important; }
+[data-theme="light"] .hero-subtitle { color: #5a5450 !important; }
+[data-theme="light"] .hero-stats .stat-num   { color: #1a1814 !important; }
+[data-theme="light"] .hero-stats .stat-label { color: #7a7468 !important; }
+
+/* ── Manifesto ── */
+[data-theme="light"] .manifesto-quote { color: #1a1814 !important; }
+[data-theme="light"] .manifesto-text  { color: #5a5450 !important; }
+
+/* ── Newsletter ── */
+[data-theme="light"] .newsletter-title { color: #1a1814 !important; }
+[data-theme="light"] .newsletter-sub   { color: #5a5450 !important; }
+[data-theme="light"] .nl-input {
+  background: #e8e3d8 !important;
+  border-color: #cdc8bc !important;
+  color: #1a1814 !important;
+}
+[data-theme="light"] .nl-input::placeholder { color: #7a7468 !important; }
+
+/* ── Pagination ── */
+[data-theme="light"] .pagination-btn {
+  color: #5a5450 !important;
+  border-color: #cdc8bc !important;
+}
+[data-theme="light"] .pagination-btn:hover {
+  color: #1a1814 !important;
+  border-color: rgba(139,0,0,0.4) !important;
+}
+
+/* ── Search overlay ── */
+[data-theme="light"] .search-overlay-backdrop {
+  background: rgba(244,241,234,0.96) !important;
+}
+[data-theme="light"] .search-overlay-input {
+  color: #1a1814 !important;
+  caret-color: #c0001a !important;
+}
+[data-theme="light"] .search-overlay-input::placeholder {
+  color: #cdc8bc !important;
+}
+
+/* ── Mockup frames in light mode ── */
+[data-theme="light"] .mockup-phone-shell {
+  background: linear-gradient(145deg, #d0ccc0 0%, #c8c4b8 40%, #c0bbb0 100%) !important;
+  border-color: rgba(0,0,0,0.15) !important;
+  box-shadow:
+    0 0 0 1px rgba(0,0,0,0.1),
+    0 40px 100px rgba(0,0,0,0.25),
+    0 16px 40px rgba(0,0,0,0.15) !important;
+}
+[data-theme="light"] .mockup-phone-notch {
+  background: #a8a49a !important;
+}
+[data-theme="light"] .mockup-phone-screen {
+  background: #f0ece4 !important;
+}
+[data-theme="light"] .mockup-monitor-bezel {
+  background: linear-gradient(160deg, #d0ccc0 0%, #c4c0b4 50%, #b8b4a8 100%) !important;
+  border-color: rgba(0,0,0,0.12) !important;
+  box-shadow:
+    0 0 0 1px rgba(0,0,0,0.08),
+    0 30px 80px rgba(0,0,0,0.2) !important;
+}
+[data-theme="light"] .mockup-monitor-screen {
+  background: #f0ece4 !important;
+}
+[data-theme="light"] .mockup-plain {
+  border-color: rgba(139,0,0,0.2) !important;
+  background: #ece8df !important;
+}
+
+/* ── Mobile menu ── */
+[data-theme="light"] .mobile-menu-panel {
+  background: rgba(244,241,234,0.98) !important;
+  border-left-color: rgba(139,0,0,0.15) !important;
+}
+[data-theme="light"] .mobile-link-label { color: #2a2520 !important; }
+[data-theme="light"] .mobile-menu-divider { background: rgba(139,0,0,0.12) !important; }
+[data-theme="light"] .mobile-menu-watermark { color: #cdc8bc !important; }
+
+/* ── Lightbox ── */
+[data-theme="light"] .lb-overlay {
+  background: rgba(244,241,234,0.97) !important;
+}
+[data-theme="light"] .lb-close,
+[data-theme="light"] .lb-arrow {
+  background: rgba(244,241,234,0.9) !important;
+  border-color: rgba(192,0,26,0.3) !important;
+  color: #c0001a !important;
+}
+
+/* ── Scrollbar ── */
+[data-theme="light"] ::-webkit-scrollbar-track { background: #e8e3d8 !important; }
+[data-theme="light"] ::-webkit-scrollbar-thumb { background: #c0001a !important; }
 
 /* ── Global Reset ──────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
