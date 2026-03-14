@@ -1,3 +1,4 @@
+// components/ProductCard.tsx
 import Image from "next/image";
 import Link from "next/link";
 
@@ -33,7 +34,7 @@ export default function ProductCard({
   return (
     <div className="group bg-[#2a2535] relative transition-transform duration-300 hover:-translate-y-2">
       {/* Image Container */}
-      <div className={`aspect-portrait relative overflow-hidden ${!thumbnail ? bgClass : ""}`}>
+      <div className={`aspect-portrait relative overflow-hidden ${!thumbnail ? bgClass : ""}`} style={{ aspectRatio: "9/16" }}>
 
         {thumbnail ? (
           // Real R2 thumbnail

@@ -1,10 +1,10 @@
 // components/DeviceMockup.tsx
 // CSS-only device frame wrapper. No external libraries.
 // Pass deviceType from your DB record:
-//   "IPHONE"  → slim phone frame (9:19.5)
+//   "IPHONE"  → slim phone frame (9:19.5) with glass reflection
 //   "ANDROID" → same phone frame
-//   "PC"      → monitor frame (16:10)
-//   null      → plain bordered container (collection images)
+//   "PC"      → monitor frame (16:9) with cinematic bezel
+//   null      → plain bordered container (collection images, 9:16)
 
 interface DeviceMockupProps {
   deviceType: string | null;
@@ -18,12 +18,13 @@ export default function DeviceMockup({ deviceType, children }: DeviceMockupProps
     return (
       <div className="mockup-phone">
         <div className="mockup-phone-shell">
-          {/* Dynamic island / notch */}
+          {/* Dynamic Island */}
           <div className="mockup-phone-notch" aria-hidden="true" />
           {/* Screen */}
           <div className="mockup-phone-screen">
             {children}
           </div>
+          {/* Glass overlay is applied via CSS ::after on mockup-phone-shell */}
         </div>
       </div>
     );
@@ -38,6 +39,7 @@ export default function DeviceMockup({ deviceType, children }: DeviceMockupProps
           <div className="mockup-monitor-screen">
             {children}
           </div>
+          {/* Glass overlay is applied via CSS ::after on mockup-monitor-bezel */}
         </div>
         {/* Stand */}
         <div className="mockup-monitor-stand" aria-hidden="true" />

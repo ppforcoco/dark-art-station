@@ -1,3 +1,4 @@
+/* app/globals.css */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -70,6 +71,20 @@ body::before {
 .fade-up-3 { animation: fadeUp 0.8s ease 0.55s both; }
 .fade-up-4 { animation: fadeUp 0.8s ease 0.75s both; }
 .fade-up-5 { animation: fadeUp 0.8s ease 0.95s both; }
+
+/* ── Master Aspect Ratios (Hardware-Perfect Lock) ─────────── */
+/* Mobile / Portrait — iPhone & Android: 9:16 */
+.aspect-portrait {
+  aspect-ratio: 9 / 16 !important;
+  width: 100%;
+  height: auto !important;
+}
+/* Desktop / Landscape — PC: 16:9 */
+.aspect-landscape {
+  aspect-ratio: 16 / 9 !important;
+  width: 100%;
+  height: auto !important;
+}
 
 /* ──────────────────────────────────────────────────────────── */
 /*  NAV                                                         */
@@ -2408,30 +2423,58 @@ body::before {
   width: 100%;
   /* 9:19.5 approx iPhone aspect */
   aspect-ratio: 9 / 19.5;
-  background: linear-gradient(145deg, #1a1a2e 0%, #0d0d1a 60%, #050510 100%);
+  background: linear-gradient(145deg, #252535 0%, #111120 40%, #06060f 100%);
   border-radius: 44px;
-  border: 2px solid rgba(201,168,76,0.25);
+  border: 1.5px solid rgba(255,255,255,0.09);
   box-shadow:
-    0 0 0 1px rgba(0,0,0,0.8),
-    inset 0 0 0 1px rgba(255,255,255,0.04),
-    0 32px 80px rgba(0,0,0,0.7),
-    0 0 40px rgba(192,0,26,0.06);
+    /* Outer rim highlight */
+    0 0 0 1px rgba(0,0,0,0.95),
+    /* Deep 3D drop shadow */
+    0 40px 100px rgba(0,0,0,0.85),
+    0 16px 40px rgba(0,0,0,0.6),
+    /* Crimson ambient glow */
+    0 0 60px rgba(192,0,26,0.08),
+    /* Inner bezel depth */
+    inset 0 1px 0 rgba(255,255,255,0.07),
+    inset 0 -1px 0 rgba(0,0,0,0.6),
+    inset 2px 0 6px rgba(0,0,0,0.4),
+    inset -2px 0 6px rgba(0,0,0,0.4);
   overflow: hidden;
   padding: 14px 6px;
 }
 
-/* Notch / dynamic island */
+/* Glass reflection layer over phone */
+.mockup-phone-shell::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 44px;
+  background: linear-gradient(
+    135deg,
+    rgba(255,255,255,0.055) 0%,
+    rgba(255,255,255,0.015) 30%,
+    transparent 55%,
+    rgba(0,0,0,0.08) 100%
+  );
+  pointer-events: none;
+  z-index: 20;
+}
+
+/* Notch / Dynamic Island */
 .mockup-phone-notch {
   position: absolute;
-  top: 10px;
+  top: 12px;
   left: 50%;
   transform: translateX(-50%);
-  width: 90px;
-  height: 26px;
-  background: #070710;
-  border-radius: 20px;
-  z-index: 10;
-  border: 1px solid rgba(255,255,255,0.04);
+  width: 80px;
+  height: 22px;
+  background: #04040c;
+  border-radius: 16px;
+  z-index: 15;
+  border: 1px solid rgba(255,255,255,0.06);
+  box-shadow:
+    inset 0 1px 3px rgba(0,0,0,0.9),
+    0 1px 0 rgba(255,255,255,0.04);
 }
 
 /* Side buttons — pure CSS, decorative */
@@ -2445,17 +2488,6 @@ body::before {
   background: rgba(201,168,76,0.2);
   border-radius: 2px;
   box-shadow: 0 20px 0 rgba(201,168,76,0.2), 0 36px 0 rgba(201,168,76,0.2);
-}
-.mockup-phone-shell::after {
-  content: "";
-  position: absolute;
-  left: -4px;
-  top: 22%;
-  width: 3px;
-  height: 8%;
-  background: rgba(201,168,76,0.2);
-  border-radius: 2px;
-  box-shadow: 0 18px 0 rgba(201,168,76,0.2);
 }
 
 /* Screen area inside the phone */
@@ -2472,63 +2504,91 @@ body::before {
 .mockup-monitor {
   position: relative;
   width: 100%;
-  max-width: 620px;
+  max-width: 680px;
   margin: 0 auto;
 }
 
 .mockup-monitor-bezel {
   position: relative;
-  background: linear-gradient(160deg, #1a1a2e, #0a0a1a);
-  border-radius: 12px 12px 4px 4px;
-  border: 2px solid rgba(201,168,76,0.2);
-  padding: 16px 16px 12px;
+  background: linear-gradient(160deg, #202030 0%, #111120 50%, #07070f 100%);
+  border-radius: 14px 14px 6px 6px;
+  border: 1.5px solid rgba(255,255,255,0.08);
+  padding: 18px 18px 14px;
   box-shadow:
-    0 0 0 1px rgba(0,0,0,0.9),
-    0 24px 60px rgba(0,0,0,0.7),
-    0 0 30px rgba(192,0,26,0.05);
+    /* Outer rim */
+    0 0 0 1px rgba(0,0,0,0.95),
+    /* Deep drop shadow */
+    0 30px 80px rgba(0,0,0,0.85),
+    0 10px 30px rgba(0,0,0,0.5),
+    /* Crimson ambient glow */
+    0 0 50px rgba(192,0,26,0.07),
+    /* Inner top highlight */
+    inset 0 1px 0 rgba(255,255,255,0.06),
+    inset 0 -1px 0 rgba(0,0,0,0.5);
+}
+
+/* Glass reflection over monitor bezel */
+.mockup-monitor-bezel::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 14px 14px 6px 6px;
+  background: linear-gradient(
+    135deg,
+    rgba(255,255,255,0.04) 0%,
+    transparent 45%
+  );
+  pointer-events: none;
+  z-index: 5;
 }
 
 /* Webcam dot */
 .mockup-monitor-cam {
-  width: 6px;
-  height: 6px;
-  background: rgba(201,168,76,0.3);
+  width: 5px;
+  height: 5px;
+  background: rgba(201,168,76,0.25);
   border-radius: 50%;
-  margin: 0 auto 10px;
+  margin: 0 auto 12px;
+  box-shadow: 0 0 4px rgba(201,168,76,0.15);
 }
 
 .mockup-monitor-screen {
   position: relative;
   width: 100%;
-  aspect-ratio: 16 / 10;
+  aspect-ratio: 16 / 9;
   overflow: hidden;
-  border-radius: 4px;
+  border-radius: 3px;
   background: #050505;
+  box-shadow:
+    inset 0 0 0 1px rgba(0,0,0,0.8),
+    inset 0 2px 8px rgba(0,0,0,0.6);
 }
 
 /* Stand */
 .mockup-monitor-stand {
-  width: 60px;
-  height: 18px;
-  background: linear-gradient(to bottom, #1a1a2e, #0d0d18);
-  border: 1px solid rgba(201,168,76,0.15);
+  width: 56px;
+  height: 22px;
+  background: linear-gradient(to bottom, #1c1c2e, #0d0d18);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-top: none;
   margin: 0 auto;
-  border-radius: 0 0 6px 6px;
+  border-radius: 0 0 4px 4px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.4);
 }
 .mockup-monitor-base {
-  width: 120px;
-  height: 8px;
-  background: linear-gradient(to right, transparent, rgba(201,168,76,0.1), transparent);
-  border-bottom: 1px solid rgba(201,168,76,0.15);
+  width: 130px;
+  height: 6px;
+  background: linear-gradient(to right, transparent, rgba(201,168,76,0.08), transparent);
+  border-bottom: 1px solid rgba(255,255,255,0.05);
   margin: 0 auto;
-  border-radius: 0 0 6px 6px;
+  border-radius: 0 0 8px 8px;
 }
 
 /* ── Plain frame (no device context — collection images) ── */
 .mockup-plain {
   position: relative;
   width: 100%;
-  aspect-ratio: 4 / 5;
+  aspect-ratio: 9 / 16;
   max-height: 80vh;
   overflow: hidden;
   border: 1px solid rgba(139,0,0,0.3);
@@ -2775,7 +2835,7 @@ body::before {
 
 /* Empty state */
 .seasonal-empty {
-  text-align: center;
+  text-text: center;
   padding: 100px 24px;
 }
 .seasonal-empty-msg {

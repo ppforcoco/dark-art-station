@@ -1,3 +1,4 @@
+// app/pc/[imageSlug]/page.tsx
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Image from "next/image";
@@ -5,6 +6,7 @@ import Link from "next/link";
 import { db } from "@/lib/db";
 import { getPublicUrl } from "@/lib/r2";
 import AdSlot from "@/components/AdSlot";
+import DeviceMockup from "@/components/DeviceMockup";
 
 // Allow on-demand rendering for slugs not in generateStaticParams
 // (handles case where image is added after build without full rebuild)
@@ -116,17 +118,19 @@ export default async function PcImagePage({ params }: PageProps) {
       <section className="max-w-7xl mx-auto px-6 md:px-[60px] py-10">
         <div className="grid md:grid-cols-[1fr_360px] gap-10 items-start">
 
-          {/* Full image */}
-          <div className="relative aspect-landscape max-h-[80vh] overflow-hidden border border-[rgba(139,0,0,0.3)] bg-[#0a0a0a]">
-            <Image
-              src={thumbUrl}
-              alt={image.title}
-              fill
-              className="object-cover"
-              priority
-              sizes="(max-width: 768px) 100vw, 65vw"
-            />
-          </div>
+          {/* Full image inside PC monitor mockup */}
+          <DeviceMockup deviceType="PC">
+            <div className="relative w-full h-full">
+              <Image
+                src={thumbUrl}
+                alt={image.title}
+                fill
+                className="object-cover"
+                priority
+                sizes="(max-width: 768px) 100vw, 65vw"
+              />
+            </div>
+          </DeviceMockup>
 
           {/* Details panel */}
           <div className="flex flex-col gap-6 sticky top-8">
