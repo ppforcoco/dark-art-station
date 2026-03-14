@@ -1,3 +1,4 @@
+// components/Footer.tsx
 import Link from "next/link";
 
 // ── Update these to your real profile URLs when ready ──────────────────────
@@ -53,11 +54,12 @@ export default function Footer() {
         <div className="footer-col">
           <h4 className="footer-col-title">Seasonal</h4>
           <ul>
-            <li><Link href="/halloween">Halloween Wallpapers</Link></li>
-            <li><Link href="/dark">Dark &amp; Gothic</Link></li>
-            <li><Link href="/skeleton">Skeleton Art</Link></li>
-            <li><Link href="/goddess">Goddess &amp; Divine</Link></li>
-            <li><Link href="/demon">Demon &amp; Occult</Link></li>
+            <li><Link href="/halloween">Halloween</Link></li>
+            <li><Link href="/dark-valentine">Dark Valentine</Link></li>
+            <li><Link href="/day-of-the-dead">Day of the Dead</Link></li>
+            <li><Link href="/blood-moon">Blood Moon</Link></li>
+            <li><Link href="/haunted-christmas">Haunted Christmas</Link></li>
+            <li><Link href="/black-easter">Black Easter</Link></li>
           </ul>
         </div>
 

@@ -7,6 +7,7 @@ import Link from "next/link";
 import ProductCard from "@/components/ProductCard";
 import AdSlot from "@/components/AdSlot";
 import { getPublicUrl } from "@/lib/r2";
+import HeroMosaic from "@/components/HeroMosaic";
 
 // ISR — revalidate every 60s so edits in Prisma Studio go live quickly
 export const revalidate = 60;
@@ -73,20 +74,7 @@ export default async function Home() {
         </div>
 
         <div className="hero-right">
-          <div className="hero-mosaic">
-            {[
-              { cls: "m1", icon: "🌙", label: "Goddesses" },
-              { cls: "m2", icon: "🔱", label: "Devils"    },
-              { cls: "m3", icon: "💀", label: "Skeletons" },
-              { cls: "m4", icon: "🃏", label: "Tarot"     },
-            ].map((t) => (
-              <div key={t.label} className={`mosaic-card ${t.cls}`}>
-                <div className={`mosaic-inner ${t.cls}`} />
-                <div className="mosaic-icon">{t.icon}</div>
-                <span className="mosaic-label">{t.label}</span>
-              </div>
-            ))}
-          </div>
+          <HeroMosaic />
         </div>
       </section>
 
@@ -125,7 +113,7 @@ export default async function Home() {
                     ))}
                   </div>
                 )}
-                <Link href={wotdHref} className="wotd-cta">
+                <Link href={wotdHref} className="wotd-cta" style={{ color: "var(--text-primary)", borderColor: "var(--blood)" }}>
                   View Today&apos;s Wallpaper →
                 </Link>
               </div>
