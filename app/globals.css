@@ -360,12 +360,89 @@ body {
   background-color: var(--bg-primary) !important;
   color: var(--text-primary);
   font-family: var(--font-cormorant), 'Cormorant Garamond', Georgia, serif;
-  font-size: 18px;
+  font-size: 19px;
   overflow-x: hidden;
   cursor: none;
   min-height: 100vh;
   transition: background-color 0.3s ease, color 0.3s ease;
 }
+
+/* ── Global Typography Scale & Contrast ────────────────────── */
+/* Minimum readable sizes — overrides tiny 0.5-0.6rem labels   */
+
+/* All font-mono small labels — floor at 0.68rem */
+[class*="tracking-"] {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Section eyebrows, badges, meta labels */
+.section-eyebrow,
+.breadcrumb-link,
+.breadcrumb-current,
+.breadcrumb-sep,
+.product-category,
+.search-card-tags,
+.filter-pill,
+.cat-tag,
+.wotd-eyebrow,
+.wotd-date,
+.footer-col-title,
+.footer-copy,
+.social-link {
+  font-size: 0.7rem !important;
+  letter-spacing: 0.18em !important;
+}
+
+/* Body prose — ensure legibility */
+.product-name,
+.search-card-title,
+.footer-brand-desc,
+.manifesto-text,
+.hero-subtitle,
+.wotd-desc,
+.shop-page-count {
+  font-size: 1.1rem !important;
+  line-height: 1.8 !important;
+}
+
+/* Nav links */
+.nav-links a {
+  font-size: 0.8rem !important;
+}
+
+/* Download / CTA buttons */
+.btn-primary,
+.btn-secondary,
+.btn-cart {
+  font-size: 0.78rem !important;
+  letter-spacing: 0.14em !important;
+}
+
+/* Light theme font contrast boost */
+[data-theme="light"] .section-eyebrow { color: #a00016 !important; }
+[data-theme="light"] .product-category { color: #a00016 !important; }
+[data-theme="light"] .search-card-tags { color: #a00016 !important; }
+[data-theme="light"] .product-name { color: #1a1814 !important; }
+[data-theme="light"] .search-card-title { color: #1a1814 !important; }
+[data-theme="light"] .section-title { color: #1a1814 !important; font-size: inherit !important; }
+[data-theme="light"] .nav-links a { color: #3a3530 !important; }
+[data-theme="light"] .footer-col-title { color: #3a3530 !important; }
+[data-theme="light"] .footer-copy { color: #5a5450 !important; }
+[data-theme="light"] .footer-brand-desc { color: #4a4540 !important; }
+[data-theme="light"] .filter-pill { color: #3a3530 !important; border-color: #b8b4a8 !important; }
+[data-theme="light"] .breadcrumb-link { color: #5a5450 !important; }
+[data-theme="light"] .breadcrumb-current { color: #1a1814 !important; opacity: 1 !important; }
+
+/* Dark theme contrast boost for muted text */
+[data-theme="dark"] .breadcrumb-link,
+[data-theme="dark"] .breadcrumb-current,
+body:not([data-theme="light"]) .breadcrumb-link,
+body:not([data-theme="light"]) .breadcrumb-current {
+  color: #9490a8 !important;
+}
+
+/* ── Noise Texture Overlay ─────────────────────────────────── */
 
 /* ── Noise Texture Overlay ─────────────────────────────────── */
 body::before {
@@ -1019,7 +1096,7 @@ body::before {
 
 /* ── Marquee ───────────────────────────────────────────────── */
 .marquee-section {
-  background: #0a0a0a;
+  background: var(--bg-secondary);
   border-top: 1px solid rgba(139,0,0,0.3);
   border-bottom: 1px solid rgba(139,0,0,0.3);
   padding: 16px 0;
@@ -1134,7 +1211,7 @@ body::before {
 /*  AD SLOT                                                     */
 /* ──────────────────────────────────────────────────────────── */
 .ad-banner {
-  background: #0a0a0a;
+  background: var(--bg-secondary);
   border-top: 1px solid rgba(139,0,0,0.4);
   border-bottom: 1px solid rgba(139,0,0,0.4);
   padding: 16px 60px;
@@ -1160,7 +1237,7 @@ body::before {
 /* ──────────────────────────────────────────────────────────── */
 /*  PRODUCT GRID                                                */
 /* ──────────────────────────────────────────────────────────── */
-.products-bg { background-color: #0e0c14; }
+.products-bg { background-color: var(--bg-secondary); }
 
 .product-grid {
   display: grid;
@@ -1246,7 +1323,7 @@ body::before {
 /*  MANIFESTO                                                   */
 /* ──────────────────────────────────────────────────────────── */
 .manifesto-section {
-  background-color: #070710;
+  background-color: var(--bg-primary);
   padding: 140px 60px;
   display: grid;
   grid-template-columns: 80px 1fr;
@@ -1281,7 +1358,7 @@ body::before {
 /*  NEWSLETTER                                                  */
 /* ──────────────────────────────────────────────────────────── */
 .newsletter-section {
-  background: #0a0a0a;
+  background: var(--bg-secondary);
   padding: 100px 60px;
   text-align: center;
   position: relative; overflow: hidden;
@@ -1338,7 +1415,7 @@ body::before {
 /*  FOOTER                                                      */
 /* ──────────────────────────────────────────────────────────── */
 .site-footer {
-  background: #0a0a0a;
+  background: var(--bg-secondary);
   border-top: 1px solid #2a2535;
   padding: 80px 60px 40px;
 }
@@ -2047,7 +2124,7 @@ body::before {
 /*  WALLPAPER OF THE DAY — DAILY SANCTUM                        */
 /* ──────────────────────────────────────────────────────────── */
 .wotd-section {
-  background: #070710;
+  background: var(--bg-primary);
   border-top: 1px solid rgba(139,0,0,0.2);
   border-bottom: 1px solid rgba(139,0,0,0.2);
   padding: 80px 60px;

@@ -150,7 +150,7 @@ export default async function Home() {
       })()}
 
       {/* ════════════════════════════ CATEGORIES */}
-      <section className="section-pad" style={{ backgroundColor: "#070710" }}>
+      <section className="section-pad" style={{ backgroundColor: "var(--bg-primary)" }}>
         <div className="section-header">
           <div>
             <span className="section-eyebrow">Browse the Darkness</span>
