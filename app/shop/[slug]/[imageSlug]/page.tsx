@@ -193,6 +193,7 @@ export default async function ImagePage({ params }: PageProps) {
               <a
                 href={`/api/download/image/${image.id}`}
                 className="font-mono text-[0.7rem] tracking-[0.2em] uppercase bg-[#8b0000] hover:bg-[#a80000] text-white px-8 py-4 transition-colors duration-200 border border-[#8b0000] text-center"
+                style={{ touchAction: "manipulation" }}
               >
                 ↓ Download 4K Wallpaper (Free)
               </a>
@@ -267,7 +268,7 @@ export default async function ImagePage({ params }: PageProps) {
 
       {/* ── Sticky Mobile Download CTA ──────────────────────────────────── */}
       <div className="mobile-sticky-cta">
-        
+        <a
           href={`/api/download/image/${image.id}`}
           className="font-mono text-[0.72rem] tracking-[0.18em] uppercase bg-[#8b0000] hover:bg-[#a80000] text-white px-6 py-4 transition-colors duration-200 border border-[#8b0000] text-center flex items-center justify-center gap-2"
           style={{ touchAction: "manipulation" }}
