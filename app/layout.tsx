@@ -1,3 +1,4 @@
+// app/layout.tsx
 import type { Metadata } from "next";
 import { Cinzel_Decorative, Cormorant_Garamond, Space_Mono } from "next/font/google";
 import "./globals.css";
@@ -132,7 +133,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Cursor />
         <HalloweenCountdown />
         <Header />
-        {children}
+        <div className="content-wrapper">
+          {children}
+        </div>
         <Footer />
       </body>
     </html>

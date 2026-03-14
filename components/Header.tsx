@@ -1,3 +1,4 @@
+// components/Header.tsx
 'use client';
 
 import Link from "next/link";
@@ -17,6 +18,28 @@ export default function Header() {
   const [menuOpen,   setMenuOpen]   = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [query,      setQuery]      = useState("");
+  const [theme,      setTheme]      = useState<"dark"|"light">("dark");
+
+  // Persist theme choice
+  const toggleTheme = useCallback(() => {
+    setTheme(prev => {
+      const next = prev === "dark" ? "light" : "dark";
+      document.documentElement.setAttribute("data-theme", next);
+      try { localStorage.setItem("hw-theme", next); } catch {}
+      return next;
+    });
+  }, []);
+
+  // Restore saved theme on mount
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("hw-theme") as "dark"|"light"|null;
+      if (saved) {
+        setTheme(saved);
+        document.documentElement.setAttribute("data-theme", saved);
+      }
+    } catch {}
+  }, []);
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   const closeMenu   = useCallback(() => setMenuOpen(false), []);
@@ -103,6 +126,14 @@ export default function Header() {
             </form>
           </div>
 
+          <button
+            className="btn-theme-toggle"
+            onClick={toggleTheme}
+            aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+            title={theme === "dark" ? "Light mode" : "Dark mode"}
+          >
+            {theme === "dark" ? "☀" : "☽"}
+          </button>
           <button className="btn-cart nav-cart-desktop">Cart (0)</button>
         </div>
 

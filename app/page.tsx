@@ -1,3 +1,4 @@
+// app/page.tsx
 import { db, getWallpaperOfTheDay } from "@/lib/db";
 import MarqueeTicker from "@/components/MarqueeTicker";
 import NewsletterForm from "@/components/NewsletterForm";

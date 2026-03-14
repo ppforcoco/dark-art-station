@@ -5,9 +5,14 @@
 
 /* ── Design Tokens ─────────────────────────────────────────── */
 :root {
-  --void:    #070710;
-  --black:   #0a0a0a;
-  --deep:    #0e0c14;
+  /* Layout geometry — single source of truth for nav heights */
+  --nav-h:      88px;   /* desktop nav height */
+  --nav-h-mob:  72px;   /* mobile nav height  */
+
+  /* Dark theme (default) */
+  --void:    #0c0b14;
+  --black:   #100f1a;
+  --deep:    #131120;
   --crimson: #8b0000;
   --blood:   #c0001a;
   --ember:   #ff3c00;
@@ -17,6 +22,39 @@
   --ghost:   #8a8099;
   --pale:    #d4cde8;
   --white:   #f0ecff;
+
+  /* Semantic aliases used throughout */
+  --bg-primary:   var(--void);
+  --bg-secondary: var(--black);
+  --text-primary: #e8e4f5;
+  --text-muted:   #9490a8;
+  --border-dim:   #2a2535;
+  --nav-bg:       rgba(12,11,20,0.92);
+}
+
+/* ── Light Theme ────────────────────────────────────────────── */
+[data-theme="light"] {
+  --void:    #f4f1ea;
+  --black:   #ece8df;
+  --deep:    #e4dfd4;
+  --ash:     #cdc8bc;
+  --smoke:   #7a7468;
+  --ghost:   #5a5450;
+  --pale:    #1a1814;
+  --white:   #0a0908;
+
+  --bg-primary:   #f4f1ea;
+  --bg-secondary: #ece8df;
+  --text-primary: #1a1814;
+  --text-muted:   #5a5450;
+  --border-dim:   #cdc8bc;
+  --nav-bg:       rgba(244,241,234,0.95);
+
+  /* Keep accent colors vivid in light mode */
+  --crimson: #8b0000;
+  --blood:   #c0001a;
+  --ember:   #cc3000;
+  --gold:    #a07828;
 }
 
 /* ── Global Reset ──────────────────────────────────────────── */
@@ -24,13 +62,14 @@
 html { scroll-behavior: smooth; }
 
 body {
-  background-color: #070710 !important;
-  color: #d4cde8;
+  background-color: var(--bg-primary) !important;
+  color: var(--text-primary);
   font-family: var(--font-cormorant), 'Cormorant Garamond', Georgia, serif;
   font-size: 18px;
   overflow-x: hidden;
   cursor: none;
   min-height: 100vh;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* ── Noise Texture Overlay ─────────────────────────────────── */
@@ -72,18 +111,42 @@ body::before {
 .fade-up-4 { animation: fadeUp 0.8s ease 0.75s both; }
 .fade-up-5 { animation: fadeUp 0.8s ease 0.95s both; }
 
-/* ── Master Aspect Ratios (Hardware-Perfect Lock) ─────────── */
-/* Mobile / Portrait — iPhone & Android: 9:16 */
-.aspect-portrait {
-  aspect-ratio: 9 / 16 !important;
-  width: 100%;
-  height: auto !important;
+/* ── Master Aspect Ratios ───────────────────────────────────── */
+.ratio-portrait  { aspect-ratio: 9 / 16 !important; position: relative; overflow: hidden; }
+.ratio-landscape { aspect-ratio: 16 / 9 !important; position: relative; overflow: hidden; }
+/* Legacy aliases — keep both working */
+.aspect-portrait  { aspect-ratio: 9 / 16 !important; }
+.aspect-landscape { aspect-ratio: 16 / 9 !important; }
+
+/* ── Global Content Wrapper — prevents nav overlap ──────────── */
+/* Wraps {children} in layout.tsx. Accounts for:                 */
+/*   --topbar-h  = Halloween bar height (set by JS, default 0px) */
+/*   --nav-h     = 88px desktop / 72px mobile                    */
+.content-wrapper {
+  padding-top: calc(var(--topbar-h, 0px) + var(--nav-h, 88px));
 }
-/* Desktop / Landscape — PC: 16:9 */
-.aspect-landscape {
-  aspect-ratio: 16 / 9 !important;
+@media (max-width: 1279px) {
+  .content-wrapper {
+    padding-top: calc(var(--topbar-h, 0px) + var(--nav-h-mob, 72px));
+  }
+}
+
+/* ── Path Bar — breadcrumb strip below nav ──────────────────── */
+.path-bar {
+  position: sticky;
+  top: calc(var(--topbar-h, 0px) + var(--nav-h, 88px));
+  z-index: 500;
   width: 100%;
-  height: auto !important;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-dim);
+  padding: 10px 60px;
+  transition: background 0.3s ease;
+}
+@media (max-width: 1279px) {
+  .path-bar {
+    top: calc(var(--topbar-h, 0px) + var(--nav-h-mob, 72px));
+    padding: 10px 24px;
+  }
 }
 
 /* ──────────────────────────────────────────────────────────── */
@@ -95,9 +158,10 @@ body::before {
   padding: 24px 60px;
   display: flex; align-items: center; justify-content: space-between;
   border-bottom: 1px solid rgba(139,0,0,0.2);
-  background: rgba(7,7,16,0.88);
+  background: var(--nav-bg);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
+  transition: background 0.3s ease;
 }
 .nav-logo {
   font-family: var(--font-cinzel), cursive;
@@ -135,6 +199,26 @@ body::before {
   transition: background 0.2s, color 0.2s;
 }
 .btn-cart:hover { background: #c0001a; color: #f0ecff; }
+
+/* ── Theme Toggle Button ── */
+.btn-theme-toggle {
+  background: transparent;
+  border: 1px solid var(--border-dim);
+  color: var(--ghost);
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: none;
+  transition: border-color 0.2s, color 0.2s;
+  flex-shrink: 0;
+  border-radius: 0;
+}
+.btn-theme-toggle:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+}
 
 /* ── Hamburger Button ── */
 .btn-hamburger {
@@ -483,7 +567,7 @@ body::before {
   min-height: 100vh;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  background-color: #070710;
+  background-color: var(--bg-primary);
 }
 @media (max-width: 1023px) { .hero-section { grid-template-columns: 1fr; } }
 
@@ -1016,8 +1100,8 @@ body::before {
 /* ──────────────────────────────────────────────────────────── */
 .search-page {
   min-height: 100vh;
-  background: #070710;
-  padding-top: 88px; /* clear fixed nav */
+  background: var(--bg-primary);
+  /* padding-top handled by .content-wrapper in layout.tsx */
 }
 
 /* ── Ad slots ── */
@@ -1289,8 +1373,8 @@ body::before {
 /* ──────────────────────────────────────────────────────────── */
 .static-page {
   min-height: 100vh;
-  background: #070710;
-  padding-top: 88px;
+  background: var(--bg-primary);
+  /* padding-top handled by .content-wrapper in layout.tsx */
 }
 .static-page-inner {
   max-width: 860px;
@@ -1643,15 +1727,15 @@ body::before {
   font-size: 0.58rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: #4a445a;
+  color: var(--ghost);
   text-decoration: none;
   transition: color 0.2s;
 }
-.breadcrumb-link:hover { color: #c0001a; }
+.breadcrumb-link:hover { color: var(--blood); }
 .breadcrumb-sep {
   font-family: var(--font-space), monospace;
   font-size: 0.55rem;
-  color: #2a2535;
+  color: var(--smoke);
   margin: 0 8px;
   user-select: none;
 }
@@ -1660,7 +1744,8 @@ body::before {
   font-size: 0.58rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: #8a8099;
+  color: var(--text-primary);
+  opacity: 0.7;
 }
 
 /* ──────────────────────────────────────────────────────────── */
@@ -2213,9 +2298,9 @@ body::before {
 /* ──────────────────────────────────────────────────────────── */
 
 .shop-page {
-  background-color: #070710;
+  background-color: var(--bg-primary);
   min-height: 100vh;
-  padding-top: 100px;   /* clears fixed nav + topbar */
+  /* padding-top handled by .content-wrapper in layout.tsx */
 }
 
 /* ── Page header ── */
@@ -2443,7 +2528,7 @@ body::before {
   padding: 14px 6px;
 }
 
-/* Glass reflection layer over phone */
+/* Glass reflection Layer over phone */
 .mockup-phone-shell::after {
   content: "";
   position: absolute;

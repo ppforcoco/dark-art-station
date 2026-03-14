@@ -1,3 +1,4 @@
+// app/shop/page.tsx
 import { db } from "@/lib/db";
 import Link from "next/link";
 import ProductCard from "@/components/ProductCard";
@@ -58,16 +59,18 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
       : "/shop";
 
   return (
-    <main className="shop-page">
+    <main className="shop-page" style={{ backgroundColor: "var(--bg-primary)", color: "var(--text-primary)" }}>
+
+      {/* ── Breadcrumb path bar ── */}
+      <Breadcrumbs items={[
+        { label: "Home",        href: "/"     },
+        { label: "Collections", href: "/shop" },
+        ...(category ? [{ label: category }] : []),
+        ...(filter === "free" ? [{ label: "Free Downloads" }] : []),
+      ]} />
 
       {/* ── Page Header ── */}
       <div className="shop-header">
-        <Breadcrumbs items={[
-          { label: "Home",        href: "/"     },
-          { label: "Collections", href: "/shop" },
-          ...(category ? [{ label: category }] : []),
-          ...(filter === "free" ? [{ label: "Free Downloads" }] : []),
-        ]} />
         <span className="section-eyebrow">The Grimoire</span>
         <h1 className="section-title shop-page-title">
           {activeLabel}

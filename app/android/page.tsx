@@ -1,3 +1,4 @@
+// app/android/page.tsx
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
@@ -75,15 +76,17 @@ export default async function AndroidPage({ searchParams }: PageProps) {
   const baseUrl    = tag ? `/android?tag=${encodeURIComponent(tag)}` : "/android";
 
   return (
-    <main className="min-h-screen bg-[#050505] text-white">
+    <main className="min-h-screen" style={{ backgroundColor: "var(--bg-primary)", color: "var(--text-primary)" }}>
+
+      {/* ── Breadcrumb path bar ── */}
+      <Breadcrumbs items={[
+        { label: "Home",    href: "/"        },
+        { label: "Android", href: "/android" },
+        ...(tag ? [{ label: `#${tag}` }] : []),
+      ]} />
 
       {/* ── Header ── */}
-      <section className="max-w-7xl mx-auto px-6 md:px-[60px] pt-16 pb-8">
-        <Breadcrumbs items={[
-          { label: "Home",    href: "/"        },
-          { label: "Android", href: "/android" },
-          ...(tag ? [{ label: `#${tag}` }] : []),
-        ]} />
+      <section className="max-w-7xl mx-auto px-6 md:px-[60px] pt-10 pb-8">
         <span className="font-mono text-[0.6rem] tracking-[0.25em] uppercase text-[#c0001a] block mb-3">
           The Sanctum — Android
         </span>
@@ -122,7 +125,8 @@ export default async function AndroidPage({ searchParams }: PageProps) {
                 <Link
                   key={img.id}
                   href={`/android/${img.slug}`}
-                  className="group relative aspect-portrait overflow-hidden bg-[#0a0a0a] border border-[#2a2535] hover:border-[rgba(192,0,26,0.6)] transition-colors duration-300"
+                  className="group relative overflow-hidden bg-[#0a0a0a] border border-[#2a2535] hover:border-[rgba(192,0,26,0.6)] transition-colors duration-300"
+                  style={{ aspectRatio: "9/16" }}
                 >
                   <Image
                     src={getPublicUrl(img.r2Key)}

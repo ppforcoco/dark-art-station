@@ -7,6 +7,7 @@ import { db } from "@/lib/db";
 import { getPublicUrl } from "@/lib/r2";
 import AdSlot from "@/components/AdSlot";
 import DeviceMockup from "@/components/DeviceMockup";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 // Allow on-demand rendering for slugs not in generateStaticParams
 // (handles case where image is added after build without full rebuild)
@@ -100,16 +101,14 @@ export default async function IphoneImagePage({ params }: PageProps) {
   const nextImage  = currentIdx < siblings.length - 1 ? siblings[currentIdx + 1] : null;
 
   return (
-    <main className="min-h-screen bg-[#050505] text-white">
+    <main className="min-h-screen" style={{ backgroundColor: "var(--bg-primary)", color: "var(--text-primary)" }}>
 
-      {/* ── Breadcrumb ──────────────────────────────────────────────────── */}
-      <div className="max-w-7xl mx-auto px-6 md:px-[60px] pt-8 pb-4">
-        <nav className="font-mono text-[0.6rem] tracking-[0.2em] uppercase text-[#4a445a] flex items-center gap-2">
-          <Link href="/iphone" className="hover:text-[#c9a84c] transition-colors">iPhone Sanctum</Link>
-          <span>/</span>
-          <span className="text-[#8a8099]">{image.title}</span>
-        </nav>
-      </div>
+      {/* ── Breadcrumb path bar ── */}
+      <Breadcrumbs items={[
+        { label: "Home",   href: "/"       },
+        { label: "iPhone", href: "/iphone" },
+        { label: image.title },
+      ]} />
 
       {/* ── Top Ad ──────────────────────────────────────────────────────── */}
       <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_MAIN} width={728} height={90} />

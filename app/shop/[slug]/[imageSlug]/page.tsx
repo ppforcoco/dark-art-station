@@ -1,3 +1,4 @@
+// app/shop/[slug]/[imageSlug]/page.tsx
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Image from "next/image";
@@ -9,6 +10,7 @@ import SocialShare from "@/components/SocialShare";
 import DeviceMockup from "@/components/DeviceMockup";
 import RelatedWallpapers from "@/components/RelatedWallpapers";
 import { getRelatedImages } from "@/lib/db";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 interface PageProps {
   params: Promise<{ slug: string; imageSlug: string }>;
@@ -128,20 +130,15 @@ export default async function ImagePage({ params }: PageProps) {
   const nextImage  = currentIdx < siblings.length - 1 ? siblings[currentIdx + 1] : null;
 
   return (
-    <main className="min-h-screen bg-[#050505] text-white">
+    <main className="min-h-screen" style={{ backgroundColor: "var(--bg-primary)", color: "var(--text-primary)" }}>
 
-      {/* ── Breadcrumb ──────────────────────────────────────────────────── */}
-      <div className="max-w-7xl mx-auto px-6 md:px-[60px] pt-8 pb-4">
-        <nav className="font-mono text-[0.6rem] tracking-[0.2em] uppercase text-[#4a445a] flex items-center gap-2">
-          <Link href="/shop" className="hover:text-[#c9a84c] transition-colors">Shop</Link>
-          <span>/</span>
-          <Link href={`/shop/${slug}`} className="hover:text-[#c9a84c] transition-colors">
-            {image.collection.title}
-          </Link>
-          <span>/</span>
-          <span className="text-[#8a8099]">{image.title}</span>
-        </nav>
-      </div>
+      {/* ── Breadcrumb path bar ── */}
+      <Breadcrumbs items={[
+        { label: "Home",                  href: "/"           },
+        { label: "Collections",           href: "/shop"       },
+        { label: image.collection.title,  href: `/shop/${slug}` },
+        { label: image.title },
+      ]} />
 
       {/* ── Top Ad ──────────────────────────────────────────────────────── */}
       <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_MAIN} width={728} height={90} />

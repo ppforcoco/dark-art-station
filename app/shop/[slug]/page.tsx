@@ -1,3 +1,4 @@
+// app/shop/[slug]/page.tsx
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Image from "next/image";
@@ -5,6 +6,7 @@ import { db } from "@/lib/db";
 import { getPublicUrl } from "@/lib/r2";
 import AdSlot from "@/components/AdSlot";
 import LightboxGallery from "@/components/LightboxGallery";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -73,10 +75,17 @@ export default async function CollectionPage({ params }: PageProps) {
   const hasImages = collection.images.length > 0;
 
   return (
-    <main className="min-h-screen bg-[#050505] text-white">
+    <main className="min-h-screen" style={{ backgroundColor: "var(--bg-primary)", color: "var(--text-primary)" }}>
+
+      {/* ── Breadcrumb path bar ── */}
+      <Breadcrumbs items={[
+        { label: "Home",        href: "/"     },
+        { label: "Collections", href: "/shop" },
+        { label: collection.title },
+      ]} />
 
       {/* ── Collection Header ───────────────────────────────────────────── */}
-      <section className="max-w-7xl mx-auto px-6 md:px-[60px] pt-16 pb-10">
+      <section className="max-w-7xl mx-auto px-6 md:px-[60px] pt-10 pb-10">
         <div className="grid md:grid-cols-2 gap-12 items-start">
 
           <div className="relative aspect-[4/3] rounded-sm overflow-hidden border border-[rgba(139,0,0,0.3)] bg-[#0a0a0a]">

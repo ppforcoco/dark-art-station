@@ -33,9 +33,14 @@ export default function ProductCard({
 
   return (
     <div className="group bg-[#2a2535] relative transition-transform duration-300 hover:-translate-y-2">
-      {/* Image Container */}
-      <div className={`aspect-portrait relative overflow-hidden ${!thumbnail ? bgClass : ""}`} style={{ aspectRatio: "9/16" }}>
-
+      {/* Image Container — full area is clickable */}
+      <Link
+        href={`/shop/${slug}`}
+        className={`aspect-portrait relative overflow-hidden block ${!thumbnail ? bgClass : ""}`}
+        aria-label={`View ${name}`}
+        tabIndex={-1}
+        style={{ aspectRatio: "9/16" }}
+      >
         {thumbnail ? (
           // Real R2 thumbnail
           <Image
@@ -59,14 +64,13 @@ export default function ProductCard({
           </span>
         )}
 
-        {/* Quick View — links to collection page */}
-        <Link
-          href={`/shop/${slug}`}
-          className="absolute bottom-[-40px] group-hover:bottom-0 left-0 right-0 bg-[rgba(7,7,16,0.9)] backdrop-blur-[10px] text-center py-3 font-mono text-[0.65rem] tracking-[0.15em] uppercase text-[#c9a84c] transition-all duration-300 z-10"
+        {/* Quick View overlay */}
+        <span
+          className="absolute bottom-[-40px] group-hover:bottom-0 left-0 right-0 bg-[rgba(7,7,16,0.9)] backdrop-blur-[10px] text-center py-3 font-mono text-[0.65rem] tracking-[0.15em] uppercase text-[#c9a84c] transition-all duration-300 z-10 pointer-events-none"
         >
           Quick View
-        </Link>
-      </div>
+        </span>
+      </Link>
 
       {/* Info */}
       <div className="p-5">
