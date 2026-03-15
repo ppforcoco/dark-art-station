@@ -40,20 +40,20 @@ export default function AdSlot({
 
   return (
     <div
-      className={`bg-[#0a0a0a] border-y border-[rgba(139,0,0,0.4)] px-6 md:px-[60px] py-4 flex items-center justify-between gap-5 ${className}`}
+      className={`bg-[#0a0a0a] border-y border-[rgba(139,0,0,0.4)] px-4 md:px-[60px] py-3 md:py-4 flex items-center justify-between gap-3 md:gap-5 overflow-hidden w-full ${className}`}
     >
-      <span className="font-mono text-[0.55rem] tracking-[0.15em] uppercase text-[#4a445a] shrink-0">
+      <span className="font-mono text-[0.55rem] tracking-[0.15em] uppercase text-[#4a445a] shrink-0 hidden xs:block sm:block">
         Sponsored
       </span>
 
       {/* Ad content area */}
-      <div className="flex-1 flex items-center justify-center border-x border-[#2a2535] px-10 py-2">
+      <div className="flex-1 min-w-0 flex items-center justify-center md:border-x md:border-[#2a2535] md:px-10 py-2 overflow-hidden">
         {isLive ? (
           // Live AdSense unit
           <ins
             ref={adRef}
             className="adsbygoogle"
-            style={{ display: "block", width, height }}
+            style={{ display: "block", width: "100%", height: "auto", minHeight: height }}
             data-ad-client={pid}
             data-ad-slot={resolvedSlot}
             data-ad-format="auto"
@@ -62,8 +62,8 @@ export default function AdSlot({
         ) : (
           // Placeholder shown in dev / when env vars are missing
           <div
-            className="flex items-center justify-center"
-            style={{ minWidth: Math.min(width, 728), height }}
+            className="flex items-center justify-center w-full"
+            style={{ height }}
           >
             <span className="font-body italic text-[1.1rem] text-[#c9a84c] opacity-40 text-center hidden md:block">
               [ Google Ad Unit — {width}×{height} leaderboard slot ]
@@ -75,7 +75,7 @@ export default function AdSlot({
         )}
       </div>
 
-      <span className="font-mono text-[0.55rem] tracking-[0.15em] uppercase text-[#4a445a] shrink-0">
+      <span className="font-mono text-[0.55rem] tracking-[0.15em] uppercase text-[#4a445a] shrink-0 hidden sm:block">
         Advertisement
       </span>
     </div>
