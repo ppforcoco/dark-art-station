@@ -57,11 +57,19 @@ export default function Breadcrumbs({ items }: BreadcrumbsProps) {
                     <span className="breadcrumb-sep" aria-hidden="true">/</span>
                   )}
                   {isLast || !item.href ? (
-                    <span className="breadcrumb-current" aria-current="page">
+                    <span
+                      className="breadcrumb-current"
+                      aria-current="page"
+                      title={item.label}
+                    >
                       {item.label}
                     </span>
                   ) : (
-                    <Link href={item.href} className="breadcrumb-link">
+                    <Link
+                      href={item.href}
+                      className="breadcrumb-link"
+                      title={item.label}
+                    >
                       {item.label}
                     </Link>
                   )}

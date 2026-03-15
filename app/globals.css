@@ -2340,12 +2340,14 @@ body::before {
   align-items: center;
   flex-wrap: wrap;
   gap: 0;
-  margin-bottom: 20px;
   list-style: none;
+  /* removed margin-bottom: 20px — path-bar is a strip, not a section */
+  overflow: hidden;
 }
 .breadcrumb-item {
   display: flex;
   align-items: center;
+  min-width: 0; /* allow flex children to shrink and truncate */
 }
 .breadcrumb-link {
   font-family: var(--font-space), monospace;
@@ -2355,6 +2357,13 @@ body::before {
   color: var(--ghost);
   text-decoration: none;
   transition: color 0.2s;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 160px;
+}
+@media (max-width: 479px) {
+  .breadcrumb-link { max-width: 90px; }
 }
 .breadcrumb-link:hover { color: var(--blood); }
 .breadcrumb-sep {
@@ -2363,6 +2372,10 @@ body::before {
   color: var(--smoke);
   margin: 0 8px;
   user-select: none;
+  flex-shrink: 0;
+}
+@media (max-width: 479px) {
+  .breadcrumb-sep { margin: 0 5px; }
 }
 .breadcrumb-current {
   font-family: var(--font-space), monospace;
@@ -2371,6 +2384,13 @@ body::before {
   text-transform: uppercase;
   color: var(--text-primary);
   opacity: 0.7;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px;
+}
+@media (max-width: 479px) {
+  .breadcrumb-current { max-width: 120px; }
 }
 
 /* ──────────────────────────────────────────────────────────── */
