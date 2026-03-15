@@ -42,7 +42,7 @@ export default function AdSlot({
     <div
       className={`bg-[#0a0a0a] border-y border-[rgba(139,0,0,0.4)] px-4 md:px-[60px] py-3 md:py-4 flex items-center justify-between gap-3 md:gap-5 overflow-hidden w-full ${className}`}
     >
-      <span className="font-mono text-[0.55rem] tracking-[0.15em] uppercase text-[#4a445a] shrink-0 hidden xs:block sm:block">
+      <span className="font-mono text-[0.55rem] tracking-[0.15em] uppercase text-[#4a445a] shrink-0 hidden sm:block">
         Sponsored
       </span>
 
