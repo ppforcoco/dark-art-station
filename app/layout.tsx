@@ -73,6 +73,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <head>
+        {/* ── Viewport — CRITICAL for mobile rendering ──────────────
+            The export const viewport above handles Next.js 13.4+.
+            This hard meta tag is the fallback for all versions and
+            is what actually prevents the "zoom out to see content"
+            symptom on mobile browsers.                             ── */}
+        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
         {/* ── Theme: set before paint to prevent flash on load ── */}
         <script
           dangerouslySetInnerHTML={{

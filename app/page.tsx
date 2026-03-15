@@ -113,7 +113,7 @@ export default async function Home() {
                     ))}
                   </div>
                 )}
-                <Link href={wotdHref} className="wotd-cta" style={{ color: "var(--text-primary)", borderColor: "var(--blood)" }}>
+                <Link href={wotdHref} className="wotd-cta">
                   View Today&apos;s Wallpaper →
                 </Link>
               </div>
@@ -160,7 +160,7 @@ export default async function Home() {
                   alt={cat.title}
                   fill
                   className="object-cover"
-                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 20vw"
+                  sizes="(max-width: 479px) 100vw, (max-width: 767px) 50vw, (max-width: 1024px) 33vw, 20vw"
                 />
               ) : (
                 <>
