@@ -64,14 +64,30 @@ export default function Header() {
     router.push(`/search?q=${encodeURIComponent(q)}`);
   }, [query, router, closeSearch, closeMenu]);
 
-  // Lock scroll when menu is open
+  // Lock scroll when menu is open — iOS Safari requires position:fixed trick
   useEffect(() => {
     if (menuOpen) {
+      const scrollY = window.scrollY;
       document.body.style.overflow = "hidden";
+      document.body.style.position = "fixed";
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.width = "100%";
     } else {
+      const scrollY = document.body.style.top;
       document.body.style.overflow = "";
+      document.body.style.position = "";
+      document.body.style.top = "";
+      document.body.style.width = "";
+      if (scrollY) {
+        window.scrollTo(0, parseInt(scrollY || "0", 10) * -1);
+      }
     }
-    return () => { document.body.style.overflow = ""; };
+    return () => {
+      document.body.style.overflow = "";
+      document.body.style.position = "";
+      document.body.style.top = "";
+      document.body.style.width = "";
+    };
   }, [menuOpen]);
 
   // Close on Escape key
@@ -123,11 +139,18 @@ export default function Header() {
                 value={query}
                 onChange={e => setQuery(e.target.value)}
                 aria-label="Search"
+                inputMode="search"
+                enterKeyHint="search"
+                autoComplete="off"
+                autoCorrect="off"
+                autoCapitalize="none"
+                spellCheck={false}
               />
             </form>
           </div>
 
           <button
+            type="button"
             className="btn-theme-toggle"
             onClick={toggleTheme}
             aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
@@ -136,7 +159,7 @@ export default function Header() {
           >
             <span style={{ fontSize: "1rem", lineHeight: 1 }}>{theme === "dark" ? "☀" : "☽"}</span>
           </button>
-          <button className="btn-cart nav-cart-desktop" style={{ touchAction: "manipulation" }}>Cart (0)</button>
+          <button type="button" className="btn-cart nav-cart-desktop" style={{ touchAction: "manipulation" }}>Cart (0)</button>
         </div>
 
         {/* ── Mobile Controls ── */}
@@ -176,7 +199,12 @@ export default function Header() {
                 placeholder="Search by theme, colour, device…"
                 value={query}
                 onChange={e => setQuery(e.target.value)}
-                autoFocus
+                inputMode="search"
+                enterKeyHint="search"
+                autoComplete="off"
+                autoCorrect="off"
+                autoCapitalize="none"
+                spellCheck={false}
               />
               {query && (
                 <button type="button" className="search-overlay-clear" onClick={() => setQuery("")}>
@@ -211,7 +239,7 @@ export default function Header() {
                 key={label}
                 href={href}
                 className="mobile-menu-link"
-                style={{ animationDelay: menuOpen ? `${0.08 + i * 0.07}s` : "0s" }}
+                style={{ animationDelay: menuOpen ? `${0.08 + i * 0.07}s` : "0s", minHeight: '44px' }}
                 onClick={closeMenu}
               >
                 <span className="mobile-link-index">0{i + 1}</span>
@@ -225,7 +253,7 @@ export default function Header() {
           <div className="mobile-menu-divider" />
 
           {/* Cart CTA */}
-          <button className="btn-cart mobile-menu-cart" onClick={closeMenu}>
+          <button type="button" className="btn-cart mobile-menu-cart" onClick={closeMenu}>
             <ShoppingCart size={14} strokeWidth={1.5} />
             Cart (0)
           </button>

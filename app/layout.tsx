@@ -1,5 +1,5 @@
 // app/layout.tsx
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Cinzel_Decorative, Cormorant_Garamond, Space_Mono } from "next/font/google";
 import "./globals.css";
 import Cursor from "@/components/Cursor";
@@ -32,6 +32,12 @@ const spaceMono = Space_Mono({
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
 const SITE_NAME = "Haunted Wallpapers";
 const OG_IMAGE  = `${SITE_URL}/og-image.jpg`;   // Place your best 1200×630 artwork at /public/og-image.jpg
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+};
 
 export const metadata: Metadata = {
   title: "Haunted Wallpapers | Free Dark Fantasy & Occult Wallpapers",
@@ -67,6 +73,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <head>
+        {/* ── Theme: set before paint to prevent flash on load ── */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem('hw-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();`,
+          }}
+        />
         {/* ── Preconnect: establish SSL to R2 CDN before first image request ── */}
         <link rel="preconnect" href="https://assets.hauntedwallpapers.com" />
         <link rel="dns-prefetch" href="https://assets.hauntedwallpapers.com" />
