@@ -11,10 +11,7 @@ export default function MarqueeTicker() {
       className="marquee-section"
       style={{ overflow: "hidden", width: "100%", maxWidth: "100%", position: "relative" }}
     >
-      <div
-        className="animate-marquee"
-        style={{ overflow: "hidden", maxWidth: "100%" }}
-      >
+      <div className="animate-marquee">
         {repeated.map((item, i) => (
           <span key={i} className="marquee-item">
             {item}<span className="marquee-dot">✦</span>

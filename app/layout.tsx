@@ -6,7 +6,6 @@ import Cursor from "@/components/Cursor";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import HalloweenCountdown from "@/components/HalloweenCountdown";
-import OverflowDebug from "@/components/OverflowDebug";
 
 const cinzel = Cinzel_Decorative({
   weight: ["400", "700", "900"],
@@ -127,7 +126,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           }}
         />
         <Cursor />
-        <OverflowDebug />
         <HalloweenCountdown />
         <Header />
         <div className="content-wrapper">

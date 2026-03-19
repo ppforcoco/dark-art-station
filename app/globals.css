@@ -353,30 +353,32 @@
 [data-theme="light"] ::-webkit-scrollbar-thumb { background: #c0001a !important; }
 
 /* ── Global Reset ──────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* ── CORE MOBILE FIX ───────────────────────────────────────────
+   This is the single most important rule for preventing the
+   "zoomed out on mobile" bug. It ensures NO element can ever be
+   wider than its parent — which means nothing can push the page
+   wider than 100vw, which means the browser never auto-zooms out.
+   This works together with overflow-x:hidden on body.           */
 *, *::before, *::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-  /* CRITICAL: min-width:0 prevents flex and grid children from overflowing
-     their containers. This is one of the most common silent causes of
-     layout-wider-than-viewport on mobile. */
+  max-width: 100%;
   min-width: 0;
+}
+
+/* Images and media should never overflow their container */
+img, video, iframe, embed, object {
+  max-width: 100%;
+  height: auto;
 }
 
 html {
   scroll-behavior: smooth;
+  overflow-x: hidden;
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
-  /* Hard cap — html element itself never exceeds the viewport */
-  max-width: 100%;
-  overflow-x: hidden;
+  max-width: 100vw;
 }
-
-/* IMPORTANT: overflow-x:hidden is on BOTH html AND body intentionally.
-   On iOS Safari, if only body has it, the user can still scroll horizontally
-   because Safari treats the html element as the scroll container.
-   However, neither one prevents the LAYOUT from computing at an overflowing
-   width — that is fixed by the individual element fixes below. */
 
 body {
   /* Already defined below — these are added to the existing body rule */
@@ -397,10 +399,8 @@ body {
   font-family: var(--font-cormorant), 'Cormorant Garamond', Georgia, serif;
   font-size: clamp(16px, 1.2vw + 14px, 19px);
   overflow-x: hidden;
-  /* Hard width cap on body prevents any child from making the document
-     scroll width wider than the screen */
   width: 100%;
-  max-width: 100%;
+  max-width: 100vw;
   cursor: none;
   min-height: 100vh;
   min-height: 100dvh;
@@ -508,19 +508,10 @@ body::before {
   from { transform: translateX(0); }
   to   { transform: translateX(-50%); }
 }
-/* CRITICAL FIX: The marquee strip is intentionally wider than 100vw (that's
-   how it works), but without containment the browser measures the page layout
-   as wider than the viewport and zooms out on mobile.
-   The fix: wrap the animation in a container with overflow:hidden (done on
-   .marquee-section below) and ensure the animating element itself does NOT
-   contribute to the document scroll width via `position` context. */
 .animate-marquee {
   display: inline-flex;
   animation: marquee 30s linear infinite;
   white-space: nowrap;
-  /* will-change prevents the element from being factored into layout width
-     recalculation during animation on some browsers */
-  will-change: transform;
 }
 
 /* ── FadeUp ────────────────────────────────────────────────── */
@@ -1050,17 +1041,12 @@ body::before {
   display: grid;
   grid-template-columns: 1fr 1fr;
   background-color: var(--bg-primary);
-  /* Prevent hero from ever being wider than the viewport */
   width: 100%;
-  max-width: 100%;
-  overflow-x: hidden;
+  overflow: hidden;
 }
 @media (max-width: 1023px) {
   .hero-section {
     grid-template-columns: 1fr;
-    /* CRITICAL FIX: min-height:100vh on mobile forces the section taller
-       than the screen. The browser sees it as overflow and zooms out.
-       Let content define height naturally on mobile. */
     min-height: auto;
   }
 }
@@ -1071,14 +1057,9 @@ body::before {
   justify-content: center;
   padding: 140px 60px 80px;
 }
-/* CRITICAL FIX: There was NO rule between 768px–1023px.
-   Tablets got 140px/60px desktop padding inside a single-column layout —
-   that's physically wider than a tablet screen and triggers zoom-out. */
-@media (max-width: 1023px) {
-  .hero-left { padding: 110px 40px 70px; }
-}
-@media (max-width: 767px) { .hero-left { padding: 100px 24px 60px; } }
-@media (max-width: 479px) { .hero-left { padding: 88px 20px 48px; } }
+@media (max-width: 1023px) { .hero-left { padding: 110px 40px 70px; } }
+@media (max-width: 767px)  { .hero-left { padding: 100px 24px 60px; } }
+@media (max-width: 479px)  { .hero-left { padding: 88px 20px 48px; } }
 
 .hero-eyebrow {
   display: flex; align-items: center; gap: 16px;
@@ -1391,17 +1372,12 @@ body::before {
 }
 
 /* ── Marquee ───────────────────────────────────────────────── */
-/* CRITICAL: overflow:hidden here is what prevents the marquee (which is
-   intentionally wider than 100vw) from contributing to the page's scroll
-   width. Without this, the browser sees the page as 2x+ wider than the
-   screen and zooms out on mobile to fit it. */
 .marquee-section {
   background: var(--bg-secondary);
   border-top: 1px solid rgba(139,0,0,0.3);
   border-bottom: 1px solid rgba(139,0,0,0.3);
   padding: 16px 0;
   overflow: hidden;
-  /* Contain the marquee within this block entirely */
   width: 100%;
   max-width: 100%;
   position: relative;
@@ -1846,8 +1822,7 @@ body::before {
   padding: 60px 60px 40px;
   border-bottom: 1px solid #2a2535;
 }
-@media (max-width: 1023px) { .search-header { padding: 48px 40px 32px; } }
-@media (max-width: 767px)  { .search-header { padding: 40px 24px 32px; } }
+@media (max-width: 767px) { .search-header { padding: 40px 24px 32px; } }
 
 .search-header-label {
   font-family: var(--font-space), monospace;
@@ -1887,11 +1862,8 @@ body::before {
 @media (max-width: 1279px) {
   .search-body {
     grid-template-columns: 1fr;
-    padding: 40px 40px 0;
+    padding: 40px 24px 0;
   }
-}
-@media (max-width: 767px) {
-  .search-body { padding: 40px 24px 0; }
 }
 
 /* ── Results column ── */
@@ -3796,8 +3768,6 @@ body::before {
 }
 
 /* ── Fix hero section on mobile — prevent overflow ──────────── */
-/* Note: hero-left padding is fully managed in the HERO block above.
-   Only overflow containment is needed here. */
 @media (max-width: 1023px) {
   .hero-section {
     overflow-x: hidden;
@@ -3854,8 +3824,6 @@ body::before {
   padding-left: max(60px, calc(60px + env(safe-area-inset-left)));
   padding-right: max(60px, calc(60px + env(safe-area-inset-right)));
 }
-/* CRITICAL FIX: use max(24px,...) not max(60px,...) for mobile,
-   and override the full padding shorthand so the 60px base doesn't leak */
 @media (max-width: 1279px) {
   .site-nav {
     padding: 20px max(24px, calc(24px + env(safe-area-inset-right))) 20px max(24px, calc(24px + env(safe-area-inset-left)));
