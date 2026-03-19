@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 
 interface AdSlotProps {
-  slotId?: string;           // data-ad-slot value — pass explicitly or falls back to env
+  slotId?: string;
   width?: number;
   height?: number;
   className?: string;
@@ -19,65 +19,51 @@ export default function AdSlot({
   const initialized = useRef(false);
 
   const pid = process.env.NEXT_PUBLIC_ADSENSE_PID;
-  // Resolve slot: explicit prop → env fallback
   const resolvedSlot = slotId ?? process.env.NEXT_PUBLIC_ADSENSE_SLOT_MAIN;
-
   const isLive = Boolean(pid && resolvedSlot);
 
   useEffect(() => {
     if (!isLive || initialized.current) return;
     initialized.current = true;
-
     try {
-      // Push the ad unit after mount
       ((window as unknown as { adsbygoogle: unknown[] }).adsbygoogle =
         (window as unknown as { adsbygoogle: unknown[] }).adsbygoogle || []).push({});
     } catch (e) {
-      // AdSense not loaded yet — safe to ignore in dev
       console.warn("[AdSlot] adsbygoogle push failed:", e);
     }
   }, [isLive]);
 
   return (
     <div
-      className={`bg-[#0a0a0a] border-y border-[rgba(139,0,0,0.4)] px-4 md:px-[60px] py-3 md:py-4 flex items-center justify-between gap-3 md:gap-5 overflow-hidden w-full ${className}`}
+      className={`ad-banner ${className}`}
+      style={{ overflow: "hidden", width: "100%", maxWidth: "100%" }}
     >
-      <span className="font-mono text-[0.55rem] tracking-[0.15em] uppercase text-[#4a445a] shrink-0 hidden sm:block">
-        Sponsored
-      </span>
+      <span className="ad-label hidden sm:block">Sponsored</span>
 
-      {/* Ad content area */}
-      <div className="flex-1 min-w-0 flex items-center justify-center md:border-x md:border-[#2a2535] md:px-10 py-2 overflow-hidden">
+      <div className="ad-content" style={{ overflow: "hidden", maxWidth: "100%" }}>
         {isLive ? (
-          // Live AdSense unit
           <ins
             ref={adRef}
             className="adsbygoogle"
-            style={{ display: "block", width: "100%", height: "auto", minHeight: height }}
+            style={{ display: "block", width: "100%", height: "auto" }}
             data-ad-client={pid}
             data-ad-slot={resolvedSlot}
             data-ad-format="auto"
             data-full-width-responsive="true"
           />
         ) : (
-          // Placeholder shown in dev / when env vars are missing
-          <div
-            className="flex items-center justify-center w-full"
-            style={{ height }}
-          >
-            <span className="font-body italic text-[1.1rem] text-[#c9a84c] opacity-40 text-center hidden md:block">
-              [ Google Ad Unit — {width}×{height} leaderboard slot ]
-            </span>
-            <span className="font-body italic text-[1rem] text-[#c9a84c] opacity-40 text-center block md:hidden">
-              [ Google Ad Unit — 320×50 ]
-            </span>
-          </div>
+          // THE FIX: the old placeholder used style={{ height }} where height=728
+          // which put a 728px tall (and implicitly wide) element on mobile,
+          // making the page layout wider than the viewport and causing zoom-out.
+          // Now we use a percentage-based min-height that never exceeds the screen.
+          <span className="ad-slot-text">
+            <span className="hidden md:inline">[ Google Ad Unit — {width}×{height} ]</span>
+            <span className="md:hidden">[ Ad ]</span>
+          </span>
         )}
       </div>
 
-      <span className="font-mono text-[0.55rem] tracking-[0.15em] uppercase text-[#4a445a] shrink-0 hidden sm:block">
-        Advertisement
-      </span>
+      <span className="ad-label hidden sm:block">Advertisement</span>
     </div>
   );
 }
