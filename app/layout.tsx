@@ -6,6 +6,7 @@ import Cursor from "@/components/Cursor";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import HalloweenCountdown from "@/components/HalloweenCountdown";
+import OverflowDebug from "@/components/OverflowDebug";
 
 const cinzel = Cinzel_Decorative({
   weight: ["400", "700", "900"],
@@ -33,33 +34,10 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.
 const SITE_NAME = "Haunted Wallpapers";
 const OG_IMAGE  = `${SITE_URL}/og-image.jpg`;
 
-// ─────────────────────────────────────────────────────────────────────────────
-// VIEWPORT FIX — this is the root cause of the "zoomed-out on mobile" bug.
-//
-// The original export had:
-//   width: "device-width", initialScale: 1, viewportFit: "cover"
-//
-// The problem: when mobile browsers (Safari, Chrome) detect that a page's
-// layout is WIDER than the viewport, they IGNORE initial-scale:1 and
-// automatically zoom out to fit the content. This is what caused the
-// "looks right at 50% zoom" symptom — the browser was measuring the layout
-// as ~2× the screen width and scaling accordingly.
-//
-// The fix has two parts:
-//   1. Add `maximumScale: 1` — this tells the browser not to zoom out
-//      automatically when it detects overflow. It locks the scale at 1.
-//   2. The real overflow sources (hero min-height:100vh, missing tablet
-//      breakpoints, section padding) are fixed in globals.css. But even with
-//      those fixes, this viewport export was missing the scale lock.
-//
-// NOTE: We do NOT set `userScalable: false` — that breaks accessibility.
-// `maximumScale: 1` prevents automatic browser zoom-to-fit without preventing
-// the user from manually pinching to zoom.
-// ─────────────────────────────────────────────────────────────────────────────
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  maximumScale: 1,   // ← THE CRITICAL MISSING PROPERTY
+  maximumScale: 1,
   viewportFit: "cover",
 };
 
@@ -97,28 +75,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <head>
-        {/* ── CRITICAL: Explicit viewport meta as a hard fallback ────────────
-            Next.js App Router generates the viewport meta from the exported
-            `viewport` object above. However, injecting it here as a raw tag
-            as well ensures it is present even if the framework's meta
-            injection is delayed or overridden by a plugin/middleware.
-            Both tags will be present — browsers use the FIRST one they see,
-            and Next.js deduplicates them server-side.                       */}
         <meta
           name="viewport"
           content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover"
         />
-
-        {/* ── Theme: set before paint to prevent flash on load ── */}
         <script
           dangerouslySetInnerHTML={{
             __html: `(function(){try{var t=localStorage.getItem('hw-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();`,
           }}
         />
-        {/* ── Preconnect: establish SSL to R2 CDN before first image request ── */}
         <link rel="preconnect" href="https://assets.hauntedwallpapers.com" />
         <link rel="dns-prefetch" href="https://assets.hauntedwallpapers.com" />
-
         {adsPid && (
           <script
             async
@@ -128,8 +95,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         )}
       </head>
       <body className={`${cormorant.variable} ${cinzel.variable} ${spaceMono.variable}`}>
-
-        {/* ── Global Structured Data — Organization + WebSite ── */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -140,18 +105,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 "@id": `${SITE_URL}/#organization`,
                 name: SITE_NAME,
                 url: SITE_URL,
-                logo: {
-                  "@type": "ImageObject",
-                  url: OG_IMAGE,
-                  width: 1200,
-                  height: 630,
-                },
-                sameAs: [
-                  "https://instagram.com/hauntedwallpapers",
-                  "https://pinterest.com/hauntedwallpapers",
-                ],
-                description:
-                  "Free dark fantasy wallpapers, tarot art, and occult designs for iPhone, Android and PC. AI-generated 4K art, instant download.",
+                logo: { "@type": "ImageObject", url: OG_IMAGE, width: 1200, height: 630 },
+                sameAs: ["https://instagram.com/hauntedwallpapers","https://pinterest.com/hauntedwallpapers"],
+                description: "Free dark fantasy wallpapers, tarot art, and occult designs for iPhone, Android and PC.",
               },
               {
                 "@context": "https://schema.org",
@@ -159,23 +115,19 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 "@id": `${SITE_URL}/#website`,
                 url: SITE_URL,
                 name: SITE_NAME,
-                description:
-                  "Free dark fantasy wallpapers and occult art. Download 4K wallpapers for iPhone, Android and PC.",
+                description: "Free dark fantasy wallpapers and occult art. Download 4K wallpapers for iPhone, Android and PC.",
                 publisher: { "@id": `${SITE_URL}/#organization` },
                 potentialAction: {
                   "@type": "SearchAction",
-                  target: {
-                    "@type": "EntryPoint",
-                    urlTemplate: `${SITE_URL}/search?q={search_term_string}`,
-                  },
+                  target: { "@type": "EntryPoint", urlTemplate: `${SITE_URL}/search?q={search_term_string}` },
                   "query-input": "required name=search_term_string",
                 },
               },
             ]),
           }}
         />
-
         <Cursor />
+        <OverflowDebug />
         <HalloweenCountdown />
         <Header />
         <div className="content-wrapper">
