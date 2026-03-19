@@ -353,50 +353,30 @@
 [data-theme="light"] ::-webkit-scrollbar-thumb { background: #c0001a !important; }
 
 /* ── Global Reset ──────────────────────────────────────────── */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-/* ── Global width containment ──────────────────────────────────
-   Ensures no element can push the layout wider than the viewport.
-   This is the REAL fix for the "zoomed-out mobile" bug — every
-   block-level element is capped at 100% of its parent's width.
-   Combined with overflow-x:hidden on body, this is airtight.    */
-*,
-*::before,
-*::after {
-  min-width: 0; /* prevents flex/grid children from overflowing their container */
-}
-
-/* All direct section-level containers get hard width caps */
-section,
-header,
-footer,
-nav,
-main,
-.hero-section,
-.manifesto-section,
-.newsletter-section,
-.wotd-section,
-.marquee-section,
-.section-pad,
-.site-nav,
-.site-footer,
-.content-wrapper {
-  max-width: 100%;
-  width: 100%;
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  /* CRITICAL: min-width:0 prevents flex and grid children from overflowing
+     their containers. This is one of the most common silent causes of
+     layout-wider-than-viewport on mobile. */
+  min-width: 0;
 }
 
 html {
   scroll-behavior: smooth;
-  /* NOTE: overflow-x intentionally NOT set here.
-     Setting overflow-x:hidden on html suppresses scroll but does NOT
-     prevent the layout from computing at a width wider than 100vw.
-     That computed-width is what causes the "zoomed-out" look on mobile.
-     The real fix is preventing any child from overflowing — see below. */
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
-  /* Ensure html never exceeds viewport width */
+  /* Hard cap — html element itself never exceeds the viewport */
   max-width: 100%;
+  overflow-x: hidden;
 }
+
+/* IMPORTANT: overflow-x:hidden is on BOTH html AND body intentionally.
+   On iOS Safari, if only body has it, the user can still scroll horizontally
+   because Safari treats the html element as the scroll container.
+   However, neither one prevents the LAYOUT from computing at an overflowing
+   width — that is fixed by the individual element fixes below. */
 
 body {
   /* Already defined below — these are added to the existing body rule */
@@ -417,14 +397,14 @@ body {
   font-family: var(--font-cormorant), 'Cormorant Garamond', Georgia, serif;
   font-size: clamp(16px, 1.2vw + 14px, 19px);
   overflow-x: hidden;
-  /* Explicit width containment — prevents any child from pushing body wider than viewport */
+  /* Hard width cap on body prevents any child from making the document
+     scroll width wider than the screen */
   width: 100%;
   max-width: 100%;
   cursor: none;
   min-height: 100vh;
-  min-height: 100dvh; /* Dynamic viewport height — fixes iOS address bar bug */
+  min-height: 100dvh;
   transition: background-color 0.3s ease, color 0.3s ease;
-  /* Safe area support for notched phones */
   padding-left: env(safe-area-inset-left);
   padding-right: env(safe-area-inset-right);
 }
@@ -528,10 +508,19 @@ body::before {
   from { transform: translateX(0); }
   to   { transform: translateX(-50%); }
 }
+/* CRITICAL FIX: The marquee strip is intentionally wider than 100vw (that's
+   how it works), but without containment the browser measures the page layout
+   as wider than the viewport and zooms out on mobile.
+   The fix: wrap the animation in a container with overflow:hidden (done on
+   .marquee-section below) and ensure the animating element itself does NOT
+   contribute to the document scroll width via `position` context. */
 .animate-marquee {
   display: inline-flex;
   animation: marquee 30s linear infinite;
   white-space: nowrap;
+  /* will-change prevents the element from being factored into layout width
+     recalculation during animation on some browsers */
+  will-change: transform;
 }
 
 /* ── FadeUp ────────────────────────────────────────────────── */
@@ -1061,20 +1050,18 @@ body::before {
   display: grid;
   grid-template-columns: 1fr 1fr;
   background-color: var(--bg-primary);
-  /* Bug fix: ensure hero never pushes past viewport width */
+  /* Prevent hero from ever being wider than the viewport */
   width: 100%;
   max-width: 100%;
   overflow-x: hidden;
 }
-/* Collapse to single column on tablet/mobile */
-@media (max-width: 1023px) { .hero-section { grid-template-columns: 1fr; } }
-/* Bug fix: min-height:100vh on mobile forces the section taller than the screen,
-   causing the browser to render the page at a zoomed-out scale.
-   On mobile, let content define the height naturally. */
 @media (max-width: 1023px) {
   .hero-section {
+    grid-template-columns: 1fr;
+    /* CRITICAL FIX: min-height:100vh on mobile forces the section taller
+       than the screen. The browser sees it as overflow and zooms out.
+       Let content define height naturally on mobile. */
     min-height: auto;
-    min-height: unset;
   }
 }
 
@@ -1084,12 +1071,11 @@ body::before {
   justify-content: center;
   padding: 140px 60px 80px;
 }
-/* Bug fix: there was NO rule between 768px–1023px — tablet got desktop padding
-   in a single column layout, making the content physically overflow the screen. */
+/* CRITICAL FIX: There was NO rule between 768px–1023px.
+   Tablets got 140px/60px desktop padding inside a single-column layout —
+   that's physically wider than a tablet screen and triggers zoom-out. */
 @media (max-width: 1023px) {
-  .hero-left {
-    padding: 110px 40px 70px;
-  }
+  .hero-left { padding: 110px 40px 70px; }
 }
 @media (max-width: 767px) { .hero-left { padding: 100px 24px 60px; } }
 @media (max-width: 479px) { .hero-left { padding: 88px 20px 48px; } }
@@ -1405,12 +1391,20 @@ body::before {
 }
 
 /* ── Marquee ───────────────────────────────────────────────── */
+/* CRITICAL: overflow:hidden here is what prevents the marquee (which is
+   intentionally wider than 100vw) from contributing to the page's scroll
+   width. Without this, the browser sees the page as 2x+ wider than the
+   screen and zooms out on mobile to fit it. */
 .marquee-section {
   background: var(--bg-secondary);
   border-top: 1px solid rgba(139,0,0,0.3);
   border-bottom: 1px solid rgba(139,0,0,0.3);
   padding: 16px 0;
   overflow: hidden;
+  /* Contain the marquee within this block entirely */
+  width: 100%;
+  max-width: 100%;
+  position: relative;
 }
 .marquee-item {
   font-family: var(--font-space), monospace;
@@ -1425,10 +1419,9 @@ body::before {
 /*  SECTION SHARED                                              */
 /* ──────────────────────────────────────────────────────────── */
 .section-pad { padding: 120px 60px; }
-/* Bug fix: add missing tablet step (768–1023px) between desktop 120px/60px and mobile 60px/24px */
 @media (max-width: 1023px) { .section-pad { padding: 80px 40px; } }
-@media (max-width: 767px) { .section-pad { padding: 60px 24px; } }
-@media (max-width: 479px) { .section-pad { padding: 48px 20px; } }
+@media (max-width: 767px)  { .section-pad { padding: 60px 24px; } }
+@media (max-width: 479px)  { .section-pad { padding: 48px 20px; } }
 
 .section-header {
   display: flex; align-items: flex-end; justify-content: space-between;
@@ -1664,8 +1657,6 @@ body::before {
   gap: 80px; align-items: center;
   border-top: 1px solid #2a2535;
 }
-/* Bug fix: add missing tablet breakpoint — was jumping straight from
-   140px/60px desktop padding to 80px/24px at ≤767px with nothing in between */
 @media (max-width: 1023px) {
   .manifesto-section { padding: 100px 40px; gap: 48px; }
 }
@@ -1708,9 +1699,8 @@ body::before {
   background: radial-gradient(ellipse at 50% 100%, rgba(139,0,0,0.18), transparent 70%);
   pointer-events: none;
 }
-/* Bug fix: add missing tablet step — was jumping 100px/60px → 80px/24px */
 @media (max-width: 1023px) { .newsletter-section { padding: 80px 40px; } }
-@media (max-width: 767px) { .newsletter-section { padding: 80px 24px; } }
+@media (max-width: 767px)  { .newsletter-section { padding: 80px 24px; } }
 
 .newsletter-title {
   font-family: var(--font-cinzel), cursive;
@@ -1856,9 +1846,8 @@ body::before {
   padding: 60px 60px 40px;
   border-bottom: 1px solid #2a2535;
 }
-/* Bug fix: add tablet step */
 @media (max-width: 1023px) { .search-header { padding: 48px 40px 32px; } }
-@media (max-width: 767px) { .search-header { padding: 40px 24px 32px; } }
+@media (max-width: 767px)  { .search-header { padding: 40px 24px 32px; } }
 
 .search-header-label {
   font-family: var(--font-space), monospace;
@@ -1895,7 +1884,6 @@ body::before {
   padding: 60px 60px 0;
   max-width: 1600px;
 }
-/* Bug fix: add tablet intermediate step */
 @media (max-width: 1279px) {
   .search-body {
     grid-template-columns: 1fr;
@@ -1903,9 +1891,7 @@ body::before {
   }
 }
 @media (max-width: 767px) {
-  .search-body {
-    padding: 40px 24px 0;
-  }
+  .search-body { padding: 40px 24px 0; }
 }
 
 /* ── Results column ── */
@@ -2513,7 +2499,6 @@ body::before {
   border-top: 1px solid rgba(139,0,0,0.2);
   border-bottom: 1px solid rgba(139,0,0,0.2);
   padding: 80px 60px;
-  /* Bug fix: image inside wotd-image-wrap can bleed on narrow screens */
   overflow: hidden;
   width: 100%;
 }
@@ -3174,13 +3159,12 @@ body::before {
 
 /* ── Mobile responsive ── */
 @media (max-width: 1023px) {
-  /* Bug fix: add tablet step so 60px padding doesn't persist at tablet widths */
-  .shop-header    { padding: 48px 40px 20px; }
+  .shop-header     { padding: 48px 40px 20px; }
   .shop-filter-bar { padding: 20px 40px; }
   .shop-grid-wrap  { padding: 48px 40px 0; }
 }
 @media (max-width: 767px) {
-  .shop-header    { padding: 40px 24px 20px; }
+  .shop-header     { padding: 40px 24px 20px; }
   .shop-filter-bar { padding: 16px 24px; }
   .shop-grid-wrap  { padding: 32px 24px 0; }
   .filter-pill     { padding: 6px 12px; }
@@ -3812,13 +3796,12 @@ body::before {
 }
 
 /* ── Fix hero section on mobile — prevent overflow ──────────── */
-/* Note: hero-left padding breakpoints are defined in the HERO section above.
-   This rule only handles overflow containment which is separate. */
+/* Note: hero-left padding is fully managed in the HERO block above.
+   Only overflow containment is needed here. */
 @media (max-width: 1023px) {
   .hero-section {
     overflow-x: hidden;
   }
-  /* Hero-left padding at this breakpoint: 110px 40px 70px (set in HERO block) */
 }
 
 /* ── Image detail page — grid to single column on mobile ────── */
@@ -3867,15 +3850,12 @@ body::before {
 }
 
 /* ── Safe area insets for fixed nav ─────────────────────────── */
-/* Desktop: 60px base + safe-area (for ultra-wide notched monitors) */
 .site-nav {
   padding-left: max(60px, calc(60px + env(safe-area-inset-left)));
   padding-right: max(60px, calc(60px + env(safe-area-inset-right)));
 }
-/* Bug fix: the mobile override MUST come AFTER the base rule and use
-   24px as the base — not 60px — so the safe-area doesn't floor it at 60px.
-   Previously both rules were present but the specificity/cascade meant
-   the mobile rule was overriding the safe-area-inset, not the padding base. */
+/* CRITICAL FIX: use max(24px,...) not max(60px,...) for mobile,
+   and override the full padding shorthand so the 60px base doesn't leak */
 @media (max-width: 1279px) {
   .site-nav {
     padding: 20px max(24px, calc(24px + env(safe-area-inset-right))) 20px max(24px, calc(24px + env(safe-area-inset-left)));
