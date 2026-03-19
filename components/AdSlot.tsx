@@ -38,7 +38,8 @@ export default function AdSlot({
       className={`ad-banner ${className}`}
       style={{ overflow: "hidden", width: "100%", maxWidth: "100%" }}
     >
-      <span className="ad-label hidden sm:block">Sponsored</span>
+      {/* Show on all screen sizes */}
+      <span className="ad-label">Sponsored</span>
 
       <div className="ad-content" style={{ overflow: "hidden", maxWidth: "100%" }}>
         {isLive ? (
@@ -52,18 +53,14 @@ export default function AdSlot({
             data-full-width-responsive="true"
           />
         ) : (
-          // THE FIX: the old placeholder used style={{ height }} where height=728
-          // which put a 728px tall (and implicitly wide) element on mobile,
-          // making the page layout wider than the viewport and causing zoom-out.
-          // Now we use a percentage-based min-height that never exceeds the screen.
           <span className="ad-slot-text">
-            <span className="hidden md:inline">[ Google Ad Unit — {width}×{height} ]</span>
-            <span className="md:hidden">[ Ad ]</span>
+            [ Google Ad Unit — {width}×{height} ]
           </span>
         )}
       </div>
 
-      <span className="ad-label hidden sm:block">Advertisement</span>
+      {/* Show on all screen sizes */}
+      <span className="ad-label">Advertisement</span>
     </div>
   );
 }
