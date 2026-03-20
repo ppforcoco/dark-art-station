@@ -2,15 +2,6 @@
 // Dynamic seasonal/event landing pages.
 // Route matches any slug — guard list (KNOWN_EVENTS) prevents wild-card
 // conflicts with real routes like /shop, /iphone, /about, etc.
-//
-// URL examples:
-//   /halloween   → tag: "halloween"
-//   /dark        → tag: "dark"
-//   /skeleton    → tag: "skeleton"
-//   /goddess     → tag: "goddess"
-//   /demon       → tag: "demon"
-//
-// To add a new season: add an entry to KNOWN_EVENTS. That's all.
 
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
@@ -20,15 +11,12 @@ import { getSeasonalImages } from "@/lib/db";
 import { getPublicUrl } from "@/lib/r2";
 import AdSlot from "@/components/AdSlot";
 
-// ─── Known events registry ────────────────────────────────────────────────────
-// slug → display config. Only slugs listed here are served; everything else 404s.
-
 interface EventConfig {
-  tag:         string;   // the DB tag to query
-  title:       string;   // <h1>
-  metaTitle:   string;   // <title> tag
-  description: string;   // meta description + subheading
-  eyebrow:     string;   // small label above title
+  tag:         string;
+  title:       string;
+  metaTitle:   string;
+  description: string;
+  eyebrow:     string;
 }
 
 const KNOWN_EVENTS: Record<string, EventConfig> = {
@@ -55,28 +43,26 @@ const KNOWN_EVENTS: Record<string, EventConfig> = {
   },
   "blood-moon": {
     tag:         "bloodmoon",
-    title:       "Blood Moon Wallpapers",
-    metaTitle:   "Blood Moon Wallpapers 4K | Haunted Wallpapers",
-    description: "Crimson lunar art, werewolf lore, and celestial horror. The blood moon rises on your screen.",
+    title:       "Crimson Moon Wallpapers",
+    metaTitle:   "Crimson Moon Wallpapers 4K | Haunted Wallpapers",
+    description: "Scarlet lunar art, werewolf lore, and celestial horror. The crimson moon rises on your screen.",
     eyebrow:     "Lunar Omen",
   },
   "haunted-christmas": {
     tag:         "christmas",
     title:       "Haunted Christmas Wallpapers",
     metaTitle:   "Haunted Christmas Wallpapers 4K | Haunted Wallpapers",
-    description: "Krampus, dark Yule, black Christmas trees, and gothic winter wonderland wallpapers for the damned.",
+    description: "Krampus, dark Yule, black Christmas trees, and gothic winter wonderland wallpapers for the dark-hearted.",
     eyebrow:     "Dark Yule",
   },
   "black-easter": {
     tag:         "easter",
     title:       "Black Easter Wallpapers",
     metaTitle:   "Black Easter Wallpapers 4K | Haunted Wallpapers",
-    description: "The resurrection reimagined in shadow. Dark Easter, occult spring, and gothic rebirth wallpapers.",
-    eyebrow:     "The Dark Resurrection",
+    description: "The dark rebirth reimagined in shadow. Gothic Easter, occult spring, and dark renewal wallpapers.",
+    eyebrow:     "The Dark Rebirth",
   },
 };
-
-// ─── Metadata ─────────────────────────────────────────────────────────────────
 
 interface PageProps {
   params: Promise<{ eventSlug: string }>;
@@ -112,8 +98,6 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 export function generateStaticParams() {
   return Object.keys(KNOWN_EVENTS).map((slug) => ({ eventSlug: slug }));
 }
-
-// ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default async function EventPage({ params }: PageProps) {
   const { eventSlug } = await params;

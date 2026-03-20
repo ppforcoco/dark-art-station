@@ -60,7 +60,7 @@ export default async function Home() {
           </h1>
           <p className="hero-subtitle fade-up-3">
             Premium dark fantasy wallpapers, tarot art, and occult designs for those
-            who dwell beyond the veil. Crafted for the damned and the divine alike.
+            who dwell beyond the veil. Crafted for the dark and the divine alike.
           </p>
           <div className="hero-ctas fade-up-4">
             <Link href="/shop" className="btn-primary"><span>Enter the Grimoire</span></Link>
@@ -214,7 +214,7 @@ export default async function Home() {
           )) : (
             <p style={{ color:"#4a445a", fontFamily:"var(--font-space)", fontSize:"0.75rem",
               gridColumn:"1/-1", padding:"60px 0", textAlign:"center" }}>
-              Summoning artworks…
+              Emerging from the abyss…
             </p>
           )}
         </div>
@@ -230,7 +230,7 @@ export default async function Home() {
           </h2>
           <p className="manifesto-text">
             We create for the unconventional. The ones who hang skulls where others
-            hang flowers. Who find divinity in demons, humor in death, and power in
+            hang flowers. Who find divinity in demons, humor in darkness, and power in
             the occult. Every wallpaper is a window into a world most dare not enter.
           </p>
           <Link href="/lore" className="btn-primary"><span>Read Our Story</span></Link>

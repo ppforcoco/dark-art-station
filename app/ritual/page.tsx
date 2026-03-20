@@ -5,7 +5,7 @@ import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
   title: "The Ritual | Haunted Wallpapers",
-  description: "How to use Haunted Wallpapers art — guides, rituals, and installation instructions for your dark digital sanctuary.",
+  description: "How to use Haunted Wallpapers art — guides, rituals, and installation instructions for your dark digital sanctum.",
 };
 
 export default function RitualPage() {
@@ -22,7 +22,7 @@ export default function RitualPage() {
             Setting the wallpaper is just the beginning.
           </p>
           <p style={{ fontFamily: "var(--font-cormorant)", fontSize: "1rem", color: "#4a445a", lineHeight: "1.8", marginBottom: "40px" }}>
-            This space will become your guide to building a dark digital sanctuary —
+            This space will become your guide to building a dark digital sanctum —
             from wallpaper setups, to dual-monitor configurations, to curating your
             own collection. The full grimoire of instructions is being prepared.
           </p>

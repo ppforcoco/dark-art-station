@@ -77,7 +77,7 @@ export default async function CollectionsPage() {
           {collections.length === 0 && (
             <div style={{ textAlign: "center", padding: "120px 0" }}>
               <p style={{ fontFamily: "var(--font-display)", fontSize: "1.5rem", color: "#2a2535", marginBottom: "16px" }}>
-                Collections summoning from the abyss…
+                Collections emerging from the abyss…
               </p>
               <Link href="/shop" className="section-link">Try the Shop →</Link>
             </div>

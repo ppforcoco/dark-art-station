@@ -20,7 +20,7 @@ export default function Footer() {
             HAUNTED<span className="logo-red">WALLPAPERS</span>
           </Link>
           <p className="footer-brand-desc">
-            Premium dark art for the damned, the divine, and everyone gloriously
+            Premium dark art for the dark-hearted, the divine, and everyone gloriously
             in between. AI-generated wallpapers and occult designs for iPhone,
             Android &amp; PC.
           </p>
@@ -45,7 +45,7 @@ export default function Footer() {
             <li><Link href="/halloween">Halloween</Link></li>
             <li><Link href="/dark-valentine">Dark Valentine</Link></li>
             <li><Link href="/day-of-the-dead">Day of the Dead</Link></li>
-            <li><Link href="/blood-moon">Blood Moon</Link></li>
+            <li><Link href="/blood-moon">Crimson Moon</Link></li>
             <li><Link href="/haunted-christmas">Haunted Christmas</Link></li>
             <li><Link href="/black-easter">Black Easter</Link></li>
           </ul>

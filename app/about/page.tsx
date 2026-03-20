@@ -27,7 +27,7 @@ export default function AboutPage() {
               the phone in your pocket to the monitor on your desk.
             </p>
             <p>
-              Every image is crafted using cutting-edge AI generation pipelines,
+              Every image is crafted using advanced AI generation pipelines,
               hand-curated and post-processed to ensure each piece feels intentional,
               not accidental. We do not sell photographs. We do not sell clip art. We
               build worlds — then we shrink them down to fit your screen.

@@ -67,7 +67,7 @@ const SEASONS = [
   {
     id:    "blood-moon",
     href:  "/blood-moon",
-    label: "Blood Moon",
+    label: "Crimson Moon",
     sub:   "Lunar Omen",
     bg:    "linear-gradient(180deg, #1a0808 0%, #2a0000 50%, #0e0000 100%)",
     icon: (
@@ -112,7 +112,7 @@ const SEASONS = [
     id:    "black-easter",
     href:  "/black-easter",
     label: "Black Easter",
-    sub:   "Dark Resurrection",
+    sub:   "Dark Rebirth",
     bg:    "linear-gradient(135deg, #0a0808 0%, #1a100a 40%, #0e0808 100%)",
     icon: (
       <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" className="mosaic-svg-icon">

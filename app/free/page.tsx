@@ -35,7 +35,7 @@ export default async function FreePage() {
           <p style={{ fontFamily: "var(--font-cormorant)", fontStyle: "italic", fontSize: "1.05rem", color: "#8a8099", marginTop: "12px" }}>
             {freeCollections.length > 0
               ? `${freeCollections.length} free ${freeCollections.length === 1 ? "collection" : "collections"} — yours for the taking`
-              : "Free collections summoning shortly…"}
+              : "Free collections arriving from the void…"}
           </p>
         </div>
 

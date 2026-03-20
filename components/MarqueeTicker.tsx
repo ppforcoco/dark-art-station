@@ -1,7 +1,7 @@
 const ITEMS = [
-  "Dark Fantasy","Occult Art","Tarot Decks","Death Aesthetics",
+  "Dark Fantasy","Occult Art","Tarot Decks","Dark Aesthetics",
   "Gothic Goddesses","Dark Humor","Demon Art","Void Witches",
-  "Arcane Relics","Blood Rites",
+  "Arcane Relics","Crimson Rites",
 ];
 
 export default function MarqueeTicker() {

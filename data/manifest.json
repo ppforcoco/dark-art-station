@@ -159,7 +159,7 @@
         {
           "slug": "shadow-demon-queen-red-glow",
           "title": "Shadow Demon Queen",
-          "description": "A monstrous dark queen with writhing tentacle hair, glowing red eyes and a sinister grin rises against a crimson and purple backdrop, flanked by blood moons, bats, and grasping clawed hands.",
+          "description": "A monstrous dark queen with writhing tentacle hair, glowing red eyes and a sinister grin rises against a crimson and purple backdrop, flanked by crimson moons, bats, and grasping clawed hands.",
           "sortOrder": 2,
           "thumbExt": "jpeg",
           "highResExt": "jpeg"
@@ -206,7 +206,7 @@
         },
         {
           "slug": "witch-full-moon-red-sparks-forest",
-          "title": "Witch Beneath the Blood-Sparked Moon",
+          "title": "Witch Beneath the Crimson-Sparked Moon",
           "description": "A witch in a wide-brimmed hat raises her hands in a dark forest, red glowing sparks and floating eyes surrounding her as a massive full moon illuminates bats and twisted branches overhead.",
           "sortOrder": 8,
           "thumbExt": "jpeg",
@@ -289,8 +289,8 @@
         },
         {
           "slug": "armored-skull-warrior-purple-flame-skull-staff",
-          "title": "Armored Skull Warrior — Card XIII Death",
-          "description": "A heavily armored skull-faced warrior in dark plate mail charges a swirling purple energy ball in one gauntleted hand while gripping a staff topped with a glowing skull, framed by a thorn-bordered card labeled Death XIII.",
+          "title": "Armored Skull Warrior — Card XIII The End",
+          "description": "A heavily armored skull-faced warrior in dark plate mail charges a swirling purple energy ball in one gauntleted hand while gripping a staff topped with a glowing skull, framed by a thorn-bordered card labeled The End XIII.",
           "sortOrder": 2,
           "thumbExt": "jpeg",
           "highResExt": "jpeg"
@@ -305,8 +305,8 @@
         },
         {
           "slug": "hooded-skeleton-purple-swirl-card-xiii-death",
-          "title": "Hooded Skeleton — Death Card XIII",
-          "description": "A hooded skeleton with glowing purple eyes clutches a swirling purple energy mass in ringed bony fingers, seated against a dark starfield on an ornately bordered card labeled Death XIII with skull corner accents.",
+          "title": "Hooded Skeleton — The End Card XIII",
+          "description": "A hooded skeleton with glowing purple eyes clutches a swirling purple energy mass in ringed bony fingers, seated against a dark starfield on an ornately bordered card labeled The End XIII with skull corner accents.",
           "sortOrder": 4,
           "thumbExt": "jpeg",
           "highResExt": "jpeg"
@@ -811,7 +811,7 @@
         {
           "slug": "they-watch-always-watching",
           "title": "They Watch: Always Watching",
-          "description": "Wide cracked green glowing eyes with long lashes stare out from darkness, topped with blood-dripping red 'They Watch' title and 'Always Watching' in white below.",
+          "description": "Wide cracked green glowing eyes with long lashes stare out from darkness, topped with crimson-dripping red 'They Watch' title and 'Always Watching' in white below.",
           "sortOrder": 3,
           "thumbExt": "jpeg",
           "highResExt": "jpeg"
@@ -941,8 +941,8 @@
         },
         {
           "slug": "deaths-greeting-coat-skeleton",
-          "title": "Death's Greeting",
-          "description": "A 3D rendered skeleton in a black open coat holds a lit cigarette in one hand while throwing up fingers with the other, topped with dripping red 'Death's Greeting' text.",
+          "title": "The Grim Greeting",
+          "description": "A 3D rendered skeleton in a black open coat holds a lit cigarette in one hand while throwing up fingers with the other, topped with dripping red 'The Grim Greeting' text.",
           "sortOrder": 3,
           "thumbExt": "jpeg",
           "highResExt": "jpeg"
@@ -965,8 +965,8 @@
         },
         {
           "slug": "death-dealer-cracked-skull",
-          "title": "Death Dealer",
-          "description": "A cracked skull with glowing red eyes in a dark coat raises one middle finger while holding a smoking cigarette in the other, under jagged red 'Death Dealer' text.",
+          "title": "Bone Dealer",
+          "description": "A cracked skull with glowing red eyes in a dark coat raises one middle finger while holding a smoking cigarette in the other, under jagged red 'Bone Dealer' text.",
           "sortOrder": 6,
           "thumbExt": "jpeg",
           "highResExt": "jpeg"
@@ -998,7 +998,7 @@
         {
           "slug": "fear-the-bone-suit-no-remorse",
           "title": "Fear The Bone: No Remorse",
-          "description": "A cracked skull in a black suit and red tie smokes a cigarette and raises a middle finger, framed by blood-drip 'Fear The Bone' at the top and 'No Remorse' at the bottom.",
+          "description": "A cracked skull in a black suit and red tie smokes a cigarette and raises a middle finger, framed by scarlet-drip 'Fear The Bone' at the top and 'No Remorse' at the bottom.",
           "sortOrder": 10,
           "thumbExt": "jpeg",
           "highResExt": "jpeg"
@@ -1013,16 +1013,16 @@
         },
         {
           "slug": "death-is-the-new-cool-mobster",
-          "title": "Death Is The New Cool",
-          "description": "A fedora-wearing skeleton in a pinstripe suit blows smoke while making hand gestures, surrounded by swirling smoke clouds under the title 'Death Is The New Cool' in horror font.",
+          "title": "The Void Is The New Cool",
+          "description": "A fedora-wearing skeleton in a pinstripe suit blows smoke while making hand gestures, surrounded by swirling smoke clouds under the title 'The Void Is The New Cool' in horror font.",
           "sortOrder": 12,
           "thumbExt": "jpeg",
           "highResExt": "jpeg"
         },
         {
           "slug": "deaths-grasp-coat-skeleton",
-          "title": "Death's Grasp",
-          "description": "A grinning skull in a tattered black coat raises a middle finger while holding a burning cigarette, under dripping red 'Death's Grasp' typography on a dark grey background.",
+          "title": "The Grim Grasp",
+          "description": "A grinning skull in a tattered black coat raises a middle finger while holding a burning cigarette, under dripping red 'The Grim Grasp' typography on a dark grey background.",
           "sortOrder": 13,
           "thumbExt": "jpeg",
           "highResExt": "jpeg"
@@ -1065,7 +1065,7 @@
         {
           "slug": "beanie-puffer-skeleton-smoking",
           "title": "Beanie Puffer Skeleton Smoking",
-          "description": "A grumpy skeleton in a grey beanie and patched puffer jacket with chain holds a lit cigarette in one hand and taps its temple with the other against a black background.",
+          "description": "A grumpy skeleton in a grey beanie and patched puffer jacket with chain holds a lit cigarette in one hand and points to its skull with the other against a black background.",
           "sortOrder": 2,
           "thumbExt": "jpeg",
           "highResExt": "jpeg"
@@ -1279,7 +1279,7 @@
         {
           "slug": "goth-witch-midnight-coven",
           "title": "Goth Witch – Midnight Coven Do Not Cross The Circle",
-          "description": "A badass goth witch in a rune-covered leather jacket stands inside a glowing summoning circle, gripping a crystal-tipped wooden staff. Purple-streaked hair and dark attitude. Text reads: The Midnight Coven – Do Not Cross The Circle.",
+          "description": "A badass goth witch in a rune-covered leather jacket stands inside a glowing arcane circle, gripping a crystal-tipped wooden staff. Purple-streaked hair and dark attitude. Text reads: The Midnight Coven – Do Not Cross The Circle.",
           "sortOrder": 1,
           "thumbExt": "jpeg",
           "highResExt": "jpeg"
@@ -1399,7 +1399,7 @@
         {
           "slug": "goth-witch-purple-hair",
           "title": "Goth Witch Purple Teal Hair Fishnet Tattoo Character Art",
-          "description": "A smirking goth witch with purple and teal hair leans against a stone arch in a hooded coat, fishnet stockings, and a pentagram necklace, with glowing green cigarette smoke and tattoos on her arms.",
+          "description": "A smirking goth witch with purple and teal hair leans against a stone arch in a hooded coat, fishnet stockings, and a star sigil necklace, with glowing green cigarette smoke and tattoos on her arms.",
           "sortOrder": 16,
           "thumbExt": "jpeg",
           "highResExt": "jpeg"
@@ -1704,7 +1704,7 @@
       {
         "slug": "skeleton-leather-jacket",
         "title": "Skeleton Leather Jacket Life Is Short Quote",
-        "description": "A full-body badass skeleton in a leather jacket, beanie, ripped jeans, and boots, holding a cigarette and a spirits bottle. Bold text reads: Life Is Short. Death Is Permanent. The Bones Just Keep Showing Up.",
+        "description": "A full-body badass skeleton in a leather jacket, beanie, ripped jeans, and boots, holding a cigarette and a spirits bottle. Bold text reads: Life Is Short. The Void Is Permanent. The Bones Just Keep Showing Up.",
         "sortOrder": 1,
         "thumbExt": "jpeg",
         "highResExt": "jpeg"
@@ -1735,8 +1735,8 @@
       },
       {
         "slug": "skeleton-death-beginning",
-        "title": "Death Is Only The Beginning Skeleton Quote",
-        "description": "A bare skeleton torso with red eyes raising one bony hand in a wave. Bold grunge text reads: Death Is Only The Beginning. Something Always Watches From The Dark.",
+        "title": "The Void Is Only The Beginning Skeleton Quote",
+        "description": "A bare skeleton torso with red eyes raising one bony hand in a wave. Bold grunge text reads: The Void Is Only The Beginning. Something Always Watches From The Dark.",
         "sortOrder": 5,
         "thumbExt": "jpeg",
         "highResExt": "jpeg"
@@ -1744,7 +1744,7 @@
       {
         "slug": "ghostboy-skeleton-hustle",
         "title": "Ghost Boy Skeleton Hustle Quote Streetwear",
-        "description": "A lean skeleton in a black hoodie, snapback cap, sunglasses, and gold skull chain, smoking a cigarette. Text reads: Death Ain't The End, It's Just A Promotion. Stay Undead. The Grind Never Stops. Ghost Boy.",
+        "description": "A lean skeleton in a black hoodie, snapback cap, sunglasses, and gold skull chain, smoking a cigarette. Text reads: The Void Ain't The End, It's Just A Promotion. Stay Undead. The Grind Never Stops. Ghost Boy.",
         "sortOrder": 6,
         "thumbExt": "jpeg",
         "highResExt": "jpeg"
@@ -1867,7 +1867,7 @@
       {
         "slug": "skeleton-vintage-red-drip",
         "title": "Vintage Sketch Skeleton Peeking Red Drip Text",
-        "description": "A detailed vintage crosshatch-style skeleton in a fedora and old suit peeks around a dark corner. Bold red blood-drip lettering above reads Hiding From Stupid People on a pure black background.",
+        "description": "A detailed vintage crosshatch-style skeleton in a fedora and old suit peeks around a dark corner. Bold red drip lettering above reads Hiding From Stupid People on a pure black background.",
         "sortOrder": 5,
         "thumbExt": "jpeg",
         "highResExt": "jpeg"
@@ -1891,7 +1891,7 @@
       {
         "slug": "reaper-corner-red-title",
         "title": "Grim Reaper Peeking Corner Red Title Wallpaper",
-        "description": "A menacing hooded grim reaper with glowing red eyes and sharp skeletal fingers peeks around a dark wall corner. Dripping blood-red horror text at the top reads Hiding From Stupid People.",
+        "description": "A menacing hooded grim reaper with glowing red eyes and sharp skeletal fingers peeks around a dark wall corner. Dripping scarlet horror text at the top reads Hiding From Stupid People.",
         "sortOrder": 8,
         "thumbExt": "jpeg",
         "highResExt": "jpeg"
@@ -2006,15 +2006,15 @@
       {
         "slug": "digital-apparition-card",
         "title": "Digital Apparition Dark Fantasy Battle Card ATK 8 DEF 4",
-        "description": "A cyberpunk skeleton warrior in dark armor wielding a glowing blue energy sword and a hexagonal circuit shield with skull emblem. Glowing teal eyes and neon blue chest circuits. ATK 8 DEF 4. Ability forces opponent to reveal hand and discard one card on entry.",
+        "description": "A cyberpunk skeleton warrior in dark armor wielding a glowing blue energy blade and a hexagonal circuit shield with skull emblem. Glowing teal eyes and neon blue chest circuits. ATK 8 DEF 4. Ability forces opponent to reveal hand and discard one card on entry.",
         "sortOrder": 1,
         "thumbExt": "jpeg",
         "highResExt": "jpeg"
       },
       {
         "slug": "death-knight-card",
-        "title": "Death Knight Undead Warrior Battle Card ATK 7 DEF 5",
-        "description": "A fearsome skeleton warrior in tattered chainmail armor wielding a bloodied sword and a dark skull-embossed shield. Glowing red eyes in a menacing battle stance. ATK 7 DEF 5. Ability forces opponent to discard one card on entry.",
+        "title": "Dark Knight Undead Warrior Battle Card ATK 7 DEF 5",
+        "description": "A fearsome skeleton warrior in tattered chainmail armor wielding a scarlet-stained sword and a dark skull-embossed shield. Glowing red eyes in a menacing battle stance. ATK 7 DEF 5. Ability forces opponent to discard one card on entry.",
         "sortOrder": 2,
         "thumbExt": "jpeg",
         "highResExt": "jpeg"
@@ -2046,7 +2046,7 @@
       {
         "slug": "soul-reaver-card",
         "title": "Soul Reaver Dark Knight Fantasy Card ATK 7 DEF 5",
-        "description": "A powerful armored dark knight with a skull face helmet wielding a long rune-etched sword crackling with blue soul energy. Swirling blue ethereal flames engulf this haunted warrior in ancient ruins. ATK 7 DEF 5. Soul Drain restores 2 DEF for every enemy defeated and ignores armor.",
+        "description": "A powerful armored dark knight with a skull face helmet wielding a long rune-etched blade crackling with blue soul energy. Swirling blue ethereal flames engulf this haunted warrior in ancient ruins. ATK 7 DEF 5. Soul Drain restores 2 DEF for every enemy defeated and ignores armor.",
         "sortOrder": 6,
         "thumbExt": "jpeg",
         "highResExt": "jpeg"
@@ -2062,7 +2062,7 @@
       {
         "slug": "spectral-knight-card",
         "title": "Spectral Knight Ghost Warrior Fantasy Card ATK 6 DEF 6",
-        "description": "A glowing blue spectral knight in full plate armor wreathed in ethereal ghost flames wielding a translucent energy sword. An ancient warrior spirit eternally bound to battle. ATK 6 DEF 6. Gains plus 1 DEF per Spectral ally on field and cannot be blocked by non-magical creatures.",
+        "description": "A glowing blue spectral knight in full plate armor wreathed in ethereal ghost flames wielding a translucent energy blade. An ancient warrior spirit eternally bound to battle. ATK 6 DEF 6. Gains plus 1 DEF per Spectral ally on field and cannot be blocked by non-magical creatures.",
         "sortOrder": 8,
         "thumbExt": "jpeg",
         "highResExt": "jpeg"
@@ -2078,7 +2078,7 @@
       {
         "slug": "bloodbound-berserker",
         "title": "Bloodbound Berserker Dark Warrior Card ATK 9 DEF 3",
-        "description": "A fearsome crimson armored berserker with horned helmet engulfed in swirling fire and rage wielding a blood-soaked battle axe in a ruined hellscape. ATK 9 DEF 3. Frenzy ability grants plus 2 ATK per damage taken but loses 1 DEF each turn.",
+        "description": "A fearsome crimson armored berserker with horned helmet engulfed in swirling fire and rage wielding a scarlet-stained battle axe in a ruined hellscape. ATK 9 DEF 3. Frenzy ability grants plus 2 ATK per damage taken but loses 1 DEF each turn.",
         "sortOrder": 10,
         "thumbExt": "jpeg",
         "highResExt": "jpeg"
@@ -2086,7 +2086,7 @@
       {
         "slug": "skeleton-token-card",
         "title": "Skeleton Token Dual Undead Warriors Card ATK 2 DEF 2",
-        "description": "Two animated skeleton warriors with red glowing eyes, wooden shields, and rusted swords surrounded by purple dark flames. A brittle bone construct summoned only by the Bone Golem. ATK 2 DEF 2. Removed from play permanently when destroyed.",
+        "description": "Two animated skeleton warriors with red glowing eyes, wooden shields, and rusted blades surrounded by purple dark flames. A brittle bone construct summoned only by the Bone Golem. ATK 2 DEF 2. Removed from play permanently when destroyed.",
         "sortOrder": 11,
         "thumbExt": "jpeg",
         "highResExt": "jpeg"
@@ -2102,7 +2102,7 @@
       {
         "slug": "gloom-stalker-card",
         "title": "Gloom Stalker Dark Rogue Assassin Card ATK 5 DEF 3",
-        "description": "A hooded shadow assassin with glowing red eyes wielding twin curved daggers surrounded by swirling purple dark mist in a moonlit dead forest. ATK 5 DEF 3. Ambush ability deals double damage from concealment and ignores enemy DEF on first turn.",
+        "description": "A hooded shadow assassin with glowing red eyes wielding twin curved blades surrounded by swirling purple dark mist in a moonlit dead forest. ATK 5 DEF 3. Ambush ability deals double damage from concealment and ignores enemy DEF on first turn.",
         "sortOrder": 13,
         "thumbExt": "jpeg",
         "highResExt": "jpeg"
@@ -2137,7 +2137,7 @@
       {
         "slug": "fire-eyes-mustache-fangs",
         "title": "Fire Eyes Mustache Monster Don't Touch My Phone Wallpaper",
-        "description": "A menacing dark face with blazing orange fire eyes, a large curling black mustache with orange fire tips, and dripping vampire fangs baring a full set of teeth. Red blood drip text at the bottom reads Don't Touch My Phone on a pure black background.",
+        "description": "A menacing dark face with blazing orange fire eyes, a large curling black mustache with orange fire tips, and dripping vampire fangs baring a full set of teeth. Red drip text at the bottom reads Don't Touch My Phone on a pure black background.",
         "sortOrder": 1,
         "thumbExt": "jpeg",
         "highResExt": "jpeg"
@@ -2249,7 +2249,7 @@
       {
         "slug": "yellow-eyes-sabertooth",
         "title": "Yellow Eyes Sabertooth Mustache Monster Wallpaper",
-        "description": "A close-up dark monster face with vivid yellow glowing eyes and sharp angular brows, a thick black mustache with subtle gold roots, and massive elongated white sabertooth fangs. Bold red blood drip text at the top reads Dont Touch My Phone.",
+        "description": "A close-up dark monster face with vivid yellow glowing eyes and sharp angular brows, a thick black mustache with subtle gold roots, and massive elongated white sabertooth fangs. Bold red drip text at the top reads Dont Touch My Phone.",
         "sortOrder": 15,
         "thumbExt": "jpeg",
         "highResExt": "jpeg"
@@ -2514,7 +2514,7 @@
       {
         "slug": "screaming-face-thorn-dark",
         "title": "Screaming Face Thorn Branch Dark Grunge Pattern Wallpaper",
-        "description": "A deeply atmospheric dark pattern of repeated screaming tortured faces tangled within crawling thorn branches and ancient rune markings on a near-black textured surface. Gothic horror wallpaper with a raw sketched grunge art style.",
+        "description": "A deeply atmospheric dark pattern of repeated screaming anguished faces tangled within crawling thorn branches and ancient rune markings on a near-black textured surface. Gothic horror wallpaper with a raw sketched grunge art style.",
         "sortOrder": 4,
         "thumbExt": "jpeg",
         "highResExt": "jpeg"
@@ -2617,7 +2617,7 @@
       },
       {
         "slug": "dark-weapon-rune-pattern",
-        "title": "Dark Weapon Rune Red Skull Grunge Pattern Wallpaper",
+        "title": "Dark Rune Red Skull Grunge Pattern Wallpaper",
         "description": "A symmetrical repeating dark pattern of crossed scythe weapons, skull icons, spiked crown shapes, red rune symbols, barbed wire dividers, and talon claw marks on a black grunge textured background. Dark fantasy aesthetic phone wallpaper.",
         "sortOrder": 17,
         "thumbExt": "jpeg",
@@ -2661,7 +2661,7 @@
       {
         "slug": "night-hallowed-evil",
         "title": "Night Hallowed Evil Demon Horror Poster",
-        "description": "A vintage horror movie poster featuring a demonic creature with glowing red eyes and bloody claws advancing through darkness. Bold red grunge text reads 'The Night Hallowed' with tagline 'Evil Has A New Face'.",
+        "description": "A vintage horror movie poster featuring a demonic creature with glowing red eyes and crimson claws advancing through darkness. Bold red grunge text reads 'The Night Hallowed' with tagline 'Evil Has A New Face'.",
         "sortOrder": 1,
         "thumbExt": "jpeg",
         "highResExt": "jpeg"
@@ -2717,7 +2717,7 @@
       {
         "slug": "hollow-reach-skull",
         "title": "Hollow Reach Skull Claw Horror Poster",
-        "description": "A dramatic horror poster featuring a monstrous clawed hand crushing a cracked human skull with blood red fractures glowing from within. Bold red and white gothic text reads 'The Hollow Reach'.",
+        "description": "A dramatic horror poster featuring a monstrous clawed hand crushing a cracked human skull with crimson fractures glowing from within. Bold red and white gothic text reads 'The Hollow Reach'.",
         "sortOrder": 8,
         "thumbExt": "jpeg",
         "highResExt": "jpeg"
@@ -2756,8 +2756,8 @@
       },
       {
         "slug": "nightmare-within-graveyard",
-        "title": "Nightmare Within Graveyard Blood Moon Horror Poster",
-        "description": "A grunge horror poster featuring a skeletal clawed hand bursting from a graveyard ground beneath a massive blood red moon with tombstones silhouetted against the sky. Bold red and white torn text reads 'Nightmare Within'.",
+        "title": "Nightmare Within Graveyard Crimson Moon Horror Poster",
+        "description": "A grunge horror poster featuring a skeletal clawed hand bursting from a graveyard ground beneath a massive crimson moon with tombstones silhouetted against the sky. Bold red and white torn text reads 'Nightmare Within'.",
         "sortOrder": 13,
         "thumbExt": "jpeg",
         "highResExt": "jpeg"
@@ -2808,7 +2808,7 @@
       {
         "slug": "horned-skull-dark",
         "title": "Horned Demon Skull Glowing Eyes Dark Fantasy Art",
-        "description": "A carved stone demon skull with massive curved horns and glowing blue eyes resting on a mossy altar stone, featuring engraved rune markings and a serpent sword emblem under a crescent moon with a ruined castle in the background.",
+        "description": "A carved stone demon skull with massive curved horns and glowing blue eyes resting on a mossy stone pedestal, featuring engraved rune markings and a serpent blade emblem under a crescent moon with a ruined castle in the background.",
         "sortOrder": 3,
         "thumbExt": "jpeg",
         "highResExt": "jpeg"
@@ -2840,7 +2840,7 @@
       {
         "slug": "viking-vs-bear",
         "title": "Viking Warrior vs Giant Bear Dark Fantasy Battle Art",
-        "description": "An armored viking warrior wielding a gleaming sword and bear-emblem shield faces off against a massive roaring grizzly bear with glowing orange eyes in a snow-covered dark forest battlefield under a crescent moon.",
+        "description": "An armored viking warrior wielding a gleaming blade and bear-emblem shield faces off against a massive roaring grizzly bear with glowing orange eyes in a snow-covered dark forest battlefield under a crescent moon.",
         "sortOrder": 7,
         "thumbExt": "jpeg",
         "highResExt": "jpeg"
@@ -2848,7 +2848,7 @@
       {
         "slug": "knight-vs-dragon",
         "title": "Knight vs Fire Dragon Epic Fantasy Battle Cliff Art",
-        "description": "A lone armored knight holds a glowing sword and shield against a colossal fire-breathing dragon with glowing orange eyes and massive wings on a rocky mountain cliff, surrounded by flames and dark stormy clouds.",
+        "description": "A lone armored knight holds a glowing blade and shield against a colossal fire-breathing dragon with glowing orange eyes and massive wings on a rocky mountain cliff, surrounded by flames and dark stormy clouds.",
         "sortOrder": 8,
         "thumbExt": "jpeg",
         "highResExt": "jpeg"
@@ -2856,7 +2856,7 @@
       {
         "slug": "warrior-dragon-storm",
         "title": "Warrior vs Flying Dragon Lightning Storm Dark Fantasy Art",
-        "description": "An armored warrior with a glowing blue sword and shield braces against a massive winged dragon breathing a massive stream of fire from above, set against a dramatic stormy sky with lightning bolts and burning ruins.",
+        "description": "An armored warrior with a glowing blue blade and shield braces against a massive winged dragon breathing a massive stream of fire from above, set against a dramatic stormy sky with lightning bolts and burning ruins.",
         "sortOrder": 9,
         "thumbExt": "jpeg",
         "highResExt": "jpeg"
@@ -2864,7 +2864,7 @@
       {
         "slug": "knight-vs-demon",
         "title": "Knight vs Giant Horned Demon Monster Epic Dark Fantasy Art",
-        "description": "A lone armored knight wielding a glowing fiery sword and shield stands his ground against a towering horned stone demon with glowing red eyes and massive claws on a crumbling cliff edge amid lightning, fire, and dark mountains.",
+        "description": "A lone armored knight wielding a glowing fiery blade and shield stands his ground against a towering horned stone demon with glowing red eyes and massive claws on a crumbling cliff edge amid lightning, fire, and dark mountains.",
         "sortOrder": 10,
         "thumbExt": "jpeg",
         "highResExt": "jpeg"
@@ -2939,7 +2939,7 @@
       {
         "slug": "skull-call-me-dare",
         "title": "Scary Skull Call Me If You Dare Phone Dark Humor Art",
-        "description": "A menacing skull with glowing red eyes holds up a black smartphone showing the message 'Call Me If You Dare - Dial 666' with smoke rising in the background against a dark gray minimal backdrop.",
+        "description": "A menacing skull with glowing red eyes holds up a black smartphone showing the message 'Call Me If You Dare - Dial 999' with smoke rising in the background against a dark gray minimal backdrop.",
         "sortOrder": 8,
         "thumbExt": "jpeg",
         "highResExt": "jpeg"
@@ -3006,7 +3006,7 @@
       {
         "slug": "skull-bony-grip",
         "title": "Beware The Bony Grip Skull Full Body Horror Wallpaper",
-        "description": "A full-body skull creature in shredded black clothing with blood-red eyes extends massive bony claws while raising one fist in the air. Text reads 'Beware The Bony Grip'. This wallpaper is for those who want their phone to look like it crawled out of a nightmare. Best on: Samsung Galaxy S24+, Xiaomi 14 Ultra.",
+        "description": "A full-body skull creature in shredded black clothing with scarlet eyes extends massive bony claws while raising one fist in the air. Text reads 'Beware The Bony Grip'. This wallpaper is for those who want their phone to look like it crawled out of a nightmare. Best on: Samsung Galaxy S24+, Xiaomi 14 Ultra.",
         "sortOrder": 5,
         "thumbExt": "jpeg",
         "highResExt": "jpeg"
@@ -3030,7 +3030,7 @@
       {
         "slug": "proceed-caution-skull",
         "title": "Proceed With Caution Screaming Skull Crouching Dark Wallpaper",
-        "description": "A crouching skeleton in tattered dark clothes holds its cracked skull head with both bony hands while screaming with glowing red eyes, sitting low in a defensive rage pose. Dripping blood-red text reads 'Proceed With Caution'. For those who want to send a message before anyone even opens their phone — enter at your own risk. Best on: Samsung Galaxy S24, Redmi Note 13 Pro.",
+        "description": "A crouching skeleton in tattered dark clothes holds its cracked skull head with both bony hands while screaming with glowing red eyes, sitting low in a defensive rage pose. Dripping scarlet text reads 'Proceed With Caution'. For those who want to send a message before anyone even opens their phone — enter at your own risk. Best on: Samsung Galaxy S24, Redmi Note 13 Pro.",
         "sortOrder": 8,
         "thumbExt": "jpeg",
         "highResExt": "jpeg"
@@ -3105,7 +3105,7 @@
       {
         "slug": "skull-minimal-dark",
         "title": "Minimal Skull Red Crack Dark Art Wallpaper",
-        "description": "A stark white skull with angry brow markings floats above a fading skeleton body with red lightning cracks spreading beneath it against a near-black background. Represents mortality dressed in rage — death is not peaceful, it is furious.",
+        "description": "A stark white skull with angry brow markings floats above a fading skeleton body with red lightning cracks spreading beneath it against a near-black background. Represents mortality dressed in rage — restless, furious, unrelenting.",
         "sortOrder": 3,
         "thumbExt": "jpeg",
         "highResExt": "jpeg"
