@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, DeviceType } from "@prisma/client";
 
 // Prevent multiple PrismaClient instances in Next.js dev hot-reload
 const globalForPrisma = globalThis as unknown as { prisma: PrismaClient };
@@ -40,7 +40,7 @@ export async function getWallpaperOfTheDay(): Promise<WotdImage | null> {
   const ids = await db.image.findMany({
     where: {
       collectionId: null,
-      deviceType: { in: ["IPHONE", "ANDROID"] },
+      deviceType: { in: [DeviceType.IPHONE, DeviceType.ANDROID] },
     },
     select: { id: true },
     orderBy: { createdAt: "asc" }, // stable order across calls
@@ -139,7 +139,7 @@ export async function searchWallpapers(
     collectionId: null,
     // Exclude PC wallpapers from global search — PC has its own search page.
     // PC thumbnails are landscape (16:9) and look distorted in portrait grids.
-    deviceType: { in: ["IPHONE", "ANDROID"] },
+    deviceType: { in: [DeviceType.IPHONE, DeviceType.ANDROID] },
     OR: [
       { title: { contains: q, mode: "insensitive" as const } },
       // Only match description when it is not null
