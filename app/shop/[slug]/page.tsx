@@ -73,22 +73,19 @@ export default async function CollectionPage({ params }: PageProps) {
 
       {/* ── Collection Header ── */}
       <section style={{ maxWidth: "1280px", margin: "0 auto", padding: "40px 24px" }}>
-        {/* FIX: was grid md:grid-cols-2 which didn't collapse on mobile.
-            Now uses a proper responsive stack: single column on mobile,
-            two columns on md+ */}
-        <div style={{
-          display: "grid",
-          gridTemplateColumns: "1fr",
-          gap: "32px",
-        }}
+        <div
+          style={{ display: "grid", gridTemplateColumns: "1fr", gap: "32px" }}
           className="collection-header-grid"
         >
-          {/* Image */}
+          {/* ── Thumbnail image ──
+              FIX: object-fit: contain via inline style so the full wallpaper
+              is always visible. The inline style prop beats Tailwind + Next.js
+              injected styles reliably. Container is locked to 9/16 portrait.  */}
           <div style={{
             position: "relative",
             overflow: "hidden",
             border: "1px solid rgba(139,0,0,0.3)",
-            background: "#0a0a0a",
+            background: "#070710",
             aspectRatio: "9/16",
             width: "100%",
             maxWidth: "360px",
@@ -99,9 +96,10 @@ export default async function CollectionPage({ params }: PageProps) {
                 src={thumbnailUrl}
                 alt={collection.title}
                 fill
-                className="object-cover"
                 priority
                 sizes="(max-width: 768px) 100vw, 50vw"
+                // inline style wins over className and Next.js injected styles
+                style={{ objectFit: "contain", objectPosition: "center center" }}
               />
             ) : (
               <div className={`w-full h-full flex items-center justify-center text-8xl ${collection.bgClass}`}>
@@ -138,7 +136,6 @@ export default async function CollectionPage({ params }: PageProps) {
                 </span>
               )}
             </div>
-            {/* FIX: buttons now stack on mobile with flex-wrap */}
             <div style={{ display: "flex", flexWrap: "wrap", gap: "12px", alignItems: "center" }}>
               <span className="font-mono text-[0.6rem] tracking-[0.25em] uppercase text-[#c9a84c] border border-[#c9a84c] px-3 py-1">
                 Free Download
@@ -157,7 +154,7 @@ export default async function CollectionPage({ params }: PageProps) {
         </div>
       </section>
 
-      {/* ── Responsive grid CSS injected via style tag ── */}
+      {/* Responsive grid: single col mobile → 2 col desktop */}
       <style>{`
         @media (min-width: 768px) {
           .collection-header-grid {
@@ -166,6 +163,7 @@ export default async function CollectionPage({ params }: PageProps) {
         }
       `}</style>
 
+      {/* AdSlot hidden when empty via .ad-banner--empty in globals.css */}
       <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_MAIN} width={728} height={90} />
 
       {hasImages && (

@@ -161,6 +161,7 @@ export default async function ImagePage({ params }: PageProps) {
               className="image-detail-img"
               priority
               sizes="(max-width: 768px) 100vw, (max-width: 1280px) 55vw, 640px"
+              style={{ objectFit: "contain", objectPosition: "center center" }}
             />
             {image.collection.category && (
               <span className="image-detail-badge">

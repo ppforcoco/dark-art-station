@@ -4149,47 +4149,60 @@ p,
   .image-detail-section { padding: 32px 24px 40px; }
 }
 
+/*
+  KEY FIX: portrait 9:16 wallpapers must be height-driven not width-driven.
+  Setting width:100% on a wide desktop column + aspect-ratio:9/16 makes the
+  frame taller than the viewport — browser squashes it and image distorts.
+  Solution: fix max-height, let width be auto-calculated from aspect-ratio.
+*/
 .image-detail-grid {
   display: grid;
-  grid-template-columns: 1fr;          /* mobile: stacked */
+  grid-template-columns: 1fr;
   gap: 40px;
   align-items: start;
 }
 @media (min-width: 1024px) {
   .image-detail-grid {
-    grid-template-columns: 480px 1fr;  /* desktop: fixed portrait + fluid details */
+    /* auto column: image sizes itself from its height, not the grid width */
+    grid-template-columns: auto 1fr;
     gap: 56px;
-  }
-}
-@media (min-width: 1280px) {
-  .image-detail-grid {
-    grid-template-columns: 560px 1fr;
+    align-items: start;
   }
 }
 
-/* ── FIX 1: Image frame — contain not cover ──────────────────
-   aspect-ratio locks the box; object-fit:contain shows the
-   FULL image without zooming, cropping, or blurring.
-   The dark background fills any letterbox areas cleanly.      */
+/* ── Image frame — HEIGHT-driven portrait container ──────────
+   max-height caps the frame. Width auto-derives from aspect-ratio.
+   This is the correct approach for portrait images on landscape screens. */
 .image-detail-frame {
   position: relative;
-  aspect-ratio: 9 / 16;               /* portrait wallpapers */
-  width: 100%;
+  aspect-ratio: 9 / 16;
+  max-height: 85vh;         /* never taller than 85% of viewport */
+  width: auto;              /* let aspect-ratio + max-height set the width */
+  max-width: 100%;          /* never wider than the viewport */
   background: #070710;
   border: 1px solid rgba(139,0,0,0.3);
   overflow: hidden;
-  /* On mobile, cap height so it doesn't dominate the viewport */
+  margin: 0 auto;
 }
 @media (max-width: 1023px) {
   .image-detail-frame {
-    max-width: 360px;
-    margin: 0 auto;
+    max-height: 70vh;
+    max-width: calc(70vh * 9 / 16);
+  }
+}
+@media (max-width: 479px) {
+  .image-detail-frame {
+    max-height: 65vh;
+    max-width: calc(65vh * 9 / 16);
   }
 }
 
-.image-detail-img {
-  object-fit: contain !important;     /* show full image — no crop/zoom */
-  object-position: center center;
+/* Triple specificity + !important ensures this beats both
+   Tailwind's .object-cover utility AND Next.js <Image> injected styles */
+.image-detail-frame .image-detail-img,
+.image-detail-frame img {
+  object-fit: contain !important;
+  object-position: center center !important;
 }
 
 /* Badge over image */
@@ -4247,13 +4260,18 @@ p,
 
 .image-detail-nav-card {
   display: flex;
-  flex-direction: column;
-  gap: 12px;
+  flex-direction: row;      /* thumb beside text, not stacked */
+  align-items: flex-start;
+  gap: 14px;
   text-decoration: none;
   border: 1px solid #2a2535;
   padding: 16px;
   transition: border-color 0.25s ease, background 0.25s ease;
   background: transparent;
+}
+/* Next card: text on left, thumb on right */
+.image-detail-nav-card--next {
+  flex-direction: row-reverse;
 }
 .image-detail-nav-card:hover {
   border-color: rgba(192,0,26,0.55);
@@ -4263,19 +4281,30 @@ p,
   transform: scale(0.99);
 }
 
-/* Thumbnail — locked 9:16 portrait, object-fit:cover fills cleanly */
+/* Thumbnail — HEIGHT-driven portrait, same principle as main frame.
+   max-height drives the size; width auto-derives from aspect-ratio.
+   object-fit:cover (set in JSX className) fills the thumb cleanly. */
 .image-detail-nav-thumb {
   position: relative;
-  width: 100%;
   aspect-ratio: 9 / 16;
-  /* Cap height on large screens so nav cards don't get enormous */
-  max-height: 260px;
+  max-height: 220px;
+  width: auto;
+  max-width: calc(220px * 9 / 16);
   overflow: hidden;
   background: #070710;
+  margin: 0 auto;
+  flex-shrink: 0;
+}
+@media (max-width: 767px) {
+  .image-detail-nav-thumb {
+    max-height: 160px;
+    max-width: calc(160px * 9 / 16);
+  }
 }
 @media (max-width: 479px) {
   .image-detail-nav-thumb {
-    max-height: 180px;
+    max-height: 130px;
+    max-width: calc(130px * 9 / 16);
   }
 }
 
