@@ -520,11 +520,11 @@ body::before {
 /*   --topbar-h  = Halloween bar height (set by JS, default 0px) */
 /*   --nav-h     = 88px desktop / 72px mobile                    */
 .content-wrapper {
-  padding-top: calc(var(--topbar-h, 0px) + var(--nav-h, 88px));
+  padding-top: calc(var(--topbar-total, 72px) + var(--nav-h, 88px));
 }
 @media (max-width: 1279px) {
   .content-wrapper {
-    padding-top: calc(var(--topbar-h, 0px) + var(--nav-h-mob, 72px));
+    padding-top: calc(var(--topbar-total, 72px) + var(--nav-h-mob, 72px));
   }
 }
 
@@ -551,7 +551,7 @@ body::before {
 /* ──────────────────────────────────────────────────────────── */
 .site-nav {
   position: fixed;
-  top: var(--topbar-total, var(--topbar-h, 0px)); width: 100%; z-index: 600;
+  top: var(--topbar-total, 72px); width: 100%; z-index: 600;
   padding: 24px 60px;
   display: flex; align-items: center; justify-content: space-between;
   border-bottom: 1px solid rgba(139,0,0,0.2);
@@ -4445,18 +4445,19 @@ p,
 @media (pointer: coarse) { .btn-random { cursor: pointer; } }
 .btn-random:hover { border-color: #c0001a; color: #f0ecff; }
 
-/* ── btn-theme-toggle — now with label ────────────────────── */
+/* ── btn-theme-toggle — label version ─────────────────────── */
 .btn-theme-label {
   font-family: var(--font-space), monospace;
   font-size: 0.6rem;
   letter-spacing: 0.14em;
-  margin-left: 4px;
+  text-transform: uppercase;
 }
-/* Widen the toggle to fit the label */
-.btn-theme-toggle {
+/* Override the fixed width to fit the label */
+.nav-right-cluster .btn-theme-toggle {
   width: auto !important;
-  padding: 0 12px;
+  padding: 0 14px;
   gap: 6px;
+  height: 38px;
 }
 
 /* ── Search overlay — new elements ────────────────────────── */
@@ -4542,7 +4543,7 @@ p,
 /* ── Dark Quote Bar ────────────────────────────────────────── */
 .dark-quote-bar {
   position: fixed;
-  top: var(--topbar-h, 36px);   /* sits right below the halloween countdown bar */
+  top: var(--topbar-h, 36px);
   left: 0;
   width: 100%;
   height: 36px;
@@ -4552,11 +4553,11 @@ p,
   display: flex;
   align-items: center;
   gap: 16px;
-  z-index: 695;                 /* below halloween bar (700), above nav (600) */
+  z-index: 695;
   overflow: hidden;
 }
 @media (max-width: 767px) {
-  .dark-quote-bar { padding: 0 16px; gap: 8px; }
+  .dark-quote-bar { padding: 0 16px; gap: 6px; }
 }
 .dqb-glyph {
   color: #c0001a;
@@ -4950,3 +4951,79 @@ p,
 [data-theme="light"] .origins-p { color: #5a5450; }
 [data-theme="light"] .origins-h2 { color: #0a0908; }
 [data-theme="light"] .rv-card { border-color: #cdc8bc; }
+
+/* ═══════════════════════════════════════════════════════════════
+   NAV ICON + TEXT BUTTONS — matching original screenshot style
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Icon-only nav buttons (search, compass, shuffle) */
+.nav-icon-btn {
+  background: transparent;
+  border: none;
+  color: #8a8099;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: none;
+  transition: color 0.2s;
+  flex-shrink: 0;
+  text-decoration: none;
+  padding: 0;
+}
+@media (pointer: coarse) { .nav-icon-btn { cursor: pointer; } }
+.nav-icon-btn:hover { color: #f0ecff; }
+
+/* Text label nav buttons (CURSOR, DARK/LIGHT) */
+.nav-text-btn {
+  background: transparent;
+  border: 1px solid rgba(139,0,0,0.35);
+  color: #8a8099;
+  font-family: var(--font-space), monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  padding: 6px 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: none;
+  transition: border-color 0.2s, color 0.2s;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+@media (pointer: coarse) { .nav-text-btn { cursor: pointer; } }
+.nav-text-btn:hover {
+  border-color: rgba(192,0,26,0.7);
+  color: #f0ecff;
+}
+.nav-text-btn-icon {
+  font-size: 0.75rem;
+  opacity: 0.7;
+}
+.nav-text-btn-arrow {
+  font-size: 0.85rem;
+  color: #c0001a;
+  line-height: 1;
+}
+/* Theme button gets a subtle red tint on the arrow */
+.nav-text-btn--theme .nav-text-btn-arrow {
+  color: #c0001a;
+}
+.nav-text-btn--theme:hover {
+  border-color: #c0001a;
+  color: #f0ecff;
+}
+
+/* ── data-cursor=off: hide custom cursor elements ── */
+[data-cursor="off"] .cursor-ring,
+[data-cursor="off"] .cursor-dot {
+  display: none !important;
+}
+
+/* Light theme overrides */
+[data-theme="light"] .nav-icon-btn { color: #5a5450; }
+[data-theme="light"] .nav-icon-btn:hover { color: #0a0908; }
+[data-theme="light"] .nav-text-btn { color: #5a5450; border-color: rgba(139,0,0,0.2); }
+[data-theme="light"] .nav-text-btn:hover { color: #0a0908; border-color: rgba(192,0,26,0.5); }

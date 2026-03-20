@@ -7,36 +7,28 @@ export default function Cursor() {
   const mx  = useRef(0);
   const my  = useRef(0);
   const raf = useRef<number>(0);
-  const [hovered,     setHovered]     = useState(false);
-  const [cursorStyle, setCursorStyle] = useState("default");
-
-  // Watch data-cursor attribute so the ring hides when an emoji cursor is active
-  useEffect(() => {
-    const read = () => {
-      setCursorStyle(document.documentElement.getAttribute("data-cursor") ?? "default");
-    };
-    read();
-    const observer = new MutationObserver(read);
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ["data-cursor"],
-    });
-    return () => observer.disconnect();
-  }, []);
+  const [hovered, setHovered] = useState(false);
+  const [active,  setActive]  = useState(true);
 
   useEffect(() => {
     const isPointerFine = window.matchMedia("(pointer: fine)").matches;
     if (!isPointerFine) return;
 
-    // Hide ring/dot when an emoji cursor is selected (CSS handles the cursor icon)
-    if (cursorStyle !== "default") {
-      if (ringRef.current) ringRef.current.style.display = "none";
-      if (dotRef.current)  dotRef.current.style.display  = "none";
-      cancelAnimationFrame(raf.current);
-      return;
-    }
+    // Check saved preference
+    try {
+      if (localStorage.getItem("hw-cursor") === "off") {
+        setActive(false);
+        return;
+      }
+    } catch {}
 
-    // Show ring/dot for the default ring cursor style
+    // Watch for toggle via data-cursor attribute
+    const observer = new MutationObserver(() => {
+      const val = document.documentElement.getAttribute("data-cursor");
+      setActive(val !== "off");
+    });
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ["data-cursor"] });
+
     if (ringRef.current) ringRef.current.style.display = "block";
     if (dotRef.current)  dotRef.current.style.display  = "block";
 
@@ -70,8 +62,11 @@ export default function Cursor() {
       document.removeEventListener("mousemove", onMove);
       document.removeEventListener("mouseover", onOver);
       cancelAnimationFrame(raf.current);
+      observer.disconnect();
     };
-  }, [cursorStyle]);
+  }, []);
+
+  if (!active) return null;
 
   const ringStyle: React.CSSProperties = {
     position: "fixed", pointerEvents: "none", zIndex: 9999,

@@ -4,7 +4,7 @@
 import Link from "next/link";
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { Menu, X, ShoppingCart, Search, Shuffle } from "lucide-react";
+import { Menu, X, ShoppingCart, Search, Shuffle, Compass } from "lucide-react";
 
 const NAV_LINKS = [
   { label: "iPhone",      href: "/iphone"      },
@@ -20,11 +20,13 @@ const SEARCH_SUGGESTIONS = [
 
 export default function Header() {
   const router = useRouter();
-  const [menuOpen,   setMenuOpen]   = useState(false);
-  const [searchOpen, setSearchOpen] = useState(false);
-  const [query,      setQuery]      = useState("");
-  const [theme,      setTheme]      = useState<"dark"|"light">("dark");
+  const [menuOpen,    setMenuOpen]    = useState(false);
+  const [searchOpen,  setSearchOpen]  = useState(false);
+  const [query,       setQuery]       = useState("");
+  const [theme,       setTheme]       = useState<"dark"|"light">("dark");
+  const [cursorOn,    setCursorOn]    = useState(true);
 
+  // ── Theme ────────────────────────────────────────────────────
   const toggleTheme = useCallback(() => {
     setTheme(prev => {
       const next = prev === "dark" ? "light" : "dark";
@@ -44,14 +46,36 @@ export default function Header() {
     } catch {}
   }, []);
 
+  // ── Custom Cursor toggle ──────────────────────────────────────
+  const toggleCursor = useCallback(() => {
+    setCursorOn(prev => {
+      const next = !prev;
+      document.documentElement.setAttribute("data-cursor", next ? "on" : "off");
+      try { localStorage.setItem("hw-cursor", next ? "on" : "off"); } catch {}
+      return next;
+    });
+  }, []);
+
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("hw-cursor");
+      if (saved === "off") {
+        setCursorOn(false);
+        document.documentElement.setAttribute("data-cursor", "off");
+      }
+    } catch {}
+  }, []);
+
+  // ── Search ───────────────────────────────────────────────────
   const searchInputRef = useRef<HTMLInputElement>(null);
-  const closeMenu   = useCallback(() => setMenuOpen(false), []);
-  const toggleMenu  = useCallback(() => setMenuOpen(prev => !prev), []);
-  const openSearch  = useCallback(() => {
+  const closeMenu    = useCallback(() => setMenuOpen(false), []);
+  const toggleMenu   = useCallback(() => setMenuOpen(prev => !prev), []);
+  const openSearch   = useCallback(() => {
     setSearchOpen(true);
     setTimeout(() => searchInputRef.current?.focus(), 50);
   }, []);
-  const closeSearch = useCallback(() => { setSearchOpen(false); setQuery(""); }, []);
+  const closeSearch  = useCallback(() => { setSearchOpen(false); setQuery(""); }, []);
+
   const handleSearch = useCallback((e: React.FormEvent) => {
     e.preventDefault();
     const q = query.trim();
@@ -65,7 +89,7 @@ export default function Header() {
     router.push(`/search?q=${encodeURIComponent(tag)}`);
   }, [router, closeSearch, closeMenu]);
 
-  // Fixed: handles both standalone (deviceType set) and collection images
+  // ── Random ───────────────────────────────────────────────────
   const handleRandom = useCallback(async () => {
     try {
       const res = await fetch("/api/random-wallpaper");
@@ -80,6 +104,7 @@ export default function Header() {
     } catch {}
   }, [router]);
 
+  // ── Body scroll lock ─────────────────────────────────────────
   useEffect(() => {
     if (menuOpen) {
       const scrollY = window.scrollY;
@@ -126,49 +151,44 @@ export default function Header() {
         </ul>
 
         <div className="nav-right-cluster">
-          {/* Inline expandable search — original style */}
-          <div className={`nav-search-wrap${searchOpen ? " nav-search-open" : ""}`}>
-            <form onSubmit={handleSearch} className="nav-search-form">
-              <button type="button" className="nav-search-icon-btn"
-                onClick={searchOpen ? closeSearch : openSearch}
-                aria-label={searchOpen ? "Close search" : "Open search"}>
-                {searchOpen ? <X size={16} strokeWidth={1.5} /> : <Search size={16} strokeWidth={1.5} />}
-              </button>
-              <input ref={searchInputRef} type="text" className="nav-search-input"
-                placeholder="Search wallpapers…" value={query}
-                onChange={e => setQuery(e.target.value)} aria-label="Search"
-                inputMode="search" enterKeyHint="search" autoComplete="off"
-                autoCorrect="off" autoCapitalize="none" spellCheck={false} />
-            </form>
-          </div>
-
-          {/* Random — labelled button */}
-          <button type="button" className="btn-random" onClick={handleRandom}
-            title="Surprise me — random wallpaper" aria-label="Random wallpaper"
-            style={{ touchAction: "manipulation" }}>
-            <Shuffle size={14} strokeWidth={1.5} />
-            <span>RANDOM</span>
+          {/* Search icon */}
+          <button type="button" className="nav-icon-btn"
+            onClick={searchOpen ? closeSearch : openSearch}
+            aria-label={searchOpen ? "Close search" : "Open search"}>
+            {searchOpen ? <X size={16} strokeWidth={1.5} /> : <Search size={16} strokeWidth={1.5} />}
           </button>
 
-          {/* Theme toggle */}
-          <button type="button" className="btn-theme-toggle" onClick={toggleTheme}
-            aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
-            style={{ touchAction: "manipulation" }}>
-            <span style={{ fontSize: "0.85rem", lineHeight: 1 }}>{theme === "dark" ? "☀" : "☽"}</span>
-            <span className="btn-theme-label">{theme === "dark" ? "LIGHT" : "DARK"}</span>
+          {/* Compass / Explore seasonal */}
+          <Link href="/collections" className="nav-icon-btn" aria-label="Explore collections">
+            <Compass size={16} strokeWidth={1.5} />
+          </Link>
+
+          {/* Random / Shuffle */}
+          <button type="button" className="nav-icon-btn"
+            onClick={handleRandom} aria-label="Random wallpaper">
+            <Shuffle size={16} strokeWidth={1.5} />
           </button>
 
-          <button type="button" className="btn-cart nav-cart-desktop" style={{ touchAction: "manipulation" }}>
-            <ShoppingCart size={13} strokeWidth={1.5} /> CART (0)
+          {/* Cursor toggle — text label like screenshot */}
+          <button type="button" className="nav-text-btn" onClick={toggleCursor}
+            aria-label="Toggle custom cursor">
+            <span className="nav-text-btn-icon">⚙</span>
+            <span>CURSOR</span>
+          </button>
+
+          {/* Theme toggle — "> DARK" or "> LIGHT" like screenshot */}
+          <button type="button" className="nav-text-btn nav-text-btn--theme"
+            onClick={toggleTheme}
+            aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}>
+            <span className="nav-text-btn-arrow">›</span>
+            <span>{theme === "dark" ? "DARK" : "LIGHT"}</span>
           </button>
         </div>
 
         {/* Mobile controls */}
         <div className="nav-mobile-controls">
-          <button type="button" className="btn-hamburger btn-theme-toggle"
-            onClick={toggleTheme}
-            aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
-            style={{ touchAction: "manipulation" }}>
+          <button type="button" className="btn-hamburger" onClick={toggleTheme}
+            aria-label="Toggle theme" style={{ touchAction: "manipulation" }}>
             <span style={{ fontSize: "1rem", lineHeight: 1 }}>{theme === "dark" ? "☀" : "☽"}</span>
           </button>
           <button className="btn-hamburger btn-search-mobile" onClick={openSearch}
@@ -183,7 +203,7 @@ export default function Header() {
         </div>
       </nav>
 
-      {/* ── Search overlay with live suggestion pills ── */}
+      {/* ── Search overlay ── */}
       {searchOpen && (
         <div className="search-overlay" role="dialog" aria-label="Search">
           <div className="search-overlay-backdrop" onClick={closeSearch} />
@@ -204,7 +224,6 @@ export default function Header() {
               <button type="submit" className="search-overlay-submit">SEARCH</button>
             </form>
 
-            {/* Live-filtered suggestion pills */}
             <div className="search-overlay-suggestions">
               <span className="search-overlay-sugg-label">Popular themes</span>
               <div className="search-overlay-pills">
@@ -232,6 +251,7 @@ export default function Header() {
         </div>
       )}
 
+      {/* ── Mobile menu ── */}
       <div className={`mobile-menu-overlay${menuOpen ? " mobile-menu-open" : ""}`} aria-hidden={!menuOpen}>
         <div className="mobile-menu-backdrop" onClick={closeMenu} />
         <div className="mobile-menu-panel">

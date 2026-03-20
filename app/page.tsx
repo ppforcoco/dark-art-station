@@ -22,10 +22,17 @@ export default async function Home() {
   // Wallpaper of the Day — deterministic daily rotation
   const wotd = await getWallpaperOfTheDay();
 
-  // Featured categories for the grid
+  // Fetch exactly the 6 category collections we display, by slug
+  const CATEGORY_SLUGS = [
+    "skeleton-card-collection",
+    "skeleton-rebellion-collection",
+    "dark-fantasy-art",
+    "dark-minimal-horror",
+    "dark-humor-wallpaper-collection",
+    "dark-pattern-wallpaper",
+  ];
   const categories = await db.collection.findMany({
-    orderBy: [{ featured: "desc" }, { createdAt: "desc" }],
-    take: 5,
+    where: { slug: { in: CATEGORY_SLUGS } },
     select: {
       id: true, slug: true, title: true, icon: true, bgClass: true,
       tag: true, featured: true, thumbnail: true,

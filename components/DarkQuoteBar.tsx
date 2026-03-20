@@ -30,7 +30,7 @@ const QUOTES = [
   { text: "You are not alone in the dark. You never were.", author: "Haunted Lore" },
 ];
 
-const DQB_HEIGHT = 36;
+const BAR_H = 36;
 
 function getDailyQuote() {
   const today = new Date().toISOString().slice(0, 10);
@@ -38,25 +38,35 @@ function getDailyQuote() {
   return QUOTES[seed % QUOTES.length];
 }
 
+function setDqbHeight(h: number) {
+  document.documentElement.style.setProperty("--dqb-h", `${h}px`);
+  // Recalculate topbar-total = halloween bar + quote bar
+  const hbH = parseInt(
+    document.documentElement.style.getPropertyValue("--topbar-h") || "36", 10
+  ) || 36;
+  document.documentElement.style.setProperty("--topbar-total", `${hbH + h}px`);
+}
+
 export default function DarkQuoteBar() {
   const [quote, setQuote] = useState<{ text: string; author: string } | null>(null);
   const [dismissed, setDismissed] = useState(false);
 
   useEffect(() => {
+    const today = new Date().toISOString().slice(0, 10);
+    const key = `hw-quote-dismissed-${today}`;
     try {
-      const key = `hw-quote-dismissed-${new Date().toISOString().slice(0, 10)}`;
       if (localStorage.getItem(key)) {
         setDismissed(true);
         return;
       }
     } catch {}
     setQuote(getDailyQuote());
-    document.documentElement.style.setProperty("--dqb-h", `${DQB_HEIGHT}px`);
+    setDqbHeight(BAR_H);
   }, []);
 
   const dismiss = () => {
     setDismissed(true);
-    document.documentElement.style.setProperty("--dqb-h", "0px");
+    setDqbHeight(0);
     try {
       const key = `hw-quote-dismissed-${new Date().toISOString().slice(0, 10)}`;
       localStorage.setItem(key, "1");
