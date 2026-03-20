@@ -73,11 +73,11 @@ export async function generateStaticParams() {
     select: { slug: true, collection: { select: { slug: true } } },
   });
   return images
-  .filter((img) => img.collection?.slug)
-  .map((img) => ({
-    slug: img.collection?.slug,
-    imageSlug: img.slug,
-  }));
+    .filter((img) => img.collection?.slug)
+    .map((img) => ({
+      slug: img.collection?.slug,
+      imageSlug: img.slug,
+    }));
 }
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
@@ -86,7 +86,6 @@ export default async function ImagePage({ params }: PageProps) {
   const { slug, imageSlug } = await params;
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
 
-  // Fetch image with collection context + siblings for navigation
   const image = await db.image.findUnique({
     where: { slug: imageSlug },
     include: {
@@ -107,66 +106,77 @@ export default async function ImagePage({ params }: PageProps) {
     },
   });
 
-  // Guard: image must exist AND belong to the correct collection slug
   if (!image || !image.collection || image.collection.slug !== slug) notFound();
 
-  // Increment view count — fire and forget
   db.image.update({
     where: { id: image.id },
     data: { viewCount: { increment: 1 } },
   }).catch(() => {});
 
-  const thumbUrl  = getPublicUrl(image.r2Key);
+  const thumbUrl = getPublicUrl(image.r2Key);
 
-  // Related images — parallel fetch with siblings
   const [related] = await Promise.all([
     getRelatedImages(image.id, image.tags ?? [], 6),
   ]);
 
-  // Sibling navigation
-  const siblings  = image.collection.images;
+  const siblings   = image.collection.images;
   const currentIdx = siblings.findIndex((s) => s.slug === imageSlug);
   const prevImage  = currentIdx > 0 ? siblings[currentIdx - 1] : null;
   const nextImage  = currentIdx < siblings.length - 1 ? siblings[currentIdx + 1] : null;
 
   return (
-    <main className="min-h-screen" style={{ backgroundColor: "var(--bg-primary)", color: "var(--text-primary)" }} id="image-detail-page">
-
+    <main
+      className="image-detail-page min-h-screen"
+      style={{ backgroundColor: "var(--bg-primary)", color: "var(--text-primary)" }}
+      id="image-detail-page"
+    >
       {/* ── Breadcrumb path bar ── */}
       <Breadcrumbs items={[
-        { label: "Home",                  href: "/"           },
-        { label: "Collections",           href: "/shop"       },
-        { label: image.collection.title,  href: `/shop/${slug}` },
+        { label: "Home",                 href: "/"             },
+        { label: "Collections",          href: "/shop"         },
+        { label: image.collection.title, href: `/shop/${slug}` },
         { label: image.title },
       ]} />
 
-      {/* ── Top Ad ──────────────────────────────────────────────────────── */}
+      {/* ── Top Ad ── */}
       <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_MAIN} width={728} height={90} />
 
-      {/* ── Main Image + Details ────────────────────────────────────────── */}
-      <section className="max-w-7xl mx-auto px-6 md:px-[60px] py-10">
-        <div style={{ display:"flex", flexDirection:"column", gap:"32px" }}>
+      {/* ── Main layout: image left, details right on desktop ── */}
+      <section className="image-detail-section">
+        <div className="image-detail-grid">
 
-          {/* Full image — plain frame with locked 9:16 ratio */}
-          <div className="relative w-full overflow-hidden border border-[rgba(139,0,0,0.3)] bg-[#0a0a0a]" style={{ aspectRatio: "9/16" }}>
+          {/* ── Left: Image ── */}
+          {/*
+            FIX 1 — Image distortion / blurring:
+            - Container locks to aspect-ratio 9/16 so it never stretches
+            - object-fit: contain shows the FULL image without cropping
+            - background #0a0a0a fills letterbox areas with the site's dark colour
+            - max-width caps it at a sensible portrait size on wide screens
+          */}
+          <div className="image-detail-frame">
             <Image
               src={thumbUrl}
               alt={image.title}
               fill
-              className="object-cover"
+              className="image-detail-img"
               priority
-              sizes="(max-width: 768px) 100vw, 65vw"
+              sizes="(max-width: 768px) 100vw, (max-width: 1280px) 55vw, 640px"
             />
+            {image.collection.category && (
+              <span className="image-detail-badge">
+                {image.collection.category}
+              </span>
+            )}
           </div>
 
-          {/* Details panel */}
-          <div style={{ display:"flex", flexDirection:"column", gap:"16px" }}>
+          {/* ── Right: Details panel ── */}
+          <div className="image-detail-panel">
             <div>
               <Link
                 href={`/shop/${slug}`}
                 className="font-mono text-[0.6rem] tracking-[0.25em] uppercase text-[#8b0000] hover:text-[#c0001a] transition-colors"
               >
-                ← {image.collection!.title}
+                ← {image.collection.title}
               </Link>
               <h1 className="font-display text-2xl md:text-3xl font-bold mt-3 leading-tight">
                 {image.title}
@@ -192,7 +202,7 @@ export default async function ImagePage({ params }: PageProps) {
             <div className="flex flex-col gap-3 mt-2">
               <a
                 href={`/api/download/image/${image.id}`}
-                style={{ display:"block", width:"100%", textAlign:"center", touchAction:"manipulation" }}
+                style={{ display: "block", width: "100%", textAlign: "center", touchAction: "manipulation" }}
                 className="font-mono text-[0.7rem] tracking-[0.2em] uppercase bg-[#8b0000] hover:bg-[#a80000] text-white px-8 py-4 transition-colors duration-200 border border-[#8b0000] text-center"
               >
                 ↓ Download 4K Wallpaper (Free)
@@ -202,14 +212,13 @@ export default async function ImagePage({ params }: PageProps) {
               </p>
             </div>
 
-            {/* Social Share */}
             <SocialShare
               title={image.title}
               imageUrl={thumbUrl}
               pageUrl={`${siteUrl}/shop/${slug}/${imageSlug}`}
             />
 
-            {/* Sidebar Ad */}
+            {/* Sidebar Ad — hidden when empty via AdSlot logic */}
             <AdSlot
               slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_SIDEBAR}
               width={300}
@@ -220,52 +229,67 @@ export default async function ImagePage({ params }: PageProps) {
         </div>
       </section>
 
-      {/* ── Prev / Next Navigation ──────────────────────────────────────── */}
+      {/* ── Prev / Next Navigation ── */}
+      {/*
+        FIX 2 — Prev/Next thumbnails:
+        - Thumbnails are now locked to aspect-ratio 9/16 (portrait)
+        - object-fit: cover fills each thumb cleanly and uniformly
+        - Cards are full-width within a 2-col grid, not tiny 56×56 squares
+        - Consistent border + hover state on both cards
+      */}
       {(prevImage || nextImage) && (
-        <nav style={{ maxWidth:"1280px", margin:"0 auto", padding:"0 24px 40px", display:"grid", gridTemplateColumns:"1fr 1fr", gap:"12px" }}>
+        <nav className="image-detail-nav">
           {prevImage ? (
-            <Link
-              href={`/shop/${slug}/${prevImage.slug}`}
-              style={{ display:"flex", flexDirection:"column", gap:"8px", padding:"16px", border:"1px solid #2a2535", textDecoration:"none" }}
-              className="hover:border-[rgba(139,0,0,0.5)] transition-colors"
-            >
-              <div className="relative w-14 h-14 shrink-0 overflow-hidden">
-                <Image src={getPublicUrl(prevImage.r2Key)} alt={prevImage.title} fill className="object-cover" sizes="56px" />
+            <Link href={`/shop/${slug}/${prevImage.slug}`} className="image-detail-nav-card image-detail-nav-card--prev">
+              <div className="image-detail-nav-thumb">
+                <Image
+                  src={getPublicUrl(prevImage.r2Key)}
+                  alt={prevImage.title}
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 640px) 40vw, 200px"
+                />
               </div>
-              <div>
-                <span className="font-mono text-[0.5rem] tracking-[0.2em] uppercase text-[#4a445a] block">← Previous</span>
-                <span className="font-body italic text-[0.9rem] text-[#f0ecff]">{prevImage.title}</span>
+              <div className="image-detail-nav-info">
+                <span className="image-detail-nav-label">← Previous</span>
+                <span className="image-detail-nav-title">{prevImage.title}</span>
               </div>
             </Link>
-          ) : <div />}
+          ) : (
+            <div /> /* empty placeholder keeps the grid balanced */
+          )}
 
-          {nextImage && (
-            <Link
-              href={`/shop/${slug}/${nextImage.slug}`}
-              style={{ display:"flex", flexDirection:"column", gap:"8px", padding:"16px", border:"1px solid #2a2535", textDecoration:"none", textAlign:"right" }}
-              className="hover:border-[rgba(139,0,0,0.5)] transition-colors"
-            >
-              <div>
-                <span className="font-mono text-[0.5rem] tracking-[0.2em] uppercase text-[#4a445a] block">Next →</span>
-                <span className="font-body italic text-[0.9rem] text-[#f0ecff]">{nextImage.title}</span>
+          {nextImage ? (
+            <Link href={`/shop/${slug}/${nextImage.slug}`} className="image-detail-nav-card image-detail-nav-card--next">
+              <div className="image-detail-nav-thumb">
+                <Image
+                  src={getPublicUrl(nextImage.r2Key)}
+                  alt={nextImage.title}
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 640px) 40vw, 200px"
+                />
               </div>
-              <div className="relative w-14 h-14 shrink-0 overflow-hidden">
-                <Image src={getPublicUrl(nextImage.r2Key)} alt={nextImage.title} fill className="object-cover" sizes="56px" />
+              <div className="image-detail-nav-info image-detail-nav-info--right">
+                <span className="image-detail-nav-label">Next →</span>
+                <span className="image-detail-nav-title">{nextImage.title}</span>
               </div>
             </Link>
+          ) : (
+            <div />
           )}
         </nav>
       )}
 
-      {/* ── Related Wallpapers ─────────────────────────────────────────── */}
+      {/* ── Related Wallpapers ── */}
       {related.length > 0 && (
         <RelatedWallpapers images={related} />
       )}
 
-      {/* ── Footer Ad ───────────────────────────────────────────────────── */}
+      {/* ── Footer Ad ── */}
       <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_FOOTER} width={728} height={90} />
 
-      {/* ── JSON-LD ─────────────────────────────────────────────────────── */}
+      {/* ── JSON-LD ── */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -282,7 +306,7 @@ export default async function ImagePage({ params }: PageProps) {
               "@id": `${siteUrl}/shop/${slug}/${imageSlug}`,
             },
             brand: { "@type": "Brand", name: "HAUNTED WALLPAPERS", url: siteUrl },
-            category: `Digital Products > Wallpapers > ${image.collection!.category}`,
+            category: `Digital Products > Wallpapers > ${image.collection.category}`,
             image: [{
               "@type": "ImageObject",
               url: thumbUrl,
@@ -291,10 +315,10 @@ export default async function ImagePage({ params }: PageProps) {
               description: image.description ?? `${image.title} — dark fantasy wallpaper`,
             }],
             additionalProperty: [
-              { "@type": "PropertyValue", name: "Format", value: "PNG (4K High Resolution)" },
-              { "@type": "PropertyValue", name: "License", value: "Personal Use License Included" },
+              { "@type": "PropertyValue", name: "Format",           value: "PNG (4K High Resolution)" },
+              { "@type": "PropertyValue", name: "License",          value: "Personal Use License Included" },
               { "@type": "PropertyValue", name: "Instant Download", value: "Yes" },
-              { "@type": "PropertyValue", name: "Resolution", value: "4K Ultra HD" },
+              { "@type": "PropertyValue", name: "Resolution",       value: "4K Ultra HD" },
             ],
             offers: {
               "@type": "Offer",
@@ -313,7 +337,7 @@ export default async function ImagePage({ params }: PageProps) {
                 deliveryTime: {
                   "@type": "ShippingDeliveryTime",
                   handlingTime: { "@type": "QuantitativeValue", minValue: 0, maxValue: 0, unitCode: "HUR" },
-                  transitTime: { "@type": "QuantitativeValue", minValue: 0, maxValue: 0, unitCode: "HUR" },
+                  transitTime:  { "@type": "QuantitativeValue", minValue: 0, maxValue: 0, unitCode: "HUR" },
                 },
               },
               hasMerchantReturnPolicy: {
@@ -325,8 +349,8 @@ export default async function ImagePage({ params }: PageProps) {
             },
             isPartOf: {
               "@type": "CollectionPage",
-              name: image.collection!.title,
-              url: `${siteUrl}/shop/${slug}`,
+              name: image.collection.title,
+              url:  `${siteUrl}/shop/${slug}`,
             },
             potentialAction: {
               "@type": "DownloadAction",
@@ -334,7 +358,7 @@ export default async function ImagePage({ params }: PageProps) {
             },
             audience: {
               "@type": "Audience",
-              audienceType: `${image.collection!.category} enthusiasts, dark fantasy art lovers, digital wallpaper collectors`,
+              audienceType: `${image.collection.category} enthusiasts, dark fantasy art lovers, digital wallpaper collectors`,
             },
           }),
         }}

@@ -134,19 +134,16 @@ const SLOT_CLASSES = ["m1", "m2", "m3", "m4"] as const;
 export default function HeroMosaic() {
   const [offset, setOffset]       = useState(0);
   const [visible, setVisible]     = useState(true);
-  // THE FIX: track whether we're on a desktop-wide screen.
-  // We render null on mobile so the mosaic grid never contributes
-  // to layout width — display:none on the parent (.hero-right) is
-  // not enough because the DOM nodes still affect scrollWidth in
-  // some mobile browsers, causing the page to appear zoomed out.
   const [isDesktop, setIsDesktop] = useState(false);
+  // Track hydration to avoid SSR mismatch
+  const [hydrated, setHydrated]   = useState(false);
   const pausedRef                 = useRef(false);
   const intervalRef               = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  // Detect screen width on mount and on resize
   useEffect(() => {
+    setHydrated(true);
     const check = () => setIsDesktop(window.innerWidth >= 1024);
-    check(); // run immediately on mount
+    check();
     window.addEventListener("resize", check);
     return () => window.removeEventListener("resize", check);
   }, []);
@@ -174,11 +171,15 @@ export default function HeroMosaic() {
   const handleMouseEnter = () => { pausedRef.current = true; };
   const handleMouseLeave = () => { pausedRef.current = false; };
 
-  // Don't render anything on mobile — this is the fix.
-  // The CSS hides .hero-right but the grid nodes were still in the DOM
-  // and being measured by the browser when calculating page width,
-  // causing the automatic zoom-out on mobile.
-  if (!isDesktop) return null;
+  /*
+    FIX 3 — Dead space / ghost containers:
+    Before hydration OR on non-desktop, return null so the component
+    contributes zero pixels to layout. The parent .hero-right uses
+    CSS display:none at <1024px anyway, but returning null here ensures
+    the DOM nodes are completely absent — no ghost width, no green
+    gradient boxes, no empty space.
+  */
+  if (!hydrated || !isDesktop) return null;
 
   return (
     <div className="hero-mosaic">
