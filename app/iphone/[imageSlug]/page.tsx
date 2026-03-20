@@ -3,11 +3,13 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { db } from "@/lib/db";
+import { db, getRelatedImages } from "@/lib/db";
 import { getPublicUrl } from "@/lib/r2";
 import AdSlot from "@/components/AdSlot";
 import DeviceMockup from "@/components/DeviceMockup";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import RelatedWallpapers from "@/components/RelatedWallpapers";
+import RecentlyViewed from "@/components/RecentlyViewed";
 
 export const dynamicParams = true;
 
@@ -77,11 +79,14 @@ export default async function IphoneImagePage({ params }: PageProps) {
 
   const thumbUrl = getPublicUrl(image.r2Key);
 
-  const siblings = await db.image.findMany({
-    where: { collectionId: null, deviceType: "IPHONE" },
-    orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
-    select: { slug: true, title: true, r2Key: true, sortOrder: true },
-  });
+  const [siblings, related] = await Promise.all([
+    db.image.findMany({
+      where: { collectionId: null, deviceType: "IPHONE" },
+      orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
+      select: { slug: true, title: true, r2Key: true, sortOrder: true },
+    }),
+    getRelatedImages(image.id, image.tags, 6),
+  ]);
   const currentIdx = siblings.findIndex((s) => s.slug === imageSlug);
   const prevImage = currentIdx > 0 ? siblings[currentIdx - 1] : null;
   const nextImage = currentIdx < siblings.length - 1 ? siblings[currentIdx + 1] : null;
@@ -215,6 +220,9 @@ export default async function IphoneImagePage({ params }: PageProps) {
       )}
 
       <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_FOOTER} width={728} height={90} />
+
+      <RelatedWallpapers images={related} heading="More Dark Art You'll Like" />
+      <RecentlyViewed />
 
       <script type="application/ld+json" dangerouslySetInnerHTML={{
         __html: JSON.stringify({

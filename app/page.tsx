@@ -144,43 +144,51 @@ export default async function Home() {
             <span className="section-eyebrow">Browse the Darkness</span>
             <h2 className="section-title">Choose Your<br />Obsession</h2>
           </div>
-          <Link href="/shop" className="section-link">View All Collections →</Link>
+          <Link href="/collections" className="section-link">View All Collections →</Link>
         </div>
 
         <div className="category-grid">
-          {categories.length > 0 ? categories.map((cat) => (
-            <Link
-              key={cat.id}
-              href={`/shop/${cat.slug}`}
-              className={`cat-card${cat.featured ? " featured" : ""}`}
-            >
-              {cat.thumbnail ? (
-                <Image
-                  src={`${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/${cat.thumbnail}`}
-                  alt={cat.title}
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 479px) 100vw, (max-width: 767px) 50vw, (max-width: 1024px) 33vw, 20vw"
-                />
-              ) : (
-                <>
-                  <div className={`cat-bg-layer ${cat.bgClass}`} />
-                  <div className="cat-icon-el">{cat.icon}</div>
-                </>
-              )}
-              <div className="cat-overlay" />
-              <div className="cat-content">
-                <span className="cat-tag">{cat.tag}</span>
-                <div className="cat-name">{cat.title}</div>
-                <div className="cat-count">{cat._count.downloads} downloads</div>
-              </div>
-            </Link>
-          )) : (
-            <p style={{ color:"#4a445a", fontFamily:"var(--font-space)", fontSize:"0.75rem",
-              gridColumn:"1/-1", padding:"60px 0", textAlign:"center" }}>
-              Collections loading from the abyss…
-            </p>
-          )}
+          {[
+            { slug: "tarot",     icon: "🃏", tag: "Collection", title: "Tarot Cards",        bgClass: "p-bg-2" },
+            { slug: "skeleton",  icon: "💀", tag: "Collection", title: "Skulls & Skeletons", bgClass: "p-bg-1" },
+            { slug: "dark-fantasy", icon: "🐉", tag: "Collection", title: "Dark Fantasy",    bgClass: "p-bg-3" },
+            { slug: "aesthetics",icon: "🌑", tag: "Collection", title: "Dark Aesthetics",    bgClass: "p-bg-4" },
+            { slug: "dark-humor",icon: "😈", tag: "Collection", title: "Dark Humor",         bgClass: "p-bg-5" },
+            { slug: "patterns",  icon: "🕸", tag: "Collection", title: "Patterns & Textures",bgClass: "p-bg-1" },
+          ].map((cat) => {
+            // Try to find a matching DB category for thumbnail; fall back to icon
+            const dbCat = categories.find(c =>
+              c.slug.includes(cat.slug) ||
+              c.title.toLowerCase().includes(cat.slug.replace("-", " "))
+            );
+            return (
+              <Link
+                key={cat.slug}
+                href={dbCat ? `/shop/${dbCat.slug}` : `/search?q=${encodeURIComponent(cat.title)}`}
+                className="cat-card"
+              >
+                {dbCat?.thumbnail ? (
+                  <Image
+                    src={`${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/${dbCat.thumbnail}`}
+                    alt={cat.title}
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 479px) 100vw, (max-width: 767px) 50vw, (max-width: 1024px) 33vw, 20vw"
+                  />
+                ) : (
+                  <>
+                    <div className={`cat-bg-layer ${cat.bgClass}`} />
+                    <div className="cat-icon-el">{cat.icon}</div>
+                  </>
+                )}
+                <div className="cat-overlay" />
+                <div className="cat-content">
+                  <span className="cat-tag">{cat.tag}</span>
+                  <div className="cat-name">{cat.title}</div>
+                </div>
+              </Link>
+            );
+          })}
         </div>
       </section>
 

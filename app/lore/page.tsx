@@ -1,33 +1,55 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
-  title: "Lore | Haunted Wallpapers",
-  description: "The story behind Haunted Wallpapers — dark fantasy art born from the abyss.",
+  title: "Origins | Haunted Wallpapers — The Story Behind the Dark Art",
+  description: "The origin of Haunted Wallpapers — dark fantasy art born from the abyss.",
 };
 
-export default function LorePage() {
+export default function OriginsPage() {
   return (
-    <>
-      <Header />
-      <main style={{ backgroundColor: "#050505", minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", padding: "120px 60px" }}>
-        <div style={{ maxWidth: "640px", textAlign: "center" }}>
-          <span className="section-eyebrow">Origins</span>
-          <h1 className="section-title" style={{ fontSize: "clamp(2rem, 5vw, 4rem)", margin: "16px 0 24px" }}>
-            The Lore
-          </h1>
-          <p style={{ fontFamily: "var(--font-cormorant)", fontStyle: "italic", fontSize: "1.2rem", color: "#8a8099", lineHeight: "1.8", marginBottom: "40px" }}>
-            Every piece of dark art has a story older than the canvas it was painted on.
-            Ours is being written in ink blacker than the void itself.
-            <br /><br />
-            Return soon — the full origin awaits.
-          </p>
-          <Link href="/shop" className="btn-primary"><span>Enter the Grimoire</span></Link>
+    <main className="static-page origins-page">
+      <div className="origins-hero">
+        <span className="section-eyebrow">Our Story</span>
+        <h1 className="origins-title">Born from the<br /><span className="t-red">Abyss</span></h1>
+        <p className="origins-sub">Where dark art finds its home.</p>
+      </div>
+      <div className="origins-body">
+        <div className="origins-block">
+          <span className="origins-num">01</span>
+          <div>
+            <h2 className="origins-h2">How It Started</h2>
+            <p className="origins-p">Haunted Wallpapers grew out of a simple obsession — the feeling that most wallpapers were too polished, too clean, too <em>safe</em>. We wanted screens that felt alive with something darker. Art that belonged to those who hang skulls where others hang flowers, who find power in shadows, and beauty in the macabre.</p>
+            <p className="origins-p">What started as a personal collection became something much bigger: a full dark art studio generating hundreds of original pieces across tarot, skeletons, gothic fantasy, demons, and arcane imagery — built specifically for your screen.</p>
+          </div>
         </div>
-      </main>
-      <Footer />
-    </>
+        <div className="origins-block">
+          <span className="origins-num">02</span>
+          <div>
+            <h2 className="origins-h2">The Art</h2>
+            <p className="origins-p">Every image on Haunted Wallpapers is AI-generated and hand-curated. We run hundreds of generations to find the pieces that truly hit — the ones that feel like they were pulled from a forgotten comic or a fever dream at 3am. The ones that make your lock screen feel like a portal.</p>
+            <p className="origins-p">We don&apos;t ship filler. Every collection is themed, cohesive, and built to look stunning on your specific device — iPhone, Android, or widescreen PC.</p>
+          </div>
+        </div>
+        <div className="origins-block">
+          <span className="origins-num">03</span>
+          <div>
+            <h2 className="origins-h2">Free, Always</h2>
+            <p className="origins-p">All wallpapers are free to download — no account, no paywall, no catch. We earn through ads that keep the lights on. That&apos;s the deal. Download, use, share — just don&apos;t resell.</p>
+          </div>
+        </div>
+        <div className="origins-block">
+          <span className="origins-num">04</span>
+          <div>
+            <h2 className="origins-h2">What&apos;s Next</h2>
+            <p className="origins-p">New collections drop regularly, seasonal events go deep, and the archive grows darker every week. Follow us on Pinterest and Instagram to catch new drops first.</p>
+            <div className="origins-links">
+              <Link href="/collections" className="btn-primary"><span>Browse Collections</span></Link>
+              <Link href="/free" className="btn-secondary">Free Downloads</Link>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
   );
 }

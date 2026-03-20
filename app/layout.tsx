@@ -7,6 +7,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import HalloweenCountdown from "@/components/HalloweenCountdown";
 import DarkQuoteBar from "@/components/DarkQuoteBar";
+import ScrollToTop from "@/components/ScrollToTop";
 
 const cinzel = Cinzel_Decorative({
   weight: ["400", "700", "900"],
@@ -80,6 +81,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             __html: `(function(){try{var t=localStorage.getItem('hw-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();`,
           }}
         />
+        {/* Auto night mode: deepen darks between 8pm–6am */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var h=new Date().getHours();if(h>=20||h<6)document.documentElement.setAttribute('data-night','true');}catch(e){}})();`,
+          }}
+        />
         <link rel="preconnect" href="https://assets.hauntedwallpapers.com" />
         <link rel="dns-prefetch" href="https://assets.hauntedwallpapers.com" />
         {adsPid && (
@@ -130,6 +137,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           {children}
         </div>
         <Footer />
+        <ScrollToTop />
       </body>
     </html>
   );

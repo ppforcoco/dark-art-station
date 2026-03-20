@@ -2,10 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { searchWallpapers, type SearchResultItem } from "@/lib/db";
 import Pagination from "@/components/Pagination";
+import SearchPageClient from "@/components/SearchPageClient";
+import AdSlot from "@/components/AdSlot";
 
 const PAGE_SIZE = 24;
-
-// ─── Metadata (dynamic for SEO) ───────────────────────────────────────────────
 
 export async function generateMetadata(
   { searchParams }: { searchParams: Promise<{ q?: string; page?: string }> }
@@ -24,49 +24,11 @@ export async function generateMetadata(
   };
 }
 
-// ─── R2 → public URL helper ───────────────────────────────────────────────────
-
 const CDN_BASE = process.env.NEXT_PUBLIC_R2_PUBLIC_URL ?? "";
+function r2Url(key: string) { return `${CDN_BASE}/${key}`; }
 
-function r2Url(key: string) {
-  return `${CDN_BASE}/${key}`;
-}
-
-// ─── AdSense ──────────────────────────────────────────────────────────────────
-// Slot IDs are read directly from your established env variables.
-// AdSense <script> must be loaded in app/layout.tsx <head>.
-
-const ADSENSE_PID  = process.env.NEXT_PUBLIC_ADSENSE_PID          ?? "";
-const SLOT_MAIN    = process.env.NEXT_PUBLIC_ADSENSE_SLOT_MAIN    ?? ""; // top leaderboard
-const SLOT_SIDEBAR = process.env.NEXT_PUBLIC_ADSENSE_SLOT_SIDEBAR ?? ""; // sticky sidebar
-const SLOT_FOOTER  = process.env.NEXT_PUBLIC_ADSENSE_SLOT_FOOTER  ?? ""; // bottom leaderboard
-
-function AdSlot({ slot, className = "" }: { slot: string; className?: string }) {
-  if (!slot) return null; // silently skip if env var is missing
-  return (
-    <div className={`ad-slot-wrapper ${className}`} aria-label="Advertisement">
-      <ins
-        className="adsbygoogle"
-        style={{ display: "block" }}
-        data-ad-client={ADSENSE_PID}
-        data-ad-slot={slot}
-        data-ad-format="auto"
-        data-full-width-responsive="true"
-      />
-    </div>
-  );
-}
-
-// ─── Result Card ──────────────────────────────────────────────────────────────
-
+// ── Result Card ───────────────────────────────────────────────
 function ResultCard({ item }: { item: SearchResultItem }) {
-  /*
-    HREF FIX — was building /collections/slug and /wallpaper/slug (404).
-    Correct routes are:
-      collection  → /shop/[collectionSlug]
-      standalone  → /shop/[collectionSlug]/[imageSlug]  (if in a collection)
-                  → falls back to /shop/[imageSlug] for truly standalone images
-  */
   const href =
     item.kind === "collection"
       ? `/shop/${item.slug}`
@@ -95,7 +57,7 @@ function ResultCard({ item }: { item: SearchResultItem }) {
           </span>
         )}
         <div className="search-card-kind">
-          {item.kind === "collection" ? item.tag ?? "Collection" : deviceLabel ?? "Standalone"}
+          {item.kind === "collection" ? (item.tag ?? "Collection") : (deviceLabel ?? "Standalone")}
         </div>
       </div>
       <div className="search-card-info">
@@ -111,13 +73,12 @@ function ResultCard({ item }: { item: SearchResultItem }) {
   );
 }
 
-// ─── Empty State ──────────────────────────────────────────────────────────────
-
+// ── Empty State ───────────────────────────────────────────────
 const TRENDING = [
-  { label: "iPhone",      href: "/iphone"          },
-  { label: "Android",     href: "/android"         },
-  { label: "PC",          href: "/pc"              },
-  { label: "Collections", href: "/collections"     },
+  { label: "iPhone",      href: "/iphone"                  },
+  { label: "Android",     href: "/android"                 },
+  { label: "PC",          href: "/pc"                      },
+  { label: "Collections", href: "/collections"             },
   { label: "Free",        href: "/collections?filter=free" },
 ];
 
@@ -128,9 +89,7 @@ function EmptyState({ query }: { query: string }) {
       <h2 className="search-empty-heading">
         No answers found for <em>&ldquo;{query}&rdquo;</em>
       </h2>
-      <p className="search-empty-sub">
-        Try a different incantation, or explore these sanctums:
-      </p>
+      <p className="search-empty-sub">Try a different incantation, or explore:</p>
       <div className="search-empty-links">
         {TRENDING.map(({ label, href }) => (
           <Link key={label} href={href} className="search-empty-tag">
@@ -138,83 +97,110 @@ function EmptyState({ query }: { query: string }) {
           </Link>
         ))}
       </div>
-
-      {/* Newsletter nudge */}
-      <div className="search-empty-newsletter">
-        <p className="search-empty-nl-label">JOIN THE DARK CONGREGATION</p>
-        <p className="search-empty-nl-sub">
-          Be first to receive new drops straight from the void.
-        </p>
-        <form
-          className="newsletter-form search-nl-form"
-          onSubmit={e => e.preventDefault()}
-        >
-          <input
-            type="email"
-            className="nl-input"
-            placeholder="your@email.com"
-            aria-label="Email address"
-          />
-          <button type="submit" className="nl-btn">Summon</button>
-        </form>
-      </div>
     </div>
   );
 }
 
-// ─── Page ─────────────────────────────────────────────────────────────────────
+// ── Category filter chips ─────────────────────────────────────
+const CATEGORY_FILTERS = [
+  { label: "All",            value: ""           },
+  { label: "📱 iPhone",      value: "iphone"     },
+  { label: "🤖 Android",     value: "android"    },
+  { label: "🖥 PC",          value: "pc"         },
+  { label: "🗂 Collections", value: "collection" },
+];
 
-export default async function SearchPage(
-  { searchParams }: { searchParams: Promise<{ q?: string; page?: string }> }
-) {
-  const { q: rawQ, page: rawPage } = await searchParams;
+// ── Page ──────────────────────────────────────────────────────
+export default async function SearchPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string; page?: string; kind?: string }>;
+}) {
+  const { q: rawQ, page: rawPage, kind: rawKind } = await searchParams;
   const query      = rawQ?.trim() ?? "";
   const page       = Math.max(1, parseInt(rawPage ?? "1", 10) || 1);
-  const { items: results, total } = query
+  const kindFilter = rawKind ?? "";
+
+  const { items: allResults, total } = query
     ? await searchWallpapers(query, page, PAGE_SIZE)
     : { items: [], total: 0 };
-  const hasResults  = results.length > 0;
-  const totalPages  = Math.ceil(total / PAGE_SIZE);
-  // Base URL preserves the ?q= param so pagination links are correct
-  const baseUrl     = query ? `/search?q=${encodeURIComponent(query)}` : "/search";
+
+  // Filter by device/collection kind
+  const results = kindFilter
+    ? allResults.filter((r) => {
+        if (kindFilter === "collection") return r.kind === "collection";
+        if (kindFilter === "iphone")     return r.kind === "standalone" && r.deviceType === "IPHONE";
+        if (kindFilter === "android")    return r.kind === "standalone" && r.deviceType === "ANDROID";
+        if (kindFilter === "pc")         return r.kind === "standalone" && r.deviceType === "PC";
+        return true;
+      })
+    : allResults;
+
+  const hasResults = results.length > 0;
+  const totalPages = Math.ceil(total / PAGE_SIZE);
+  const baseUrl    = query ? `/search?q=${encodeURIComponent(query)}` : "/search";
 
   return (
     <main className="search-page">
 
-      {/* ── Top Ad Slot — SLOT_MAIN ── */}
+      {/* Top ad */}
       <div className="search-ad-top">
-        <AdSlot slot={SLOT_MAIN} className="ad-leaderboard" />
+        <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_MAIN} width={728} height={90} />
       </div>
 
-      {/* ── Page Header ── */}
+      {/* Big live search bar */}
+      <SearchPageClient initialQuery={query} />
+
+      {/* Category filter chips — only when there's a query */}
+      {query && (
+        <div className="search-filter-bar">
+          {CATEGORY_FILTERS.map(({ label, value }) => {
+            const isActive = kindFilter === value;
+            const href = value ? `${baseUrl}&kind=${value}` : baseUrl;
+            return (
+              <Link
+                key={value}
+                href={href}
+                className={`search-filter-chip${isActive ? " active" : ""}`}
+              >
+                {label}
+              </Link>
+            );
+          })}
+        </div>
+      )}
+
+      {/* Results header + X clear button */}
       <header className="search-header">
         <p className="search-header-label">THE ORACLE&apos;S EYE</p>
         {query ? (
-          <h1 className="search-header-title">
-            Results for <em className="search-query-em">&ldquo;{query}&rdquo;</em>
-          </h1>
+          <div className="search-header-row">
+            <h1 className="search-header-title">
+              Results for{" "}
+              <em className="search-query-em">&ldquo;{query}&rdquo;</em>
+            </h1>
+            <Link href="/search" className="search-clear-btn" aria-label="Clear search">
+              ✕
+            </Link>
+          </div>
         ) : (
           <h1 className="search-header-title">Search the Sanctum</h1>
         )}
         {hasResults && (
           <p className="search-header-count">
-            {total} vision{total !== 1 ? "s" : ""} surfaced
+            {results.length} vision{results.length !== 1 ? "s" : ""} surfaced
             {totalPages > 1 && ` — page ${page} of ${totalPages}`}
           </p>
         )}
       </header>
 
-      {/* ── Main Content + Sidebar ── */}
+      {/* Main content */}
       <div className="search-body">
-
-        {/* ── Results Grid ── */}
         <section className="search-results-col">
           {!query && (
-            <p className="search-no-query">Enter a theme above to begin your search.</p>
+            <p className="search-no-query">Type above to begin your search.</p>
           )}
-
           {query && !hasResults && <EmptyState query={query} />}
-
           {hasResults && (
             <div className="search-grid">
               {results.map((item) => (
@@ -222,8 +208,6 @@ export default async function SearchPage(
               ))}
             </div>
           )}
-
-          {/* Pagination */}
           {hasResults && totalPages > 1 && (
             <Pagination
               currentPage={page}
@@ -233,20 +217,23 @@ export default async function SearchPage(
           )}
         </section>
 
-        {/* ── Sidebar Ad — SLOT_SIDEBAR ── */}
+        {/* Sidebar ad */}
         <aside className="search-sidebar">
           <div className="search-sidebar-ad-sticky">
             <p className="search-sidebar-label">Sponsored</p>
-            <AdSlot slot={SLOT_SIDEBAR} className="ad-sidebar-rect" />
+            <AdSlot
+              slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_SIDEBAR}
+              width={300}
+              height={250}
+            />
           </div>
         </aside>
-
       </div>
 
-      {/* ── Bottom Ad Slot — SLOT_FOOTER ── */}
+      {/* Bottom ad */}
       {(hasResults || query) && (
         <div className="search-ad-bottom">
-          <AdSlot slot={SLOT_FOOTER} className="ad-leaderboard" />
+          <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_FOOTER} width={728} height={90} />
         </div>
       )}
 

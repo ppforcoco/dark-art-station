@@ -1,7 +1,14 @@
 const ITEMS = [
-  "Dark Fantasy","Arcane Art","Tarot Decks","Dark Aesthetics",
-  "Gothic Goddesses","Dark Humor","Demon Art","Void Witches",
-  "Arcane Relics","Crimson Rites",
+  "Tarot Cards",
+  "Skulls & Skeletons",
+  "Dark Fantasy",
+  "Dark Aesthetics",
+  "Dark Humor",
+  "Patterns & Textures",
+  "Gothic Art",
+  "Horror",
+  "Incognito Mode",
+  "Bone Street",
 ];
 
 export default function MarqueeTicker() {
