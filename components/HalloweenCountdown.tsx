@@ -39,6 +39,17 @@ function pad(n: number): string {
   return String(n).padStart(2, "0");
 }
 
+// Returns a flavour label based on how many days remain
+function getPrefix(days: number): string {
+  if (days > 100) return "🕯 Halloween approaches — the veil thins in";
+  if (days > 30)  return "🕯 The darkness gathers — Halloween in";
+  if (days > 14)  return "🦇 The spirits stir — Halloween in";
+  if (days > 7)   return "💀 The veil is thinning — Halloween in";
+  if (days > 1)   return "🩸 Almost time — Halloween in";
+  if (days === 1) return "☠️ Tomorrow the veil breaks — Halloween in";
+  return "🩸 Tonight the veil breaks — Halloween in";
+}
+
 export default function HalloweenCountdown() {
   const [remaining, setRemaining] = useState<Remaining | null>(null);
   const [halloween, setHalloween] = useState(false);
@@ -73,14 +84,13 @@ export default function HalloweenCountdown() {
         </a>
       ) : (
         <>
-          <span className="hc-prefix">Until the Veil Thins</span>
+          <span className="hc-prefix">{getPrefix(remaining.days)}</span>
 
           <div className="hc-segment">
             <span className="hc-num">{remaining.days}</span>
             <span className="hc-label">days</span>
           </div>
 
-          {/* Show all units on all screen sizes — removed hc-hide-mobile */}
           <span className="hc-sep">·</span>
           <div className="hc-segment">
             <span className="hc-num">{pad(remaining.hours)}</span>
