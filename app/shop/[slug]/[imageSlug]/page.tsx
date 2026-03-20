@@ -192,9 +192,8 @@ export default async function ImagePage({ params }: PageProps) {
             <div className="flex flex-col gap-3 mt-2">
               <a
                 href={`/api/download/image/${image.id}`}
-                style={{ display:"block", width:"100%", textAlign:"center" }}
+                style={{ display:"block", width:"100%", textAlign:"center", touchAction:"manipulation" }}
                 className="font-mono text-[0.7rem] tracking-[0.2em] uppercase bg-[#8b0000] hover:bg-[#a80000] text-white px-8 py-4 transition-colors duration-200 border border-[#8b0000] text-center"
-                style={{ touchAction: "manipulation" }}
               >
                 ↓ Download 4K Wallpaper (Free)
               </a>
