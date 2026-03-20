@@ -19,14 +19,14 @@ export default function NewsletterForm() {
         type="email"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
-        placeholder="your.soul@email.com"
+        placeholder="your.email@domain.com"
         className="nl-input"
       />
       <button type="submit" className="nl-btn">
         {status === "success" ? "Summoned ✦" : "Summon"}
       </button>
       {status === "error" && (
-        <p className="nl-feedback error">Enter a valid soul address.</p>
+        <p className="nl-feedback error">Enter a valid email address.</p>
       )}
       {status === "success" && (
         <p className="nl-feedback success">Welcome to the congregation.</p>

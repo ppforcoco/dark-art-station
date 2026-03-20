@@ -254,7 +254,7 @@
         },
         {
           "slug": "white-hair-sorceress-shadow-spirits",
-          "title": "White-Haired Sorceress and Shadow Spirits",
+          "title": "White-Haired Sorceress and Shadow Entities",
           "description": "A striking sorceress with flowing white hair and a jagged feathered gown channels faint energy from both hands, surrounded by lurking shadow creatures with glowing eyes in a dark swirling background.",
           "sortOrder": 14,
           "thumbExt": "jpeg",
@@ -1704,7 +1704,7 @@
       {
         "slug": "skeleton-leather-jacket",
         "title": "Skeleton Leather Jacket Life Is Short Quote",
-        "description": "A full-body badass skeleton in a leather jacket, beanie, ripped jeans, and boots, holding a cigarette and a spirits bottle. Bold text reads: Life Is Short. The Void Is Permanent. The Bones Just Keep Showing Up.",
+        "description": "A full-body badass skeleton in a leather jacket, beanie, ripped jeans, and boots, holding a cigarette and a dark bottle. Bold text reads: Life Is Short. The Void Is Permanent. The Bones Just Keep Showing Up.",
         "sortOrder": 1,
         "thumbExt": "jpeg",
         "highResExt": "jpeg"
@@ -1791,8 +1791,8 @@
       },
       {
         "slug": "skeleton-streets-soul",
-        "title": "Streets Have My Bones Never My Soul Skeleton",
-        "description": "A full-body skeleton in a black hoodie, beanie, skull pendant chain, and dark pants standing confidently. Quote reads: The Streets May Have My Bones But They'll Never Take My Soul. Stay Gritty. Stay Alive.",
+        "title": "Streets Have My Bones Never My Essence Skeleton",
+        "description": "A full-body skeleton in a black hoodie, beanie, skull pendant chain, and dark pants standing confidently. Quote reads: The Streets May Have My Bones But They'll Never Take My Essence. Stay Gritty. Stay Alive.",
         "sortOrder": 12,
         "thumbExt": "jpeg",
         "highResExt": "jpeg"
@@ -2045,8 +2045,8 @@
       },
       {
         "slug": "soul-reaver-card",
-        "title": "Soul Reaver Dark Knight Fantasy Card ATK 7 DEF 5",
-        "description": "A powerful armored dark knight with a skull face helmet wielding a long rune-etched blade crackling with blue soul energy. Swirling blue ethereal flames engulf this haunted warrior in ancient ruins. ATK 7 DEF 5. Soul Drain restores 2 DEF for every enemy defeated and ignores armor.",
+        "title": "Essence Reaver Dark Knight Fantasy Card ATK 7 DEF 5",
+        "description": "A powerful armored dark knight with a skull face helmet wielding a long rune-etched blade crackling with blue arcane energy. Swirling blue ethereal flames engulf this dark warrior in ancient ruins. ATK 7 DEF 5. Essence Drain restores 2 DEF for every enemy defeated and ignores armor.",
         "sortOrder": 6,
         "thumbExt": "jpeg",
         "highResExt": "jpeg"
@@ -2062,7 +2062,7 @@
       {
         "slug": "spectral-knight-card",
         "title": "Spectral Knight Ghost Warrior Fantasy Card ATK 6 DEF 6",
-        "description": "A glowing blue spectral knight in full plate armor wreathed in ethereal ghost flames wielding a translucent energy blade. An ancient warrior spirit eternally bound to battle. ATK 6 DEF 6. Gains plus 1 DEF per Spectral ally on field and cannot be blocked by non-magical creatures.",
+        "description": "A glowing blue spectral knight in full plate armor wreathed in ethereal ghost flames wielding a translucent energy blade. An ancient warrior eternally bound to battle. ATK 6 DEF 6. Gains plus 1 DEF per Spectral ally on field and cannot be blocked by non-magical creatures.",
         "sortOrder": 8,
         "thumbExt": "jpeg",
         "highResExt": "jpeg"
@@ -2505,8 +2505,8 @@
       },
       {
         "slug": "occult-rune-symbol-pattern",
-        "title": "Occult Rune Symbol Skull Dark Pattern Phone Wallpaper",
-        "description": "A dense all-over pattern of small white hand-drawn occult symbols, ancient runes, crescent moons, animal skull icons, thorn branches, and floating skull heads on a black grunge textured background. Dark mystical aesthetic wallpaper.",
+        "title": "Arcane Rune Symbol Skull Dark Pattern Phone Wallpaper",
+        "description": "A dense all-over pattern of small white hand-drawn arcane symbols, ancient runes, crescent moons, animal skull icons, thorn branches, and floating skull heads on a black grunge textured background. Dark mystical aesthetic wallpaper.",
         "sortOrder": 3,
         "thumbExt": "jpeg",
         "highResExt": "jpeg"
@@ -2530,7 +2530,7 @@
       {
         "slug": "skull-claw-rune-red",
         "title": "Skull Claw Red Mark Dark Rune Pattern Wallpaper",
-        "description": "A repeating grunge pattern combining skull icons, skeleton hands, red claw slash marks, dark bird silhouettes, triangle symbols, and ancient sigil runes on a black canvas texture. Dark occult aesthetic phone wallpaper.",
+        "description": "A repeating grunge pattern combining skull icons, skeleton hands, red claw slash marks, dark bird silhouettes, triangle symbols, and ancient sigil runes on a black canvas texture. Dark arcane aesthetic phone wallpaper.",
         "sortOrder": 6,
         "thumbExt": "jpeg",
         "highResExt": "jpeg"
@@ -2661,7 +2661,7 @@
       {
         "slug": "night-hallowed-evil",
         "title": "Night Hallowed Evil Demon Horror Poster",
-        "description": "A vintage horror movie poster featuring a demonic creature with glowing red eyes and crimson claws advancing through darkness. Bold red grunge text reads 'The Night Hallowed' with tagline 'Evil Has A New Face'.",
+        "description": "A vintage horror movie poster featuring a dark creature with glowing red eyes and crimson claws advancing through darkness. Bold red grunge text reads 'The Night Hallowed' with tagline 'Evil Has A New Face'.",
         "sortOrder": 1,
         "thumbExt": "jpeg",
         "highResExt": "jpeg"
@@ -3161,7 +3161,7 @@
       {
         "slug": "skull-hand-forest",
         "title": "Skull Hand Red Sky Dark Forest Minimal Wallpaper",
-        "description": "A dark claw hand reaches upward toward a floating tiny red-eyed skull above a crimson horizon silhouetted against a dark pine forest. A story of a soul reaching for the darkness it belongs to — finally going home.",
+        "description": "A dark claw hand reaches upward toward a floating tiny red-eyed skull above a crimson horizon silhouetted against a dark pine forest. A story of an essence reaching for the darkness it belongs to — finally going home.",
         "sortOrder": 10,
         "thumbExt": "jpeg",
         "highResExt": "jpeg"

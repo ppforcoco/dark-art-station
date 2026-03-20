@@ -19,7 +19,7 @@ export async function generateMetadata(
       ? `"${q}" — Search Results${pageLabel} | HauntedWallpapers`
       : "Search | HauntedWallpapers",
     description: q
-      ? `Discover dark, occult wallpapers matching "${q}". Curated for iPhone, Android & PC.`
+      ? `Discover dark, arcane wallpapers matching "${q}". Curated for iPhone, Android & PC.`
       : "Search the full HauntedWallpapers sanctum.",
   };
 }
@@ -126,7 +126,7 @@ function EmptyState({ query }: { query: string }) {
     <div className="search-empty">
       <p className="search-empty-glyph">✦</p>
       <h2 className="search-empty-heading">
-        No spirits answered for <em>&ldquo;{query}&rdquo;</em>
+        No answers found for <em>&ldquo;{query}&rdquo;</em>
       </h2>
       <p className="search-empty-sub">
         Try a different incantation, or explore these sanctums:

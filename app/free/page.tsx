@@ -9,7 +9,7 @@ export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "Free Wallpapers | Haunted Wallpapers",
-  description: "Download free dark fantasy wallpapers. No account required. High-resolution occult art, skeletons, tarot, and more — all free.",
+  description: "Download free dark fantasy wallpapers. No account required. High-resolution arcane art, skeletons, tarot, and more — all free.",
 };
 
 export default async function FreePage() {
@@ -30,7 +30,7 @@ export default async function FreePage() {
         <div style={{ padding: "60px 60px 40px", borderBottom: "1px solid #2a2535" }}>
           <span className="section-eyebrow">No Sacrifice Required</span>
           <h1 className="section-title" style={{ fontSize: "clamp(2rem, 4vw, 3.5rem)" }}>
-            Free Souls
+            Free Picks
           </h1>
           <p style={{ fontFamily: "var(--font-cormorant)", fontStyle: "italic", fontSize: "1.05rem", color: "#8a8099", marginTop: "12px" }}>
             {freeCollections.length > 0

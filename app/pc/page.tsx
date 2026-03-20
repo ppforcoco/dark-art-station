@@ -19,8 +19,6 @@ interface PageProps {
   searchParams: Promise<{ tag?: string; page?: string }>;
 }
 
-// ─── SEO ─────────────────────────────────────────────────────────────────────
-
 export async function generateMetadata({ searchParams }: PageProps): Promise<Metadata> {
   const { tag, page: rawPage } = await searchParams;
   const page      = Math.max(1, parseInt(rawPage ?? "1", 10) || 1);
@@ -29,25 +27,23 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
 
   const title = tag
     ? `Trending Dark #${tag} Desktop Wallpapers for PC${pageLabel} | HAUNTED WALLPAPERS`
-    : `Free Dark PC Desktop Wallpapers 4K${pageLabel} | HAUNTED WALLPAPERS`;
+    : `Free Dark Desktop Wallpapers 4K${pageLabel} | HAUNTED WALLPAPERS`;
 
   const description = tag
-    ? `Browse free 4K dark fantasy PC desktop wallpapers tagged #${tag}. Download instantly, no account required.`
-    : "Free 4K dark fantasy & occult wallpapers for PC. Landscape 16:9 optimised. New drops daily. No account required.";
+    ? `Browse free 4K dark fantasy Android wallpapers tagged #${tag}. Download instantly, no account required.`
+    : "Free 4K dark fantasy & arcane wallpapers for PC. Portrait 9:16 optimised. New drops daily. No account required.";
 
   const canonical = tag ? `${siteUrl}/pc?tag=${tag}` : `${siteUrl}/pc`;
 
   return {
     title,
     description,
-    keywords: ["pc wallpaper", "desktop wallpaper dark", "4k desktop wallpaper", "free pc wallpaper", "16:9 wallpaper", tag ?? "occult", "dark fantasy"].filter(Boolean),
+    keywords: ["pc wallpaper", "desktop wallpaper dark", "4k desktop wallpaper", "free pc wallpaper", "16:9 wallpaper", tag ?? "arcane", "dark fantasy"].filter(Boolean),
     openGraph: { title, description, url: canonical, siteName: "HAUNTED WALLPAPERS", type: "website" },
     twitter: { card: "summary_large_image", title, description },
     alternates: { canonical },
   };
 }
-
-// ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default async function PcPage({ searchParams }: PageProps) {
   const { tag, page: rawPage } = await searchParams;
@@ -78,23 +74,21 @@ export default async function PcPage({ searchParams }: PageProps) {
   return (
     <main className="min-h-screen" style={{ backgroundColor: "var(--bg-primary)", color: "var(--text-primary)" }}>
 
-      {/* ── Breadcrumb path bar ── */}
       <Breadcrumbs items={[
-        { label: "Home", href: "/"   },
+        { label: "Home",    href: "/"        },
         { label: "PC",   href: "/pc" },
         ...(tag ? [{ label: `#${tag}` }] : []),
       ]} />
 
-      {/* ── Header ── */}
       <section className="max-w-7xl mx-auto px-6 md:px-[60px] pt-10 pb-8">
         <span className="font-mono text-[0.6rem] tracking-[0.25em] uppercase text-[#c0001a] block mb-3">
           The Sanctum — PC Desktop
         </span>
         <h1 className="font-display text-3xl md:text-4xl font-bold leading-tight mb-4">
           {tag ? (
-            <>Dark <span className="text-[#c9a84c] italic">#{tag}</span> Desktop Wallpapers</>
+            <>Dark <span className="text-[#c9a84c] italic">#{tag}</span> Desktop Wallpapers for PC</>
           ) : (
-            <>Free Dark Desktop <span className="text-[#c9a84c] italic">Wallpapers</span></>
+            <>Free Dark Android <span className="text-[#c9a84c] italic">Wallpapers</span></>
           )}
           {page > 1 && <span className="text-[#4a445a] text-2xl"> — Page {page}</span>}
         </h1>
@@ -106,10 +100,8 @@ export default async function PcPage({ searchParams }: PageProps) {
         </Suspense>
       </section>
 
-      {/* ── Top Ad ── */}
       <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_MAIN} width={728} height={90} />
 
-      {/* ── Grid — landscape 16:9 ── */}
       <section className="max-w-7xl mx-auto px-6 md:px-[60px] py-10">
         {images.length === 0 ? (
           <p className="font-mono text-[0.65rem] tracking-[0.2em] uppercase text-[#4a445a] py-20 text-center">
@@ -135,11 +127,11 @@ export default async function PcPage({ searchParams }: PageProps) {
                     className="object-cover transition-transform duration-500 group-hover:scale-105"
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[rgba(5,5,5,0.92)] via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
+                  <div className="absolute inset-0 bg-gradient-to-t from-[rgba(5,5,5,0.92)] via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-3">
                     <div>
-                      <p className="font-body italic text-[0.9rem] text-white leading-tight">{img.title}</p>
+                      <p className="font-body italic text-[0.85rem] text-white leading-tight">{img.title}</p>
                       <div className="flex flex-wrap gap-1 mt-1">
-                        {img.tags.slice(0, 4).map((t) => (
+                        {img.tags.slice(0, 3).map((t) => (
                           <span key={t} className="font-mono text-[0.45rem] tracking-[0.1em] text-[#c9a84c]">#{t}</span>
                         ))}
                       </div>
@@ -148,28 +140,21 @@ export default async function PcPage({ searchParams }: PageProps) {
                 </Link>
               ))}
             </div>
-
             <Pagination currentPage={page} totalPages={totalPages} baseUrl={baseUrl} />
           </>
         )}
       </section>
 
-      {/* ── Footer Ad ── */}
       <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_FOOTER} width={728} height={90} className="mt-8" />
 
-      {/* ── ItemList JSON-LD ── */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
           __html: JSON.stringify({
             "@context": "https://schema.org",
             "@type": "ItemList",
-            name: tag
-              ? `Dark #${tag} PC Wallpapers | Haunted Wallpapers`
-              : "Free Dark PC Wallpapers 4K | Haunted Wallpapers",
-            url: tag
-              ? `${process.env.NEXT_PUBLIC_SITE_URL}/pc?tag=${tag}`
-              : `${process.env.NEXT_PUBLIC_SITE_URL}/pc`,
+            name: tag ? `Dark #${tag} PC Wallpapers | Haunted Wallpapers` : "Free Dark Desktop Wallpapers 4K | Haunted Wallpapers",
+            url: tag ? `${process.env.NEXT_PUBLIC_SITE_URL}/pc?tag=${tag}` : `${process.env.NEXT_PUBLIC_SITE_URL}/pc`,
             numberOfItems: total,
             itemListElement: images.map((img, i) => ({
               "@type": "ListItem",

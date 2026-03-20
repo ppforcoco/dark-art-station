@@ -1,5 +1,5 @@
 const ITEMS = [
-  "Dark Fantasy","Occult Art","Tarot Decks","Dark Aesthetics",
+  "Dark Fantasy","Arcane Art","Tarot Decks","Dark Aesthetics",
   "Gothic Goddesses","Dark Humor","Demon Art","Void Witches",
   "Arcane Relics","Crimson Rites",
 ];

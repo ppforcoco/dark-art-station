@@ -41,13 +41,13 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "Haunted Wallpapers | Free Dark Fantasy & Occult Wallpapers",
+  title: "Haunted Wallpapers | Free Dark Fantasy & Arcane Wallpapers",
   description:
-    "Free dark fantasy wallpapers, tarot art, and occult designs. Download high-resolution AI art collections. Skeletons, demons, goddesses and more.",
+    "Free dark fantasy wallpapers, tarot art, and arcane designs. Download high-resolution AI art collections. Skeletons, demons, goddesses and more.",
   metadataBase: new URL(SITE_URL),
   openGraph: {
-    title:       "Haunted Wallpapers | Free Dark Fantasy & Occult Wallpapers",
-    description: "Free dark fantasy wallpapers, tarot art, and occult designs. Download high-resolution AI art collections.",
+    title:       "Haunted Wallpapers | Free Dark Fantasy & Arcane Wallpapers",
+    description: "Free dark fantasy wallpapers, tarot art, and arcane designs. Download high-resolution AI art collections.",
     url:         SITE_URL,
     siteName:    SITE_NAME,
     type:        "website",
@@ -56,14 +56,14 @@ export const metadata: Metadata = {
         url:    OG_IMAGE,
         width:  1200,
         height: 630,
-        alt:    "Haunted Wallpapers — Dark Fantasy & Occult Art",
+        alt:    "Haunted Wallpapers — Dark Fantasy & Arcane Art",
       },
     ],
   },
   twitter: {
     card:        "summary_large_image",
-    title:       "Haunted Wallpapers | Free Dark Fantasy & Occult Wallpapers",
-    description: "Free dark fantasy wallpapers, tarot art, and occult designs. Download high-resolution AI art collections.",
+    title:       "Haunted Wallpapers | Free Dark Fantasy & Arcane Wallpapers",
+    description: "Free dark fantasy wallpapers, tarot art, and arcane designs. Download high-resolution AI art collections.",
     images:      [OG_IMAGE],
   },
   alternates: { canonical: SITE_URL },
@@ -102,7 +102,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 url: SITE_URL,
                 logo: { "@type": "ImageObject", url: OG_IMAGE, width: 1200, height: 630 },
                 sameAs: ["https://instagram.com/hauntedwallpapers","https://pinterest.com/hauntedwallpapers"],
-                description: "Free dark fantasy wallpapers, tarot art, and occult designs for iPhone, Android and PC.",
+                description: "Free dark fantasy wallpapers, tarot art, and arcane designs for iPhone, Android and PC.",
               },
               {
                 "@context": "https://schema.org",
@@ -110,7 +110,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 "@id": `${SITE_URL}/#website`,
                 url: SITE_URL,
                 name: SITE_NAME,
-                description: "Free dark fantasy wallpapers and occult art. Download 4K wallpapers for iPhone, Android and PC.",
+                description: "Free dark fantasy wallpapers and arcane art. Download 4K wallpapers for iPhone, Android and PC.",
                 publisher: { "@id": `${SITE_URL}/#organization` },
                 potentialAction: {
                   "@type": "SearchAction",

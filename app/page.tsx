@@ -59,8 +59,8 @@ export default async function Home() {
             <span className="t-gold">Abyss</span>
           </h1>
           <p className="hero-subtitle fade-up-3">
-            Premium dark fantasy wallpapers, tarot art, and occult designs for those
-            who dwell beyond the veil. Crafted for the dark and the divine alike.
+            Premium dark fantasy wallpapers, tarot art, and arcane designs for those
+            who dwell beyond the veil. Crafted for the dark and the ethereal alike.
           </p>
           <div className="hero-ctas fade-up-4">
             <Link href="/shop" className="btn-primary"><span>Enter the Grimoire</span></Link>
@@ -68,7 +68,7 @@ export default async function Home() {
           </div>
           <div className="hero-stats fade-up-5">
             <div><span className="stat-num">500+</span><span className="stat-label">Dark Artworks</span></div>
-            <div><span className="stat-num">12K</span><span className="stat-label">Souls Collected</span></div>
+            <div><span className="stat-num">12K</span><span className="stat-label">Members Growing</span></div>
             <div><span className="stat-num">Free</span><span className="stat-label">Shipping (Digital)</span></div>
           </div>
         </div>
@@ -231,7 +231,7 @@ export default async function Home() {
           <p className="manifesto-text">
             We create for the unconventional. The ones who hang skulls where others
             hang flowers. Who find divinity in demons, humor in darkness, and power in
-            the occult. Every wallpaper is a window into a world most dare not enter.
+            the arcane. Every wallpaper is a window into a world most dare not enter.
           </p>
           <Link href="/lore" className="btn-primary"><span>Read Our Story</span></Link>
         </div>

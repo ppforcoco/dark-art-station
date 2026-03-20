@@ -8,7 +8,7 @@ export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "All Collections | Haunted Wallpapers",
-  description: "Browse all dark fantasy wallpaper collections — skeletons, tarot, demons, goddesses, occult art and more. Free high-resolution downloads.",
+  description: "Browse all dark fantasy wallpaper collections — skeletons, tarot, demons, goddesses, arcane art and more. Free high-resolution downloads.",
 };
 
 export default async function CollectionsPage() {

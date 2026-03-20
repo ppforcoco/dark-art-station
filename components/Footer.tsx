@@ -20,8 +20,8 @@ export default function Footer() {
             HAUNTED<span className="logo-red">WALLPAPERS</span>
           </Link>
           <p className="footer-brand-desc">
-            Premium dark art for the dark-hearted, the divine, and everyone gloriously
-            in between. AI-generated wallpapers and occult designs for iPhone,
+            Premium dark art for the dark-hearted, the ethereal, and everyone gloriously
+            in between. AI-generated wallpapers and arcane designs for iPhone,
             Android &amp; PC.
           </p>
         </div>
@@ -78,7 +78,7 @@ export default function Footer() {
       <div className="footer-bottom">
         <span className="footer-copy">
           © {new Date().getFullYear()} HauntedWallpapers. All rights reserved.
-          Souls collected daily.
+          Visions collected daily.
         </span>
         <div className="footer-socials">
           {SOCIAL_LINKS.map(({ label, href }) => (

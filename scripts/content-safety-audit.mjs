@@ -58,22 +58,21 @@ const WHITELIST = new Set([
   // Core brand words
   'haunted', 'hauntedwallpapers', 'wallpaper', 'wallpapers',
 
-  // Dark aesthetic vocabulary — part of the brand identity
+  // Dark aesthetic vocabulary — safe for this brand
   'dark', 'darkness', 'shadow', 'shadows', 'shadowy',
   'ghost', 'ghostly', 'ghosts',
   'skull', 'skulls',
-  'demon', 'demonic', 'demons',     // artistic dark fantasy
-  'witch', 'witches', 'witchcraft', // artistic dark fantasy
-  'dead',                            // "Day of the Dead" is a collection name
-  'hell',                            // artistic / brand aesthetic
+  'demon', 'demons',               // artistic dark fantasy (demonic removed — now flagged)
+  'witch', 'witches',              // artistic dark fantasy (witchcraft removed — now flagged)
+  'dead',                          // "Day of the Dead" is a collection name
+  'hell',                          // artistic / brand aesthetic
   'hellish',
   'grim', 'grimoire',
-  'occult',                          // used in collection names
   'abyss', 'void',
   'cursed', 'curse',
-  'ritual',                          // artistic context
+  'ritual',                        // artistic context
   'sinister', 'ominous', 'eerie',
-  'macabre', 'morbid',
+  'macabre',                       // morbid removed — now flagged
   'skeleton', 'skeletal',
   'reaper',
   'raven',
@@ -86,7 +85,7 @@ const WHITELIST = new Set([
   'tarot',
   'sigil',
 
-  // Common programming/technical terms that may false-positive
+  // Programming/technical terms — genuine false positives in code
   'kill',         // e.g. kill() process, kill switch in code comments
   'execute',      // code execution
   'script',
@@ -96,9 +95,8 @@ const WHITELIST = new Set([
   'terminate',
   'host',
   'master',
-  'slave',        // legacy git/db terminology
   'hack',         // "life hack", dev context
-  'sin',          // Math.sin() — JS math function, massive false positive
+  // 'slave' and 'sin' are not whitelisted — they are actively flagged by the dictionary
 ]);
 
 // ============================================================
@@ -110,41 +108,28 @@ const WHITELIST = new Set([
 // ============================================================
 
 const RELIGIOUS_WHITELIST = new Set([
-  // Dark aesthetic / brand words that touch religion but are safe
+  // Dark aesthetic / brand words that touch religion but are safe for this brand
   'hell', 'hellish',          // artistic aesthetic
-  'demon', 'demonic', 'demons', // dark fantasy art
-  'devil',                    // artistic dark aesthetic
-  'witch', 'witches',         // dark fantasy art
+  'demon', 'demons',          // dark fantasy art (demonic now flagged)
+  'witch', 'witches',         // dark fantasy art (witchcraft now flagged)
   'ghost', 'ghostly',         // brand name adjacent
   'haunted',                  // literal brand name
   'shadow', 'shadows',        // aesthetic
   'dark', 'darkness',         // aesthetic
-  'pagan',                    // thematic, not targeting a religion mockingly
-  'occult',                   // collection category
+  'pagan',                    // thematic
   'ritual',                   // artistic context
-  'spirit', 'spirits',        // used in artistic/atmospheric copy constantly
-  'soul', 'souls',            // "12K Souls Collected" — brand copy
   'abyss', 'void',
 
-  // Common English words with religious roots — too high false-positive risk
-  'bless', 'blessed', 'blessing', // "blessed event", everyday usage
-  'grace',                    // "grace period", a person's name, everyday use
-  'faith',                    // "keep the faith", common idiom
-  'divine',                   // "divine inspiration", common English adjective
-  'holy',                     // "holy moly", exclamation, very common
-  'sacred',                   // "sacred space" — design/art copy
-  'heaven',                   // common idiom "heaven knows", "pure heaven"
-  'gospel',                   // "gospel truth", music genre
-  'saint',                    // place names, people's names (St. Louis etc.)
-  'angel', 'angels',          // common in dark art / gothic aesthetics
-  'paradise',                 // common metaphorical use
-  'sermon',                   // very low AdSense risk
-
-  // Programming / technical false positives
+  // Programming / technical false positives only
   'host',                     // server host
   'oracle',                   // Oracle DB, "The Oracle's Eye" brand copy
   'creed',                    // "Our Creed" — brand copy section
   'lore',                     // "/lore" page route
+
+  // NOTE: The following are now REMOVED from whitelist and will be FLAGGED:
+  // devil, demonic, occult, spirit, spirits, soul, souls, witchcraft,
+  // bless, blessed, blessing, grace, faith, divine, holy, sacred,
+  // heaven, gospel, saint, angel, angels, paradise, sermon, morbid, slave, sin
 ]);
 
 // ============================================================
@@ -375,6 +360,43 @@ const DICTIONARY = [
   { term: 'allah akbar',   exactMatch: false, category: REL_FIGURES, severity: HIGH,   suggestion: 'Remove — highly sensitive, often misused in harmful contexts', notes: 'Islam — contextual risk is very high' },
   { term: 'allahu akbar',  exactMatch: false, category: REL_FIGURES, severity: HIGH,   suggestion: 'Remove — highly sensitive', notes: 'Islam' },
   { term: 'infidel',       exactMatch: true,  category: REL_FIGURES, severity: HIGH,   suggestion: 'Remove if targeting a religious group', notes: 'Multi-religion — used as slur' },
+
+  // ── NEWLY ACTIVATED — removed from whitelist per site owner ──────────────
+  // These were previously ignored. Now flagged so you can review each
+  // occurrence and decide whether to replace or keep.
+
+  // Spiritual / afterlife concepts
+  { term: 'soul',       exactMatch: true, category: REL_CONCEPTS,  severity: MEDIUM, suggestion: 'Replace with "essence", "energy". e.g. "12K Souls" → "12K Members"' },
+  { term: 'souls',      exactMatch: true, category: REL_CONCEPTS,  severity: MEDIUM, suggestion: 'Replace with "followers", "members", "visitors"' },
+  { term: 'spirit',     exactMatch: true, category: REL_CONCEPTS,  severity: MEDIUM, suggestion: 'Replace with "essence", "force", "energy"' },
+  { term: 'spirits',    exactMatch: true, category: REL_CONCEPTS,  severity: MEDIUM, suggestion: 'Replace with "forces", "energies", "essences"' },
+  { term: 'divine',     exactMatch: true, category: REL_CONCEPTS,  severity: MEDIUM, suggestion: 'Replace with "ethereal", "otherworldly", "supreme"' },
+  { term: 'heaven',     exactMatch: true, category: REL_CONCEPTS,  severity: MEDIUM, suggestion: 'Replace with "the beyond", "the void above"' },
+  { term: 'paradise',   exactMatch: true, category: REL_CONCEPTS,  severity: MEDIUM, suggestion: 'Replace with "sanctuary", "the beyond"' },
+  { term: 'sacred',     exactMatch: true, category: REL_CONCEPTS,  severity: MEDIUM, suggestion: 'Replace with "ancient", "forbidden", "arcane"' },
+  { term: 'holy',       exactMatch: true, category: REL_CONCEPTS,  severity: MEDIUM, suggestion: 'Replace with "arcane", "ancient", "revered"' },
+  { term: 'faith',      exactMatch: true, category: REL_CONCEPTS,  severity: LOW,    suggestion: 'Replace with "belief", "conviction" if in copy' },
+  { term: 'sin',        exactMatch: true, category: REL_CONCEPTS,  severity: MEDIUM, suggestion: 'Replace with "darkness", "vice"', notes: 'Also matches Math.sin() — check context carefully' },
+  { term: 'occult',     exactMatch: true, category: REL_CONCEPTS,  severity: MEDIUM, suggestion: 'Replace with "arcane", "mystic", "hidden arts"', notes: 'Used in collection names — review carefully before changing' },
+  { term: 'morbid',     exactMatch: true, category: REL_CONCEPTS,  severity: LOW,    suggestion: 'Replace with "dark", "shadowy", "grim"' },
+
+  // Religious figures / beings
+  { term: 'angel',      exactMatch: true, category: REL_FIGURES,   severity: MEDIUM, suggestion: 'Replace with "dark figure", "winged entity"' },
+  { term: 'angels',     exactMatch: true, category: REL_FIGURES,   severity: MEDIUM, suggestion: 'Replace with "dark figures", "winged entities"' },
+  { term: 'demonic',    exactMatch: true, category: REL_FIGURES,   severity: MEDIUM, suggestion: 'Replace with "dark", "shadowy", "infernal"' },
+  { term: 'witchcraft', exactMatch: true, category: REL_FIGURES,   severity: MEDIUM, suggestion: 'Replace with "dark arts", "arcane practice", "sorcery"' },
+
+  // Religious practices / texts
+  { term: 'gospel',     exactMatch: true, category: REL_TEXTS,     severity: LOW,    suggestion: 'Replace with "truth", "word", or remove' },
+  { term: 'saint',      exactMatch: true, category: REL_FIGURES,   severity: LOW,    suggestion: 'Replace with "figure", "icon"', notes: 'Common in place names — check context' },
+  { term: 'bless',      exactMatch: true, category: REL_PRACTICES, severity: LOW,    suggestion: 'Replace with "grant", "bestow"' },
+  { term: 'blessed',    exactMatch: true, category: REL_PRACTICES, severity: LOW,    suggestion: 'Replace with "gifted", "chosen", "marked"' },
+  { term: 'blessing',   exactMatch: true, category: REL_PRACTICES, severity: LOW,    suggestion: 'Replace with "gift", "power", "mark"' },
+  { term: 'grace',      exactMatch: true, category: REL_PRACTICES, severity: LOW,    suggestion: 'Replace with "elegance", "poise"', notes: 'Common name and everyday word — check context' },
+
+  // Sensitive social terms
+  { term: 'slave',      exactMatch: true, category: CAT_POLICY,     severity: MEDIUM, suggestion: 'Replace with "follower", "subject", or remove', notes: 'Also legacy git/db terminology — check context' },
+
   { term: 'heretic',       exactMatch: false, category: REL_FIGURES, severity: LOW,    suggestion: 'Fine in artistic/dark context', notes: 'Generic — low risk' },
   { term: 'apostate',      exactMatch: false, category: REL_FIGURES, severity: LOW,    suggestion: 'Fine in historical/artistic context', notes: 'Generic' },
 

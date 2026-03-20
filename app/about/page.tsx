@@ -23,7 +23,7 @@ export default function AboutPage() {
             <h2>What Is HauntedWallpapers?</h2>
             <p>
               HauntedWallpapers is an independent digital art studio specialising in
-              dark, atmospheric, and occult-inspired wallpapers for every screen — from
+              dark, atmospheric, and arcane-inspired wallpapers for every screen — from
               the phone in your pocket to the monitor on your desk.
             </p>
             <p>

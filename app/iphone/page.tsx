@@ -19,35 +19,31 @@ interface PageProps {
   searchParams: Promise<{ tag?: string; page?: string }>;
 }
 
-// ─── SEO ─────────────────────────────────────────────────────────────────────
-
 export async function generateMetadata({ searchParams }: PageProps): Promise<Metadata> {
   const { tag, page: rawPage } = await searchParams;
-  const page    = Math.max(1, parseInt(rawPage ?? "1", 10) || 1);
+  const page      = Math.max(1, parseInt(rawPage ?? "1", 10) || 1);
   const pageLabel = page > 1 ? ` — Page ${page}` : "";
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
+  const siteUrl   = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
 
   const title = tag
     ? `Trending Dark #${tag} Wallpapers for iPhone${pageLabel} | HAUNTED WALLPAPERS`
     : `Free Dark iPhone Wallpapers 4K${pageLabel} | HAUNTED WALLPAPERS`;
 
   const description = tag
-    ? `Browse free 4K dark fantasy iPhone wallpapers tagged #${tag}. Download instantly, no account required.`
-    : "Free 4K dark fantasy & occult wallpapers for iPhone. Portrait 9:16 optimised. New drops daily. No account required.";
+    ? `Browse free 4K dark fantasy Android wallpapers tagged #${tag}. Download instantly, no account required.`
+    : "Free 4K dark fantasy & arcane wallpapers for iPhone. Portrait 9:16 optimised. New drops daily. No account required.";
 
   const canonical = tag ? `${siteUrl}/iphone?tag=${tag}` : `${siteUrl}/iphone`;
 
   return {
     title,
     description,
-    keywords: ["iphone wallpaper", "dark wallpaper iphone", "4k iphone wallpaper", "free iphone wallpaper", tag ?? "occult", "dark fantasy"].filter(Boolean),
+    keywords: ["iphone wallpaper", "dark wallpaper iphone", "4k iphone wallpaper", "free iphone wallpaper", tag ?? "arcane", "dark fantasy"].filter(Boolean),
     openGraph: { title, description, url: canonical, siteName: "HAUNTED WALLPAPERS", type: "website" },
     twitter: { card: "summary_large_image", title, description },
     alternates: { canonical },
   };
 }
-
-// ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default async function IphonePage({ searchParams }: PageProps) {
   const { tag, page: rawPage } = await searchParams;
@@ -78,14 +74,12 @@ export default async function IphonePage({ searchParams }: PageProps) {
   return (
     <main className="min-h-screen" style={{ backgroundColor: "var(--bg-primary)", color: "var(--text-primary)" }}>
 
-      {/* ── Breadcrumb path bar ── */}
       <Breadcrumbs items={[
-        { label: "Home",   href: "/"       },
+        { label: "Home",    href: "/"       },
         { label: "iPhone", href: "/iphone" },
         ...(tag ? [{ label: `#${tag}` }] : []),
       ]} />
 
-      {/* ── Header ── */}
       <section className="max-w-7xl mx-auto px-6 md:px-[60px] pt-10 pb-8">
         <span className="font-mono text-[0.6rem] tracking-[0.25em] uppercase text-[#c0001a] block mb-3">
           The Sanctum — iPhone
@@ -94,7 +88,7 @@ export default async function IphonePage({ searchParams }: PageProps) {
           {tag ? (
             <>Dark <span className="text-[#c9a84c] italic">#{tag}</span> Wallpapers for iPhone</>
           ) : (
-            <>Free Dark iPhone <span className="text-[#c9a84c] italic">Wallpapers</span></>
+            <>Free Dark Android <span className="text-[#c9a84c] italic">Wallpapers</span></>
           )}
           {page > 1 && <span className="text-[#4a445a] text-2xl"> — Page {page}</span>}
         </h1>
@@ -106,10 +100,8 @@ export default async function IphonePage({ searchParams }: PageProps) {
         </Suspense>
       </section>
 
-      {/* ── Top Ad ── */}
       <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_MAIN} width={728} height={90} />
 
-      {/* ── Grid ── */}
       <section className="max-w-7xl mx-auto px-6 md:px-[60px] py-10">
         {images.length === 0 ? (
           <p className="font-mono text-[0.65rem] tracking-[0.2em] uppercase text-[#4a445a] py-20 text-center">
@@ -148,28 +140,21 @@ export default async function IphonePage({ searchParams }: PageProps) {
                 </Link>
               ))}
             </div>
-
             <Pagination currentPage={page} totalPages={totalPages} baseUrl={baseUrl} />
           </>
         )}
       </section>
 
-      {/* ── Footer Ad ── */}
       <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_FOOTER} width={728} height={90} className="mt-8" />
 
-      {/* ── ItemList JSON-LD ── */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
           __html: JSON.stringify({
             "@context": "https://schema.org",
             "@type": "ItemList",
-            name: tag
-              ? `Dark #${tag} iPhone Wallpapers | Haunted Wallpapers`
-              : "Free Dark iPhone Wallpapers 4K | Haunted Wallpapers",
-            url: tag
-              ? `${process.env.NEXT_PUBLIC_SITE_URL}/iphone?tag=${tag}`
-              : `${process.env.NEXT_PUBLIC_SITE_URL}/iphone`,
+            name: tag ? `Dark #${tag} iPhone Wallpapers | Haunted Wallpapers` : "Free Dark iPhone Wallpapers 4K | Haunted Wallpapers",
+            url: tag ? `${process.env.NEXT_PUBLIC_SITE_URL}/iphone?tag=${tag}` : `${process.env.NEXT_PUBLIC_SITE_URL}/iphone`,
             numberOfItems: total,
             itemListElement: images.map((img, i) => ({
               "@type": "ListItem",
