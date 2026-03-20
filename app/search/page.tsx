@@ -60,10 +60,19 @@ function AdSlot({ slot, className = "" }: { slot: string; className?: string }) 
 // ─── Result Card ──────────────────────────────────────────────────────────────
 
 function ResultCard({ item }: { item: SearchResultItem }) {
+  /*
+    HREF FIX — was building /collections/slug and /wallpaper/slug (404).
+    Correct routes are:
+      collection  → /shop/[collectionSlug]
+      standalone  → /shop/[collectionSlug]/[imageSlug]  (if in a collection)
+                  → falls back to /shop/[imageSlug] for truly standalone images
+  */
   const href =
     item.kind === "collection"
-      ? `/collections/${item.slug}`
-      : `/wallpaper/${item.slug}`;
+      ? `/shop/${item.slug}`
+      : item.collectionSlug
+        ? `/shop/${item.collectionSlug}/${item.slug}`
+        : `/shop/${item.slug}`;
 
   const deviceLabel =
     item.kind === "standalone" && item.deviceType

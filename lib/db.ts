@@ -87,8 +87,10 @@ export type SearchResultItem = {
   isFree?:   boolean;
   badge?:    string | null;
   // standalone-specific
-  deviceType?: string | null;
-  tags?:       string[];
+  deviceType?:    string | null;
+  tags?:          string[];
+  // needed to build correct href: /shop/[collectionSlug]/[imageSlug]
+  collectionSlug?: string | null;
 };
 
 // ─── Global Search Query ─────────────────────────────────────────────────────
@@ -135,7 +137,9 @@ export async function searchWallpapers(
   // For Image, guard description with a nested AND so null rows are skipped
   const imageWhere = {
     collectionId: null,
-    deviceType:   { not: null },
+    // Exclude PC wallpapers from global search — PC has its own search page.
+    // PC thumbnails are landscape (16:9) and look distorted in portrait grids.
+    deviceType: { in: ["IPHONE", "ANDROID"] },
     OR: [
       { title: { contains: q, mode: "insensitive" as const } },
       // Only match description when it is not null
@@ -181,6 +185,8 @@ export async function searchWallpapers(
           r2Key:      true,
           deviceType: true,
           tags:       true,
+          // Include collection slug so search page can build correct href
+          collection: { select: { slug: true } },
         },
         orderBy: { createdAt: "desc" },
         take: limit,
@@ -204,13 +210,15 @@ export async function searchWallpapers(
   }));
 
   const standaloneResults: SearchResultItem[] = standalones.map(img => ({
-    id:         img.id,
-    slug:       img.slug,
-    title:      img.title,
-    thumbnail:  img.r2Key,
-    kind:       "standalone",
-    deviceType: img.deviceType,
-    tags:       img.tags,
+    id:             img.id,
+    slug:           img.slug,
+    title:          img.title,
+    thumbnail:      img.r2Key,
+    kind:           "standalone",
+    deviceType:     img.deviceType,
+    tags:           img.tags,
+    // collectionSlug enables building /shop/[collectionSlug]/[imageSlug]
+    collectionSlug: img.collection?.slug ?? null,
   }));
 
   const all = [...collectionResults, ...standaloneResults];
