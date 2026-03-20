@@ -42,8 +42,8 @@ function setDqbHeight(h: number) {
   document.documentElement.style.setProperty("--dqb-h", `${h}px`);
   // Recalculate topbar-total = halloween bar + quote bar
   const hbH = parseInt(
-    document.documentElement.style.getPropertyValue("--topbar-h") || "36", 10
-  ) || 36;
+    document.documentElement.style.getPropertyValue("--topbar-h") || "0", 10
+  ) || 0;
   document.documentElement.style.setProperty("--topbar-total", `${hbH + h}px`);
 }
 
@@ -52,14 +52,6 @@ export default function DarkQuoteBar() {
   const [dismissed, setDismissed] = useState(false);
 
   useEffect(() => {
-    const today = new Date().toISOString().slice(0, 10);
-    const key = `hw-quote-dismissed-${today}`;
-    try {
-      if (localStorage.getItem(key)) {
-        setDismissed(true);
-        return;
-      }
-    } catch {}
     setQuote(getDailyQuote());
     setDqbHeight(BAR_H);
   }, []);
@@ -67,10 +59,6 @@ export default function DarkQuoteBar() {
   const dismiss = () => {
     setDismissed(true);
     setDqbHeight(0);
-    try {
-      const key = `hw-quote-dismissed-${new Date().toISOString().slice(0, 10)}`;
-      localStorage.setItem(key, "1");
-    } catch {}
   };
 
   if (dismissed || !quote) return null;
