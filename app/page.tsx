@@ -149,22 +149,42 @@ export default async function Home() {
 
         <div className="category-grid">
           {[
-            { slug: "tarot",     icon: "🃏", tag: "Collection", title: "Tarot Cards",        bgClass: "p-bg-2" },
-            { slug: "skeleton",  icon: "💀", tag: "Collection", title: "Skulls & Skeletons", bgClass: "p-bg-1" },
-            { slug: "dark-fantasy", icon: "🐉", tag: "Collection", title: "Dark Fantasy",    bgClass: "p-bg-3" },
-            { slug: "aesthetics",icon: "🌑", tag: "Collection", title: "Dark Aesthetics",    bgClass: "p-bg-4" },
-            { slug: "dark-humor",icon: "😈", tag: "Collection", title: "Dark Humor",         bgClass: "p-bg-5" },
-            { slug: "patterns",  icon: "🕸", tag: "Collection", title: "Patterns & Textures",bgClass: "p-bg-1" },
+            {
+              slug:  "skeleton-card-collection",
+              title: "Tarot Cards",
+              tag:   "Collection",
+            },
+            {
+              slug:  "skeleton-rebellion-collection",
+              title: "Skulls & Skeletons",
+              tag:   "Collection",
+            },
+            {
+              slug:  "dark-fantasy-art",
+              title: "Dark Fantasy",
+              tag:   "Collection",
+            },
+            {
+              slug:  "dark-minimal-horror",
+              title: "Dark Aesthetics",
+              tag:   "Collection",
+            },
+            {
+              slug:  "dark-humor-wallpaper-collection",
+              title: "Dark Humor",
+              tag:   "Collection",
+            },
+            {
+              slug:  "dark-pattern-wallpaper",
+              title: "Patterns & Textures",
+              tag:   "Collection",
+            },
           ].map((cat) => {
-            // Try to find a matching DB category for thumbnail; fall back to icon
-            const dbCat = categories.find(c =>
-              c.slug.includes(cat.slug) ||
-              c.title.toLowerCase().includes(cat.slug.replace("-", " "))
-            );
+            const dbCat = categories.find(c => c.slug === cat.slug);
             return (
               <Link
                 key={cat.slug}
-                href={dbCat ? `/shop/${dbCat.slug}` : `/search?q=${encodeURIComponent(cat.title)}`}
+                href={`/shop/${cat.slug}`}
                 className="cat-card"
               >
                 {dbCat?.thumbnail ? (
@@ -176,15 +196,15 @@ export default async function Home() {
                     sizes="(max-width: 479px) 100vw, (max-width: 767px) 50vw, (max-width: 1024px) 33vw, 20vw"
                   />
                 ) : (
-                  <>
-                    <div className={`cat-bg-layer ${cat.bgClass}`} />
-                    <div className="cat-icon-el">{cat.icon}</div>
-                  </>
+                  <div className="cat-bg-layer p-bg-1" />
                 )}
                 <div className="cat-overlay" />
                 <div className="cat-content">
                   <span className="cat-tag">{cat.tag}</span>
                   <div className="cat-name">{cat.title}</div>
+                  {dbCat && (
+                    <div className="cat-count">{dbCat._count.downloads} downloads</div>
+                  )}
                 </div>
               </Link>
             );

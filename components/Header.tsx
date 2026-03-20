@@ -70,10 +70,15 @@ export default function Header() {
       const res = await fetch("/api/random-wallpaper");
       if (!res.ok) return;
       const img = await res.json();
-      if (!img?.slug || !img?.deviceType) return;
-      const device = img.deviceType === "IPHONE" ? "iphone"
-                   : img.deviceType === "ANDROID" ? "android" : "pc";
-      router.push(`/${device}/${img.slug}`);
+      if (!img?.slug) return;
+      // Standalone device wallpaper
+      if (img.deviceType === "IPHONE")   { router.push(`/iphone/${img.slug}`);  return; }
+      if (img.deviceType === "ANDROID")  { router.push(`/android/${img.slug}`); return; }
+      if (img.deviceType === "PC")       { router.push(`/pc/${img.slug}`);      return; }
+      // Collection image — route to /shop/[collectionSlug]/[imageSlug]
+      if (img.collection?.slug) { router.push(`/shop/${img.collection.slug}/${img.slug}`); return; }
+      // Last resort
+      router.push("/collections");
     } catch {}
   }, [router]);
 

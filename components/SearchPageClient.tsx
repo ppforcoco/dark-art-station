@@ -38,10 +38,12 @@ export default function SearchPageClient({ initialQuery }: Props) {
       const res = await fetch("/api/random-wallpaper");
       if (!res.ok) return;
       const img = await res.json();
-      if (!img?.slug || !img?.deviceType) return;
-      const device = img.deviceType === "IPHONE" ? "iphone"
-                   : img.deviceType === "ANDROID" ? "android" : "pc";
-      router.push(`/${device}/${img.slug}`);
+      if (!img?.slug) return;
+      if (img.deviceType === "IPHONE")  { router.push(`/iphone/${img.slug}`);  return; }
+      if (img.deviceType === "ANDROID") { router.push(`/android/${img.slug}`); return; }
+      if (img.deviceType === "PC")      { router.push(`/pc/${img.slug}`);      return; }
+      if (img.collection?.slug)         { router.push(`/shop/${img.collection.slug}/${img.slug}`); return; }
+      router.push("/collections");
     } catch {}
   }, [router]);
 

@@ -265,15 +265,21 @@ export async function getRelatedImages(
   sourceId:   string,
   sourceTags: string[],
   limit = 6,
+  deviceType?: string | null,   // filter to same device type
 ): Promise<RelatedImage[]> {
   if (sourceTags.length === 0) return [];
 
-  // Fetch candidates — any image sharing ≥1 tag (broad net), not the source
+  // Build the where clause — optionally restrict to same deviceType
+  const whereClause: Record<string, unknown> = {
+    id:   { not: sourceId },
+    tags: { hasSome: sourceTags },
+  };
+  if (deviceType) {
+    whereClause.deviceType = deviceType;
+  }
+
   const candidates = await db.image.findMany({
-    where: {
-      id:   { not: sourceId },
-      tags: { hasSome: sourceTags },
-    },
+    where: whereClause,
     select: {
       id:         true,
       slug:       true,
@@ -285,17 +291,15 @@ export async function getRelatedImages(
       collection: { select: { slug: true } },
     },
     orderBy: { viewCount: "desc" },
-    take:    limit * 4, // over-fetch so post-filter has enough candidates
+    take:    limit * 4,
   });
 
-  // Post-filter: require ≥2 matching tags for true "related" quality
   const sourceSet = new Set(sourceTags.map(t => t.toLowerCase()));
   const qualified = candidates.filter((img) => {
     const overlap = img.tags.filter(t => sourceSet.has(t.toLowerCase())).length;
     return overlap >= 2;
   });
 
-  // Fall back to ≥1 overlap if we couldn't find enough ≥2 matches
   const pool = qualified.length >= 2 ? qualified : candidates;
 
   return pool.slice(0, limit).map(img => ({

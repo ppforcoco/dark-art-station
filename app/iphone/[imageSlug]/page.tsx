@@ -85,7 +85,7 @@ export default async function IphoneImagePage({ params }: PageProps) {
       orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
       select: { slug: true, title: true, r2Key: true, sortOrder: true },
     }),
-    getRelatedImages(image.id, image.tags, 6),
+    getRelatedImages(image.id, image.tags, 6, "IPHONE"),
   ]);
   const currentIdx = siblings.findIndex((s) => s.slug === imageSlug);
   const prevImage = currentIdx > 0 ? siblings[currentIdx - 1] : null;
