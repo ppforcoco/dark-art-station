@@ -8,11 +8,16 @@ export default function Cursor() {
   const my  = useRef(0);
   const raf = useRef<number>(0);
   const [hovered, setHovered] = useState(false);
-  const [visible, setVisible] = useState(false); // only show ring on "default" cursor
+  const [visible, setVisible] = useState(false);
+  const [isTouch, setIsTouch] = useState(true); // default true = hidden until confirmed fine pointer
 
   useEffect(() => {
     const isPointerFine = window.matchMedia("(pointer: fine)").matches;
-    if (!isPointerFine) return;
+    if (!isPointerFine) return; // no cursor on touch/mobile
+    setIsTouch(false);
+
+    const isPointerFine2 = window.matchMedia("(pointer: fine)").matches;
+    if (!isPointerFine2) return;
 
     // Check if default ring cursor should show
     const checkCursor = () => {
@@ -57,6 +62,8 @@ export default function Cursor() {
       observer.disconnect();
     };
   }, []);
+
+  if (isTouch) return null;
 
   return (
     <>

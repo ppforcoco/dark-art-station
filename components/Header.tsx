@@ -252,14 +252,16 @@ export default function Header() {
         [data-theme="blood"] .dark-quote-bar       { background: #100000 !important; border-color: rgba(192,0,0,0.25) !important; }
         [data-theme="blood"] .dqb-text             { color: #ffd0d0 !important; }
 
-        [data-cursor="skull"]  * { cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32'%3E%3Ctext y='26' font-size='22'%3E%F0%9F%92%80%3C/text%3E%3C/svg%3E") 16 16, auto !important; }
-        [data-cursor="skull"]    { cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32'%3E%3Ctext y='26' font-size='22'%3E%F0%9F%92%80%3C/text%3E%3C/svg%3E") 16 16, auto !important; }
-        [data-cursor="flame"]  * { cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32'%3E%3Ctext y='26' font-size='22'%3E%F0%9F%94%A5%3C/text%3E%3C/svg%3E") 16 8,  auto !important; }
-        [data-cursor="flame"]    { cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32'%3E%3Ctext y='26' font-size='22'%3E%F0%9F%94%A5%3C/text%3E%3C/svg%3E") 16 8,  auto !important; }
-        [data-cursor="ghost"]  * { cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32'%3E%3Ctext y='26' font-size='22'%3E%F0%9F%91%BB%3C/text%3E%3C/svg%3E") 16 16, auto !important; }
-        [data-cursor="ghost"]    { cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32'%3E%3Ctext y='26' font-size='22'%3E%F0%9F%91%BB%3C/text%3E%3C/svg%3E") 16 16, auto !important; }
-        [data-cursor="dagger"] * { cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32'%3E%3Ctext y='26' font-size='22'%3E%F0%9F%97%A1%3C/text%3E%3C/svg%3E") 8  8,  auto !important; }
-        [data-cursor="dagger"]   { cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32'%3E%3Ctext y='26' font-size='22'%3E%F0%9F%97%A1%3C/text%3E%3C/svg%3E") 8  8,  auto !important; }
+        @media (pointer: fine) {
+          [data-cursor="skull"]  * { cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32'%3E%3Ctext y='26' font-size='22'%3E%F0%9F%92%80%3C/text%3E%3C/svg%3E") 16 16, auto !important; }
+          [data-cursor="skull"]    { cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32'%3E%3Ctext y='26' font-size='22'%3E%F0%9F%92%80%3C/text%3E%3C/svg%3E") 16 16, auto !important; }
+          [data-cursor="flame"]  * { cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32'%3E%3Ctext y='26' font-size='22'%3E%F0%9F%94%A5%3C/text%3E%3C/svg%3E") 16 8,  auto !important; }
+          [data-cursor="flame"]    { cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32'%3E%3Ctext y='26' font-size='22'%3E%F0%9F%94%A5%3C/text%3E%3C/svg%3E") 16 8,  auto !important; }
+          [data-cursor="ghost"]  * { cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32'%3E%3Ctext y='26' font-size='22'%3E%F0%9F%91%BB%3C/text%3E%3C/svg%3E") 16 16, auto !important; }
+          [data-cursor="ghost"]    { cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32'%3E%3Ctext y='26' font-size='22'%3E%F0%9F%91%BB%3C/text%3E%3C/svg%3E") 16 16, auto !important; }
+          [data-cursor="dagger"] * { cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32'%3E%3Ctext y='26' font-size='22'%3E%F0%9F%97%A1%3C/text%3E%3C/svg%3E") 8  8,  auto !important; }
+          [data-cursor="dagger"]   { cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32'%3E%3Ctext y='26' font-size='22'%3E%F0%9F%97%A1%3C/text%3E%3C/svg%3E") 8  8,  auto !important; }
+        }
 
         .hw-nav-icon {
           display: flex; align-items: center; justify-content: center;
@@ -508,18 +510,6 @@ export default function Header() {
         <div className="nav-mobile-controls">
           <button type="button" className="btn-hamburger btn-search-mobile" onClick={openSearch} aria-label="Search" style={{ touchAction: "manipulation" }}>
             <Search size={18} strokeWidth={1.5} />
-          </button>
-          <button
-            type="button"
-            className="btn-hamburger btn-theme-mobile"
-            onClick={() => {
-              const next: Theme = theme === "dark" ? "light" : theme === "light" ? "blood" : "dark";
-              setThemeAndClose(next);
-            }}
-            aria-label="Toggle theme"
-            style={{ touchAction: "manipulation", fontSize: "1.1rem", lineHeight: 1 }}
-          >
-            {themeIcon}
           </button>
           <button className="btn-hamburger" onClick={toggleMenu} aria-label={menuOpen ? "Close menu" : "Open menu"} aria-expanded={menuOpen} style={{ touchAction: "manipulation" }}>
             {menuOpen ? <X size={22} strokeWidth={1.5} /> : <Menu size={22} strokeWidth={1.5} />}
