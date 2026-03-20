@@ -31,16 +31,43 @@ export default function LightboxGallery({ images }: Props) {
 
   useEffect(() => {
     if (!isOpen) return;
+
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape")     close();
       if (e.key === "ArrowLeft")  prev();
       if (e.key === "ArrowRight") next();
     };
     window.addEventListener("keydown", onKey);
-    document.body.style.overflow = "hidden";
+
+    /*
+      iOS SAFARI SCROLL LOCK FIX:
+      Safari ignores document.body.style.overflow = "hidden" — the page
+      still scrolls behind the lightbox overlay.
+
+      The correct fix:
+        1. Record the current scroll position.
+        2. Fix the body at that position using position:fixed + top offset.
+           This prevents iOS from scrolling the body at all.
+        3. On close, restore position:static and scroll back to the saved Y.
+
+      This is the industry-standard pattern for iOS modal scroll locking.
+    */
+    const scrollY = window.scrollY;
+    document.body.style.overflow   = "hidden";
+    document.body.style.position   = "fixed";
+    document.body.style.top        = `-${scrollY}px`;
+    document.body.style.width      = "100%";
+    document.body.style.left       = "0";
+
     return () => {
       window.removeEventListener("keydown", onKey);
-      document.body.style.overflow = "";
+      // Restore body and scroll back to where the user was
+      document.body.style.overflow  = "";
+      document.body.style.position  = "";
+      document.body.style.top       = "";
+      document.body.style.width     = "";
+      document.body.style.left      = "";
+      window.scrollTo(0, scrollY);
     };
   }, [isOpen, close, prev, next]);
 
@@ -82,6 +109,13 @@ export default function LightboxGallery({ images }: Props) {
           role="dialog"
           aria-modal="true"
           aria-label={current.title}
+          style={{
+            // iOS Safari: touch-action:none stops the overlay from
+            // passing touch events through to the page behind it.
+            // overscroll-behavior:contain stops scroll chaining.
+            touchAction: "none",
+            overscrollBehavior: "contain",
+          }}
         >
           <button className="lb-close" onClick={close} aria-label="Close lightbox" type="button">
             ✕

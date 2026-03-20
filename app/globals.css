@@ -2823,6 +2823,13 @@ body::before {
   align-items: center;
   justify-content: center;
   animation: lb-fade-in 0.2s ease;
+  /* iOS Safari scroll-behind fix */
+  overflow: hidden;
+  touch-action: none;              /* block touch passthrough to page behind */
+  overscroll-behavior: contain;    /* stop scroll chaining on iOS */
+  /* Ensure overlay covers the full viewport including safe areas */
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
 }
 @keyframes lb-fade-in {
   from { opacity: 0; }
