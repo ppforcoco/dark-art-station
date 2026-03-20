@@ -1,7 +1,6 @@
 // components/Footer.tsx
 import Link from "next/link";
 
-// ── Update these to your real profile URLs when ready ──────────────────────
 const SOCIAL_LINKS = [
   { label: "Instagram", href: "https://instagram.com/hauntedwallpapers" },
   { label: "Pinterest", href: "https://pinterest.com/hauntedwallpapers" },
@@ -16,7 +15,7 @@ export default function Footer() {
       <div className="footer-grid">
 
         {/* ── Brand ── */}
-        <div>
+        <div className="footer-col footer-col--brand">
           <Link href="/" className="nav-logo">
             HAUNTED<span className="logo-red">WALLPAPERS</span>
           </Link>
@@ -39,17 +38,6 @@ export default function Footer() {
           </ul>
         </div>
 
-        {/* ── Company ── */}
-        <div className="footer-col">
-          <h4 className="footer-col-title">Company</h4>
-          <ul>
-            <li><Link href="/about">About</Link></li>
-            <li><Link href="/licensing">Licensing &amp; Terms</Link></li>
-            <li><Link href="/faq">FAQ</Link></li>
-            <li><Link href="/contact">Contact</Link></li>
-          </ul>
-        </div>
-
         {/* ── Seasonal ── */}
         <div className="footer-col">
           <h4 className="footer-col-title">Seasonal</h4>
@@ -60,6 +48,17 @@ export default function Footer() {
             <li><Link href="/blood-moon">Blood Moon</Link></li>
             <li><Link href="/haunted-christmas">Haunted Christmas</Link></li>
             <li><Link href="/black-easter">Black Easter</Link></li>
+          </ul>
+        </div>
+
+        {/* ── Company ── */}
+        <div className="footer-col">
+          <h4 className="footer-col-title">Company</h4>
+          <ul>
+            <li><Link href="/about">About</Link></li>
+            <li><Link href="/licensing">Licensing &amp; Terms</Link></li>
+            <li><Link href="/faq">FAQ</Link></li>
+            <li><Link href="/contact">Contact</Link></li>
           </ul>
         </div>
 

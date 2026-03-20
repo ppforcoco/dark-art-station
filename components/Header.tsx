@@ -171,9 +171,7 @@ export default function Header() {
 
       <div className={`mobile-menu-overlay${menuOpen ? " mobile-menu-open" : ""}`} aria-hidden={!menuOpen}>
         <div className="mobile-menu-backdrop" onClick={closeMenu} />
-        <div className="mobile-menu-panel" style={{
-          paddingTop: "calc(var(--topbar-h, 0px) + var(--nav-h-mob, 72px) + 24px)"
-        }}>
+        <div className="mobile-menu-panel">
           <div className="mobile-menu-topbar" />
           <nav className="mobile-menu-nav">
             {NAV_LINKS.map(({ label, href }, i) => (

@@ -3860,3 +3860,275 @@ body::before {
     white-space: normal !important;
   }
 }
+/* ══════════════════════════════════════════════════════════════
+   UI POLISH PATCH — Quality of Life / AdSense / UX Fixes
+   ══════════════════════════════════════════════════════════════ */
+
+/* ── 1. Conditional Ad Slots ──────────────────────────────────
+   Hide the entire ad container when the live slot is empty.
+   This prevents blank white boxes on mobile.                    */
+.ad-banner--empty {
+  display: none !important;
+}
+
+/* Show normally once AdSense has filled the slot */
+.ad-banner--loaded {
+  display: flex !important;
+}
+
+/* Dev placeholder — styled to match dark theme, not white box  */
+.ad-banner--dev {
+  background: var(--bg-secondary) !important;
+  border-top: 1px solid rgba(139,0,0,0.25) !important;
+  border-bottom: 1px solid rgba(139,0,0,0.25) !important;
+  /* Slightly more compact on mobile so it takes less space      */
+}
+@media (max-width: 767px) {
+  .ad-banner--dev .ad-content {
+    min-height: 44px;
+    padding: 8px 20px;
+  }
+  .ad-banner--dev .ad-label {
+    display: none; /* hide "Sponsored / Advertisement" labels on mobile dev */
+  }
+}
+
+/* ── 2. Search overlay — smooth fade-in animation ─────────────
+   Replaces the abrupt pop-in when search results appear.        */
+@keyframes searchResultsIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.search-overlay-panel {
+  animation: searchResultsIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) both !important;
+}
+
+/* ── 3. Hero Stats — center labels under numbers ─────────────
+   Tighten alignment so labels sit directly below their stat.    */
+.hero-stats > div {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* left-aligned on desktop (matches number) */
+  min-width: 80px;
+}
+.stat-num {
+  line-height: 1;
+  margin-bottom: 6px;
+}
+.stat-label {
+  margin-top: 0;
+  line-height: 1.3;
+}
+
+/* ── 4. "Our Creed" / Manifesto — constrain line length ───────
+   Long lines on wide monitors are hard to read. Cap at 65ch.    */
+.manifesto-quote {
+  max-width: 820px;
+}
+.manifesto-text {
+  max-width: 620px !important;
+  line-height: 2 !important;        /* increased from 1.9 for better legibility */
+  font-size: 1.1rem !important;
+}
+
+/* ── 5. Footer — 5-column grid + consistent vertical alignment ─
+   Brand col is wider; the 4 nav cols are equal-width and
+   top-aligned so their headings sit on the same baseline.       */
+.footer-grid {
+  grid-template-columns: 2fr 1fr 1fr 1fr 1fr !important;
+  align-items: start !important;    /* all columns top-align */
+}
+@media (max-width: 1279px) {
+  .footer-grid {
+    grid-template-columns: 1fr 1fr 1fr !important;
+  }
+  /* Brand spans full width on tablet */
+  .footer-col--brand {
+    grid-column: 1 / -1;
+  }
+}
+@media (max-width: 1023px) {
+  .footer-grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 40px !important;
+  }
+  .footer-col--brand {
+    grid-column: 1 / -1;
+  }
+}
+@media (max-width: 639px) {
+  .footer-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .footer-col--brand {
+    grid-column: unset;
+  }
+}
+
+/* Ensure all footer nav columns share the same baseline */
+.footer-col {
+  display: flex;
+  flex-direction: column;
+}
+.footer-col-title {
+  margin-bottom: 20px;
+  padding-bottom: 0;
+}
+.footer-col ul {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;  /* even vertical spacing between links */
+}
+.footer-col li {
+  margin-bottom: 0; /* gap handles spacing */
+}
+
+/* ── 6. Collection grid image cards — text contrast ──────────
+   Adds a gradient overlay so white title text is always readable
+   regardless of how light or dark the underlying wallpaper is.  */
+.cat-overlay {
+  background: linear-gradient(
+    to top,
+    rgba(5, 5, 14, 0.96) 0%,
+    rgba(5, 5, 14, 0.55) 40%,
+    rgba(5, 5, 14, 0.12) 70%,
+    transparent 100%
+  ) !important;
+}
+.cat-name {
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.8), 0 2px 16px rgba(0, 0, 0, 0.6);
+}
+.cat-count {
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
+}
+
+/* ── 7. Mobile menu — top padding so first item clears header ─
+   Fixes "01 IPHONE" touching the header border.                 */
+.mobile-menu-panel {
+  padding-top: calc(var(--topbar-h, 0px) + var(--nav-h-mob, 72px) + 32px) !important;
+}
+@media (max-width: 479px) {
+  .mobile-menu-panel {
+    padding-top: calc(var(--topbar-h, 0px) + var(--nav-h-mob, 72px) + 24px) !important;
+  }
+}
+@media (max-height: 680px) {
+  .mobile-menu-panel {
+    padding-top: calc(var(--topbar-h, 0px) + var(--nav-h-mob, 72px) + 12px) !important;
+  }
+}
+
+/* ── 8. Interactive states — hover + active feedback ─────────
+   Adds visual response to buttons so the site feels alive.      */
+
+/* btn-primary — ember sweep already exists; add active feedback */
+.btn-primary:active {
+  transform: scale(0.96) !important;
+  transition: transform 0.1s ease !important;
+}
+
+/* btn-secondary — hover lift + active press */
+.btn-secondary {
+  transition: border-color 0.2s, color 0.2s, background 0.2s, transform 0.15s ease !important;
+}
+.btn-secondary:hover {
+  background: rgba(192, 0, 26, 0.06) !important;
+  border-color: rgba(192, 0, 26, 0.6) !important;
+  color: #f0ecff !important;
+  transform: translateY(-1px);
+}
+.btn-secondary:active {
+  transform: scale(0.97) translateY(0) !important;
+  transition: transform 0.08s ease !important;
+}
+
+/* btn-cart */
+.btn-cart {
+  transition: background 0.2s, color 0.2s, border-color 0.2s, transform 0.15s ease !important;
+}
+.btn-cart:hover {
+  transform: translateY(-1px);
+}
+.btn-cart:active {
+  transform: scale(0.96) translateY(0) !important;
+}
+
+/* Hamburger / mobile icon buttons — tap highlight */
+.btn-hamburger {
+  transition: border-color 0.2s, color 0.2s, background 0.15s ease !important;
+  -webkit-tap-highlight-color: rgba(192, 0, 26, 0.12);
+}
+.btn-hamburger:active {
+  background: rgba(192, 0, 26, 0.1) !important;
+}
+
+/* Mobile menu links — active state */
+.mobile-menu-link {
+  transition: padding-left 0.2s ease, color 0.2s !important;
+  -webkit-tap-highlight-color: rgba(192, 0, 26, 0.08);
+}
+.mobile-menu-link:active {
+  background: rgba(192, 0, 26, 0.06);
+}
+
+/* Category cards — touch tap feedback */
+@media (pointer: coarse) {
+  .cat-card:active {
+    transform: scale(0.985) !important;
+    transition: transform 0.1s ease !important;
+  }
+}
+
+/* Product cards — desktop hover is via Tailwind; add coarse tap  */
+@media (pointer: coarse) {
+  .group:active {
+    transform: scale(0.98) translateY(0) !important;
+    transition: transform 0.1s ease !important;
+  }
+}
+
+/* ── 9. Body text line-height global boost ────────────────────
+   Ensures all paragraph-level text has comfortable leading.     */
+p,
+.footer-brand-desc,
+.hero-subtitle,
+.wotd-desc,
+.manifesto-text,
+.newsletter-sub {
+  line-height: 1.85;
+}
+
+/* ── 10. Ad slot light-theme integration ─────────────────────
+   Ensure the dev placeholder also adapts to light mode.         */
+[data-theme="light"] .ad-banner--dev {
+  background: var(--bg-secondary) !important;
+  border-color: rgba(139, 0, 0, 0.15) !important;
+}
+[data-theme="light"] .ad-banner--dev .ad-slot-text {
+  color: var(--smoke) !important;
+  opacity: 0.6;
+}
+
+/* ── 11. Touch target minimum sizes on mobile ─────────────────
+   Ensures category grid tiles and filter pills are comfortably
+   tappable (≥ 44px touch target per Apple HIG).                 */
+@media (max-width: 1023px) {
+  .cat-card {
+    min-height: 140px;
+  }
+  .filter-pill {
+    min-height: 40px;
+    padding: 10px 18px !important;
+  }
+}
+
+/* ── 12. Hero stats label alignment (PC) ─────────────────────
+   Ensures the stat labels are precisely beneath their number.   */
+@media (min-width: 1024px) {
+  .hero-stats {
+    gap: 48px;
+  }
+  .hero-stats > div {
+    align-items: flex-start;
+  }
+}
