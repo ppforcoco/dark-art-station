@@ -145,7 +145,7 @@ export default async function ImagePage({ params }: PageProps) {
 
       {/* ── Main Image + Details ────────────────────────────────────────── */}
       <section className="max-w-7xl mx-auto px-6 md:px-[60px] py-10">
-        <div className="grid md:grid-cols-[1fr_360px] gap-10 items-start">
+        <div style={{ display:"flex", flexDirection:"column", gap:"32px" }}>
 
           {/* Full image — plain frame with locked 9:16 ratio */}
           <div className="relative w-full overflow-hidden border border-[rgba(139,0,0,0.3)] bg-[#0a0a0a]" style={{ aspectRatio: "9/16" }}>
@@ -160,7 +160,7 @@ export default async function ImagePage({ params }: PageProps) {
           </div>
 
           {/* Details panel */}
-          <div className="flex flex-col gap-6 sticky top-8">
+          <div style={{ display:"flex", flexDirection:"column", gap:"16px" }}>
             <div>
               <Link
                 href={`/shop/${slug}`}
@@ -192,6 +192,7 @@ export default async function ImagePage({ params }: PageProps) {
             <div className="flex flex-col gap-3 mt-2">
               <a
                 href={`/api/download/image/${image.id}`}
+                style={{ display:"block", width:"100%", textAlign:"center" }}
                 className="font-mono text-[0.7rem] tracking-[0.2em] uppercase bg-[#8b0000] hover:bg-[#a80000] text-white px-8 py-4 transition-colors duration-200 border border-[#8b0000] text-center"
                 style={{ touchAction: "manipulation" }}
               >
@@ -222,11 +223,12 @@ export default async function ImagePage({ params }: PageProps) {
 
       {/* ── Prev / Next Navigation ──────────────────────────────────────── */}
       {(prevImage || nextImage) && (
-        <nav className="max-w-7xl mx-auto px-6 md:px-[60px] pb-8 flex items-center justify-between gap-4">
+        <nav style={{ maxWidth:"1280px", margin:"0 auto", padding:"0 24px 40px", display:"grid", gridTemplateColumns:"1fr 1fr", gap:"12px" }}>
           {prevImage ? (
             <Link
               href={`/shop/${slug}/${prevImage.slug}`}
-              className="group flex items-center gap-4 border border-[#2a2535] hover:border-[rgba(139,0,0,0.5)] p-4 transition-colors flex-1 max-w-[280px]"
+              style={{ display:"flex", flexDirection:"column", gap:"8px", padding:"16px", border:"1px solid #2a2535", textDecoration:"none" }}
+              className="hover:border-[rgba(139,0,0,0.5)] transition-colors"
             >
               <div className="relative w-14 h-14 shrink-0 overflow-hidden">
                 <Image src={getPublicUrl(prevImage.r2Key)} alt={prevImage.title} fill className="object-cover" sizes="56px" />
@@ -241,7 +243,8 @@ export default async function ImagePage({ params }: PageProps) {
           {nextImage && (
             <Link
               href={`/shop/${slug}/${nextImage.slug}`}
-              className="group flex items-center gap-4 border border-[#2a2535] hover:border-[rgba(139,0,0,0.5)] p-4 transition-colors flex-1 max-w-[280px] justify-end text-right ml-auto"
+              style={{ display:"flex", flexDirection:"column", gap:"8px", padding:"16px", border:"1px solid #2a2535", textDecoration:"none", textAlign:"right" }}
+              className="hover:border-[rgba(139,0,0,0.5)] transition-colors"
             >
               <div>
                 <span className="font-mono text-[0.5rem] tracking-[0.2em] uppercase text-[#4a445a] block">Next →</span>
@@ -260,22 +263,8 @@ export default async function ImagePage({ params }: PageProps) {
         <RelatedWallpapers images={related} />
       )}
 
-      {/* ── Mobile spacer so sticky CTA doesn't cover content ────────── */}
-      <div className="mobile-cta-spacer" aria-hidden="true" />
-
       {/* ── Footer Ad ───────────────────────────────────────────────────── */}
       <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_FOOTER} width={728} height={90} />
-
-      {/* ── Sticky Mobile Download CTA ──────────────────────────────────── */}
-      <div className="mobile-sticky-cta">
-        <a
-          href={`/api/download/image/${image.id}`}
-          className="font-mono text-[0.72rem] tracking-[0.18em] uppercase bg-[#8b0000] hover:bg-[#a80000] text-white px-6 py-4 transition-colors duration-200 border border-[#8b0000] text-center flex items-center justify-center gap-2"
-          style={{ touchAction: "manipulation" }}
-        >
-          ↓ Download Free 4K
-        </a>
-      </div>
 
       {/* ── JSON-LD ─────────────────────────────────────────────────────── */}
       <script
