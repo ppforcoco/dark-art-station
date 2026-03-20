@@ -509,6 +509,18 @@ export default function Header() {
           <button type="button" className="btn-hamburger btn-search-mobile" onClick={openSearch} aria-label="Search" style={{ touchAction: "manipulation" }}>
             <Search size={18} strokeWidth={1.5} />
           </button>
+          <button
+            type="button"
+            className="btn-hamburger btn-theme-mobile"
+            onClick={() => {
+              const next: Theme = theme === "dark" ? "light" : theme === "light" ? "blood" : "dark";
+              setThemeAndClose(next);
+            }}
+            aria-label="Toggle theme"
+            style={{ touchAction: "manipulation", fontSize: "1.1rem", lineHeight: 1 }}
+          >
+            {themeIcon}
+          </button>
           <button className="btn-hamburger" onClick={toggleMenu} aria-label={menuOpen ? "Close menu" : "Open menu"} aria-expanded={menuOpen} style={{ touchAction: "manipulation" }}>
             {menuOpen ? <X size={22} strokeWidth={1.5} /> : <Menu size={22} strokeWidth={1.5} />}
           </button>

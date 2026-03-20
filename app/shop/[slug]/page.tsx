@@ -12,6 +12,11 @@ interface PageProps {
   params: Promise<{ slug: string }>;
 }
 
+// Display title overrides — fix DB title mismatches without a DB migration
+const TITLE_OVERRIDES: Record<string, string> = {
+  "dark-sorceress-collection": "Skulls & Skeletons",
+};
+
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
@@ -20,22 +25,23 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     select: { title: true, description: true, thumbnail: true, category: true },
   });
   if (!collection) return { title: "Not Found | Haunted Wallpapers" };
+  const displayTitle = TITLE_OVERRIDES[slug] ?? collection.title;
   const ogImage = collection.thumbnail ? getPublicUrl(collection.thumbnail) : `${siteUrl}/og-default.jpg`;
   return {
-    title: `${collection.title} | Haunted Wallpapers`,
+    title: `${displayTitle} | Haunted Wallpapers`,
     description: collection.description,
-    keywords: [collection.category, "dark wallpaper", "arcane art", "dark fantasy", "AI art", collection.title],
+    keywords: [collection.category, "dark wallpaper", "arcane art", "dark fantasy", "AI art", displayTitle],
     openGraph: {
-      title: `${collection.title} | Haunted Wallpapers`,
+      title: `${displayTitle} | Haunted Wallpapers`,
       description: collection.description,
       url: `${siteUrl}/shop/${slug}`,
       siteName: "Haunted Wallpapers",
-      images: [{ url: ogImage, width: 1200, height: 630, alt: collection.title }],
+      images: [{ url: ogImage, width: 1200, height: 630, alt: displayTitle }],
       type: "website",
     },
     twitter: {
       card: "summary_large_image",
-      title: `${collection.title} | Haunted Wallpapers`,
+      title: `${displayTitle} | Haunted Wallpapers`,
       description: collection.description,
       images: [ogImage],
     },
@@ -59,6 +65,8 @@ export default async function CollectionPage({ params }: PageProps) {
   });
   if (!collection) notFound();
 
+  const displayTitle = TITLE_OVERRIDES[slug] ?? collection.title;
+
   const thumbnailUrl = collection.thumbnail ? getPublicUrl(collection.thumbnail) : null;
   const hasImages = collection.images.length > 0;
 
@@ -68,7 +76,7 @@ export default async function CollectionPage({ params }: PageProps) {
       <Breadcrumbs items={[
         { label: "Home",        href: "/" },
         { label: "Collections", href: "/shop" },
-        { label: collection.title },
+        { label: displayTitle },
       ]} />
 
       {/* ── Collection Header ── */}
@@ -95,7 +103,7 @@ export default async function CollectionPage({ params }: PageProps) {
             {thumbnailUrl ? (
               <Image
                 src={thumbnailUrl}
-                alt={collection.title}
+                alt={displayTitle}
                 fill
                 priority
                 sizes="360px"
@@ -121,7 +129,7 @@ export default async function CollectionPage({ params }: PageProps) {
                 {collection.category}
               </span>
               <h1 className="font-display text-3xl font-bold mt-2 leading-tight">
-                {collection.title}
+                {displayTitle}
               </h1>
             </div>
             <p className="font-body text-[1.05rem] text-[#a89bc0] leading-relaxed">
@@ -192,7 +200,7 @@ export default async function CollectionPage({ params }: PageProps) {
           __html: JSON.stringify({
             "@context": "https://schema.org",
             "@type": "Product",
-            name: collection.title,
+            name: displayTitle,
             description: collection.description,
             url: `${process.env.NEXT_PUBLIC_SITE_URL}/shop/${slug}`,
             offers: {

@@ -66,10 +66,9 @@ export default function ProductCard({
       {/* Image Container — full area is clickable */}
       <Link
         href={`/shop/${slug}`}
-        className={`aspect-portrait relative overflow-hidden block ${!thumbnail ? bgClass : ""}`}
+        className={`product-card-image relative overflow-hidden block ${!thumbnail ? bgClass : ""}`}
         aria-label={`View ${name}`}
         tabIndex={-1}
-        style={{ aspectRatio: "9/16" }}
       >
         {thumbnail ? (
           <Image
