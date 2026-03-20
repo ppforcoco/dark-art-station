@@ -1,6 +1,9 @@
 // components/ProductCard.tsx
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 interface ProductCardProps {
   slug: string;
@@ -25,11 +28,38 @@ export default function ProductCard({
   bgClass = "p-bg-1",
   thumbnail,
 }: ProductCardProps) {
+  const [theme, setTheme] = useState<string>("dark");
+
+  useEffect(() => {
+    // Read initial theme
+    setTheme(document.documentElement.getAttribute("data-theme") ?? "dark");
+    // Watch for changes
+    const observer = new MutationObserver(() => {
+      setTheme(document.documentElement.getAttribute("data-theme") ?? "dark");
+    });
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["data-theme"],
+    });
+    return () => observer.disconnect();
+  }, []);
+
   const badgeStyles = {
-    New: "bg-[#c0001a] text-[#f0ecff]",
-    Hot: "bg-[#ff3c00] text-[#0a0a0a]",
+    New:  "bg-[#c0001a] text-[#f0ecff]",
+    Hot:  "bg-[#ff3c00] text-[#0a0a0a]",
     Free: "bg-[#c9a84c] text-[#0a0a0a]",
   };
+
+  // CTA label — changes per theme and whether free
+  const ctaLabel = isFree
+    ? theme === "blood"
+      ? "Claim the Blood"
+      : theme === "light"
+      ? "Download Free"
+      : "Claim the Dark"
+    : theme === "blood"
+    ? "Conjure"
+    : "View";
 
   return (
     <div className="group bg-[#2a2535] relative transition-transform duration-300 hover:-translate-y-2">
@@ -42,7 +72,6 @@ export default function ProductCard({
         style={{ aspectRatio: "9/16" }}
       >
         {thumbnail ? (
-          // Real R2 thumbnail
           <Image
             src={thumbnail}
             alt={name}
@@ -51,7 +80,6 @@ export default function ProductCard({
             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
           />
         ) : (
-          // Emoji fallback while thumbnail isn't uploaded yet
           <div className="w-full h-full flex items-center justify-center text-[3rem] transition-transform duration-500 group-hover:scale-105 select-none">
             {icon}
           </div>
@@ -65,9 +93,7 @@ export default function ProductCard({
         )}
 
         {/* Quick View overlay */}
-        <span
-          className="absolute bottom-[-40px] group-hover:bottom-0 left-0 right-0 bg-[rgba(7,7,16,0.9)] backdrop-blur-[10px] text-center py-3 font-mono text-[0.65rem] tracking-[0.15em] uppercase text-[#c9a84c] transition-all duration-300 z-10 pointer-events-none"
-        >
+        <span className="absolute bottom-[-40px] group-hover:bottom-0 left-0 right-0 bg-[rgba(7,7,16,0.9)] backdrop-blur-[10px] text-center py-3 font-mono text-[0.65rem] tracking-[0.15em] uppercase text-[#c9a84c] transition-all duration-300 z-10 pointer-events-none">
           Quick View
         </span>
       </Link>
@@ -76,16 +102,16 @@ export default function ProductCard({
       <div className="p-5">
         <span className="font-mono text-[0.6rem] tracking-[0.15em] uppercase text-[#c0001a] mb-2 block">{category}</span>
         <div className="font-body italic text-[1.05rem] text-[#f0ecff] mb-3 leading-[1.3]">{name}</div>
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between gap-2">
           <span className={`font-mono text-[0.9rem] ${isFree ? "text-[#ff3c00]" : "text-[#c9a84c]"}`}>
             {isFree ? "Free" : typeof price === "number" ? `$${price.toFixed(2)}` : price}
           </span>
           <Link
             href={`/shop/${slug}`}
-            className="w-8 h-8 bg-transparent border border-[#c0001a] text-[#c0001a] text-[1.2rem] flex items-center justify-center hover:bg-[#c0001a] hover:text-[#f0ecff] transition-all"
-            aria-label={`View ${name}`}
+            className="flex items-center px-3 h-8 bg-transparent border border-[#c0001a] text-[#c0001a] font-mono text-[0.55rem] tracking-[0.1em] uppercase hover:bg-[#c0001a] hover:text-[#f0ecff] transition-all whitespace-nowrap"
+            aria-label={`${ctaLabel} ${name}`}
           >
-            +
+            {ctaLabel}
           </Link>
         </div>
       </div>

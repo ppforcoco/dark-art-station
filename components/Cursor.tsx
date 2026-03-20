@@ -7,19 +7,39 @@ export default function Cursor() {
   const mx  = useRef(0);
   const my  = useRef(0);
   const raf = useRef<number>(0);
-  const [hovered, setHovered] = useState(false);
+  const [hovered,     setHovered]     = useState(false);
+  const [cursorStyle, setCursorStyle] = useState("default");
+
+  // Watch data-cursor attribute so the ring hides when an emoji cursor is active
+  useEffect(() => {
+    const read = () => {
+      setCursorStyle(document.documentElement.getAttribute("data-cursor") ?? "default");
+    };
+    read();
+    const observer = new MutationObserver(read);
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["data-cursor"],
+    });
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
-    // Only activate on true pointer (mouse/trackpad) devices.
-    // Touch-only phones/tablets keep native behaviour — zero CPU waste.
     const isPointerFine = window.matchMedia("(pointer: fine)").matches;
     if (!isPointerFine) return;
 
-    // Reveal cursor elements (start hidden to prevent flash on touch devices)
+    // Hide ring/dot when an emoji cursor is selected (CSS handles the cursor icon)
+    if (cursorStyle !== "default") {
+      if (ringRef.current) ringRef.current.style.display = "none";
+      if (dotRef.current)  dotRef.current.style.display  = "none";
+      cancelAnimationFrame(raf.current);
+      return;
+    }
+
+    // Show ring/dot for the default ring cursor style
     if (ringRef.current) ringRef.current.style.display = "block";
     if (dotRef.current)  dotRef.current.style.display  = "block";
 
-    // ── Position tracking ─────────────────────────────────────────────────────
     const onMove = (e: MouseEvent) => {
       mx.current = e.clientX;
       my.current = e.clientY;
@@ -29,7 +49,6 @@ export default function Cursor() {
       }
     };
 
-    // rAF loop for the lagging ring — gives the "trailing" feel
     const loop = () => {
       if (ringRef.current) {
         ringRef.current.style.left = `${mx.current}px`;
@@ -39,27 +58,20 @@ export default function Cursor() {
     };
     raf.current = requestAnimationFrame(loop);
 
-    // ── Event delegation — ONE listener on document, no MutationObserver ─────
-    // Instead of attaching mouseenter/mouseleave to every a/button on the page
-    // (which needed a MutationObserver to catch dynamically added elements),
-    // we use a single mouseover on document and walk up the DOM to check if
-    // the cursor is over an interactive element. O(1) listeners regardless of
-    // how many links/buttons are on the page.
     const onOver = (e: MouseEvent) => {
       const target = e.target as Element | null;
-      const interactive = target?.closest("a, button, [data-hover]");
-      setHovered(!!interactive);
+      setHovered(!!target?.closest("a, button, [data-hover]"));
     };
 
-    document.addEventListener("mousemove",  onMove);
-    document.addEventListener("mouseover",  onOver);
+    document.addEventListener("mousemove", onMove);
+    document.addEventListener("mouseover", onOver);
 
     return () => {
       document.removeEventListener("mousemove", onMove);
       document.removeEventListener("mouseover", onOver);
       cancelAnimationFrame(raf.current);
     };
-  }, []);
+  }, [cursorStyle]);
 
   const ringStyle: React.CSSProperties = {
     position: "fixed", pointerEvents: "none", zIndex: 9999,
@@ -67,14 +79,14 @@ export default function Cursor() {
     border: "1px solid #c0001a", borderRadius: "50%",
     transform: `translate(-50%, -50%) scale(${hovered ? 2 : 1})`,
     transition: "transform 0.15s ease",
-    display: "none",  // hidden until pointer:fine confirmed in useEffect
+    display: "none",
   };
   const dotStyle: React.CSSProperties = {
     position: "fixed", pointerEvents: "none", zIndex: 9999,
     width: 4, height: 4,
     background: "#ff3c00", borderRadius: "50%",
     transform: "translate(-50%, -50%)",
-    display: "none",  // hidden until pointer:fine confirmed in useEffect
+    display: "none",
   };
 
   return (

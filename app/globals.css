@@ -4421,3 +4421,111 @@ p,
 [data-theme="light"] .image-detail-nav-thumb {
   background: #e4dfd4 !important;
 }
+/* ══════════════════════════════════════════════════════════════
+   BLOOD RED THEME — Site-wide page & component overrides
+   (mirrors the same pattern as the light theme block above)
+   ══════════════════════════════════════════════════════════════ */
+
+/* Global page background & text */
+[data-theme="blood"] body,
+[data-theme="blood"] main,
+[data-theme="blood"] .shop-page,
+[data-theme="blood"] .search-page,
+[data-theme="blood"] .static-page,
+[data-theme="blood"] .hero-section,
+[data-theme="blood"] .products-bg,
+[data-theme="blood"] .manifesto-section,
+[data-theme="blood"] .newsletter-section,
+[data-theme="blood"] .wotd-section,
+[data-theme="blood"] .seasonal-page,
+[data-theme="blood"] .error-page {
+  background-color: var(--bg-primary) !important;
+  color: var(--text-primary) !important;
+}
+
+/* Dark bg Tailwind classes */
+[data-theme="blood"] .bg-\[\#050505\],
+[data-theme="blood"] .bg-\[\#070710\],
+[data-theme="blood"] .bg-\[\#0a0a0a\],
+[data-theme="blood"] .bg-\[\#0e0c14\],
+[data-theme="blood"] .bg-\[\#0c0b14\] {
+  background-color: var(--bg-primary) !important;
+}
+[data-theme="blood"] .bg-\[\#2a2535\] { background-color: #2e0808 !important; }
+[data-theme="blood"] .bg-\[\#1a1727\] { background-color: #280606 !important; }
+
+/* Tailwind text classes */
+[data-theme="blood"] .text-\[\#f0ecff\] { color: #ffe4e4 !important; }
+[data-theme="blood"] .text-\[\#d4cde8\] { color: #ffd0d0 !important; }
+[data-theme="blood"] .text-\[\#a89bc0\] { color: #cc9090 !important; }
+[data-theme="blood"] .text-\[\#8a8099\] { color: #aa6868 !important; }
+[data-theme="blood"] .text-\[\#4a445a\] { color: #884848 !important; }
+
+/* Borders */
+[data-theme="blood"] .border-\[\#2a2535\] { border-color: #380a0a !important; }
+[data-theme="blood"] .border-\[\#1a1727\] { border-color: #2e0808 !important; }
+
+/* Product cards */
+[data-theme="blood"] .group.bg-\[\#2a2535\],
+[data-theme="blood"] .search-card,
+[data-theme="blood"] .related-card,
+[data-theme="blood"] .seasonal-card {
+  background-color: #2e0808 !important;
+}
+
+/* Nav */
+[data-theme="blood"] .path-bar {
+  background: #100000 !important;
+  border-bottom-color: #340808 !important;
+}
+
+/* Footer */
+[data-theme="blood"] .site-footer   { background: #100000 !important; border-color: #340808 !important; }
+[data-theme="blood"] .footer-bottom { border-color: #340808 !important; }
+[data-theme="blood"] .footer-copy   { color: #884848 !important; }
+[data-theme="blood"] .footer-brand-desc { color: #884848 !important; }
+[data-theme="blood"] .footer-col-title  { color: #aa6868 !important; }
+[data-theme="blood"] .footer-col a      { color: #884848 !important; }
+
+/* Marquee */
+[data-theme="blood"] .marquee-item { color: #884848 !important; }
+
+/* Ad slots */
+[data-theme="blood"] .ad-banner {
+  background: #100000 !important;
+  border-color: rgba(192,0,0,0.25) !important;
+}
+[data-theme="blood"] .ad-slot-text { color: #ff7070 !important; }
+
+/* Shop */
+[data-theme="blood"] .shop-header    { border-color: #340808 !important; }
+[data-theme="blood"] .shop-filter-bar { border-color: #340808 !important; }
+[data-theme="blood"] .filter-pill    { color: #aa6868 !important; border-color: #340808 !important; }
+[data-theme="blood"] .filter-pill:hover,
+[data-theme="blood"] .filter-pill[data-active="true"] { color: #fff0f0 !important; border-color: #cc0000 !important; background: rgba(192,0,0,0.1) !important; }
+
+/* Search overlay */
+[data-theme="blood"] .search-overlay-input { color: #fff0f0 !important; caret-color: #cc0000 !important; }
+[data-theme="blood"] .search-overlay-input::placeholder { color: #622020 !important; }
+
+/* Pagination */
+[data-theme="blood"] .pagination-btn { color: #884848 !important; border-color: #340808 !important; }
+[data-theme="blood"] .pagination-btn:hover { color: #fff0f0 !important; border-color: rgba(192,0,0,0.5) !important; }
+[data-theme="blood"] .pagination-btn[aria-current="page"],
+[data-theme="blood"] .pagination-btn--active { border-color: #cc0000 !important; color: #fff0f0 !important; }
+
+/* Lightbox */
+[data-theme="blood"] .lb-overlay { background: rgba(8,0,0,0.96) !important; }
+[data-theme="blood"] .lb-close,
+[data-theme="blood"] .lb-arrow { background: rgba(10,0,0,0.8) !important; border-color: rgba(192,0,0,0.4) !important; color: #cc0000 !important; }
+
+/* Image detail */
+[data-theme="blood"] .image-detail-frame { background: #0a0000 !important; border-color: rgba(192,0,0,0.3) !important; }
+[data-theme="blood"] .image-detail-nav-card { border-color: #380a0a !important; }
+[data-theme="blood"] .image-detail-nav-card:hover { border-color: rgba(192,0,0,0.55) !important; background: rgba(192,0,0,0.04) !important; }
+[data-theme="blood"] .image-detail-nav-title { color: #fff0f0 !important; }
+[data-theme="blood"] .image-detail-nav-thumb { background: #0a0000 !important; }
+
+/* Scrollbar */
+[data-theme="blood"] ::-webkit-scrollbar-track { background: #080000 !important; }
+[data-theme="blood"] ::-webkit-scrollbar-thumb { background: #cc0000 !important; }
