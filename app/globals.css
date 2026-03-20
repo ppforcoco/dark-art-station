@@ -4140,6 +4140,18 @@ p,
 
 /* ── Image Detail Page — main layout ─────────────────────────
    Two-column on desktop (image | details), single column mobile */
+/* ── IMAGE DETAIL PAGE LAYOUT ─────────────────────────────────
+   The definitive approach for portrait 9:16 wallpapers on desktop:
+
+   RULE: padding-top % is calculated from the element's WIDTH.
+   So the parent column MUST have a real fixed pixel width for
+   padding-top: 177.78% to produce a visible height.
+
+   Grid left column = 400px fixed → inner padding-top 177.78%
+   → height = 400 × 1.7778 = 711px → correct 9:16 portrait box.
+   The image fills that 400×711 box perfectly.
+   ─────────────────────────────────────────────────────────── */
+
 .image-detail-section {
   max-width: 1280px;
   margin: 0 auto;
@@ -4149,86 +4161,56 @@ p,
   .image-detail-section { padding: 32px 24px 40px; }
 }
 
-/*
-  KEY FIX: portrait 9:16 wallpapers must be height-driven not width-driven.
-  Setting width:100% on a wide desktop column + aspect-ratio:9/16 makes the
-  frame taller than the viewport — browser squashes it and image distorts.
-  Solution: fix max-height, let width be auto-calculated from aspect-ratio.
-*/
 .image-detail-grid {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: 1fr;   /* mobile: single column */
   gap: 40px;
   align-items: start;
 }
 @media (min-width: 1024px) {
   .image-detail-grid {
-    /* auto column: image sizes itself from its height, not the grid width */
-    grid-template-columns: auto 1fr;
+    grid-template-columns: 400px 1fr;  /* fixed px column → padding-top % works */
     gap: 56px;
-    align-items: start;
+  }
+}
+@media (min-width: 1280px) {
+  .image-detail-grid {
+    grid-template-columns: 440px 1fr;
+    gap: 64px;
   }
 }
 
-/* ── Image frame — HEIGHT-driven portrait container ──────────
-   max-height caps the frame. Width auto-derives from aspect-ratio.
-   This is the correct approach for portrait images on landscape screens. */
-/*
-  CORRECTED APPROACH:
-  Next.js <Image fill> requires the parent to have:
-    - position: relative
-    - explicit pixel/percentage width AND height (not just aspect-ratio)
-  "width: auto" gives the browser nothing to fill into → image disappears.
-
-  Solution: use width:100% + padding-top trick to enforce 9:16 ratio.
-  padding-top: 177.78% = (16/9) × 100% forces the correct portrait height.
-  max-height + overflow:hidden then caps it so it never exceeds the viewport.
-  The inner .image-detail-frame-inner holds position:relative for Next.js fill.
-*/
+/* Outer frame — just a border/background wrapper, no height set here */
 .image-detail-frame {
   width: 100%;
-  max-width: 480px;            /* cap width on desktop */
-  margin: 0 auto;
   background: #070710;
   border: 1px solid rgba(139,0,0,0.3);
   overflow: hidden;
-  /* Enforce max height — clip at 85vh */
-  max-height: 85vh;
+  margin: 0 auto;
+}
+@media (max-width: 1023px) {
+  /* On mobile, cap the width so it doesn't fill the whole screen */
+  .image-detail-frame {
+    max-width: 360px;
+  }
 }
 
-/* Inner wrapper: padding-top enforces 9:16 aspect ratio.
-   Next.js <Image fill> positions itself absolute inside this. */
+/* Inner wrapper: padding-top: 177.78% on a 400px-wide column
+   = 711px tall → perfect 9:16 portrait.
+   position:relative is required for Next.js <Image fill>.      */
 .image-detail-frame-inner {
   position: relative;
   width: 100%;
-  padding-top: 177.78%;        /* 16/9 × 100 = 177.78% → portrait 9:16 */
+  padding-top: 177.78%;   /* 16/9 × 100 = 177.78% — creates the 9:16 box */
   overflow: hidden;
 }
-/* padding-top inner for nav thumbnails */
+
+/* Nav thumbnail inner — same padding-top trick, fixed width set on outer */
 .image-detail-nav-thumb-inner {
   position: relative;
   width: 100%;
   padding-top: 177.78%;
   overflow: hidden;
-}
-
-@media (max-width: 1023px) {
-  .image-detail-frame {
-    max-width: 360px;
-    max-height: 70vh;
-  }
-  .image-detail-frame-inner {
-    max-height: 70vh;
-  }
-}
-@media (max-width: 479px) {
-  .image-detail-frame {
-    max-width: 100%;
-    max-height: 65vh;
-  }
-  .image-detail-frame-inner {
-    max-height: 65vh;
-  }
 }
 
 /* Target images inside the inner wrapper — beats Tailwind + Next.js inline styles */
