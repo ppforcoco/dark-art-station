@@ -1,11 +1,5 @@
 'use client';
 
-// LightboxGallery.tsx
-// Full-screen image lightbox for collection gallery pages.
-// Renders a 4-column grid (2 on mobile). Clicking any image opens the lightbox.
-// Keyboard: Escape = close, ArrowLeft/Right = prev/next.
-// No external dependencies — pure React + CSS (classes in globals.css).
-
 import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -15,7 +9,7 @@ export interface LightboxImage {
   src:   string;
   alt:   string;
   title: string;
-  href:  string;   // deep-link to individual image page
+  href:  string;
 }
 
 interface Props {
@@ -35,16 +29,14 @@ export default function LightboxGallery({ images }: Props) {
     setActiveIndex((i) => (i === null ? null : (i + 1) % images.length)),
   [images.length]);
 
-  // Keyboard navigation
   useEffect(() => {
     if (!isOpen) return;
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape")      close();
-      if (e.key === "ArrowLeft")   prev();
-      if (e.key === "ArrowRight")  next();
+      if (e.key === "Escape")     close();
+      if (e.key === "ArrowLeft")  prev();
+      if (e.key === "ArrowRight") next();
     };
     window.addEventListener("keydown", onKey);
-    // Prevent body scroll while open
     document.body.style.overflow = "hidden";
     return () => {
       window.removeEventListener("keydown", onKey);
@@ -56,7 +48,6 @@ export default function LightboxGallery({ images }: Props) {
 
   return (
     <>
-      {/* ── Gallery Grid ── */}
       <div className="lb-grid">
         {images.map((img, i) => (
           <button
@@ -84,60 +75,41 @@ export default function LightboxGallery({ images }: Props) {
         ))}
       </div>
 
-      {/* ── Lightbox Overlay ── */}
       {isOpen && current && (
         <div
           className="lb-overlay"
-          onClick={close}           // click backdrop to close
+          onClick={close}
           role="dialog"
           aria-modal="true"
           aria-label={current.title}
         >
-          {/* Close */}
-          <button
-            className="lb-close"
-            onClick={close}
-            aria-label="Close lightbox"
-            type="button"
-          >
+          <button className="lb-close" onClick={close} aria-label="Close lightbox" type="button">
             ✕
           </button>
 
-          {/* Prev arrow */}
           {images.length > 1 && (
             <button
               className="lb-arrow lb-arrow-prev"
               onClick={(e) => { e.stopPropagation(); prev(); }}
               aria-label="Previous image"
               type="button"
-            >
-              ‹
-            </button>
+            >‹</button>
           )}
 
-          {/* Main image — stopPropagation prevents backdrop-close when clicking image */}
           <div className="lb-img-wrap" onClick={(e) => e.stopPropagation()}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={current.src}
-              alt={current.alt}
-              key={current.id}   // forces re-mount + re-animation on image change
-            />
+            <img src={current.src} alt={current.alt} key={current.id} />
           </div>
 
-          {/* Next arrow */}
           {images.length > 1 && (
             <button
               className="lb-arrow lb-arrow-next"
               onClick={(e) => { e.stopPropagation(); next(); }}
               aria-label="Next image"
               type="button"
-            >
-              ›
-            </button>
+            >›</button>
           )}
 
-          {/* Thumbnail strip */}
           {images.length > 1 && (
             <div className="lb-thumbs" onClick={(e) => e.stopPropagation()}>
               {images.map((img, i) => (
@@ -154,15 +126,41 @@ export default function LightboxGallery({ images }: Props) {
             </div>
           )}
 
-          {/* Caption bar */}
-          <div className="lb-caption" onClick={(e) => e.stopPropagation()}>
-            <span className="lb-caption-title">{current.title}</span>
+          {/* FIX: caption now stacks on mobile so button is never pushed off screen */}
+          <div
+            className="lb-caption"
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              flexDirection: "column",
+              alignItems: "stretch",
+              gap: "8px",
+              padding: "12px 16px calc(12px + env(safe-area-inset-bottom))",
+            }}
+          >
+            <span
+              className="lb-caption-title"
+              style={{
+                display: "-webkit-box",
+                WebkitLineClamp: 2,
+                WebkitBoxOrient: "vertical",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+              }}
+            >
+              {current.title}
+            </span>
             <Link
               href={current.href}
               className="lb-caption-link"
               onClick={close}
+              style={{
+                display: "block",
+                textAlign: "center",
+                width: "100%",
+                padding: "10px 16px",
+              }}
             >
-              View & Download →
+              View &amp; Download →
             </Link>
           </div>
         </div>
