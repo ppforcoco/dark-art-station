@@ -20,7 +20,6 @@ export default function Header() {
   const [query,      setQuery]      = useState("");
   const [theme,      setTheme]      = useState<"dark"|"light">("dark");
 
-  // Persist theme choice
   const toggleTheme = useCallback(() => {
     setTheme(prev => {
       const next = prev === "dark" ? "light" : "dark";
@@ -30,7 +29,6 @@ export default function Header() {
     });
   }, []);
 
-  // Restore saved theme on mount
   useEffect(() => {
     try {
       const saved = localStorage.getItem("hw-theme") as "dark"|"light"|null;
@@ -40,14 +38,13 @@ export default function Header() {
       }
     } catch {}
   }, []);
-  const searchInputRef = useRef<HTMLInputElement>(null);
 
+  const searchInputRef = useRef<HTMLInputElement>(null);
   const closeMenu   = useCallback(() => setMenuOpen(false), []);
   const toggleMenu  = useCallback(() => setMenuOpen(prev => !prev), []);
 
   const openSearch  = useCallback(() => {
     setSearchOpen(true);
-    // focus after paint
     setTimeout(() => searchInputRef.current?.focus(), 50);
   }, []);
   const closeSearch = useCallback(() => {
@@ -64,7 +61,6 @@ export default function Header() {
     router.push(`/search?q=${encodeURIComponent(q)}`);
   }, [query, router, closeSearch, closeMenu]);
 
-  // Lock scroll when menu is open — iOS Safari requires position:fixed trick
   useEffect(() => {
     if (menuOpen) {
       const scrollY = window.scrollY;
@@ -90,7 +86,6 @@ export default function Header() {
     };
   }, [menuOpen]);
 
-  // Close on Escape key
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") { closeMenu(); closeSearch(); }
@@ -107,18 +102,13 @@ export default function Header() {
           <span className="logo-compact">H<span className="logo-red">W</span></span>
         </Link>
 
-        {/* ── Desktop Nav ── */}
         <ul className="nav-links">
           {NAV_LINKS.map(({ label, href }) => (
-            <li key={label}>
-              <Link href={href}>{label}</Link>
-            </li>
+            <li key={label}><Link href={href}>{label}</Link></li>
           ))}
         </ul>
 
-        {/* ── Desktop Right Cluster ── */}
         <div className="nav-right-cluster">
-          {/* Search bar — expands on click */}
           <div className={`nav-search-wrap${searchOpen ? " nav-search-open" : ""}`}>
             <form onSubmit={handleSearch} className="nav-search-form">
               <button
@@ -127,9 +117,7 @@ export default function Header() {
                 onClick={searchOpen ? closeSearch : openSearch}
                 aria-label={searchOpen ? "Close search" : "Open search"}
               >
-                {searchOpen
-                  ? <X size={16} strokeWidth={1.5} />
-                  : <Search size={16} strokeWidth={1.5} />}
+                {searchOpen ? <X size={16} strokeWidth={1.5} /> : <Search size={16} strokeWidth={1.5} />}
               </button>
               <input
                 ref={searchInputRef}
@@ -148,13 +136,11 @@ export default function Header() {
               />
             </form>
           </div>
-
           <button
             type="button"
             className="btn-theme-toggle"
             onClick={toggleTheme}
             aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
-            title={theme === "dark" ? "Light mode" : "Dark mode"}
             style={{ touchAction: "manipulation" }}
           >
             <span style={{ fontSize: "1rem", lineHeight: 1 }}>{theme === "dark" ? "☀" : "☽"}</span>
@@ -162,7 +148,6 @@ export default function Header() {
           <button type="button" className="btn-cart nav-cart-desktop" style={{ touchAction: "manipulation" }}>Cart (0)</button>
         </div>
 
-        {/* ── Mobile Controls ── */}
         <div className="nav-mobile-controls">
           <button
             className="btn-hamburger btn-search-mobile"
@@ -184,7 +169,6 @@ export default function Header() {
         </div>
       </nav>
 
-      {/* ── Full-screen Search Overlay (mobile + desktop fallback) ── */}
       {searchOpen && (
         <div className="search-overlay" role="dialog" aria-label="Search">
           <div className="search-overlay-backdrop" onClick={closeSearch} />
@@ -219,27 +203,25 @@ export default function Header() {
         </div>
       )}
 
-      {/* ── Mobile Overlay Menu ── */}
+      {/* FIX: mobile-menu-overlay now uses z-index higher than nav,
+          and panel padding-top accounts for the topbar + nav height
+          so menu items are never clipped behind the header */}
       <div
         className={`mobile-menu-overlay${menuOpen ? " mobile-menu-open" : ""}`}
         aria-hidden={!menuOpen}
       >
-        {/* Backdrop */}
         <div className="mobile-menu-backdrop" onClick={closeMenu} />
-
-        {/* Panel */}
-        <div className="mobile-menu-panel">
-          {/* Decorative top bar */}
+        <div className="mobile-menu-panel" style={{
+          paddingTop: "calc(var(--topbar-h, 0px) + var(--nav-h-mob, 72px) + 24px)"
+        }}>
           <div className="mobile-menu-topbar" />
-
-          {/* Links */}
           <nav className="mobile-menu-nav">
             {NAV_LINKS.map(({ label, href }, i) => (
               <Link
                 key={label}
                 href={href}
                 className="mobile-menu-link"
-                style={{ animationDelay: menuOpen ? `${0.08 + i * 0.07}s` : "0s", minHeight: '44px' }}
+                style={{ animationDelay: menuOpen ? `${0.08 + i * 0.07}s` : "0s", minHeight: "44px" }}
                 onClick={closeMenu}
               >
                 <span className="mobile-link-index">0{i + 1}</span>
@@ -248,17 +230,11 @@ export default function Header() {
               </Link>
             ))}
           </nav>
-
-          {/* Divider */}
           <div className="mobile-menu-divider" />
-
-          {/* Cart CTA */}
           <button type="button" className="btn-cart mobile-menu-cart" onClick={closeMenu}>
             <ShoppingCart size={14} strokeWidth={1.5} />
             Cart (0)
           </button>
-
-          {/* Brand watermark */}
           <p className="mobile-menu-watermark">
             HAUNTED<span>WALLPAPERS</span>
           </p>
