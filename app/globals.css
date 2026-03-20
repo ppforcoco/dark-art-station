@@ -1517,8 +1517,22 @@ body::before {
   gap: 24px;
 }
 @media (max-width: 1023px) { .product-grid { grid-template-columns: repeat(2, 1fr); } }
-@media (max-width: 639px)  { .product-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; } }
+@media (max-width: 639px)  { .product-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; } }
 @media (max-width: 359px)  { .product-grid { grid-template-columns: 1fr; } }
+
+/* Product card image — full portrait on desktop, shorter on mobile */
+.product-card-image {
+  display: block;
+  aspect-ratio: 9 / 16;
+}
+@media (max-width: 639px) {
+  .product-card-image {
+    aspect-ratio: 3 / 4;
+  }
+  .product-grid .p-5 {
+    padding: 10px 10px 12px;
+  }
+}
 
 .product-card {
   background: #2a2535;
@@ -4011,18 +4025,18 @@ body::before {
 }
 
 /* ── 7. Mobile menu — top padding so first item clears header ─
-   Fixes "01 IPHONE" touching the header border.                 */
+   Uses --topbar-total (halloween bar + quote bar) + nav height.  */
 .mobile-menu-panel {
-  padding-top: calc(var(--topbar-h, 0px) + var(--nav-h-mob, 72px) + 32px) !important;
+  padding-top: calc(var(--topbar-total, 0px) + var(--nav-h-mob, 72px) + 32px) !important;
 }
 @media (max-width: 479px) {
   .mobile-menu-panel {
-    padding-top: calc(var(--topbar-h, 0px) + var(--nav-h-mob, 72px) + 24px) !important;
+    padding-top: calc(var(--topbar-total, 0px) + var(--nav-h-mob, 72px) + 24px) !important;
   }
 }
 @media (max-height: 680px) {
   .mobile-menu-panel {
-    padding-top: calc(var(--topbar-h, 0px) + var(--nav-h-mob, 72px) + 12px) !important;
+    padding-top: calc(var(--topbar-total, 0px) + var(--nav-h-mob, 72px) + 12px) !important;
   }
 }
 
@@ -4611,8 +4625,8 @@ p,
     flex-wrap: wrap;
     align-items: flex-start;
   }
+  .dqb-label { display: none; }
   .dqb-author { display: none; }
-  .dqb-label  { display: none; }
 }
 .dqb-author {
   font-family: var(--font-space), monospace;

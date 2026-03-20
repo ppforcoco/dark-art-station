@@ -9,15 +9,13 @@ export default function Cursor() {
   const raf = useRef<number>(0);
   const [hovered, setHovered] = useState(false);
   const [visible, setVisible] = useState(false);
-  const [isTouch, setIsTouch] = useState(true); // default true = hidden until confirmed fine pointer
+  const [isTouch, setIsTouch] = useState(true); // default hidden until confirmed mouse
 
   useEffect(() => {
+    // Never show cursor on touch/coarse pointer devices (phones, tablets)
     const isPointerFine = window.matchMedia("(pointer: fine)").matches;
-    if (!isPointerFine) return; // no cursor on touch/mobile
+    if (!isPointerFine) return;
     setIsTouch(false);
-
-    const isPointerFine2 = window.matchMedia("(pointer: fine)").matches;
-    if (!isPointerFine2) return;
 
     // Check if default ring cursor should show
     const checkCursor = () => {
