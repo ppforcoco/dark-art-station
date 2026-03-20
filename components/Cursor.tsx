@@ -8,29 +8,21 @@ export default function Cursor() {
   const my  = useRef(0);
   const raf = useRef<number>(0);
   const [hovered, setHovered] = useState(false);
-  const [active,  setActive]  = useState(true);
+  const [visible, setVisible] = useState(false); // only show ring on "default" cursor
 
   useEffect(() => {
     const isPointerFine = window.matchMedia("(pointer: fine)").matches;
     if (!isPointerFine) return;
 
-    // Check saved preference
-    try {
-      if (localStorage.getItem("hw-cursor") === "off") {
-        setActive(false);
-        return;
-      }
-    } catch {}
+    // Check if default ring cursor should show
+    const checkCursor = () => {
+      const val = document.documentElement.getAttribute("data-cursor") ?? "default";
+      setVisible(val === "default");
+    };
+    checkCursor();
 
-    // Watch for toggle via data-cursor attribute
-    const observer = new MutationObserver(() => {
-      const val = document.documentElement.getAttribute("data-cursor");
-      setActive(val !== "off");
-    });
+    const observer = new MutationObserver(checkCursor);
     observer.observe(document.documentElement, { attributes: true, attributeFilter: ["data-cursor"] });
-
-    if (ringRef.current) ringRef.current.style.display = "block";
-    if (dotRef.current)  dotRef.current.style.display  = "block";
 
     const onMove = (e: MouseEvent) => {
       mx.current = e.clientX;
@@ -66,28 +58,23 @@ export default function Cursor() {
     };
   }, []);
 
-  if (!active) return null;
-
-  const ringStyle: React.CSSProperties = {
-    position: "fixed", pointerEvents: "none", zIndex: 9999,
-    width: 20, height: 20,
-    border: "1px solid #c0001a", borderRadius: "50%",
-    transform: `translate(-50%, -50%) scale(${hovered ? 2 : 1})`,
-    transition: "transform 0.15s ease",
-    display: "none",
-  };
-  const dotStyle: React.CSSProperties = {
-    position: "fixed", pointerEvents: "none", zIndex: 9999,
-    width: 4, height: 4,
-    background: "#ff3c00", borderRadius: "50%",
-    transform: "translate(-50%, -50%)",
-    display: "none",
-  };
-
   return (
     <>
-      <div ref={ringRef} style={ringStyle} />
-      <div ref={dotRef}  style={dotStyle}  />
+      <div ref={ringRef} style={{
+        position: "fixed", pointerEvents: "none", zIndex: 9999,
+        width: 20, height: 20,
+        border: "1px solid #c0001a", borderRadius: "50%",
+        transform: `translate(-50%, -50%) scale(${hovered ? 2 : 1})`,
+        transition: "transform 0.15s ease",
+        display: visible ? "block" : "none",
+      }} />
+      <div ref={dotRef} style={{
+        position: "fixed", pointerEvents: "none", zIndex: 9999,
+        width: 4, height: 4,
+        background: "#ff3c00", borderRadius: "50%",
+        transform: "translate(-50%, -50%)",
+        display: visible ? "block" : "none",
+      }} />
     </>
   );
 }

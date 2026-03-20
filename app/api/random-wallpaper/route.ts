@@ -30,7 +30,14 @@ export async function GET() {
       return NextResponse.json({ error: "No wallpapers found" }, { status: 404 });
     }
 
-    return NextResponse.json(image);
+    // Build href so the Header can navigate directly
+    let href = "/collections";
+    if (image.deviceType === "IPHONE")       href = `/iphone/${image.slug}`;
+    else if (image.deviceType === "ANDROID") href = `/android/${image.slug}`;
+    else if (image.deviceType === "PC")      href = `/pc/${image.slug}`;
+    else if (image.collection?.slug)         href = `/shop/${image.collection.slug}/${image.slug}`;
+
+    return NextResponse.json({ ...image, href });
   } catch (err) {
     console.error("[RANDOM_WALLPAPER]", err);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });

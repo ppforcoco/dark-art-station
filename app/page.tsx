@@ -25,7 +25,7 @@ export default async function Home() {
   // Fetch exactly the 6 category collections we display, by slug
   const CATEGORY_SLUGS = [
     "skeleton-card-collection",
-    "skeleton-rebellion-collection",
+    "dark-sorceress-collection",
     "dark-fantasy-art",
     "dark-minimal-horror",
     "dark-humor-wallpaper-collection",
@@ -157,7 +157,7 @@ export default async function Home() {
         <div className="category-grid">
           {[
             { slug: "skeleton-card-collection",        icon: "🃏", title: "Tarot Cards",        tag: "Collection", bgClass: "p-bg-2" },
-            { slug: "skeleton-rebellion-collection",   icon: "💀", title: "Skulls & Skeletons", tag: "Collection", bgClass: "p-bg-1" },
+          { slug: "dark-sorceress-collection",        icon: "💀", title: "Skulls & Skeletons", tag: "Collection", bgClass: "p-bg-1" },
             { slug: "dark-fantasy-art",                icon: "🐉", title: "Dark Fantasy",       tag: "Collection", bgClass: "p-bg-3" },
             { slug: "dark-minimal-horror",             icon: "🌑", title: "Dark Aesthetics",    tag: "Collection", bgClass: "p-bg-4" },
             { slug: "dark-humor-wallpaper-collection", icon: "😈", title: "Dark Humor",         tag: "Collection", bgClass: "p-bg-5" },
