@@ -65,19 +65,17 @@ export default function Header() {
     router.push(`/search?q=${encodeURIComponent(tag)}`);
   }, [router, closeSearch, closeMenu]);
 
+  // Fixed: handles both standalone (deviceType set) and collection images
   const handleRandom = useCallback(async () => {
     try {
       const res = await fetch("/api/random-wallpaper");
       if (!res.ok) return;
       const img = await res.json();
       if (!img?.slug) return;
-      // Standalone device wallpaper
-      if (img.deviceType === "IPHONE")   { router.push(`/iphone/${img.slug}`);  return; }
-      if (img.deviceType === "ANDROID")  { router.push(`/android/${img.slug}`); return; }
-      if (img.deviceType === "PC")       { router.push(`/pc/${img.slug}`);      return; }
-      // Collection image — route to /shop/[collectionSlug]/[imageSlug]
-      if (img.collection?.slug) { router.push(`/shop/${img.collection.slug}/${img.slug}`); return; }
-      // Last resort
+      if (img.deviceType === "IPHONE")  { router.push(`/iphone/${img.slug}`);  return; }
+      if (img.deviceType === "ANDROID") { router.push(`/android/${img.slug}`); return; }
+      if (img.deviceType === "PC")      { router.push(`/pc/${img.slug}`);      return; }
+      if (img.collection?.slug)         { router.push(`/shop/${img.collection.slug}/${img.slug}`); return; }
       router.push("/collections");
     } catch {}
   }, [router]);
@@ -144,7 +142,7 @@ export default function Header() {
             </form>
           </div>
 
-          {/* Random — labelled icon */}
+          {/* Random — labelled button */}
           <button type="button" className="btn-random" onClick={handleRandom}
             title="Surprise me — random wallpaper" aria-label="Random wallpaper"
             style={{ touchAction: "manipulation" }}>
@@ -152,7 +150,7 @@ export default function Header() {
             <span>RANDOM</span>
           </button>
 
-          {/* Theme toggle — now says LIGHT/DARK */}
+          {/* Theme toggle */}
           <button type="button" className="btn-theme-toggle" onClick={toggleTheme}
             aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
             style={{ touchAction: "manipulation" }}>

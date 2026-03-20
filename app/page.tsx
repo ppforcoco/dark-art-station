@@ -149,36 +149,12 @@ export default async function Home() {
 
         <div className="category-grid">
           {[
-            {
-              slug:  "skeleton-card-collection",
-              title: "Tarot Cards",
-              tag:   "Collection",
-            },
-            {
-              slug:  "skeleton-rebellion-collection",
-              title: "Skulls & Skeletons",
-              tag:   "Collection",
-            },
-            {
-              slug:  "dark-fantasy-art",
-              title: "Dark Fantasy",
-              tag:   "Collection",
-            },
-            {
-              slug:  "dark-minimal-horror",
-              title: "Dark Aesthetics",
-              tag:   "Collection",
-            },
-            {
-              slug:  "dark-humor-wallpaper-collection",
-              title: "Dark Humor",
-              tag:   "Collection",
-            },
-            {
-              slug:  "dark-pattern-wallpaper",
-              title: "Patterns & Textures",
-              tag:   "Collection",
-            },
+            { slug: "skeleton-card-collection",        icon: "🃏", title: "Tarot Cards",        tag: "Collection", bgClass: "p-bg-2" },
+            { slug: "skeleton-rebellion-collection",   icon: "💀", title: "Skulls & Skeletons", tag: "Collection", bgClass: "p-bg-1" },
+            { slug: "dark-fantasy-art",                icon: "🐉", title: "Dark Fantasy",       tag: "Collection", bgClass: "p-bg-3" },
+            { slug: "dark-minimal-horror",             icon: "🌑", title: "Dark Aesthetics",    tag: "Collection", bgClass: "p-bg-4" },
+            { slug: "dark-humor-wallpaper-collection", icon: "😈", title: "Dark Humor",         tag: "Collection", bgClass: "p-bg-5" },
+            { slug: "dark-pattern-wallpaper",          icon: "🕸", title: "Patterns & Textures",tag: "Collection", bgClass: "p-bg-1" },
           ].map((cat) => {
             const dbCat = categories.find(c => c.slug === cat.slug);
             return (
@@ -196,7 +172,10 @@ export default async function Home() {
                     sizes="(max-width: 479px) 100vw, (max-width: 767px) 50vw, (max-width: 1024px) 33vw, 20vw"
                   />
                 ) : (
-                  <div className="cat-bg-layer p-bg-1" />
+                  <>
+                    <div className={`cat-bg-layer ${cat.bgClass}`} />
+                    <div className="cat-icon-el">{cat.icon}</div>
+                  </>
                 )}
                 <div className="cat-overlay" />
                 <div className="cat-content">
