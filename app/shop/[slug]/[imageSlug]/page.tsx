@@ -154,15 +154,18 @@ export default async function ImagePage({ params }: PageProps) {
             - max-width caps it at a sensible portrait size on wide screens
           */}
           <div className="image-detail-frame">
-            <Image
-              src={thumbUrl}
-              alt={image.title}
-              fill
-              className="image-detail-img"
-              priority
-              sizes="(max-width: 768px) 100vw, (max-width: 1280px) 55vw, 640px"
-              style={{ objectFit: "contain", objectPosition: "center center" }}
-            />
+            {/* Inner wrapper enforces 9:16 via padding-top so Next.js fill works */}
+            <div className="image-detail-frame-inner">
+              <Image
+                src={thumbUrl}
+                alt={image.title}
+                fill
+                className="image-detail-img"
+                priority
+                sizes="(max-width: 768px) 100vw, (max-width: 1280px) 480px, 480px"
+                style={{ objectFit: "contain", objectPosition: "center center" }}
+              />
+            </div>
             {image.collection.category && (
               <span className="image-detail-badge">
                 {image.collection.category}
@@ -243,13 +246,16 @@ export default async function ImagePage({ params }: PageProps) {
           {prevImage ? (
             <Link href={`/shop/${slug}/${prevImage.slug}`} className="image-detail-nav-card image-detail-nav-card--prev">
               <div className="image-detail-nav-thumb">
-                <Image
-                  src={getPublicUrl(prevImage.r2Key)}
-                  alt={prevImage.title}
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 640px) 40vw, 200px"
-                />
+                <div className="image-detail-nav-thumb-inner">
+                  <Image
+                    src={getPublicUrl(prevImage.r2Key)}
+                    alt={prevImage.title}
+                    fill
+                    className="object-cover"
+                    sizes="90px"
+                    style={{ objectFit: "cover" }}
+                  />
+                </div>
               </div>
               <div className="image-detail-nav-info">
                 <span className="image-detail-nav-label">← Previous</span>
@@ -263,13 +269,16 @@ export default async function ImagePage({ params }: PageProps) {
           {nextImage ? (
             <Link href={`/shop/${slug}/${nextImage.slug}`} className="image-detail-nav-card image-detail-nav-card--next">
               <div className="image-detail-nav-thumb">
-                <Image
-                  src={getPublicUrl(nextImage.r2Key)}
-                  alt={nextImage.title}
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 640px) 40vw, 200px"
-                />
+                <div className="image-detail-nav-thumb-inner">
+                  <Image
+                    src={getPublicUrl(nextImage.r2Key)}
+                    alt={nextImage.title}
+                    fill
+                    className="object-cover"
+                    sizes="90px"
+                    style={{ objectFit: "cover" }}
+                  />
+                </div>
               </div>
               <div className="image-detail-nav-info image-detail-nav-info--right">
                 <span className="image-detail-nav-label">Next →</span>

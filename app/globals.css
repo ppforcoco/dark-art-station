@@ -4173,35 +4173,73 @@ p,
 /* ── Image frame — HEIGHT-driven portrait container ──────────
    max-height caps the frame. Width auto-derives from aspect-ratio.
    This is the correct approach for portrait images on landscape screens. */
+/*
+  CORRECTED APPROACH:
+  Next.js <Image fill> requires the parent to have:
+    - position: relative
+    - explicit pixel/percentage width AND height (not just aspect-ratio)
+  "width: auto" gives the browser nothing to fill into → image disappears.
+
+  Solution: use width:100% + padding-top trick to enforce 9:16 ratio.
+  padding-top: 177.78% = (16/9) × 100% forces the correct portrait height.
+  max-height + overflow:hidden then caps it so it never exceeds the viewport.
+  The inner .image-detail-frame-inner holds position:relative for Next.js fill.
+*/
 .image-detail-frame {
-  position: relative;
-  aspect-ratio: 9 / 16;
-  max-height: 85vh;         /* never taller than 85% of viewport */
-  width: auto;              /* let aspect-ratio + max-height set the width */
-  max-width: 100%;          /* never wider than the viewport */
+  width: 100%;
+  max-width: 480px;            /* cap width on desktop */
+  margin: 0 auto;
   background: #070710;
   border: 1px solid rgba(139,0,0,0.3);
   overflow: hidden;
-  margin: 0 auto;
+  /* Enforce max height — clip at 85vh */
+  max-height: 85vh;
 }
+
+/* Inner wrapper: padding-top enforces 9:16 aspect ratio.
+   Next.js <Image fill> positions itself absolute inside this. */
+.image-detail-frame-inner {
+  position: relative;
+  width: 100%;
+  padding-top: 177.78%;        /* 16/9 × 100 = 177.78% → portrait 9:16 */
+  overflow: hidden;
+}
+/* padding-top inner for nav thumbnails */
+.image-detail-nav-thumb-inner {
+  position: relative;
+  width: 100%;
+  padding-top: 177.78%;
+  overflow: hidden;
+}
+
 @media (max-width: 1023px) {
   .image-detail-frame {
+    max-width: 360px;
     max-height: 70vh;
-    max-width: calc(70vh * 9 / 16);
+  }
+  .image-detail-frame-inner {
+    max-height: 70vh;
   }
 }
 @media (max-width: 479px) {
   .image-detail-frame {
+    max-width: 100%;
     max-height: 65vh;
-    max-width: calc(65vh * 9 / 16);
+  }
+  .image-detail-frame-inner {
+    max-height: 65vh;
   }
 }
 
-/* Triple specificity + !important ensures this beats both
-   Tailwind's .object-cover utility AND Next.js <Image> injected styles */
-.image-detail-frame .image-detail-img,
-.image-detail-frame img {
+/* Target images inside the inner wrapper — beats Tailwind + Next.js inline styles */
+.image-detail-frame-inner .image-detail-img,
+.image-detail-frame-inner img {
   object-fit: contain !important;
+  object-position: center center !important;
+}
+/* Nav thumbs use cover */
+.image-detail-nav-thumb-inner img {
+  object-fit: cover !important;
   object-position: center center !important;
 }
 
@@ -4281,31 +4319,27 @@ p,
   transform: scale(0.99);
 }
 
-/* Thumbnail — HEIGHT-driven portrait, same principle as main frame.
-   max-height drives the size; width auto-derives from aspect-ratio.
-   object-fit:cover (set in JSX className) fills the thumb cleanly. */
+/* Nav thumbnail — fixed pixel width so Next.js fill has real dimensions.
+   padding-top enforces 9:16 ratio. object-fit:cover fills cleanly.     */
 .image-detail-nav-thumb {
   position: relative;
-  aspect-ratio: 9 / 16;
-  max-height: 220px;
-  width: auto;
-  max-width: calc(220px * 9 / 16);
+  width: 90px;                 /* fixed width → height = 90 × 16/9 = 160px */
+  flex-shrink: 0;
   overflow: hidden;
   background: #070710;
-  margin: 0 auto;
-  flex-shrink: 0;
+}
+/* padding-top inner wrapper enforces 9:16 */
+.image-detail-nav-thumb-inner {
+  position: relative;
+  width: 100%;
+  padding-top: 177.78%;        /* 9:16 portrait */
+  overflow: hidden;
 }
 @media (max-width: 767px) {
-  .image-detail-nav-thumb {
-    max-height: 160px;
-    max-width: calc(160px * 9 / 16);
-  }
+  .image-detail-nav-thumb { width: 72px; }
 }
 @media (max-width: 479px) {
-  .image-detail-nav-thumb {
-    max-height: 130px;
-    max-width: calc(130px * 9 / 16);
-  }
+  .image-detail-nav-thumb { width: 60px; }
 }
 
 /* Info text block */

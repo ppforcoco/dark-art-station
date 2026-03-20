@@ -81,24 +81,24 @@ export default async function CollectionPage({ params }: PageProps) {
               FIX: object-fit: contain via inline style so the full wallpaper
               is always visible. The inline style prop beats Tailwind + Next.js
               injected styles reliably. Container is locked to 9/16 portrait.  */}
+          {/* Outer: caps max-width. Inner padding-top wrapper: enforces 9:16 so
+               Next.js <Image fill> has real pixel dimensions to fill into.       */}
           <div style={{
-            position: "relative",
-            overflow: "hidden",
-            border: "1px solid rgba(139,0,0,0.3)",
-            background: "#070710",
-            aspectRatio: "9/16",
             width: "100%",
             maxWidth: "360px",
             margin: "0 auto",
+            background: "#070710",
+            border: "1px solid rgba(139,0,0,0.3)",
+            overflow: "hidden",
           }}>
+            <div style={{ position: "relative", width: "100%", paddingTop: "177.78%" }}>
             {thumbnailUrl ? (
               <Image
                 src={thumbnailUrl}
                 alt={collection.title}
                 fill
                 priority
-                sizes="(max-width: 768px) 100vw, 50vw"
-                // inline style wins over className and Next.js injected styles
+                sizes="360px"
                 style={{ objectFit: "contain", objectPosition: "center center" }}
               />
             ) : (
@@ -106,8 +106,9 @@ export default async function CollectionPage({ params }: PageProps) {
                 {collection.icon}
               </div>
             )}
+            </div>
             {collection.badge && (
-              <span className="absolute top-4 left-4 font-mono text-[0.6rem] tracking-[0.2em] uppercase bg-[#8b0000] text-white px-3 py-1">
+              <span style={{ position:"absolute", top:"16px", left:"16px" }} className="font-mono text-[0.6rem] tracking-[0.2em] uppercase bg-[#8b0000] text-white px-3 py-1">
                 {collection.badge}
               </span>
             )}
