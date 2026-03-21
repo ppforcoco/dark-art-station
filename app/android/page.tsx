@@ -82,7 +82,7 @@ export default async function AndroidPage({ searchParams }: PageProps) {
 
       <section className="max-w-7xl mx-auto px-6 md:px-[60px] pt-10 pb-8">
         <span className="font-mono text-[0.6rem] tracking-[0.25em] uppercase text-[#c0001a] block mb-3">
-          The Sanctum — Android
+          Free Android Wallpapers
         </span>
         <h1 className="font-display text-3xl md:text-4xl font-bold leading-tight mb-4">
           {tag ? (

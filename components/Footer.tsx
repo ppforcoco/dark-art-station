@@ -36,16 +36,16 @@ export default function Footer() {
           </ul>
         </div>
 
-        {/* ── Seasonal ── */}
+        {/* ── Popular ── */}
         <div className="footer-col">
-          <h4 className="footer-col-title">Seasonal</h4>
+          <h4 className="footer-col-title">Popular</h4>
           <ul>
-            <li><Link href="/halloween">Halloween</Link></li>
-            <li><Link href="/dark-valentine">Dark Valentine</Link></li>
-            <li><Link href="/day-of-the-dead">Day of the Dead</Link></li>
-            <li><Link href="/blood-moon">Crimson Moon</Link></li>
-            <li><Link href="/haunted-christmas">Haunted Christmas</Link></li>
-            <li><Link href="/black-easter">Black Easter</Link></li>
+            <li><Link href="/shop/dark-humor-wallpaper-collection">Dark Humor</Link></li>
+            <li><Link href="/shop/incognito-mode-collection">Incognito Mode</Link></li>
+            <li><Link href="/shop/dark-fantasy-art">Dark Fantasy</Link></li>
+            <li><Link href="/shop/skull-peeking-collection">Skull Peeking</Link></li>
+            <li><Link href="/shop/horror-movie-posters">Horror Posters</Link></li>
+            <li><Link href="/shop/dark-minimal-horror">Dark Minimal</Link></li>
           </ul>
         </div>
 

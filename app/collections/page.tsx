@@ -6,7 +6,7 @@ export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "All Collections | Haunted Wallpapers",
-  description: "Browse all dark fantasy wallpaper collections — skeletons, tarot, demons, goddesses, arcane art and more. Free high-resolution downloads.",
+  description: "Browse all dark fantasy wallpaper collections — horror, gothic, street style, dark humor and more. Free high-resolution downloads.",
 };
 
 export default async function CollectionsPage() {
@@ -33,7 +33,7 @@ export default async function CollectionsPage() {
           All Collections
         </h1>
         <p style={{ fontFamily: "var(--font-cormorant)", fontStyle: "italic", fontSize: "1.05rem", color: "#8a8099", marginTop: "12px" }}>
-          {collections.length} {collections.length === 1 ? "collection" : "collections"} in the grimoire
+          {collections.length} {collections.length === 1 ? "collection" : "collections"} available
         </p>
       </div>
 

@@ -25,10 +25,10 @@ export default async function Home() {
   // Fetch exactly the 6 category collections we display, by slug
   const CATEGORY_SLUGS = [
     "skeleton-card-collection",
-    "dark-sorceress-collection",
+    "dark-humor-wallpaper-collection",
     "dark-fantasy-art",
     "dark-minimal-horror",
-    "dark-humor-wallpaper-collection",
+    "incognito-mode-collection",
     "dark-pattern-wallpaper",
   ];
   const categories = await db.collection.findMany({
@@ -157,10 +157,10 @@ export default async function Home() {
         <div className="category-grid">
           {[
             { slug: "skeleton-card-collection",        icon: "🃏", title: "Tarot Cards",        tag: "Collection", bgClass: "p-bg-2" },
-          { slug: "incognito-mode-collection",        icon: "🕵️", title: "Incognito Mode",    tag: "Collection", bgClass: "p-bg-1" },
+          { slug: "dark-humor-wallpaper-collection",  icon: "💀", title: "Dark Humor",         tag: "Collection", bgClass: "p-bg-1" },
             { slug: "dark-fantasy-art",                icon: "🐉", title: "Dark Fantasy",       tag: "Collection", bgClass: "p-bg-3" },
             { slug: "dark-minimal-horror",             icon: "🌑", title: "Dark Aesthetics",    tag: "Collection", bgClass: "p-bg-4" },
-            { slug: "dark-humor-wallpaper-collection", icon: "😈", title: "Dark Humor",         tag: "Collection", bgClass: "p-bg-5" },
+            { slug: "incognito-mode-collection",       icon: "🕵️", title: "Incognito Mode",    tag: "Collection", bgClass: "p-bg-5" },
             { slug: "dark-pattern-wallpaper",          icon: "🕸", title: "Patterns & Textures",tag: "Collection", bgClass: "p-bg-1" },
           ].map((cat) => {
             const dbCat = categories.find(c => c.slug === cat.slug);

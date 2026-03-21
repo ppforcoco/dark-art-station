@@ -82,13 +82,13 @@ export default async function IphonePage({ searchParams }: PageProps) {
 
       <section className="max-w-7xl mx-auto px-6 md:px-[60px] pt-10 pb-8">
         <span className="font-mono text-[0.6rem] tracking-[0.25em] uppercase text-[#c0001a] block mb-3">
-          The Sanctum — iPhone
+          Free iPhone Wallpapers
         </span>
         <h1 className="font-display text-3xl md:text-4xl font-bold leading-tight mb-4">
           {tag ? (
             <>Dark <span className="text-[#c9a84c] italic">#{tag}</span> Wallpapers for iPhone</>
           ) : (
-            <>Free Dark Android <span className="text-[#c9a84c] italic">Wallpapers</span></>
+            <>Free Dark iPhone <span className="text-[#c9a84c] italic">Wallpapers</span></>
           )}
           {page > 1 && <span className="text-[#4a445a] text-2xl"> — Page {page}</span>}
         </h1>

@@ -3636,6 +3636,57 @@
   "ext": "webp",
   "sortOrder": 35
 },
+{
+  "slug": "black-easter-eye-hatch-iphone",
+  "title": "Black Easter Watcher",
+  "description": "A dark entity with a central eye and sharp teeth emerges from a cracked shell. Set on a stone altar with rising purple mist, this piece brings a mysterious and edgy vibe to seasonal art.",
+  "deviceType": "IPHONE",
+  "tags": [
+    "easter",
+    "black easter",
+    "dark fantasy",
+    "creature",
+    "mysterious",
+    "horror",
+    "iphone"
+  ],
+  "ext": "webp",
+  "sortOrder": 36
+},
+{
+  "slug": "black-easter-shadow-bunny-iphone",
+  "title": "Black Easter Shadow Bunny",
+  "description": "A dark rabbit silhouette with intense glowing red eyes guards a nest of rune-marked eggs. Surrounded by thorns and rising mist, this high-contrast illustration is perfect for a moody lock screen.",
+  "deviceType": "IPHONE",
+  "tags": [
+    "easter",
+    "black easter",
+    "bunny",
+    "runes",
+    "dark aesthetic",
+    "gothic",
+    "iphone"
+  ],
+  "ext": "webp",
+  "sortOrder": 37
+},
+{
+  "slug": "black-easter-skeletal-hatch-iphone",
+  "title": "Skeletal Seasonal Hatch",
+  "description": "Skeletal hands break free from a large, glowing egg in a moonlit forest of thorns. With small skulls hidden in nearby shells, this atmospheric fantasy scene creates a truly unique phone background.",
+  "deviceType": "IPHONE",
+  "tags": [
+    "easter",
+    "black easter",
+    "skeleton",
+    "moonlight",
+    "dark forest",
+    "fantasy",
+    "iphone"
+  ],
+  "ext": "webp",
+  "sortOrder": 38
+},
     {
       "slug": "haunted-history-android",
       "title": "Haunted History",
@@ -4040,6 +4091,41 @@
   ],
   "ext": "webp",
   "sortOrder": 35
+},
+{
+  "slug": "easter-cancelled-skull-android",
+  "title": "Easter is Cancelled",
+  "description": "A shadowy figure with a skull mask and bunny ears looms over cracked shells. Bold red text delivers a sharp, dark humor message. A high-contrast illustration for an edgy lock screen.",
+  "deviceType": "ANDROID",
+  "tags": [
+    "easter",
+    "black easter",
+    "dark humor",
+    "skull",
+    "creepy",
+    "minimalist",
+    "android"
+  ],
+  "ext": "webp",
+  "sortOrder": 36
+},
+{
+  "slug": "skeletal-hatch-roses-android",
+  "title": "Skeletal Floral Hatch",
+  "description": "Detailed skeletal hands emerge from a dark, cracked egg surrounded by elegant roses and lilies. The deep crimson and monochrome tones create a sophisticated dark fantasy aesthetic.",
+  "deviceType": "ANDROID",
+  "tags": [
+    "easter",
+    "black easter",
+    "skeleton",
+    "roses",
+    "dark fantasy",
+    "gothic",
+    "artistic",
+    "android"
+  ],
+  "ext": "webp",
+  "sortOrder": 37
 },
     {
       "slug": "gangster-skull-pc",
