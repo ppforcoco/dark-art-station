@@ -475,7 +475,7 @@ export default function Header() {
               </div>
             </form>
             <div className="hw-search-hints">
-              {["Skull", "Dark Fantasy", "Tarot", "Blood Moon", "Demon", "Gothic", "Witch", "Vampire"].map(hint => (
+              {["Dark Art", "Dark Fantasy", "Incognito", "Horror", "Gothic", "Street Style", "Dark Humor", "Patterns"].map(hint => (
                 <button key={hint} type="button" className="search-hint-btn"
                   onClick={() => { setQuery(hint); router.push(`/search?q=${encodeURIComponent(hint)}`); closeSearch(); }}>
                   {hint}

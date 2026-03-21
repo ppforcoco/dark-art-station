@@ -1,9 +1,15 @@
 // app/shop/page.tsx
+import type { Metadata } from "next";
 import { db } from "@/lib/db";
 import Link from "next/link";
 import ProductCard from "@/components/ProductCard";
 import Pagination from "@/components/Pagination";
 import Breadcrumbs from "@/components/Breadcrumbs";
+
+export const metadata: Metadata = {
+  title: "All Collections | Haunted Wallpapers",
+  description: "Browse all dark fantasy wallpaper collections. Free high-resolution downloads for iPhone, Android and PC. New art added regularly.",
+};
 
 export const dynamic = "force-dynamic";
 

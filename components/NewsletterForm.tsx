@@ -23,13 +23,13 @@ export default function NewsletterForm() {
         className="nl-input"
       />
       <button type="submit" className="nl-btn">
-        {status === "success" ? "Summoned ✦" : "Summon"}
+        {status === "success" ? "Subscribed ✓" : "Subscribe"}
       </button>
       {status === "error" && (
         <p className="nl-feedback error">Enter a valid email address.</p>
       )}
       {status === "success" && (
-        <p className="nl-feedback success">Welcome to the congregation.</p>
+        <p className="nl-feedback success">You&apos;re in. New drops coming your way.</p>
       )}
     </form>
   );
