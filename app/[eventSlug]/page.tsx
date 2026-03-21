@@ -115,7 +115,7 @@ export default async function EventPage({ params }: PageProps) {
         <span className="seasonal-tag-badge">#{event.tag}</span>
         <h1 className="seasonal-title">{event.title}</h1>
         <p className="seasonal-desc">{event.description}</p>
-        <p className="seasonal-count">{images.length} works summoned</p>
+        <p className="seasonal-count">{images.length} wallpapers available</p>
       </section>
 
       {/* ── Top Ad ── */}

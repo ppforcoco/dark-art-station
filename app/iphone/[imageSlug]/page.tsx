@@ -9,6 +9,7 @@ import AdSlot from "@/components/AdSlot";
 import DeviceMockup from "@/components/DeviceMockup";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import RelatedWallpapers from "@/components/RelatedWallpapers";
+import DownloadButton from "@/components/DownloadButton";
 import RecentlyViewed from "@/components/RecentlyViewed";
 
 export const dynamicParams = true;
@@ -141,26 +142,16 @@ export default async function IphoneImagePage({ params }: PageProps) {
               <span className="font-mono text-[0.6rem] tracking-[0.2em] uppercase text-[#4a445a] border border-[#2a2535] px-3 py-1">
                 iPhone · 9:16
               </span>
-              <span className="font-mono text-[0.55rem] tracking-[0.1em] text-[#4a445a]">
-                {image.viewCount} views
-              </span>
             </div>
 
-            {/* Download button — full width on mobile */}
-            <div style={{ display: "flex", flexDirection: "column", gap: "8px", marginTop: "8px" }}>
-              <a
-                href={`/api/download/image/${image.id}`}
-                style={{ display: "block", width: "100%", textAlign: "center" }}
-                className="font-mono text-[0.7rem] tracking-[0.2em] uppercase bg-[#8b0000] hover:bg-[#a80000] text-white px-8 py-4 transition-colors duration-200 border border-[#8b0000]"
-              >
-                ↓ Download 4K Wallpaper (Free)
-              </a>
-              <p className="font-mono text-[0.5rem] tracking-[0.1em] text-[#4a445a]">
-                JPEG · 4K resolution · No account required
-              </p>
-            </div>
+            {/* Ad unit — above download button (highest converting position) */}
+            <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_SIDEBAR} width={300} height={250} className="mt-2" />
 
-            <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_SIDEBAR} width={300} height={250} className="mt-4" />
+            {/* Download button with success state + view count */}
+            <DownloadButton
+              href={`/api/download/image/${image.id}`}
+              viewCount={image.viewCount}
+            />
           </div>
         </div>
       </section>

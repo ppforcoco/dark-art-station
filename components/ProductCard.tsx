@@ -50,16 +50,8 @@ export default function ProductCard({
     Free: "bg-[#c9a84c] text-[#0a0a0a]",
   };
 
-  // CTA label — changes per theme and whether free
-  const ctaLabel = isFree
-    ? theme === "blood"
-      ? "Claim the Blood"
-      : theme === "light"
-      ? "Download Free"
-      : "Claim the Dark"
-    : theme === "blood"
-    ? "Conjure"
-    : "View";
+  // CTA label — simple and consistent across all themes
+  const ctaLabel = isFree ? "Download Free" : "View Collection";
 
   return (
     <div className="group bg-[#2a2535] relative transition-transform duration-300 hover:-translate-y-2">

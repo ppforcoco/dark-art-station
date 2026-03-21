@@ -6,6 +6,7 @@ import Link from "next/link";
 import { db } from "@/lib/db";
 import { getPublicUrl } from "@/lib/r2";
 import AdSlot from "@/components/AdSlot";
+import DownloadButton from "@/components/DownloadButton";
 import SocialShare from "@/components/SocialShare";
 import DeviceMockup from "@/components/DeviceMockup";
 import RelatedWallpapers from "@/components/RelatedWallpapers";
@@ -197,24 +198,16 @@ export default async function ImagePage({ params }: PageProps) {
               <span className="font-mono text-[0.6rem] tracking-[0.2em] uppercase text-[#4a445a] border border-[#2a2535] px-3 py-1">
                 {image.collection.category}
               </span>
-              <span className="font-mono text-[0.55rem] tracking-[0.1em] text-[#4a445a]">
-                {image.viewCount} views
-              </span>
             </div>
 
-            {/* Download CTA */}
-            <div className="flex flex-col gap-3 mt-2">
-              <a
-                href={`/api/download/image/${image.id}`}
-                style={{ display: "block", width: "100%", textAlign: "center", touchAction: "manipulation" }}
-                className="font-mono text-[0.7rem] tracking-[0.2em] uppercase bg-[#8b0000] hover:bg-[#a80000] text-white px-8 py-4 transition-colors duration-200 border border-[#8b0000] text-center"
-              >
-                ↓ Download 4K Wallpaper (Free)
-              </a>
-              <p className="font-mono text-[0.5rem] tracking-[0.1em] text-[#4a445a]">
-                PNG · 4K resolution · No account required
-              </p>
-            </div>
+            {/* Ad above download — highest converting position */}
+            <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_SIDEBAR} width={300} height={250} className="mt-2" />
+
+            {/* Download CTA with success state */}
+            <DownloadButton
+              href={`/api/download/image/${image.id}`}
+              viewCount={image.viewCount}
+            />
 
             <SocialShare
               title={image.title}
@@ -222,13 +215,7 @@ export default async function ImagePage({ params }: PageProps) {
               pageUrl={`${siteUrl}/shop/${slug}/${imageSlug}`}
             />
 
-            {/* Sidebar Ad — hidden when empty via AdSlot logic */}
-            <AdSlot
-              slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_SIDEBAR}
-              width={300}
-              height={250}
-              className="mt-4"
-            />
+
           </div>
         </div>
       </section>
