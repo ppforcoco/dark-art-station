@@ -115,7 +115,7 @@ export default async function IphoneImagePage({ params }: PageProps) {
           <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
             <div>
               <Link href="/android" className="font-mono text-[0.6rem] tracking-[0.25em] uppercase text-[#8b0000] hover:text-[#c0001a] transition-colors">
-                ← Android Sanctum
+                ← Android Wallpapers
               </Link>
               <h1 className="font-display text-2xl md:text-3xl font-bold mt-3 leading-tight">
                 {image.title}

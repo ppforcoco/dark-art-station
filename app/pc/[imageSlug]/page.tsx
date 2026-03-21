@@ -115,7 +115,7 @@ export default async function IphoneImagePage({ params }: PageProps) {
           <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
             <div>
               <Link href="/pc" className="font-mono text-[0.6rem] tracking-[0.25em] uppercase text-[#8b0000] hover:text-[#c0001a] transition-colors">
-                ← PC Sanctum
+                ← PC Wallpapers
               </Link>
               <h1 className="font-display text-2xl md:text-3xl font-bold mt-3 leading-tight">
                 {image.title}
@@ -139,7 +139,7 @@ export default async function IphoneImagePage({ params }: PageProps) {
 
             <div style={{ display: "flex", flexWrap: "wrap", gap: "12px", alignItems: "center" }}>
               <span className="font-mono text-[0.6rem] tracking-[0.2em] uppercase text-[#4a445a] border border-[#2a2535] px-3 py-1">
-                PC · 9:16
+                PC · 16:9
               </span>
               <span className="font-mono text-[0.55rem] tracking-[0.1em] text-[#4a445a]">
                 {image.viewCount} views
@@ -189,8 +189,8 @@ export default async function IphoneImagePage({ params }: PageProps) {
               className="hover:border-[rgba(139,0,0,0.5)] transition-colors">
               <span className="font-mono text-[0.5rem] tracking-[0.2em] uppercase text-[#4a445a]">← Previous</span>
               <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                <div style={{ position: "relative", width: "48px", height: "48px", flexShrink: 0, overflow: "hidden" }}>
-                  <Image src={getPublicUrl(prevImage.r2Key)} alt={prevImage.title} fill className="object-cover" sizes="48px" />
+                <div style={{ position: "relative", width: "80px", height: "45px", flexShrink: 0, overflow: "hidden" }}>
+                  <Image src={getPublicUrl(prevImage.r2Key)} alt={prevImage.title} fill className="object-cover" sizes="80px" />
                 </div>
                 <span className="font-body italic text-[0.8rem] text-[#f0ecff]"
                   style={{ display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" as const, overflow: "hidden" }}>
@@ -210,8 +210,8 @@ export default async function IphoneImagePage({ params }: PageProps) {
                   style={{ display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" as const, overflow: "hidden" }}>
                   {nextImage.title}
                 </span>
-                <div style={{ position: "relative", width: "48px", height: "48px", flexShrink: 0, overflow: "hidden" }}>
-                  <Image src={getPublicUrl(nextImage.r2Key)} alt={nextImage.title} fill className="object-cover" sizes="48px" />
+                <div style={{ position: "relative", width: "80px", height: "45px", flexShrink: 0, overflow: "hidden" }}>
+                  <Image src={getPublicUrl(nextImage.r2Key)} alt={nextImage.title} fill className="object-cover" sizes="80px" />
                 </div>
               </div>
             </Link>
@@ -221,7 +221,7 @@ export default async function IphoneImagePage({ params }: PageProps) {
 
       <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_FOOTER} width={728} height={90} />
 
-      <RelatedWallpapers images={related} heading="More Dark Art You'll Like" />
+      <RelatedWallpapers images={related} heading="More Dark Art You'll Like" landscape />
       <RecentlyViewed />
 
       <script type="application/ld+json" dangerouslySetInnerHTML={{

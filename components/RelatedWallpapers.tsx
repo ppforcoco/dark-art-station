@@ -12,11 +12,13 @@ import type { RelatedImage } from "@/lib/db";
 interface Props {
   images: RelatedImage[];
   heading?: string;
+  landscape?: boolean;
 }
 
 export default function RelatedWallpapers({
   images,
   heading = "You May Also Like",
+  landscape = false,
 }: Props) {
   if (images.length === 0) return null;
 
@@ -27,10 +29,8 @@ export default function RelatedWallpapers({
         <h2 className="related-title">{heading}</h2>
       </div>
 
-      <div className="related-grid">
+      <div className={landscape ? "related-grid related-grid--landscape" : "related-grid"}>
         {images.map((img) => {
-          // Build the correct href depending on whether the image belongs to
-          // a collection or is a standalone device wallpaper.
           const href = img.collectionSlug
             ? `/shop/${img.collectionSlug}/${img.slug}`
             : img.deviceType
@@ -38,7 +38,7 @@ export default function RelatedWallpapers({
               : `/shop`;
 
           return (
-            <Link key={img.id} href={href} className="related-card">
+            <Link key={img.id} href={href} className={landscape ? "related-card related-card--landscape" : "related-card"}>
               <div className="related-card-img">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img

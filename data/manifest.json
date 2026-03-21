@@ -3445,6 +3445,197 @@
   "ext": "webp",
   "sortOrder": 21
 },
+{
+  "slug": "haunted-mansion-web-iphone",
+  "title": "Haunted Mansion Web",
+  "description": "A spooky haunted house silhouette under a full moon, trapped in a massive spiderweb. Clawed hands reach from the dark ground in this perfect Halloween-themed lock screen.",
+  "deviceType": "IPHONE",
+  "tags": ["halloween", "haunted house", "spiderweb", "moon", "spooky", "dark aesthetic", "iphone"],
+  "ext": "webp",
+  "sortOrder": 22
+},
+{
+  "slug": "happy-haunting-pumpkin-iphone",
+  "title": "Happy Haunting",
+  "description": "A fun and festive Halloween scene featuring a glowing jack-o-lantern, a friendly ghost, bats, and a grumpy cat. The perfect mix of spooky and cute for your iPhone.",
+  "deviceType": "IPHONE",
+  "tags": ["halloween", "pumpkin", "ghost", "cat", "bats", "festive", "dark humor", "iphone"],
+  "ext": "webp",
+  "sortOrder": 23
+},
+{
+  "slug": "pumpkin-aurora-night-iphone",
+  "title": "Pumpkin Aurora Night",
+  "description": "A glowing, sinister pumpkin sits beneath a moonlit sky filled with aurora borealis and shadowy spirits. A vibrant and atmospheric wallpaper for the spookiest time of the year.",
+  "deviceType": "IPHONE",
+  "tags": ["halloween", "pumpkin", "aurora", "moon", "spooky", "dark fantasy", "hd wallpaper", "iphone"],
+  "ext": "webp",
+  "sortOrder": 24
+},
+{
+  "slug": "love-eternal-skeleton-iphone",
+  "title": "Love Eternal",
+  "description": "An elegant illustration of two figures in formal attire standing together in a romantic embrace, surrounded by dark roses and intricate vine patterns. A sophisticated, moody piece capturing a timeless bond.",
+  "deviceType": "IPHONE",
+  "tags": ["valentine", "romance", "gothic", "roses", "dark fantasy", "love", "iphone", "artistic"],
+  "ext": "webp",
+  "sortOrder": 25
+},
+{
+  "slug": "heart-of-roses-candles-iphone",
+  "title": "Heart of Roses",
+  "description": "An ornate heart shape crafted from dark roses and delicate thorny vines, glowing with the soft light of two flickering candles. A beautiful, symbolic design representing affection in a dark aesthetic style.",
+  "deviceType": "IPHONE",
+  "tags": ["valentine", "heart", "roses", "candles", "gothic", "dark romance", "hd wallpaper", "iphone"],
+  "ext": "webp",
+  "sortOrder": 26
+},
+{
+  "slug": "valentine-floral-keys-iphone",
+  "title": "Valentine Floral Keys",
+  "description": "An elegant gothic frame featuring deep red roses, delicate purple flowers, and antique keys arranged in a heart-inspired layout. Sophisticated, detailed, and perfect for a stylish lock screen.",
+  "deviceType": "IPHONE",
+  "tags": ["valentine", "roses", "keys", "floral", "gothic", "dark aesthetic", "typography", "iphone"],
+  "ext": "webp",
+  "sortOrder": 27
+},
+{
+  "slug": "day-of-the-dead-cemetery-queen-iphone",
+  "title": "Cemetery Queen",
+  "description": "A tall, elegant skeleton queen in a black gown and ornate crown stands in a misty graveyard at night. A haunting, atmospheric scene with glowing red eyes and a looming haunted house in the background.",
+  "deviceType": "IPHONE",
+  "tags": [
+    "dayofthedead",
+    "skeleton",
+    "graveyard",
+    "queen",
+    "dark fantasy",
+    "hd wallpaper",
+    "iphone"
+  ],
+  "ext": "webp",
+  "sortOrder": 28
+},
+{
+  "slug": "dead-dont-stay-dead-skull-iphone",
+  "title": "The Dead Don't Stay Dead",
+  "description": "An intricately detailed sugar skull with glowing red eyes and vampire fangs, surrounded by candles, marigolds, and thorns. A scroll beside it reads: The dead don't stay dead. Moody and symbolic.",
+  "deviceType": "IPHONE",
+  "tags": [
+    "dayofthedead",
+    "skull",
+    "marigold",
+    "candles",
+    "horror",
+    "gothic",
+    "iphone"
+  ],
+  "ext": "webp",
+  "sortOrder": 29
+},
+{
+  "slug": "day-of-the-dead-mariachi-band-iphone",
+  "title": "Day of the Dead Mariachi Band",
+  "description": "A festive celebration in a graveyard featuring a mariachi band of skeletons playing guitars. Surrounded by marigolds, candles, and a large decorative sugar skull above, all inside an ornate gothic frame.",
+  "deviceType": "IPHONE",
+  "tags": [
+    "dayofthedead",
+    "skeleton",
+    "mariachi",
+    "graveyard",
+    "festive",
+    "gothic",
+    "iphone"
+  ],
+  "ext": "webp",
+  "sortOrder": 30
+},
+{
+  "slug": "crimson-moon-forest-spirits-iphone",
+  "title": "Crimson Moon Forest Spirits",
+  "description": "A massive, glowing scarlet moon hangs above a twisted dark forest. Eerie silhouettes with glowing eyes peer through the thick, rising mist, creating a haunting and atmospheric scene for your lock screen.",
+  "deviceType": "IPHONE",
+  "tags": [
+    "bloodmoon",
+    "crimson moon",
+    "dark forest",
+    "moonlight",
+    "eerie",
+    "iphone",
+    "dark aesthetic"
+  ],
+  "ext": "webp",
+  "sortOrder": 31
+},
+{
+  "slug": "crimson-moon-graveyard-iphone",
+  "title": "Crimson Moon Graveyard",
+  "description": "A giant, textured red moon looms over a solitary dead tree and a foggy, ancient graveyard. This high-contrast landscape brings a powerful sense of mystery and dark fantasy to your mobile display.",
+  "deviceType": "IPHONE",
+  "tags": [
+    "bloodmoon",
+    "crimson moon",
+    "graveyard",
+    "dead tree",
+    "dark fantasy",
+    "moonlight",
+    "iphone"
+  ],
+  "ext": "webp",
+  "sortOrder": 32
+},
+{
+  "slug": "howling-wolf-crimson-moon-iphone",
+  "title": "Howling Crimson Moon",
+  "description": "A cinematic scene featuring a wolf howling under a fractured red moon and a stormy sky lit by lightning. A bold and intense dark fantasy piece set in a gnarled, shadowy landscape.",
+  "deviceType": "IPHONE",
+  "tags": [
+    "bloodmoon",
+    "crimson moon",
+    "wolf",
+    "lightning",
+    "dark fantasy",
+    "moonlight",
+    "iphone"
+  ],
+  "ext": "webp",
+  "sortOrder": 33
+},
+{
+  "slug": "dark-christmas-sleigh-iphone",
+  "title": "Dark Christmas Sleigh",
+  "description": "A powerful figure in a classic red suit stands in a misty, moonlit forest beside a dark, ornate sleigh. The atmosphere is filled with a mysterious green glow from the aurora above. A unique and moody take on winter folklore for your iPhone.",
+  "deviceType": "IPHONE",
+  "tags": [
+    "christmas",
+    "winter",
+    "dark fantasy",
+    "aurora",
+    "sleigh",
+    "moonlight",
+    "iphone"
+  ],
+  "ext": "webp",
+  "sortOrder": 34
+},
+{
+  "slug": "frost-spirit-santa-iphone",
+  "title": "Frost Spirit Santa",
+  "description": "An intense winter illustration of a dark holiday figure emerging through a snowy vortex. Set against a backdrop of twisted trees and a pale moon, this cinematic piece brings a high-contrast, edgy vibe to your holiday lock screen.",
+  "deviceType": "IPHONE",
+  "tags": [
+    "christmas",
+    "winter",
+    "horror",
+    "dark fantasy",
+    "vortex",
+    "snowy",
+    "moonlight",
+    "iphone"
+  ],
+  "ext": "webp",
+  "sortOrder": 35
+},
     {
       "slug": "haunted-history-android",
       "title": "Haunted History",
@@ -3639,6 +3830,216 @@
   "tags": ["horror", "quote", "scary", "cracked wall", "red eyes", "dark humor", "android"],
   "ext": "webp",
   "sortOrder": 21
+},
+{
+  "slug": "evil-pumpkin-bats-android",
+  "title": "Evil Pumpkin Night",
+  "description": "A glowing, sinister pumpkin sits under a massive full moon filled with a swarm of bats in a dark forest. A perfect, high-contrast Halloween wallpaper for a spooky Android lock screen.",
+  "deviceType": "ANDROID",
+  "tags": ["halloween", "pumpkin", "bats", "full moon", "spooky", "dark forest", "hd wallpaper", "android"],
+  "ext": "webp",
+  "sortOrder": 22
+},
+{
+  "slug": "haunted-forest-manor-android",
+  "title": "Haunted Forest Manor",
+  "description": "A gothic mansion glowing with eerie orange light stands deep within a dark, foggy forest. A sinister tree with glowing eyes and carved pumpkins complete the ultimate Halloween scene.",
+  "deviceType": "ANDROID",
+  "tags": ["halloween", "haunted house", "gothic", "forest", "spooky", "dark aesthetic", "hd wallpaper", "android"],
+  "ext": "webp",
+  "sortOrder": 23
+},
+{
+  "slug": "happy-haunting-skeleton-android",
+  "title": "Happy Haunting Skeleton",
+  "description": "A friendly skeleton in a top hat holds a glowing jack-o-lantern surrounded by cheerful ghosts and pumpkins. Fun, festive, and perfect for getting into the Halloween spirit on your phone.",
+  "deviceType": "ANDROID",
+  "tags": ["halloween", "skeleton", "ghost", "pumpkin", "happy haunting", "festive", "dark humor", "android"],
+  "ext": "webp",
+  "sortOrder": 24
+},
+{
+  "slug": "broken-heart-skeleton-key-android",
+  "title": "Broken Heart Skeleton Key",
+  "description": "A dark, intricate illustration featuring a shattered black heart entwined with thorns and roses, held by skeletal hands. A silver antique key hangs below, creating a mysterious dark valentine atmosphere.",
+  "deviceType": "ANDROID",
+  "tags": [
+    "dark valentine",
+    "broken heart",
+    "skeleton",
+    "roses",
+    "dark romance",
+    "android"
+  ],
+  "ext": "webp",
+  "sortOrder": 25
+},
+{
+  "slug": "dark-humor-shovel-quote-android",
+  "title": "Dark Humor Shovel Quote",
+  "description": "A skeleton holding a single red rose over a cracked heart and skull, paired with witty dark humor text. A playful yet edgy twist on traditional dark valentine art for your lock screen.",
+  "deviceType": "ANDROID",
+  "tags": [
+    "dark valentine",
+    "skeleton",
+    "roses",
+    "dark humor",
+    "quote",
+    "dark aesthetic",
+    "android"
+  ],
+  "ext": "webp",
+  "sortOrder": 26
+},
+{
+  "slug": "day-of-the-dead-ornate-skull-android",
+  "title": "Day of the Dead Ornate Skull",
+  "description": "A beautifully detailed sugar skull with intricate floral patterns, framed by skeletons and orange marigolds. A vibrant and symbolic tribute to ancestral memories.",
+  "deviceType": "ANDROID",
+  "tags": [
+    "dayofthedead",
+    "sugar skull",
+    "marigold",
+    "skeleton",
+    "floral",
+    "dark aesthetic",
+    "android"
+  ],
+  "ext": "webp",
+  "sortOrder": 27
+},
+{
+  "slug": "dead-know-secrets-skull-android",
+  "title": "Dead Know Secrets",
+  "description": "A sinister skull adorned with thorns and roses against a foggy graveyard background. The text reads: The dead know secrets the living cannot grasp. An intense, moody wallpaper for your lock screen.",
+  "deviceType": "ANDROID",
+  "tags": [
+    "dayofthedead",
+    "skull",
+    "graveyard",
+    "dark fantasy",
+    "quotes",
+    "roses",
+    "android"
+  ],
+  "ext": "webp",
+  "sortOrder": 28
+},
+{
+  "slug": "skeleton-gatekeeper-android",
+  "title": "Skeleton Gatekeeper",
+  "description": "A mysterious skeleton in a wide-brimmed hat standing before a dark stone archway filled with skulls. The path leads into a misty, haunted landscape. Perfect for an immersive dark aesthetic.",
+  "deviceType": "ANDROID",
+  "tags": [
+    "dayofthedead",
+    "skeleton",
+    "graveyard",
+    "gatekeeper",
+    "dark fantasy",
+    "minimalist",
+    "android"
+  ],
+  "ext": "webp",
+  "sortOrder": 29
+},
+{
+  "slug": "vampire-skeleton-crimson-moon-android",
+  "title": "Vampire Skeleton Moon",
+  "description": "A stylized skeleton in a dark cape stands in a moonlit graveyard. Under the glow of a massive crimson moon and circling bats, this piece brings a fun, edgy vibe to your home screen.",
+  "deviceType": "ANDROID",
+  "tags": [
+    "bloodmoon",
+    "crimson moon",
+    "skeleton",
+    "graveyard",
+    "dark aesthetic",
+    "android"
+  ],
+  "ext": "webp",
+  "sortOrder": 30
+},
+{
+  "slug": "isolated-house-crimson-moon-android",
+  "title": "Isolated Moon House",
+  "description": "A mysterious house silhouetted against a giant, glowing red moon. The deep crimson tones and quiet atmosphere create a powerful minimalist look for any mobile display.",
+  "deviceType": "ANDROID",
+  "tags": [
+    "bloodmoon",
+    "crimson moon",
+    "minimalist",
+    "mystery",
+    "darkness",
+    "android"
+  ],
+  "ext": "webp",
+  "sortOrder": 31
+},
+{
+  "slug": "gothic-manor-crimson-moon-android",
+  "title": "Gothic Manor Moon",
+  "description": "A grand mansion looms under a vast crimson moon. With shadowy figures lurking in the mist, this detailed fantasy scene is perfect for a truly moody and atmospheric lock screen.",
+  "deviceType": "ANDROID",
+  "tags": [
+    "bloodmoon",
+    "crimson moon",
+    "gothic",
+    "mansion",
+    "dark fantasy",
+    "android"
+  ],
+  "ext": "webp",
+  "sortOrder": 32
+},
+{
+  "slug": "haunted-christmas-mansion-android",
+  "title": "Haunted Christmas Mansion",
+  "description": "A dark gothic mansion decorated for the holidays with lit Christmas trees and presents, set under a massive full moon. A perfect blend of festive and eerie for your lock screen.",
+  "deviceType": "ANDROID",
+  "tags": [
+    "christmas",
+    "dark christmas",
+    "haunted house",
+    "winter",
+    "gothic",
+    "festive",
+    "android"
+  ],
+  "ext": "webp",
+  "sortOrder": 33
+},
+{
+  "slug": "dark-santa-wolf-sleigh-android",
+  "title": "Dark Santa Sleigh",
+  "description": "An intense winter scene featuring a dark figure on a sleigh pulled by fierce, blue-eyed wolves. A cinematic and edgy take on a holiday classic for your mobile device.",
+  "deviceType": "ANDROID",
+  "tags": [
+    "christmas",
+    "dark christmas",
+    "santa",
+    "wolves",
+    "winter",
+    "dark fantasy",
+    "android"
+  ],
+  "ext": "webp",
+  "sortOrder": 34
+},
+{
+  "slug": "horror-santa-portrait-android",
+  "title": "Horror Santa Portrait",
+  "description": "A terrifying close-up of a dark holiday figure with glowing red eyes and a sharp, sinister grin. This high-detail illustration transforms a classic character into a winter nightmare.",
+  "deviceType": "ANDROID",
+  "tags": [
+    "christmas",
+    "dark christmas",
+    "santa",
+    "horror",
+    "red eyes",
+    "dark art",
+    "android"
+  ],
+  "ext": "webp",
+  "sortOrder": 35
 },
     {
       "slug": "gangster-skull-pc",

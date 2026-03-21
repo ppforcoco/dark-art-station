@@ -3635,6 +3635,19 @@ body::before {
   width: 100%;
   padding-top: 177.78%;  /* 16/9 */
 }
+
+/* 16:9 landscape variant for PC pages */
+.related-grid--landscape {
+  grid-template-columns: repeat(3, 1fr);
+}
+@media (max-width: 1023px) {
+  .related-grid--landscape {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+.related-card--landscape .related-card-img {
+  padding-top: 56.25%; /* 9/16 = 16:9 ratio */
+}
 .related-card-img img {
   position: absolute;
   inset: 0;
