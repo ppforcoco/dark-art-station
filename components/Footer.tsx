@@ -65,7 +65,8 @@ export default function Footer() {
           <h4 className="footer-col-title">Legal</h4>
           <ul>
             <li><Link href="/privacy">Privacy Policy</Link></li>
-            <li><Link href="/licensing">Terms of Use</Link></li>
+            <li><Link href="/terms">Terms of Service</Link></li>
+            <li><Link href="/licensing">Licensing &amp; Terms of Use</Link></li>
             <li><Link href="/privacy#cookies">Cookie Policy</Link></li>
             <li><Link href="/privacy#adsense">Advertising</Link></li>
           </ul>

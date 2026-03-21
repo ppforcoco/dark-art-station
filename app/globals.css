@@ -1621,13 +1621,15 @@ body::before {
 @media (max-width: 639px)  { .product-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; } }
 @media (max-width: 359px)  { .product-grid { grid-template-columns: 1fr; } }
 
-/* Product card image — portrait on desktop, 3/4 on mobile */
+/* Product card image — full portrait on ALL screen sizes, no cropping */
 .product-card-image {
   display: block;
   aspect-ratio: 9 / 16;
 }
 @media (max-width: 639px) {
-  .product-card-image { aspect-ratio: 3 / 4; }
+  /* Keep 9/16 portrait — never crop to 3/4 on mobile.
+     Images like "YOU ARE NEXT" have top text that gets cut at 3/4. */
+  .product-card-image { aspect-ratio: 9 / 16; }
   .product-grid .p-5 { padding: 10px 10px 12px; }
 }
 

@@ -263,6 +263,118 @@ export default async function CollectionPage({ params }: PageProps) {
       {/* Main ad banner */}
       <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_MAIN} width={728} height={90} />
 
+      {/* ── About This Collection — rich text content for AdSense ── */}
+      <section style={{ maxWidth: "1280px", margin: "0 auto", padding: "0 24px 48px" }}>
+        <div className="collection-about-grid">
+          <div className="collection-about-text">
+            <h2 className="collection-about-heading">About This Collection</h2>
+            <p className="collection-about-body">
+              The <strong>{displayTitle}</strong> collection is part of the Haunted Wallpapers dark art library —
+              a curated series of high-resolution wallpapers designed for those who appreciate bold,
+              unconventional aesthetics. Every piece in this collection is AI-generated, hand-reviewed,
+              and refined to meet our quality standards before it reaches the site.
+            </p>
+            <p className="collection-about-body">
+              {collection.description && collection.description.length > 80
+                ? collection.description
+                : `This collection explores dark visual themes with striking detail and atmosphere. 
+                   Each wallpaper is optimised for both phone and desktop screens, available in 4K resolution 
+                   at no cost. No watermarks, no account required — just download and use.`}
+            </p>
+            <p className="collection-about-body">
+              All wallpapers in the {displayTitle} collection are free for personal use. Download any image
+              directly to your device and set it as your wallpaper on iPhone, Android, or PC. See our{" "}
+              <a href="/faq" style={{ color: "var(--accent-gold, #c9a84c)", textDecoration: "underline" }}>FAQ</a>{" "}
+              for step-by-step instructions on how to apply wallpapers on any device.
+            </p>
+          </div>
+          <div className="collection-about-meta">
+            <div className="collection-meta-item">
+              <span className="collection-meta-label">Collection</span>
+              <span className="collection-meta-value">{displayTitle}</span>
+            </div>
+            <div className="collection-meta-item">
+              <span className="collection-meta-label">Images</span>
+              <span className="collection-meta-value">{collection.images.length} artworks</span>
+            </div>
+            <div className="collection-meta-item">
+              <span className="collection-meta-label">Resolution</span>
+              <span className="collection-meta-value">Up to 4K</span>
+            </div>
+            <div className="collection-meta-item">
+              <span className="collection-meta-label">Price</span>
+              <span className="collection-meta-value">Free</span>
+            </div>
+            <div className="collection-meta-item">
+              <span className="collection-meta-label">Format</span>
+              <span className="collection-meta-value">JPEG / PNG</span>
+            </div>
+            <div className="collection-meta-item">
+              <span className="collection-meta-label">Licence</span>
+              <span className="collection-meta-value">Personal use</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <style>{`
+        .collection-about-grid {
+          display: grid;
+          grid-template-columns: 1fr;
+          gap: 40px;
+          border-top: 1px solid rgba(255,255,255,0.06);
+          padding-top: 40px;
+        }
+        @media (min-width: 768px) {
+          .collection-about-grid { grid-template-columns: 2fr 1fr; }
+        }
+        .collection-about-heading {
+          font-family: var(--font-cinzel), cursive;
+          font-size: 1.1rem;
+          font-weight: 700;
+          color: var(--text-primary, #f0ecff);
+          margin-bottom: 16px;
+          letter-spacing: 0.04em;
+        }
+        .collection-about-body {
+          font-family: var(--font-cormorant), Georgia, serif;
+          font-size: 1.05rem;
+          line-height: 1.75;
+          color: var(--text-secondary, #8a8099);
+          margin-bottom: 14px;
+        }
+        .collection-about-body a:hover { color: #f0ecff; }
+        .collection-about-meta {
+          display: flex;
+          flex-direction: column;
+          gap: 12px;
+          background: rgba(255,255,255,0.02);
+          border: 1px solid rgba(255,255,255,0.06);
+          padding: 24px;
+        }
+        .collection-meta-item {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding-bottom: 10px;
+          border-bottom: 1px solid rgba(255,255,255,0.04);
+        }
+        .collection-meta-item:last-child { border-bottom: none; padding-bottom: 0; }
+        .collection-meta-label {
+          font-family: var(--font-space), monospace;
+          font-size: 0.58rem;
+          letter-spacing: 0.18em;
+          text-transform: uppercase;
+          color: #4a445a;
+        }
+        .collection-meta-value {
+          font-family: var(--font-space), monospace;
+          font-size: 0.65rem;
+          letter-spacing: 0.1em;
+          color: #a89bc0;
+        }
+      `}</style>
+
       {/* Image gallery */}
       {hasImages && (
         <section style={{ maxWidth: "1280px", margin: "0 auto", padding: "48px 24px" }}>

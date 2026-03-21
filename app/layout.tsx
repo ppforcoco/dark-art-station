@@ -96,13 +96,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <meta name="apple-mobile-web-app-title" content="Haunted WP" />
         <meta name="mobile-web-app-capable" content="yes" />
-        {adsPid && (
-          <script
-            async
-            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsPid}`}
-            crossOrigin="anonymous"
-          />
-        )}
+        {/* AdSense script is injected lazily by CookieBanner after user consents.
+            Loading it here unconditionally would violate GDPR / AdSense policies. */}
       </head>
       <body className={`${cormorant.variable} ${cinzel.variable} ${spaceMono.variable}`}>
         <script

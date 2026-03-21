@@ -2,6 +2,16 @@
 
 import { useEffect, useRef, useState } from "react";
 
+const STORAGE_KEY = "hw-cookie-consent";
+
+function getConsent(): "accepted" | "declined" | null {
+  try {
+    return (localStorage.getItem(STORAGE_KEY) as "accepted" | "declined") ?? null;
+  } catch {
+    return null;
+  }
+}
+
 interface AdSlotProps {
   slotId?: string;
   width?: number;
@@ -20,13 +30,28 @@ export default function AdSlot({
   const adRef = useRef<HTMLModElement>(null);
   const initialized = useRef(false);
   const [adLoaded, setAdLoaded] = useState(false);
+  const [consent, setConsent] = useState<"accepted" | "declined" | null>(null);
 
   const pid = process.env.NEXT_PUBLIC_ADSENSE_PID;
   const resolvedSlot = slotId ?? process.env.NEXT_PUBLIC_ADSENSE_SLOT_MAIN;
   const isLive = Boolean(pid && resolvedSlot);
 
+  // Read consent on mount, then listen for changes
   useEffect(() => {
-    if (!isLive || initialized.current) return;
+    setConsent(getConsent());
+
+    function onConsentChange(e: Event) {
+      const detail = (e as CustomEvent).detail as "accepted" | "declined";
+      setConsent(detail);
+    }
+
+    window.addEventListener("hw-consent-change", onConsentChange);
+    return () => window.removeEventListener("hw-consent-change", onConsentChange);
+  }, []);
+
+  // Only push the ad unit after consent has been given and AdSense script is loaded
+  useEffect(() => {
+    if (!isLive || consent !== "accepted" || initialized.current) return;
     initialized.current = true;
 
     const observer = new MutationObserver(() => {
@@ -40,22 +65,28 @@ export default function AdSlot({
       observer.observe(adRef.current, { childList: true, subtree: true });
     }
 
-    try {
-      (
-        (window as unknown as { adsbygoogle: unknown[] }).adsbygoogle =
-          (window as unknown as { adsbygoogle: unknown[] }).adsbygoogle || []
-      ).push({});
-    } catch (e) {
-      console.warn("[AdSlot] push failed:", e);
-    }
+    // Small delay to ensure AdSense script has loaded after consent injection
+    const timer = setTimeout(() => {
+      try {
+        (
+          (window as unknown as { adsbygoogle: unknown[] }).adsbygoogle =
+            (window as unknown as { adsbygoogle: unknown[] }).adsbygoogle || []
+        ).push({});
+      } catch (e) {
+        console.warn("[AdSlot] push failed:", e);
+      }
+    }, 300);
 
-    const timer = setTimeout(() => observer.disconnect(), 3000);
+    const cleanupTimer = setTimeout(() => observer.disconnect(), 5000);
+
     return () => {
       clearTimeout(timer);
+      clearTimeout(cleanupTimer);
       observer.disconnect();
     };
-  }, [isLive]);
+  }, [isLive, consent]);
 
+  // Dev placeholder — no live PID set
   if (!isLive) {
     return (
       <div className={`ad-banner ad-banner--dev ${className}`}>
@@ -68,6 +99,11 @@ export default function AdSlot({
         <span className="ad-label">Advertisement</span>
       </div>
     );
+  }
+
+  // Consent declined or not yet given — show nothing (no ad, no placeholder)
+  if (consent !== "accepted") {
+    return null;
   }
 
   const insStyle = format !== "auto"

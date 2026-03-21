@@ -100,8 +100,8 @@ export default async function Home() {
           </div>
           <div className="hero-stats fade-up-5">
             <div><span className="stat-num">500+</span><span className="stat-label">Dark Artworks</span></div>
-            <div><span className="stat-num">12K</span><span className="stat-label">Members Growing</span></div>
-            <div><span className="stat-num">Free</span><span className="stat-label">Shipping (Digital)</span></div>
+            <div><span className="stat-num">Free</span><span className="stat-label">Always Free</span></div>
+            <div><span className="stat-num">4K</span><span className="stat-label">Resolution Art</span></div>
           </div>
         </div>
 

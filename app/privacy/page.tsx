@@ -3,10 +3,10 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Privacy Policy — HauntedWallpapers",
   description: "How HauntedWallpapers collects, uses, and protects your data.",
-  robots: { index: false, follow: true }, // crawlable but not indexed in search
+  // robots: noindex intentionally removed — AdSense reviewers must crawl this page
 };
 
-const LAST_UPDATED = "1 July 2025";
+const LAST_UPDATED = "21 March 2026";
 const SITE_NAME    = "HauntedWallpapers";
 const SITE_URL     = "https://hauntedwallpapers.com";
 const CONTACT_EMAIL = "hello@hauntedwallpapers.com";
@@ -104,6 +104,15 @@ export default function PrivacyPage() {
                 full details.
               </li>
             </ul>
+
+            <h3>Consent for Advertising Cookies</h3>
+            <p>
+              When you first visit the Site, a cookie consent banner is displayed.
+              Advertising cookies and personalised ads are only activated after you
+              click &quot;Accept All.&quot; If you click &quot;Decline,&quot; no
+              advertising cookies will be set. You may change your preference at any
+              time by clearing your browser cookies and revisiting the Site.
+            </p>
 
             <h3>Managing Cookies</h3>
             <p>

@@ -2,25 +2,41 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 
+// ─── Consent helpers (used by AdSlot too via window flag) ─────────────────────
+export type ConsentState = "accepted" | "declined" | null;
+const STORAGE_KEY = "hw-cookie-consent";
+
+export function getConsent(): ConsentState {
+  try {
+    return (localStorage.getItem(STORAGE_KEY) as ConsentState) ?? null;
+  } catch {
+    return null;
+  }
+}
+
+export function setConsentValue(value: "accepted" | "declined") {
+  try {
+    localStorage.setItem(STORAGE_KEY, value);
+  } catch {}
+  window.dispatchEvent(new CustomEvent("hw-consent-change", { detail: value }));
+}
+
+// ─── Component ────────────────────────────────────────────────────────────────
 export default function CookieBanner() {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    try {
-      const consent = localStorage.getItem("hw-cookie-consent");
-      if (!consent) setVisible(true);
-    } catch {
-      setVisible(true);
-    }
+    if (getConsent() === null) setVisible(true);
   }, []);
 
   function accept() {
-    try { localStorage.setItem("hw-cookie-consent", "accepted"); } catch {}
+    setConsentValue("accepted");
     setVisible(false);
+    injectAdSense();
   }
 
   function decline() {
-    try { localStorage.setItem("hw-cookie-consent", "declined"); } catch {}
+    setConsentValue("declined");
     setVisible(false);
   }
 
@@ -32,6 +48,7 @@ export default function CookieBanner() {
       <div
         className="cookie-banner"
         role="dialog"
+        aria-modal="true"
         aria-label="Cookie consent"
         aria-live="polite"
       >
@@ -40,9 +57,14 @@ export default function CookieBanner() {
             <p className="cookie-title">🍪 This site uses cookies</p>
             <p className="cookie-desc">
               We use Google AdSense to serve ads that keep this site free.
-              Ads may use cookies to show you relevant content.{" "}
+              Personalised ads use cookies based on your browsing activity.
+              You can accept or decline — your choice is saved.{" "}
               <Link href="/privacy#cookies" className="cookie-link">
                 Privacy Policy
+              </Link>
+              {" · "}
+              <Link href="/terms" className="cookie-link">
+                Terms of Service
               </Link>
             </p>
           </div>
@@ -100,10 +122,7 @@ export default function CookieBanner() {
           gap: 24px;
           flex-wrap: wrap;
         }
-        .cookie-text-block {
-          flex: 1;
-          min-width: 240px;
-        }
+        .cookie-text-block { flex: 1; min-width: 240px; }
         .cookie-title {
           font-family: var(--font-space), monospace;
           font-size: 0.75rem;
@@ -119,17 +138,9 @@ export default function CookieBanner() {
           color: #8a8099;
           line-height: 1.5;
         }
-        .cookie-link {
-          color: #c9a84c;
-          text-decoration: underline;
-          text-underline-offset: 2px;
-        }
+        .cookie-link { color: #c9a84c; text-decoration: underline; text-underline-offset: 2px; }
         .cookie-link:hover { color: #f0ecff; }
-        .cookie-actions {
-          display: flex;
-          gap: 10px;
-          flex-shrink: 0;
-        }
+        .cookie-actions { display: flex; gap: 10px; flex-shrink: 0; }
         .cookie-btn {
           font-family: var(--font-space), monospace;
           font-size: 0.65rem;
@@ -144,44 +155,32 @@ export default function CookieBanner() {
           touch-action: manipulation;
           white-space: nowrap;
         }
-        .cookie-btn--decline {
-          background: transparent;
-          border-color: #2a2535;
-          color: #8a8099;
-        }
-        .cookie-btn--decline:hover {
-          border-color: #8a8099;
-          color: #f0ecff;
-        }
-        .cookie-btn--accept {
-          background: #8b0000;
-          border-color: #8b0000;
-          color: #ffffff;
-        }
-        .cookie-btn--accept:hover {
-          background: #a80000;
-          border-color: #a80000;
-        }
+        .cookie-btn--decline { background: transparent; border-color: #2a2535; color: #8a8099; }
+        .cookie-btn--decline:hover { border-color: #8a8099; color: #f0ecff; }
+        .cookie-btn--accept { background: #8b0000; border-color: #8b0000; color: #ffffff; }
+        .cookie-btn--accept:hover { background: #a80000; border-color: #a80000; }
         @media (max-width: 639px) {
           .cookie-inner { flex-direction: column; align-items: stretch; gap: 16px; }
           .cookie-actions { flex-direction: row; }
           .cookie-btn { flex: 1; }
         }
-        [data-theme="light"] .cookie-banner {
-          background: #f4f1ea;
-          border-top-color: rgba(192,0,26,0.3);
-        }
+        [data-theme="light"] .cookie-banner { background: #f4f1ea; border-top-color: rgba(192,0,26,0.3); }
         [data-theme="light"] .cookie-title { color: #1a1814; }
         [data-theme="light"] .cookie-desc  { color: #5a5450; }
-        [data-theme="light"] .cookie-btn--decline {
-          border-color: #cdc8bc;
-          color: #5a5450;
-        }
-        [data-theme="light"] .cookie-btn--decline:hover {
-          border-color: #5a5450;
-          color: #1a1814;
-        }
+        [data-theme="light"] .cookie-btn--decline { border-color: #cdc8bc; color: #5a5450; }
+        [data-theme="light"] .cookie-btn--decline:hover { border-color: #5a5450; color: #1a1814; }
       `}</style>
     </>
   );
+}
+
+function injectAdSense() {
+  const pid = process.env.NEXT_PUBLIC_ADSENSE_PID;
+  if (!pid) return;
+  if (document.querySelector(`script[src*="adsbygoogle.js"]`)) return;
+  const script = document.createElement("script");
+  script.async = true;
+  script.crossOrigin = "anonymous";
+  script.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${pid}`;
+  document.head.appendChild(script);
 }
