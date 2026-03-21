@@ -136,8 +136,13 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
               );
               if ((idx + 1) % 8 === 0) {
                 return [card, (
-                  <div key={`ad-${idx}`} className="flex items-center justify-center" style={{ minHeight: "100px", gridColumn: "1 / -1" }}>
-                    <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_MAIN} width={728} height={90} />
+                  <div key={`ad-${idx}`} style={{ gridColumn: "1 / -1" }}>
+                    <AdSlot
+                      slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_INFEED ?? process.env.NEXT_PUBLIC_ADSENSE_SLOT_MAIN}
+                      format="auto"
+                      width={728}
+                      height={90}
+                    />
                   </div>
                 )];
               }

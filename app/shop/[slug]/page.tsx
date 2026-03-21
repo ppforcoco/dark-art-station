@@ -171,7 +171,7 @@ export default async function CollectionPage({ params }: PageProps) {
                   className="collection-download-btn"
                   download
                 >
-                  ↓ Download Full Bundle · Free
+                  ↓ Download Bundle · Free
                 </a>
               ) : firstImage ? (
                 /* No ZIP → lead user to the first image detail page */
@@ -179,7 +179,7 @@ export default async function CollectionPage({ params }: PageProps) {
                   href={`/shop/${slug}/${firstImage.slug}`}
                   className="collection-download-btn"
                 >
-                  ↓ View &amp; Download Images · Free
+                  ↓ Download Free
                 </Link>
               ) : null}
 
@@ -219,26 +219,28 @@ export default async function CollectionPage({ params }: PageProps) {
           margin-top: 4px;
         }
         .collection-download-btn {
-          display: block;
+          display: flex;
+          align-items: center;
+          justify-content: center;
           width: 100%;
-          text-align: center;
-          min-height: 56px;
-          line-height: 56px;
+          min-height: 60px;
           padding: 0 24px;
           box-sizing: border-box;
           background-color: #8b0000;
           border: 1px solid #8b0000;
           color: #ffffff !important;
           font-family: var(--font-space), monospace;
-          font-size: 0.75rem;
+          font-size: 0.72rem;
           font-weight: 700;
-          letter-spacing: 0.2em;
+          letter-spacing: 0.18em;
           text-transform: uppercase;
           text-decoration: none !important;
+          text-align: center;
           transition: background-color 0.2s ease, filter 0.2s ease;
           -webkit-tap-highlight-color: transparent;
           touch-action: manipulation;
           cursor: pointer;
+          white-space: nowrap;
         }
         .collection-download-btn:hover {
           background-color: #a80000;
@@ -255,13 +257,6 @@ export default async function CollectionPage({ params }: PageProps) {
           color: #4a445a;
           margin: 0;
           text-align: center;
-        }
-        @media (max-width: 767px) {
-          .collection-download-btn {
-            min-height: 60px;
-            line-height: 60px;
-            font-size: 0.8rem;
-          }
         }
       `}</style>
 
@@ -284,6 +279,18 @@ export default async function CollectionPage({ params }: PageProps) {
             }))}
           />
         </section>
+      )}
+
+      {/* Multiplex / native content ad — after gallery, highest CTR position */}
+      {hasImages && (
+        <div style={{ maxWidth: "1280px", margin: "0 auto", padding: "0 24px 40px" }}>
+          <AdSlot
+            slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_MULTIPLEX ?? process.env.NEXT_PUBLIC_ADSENSE_SLOT_FOOTER}
+            format="auto"
+            width={728}
+            height={90}
+          />
+        </div>
       )}
 
       <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_FOOTER} width={728} height={90} className="mt-8" />

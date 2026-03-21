@@ -39,7 +39,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       description: image.description ?? `Free 4K iPhone wallpaper: ${image.title}`,
       url: `${siteUrl}/iphone/${imageSlug}`,
       siteName: "HAUNTED WALLPAPERS",
-      images: [{ url: ogImage, width: 1200, height: 630, alt: image.title }],
+      images: [{ url: ogImage, width: 1080, height: 1920, alt: image.title }],
       type: "website",
     },
     twitter: {

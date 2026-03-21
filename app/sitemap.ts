@@ -1,30 +1,32 @@
 import { MetadataRoute } from "next";
 import { db } from "@/lib/db";
 
+const CDN = process.env.NEXT_PUBLIC_R2_PUBLIC_URL ?? "https://assets.hauntedwallpapers.com";
+
+function r2Url(key: string) {
+  return `${CDN}/${key}`;
+}
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
 
-  // Static pages — every crawlable route with a real page
   const staticRoutes: MetadataRoute.Sitemap = [
-    // Core
-    { url: siteUrl,                       lastModified: new Date(), changeFrequency: "weekly"  as const, priority: 1.0  },
-    { url: `${siteUrl}/shop`,            lastModified: new Date(), changeFrequency: "daily"   as const, priority: 0.9  },
-    // Device portals
-    { url: `${siteUrl}/iphone`,          lastModified: new Date(), changeFrequency: "daily"   as const, priority: 0.85 },
-    { url: `${siteUrl}/android`,         lastModified: new Date(), changeFrequency: "daily"   as const, priority: 0.85 },
-    { url: `${siteUrl}/pc`,              lastModified: new Date(), changeFrequency: "daily"   as const, priority: 0.85 },
-    // Utility / info pages
-    { url: `${siteUrl}/search`,          lastModified: new Date(), changeFrequency: "weekly"  as const, priority: 0.6  },
-    { url: `${siteUrl}/about`,           lastModified: new Date(), changeFrequency: "monthly" as const, priority: 0.5  },
-    { url: `${siteUrl}/faq`,             lastModified: new Date(), changeFrequency: "monthly" as const, priority: 0.5  },
-    { url: `${siteUrl}/contact`,         lastModified: new Date(), changeFrequency: "monthly" as const, priority: 0.4  },
-    { url: `${siteUrl}/licensing`,       lastModified: new Date(), changeFrequency: "monthly" as const, priority: 0.4  },
-    { url: `${siteUrl}/privacy`,         lastModified: new Date(), changeFrequency: "monthly" as const, priority: 0.3  },
+    { url: siteUrl,                    lastModified: new Date(), changeFrequency: "weekly"  as const, priority: 1.0  },
+    { url: `${siteUrl}/shop`,         lastModified: new Date(), changeFrequency: "daily"   as const, priority: 0.9  },
+    { url: `${siteUrl}/iphone`,       lastModified: new Date(), changeFrequency: "daily"   as const, priority: 0.85 },
+    { url: `${siteUrl}/android`,      lastModified: new Date(), changeFrequency: "daily"   as const, priority: 0.85 },
+    { url: `${siteUrl}/pc`,           lastModified: new Date(), changeFrequency: "daily"   as const, priority: 0.85 },
+    { url: `${siteUrl}/search`,       lastModified: new Date(), changeFrequency: "weekly"  as const, priority: 0.6  },
+    { url: `${siteUrl}/about`,        lastModified: new Date(), changeFrequency: "monthly" as const, priority: 0.5  },
+    { url: `${siteUrl}/faq`,          lastModified: new Date(), changeFrequency: "monthly" as const, priority: 0.5  },
+    { url: `${siteUrl}/contact`,      lastModified: new Date(), changeFrequency: "monthly" as const, priority: 0.4  },
+    { url: `${siteUrl}/licensing`,    lastModified: new Date(), changeFrequency: "monthly" as const, priority: 0.4  },
+    { url: `${siteUrl}/privacy`,      lastModified: new Date(), changeFrequency: "monthly" as const, priority: 0.3  },
   ];
 
-  // Collection pages
+  // Collection pages — include thumbnail image for Google Image Search
   const collections = await db.collection.findMany({
-    select: { slug: true, updatedAt: true },
+    select: { slug: true, title: true, thumbnail: true, updatedAt: true },
     orderBy: { updatedAt: "desc" },
   });
 
@@ -33,35 +35,36 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     lastModified: c.updatedAt,
     changeFrequency: "monthly" as const,
     priority: 0.8,
+    ...(c.thumbnail ? {
+      images: [{ url: r2Url(c.thumbnail), title: c.title }],
+    } : {}),
   }));
 
-  // Individual image pages — indexed separately for Google Image Search
-  const images = await db.image.findMany({
+  // Collection image pages — include the wallpaper image
+  const collectionImages = await db.image.findMany({
     select: {
-      slug: true,
-      updatedAt: true,
+      slug: true, title: true, r2Key: true, updatedAt: true,
       collection: { select: { slug: true } },
     },
     where: { collectionId: { not: null } },
     orderBy: { updatedAt: "desc" },
   });
 
-  const imageRoutes: MetadataRoute.Sitemap = images
+  const imageRoutes: MetadataRoute.Sitemap = collectionImages
     .filter((img) => img.collection?.slug)
     .map((img) => ({
       url: `${siteUrl}/shop/${img.collection?.slug}/${img.slug}`,
       lastModified: img.updatedAt,
       changeFrequency: "monthly" as const,
       priority: 0.6,
+      images: [{ url: r2Url(img.r2Key), title: img.title }],
     }));
 
-  // Standalone image pages — individual download/view pages per wallpaper
+  // Standalone wallpaper pages — iphone/android/pc detail pages
   const standalones = await db.image.findMany({
     select: {
-      slug: true,
-      updatedAt: true,
+      slug: true, title: true, r2Key: true, updatedAt: true,
       deviceType: true,
-      tags: true,
     },
     where: { collectionId: null, deviceType: { not: null } },
     orderBy: { updatedAt: "desc" },
@@ -72,6 +75,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     lastModified: img.updatedAt,
     changeFrequency: "monthly" as const,
     priority: 0.65,
+    images: [{ url: r2Url(img.r2Key), title: img.title }],
   }));
 
   return [...staticRoutes, ...collectionRoutes, ...imageRoutes, ...standaloneRoutes];

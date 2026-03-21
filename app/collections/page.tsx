@@ -5,9 +5,26 @@ import AdSlot from "@/components/AdSlot";
 
 export const revalidate = 60;
 
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
+
 export const metadata: Metadata = {
-  title: "All Collections | Haunted Wallpapers",
-  description: "Browse all dark fantasy wallpaper collections — horror, gothic, street style, dark humor and more. Free high-resolution downloads.",
+  title: "All Collections | Free Dark Wallpapers | Haunted Wallpapers",
+  description: "Browse all dark fantasy wallpaper collections — horror, gothic, street style, dark humor and more. Free 4K downloads for iPhone, Android and PC.",
+  alternates: { canonical: `${SITE_URL}/collections` },
+  openGraph: {
+    title: "All Collections | Haunted Wallpapers",
+    description: "Browse all dark fantasy wallpaper collections. Free 4K downloads for iPhone, Android and PC.",
+    url: `${SITE_URL}/collections`,
+    siteName: "Haunted Wallpapers",
+    type: "website",
+    images: [{ url: `${SITE_URL}/og-image.jpg`, width: 1200, height: 630, alt: "Haunted Wallpapers — All Collections" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "All Collections | Haunted Wallpapers",
+    description: "Browse all dark fantasy wallpaper collections. Free 4K downloads.",
+    images: [`${SITE_URL}/og-image.jpg`],
+  },
 };
 
 export default async function CollectionsPage() {

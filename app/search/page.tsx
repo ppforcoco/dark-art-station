@@ -208,8 +208,15 @@ export default async function SearchPage({
           {query && !hasResults && <EmptyState query={query} />}
           {hasResults && (
             <div className="search-grid">
-              {results.map((item) => (
-                <ResultCard key={item.id} item={item} />
+              {results.map((item, idx) => (
+                <>
+                  <ResultCard key={item.id} item={item} />
+                  {idx === 5 && (
+                    <div key="search-mid-ad" style={{ gridColumn: "1 / -1" }}>
+                      <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_MAIN} width={728} height={90} />
+                    </div>
+                  )}
+                </>
               ))}
             </div>
           )}

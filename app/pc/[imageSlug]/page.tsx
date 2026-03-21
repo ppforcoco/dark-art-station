@@ -39,7 +39,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       description: image.description ?? `Free 4K PC wallpaper: ${image.title}`,
       url: `${siteUrl}/pc/${imageSlug}`,
       siteName: "HAUNTED WALLPAPERS",
-      images: [{ url: ogImage, width: 1200, height: 630, alt: image.title }],
+      images: [{ url: ogImage, width: 1920, height: 1080, alt: image.title }],
       type: "website",
     },
     twitter: {
