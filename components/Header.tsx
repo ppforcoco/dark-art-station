@@ -353,14 +353,23 @@ export default function Header() {
           cursor: pointer; transition: background 0.15s, color 0.15s, border-color 0.15s;
         }
         .search-hint-btn:hover { background: rgba(192,0,26,0.2); color: #f0ecff; border-color: rgba(192,0,26,0.55); }
-        .hw-search-close-row { display: flex; justify-content: center; margin-top: 22px; }
+        .hw-search-close-row { display: flex; justify-content: center; margin-top: 24px; }
         .hw-search-close-btn {
-          background: transparent; border: none; color: #2a2540; cursor: pointer;
+          background: rgba(192,0,26,0.1);
+          border: 1px solid rgba(192,0,26,0.45);
+          color: #f0ecff;
+          cursor: pointer;
           font-family: var(--font-space, monospace);
-          font-size: 0.54rem; letter-spacing: 0.18em; text-transform: uppercase;
-          display: flex; align-items: center; gap: 7px; transition: color 0.2s;
+          font-size: 0.72rem; letter-spacing: 0.2em; text-transform: uppercase;
+          display: flex; align-items: center; gap: 10px;
+          padding: 14px 40px;
+          transition: color 0.2s, border-color 0.2s, background 0.2s;
+          min-height: 50px;
+          min-width: 200px;
+          justify-content: center;
+          touch-action: manipulation;
         }
-        .hw-search-close-btn:hover { color: #6a6480; }
+        .hw-search-close-btn:hover { color: #fff; border-color: #c0001a; background: rgba(192,0,26,0.22); }
 
         .mobile-action-strip { display: flex; flex-direction: column; gap: 8px; padding: 0 0 4px; }
         .mobile-action-btn {
@@ -475,7 +484,7 @@ export default function Header() {
             </div>
             <div className="hw-search-close-row">
               <button type="button" className="hw-search-close-btn" onClick={closeSearch}>
-                <X size={11} strokeWidth={1.5} /> ESC to close
+                <X size={16} strokeWidth={1.5} /> Close Search
               </button>
             </div>
           </div>
@@ -486,6 +495,31 @@ export default function Header() {
         <div className="mobile-menu-backdrop" onClick={closeMenu} />
         <div className="mobile-menu-panel">
           <div className="mobile-menu-topbar" />
+          {/* Close button inside the panel — positioned below the full header */}
+          <button
+            type="button"
+            onClick={closeMenu}
+            aria-label="Close menu"
+            style={{
+              position: "absolute",
+              top: "calc(var(--topbar-total, 72px) + var(--nav-h-mob, 72px) + 16px)",
+              right: "20px",
+              width: "52px", height: "52px",
+              display: "flex", alignItems: "center", justifyContent: "center",
+              background: "rgba(192,0,26,0.12)",
+              border: "1px solid rgba(192,0,26,0.5)",
+              color: "#f0ecff",
+              cursor: "pointer",
+              touchAction: "manipulation",
+              transition: "border-color 0.2s, background 0.2s",
+              zIndex: 10,
+              borderRadius: "2px",
+            }}
+            onMouseOver={e => { (e.currentTarget as HTMLButtonElement).style.background = "rgba(192,0,26,0.28)"; (e.currentTarget as HTMLButtonElement).style.borderColor = "#c0001a"; }}
+            onMouseOut={e => { (e.currentTarget as HTMLButtonElement).style.background = "rgba(192,0,26,0.12)"; (e.currentTarget as HTMLButtonElement).style.borderColor = "rgba(192,0,26,0.5)"; }}
+          >
+            <X size={22} strokeWidth={1.5} />
+          </button>
           <nav className="mobile-menu-nav">
             {NAV_LINKS.map(({ label, href }, i) => (
               <Link key={label} href={href} className="mobile-menu-link"
