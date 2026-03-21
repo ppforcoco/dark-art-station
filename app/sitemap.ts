@@ -36,7 +36,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     changeFrequency: "monthly" as const,
     priority: 0.8,
     ...(c.thumbnail ? {
-      images: [{ url: r2Url(c.thumbnail), title: c.title }],
+      images: [r2Url(c.thumbnail)],
     } : {}),
   }));
 
@@ -57,7 +57,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: img.updatedAt,
       changeFrequency: "monthly" as const,
       priority: 0.6,
-      images: [{ url: r2Url(img.r2Key), title: img.title }],
+      images: [r2Url(img.r2Key)],
     }));
 
   // Standalone wallpaper pages — iphone/android/pc detail pages
@@ -75,7 +75,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     lastModified: img.updatedAt,
     changeFrequency: "monthly" as const,
     priority: 0.65,
-    images: [{ url: r2Url(img.r2Key), title: img.title }],
+    images: [r2Url(img.r2Key)],
   }));
 
   return [...staticRoutes, ...collectionRoutes, ...imageRoutes, ...standaloneRoutes];
