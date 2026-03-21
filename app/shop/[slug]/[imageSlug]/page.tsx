@@ -12,6 +12,8 @@ import DeviceMockup from "@/components/DeviceMockup";
 import RelatedWallpapers from "@/components/RelatedWallpapers";
 import { getRelatedImages } from "@/lib/db";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import PageTracker from "@/components/PageTracker";
+import RecentlyViewed from "@/components/RecentlyViewed";
 
 interface PageProps {
   params: Promise<{ slug: string; imageSlug: string }>;
@@ -285,6 +287,15 @@ export default async function ImagePage({ params }: PageProps) {
 
       {/* ── Footer Ad ── */}
       <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_FOOTER} width={728} height={90} />
+
+      {/* ── Recently Viewed ── */}
+      <PageTracker item={{
+        slug:  imageSlug,
+        title: image.title,
+        thumb: thumbUrl,
+        href:  `/shop/${slug}/${imageSlug}`,
+      }} />
+      <RecentlyViewed />
 
       {/* ── JSON-LD ── */}
       <script

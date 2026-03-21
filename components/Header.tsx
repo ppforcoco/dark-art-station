@@ -126,8 +126,8 @@ export default function Header() {
     return () => window.removeEventListener("keydown", onKey);
   }, [closeMenu, closeSearch]);
 
-  const themeIcon  = theme === "dark" ? "☽" : theme === "blood" ? "🩸" : theme === "ghost" ? "👻" : theme === "ember" ? "🔥" : "☀";
-  const themeLabel = theme === "dark" ? "Dark" : theme === "blood" ? "Blood" : theme === "ghost" ? "Ghost" : theme === "ember" ? "Ember" : "Light";
+  const themeIcon  = theme === "dark" ? "☽" : theme === "blood" ? "🌑" : theme === "ghost" ? "👻" : theme === "ember" ? "🔥" : "☀";
+  const themeLabel = theme === "dark" ? "Dark" : theme === "blood" ? "Crimson" : theme === "ghost" ? "Ghost" : theme === "ember" ? "Ember" : "Light";
 
   return (
     <>
