@@ -22,6 +22,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${siteUrl}/contact`,      lastModified: new Date(), changeFrequency: "monthly" as const, priority: 0.4  },
     { url: `${siteUrl}/licensing`,    lastModified: new Date(), changeFrequency: "monthly" as const, priority: 0.4  },
     { url: `${siteUrl}/privacy`,      lastModified: new Date(), changeFrequency: "monthly" as const, priority: 0.3  },
+    { url: `${siteUrl}/terms`,        lastModified: new Date(), changeFrequency: "monthly" as const, priority: 0.3  },
   ];
 
   // Collection pages — include thumbnail image for Google Image Search

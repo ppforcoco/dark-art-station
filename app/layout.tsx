@@ -71,7 +71,6 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  const adsPid = process.env.NEXT_PUBLIC_ADSENSE_PID;
   return (
     <html lang="en">
       <head>
