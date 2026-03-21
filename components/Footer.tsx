@@ -34,7 +34,6 @@ export default function Footer() {
             <li><Link href="/android">Android Wallpapers</Link></li>
             <li><Link href="/pc">PC &amp; Desktop</Link></li>
             <li><Link href="/collections">All Collections</Link></li>
-            <li><Link href="/collections?filter=free">Free Downloads</Link></li>
           </ul>
         </div>
 
