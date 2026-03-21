@@ -3461,6 +3461,186 @@
       "sortOrder": 1
     },
     {
+  "slug": "fear-is-a-game-android",
+  "title": "Fear is a Game",
+  "description": "A dark, skeletal hand reaching out of the abyss with the eerie quote: Fear is just a game, let's play. A chilling and psychological lock screen designed for a deep, minimalist dark vibe.",
+  "deviceType": "ANDROID",
+  "tags": ["horror", "creepy", "dark humor", "minimalist", "skeleton hand", "quotes", "dark aesthetic", "android"],
+  "ext": "webp",
+  "sortOrder": 2
+},
+{
+  "slug": "goth-sorceress-claws-android",
+  "title": "Goth Sorceress Claws",
+  "description": "A gothic enchantress with long flowing hair and intense red eyes, reaching out with sharp, claw-like hands. A dark, moody, and powerful character illustration for your Android device.",
+  "deviceType": "ANDROID",
+  "tags": ["gothic", "witch", "dark fantasy", "sorceress", "moody", "character art", "hd wallpaper", "android"],
+  "ext": "webp",
+  "sortOrder": 3
+},
+{
+  "slug": "mad-sometimes-skull-android",
+  "title": "We All Go A Little Mad",
+  "description": "An edgy illustration featuring the classic quote: We all go a little mad sometimes. Paired with a creepy, glowing-eyed skull character at the bottom. Perfect for a unique, personality-driven lock screen.",
+  "deviceType": "ANDROID",
+  "tags": ["quote", "dark humor", "skull", "creepy", "minimalist", "typography", "dark aesthetic", "android"],
+  "ext": "webp",
+  "sortOrder": 4
+},
+{
+  "slug": "sweet-screams-vampire-android",
+  "title": "Sweet Screams Goodnight",
+  "description": "A dark vampire-inspired design featuring sharp fangs, glowing red eyes, and skeleton hands. The text reads 'Sweet Screams - Goodnight'. A perfect, spooky lock screen for the end of the day.",
+  "deviceType": "ANDROID",
+  "tags": ["vampire", "horror", "dark humor", "goodnight", "skull", "fangs", "spooky", "android"],
+  "ext": "webp",
+  "sortOrder": 5
+},
+{
+  "slug": "shadow-sorceress-reach-android",
+  "title": "Shadow Sorceress Reach",
+  "description": "A dark, silhouetted sorceress with glowing red eyes and long, flowing hair rising from the shadows. She reaches out with sharp, clawed hands, casting a menacing and powerful aura. A perfect dark aesthetic for your Android lock screen.",
+  "deviceType": "ANDROID",
+  "tags": ["sorceress", "shadow queen", "dark magic", "gothic", "red eyes", "minimalist", "dark aesthetic", "android"],
+  "ext": "webp",
+  "sortOrder": 6
+},
+{
+  "slug": "shadow-creature-claws-android",
+  "title": "Shadow Creature Claws",
+  "description": "A dark, shadowy entity with sharp claws reaching out from the void, framed by swirling darkness. A high-contrast, minimalist design that feels both threatening and sleek on a dark background.",
+  "deviceType": "ANDROID",
+  "tags": ["shadow", "creature", "darkness", "claws", "minimalist", "horror", "android wallpaper"],
+  "ext": "webp",
+  "sortOrder": 7
+},
+{
+  "slug": "gamer-shadow-android",
+  "title": "Gamer Shadow",
+  "description": "A mysterious hooded figure in the dark playing with a glowing red gaming controller. The sharp red lines and deep black atmosphere create an edgy, modern aesthetic for any mobile gamer.",
+  "deviceType": "ANDROID",
+  "tags": ["gamer", "shadow", "neon", "gaming", "dark aesthetic", "hd wallpaper", "android"],
+  "ext": "webp",
+  "sortOrder": 8
+},
+{
+  "slug": "skeletal-queen-middle-finger-android",
+  "title": "Skeletal Queen Middle Finger",
+  "description": "A gothic queen skeleton wearing a dark crown, surrounded by swirling shadows, making an iconic defiant gesture. A dark, rebellious piece with incredible detail and a gothic vibe.",
+  "deviceType": "ANDROID",
+  "tags": ["skeleton", "gothic", "rebel", "dark art", "attitude", "queen", "hd wallpaper", "android"],
+  "ext": "webp",
+  "sortOrder": 9
+},
+{
+  "slug": "bloody-vampire-skull-android",
+  "title": "Bloody Vampire Skull",
+  "description": "A dark, ominous skull with sharp fangs and blood dripping from its mouth, framed by swirling smoke. A classic, intense horror aesthetic perfect for those who want a truly dark lock screen.",
+  "deviceType": "ANDROID",
+  "tags": ["skull", "vampire", "horror", "darkness", "fangs", "blood", "hd wallpaper", "android"],
+  "ext": "webp",
+  "sortOrder": 10
+},
+{
+  "slug": "sweet-screams-hoodie-android",
+  "title": "Sweet Screams Hoodie",
+  "description": "A rebellious skeleton in a black hoodie making a defiant gesture, under the 'Sweet Screams' horror-style text. An edgy mix of street style and dark, ghostly vibes for your screen.",
+  "deviceType": "ANDROID",
+  "tags": ["skeleton", "hoodie", "sweet screams", "dark humor", "street style", "horror", "android"],
+  "ext": "webp",
+  "sortOrder": 11
+},
+{
+  "slug": "shadow-sorceress-smoke-android",
+  "title": "Shadow Sorceress Smoke",
+  "description": "A pale, haunting sorceress with flowing black hair and glowing yellow eyes conjures dark magical smoke. A high-contrast, atmospheric illustration perfect for a dark mode lock screen.",
+  "deviceType": "ANDROID",
+  "tags": ["sorceress", "dark magic", "witch", "gothic", "smoke", "minimalist", "dark aesthetic", "android"],
+  "ext": "webp",
+  "sortOrder": 12
+},
+{
+  "slug": "screen-time-terrifying-android",
+  "title": "Terrifying Screen Time",
+  "description": "A dark humor design featuring a skull with two tiny ghosts in its eye sockets. Text reads: My screen time is terrifying, you should see my battery life. A witty and relatable wallpaper for dark mode users.",
+  "deviceType": "ANDROID",
+  "tags": ["funny", "dark humor", "skull", "ghosts", "battery", "minimalist", "android"],
+  "ext": "webp",
+  "sortOrder": 13
+},
+{
+  "slug": "dark-abyss-grin-android",
+  "title": "Dark Abyss Grin",
+  "description": "A shadowy, serpent-like creature emerging from a swirling abyss with intense glowing red eyes and a massive fanged grin. Minimal, sharp, and deeply unsettling.",
+  "deviceType": "ANDROID",
+  "tags": ["abyss", "creature", "darkness", "fangs", "red eyes", "minimalist", "horror", "android"],
+  "ext": "webp",
+  "sortOrder": 14
+},
+{
+  "slug": "skeletal-reach-android",
+  "title": "Skeletal Reach",
+  "description": "A detailed, ghostly skeleton hand reaching up through dark smoke toward a pair of glowing red eyes in the shadows. A dramatic, high-contrast lock screen that brings a sense of impending dread.",
+  "deviceType": "ANDROID",
+  "tags": ["skeleton", "hand", "darkness", "horror", "red eyes", "smoke", "minimalist", "android"],
+  "ext": "webp",
+  "sortOrder": 15
+},
+{
+  "slug": "little-mad-quote-android",
+  "title": "We All Go A Little Mad",
+  "description": "A dark, moody illustration featuring the classic quote: We all go a little mad sometimes. The text is paired with a sinister, grinning skeletal face at the bottom on a pure black background.",
+  "deviceType": "ANDROID",
+  "tags": ["quote", "dark humor", "skull", "madness", "minimalist", "typography", "dark aesthetic", "android"],
+  "ext": "webp",
+  "sortOrder": 16
+},
+{
+  "slug": "gothic-witch-spell-android",
+  "title": "Gothic Witch Spell",
+  "description": "A powerful witch in a wide-brimmed hat channels dark energy from her fingertips. With glowing red eyes and long, flowing hair, she commands the shadows around her. A high-detail, moody gothic illustration.",
+  "deviceType": "ANDROID",
+  "tags": ["witch", "gothic", "dark magic", "sorceress", "spooky", "character art", "hd wallpaper", "android"],
+  "ext": "webp",
+  "sortOrder": 17
+},
+{
+  "slug": "always-watching-eyes-android",
+  "title": "Always Watching Eyes",
+  "description": "Two piercing red eyes stare out from a pitch-black void. A white comic-style speech bubble above contains the text: I'M ALWAYS WATCHING. A minimalist horror lock screen that keeps you on edge.",
+  "deviceType": "ANDROID",
+  "tags": ["horror", "red eyes", "minimalist", "creepy", "darkness", "warning", "android"],
+  "ext": "webp",
+  "sortOrder": 18
+},
+{
+  "slug": "shadows-have-eyes-android",
+  "title": "The Shadows Have Eyes",
+  "description": "A spooky, minimalist wallpaper featuring yellow eyes in the deep darkness surrounded by grasping, shadowy hands. The text reads: THE SHADOWS HAVE EYES. A perfect minimalist warning for your lock screen.",
+  "deviceType": "ANDROID",
+  "tags": ["shadows", "creepy", "minimalist", "horror", "eyes", "dark aesthetic", "android"],
+  "ext": "webp",
+  "sortOrder": 19
+},
+{
+  "slug": "skeleton-king-defiance-android",
+  "title": "Skeletal King Defiance",
+  "description": "A regal skeleton king wearing a sharp black crown and holding a jagged scepter, raising a defiant middle finger gesture. Dark, gritty, and rebellious art style for those who live by their own rules.",
+  "deviceType": "ANDROID",
+  "tags": ["skeleton", "king", "rebel", "dark art", "crown", "attitude", "hd wallpaper", "android"],
+  "ext": "webp",
+  "sortOrder": 20
+},
+{
+  "slug": "call-from-inside-android",
+  "title": "Call From Inside",
+  "description": "A terrifying, cracked-wall design featuring glowing red eyes peering from the darkness. White, bleeding text reads: THE CALL IS COMING FROM INSIDE THE HOUSE. A classic horror trope brought to your screen.",
+  "deviceType": "ANDROID",
+  "tags": ["horror", "quote", "scary", "cracked wall", "red eyes", "dark humor", "android"],
+  "ext": "webp",
+  "sortOrder": 21
+},
+    {
       "slug": "gangster-skull-pc",
       "title": "Gangster Skull",
       "description": "Cartoon skeleton in a suit lounging with a cigar, gold chain, and awesome attitude.",
