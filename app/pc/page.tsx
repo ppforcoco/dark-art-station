@@ -113,34 +113,32 @@ export default async function PcPage({ searchParams }: PageProps) {
               — {total} wallpapers · page {page} of {totalPages}
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {images.map((img) => {
-                const card = (
-                  <Link
-                    key={img.id}
-                    href={`/pc/${img.slug}`}
-                    className="group relative overflow-hidden bg-[#0a0a0a] border border-[#2a2535] hover:border-[rgba(192,0,26,0.6)] transition-colors duration-300"
-                    style={{ aspectRatio: "16/9" }}
-                  >
-                    <Image
-                      src={getPublicUrl(img.r2Key)}
-                      alt={img.title}
-                      fill
-                      className="object-cover transition-transform duration-500 group-hover:scale-105"
-                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[rgba(5,5,5,0.92)] via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-3">
-                      <div>
-                        <p className="font-body italic text-[0.85rem] text-white leading-tight">{img.title}</p>
-                        <div className="flex flex-wrap gap-1 mt-1">
-                          {img.tags.slice(0, 3).map((t) => (
-                            <span key={t} className="font-mono text-[0.45rem] tracking-[0.1em] text-[#c9a84c]">#{t}</span>
-                          ))}
-                        </div>
+              {images.map((img) => (
+                <Link
+                  key={img.id}
+                  href={`/pc/${img.slug}`}
+                  className="group relative overflow-hidden bg-[#0a0a0a] border border-[#2a2535] hover:border-[rgba(192,0,26,0.6)] transition-colors duration-300"
+                  style={{ aspectRatio: "16/9" }}
+                >
+                  <Image
+                    src={getPublicUrl(img.r2Key)}
+                    alt={img.title}
+                    fill
+                    className="object-cover transition-transform duration-500 group-hover:scale-105"
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[rgba(5,5,5,0.92)] via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-3">
+                    <div>
+                      <p className="font-body italic text-[0.85rem] text-white leading-tight">{img.title}</p>
+                      <div className="flex flex-wrap gap-1 mt-1">
+                        {img.tags.slice(0, 3).map((t) => (
+                          <span key={t} className="font-mono text-[0.45rem] tracking-[0.1em] text-[#c9a84c]">#{t}</span>
+                        ))}
                       </div>
                     </div>
-                  </Link>
-                );
-              })}
+                  </div>
+                </Link>
+              ))}
             </div>
             <Pagination currentPage={page} totalPages={totalPages} baseUrl={baseUrl} />
           </>
