@@ -7,6 +7,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import HalloweenCountdown from "@/components/HalloweenCountdown";
 import DarkQuoteBar from "@/components/DarkQuoteBar";
+import DarkDrift from "@/components/DarkDrift";
 import ScrollToTop from "@/components/ScrollToTop";
 
 const cinzel = Cinzel_Decorative({
@@ -78,7 +79,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{var t=localStorage.getItem('hw-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}; document.documentElement.style.setProperty('--topbar-total','0px');})();`,
+            __html: `(function(){try{var t=localStorage.getItem('hw-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();`,
           }}
         />
         {/* Auto night mode: deepen darks between 8pm–6am */}
@@ -130,6 +131,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           }}
         />
         <Cursor />
+        <DarkDrift />
         <HalloweenCountdown />
         <DarkQuoteBar />
         <Header />

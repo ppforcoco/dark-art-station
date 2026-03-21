@@ -13,7 +13,7 @@ const NAV_LINKS = [
   { label: "Collections", href: "/collections" },
 ];
 
-type Theme = "dark" | "blood" | "light";
+type Theme = "dark" | "blood" | "light" | "ghost" | "ember";
 
 const DARK_ROUTES = [
   "/halloween", "/dark-valentine", "/blood-moon",
@@ -47,7 +47,7 @@ export default function Header() {
   useEffect(() => {
     try {
       const saved = localStorage.getItem("hw-theme") as Theme | null;
-      const valid: Theme[] = ["dark", "blood", "light"];
+      const valid: Theme[] = ["dark", "blood", "light", "ghost", "ember"];
       if (saved && valid.includes(saved)) {
         setTheme(saved);
         document.documentElement.setAttribute("data-theme", saved);
@@ -156,8 +156,8 @@ export default function Header() {
     return () => window.removeEventListener("keydown", onKey);
   }, [closeMenu, closeSearch]);
 
-  const themeIcon  = theme === "dark" ? "☽" : theme === "blood" ? "🩸" : "☀";
-  const themeLabel = theme === "dark" ? "Dark" : theme === "blood" ? "Blood" : "Light";
+  const themeIcon  = theme === "dark" ? "☽" : theme === "blood" ? "🩸" : theme === "ghost" ? "👻" : theme === "ember" ? "🔥" : "☀";
+  const themeLabel = theme === "dark" ? "Dark" : theme === "blood" ? "Blood" : theme === "ghost" ? "Ghost" : theme === "ember" ? "Ember" : "Light";
   const cursorEmoji = CURSOR_STYLES.find(c => c.id === cursorStyle)?.emoji ?? "⬡";
 
   return (
@@ -252,16 +252,14 @@ export default function Header() {
         [data-theme="blood"] .dark-quote-bar       { background: #100000 !important; border-color: rgba(192,0,0,0.25) !important; }
         [data-theme="blood"] .dqb-text             { color: #ffd0d0 !important; }
 
-        @media (pointer: fine) {
-          [data-cursor="skull"]  * { cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32'%3E%3Ctext y='26' font-size='22'%3E%F0%9F%92%80%3C/text%3E%3C/svg%3E") 16 16, auto !important; }
-          [data-cursor="skull"]    { cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32'%3E%3Ctext y='26' font-size='22'%3E%F0%9F%92%80%3C/text%3E%3C/svg%3E") 16 16, auto !important; }
-          [data-cursor="flame"]  * { cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32'%3E%3Ctext y='26' font-size='22'%3E%F0%9F%94%A5%3C/text%3E%3C/svg%3E") 16 8,  auto !important; }
-          [data-cursor="flame"]    { cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32'%3E%3Ctext y='26' font-size='22'%3E%F0%9F%94%A5%3C/text%3E%3C/svg%3E") 16 8,  auto !important; }
-          [data-cursor="ghost"]  * { cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32'%3E%3Ctext y='26' font-size='22'%3E%F0%9F%91%BB%3C/text%3E%3C/svg%3E") 16 16, auto !important; }
-          [data-cursor="ghost"]    { cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32'%3E%3Ctext y='26' font-size='22'%3E%F0%9F%91%BB%3C/text%3E%3C/svg%3E") 16 16, auto !important; }
-          [data-cursor="dagger"] * { cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32'%3E%3Ctext y='26' font-size='22'%3E%F0%9F%97%A1%3C/text%3E%3C/svg%3E") 8  8,  auto !important; }
-          [data-cursor="dagger"]   { cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32'%3E%3Ctext y='26' font-size='22'%3E%F0%9F%97%A1%3C/text%3E%3C/svg%3E") 8  8,  auto !important; }
-        }
+        [data-cursor="skull"]  * { cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32'%3E%3Ctext y='26' font-size='22'%3E%F0%9F%92%80%3C/text%3E%3C/svg%3E") 16 16, auto !important; }
+        [data-cursor="skull"]    { cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32'%3E%3Ctext y='26' font-size='22'%3E%F0%9F%92%80%3C/text%3E%3C/svg%3E") 16 16, auto !important; }
+        [data-cursor="flame"]  * { cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32'%3E%3Ctext y='26' font-size='22'%3E%F0%9F%94%A5%3C/text%3E%3C/svg%3E") 16 8,  auto !important; }
+        [data-cursor="flame"]    { cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32'%3E%3Ctext y='26' font-size='22'%3E%F0%9F%94%A5%3C/text%3E%3C/svg%3E") 16 8,  auto !important; }
+        [data-cursor="ghost"]  * { cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32'%3E%3Ctext y='26' font-size='22'%3E%F0%9F%91%BB%3C/text%3E%3C/svg%3E") 16 16, auto !important; }
+        [data-cursor="ghost"]    { cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32'%3E%3Ctext y='26' font-size='22'%3E%F0%9F%91%BB%3C/text%3E%3C/svg%3E") 16 16, auto !important; }
+        [data-cursor="dagger"] * { cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32'%3E%3Ctext y='26' font-size='22'%3E%F0%9F%97%A1%3C/text%3E%3C/svg%3E") 8  8,  auto !important; }
+        [data-cursor="dagger"]   { cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32'%3E%3Ctext y='26' font-size='22'%3E%F0%9F%97%A1%3C/text%3E%3C/svg%3E") 8  8,  auto !important; }
 
         .hw-nav-icon {
           display: flex; align-items: center; justify-content: center;
@@ -424,15 +422,15 @@ export default function Header() {
           touch-action: manipulation; min-height: 44px;
         }
         .mobile-action-btn:hover, .mobile-action-btn:active { background: rgba(192,0,26,0.14); color: #f0ecff; border-color: rgba(192,0,26,0.4); }
-        .mobile-theme-row { display: flex; gap: 6px; padding: 0 0 4px; }
+        .mobile-theme-row { display: flex; gap: 5px; padding: 0 0 4px; flex-wrap: wrap; }
         .mobile-theme-pill {
-          flex: 1; padding: 10px 4px; background: transparent;
+          flex: 1; min-width: calc(33% - 4px); padding: 9px 3px; background: transparent;
           border: 1px solid rgba(139,0,0,0.25); color: #4a445a;
           font-family: var(--font-space, monospace);
-          font-size: 0.55rem; letter-spacing: 0.1em; text-transform: uppercase;
+          font-size: 0.5rem; letter-spacing: 0.08em; text-transform: uppercase;
           cursor: pointer; text-align: center;
           transition: background 0.15s, color 0.15s, border-color 0.15s;
-          touch-action: manipulation; min-height: 40px;
+          touch-action: manipulation; min-height: 38px;
         }
         .mobile-theme-pill.active { border-color: #c0001a; color: #c0001a; background: rgba(192,0,26,0.12); }
         .mobile-cursor-row { display: flex; gap: 6px; }
@@ -502,6 +500,12 @@ export default function Header() {
                 <button type="button" className={`hw-dropdown-item${theme === "light" ? " hw-active" : ""}`} onClick={() => setThemeAndClose("light")}>
                   <span className="hw-dot">☀</span><span>Light</span>
                 </button>
+                <button type="button" className={`hw-dropdown-item${theme === "ghost" ? " hw-active" : ""}`} onClick={() => setThemeAndClose("ghost")}>
+                  <span className="hw-dot">👻</span><span>Ghost</span>
+                </button>
+                <button type="button" className={`hw-dropdown-item${theme === "ember" ? " hw-active" : ""}`} onClick={() => setThemeAndClose("ember")}>
+                  <span className="hw-dot">🔥</span><span>Ember</span>
+                </button>
               </div>
             )}
           </div>
@@ -510,19 +514,6 @@ export default function Header() {
         <div className="nav-mobile-controls">
           <button type="button" className="btn-hamburger btn-search-mobile" onClick={openSearch} aria-label="Search" style={{ touchAction: "manipulation" }}>
             <Search size={18} strokeWidth={1.5} />
-          </button>
-          <button
-            type="button"
-            className="btn-hamburger"
-            onClick={() => {
-              const next: Theme = theme === "dark" ? "light" : theme === "light" ? "blood" : "dark";
-              setThemeAndClose(next);
-            }}
-            aria-label="Toggle theme"
-            title={`Switch to ${theme === "dark" ? "light" : theme === "light" ? "blood" : "dark"} theme`}
-            style={{ touchAction: "manipulation", fontSize: "1.1rem", lineHeight: 1 }}
-          >
-            {themeIcon}
           </button>
           <button className="btn-hamburger" onClick={toggleMenu} aria-label={menuOpen ? "Close menu" : "Open menu"} aria-expanded={menuOpen} style={{ touchAction: "manipulation" }}>
             {menuOpen ? <X size={22} strokeWidth={1.5} /> : <Menu size={22} strokeWidth={1.5} />}
@@ -593,9 +584,9 @@ export default function Header() {
             </button>
           </div>
           <div className="mobile-theme-row" style={{ marginTop: "12px" }}>
-            {(["dark", "blood", "light"] as Theme[]).map(t => (
+            {(["dark", "blood", "light", "ghost", "ember"] as Theme[]).map(t => (
               <button key={t} type="button" className={`mobile-theme-pill${theme === t ? " active" : ""}`} onClick={() => setThemeAndClose(t)}>
-                {t === "dark" ? "☽ Dark" : t === "blood" ? "🩸 Blood" : "☀ Light"}
+                {t === "dark" ? "☽ Dark" : t === "blood" ? "🩸 Blood" : t === "ghost" ? "👻 Ghost" : t === "ember" ? "🔥 Ember" : "☀ Light"}
               </button>
             ))}
           </div>
