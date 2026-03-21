@@ -7,29 +7,18 @@ export default function Cursor() {
   const mx  = useRef(0);
   const my  = useRef(0);
   const raf = useRef<number>(0);
-  const [hovered, setHovered] = useState(false);
-  const [visible, setVisible] = useState(false);
-  const [isTouch, setIsTouch] = useState(true); // default hidden until confirmed mouse
+  const [hovered,  setHovered]  = useState(false);
+  const [mounted,  setMounted]  = useState(false); // hide until mouse first moves
 
   useEffect(() => {
-    // Never show cursor on touch/coarse pointer devices (phones, tablets)
+    // Never show on touch/mobile devices
     const isPointerFine = window.matchMedia("(pointer: fine)").matches;
     if (!isPointerFine) return;
-    setIsTouch(false);
-
-    // Check if default ring cursor should show
-    const checkCursor = () => {
-      const val = document.documentElement.getAttribute("data-cursor") ?? "default";
-      setVisible(val === "default");
-    };
-    checkCursor();
-
-    const observer = new MutationObserver(checkCursor);
-    observer.observe(document.documentElement, { attributes: true, attributeFilter: ["data-cursor"] });
 
     const onMove = (e: MouseEvent) => {
       mx.current = e.clientX;
       my.current = e.clientY;
+      if (!mounted) setMounted(true);
       if (dotRef.current) {
         dotRef.current.style.left = `${e.clientX}px`;
         dotRef.current.style.top  = `${e.clientY}px`;
@@ -57,12 +46,10 @@ export default function Cursor() {
       document.removeEventListener("mousemove", onMove);
       document.removeEventListener("mouseover", onOver);
       cancelAnimationFrame(raf.current);
-      observer.disconnect();
     };
-  }, []);
+  }, [mounted]);
 
-  if (isTouch) return null;
-
+  // Don't render anything on touch devices (SSR safe — defaults hidden)
   return (
     <>
       <div ref={ringRef} style={{
@@ -71,14 +58,14 @@ export default function Cursor() {
         border: "1px solid #c0001a", borderRadius: "50%",
         transform: `translate(-50%, -50%) scale(${hovered ? 2 : 1})`,
         transition: "transform 0.15s ease",
-        display: visible ? "block" : "none",
+        display: mounted ? "block" : "none",
       }} />
       <div ref={dotRef} style={{
         position: "fixed", pointerEvents: "none", zIndex: 9999,
         width: 4, height: 4,
         background: "#ff3c00", borderRadius: "50%",
         transform: "translate(-50%, -50%)",
-        display: visible ? "block" : "none",
+        display: mounted ? "block" : "none",
       }} />
     </>
   );
