@@ -11,7 +11,7 @@ import AdSlot from "@/components/AdSlot";
 import Pagination from "@/components/Pagination";
 import Breadcrumbs from "@/components/Breadcrumbs";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 const PAGE_SIZE = 24;
 
@@ -122,7 +122,7 @@ export default async function IphonePage({ searchParams }: PageProps) {
                 >
                   <Image
                     src={getPublicUrl(img.r2Key)}
-                    alt={img.title}
+                    alt={`${img.title} — free dark iPhone wallpaper 4K`}
                     fill
                     className="object-cover transition-transform duration-500 group-hover:scale-105"
                     sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"

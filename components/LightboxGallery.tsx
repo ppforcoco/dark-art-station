@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -19,6 +19,8 @@ interface Props {
 export default function LightboxGallery({ images }: Props) {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [dlState, setDlState] = useState<"idle" | "done">("idle");
+  const touchStartX = useRef<number | null>(null);
+  const touchStartY = useRef<number | null>(null);
   const isOpen = activeIndex !== null;
 
   const open  = (i: number) => { setActiveIndex(i); setDlState("idle"); };
@@ -107,6 +109,22 @@ export default function LightboxGallery({ images }: Props) {
           aria-modal="true"
           aria-label={current.title}
           style={{ touchAction: "none", overscrollBehavior: "contain" }}
+          onTouchStart={(e) => {
+            touchStartX.current = e.touches[0].clientX;
+            touchStartY.current = e.touches[0].clientY;
+          }}
+          onTouchEnd={(e) => {
+            if (touchStartX.current === null || touchStartY.current === null) return;
+            const dx = e.changedTouches[0].clientX - touchStartX.current;
+            const dy = e.changedTouches[0].clientY - touchStartY.current;
+            touchStartX.current = null;
+            touchStartY.current = null;
+            // Only trigger if horizontal swipe is dominant and long enough
+            if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 50) {
+              if (dx < 0) next();
+              else prev();
+            }
+          }}
         >
           {/* Close */}
           <button className="lb-close" onClick={close} aria-label="Close lightbox" type="button">✕</button>

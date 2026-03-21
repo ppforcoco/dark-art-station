@@ -28,7 +28,7 @@ export default async function CollectionsPage() {
 
   return (
     <main style={{ backgroundColor: "#070710", minHeight: "100vh", paddingTop: "100px" }}>
-      <div style={{ padding: "60px 60px 40px", borderBottom: "1px solid #2a2535" }}>
+      <div style={{ padding: "clamp(20px, 5vw, 60px) clamp(20px, 5vw, 60px) 40px", borderBottom: "1px solid #2a2535" }}>
         <span className="section-eyebrow">The Archive</span>
         <h1 className="section-title" style={{ fontSize: "clamp(2rem, 4vw, 3.5rem)" }}>
           All Collections
@@ -38,7 +38,7 @@ export default async function CollectionsPage() {
         </p>
       </div>
 
-      <div style={{ padding: "60px" }}>
+      <div style={{ padding: "0 clamp(20px, 5vw, 60px) 60px" }}>
         {Object.entries(grouped).map(([category, cols], groupIdx) => (
           <div key={category} style={{ marginBottom: "60px" }}>
             <h2 style={{

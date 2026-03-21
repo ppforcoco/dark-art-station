@@ -87,6 +87,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
         <link rel="preconnect" href="https://assets.hauntedwallpapers.com" />
         <link rel="dns-prefetch" href="https://assets.hauntedwallpapers.com" />
+        <link rel="manifest" href="/manifest.json" />
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+        <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+        <meta name="theme-color" content="#0c0b14" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <meta name="apple-mobile-web-app-title" content="Haunted WP" />
+        <meta name="mobile-web-app-capable" content="yes" />
         {adsPid && (
           <script
             async

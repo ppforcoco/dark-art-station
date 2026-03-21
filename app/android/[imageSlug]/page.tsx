@@ -146,14 +146,14 @@ export default async function IphoneImagePage({ params }: PageProps) {
               </span>
             </div>
 
-            {/* Ad unit — above download button (highest converting position) */}
-            <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_SIDEBAR} width={300} height={250} className="mt-2" />
-
-            {/* Download button with success state + view count */}
+            {/* Download button — primary CTA */}
             <DownloadButton
               href={`/api/download/image/${image.id}`}
               viewCount={image.viewCount}
             />
+
+            {/* Ad unit — below download button for higher viewability */}
+            <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_SIDEBAR} width={300} height={250} className="mt-2" />
           </div>
         </div>
       </section>
