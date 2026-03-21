@@ -13,8 +13,7 @@ interface ErrorProps {
 
 export default function ErrorPage({ error, reset }: ErrorProps) {
   useEffect(() => {
-    // Log to your error tracking service here if you add one later
-    console.error("[SANCTUM ERROR]", error);
+    console.error("[APP ERROR]", error);
   }, [error]);
 
   return (
@@ -24,19 +23,18 @@ export default function ErrorPage({ error, reset }: ErrorProps) {
         <div className="error-sigil" aria-hidden="true">⚠ ✦ ⚠</div>
 
         <span className="error-code">500</span>
-        <h1 className="error-title">A Rift in the Ritual</h1>
+        <h1 className="error-title">Something Went Wrong</h1>
         <p className="error-desc">
-          Something fractured in the abyss. The dark forces are working to seal the wound.
-          You may try again, or retreat to safer ground.
+          An unexpected error occurred. You can try again or head back to the homepage.
         </p>
 
         {error.digest && (
-          <p className="error-digest">Rift signature: {error.digest}</p>
+          <p className="error-digest">Error ID: {error.digest}</p>
         )}
 
         <div className="error-actions">
           <button onClick={reset} className="error-btn-primary">Try Again</button>
-          <Link href="/" className="error-btn-secondary">Return to the Sanctum</Link>
+          <Link href="/" className="error-btn-secondary">Back to Home</Link>
         </div>
 
       </div>

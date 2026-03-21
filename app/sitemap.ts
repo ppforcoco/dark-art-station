@@ -20,12 +20,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${siteUrl}/contact`,         lastModified: new Date(), changeFrequency: "monthly" as const, priority: 0.4  },
     { url: `${siteUrl}/licensing`,       lastModified: new Date(), changeFrequency: "monthly" as const, priority: 0.4  },
     { url: `${siteUrl}/privacy`,         lastModified: new Date(), changeFrequency: "monthly" as const, priority: 0.3  },
-    // Seasonal / event landing pages (Phase 27)
-    { url: `${siteUrl}/halloween`,       lastModified: new Date(), changeFrequency: "weekly"  as const, priority: 0.8  },
-    { url: `${siteUrl}/dark`,            lastModified: new Date(), changeFrequency: "weekly"  as const, priority: 0.7  },
-    { url: `${siteUrl}/skeleton`,        lastModified: new Date(), changeFrequency: "weekly"  as const, priority: 0.7  },
-    { url: `${siteUrl}/goddess`,         lastModified: new Date(), changeFrequency: "weekly"  as const, priority: 0.7  },
-    { url: `${siteUrl}/demon`,           lastModified: new Date(), changeFrequency: "weekly"  as const, priority: 0.7  },
   ];
 
   // Collection pages

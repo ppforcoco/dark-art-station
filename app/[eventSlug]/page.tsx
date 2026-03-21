@@ -24,7 +24,7 @@ const KNOWN_EVENTS: Record<string, EventConfig> = {
     tag:         "halloween",
     title:       "Halloween Wallpapers",
     metaTitle:   "Best Free 4K Halloween Wallpapers 2026 | Haunted Wallpapers",
-    description: "Free dark Halloween wallpapers for iPhone, Android & PC. Skulls, demons, witches and arcane imagery — 4K resolution, instant download.",
+    description: "Free dark Halloween wallpapers for iPhone, Android & PC. Dark, moody and atmospheric imagery — 4K resolution, instant download.",
     eyebrow:     "Ritual Season",
   },
   "dark-valentine": {
@@ -38,7 +38,7 @@ const KNOWN_EVENTS: Record<string, EventConfig> = {
     tag:         "dayofthedead",
     title:       "Day of the Dead Wallpapers",
     metaTitle:   "Day of the Dead Wallpapers 4K | Haunted Wallpapers",
-    description: "Dia de los Muertos — vibrant skull art, marigolds, and ancestral energies in 4K dark fantasy wallpapers.",
+    description: "Dia de los Muertos — vibrant art, marigolds, and ancestral energies in 4K dark fantasy wallpapers.",
     eyebrow:     "Día de Muertos",
   },
   "blood-moon": {
@@ -59,7 +59,7 @@ const KNOWN_EVENTS: Record<string, EventConfig> = {
     tag:         "easter",
     title:       "Black Easter Wallpapers",
     metaTitle:   "Black Easter Wallpapers 4K | Haunted Wallpapers",
-    description: "The dark rebirth reimagined in shadow. Gothic Easter, arcane spring, and dark renewal wallpapers.",
+    description: "The dark rebirth reimagined in shadow. Gothic Easter, gothic spring, and dark renewal wallpapers.",
     eyebrow:     "The Dark Rebirth",
   },
 };
@@ -78,7 +78,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   return {
     title:       event.metaTitle,
     description: event.description,
-    keywords:    [event.tag, "dark wallpaper", "4k wallpaper", "free wallpaper", "arcane art", "haunted wallpapers"],
+    keywords:    [event.tag, "dark wallpaper", "4k wallpaper", "free wallpaper", "dark art", "haunted wallpapers"],
     openGraph: {
       title:       event.metaTitle,
       description: event.description,

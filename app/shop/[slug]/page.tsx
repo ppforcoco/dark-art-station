@@ -30,7 +30,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   return {
     title: `${displayTitle} | Haunted Wallpapers`,
     description: collection.description,
-    keywords: [collection.category, "dark wallpaper", "arcane art", "dark fantasy", "AI art", displayTitle],
+    keywords: [collection.category, "dark wallpaper", "dark art", "dark fantasy", "AI art", displayTitle],
     openGraph: {
       title: `${displayTitle} | Haunted Wallpapers`,
       description: collection.description,

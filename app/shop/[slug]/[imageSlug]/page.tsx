@@ -46,7 +46,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       image.title,
       image.collection.title,
       "dark wallpaper",
-      "arcane art",
+      "dark art",
       "AI art",
       "desktop wallpaper",
     ],

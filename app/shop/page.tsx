@@ -77,7 +77,7 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
           {page > 1 && <span className="shop-page-num"> — Page {page}</span>}
         </h1>
         <p className="shop-page-count">
-          {total} {total === 1 ? "work" : "works"} found in the abyss
+          {total} {total === 1 ? "work" : "works"} found
         </p>
       </div>
 

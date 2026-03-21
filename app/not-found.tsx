@@ -13,15 +13,15 @@ export default function NotFound() {
         <div className="error-sigil" aria-hidden="true">☽ ✦ ☾</div>
 
         <span className="error-code">404</span>
-        <h1 className="error-title">The Veil Has Folded</h1>
+        <h1 className="error-title">Page Not Found</h1>
         <p className="error-desc">
-          This page wandered beyond the sanctum and was swallowed by the void.
-          The ritual you seek does not exist — or was never summoned.
+          This page doesn&apos;t exist or has been moved.
+          Head back home to find what you&apos;re looking for.
         </p>
 
         <div className="error-actions">
-          <Link href="/" className="error-btn-primary">Return to the Sanctum →</Link>
-          <Link href="/shop" className="error-btn-secondary">Browse the Grimoire</Link>
+          <Link href="/" className="error-btn-primary">Back to Home →</Link>
+          <Link href="/shop" className="error-btn-secondary">Browse Collections</Link>
         </div>
 
       </div>

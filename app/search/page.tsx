@@ -19,8 +19,8 @@ export async function generateMetadata(
       ? `"${q}" — Search Results${pageLabel} | HauntedWallpapers`
       : "Search | HauntedWallpapers",
     description: q
-      ? `Discover dark, arcane wallpapers matching "${q}". Curated for iPhone, Android & PC.`
-      : "Search the full HauntedWallpapers sanctum.",
+      ? `Discover dark fantasy wallpapers matching "${q}". Curated for iPhone, Android & PC.`
+      : "Search the full HauntedWallpapers collection.",
   };
 }
 
