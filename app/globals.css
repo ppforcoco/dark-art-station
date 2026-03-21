@@ -157,6 +157,7 @@
 [data-theme="ember"] .mobile-theme-pill.active { border-color: #ff4400 !important; color: #ff4400 !important; background: rgba(255,68,0,0.12) !important; }
 
 
+/* ── Light Theme — Full Site Override ───────────────────────────
    Overrides every hardcoded Tailwind inline color used across
    all page files so the entire site responds to the theme toggle.
    Specificity: [data-theme="light"] beats any single class.      */
