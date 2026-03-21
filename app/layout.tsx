@@ -5,7 +5,7 @@ import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import HalloweenCountdown from "@/components/HalloweenCountdown";
-import DarkDrift from "@/components/DarkDrift";
+import Cursor from "@/components/Cursor";
 import ScrollToTop from "@/components/ScrollToTop";
 
 const cinzel = Cinzel_Decorative({
@@ -126,7 +126,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             ]),
           }}
         />
-        <DarkDrift />
+        <Cursor />
         <HalloweenCountdown />
         <Header />
         <div className="content-wrapper">

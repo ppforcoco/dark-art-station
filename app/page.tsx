@@ -247,7 +247,6 @@ export default async function Home() {
             hang flowers. Who find divinity in demons, humor in darkness, and power in
             the arcane. Every wallpaper is a window into a world most dare not enter.
           </p>
-          <Link href="/lore" className="btn-primary"><span>Read Our Story</span></Link>
         </div>
       </section>
 

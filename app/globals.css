@@ -484,13 +484,18 @@ body {
   font-family: var(--font-cormorant), 'Cormorant Garamond', Georgia, serif;
   font-size: clamp(16px, 1.2vw + 14px, 19px);
   overflow-x: hidden;
-  cursor: none;
+  cursor: auto; /* default on mobile/touch */
   min-height: 100vh;
   min-height: 100dvh; /* Dynamic viewport height — fixes iOS address bar bug */
   transition: background-color 0.3s ease, color 0.3s ease;
   /* Safe area support for notched phones */
   padding-left: env(safe-area-inset-left);
   padding-right: env(safe-area-inset-right);
+}
+
+/* Hide native cursor only on desktop (real pointer) — custom Cursor component takes over */
+@media (pointer: fine) {
+  body { cursor: none; }
 }
 
 /* ── Global Typography Scale & Contrast ────────────────────── */
