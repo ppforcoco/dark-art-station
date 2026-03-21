@@ -2,11 +2,9 @@
 import type { Metadata, Viewport } from "next";
 import { Cinzel_Decorative, Cormorant_Garamond, Space_Mono } from "next/font/google";
 import "./globals.css";
-import Cursor from "@/components/Cursor";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import HalloweenCountdown from "@/components/HalloweenCountdown";
-import DarkQuoteBar from "@/components/DarkQuoteBar";
 import DarkDrift from "@/components/DarkDrift";
 import ScrollToTop from "@/components/ScrollToTop";
 
@@ -36,7 +34,6 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.
 const SITE_NAME = "Haunted Wallpapers";
 const OG_IMAGE  = `${SITE_URL}/og-image.jpg`;
 
-// Single viewport declaration — no duplicate manual meta tag
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
@@ -82,7 +79,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             __html: `(function(){try{var t=localStorage.getItem('hw-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();`,
           }}
         />
-        {/* Auto night mode: deepen darks between 8pm–6am */}
         <script
           dangerouslySetInnerHTML={{
             __html: `(function(){try{var h=new Date().getHours();if(h>=20||h<6)document.documentElement.setAttribute('data-night','true');}catch(e){}})();`,
@@ -130,10 +126,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             ]),
           }}
         />
-        <Cursor />
         <DarkDrift />
         <HalloweenCountdown />
-        <DarkQuoteBar />
         <Header />
         <div className="content-wrapper">
           {children}

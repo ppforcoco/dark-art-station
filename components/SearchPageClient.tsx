@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { Search, X, Shuffle } from "lucide-react";
+import { Search, X } from "lucide-react";
 
 const SUGGESTIONS = [
   "skull", "dark fantasy", "witch", "vampire", "skeleton",
@@ -19,7 +19,6 @@ export default function SearchPageClient({ initialQuery }: Props) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [query, setQuery] = useState(initialQuery);
 
-  // Sync if URL param changes (e.g. back/forward)
   useEffect(() => { setQuery(initialQuery); }, [initialQuery]);
 
   const handleSubmit = useCallback((e: React.FormEvent) => {
@@ -31,20 +30,6 @@ export default function SearchPageClient({ initialQuery }: Props) {
 
   const handleSuggestion = useCallback((tag: string) => {
     router.push(`/search?q=${encodeURIComponent(tag)}`);
-  }, [router]);
-
-  const handleRandom = useCallback(async () => {
-    try {
-      const res = await fetch("/api/random-wallpaper");
-      if (!res.ok) return;
-      const img = await res.json();
-      if (!img?.slug) return;
-      if (img.deviceType === "IPHONE")  { router.push(`/iphone/${img.slug}`);  return; }
-      if (img.deviceType === "ANDROID") { router.push(`/android/${img.slug}`); return; }
-      if (img.deviceType === "PC")      { router.push(`/pc/${img.slug}`);      return; }
-      if (img.collection?.slug)         { router.push(`/shop/${img.collection.slug}/${img.slug}`); return; }
-      router.push("/collections");
-    } catch {}
   }, [router]);
 
   const filtered = query
@@ -81,7 +66,6 @@ export default function SearchPageClient({ initialQuery }: Props) {
         <button type="submit" className="sp-search-btn">SEARCH</button>
       </form>
 
-      {/* Live suggestion pills */}
       <div className="sp-suggestions">
         {filtered.slice(0, 10).map(tag => (
           <button key={tag} type="button"
@@ -90,9 +74,6 @@ export default function SearchPageClient({ initialQuery }: Props) {
             {tag}
           </button>
         ))}
-        <button type="button" className="sp-pill sp-pill-random" onClick={handleRandom}>
-          <Shuffle size={11} strokeWidth={1.5} /> Surprise me
-        </button>
       </div>
     </div>
   );
