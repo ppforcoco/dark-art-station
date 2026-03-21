@@ -4,7 +4,7 @@
 import Link from "next/link";
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { Menu, X, Search, Skull, Shuffle } from "lucide-react";
+import { Menu, X, Search, Shuffle } from "lucide-react";
 
 const NAV_LINKS = [
   { label: "iPhone",      href: "/iphone"      },
@@ -15,19 +15,6 @@ const NAV_LINKS = [
 
 type Theme = "dark" | "blood" | "light" | "ghost" | "ember";
 
-const DARK_ROUTES = [
-  "/halloween", "/dark-valentine", "/blood-moon",
-  "/day-of-the-dead", "/iphone", "/android", "/pc",
-];
-
-const CURSOR_STYLES = [
-  { id: "default", emoji: "⬡", label: "Ring"   },
-  { id: "skull",   emoji: "💀", label: "Skull"  },
-  { id: "flame",   emoji: "🔥", label: "Flame"  },
-  { id: "ghost",   emoji: "👻", label: "Ghost"  },
-  { id: "dagger",  emoji: "🗡",  label: "Dagger" },
-];
-
 export default function Header() {
   const router = useRouter();
   const [menuOpen,        setMenuOpen]        = useState(false);
@@ -35,8 +22,6 @@ export default function Header() {
   const [query,           setQuery]           = useState("");
   const [theme,           setTheme]           = useState<Theme>("dark");
   const [themeMenuOpen,   setThemeMenuOpen]   = useState(false);
-  const [cursorMenuOpen,  setCursorMenuOpen]  = useState(false);
-  const [cursorStyle,     setCursorStyle]     = useState("default");
   const [randomSpin,      setRandomSpin]      = useState(false);
 
   const applyTheme = useCallback((t: Theme) => {
@@ -60,27 +45,6 @@ export default function Header() {
     applyTheme(t);
     setThemeMenuOpen(false);
   }, [applyTheme]);
-
-  useEffect(() => {
-    try {
-      const saved = localStorage.getItem("hw-cursor") ?? "default";
-      setCursorStyle(saved);
-      document.documentElement.setAttribute("data-cursor", saved);
-    } catch {}
-  }, []);
-
-  const applyCursor = useCallback((id: string) => {
-    setCursorStyle(id);
-    document.documentElement.setAttribute("data-cursor", id);
-    try { localStorage.setItem("hw-cursor", id); } catch {}
-    setCursorMenuOpen(false);
-  }, []);
-
-  const handleDarkRoute = useCallback(() => {
-    const idx = Math.floor(Date.now() / 86400000) % DARK_ROUTES.length;
-    router.push(DARK_ROUTES[idx]);
-    setMenuOpen(false);
-  }, [router]);
 
   const handleRandom = useCallback(async () => {
     setRandomSpin(true);
@@ -106,7 +70,6 @@ export default function Header() {
   const toggleMenu   = useCallback(() => {
     setMenuOpen(p => !p);
     setThemeMenuOpen(false);
-    setCursorMenuOpen(false);
   }, []);
   const openSearch   = useCallback(() => {
     setSearchOpen(true);
@@ -149,7 +112,7 @@ export default function Header() {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         closeMenu(); closeSearch();
-        setThemeMenuOpen(false); setCursorMenuOpen(false);
+        setThemeMenuOpen(false);
       }
     };
     window.addEventListener("keydown", onKey);
@@ -158,7 +121,6 @@ export default function Header() {
 
   const themeIcon  = theme === "dark" ? "☽" : theme === "blood" ? "🩸" : theme === "ghost" ? "👻" : theme === "ember" ? "🔥" : "☀";
   const themeLabel = theme === "dark" ? "Dark" : theme === "blood" ? "Blood" : theme === "ghost" ? "Ghost" : theme === "ember" ? "Ember" : "Light";
-  const cursorEmoji = CURSOR_STYLES.find(c => c.id === cursorStyle)?.emoji ?? "⬡";
 
   return (
     <>
@@ -248,18 +210,8 @@ export default function Header() {
         [data-theme="blood"] .hw-search-submit     { background: #cc0000 !important; }
         [data-theme="blood"] .hw-search-submit:hover { background: #a80000 !important; }
         [data-theme="blood"] .mobile-theme-pill.active { border-color: #cc0000 !important; color: #cc0000 !important; background: rgba(192,0,0,0.12) !important; }
-        [data-theme="blood"] .mobile-cursor-pill.active { border-color: #cc0000 !important; background: rgba(192,0,0,0.12) !important; }
         [data-theme="blood"] .dark-quote-bar       { background: #100000 !important; border-color: rgba(192,0,0,0.25) !important; }
         [data-theme="blood"] .dqb-text             { color: #ffd0d0 !important; }
-
-        [data-cursor="skull"]  * { cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32'%3E%3Ctext y='26' font-size='22'%3E%F0%9F%92%80%3C/text%3E%3C/svg%3E") 16 16, auto !important; }
-        [data-cursor="skull"]    { cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32'%3E%3Ctext y='26' font-size='22'%3E%F0%9F%92%80%3C/text%3E%3C/svg%3E") 16 16, auto !important; }
-        [data-cursor="flame"]  * { cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32'%3E%3Ctext y='26' font-size='22'%3E%F0%9F%94%A5%3C/text%3E%3C/svg%3E") 16 8,  auto !important; }
-        [data-cursor="flame"]    { cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32'%3E%3Ctext y='26' font-size='22'%3E%F0%9F%94%A5%3C/text%3E%3C/svg%3E") 16 8,  auto !important; }
-        [data-cursor="ghost"]  * { cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32'%3E%3Ctext y='26' font-size='22'%3E%F0%9F%91%BB%3C/text%3E%3C/svg%3E") 16 16, auto !important; }
-        [data-cursor="ghost"]    { cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32'%3E%3Ctext y='26' font-size='22'%3E%F0%9F%91%BB%3C/text%3E%3C/svg%3E") 16 16, auto !important; }
-        [data-cursor="dagger"] * { cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32'%3E%3Ctext y='26' font-size='22'%3E%F0%9F%97%A1%3C/text%3E%3C/svg%3E") 8  8,  auto !important; }
-        [data-cursor="dagger"]   { cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32'%3E%3Ctext y='26' font-size='22'%3E%F0%9F%97%A1%3C/text%3E%3C/svg%3E") 8  8,  auto !important; }
 
         .hw-nav-icon {
           display: flex; align-items: center; justify-content: center;
@@ -433,16 +385,6 @@ export default function Header() {
           touch-action: manipulation; min-height: 38px;
         }
         .mobile-theme-pill.active { border-color: #c0001a; color: #c0001a; background: rgba(192,0,26,0.12); }
-        .mobile-cursor-row { display: flex; gap: 6px; }
-        .mobile-cursor-pill {
-          flex: 1; padding: 10px 4px; background: transparent;
-          border: 1px solid rgba(139,0,0,0.2); color: #4a445a;
-          font-size: 0.85rem; cursor: pointer; text-align: center;
-          transition: background 0.15s, border-color 0.15s;
-          touch-action: manipulation; min-height: 40px;
-          display: flex; align-items: center; justify-content: center;
-        }
-        .mobile-cursor-pill.active { border-color: #c0001a; background: rgba(192,0,26,0.12); }
       `}</style>
 
       <nav className="site-nav">
@@ -461,31 +403,12 @@ export default function Header() {
           <button type="button" className="hw-nav-icon" onClick={openSearch} aria-label="Search" style={{ touchAction: "manipulation" }}>
             <Search size={15} strokeWidth={1.5} />
           </button>
-          <button type="button" className="hw-nav-icon" onClick={handleDarkRoute} title="Dark Route of the Day" aria-label="Dark route" style={{ touchAction: "manipulation" }}>
-            <Skull size={14} strokeWidth={1.5} />
-          </button>
           <button type="button" className={`hw-nav-icon${randomSpin ? " spinning" : ""}`} onClick={handleRandom} title="Random Wallpaper" aria-label="Random wallpaper" style={{ touchAction: "manipulation" }}>
             <Shuffle size={14} strokeWidth={1.5} />
           </button>
 
           <div className="hw-dropdown-wrap">
-            <button type="button" className="hw-dropdown-btn" onClick={() => { setCursorMenuOpen(p => !p); setThemeMenuOpen(false); }} aria-label="Change cursor" style={{ touchAction: "manipulation" }}>
-              <span style={{ fontSize: "0.85rem", lineHeight: 1 }}>{cursorEmoji}</span>
-              <span>Cursor</span>
-            </button>
-            {cursorMenuOpen && (
-              <div className="hw-dropdown">
-                {CURSOR_STYLES.map(c => (
-                  <button key={c.id} type="button" className={`hw-dropdown-item${cursorStyle === c.id ? " hw-active" : ""}`} onClick={() => applyCursor(c.id)}>
-                    <span className="hw-dot">{c.emoji}</span><span>{c.label}</span>
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-
-          <div className="hw-dropdown-wrap">
-            <button type="button" className="hw-dropdown-btn" onClick={() => { setThemeMenuOpen(p => !p); setCursorMenuOpen(false); }} aria-label="Change theme" style={{ touchAction: "manipulation" }}>
+            <button type="button" className="hw-dropdown-btn" onClick={() => { setThemeMenuOpen(p => !p); }} aria-label="Change theme" style={{ touchAction: "manipulation" }}>
               <span style={{ fontSize: "0.85rem", lineHeight: 1 }}>{themeIcon}</span>
               <span>{themeLabel}</span>
             </button>
@@ -576,9 +499,6 @@ export default function Header() {
           </nav>
           <div className="mobile-menu-divider" />
           <div className="mobile-action-strip">
-            <button type="button" className="mobile-action-btn" onClick={handleDarkRoute}>
-              <Skull size={13} strokeWidth={1.5} /> Dark Route of the Day
-            </button>
             <button type="button" className="mobile-action-btn" onClick={handleRandom}>
               <Shuffle size={13} strokeWidth={1.5} /> Summon Random Wallpaper
             </button>
@@ -587,13 +507,6 @@ export default function Header() {
             {(["dark", "blood", "light", "ghost", "ember"] as Theme[]).map(t => (
               <button key={t} type="button" className={`mobile-theme-pill${theme === t ? " active" : ""}`} onClick={() => setThemeAndClose(t)}>
                 {t === "dark" ? "☽ Dark" : t === "blood" ? "🩸 Blood" : t === "ghost" ? "👻 Ghost" : t === "ember" ? "🔥 Ember" : "☀ Light"}
-              </button>
-            ))}
-          </div>
-          <div className="mobile-cursor-row" style={{ marginTop: "8px" }}>
-            {CURSOR_STYLES.map(c => (
-              <button key={c.id} type="button" className={`mobile-cursor-pill${cursorStyle === c.id ? " active" : ""}`} onClick={() => applyCursor(c.id)} title={c.label}>
-                {c.emoji}
               </button>
             ))}
           </div>
