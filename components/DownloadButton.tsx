@@ -4,65 +4,63 @@ import { useState } from "react";
 interface Props {
   href: string;
   viewCount: number;
+  label?: string;
 }
 
-export default function DownloadButton({ href, viewCount }: Props) {
-  const [downloaded, setDownloaded] = useState(false);
+export default function DownloadButton({ href, viewCount, label }: Props) {
+  const [state, setState] = useState<"idle" | "loading" | "done">("idle");
+
+  function handleClick(e: React.MouseEvent<HTMLAnchorElement>) {
+    if (state === "done") return;
+    // Don't prevent default — let the download happen
+    setState("loading");
+    setTimeout(() => setState("done"), 1400);
+  }
+
+  const buttonLabel =
+    state === "loading"
+      ? "Preparing Download…"
+      : state === "done"
+      ? "✓ Download Started"
+      : label ?? "↓ Download 4K · Free";
+
+  const bgColor =
+    state === "done"
+      ? "#1a5c35"
+      : state === "loading"
+      ? "#6b0000"
+      : "#8b0000";
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "8px", marginTop: "8px" }}>
-      {/* View count + success indicator — fixed height so nothing shifts */}
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", height: "20px" }}>
-        <span style={{
-          fontFamily: "var(--font-space, monospace)",
-          fontSize: "0.6rem",
-          letterSpacing: "0.15em",
-          textTransform: "uppercase",
-          color: "#4a445a",
-        }}>
+    <div className="download-btn-wrap">
+      {/* Stats row */}
+      <div className="download-stats-row">
+        <span className="download-stat">
           👁 {viewCount.toLocaleString()} views
         </span>
-        <span style={{
-          fontFamily: "var(--font-space, monospace)",
-          fontSize: "0.6rem",
-          letterSpacing: "0.15em",
-          textTransform: "uppercase",
-          color: "#2ecc71",
-          opacity: downloaded ? 1 : 0,
-          transition: "opacity 0.3s ease",
-        }}>
-          ✓ Saved
+        <span
+          className="download-saved-msg"
+          style={{ opacity: state === "done" ? 1 : 0 }}
+          aria-live="polite"
+        >
+          ✓ Check your downloads folder
         </span>
       </div>
 
-      {/* Fixed-size button — color changes but text and size stay identical */}
+      {/* Main CTA */}
       <a
-        href={href}
-        onClick={() => setDownloaded(true)}
-        style={{
-          display: "block",
-          width: "100%",
-          textAlign: "center",
-          height: "56px",
-          lineHeight: "56px",
-          padding: "0 32px",
-          boxSizing: "border-box",
-          backgroundColor: downloaded ? "#1a6b3a" : "#8b0000",
-          borderColor: downloaded ? "#1a6b3a" : "#8b0000",
-          border: "1px solid",
-          color: "#fff",
-          fontFamily: "var(--font-space, monospace)",
-          fontSize: "0.7rem",
-          letterSpacing: "0.2em",
-          textTransform: "uppercase",
-          textDecoration: "none",
-          transition: "background-color 0.3s ease, border-color 0.3s ease",
-        }}
+        href={state === "loading" ? "#" : href}
+        onClick={handleClick}
+        className="download-btn"
+        style={{ backgroundColor: bgColor, borderColor: bgColor }}
+        aria-label={buttonLabel}
+        download
       >
-        {downloaded ? "✓ Downloaded (Free)" : "↓ Download 4K (Free)"}
+        {buttonLabel}
       </a>
-      <p className="font-mono text-[0.5rem] tracking-[0.1em] text-[#4a445a]">
-        JPEG · 4K resolution · No account required
+
+      <p className="download-sublabel">
+        JPEG · 4K resolution · No account · No watermark
       </p>
     </div>
   );

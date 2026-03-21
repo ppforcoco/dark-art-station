@@ -5111,3 +5111,212 @@ body::after {
   z-index: 1;
   transition: background 90s linear;
 }
+
+
+/* ══════════════════════════════════════════════════════════════
+   PHASE: DOWNLOAD & CTA FIX
+   - Fixed download button height, touch targets, mobile sizing
+   - Product card CTA button fix
+   - AdSense responsive improvements
+   ══════════════════════════════════════════════════════════════ */
+
+/* ── Download Button (DownloadButton component) ───────────────*/
+
+.download-btn-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 12px;
+  width: 100%;
+}
+
+.download-stats-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 20px;
+}
+
+.download-stat {
+  font-family: var(--font-space), monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #4a445a;
+}
+
+.download-saved-msg {
+  font-family: var(--font-space), monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #2ecc71;
+  transition: opacity 0.35s ease;
+  white-space: nowrap;
+}
+
+/* THE DOWNLOAD BUTTON — explicit fixed height so it never collapses */
+a.download-btn {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 56px;
+  padding: 0 28px;
+  box-sizing: border-box;
+  /* background-color & border-color injected via inline style */
+  color: #ffffff !important;
+  font-family: var(--font-space), monospace;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  text-decoration: none !important;
+  border: 1px solid;
+  cursor: pointer;
+  transition: filter 0.2s ease, transform 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  user-select: none;
+  white-space: nowrap;
+}
+
+a.download-btn:hover {
+  filter: brightness(1.18);
+  transform: translateY(-1px);
+}
+a.download-btn:active {
+  transform: translateY(0px);
+  filter: brightness(0.9);
+}
+
+/* Mobile: even bigger touch target */
+@media (max-width: 767px) {
+  a.download-btn {
+    min-height: 62px;
+    font-size: 0.8rem;
+    letter-spacing: 0.15em;
+  }
+}
+
+.download-sublabel {
+  font-family: var(--font-space), monospace;
+  font-size: 0.5rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #4a445a;
+  text-align: center;
+  margin: 0;
+}
+
+/* Light theme */
+[data-theme="light"] .download-stat    { color: #7a7468; }
+[data-theme="light"] .download-sublabel { color: #7a7468; }
+
+/* ── Product Card CTA ─────────────────────────────────────────*/
+
+.product-card-cta {
+  display: block;
+  width: 100%;
+  text-align: center;
+  min-height: 44px;
+  line-height: 44px;
+  padding: 0 10px;
+  box-sizing: border-box;
+  font-family: var(--font-space), monospace;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  text-decoration: none !important;
+  color: #c0001a;
+  border: 1px solid #c0001a;
+  background: transparent;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+}
+
+.product-card-cta:hover {
+  background-color: #c0001a;
+  color: #f0ecff !important;
+}
+.product-card-cta:active {
+  background-color: #8b0000;
+}
+
+@media (max-width: 639px) {
+  .product-card-cta {
+    min-height: 42px;
+    line-height: 42px;
+    font-size: 0.6rem;
+  }
+  .product-grid .flex.flex-col.gap-3 {
+    gap: 8px !important;
+  }
+  .product-grid > div > .p-5,
+  .product-grid > div > div[class*="p-5"] {
+    padding: 10px 10px 12px !important;
+  }
+}
+
+/* Light theme */
+[data-theme="light"] .product-card-cta {
+  color: #c0001a;
+  border-color: #c0001a;
+}
+[data-theme="light"] .product-card-cta:hover {
+  background-color: #c0001a;
+  color: #fff !important;
+}
+
+/* ── AdSense: responsive, no broken blank boxes ───────────────*/
+
+/* Ensure ins tag never forces horizontal overflow on mobile */
+.adsbygoogle {
+  overflow: hidden !important;
+  max-width: 100% !important;
+}
+
+/* Responsive ad wrapper */
+.ad-content {
+  overflow: hidden;
+  max-width: 100%;
+}
+
+@media (max-width: 767px) {
+  .ad-banner {
+    padding: 10px 16px;
+  }
+  .ad-content {
+    padding: 6px 0;
+    border-left: none !important;
+    border-right: none !important;
+  }
+  .ad-label {
+    display: none; /* cleaner on mobile */
+  }
+}
+
+/* ── Image lazy-load fade-in ──────────────────────────────────*/
+/* Applied to non-priority images for smoother perceived performance */
+.img-lazy {
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+.img-lazy.loaded {
+  opacity: 1;
+}
+
+/* ── line-clamp utility (not in all Tailwind versions) ─────── */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}

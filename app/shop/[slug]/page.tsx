@@ -2,6 +2,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Image from "next/image";
+import Link from "next/link";
 import { db } from "@/lib/db";
 import { getPublicUrl } from "@/lib/r2";
 import AdSlot from "@/components/AdSlot";
@@ -28,9 +29,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const displayTitle = TITLE_OVERRIDES[slug] ?? collection.title;
   const ogImage = collection.thumbnail ? getPublicUrl(collection.thumbnail) : `${siteUrl}/og-default.jpg`;
   return {
-    title: `${displayTitle} | Haunted Wallpapers`,
-    description: collection.description,
-    keywords: [collection.category, "dark wallpaper", "dark art", "dark fantasy", "AI art", displayTitle],
+    title: `${displayTitle} | Free Download | Haunted Wallpapers`,
+    description: `${collection.description} Download all ${displayTitle} wallpapers free — no account required.`,
+    keywords: [collection.category, "dark wallpaper", "dark art", "dark fantasy", "free download", displayTitle],
     openGraph: {
       title: `${displayTitle} | Haunted Wallpapers`,
       description: collection.description,
@@ -66,18 +67,23 @@ export default async function CollectionPage({ params }: PageProps) {
   if (!collection) notFound();
 
   const displayTitle = TITLE_OVERRIDES[slug] ?? collection.title;
-
   const thumbnailUrl = collection.thumbnail ? getPublicUrl(collection.thumbnail) : null;
   const hasImages = collection.images.length > 0;
+  // First image used as fallback download target when no bundle ZIP exists
+  const firstImage = collection.images[0] ?? null;
 
   return (
-    <main className="min-h-screen" style={{ backgroundColor: "var(--bg-primary)", color: "var(--text-primary)" }}>
-
-      <Breadcrumbs items={[
-        { label: "Home",        href: "/" },
-        { label: "Collections", href: "/shop" },
-        { label: displayTitle },
-      ]} />
+    <main
+      className="min-h-screen"
+      style={{ backgroundColor: "var(--bg-primary)", color: "var(--text-primary)" }}
+    >
+      <Breadcrumbs
+        items={[
+          { label: "Home",        href: "/" },
+          { label: "Collections", href: "/shop" },
+          { label: displayTitle },
+        ]}
+      />
 
       {/* ── Collection Header ── */}
       <section style={{ maxWidth: "1280px", margin: "0 auto", padding: "40px 24px" }}>
@@ -85,45 +91,49 @@ export default async function CollectionPage({ params }: PageProps) {
           style={{ display: "grid", gridTemplateColumns: "1fr", gap: "32px" }}
           className="collection-header-grid"
         >
-          {/* ── Thumbnail image ──
-              FIX: object-fit: contain via inline style so the full wallpaper
-              is always visible. The inline style prop beats Tailwind + Next.js
-              injected styles reliably. Container is locked to 9/16 portrait.  */}
-          {/* Outer: caps max-width. Inner padding-top wrapper: enforces 9:16 so
-               Next.js <Image fill> has real pixel dimensions to fill into.       */}
-          <div style={{
-            width: "100%",
-            maxWidth: "360px",
-            margin: "0 auto",
-            background: "#070710",
-            border: "1px solid rgba(139,0,0,0.3)",
-            overflow: "hidden",
-          }}>
+          {/* Thumbnail */}
+          <div
+            style={{
+              width: "100%",
+              maxWidth: "360px",
+              margin: "0 auto",
+              background: "#070710",
+              border: "1px solid rgba(139,0,0,0.3)",
+              overflow: "hidden",
+              position: "relative",
+            }}
+          >
             <div style={{ position: "relative", width: "100%", paddingTop: "177.78%" }}>
-            {thumbnailUrl ? (
-              <Image
-                src={thumbnailUrl}
-                alt={displayTitle}
-                fill
-                priority
-                sizes="360px"
-                style={{ objectFit: "contain", objectPosition: "center center" }}
-              />
-            ) : (
-              <div className={`w-full h-full flex items-center justify-center text-8xl ${collection.bgClass}`}>
-                {collection.icon}
-              </div>
-            )}
+              {thumbnailUrl ? (
+                <Image
+                  src={thumbnailUrl}
+                  alt={displayTitle}
+                  fill
+                  priority
+                  sizes="360px"
+                  style={{ objectFit: "contain", objectPosition: "center center" }}
+                />
+              ) : (
+                <div
+                  className={`w-full h-full flex items-center justify-center text-8xl ${collection.bgClass}`}
+                  style={{ position: "absolute", inset: 0 }}
+                >
+                  {collection.icon}
+                </div>
+              )}
             </div>
             {collection.badge && (
-              <span style={{ position:"absolute", top:"16px", left:"16px" }} className="font-mono text-[0.6rem] tracking-[0.2em] uppercase bg-[#8b0000] text-white px-3 py-1">
+              <span
+                style={{ position: "absolute", top: "16px", left: "16px", zIndex: 10 }}
+                className="font-mono text-[0.6rem] tracking-[0.2em] uppercase bg-[#8b0000] text-white px-3 py-1"
+              >
                 {collection.badge}
               </span>
             )}
           </div>
 
-          {/* Info */}
-          <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+          {/* Info + Download */}
+          <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
             <div>
               <span className="font-mono text-[0.6rem] tracking-[0.25em] uppercase text-[#8b0000]">
                 {collection.category}
@@ -132,49 +142,133 @@ export default async function CollectionPage({ params }: PageProps) {
                 {displayTitle}
               </h1>
             </div>
+
             <p className="font-body text-[1.05rem] text-[#a89bc0] leading-relaxed">
               {collection.description}
             </p>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "12px", alignItems: "center" }}>
+
+            {/* Meta tags row */}
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "10px", alignItems: "center" }}>
               <span className="font-mono text-[0.6rem] tracking-[0.2em] uppercase text-[#4a445a] border border-[#2a2535] px-3 py-1">
                 {collection.tag}
               </span>
               {hasImages && (
-                <span className="font-mono text-[0.6rem] tracking-[0.2em] uppercase text-[#4a445a]">
+                <span className="font-mono text-[0.6rem] tracking-[0.2em] uppercase text-[#4a445a] border border-[#2a2535] px-3 py-1">
                   {collection.images.length} images
                 </span>
               )}
-            </div>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "12px", alignItems: "center" }}>
-              <span className="font-mono text-[0.6rem] tracking-[0.25em] uppercase text-[#c9a84c] border border-[#c9a84c] px-3 py-1">
-                Free Download
+              <span className="font-mono text-[0.6rem] tracking-[0.2em] uppercase text-[#4a445a] border border-[#2a2535] px-3 py-1">
+                4K · Free
               </span>
-              {collection.downloadUrl && (
+            </div>
+
+            {/* ── DOWNLOAD CTA ── */}
+            <div className="collection-download-wrap">
+              {collection.downloadUrl ? (
+                /* Full ZIP bundle exists → download the whole thing */
                 <a
                   href={`/api/download/${collection.id}`}
-                  style={{ flex: "1 1 auto", textAlign: "center", minWidth: "160px" }}
-                  className="font-mono text-[0.7rem] tracking-[0.2em] uppercase bg-[#8b0000] hover:bg-[#a80000] text-white px-6 py-3 transition-colors duration-200 border border-[#8b0000] block"
+                  className="collection-download-btn"
+                  download
                 >
-                  Download 4K Bundle (Free)
+                  ↓ Download Full Bundle · Free
                 </a>
-              )}
+              ) : firstImage ? (
+                /* No ZIP → lead user to the first image detail page */
+                <Link
+                  href={`/shop/${slug}/${firstImage.slug}`}
+                  className="collection-download-btn"
+                >
+                  ↓ View &amp; Download Images · Free
+                </Link>
+              ) : null}
+
+              <p className="collection-download-note">
+                {collection.downloadUrl
+                  ? "ZIP archive · 4K JPEG · No account · No watermark"
+                  : "Tap any image below to download individually · 4K · Free"}
+              </p>
             </div>
+
+            {/* AdSense sidebar unit — right beside the download CTA */}
+            <AdSlot
+              slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_SIDEBAR}
+              format="rectangle"
+              width={300}
+              height={250}
+              className="mt-2"
+            />
           </div>
         </div>
       </section>
 
-      {/* Responsive grid: single col mobile → 2 col desktop */}
+      {/* Responsive grid CSS */}
       <style>{`
         @media (min-width: 768px) {
           .collection-header-grid {
             grid-template-columns: 1fr 1fr !important;
+            align-items: start;
+          }
+        }
+
+        /* ── Collection download button ── */
+        .collection-download-wrap {
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+          margin-top: 4px;
+        }
+        .collection-download-btn {
+          display: block;
+          width: 100%;
+          text-align: center;
+          min-height: 56px;
+          line-height: 56px;
+          padding: 0 24px;
+          box-sizing: border-box;
+          background-color: #8b0000;
+          border: 1px solid #8b0000;
+          color: #ffffff !important;
+          font-family: var(--font-space), monospace;
+          font-size: 0.75rem;
+          font-weight: 700;
+          letter-spacing: 0.2em;
+          text-transform: uppercase;
+          text-decoration: none !important;
+          transition: background-color 0.2s ease, filter 0.2s ease;
+          -webkit-tap-highlight-color: transparent;
+          touch-action: manipulation;
+          cursor: pointer;
+        }
+        .collection-download-btn:hover {
+          background-color: #a80000;
+          filter: brightness(1.1);
+        }
+        .collection-download-btn:active {
+          filter: brightness(0.9);
+        }
+        .collection-download-note {
+          font-family: var(--font-space), monospace;
+          font-size: 0.5rem;
+          letter-spacing: 0.12em;
+          text-transform: uppercase;
+          color: #4a445a;
+          margin: 0;
+          text-align: center;
+        }
+        @media (max-width: 767px) {
+          .collection-download-btn {
+            min-height: 60px;
+            line-height: 60px;
+            font-size: 0.8rem;
           }
         }
       `}</style>
 
-      {/* AdSlot hidden when empty via .ad-banner--empty in globals.css */}
+      {/* Main ad banner */}
       <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_MAIN} width={728} height={90} />
 
+      {/* Image gallery */}
       {hasImages && (
         <section style={{ maxWidth: "1280px", margin: "0 auto", padding: "48px 24px" }}>
           <h2 className="font-mono text-[0.7rem] tracking-[0.3em] uppercase text-[#4a445a] mb-8">
@@ -209,7 +303,8 @@ export default async function CollectionPage({ params }: PageProps) {
               priceCurrency: "USD",
               availability: "https://schema.org/InStock",
             },
-          })
+            image: thumbnailUrl ?? undefined,
+          }),
         }}
       />
     </main>
