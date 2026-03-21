@@ -3266,6 +3266,106 @@
       "sortOrder": 1
     },
     {
+  "slug": "glowing-duality-eyes-iphone",
+  "title": "Glowing Duality Eyes",
+  "description": "Step into the mystery with this captivating wallpaper featuring two striking, glowing eyes emerging from deep shadow. The perfect balance of emerald green and amber gold creates a sharp, high-contrast look that brings your lock screen to life. This design celebrates the allure of the unknown, offering a minimalist yet immersive aesthetic. It is crafted to look sleek on any display, with deep blacks that help save battery while making the vibrant iris colors pop. Whether you love the intrigue of nocturnal creatures or simply want a clean, artistic background that stands out, this high-definition image provides a sophisticated and modern feel to your device.",
+  "deviceType": "IPHONE",
+  "tags": [
+    "glowing eyes",
+    "minimalist dark",
+    "mystery wallpaper",
+    "neon art",
+    "nocturnal",
+    "abstract",
+    "contrast",
+    "hd wallpaper",
+    "dark aesthetic",
+    "iphone background"
+  ],
+  "ext": "jpeg",
+  "sortOrder": 2
+},
+{
+  "slug": "shadow-entity-iphone",
+  "title": "Shadow Entity",
+  "description": "Embrace the dark aesthetic with this striking wallpaper featuring a mysterious, stylized creature emerging from the shadows. With glowing red eyes and intricate, swirling tendrils, this design captures a sense of intense curiosity and nocturnal mystery. The deep black background is perfect for OLED screens, providing a clean and power-efficient look for your lock screen. The high-contrast red accents create a sharp, modern, and edgy vibe that makes your device stand out. If you appreciate abstract character art and minimalist dark themes, this piece is the perfect addition to your collection. It brings a unique, artistic, and sophisticated touch to your phone, blending deep atmospheric tones with sharp, detailed illustrations that look great on any display.",
+  "deviceType": "IPHONE",
+  "tags": [
+    "dark aesthetic",
+    "shadow creature",
+    "minimalist dark",
+    "glowing eyes",
+    "abstract art",
+    "nocturnal",
+    "edgy wallpaper",
+    "hd art",
+    "contrast",
+    "iphone background"
+  ],
+  "ext": "jpeg",
+  "sortOrder": 3
+},
+{
+  "slug": "midnight-crescent-moon-iphone",
+  "title": "Midnight Crescent Moon",
+  "description": "Lose yourself in the peaceful serenity of a clear midnight sky. This beautiful illustration captures a glowing crescent moon hanging over a quiet, mountainous horizon. The deep indigo tones and soft silhouettes of the trees and landscape create a calming, dreamlike atmosphere perfect for unwinding. Designed with a clean, minimalist vector style, it brings a sense of balance and tranquility to your home screen. The subtle gradients and starlit sky offer a sophisticated look that is both immersive and easy on the eyes. Whether you are looking to bring a peaceful night vibe to your phone or simply love the magic of a starlit landscape, this high-quality wallpaper is a timeless choice that feels both cozy and expansive.",
+  "deviceType": "IPHONE",
+  "tags": [
+    "night sky",
+    "crescent moon",
+    "minimalist landscape",
+    "starry night",
+    "calm aesthetic",
+    "vector art",
+    "nature wallpaper",
+    "blue tones",
+    "sleepy vibes",
+    "iphone background"
+  ],
+  "ext": "jpeg",
+  "sortOrder": 4
+},
+{
+  "slug": "knight-and-ancient-tree-iphone",
+  "title": "Knight and Ancient Tree",
+  "description": "Standing on the edge of a cliff, a lone knight faces an ancient, watching tree under the moonlight. The whole scene feels like a chapter from a dark fantasy book—quiet, tense, and full of secrets. You've got the cool blues of the night sky contrasted with the faint, unsettling glow of eyes hidden in the tree's branches. It’s a moody, atmospheric look that fits perfectly on a phone screen if you like art that tells a story. No fluff, just a solid, high-quality image that looks sharp on your lock screen and captures that sense of adventure in the deep, dark woods.",
+  "deviceType": "IPHONE",
+  "tags": [
+    "knight",
+    "fantasy art",
+    "moonlight",
+    "dark forest",
+    "adventure",
+    "moody",
+    "warrior",
+    "ancient tree",
+    "digital painting",
+    "iphone wallpaper"
+  ],
+  "ext": "jpeg",
+  "sortOrder": 5
+},
+{
+  "slug": "shadow-shade-iphone",
+  "title": "Shadow Shade",
+  "description": "A dark, shadowy figure reaching out with sharp claws, set against a deep black background. It has intense glowing red eyes and a wide, toothy grin that really stands out. Down in the corner, there's a small, surprised face icon that adds a bit of weird contrast to the whole scene. It’s got a cool, edgy cartoon style that looks great on an OLED screen. If you're into dark, moody art that’s a little bit different and catches people's attention when they see your phone, this is a solid pick. Simple, sharp, and definitely has a unique vibe.",
+  "deviceType": "IPHONE",
+  "tags": [
+    "shadow",
+    "creature",
+    "dark art",
+    "glowing eyes",
+    "sharp claws",
+    "minimalist",
+    "moody",
+    "edgy",
+    "digital illustration",
+    "iphone background"
+  ],
+  "ext": "jpeg",
+  "sortOrder": 6
+}
+    {
       "slug": "haunted-history-android",
       "title": "Haunted History",
       "description": "Mysterious figure in a hat and sunglasses surrounded by ghosts with the caption don't check my history it's haunted.",
