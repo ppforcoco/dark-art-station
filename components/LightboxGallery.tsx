@@ -18,63 +18,58 @@ interface Props {
 
 export default function LightboxGallery({ images }: Props) {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
+  const [dlState, setDlState] = useState<"idle" | "done">("idle");
   const isOpen = activeIndex !== null;
 
-  const open  = (i: number) => setActiveIndex(i);
+  const open  = (i: number) => { setActiveIndex(i); setDlState("idle"); };
   const close = useCallback(() => setActiveIndex(null), []);
-  const prev  = useCallback(() =>
-    setActiveIndex((i) => (i === null ? null : (i - 1 + images.length) % images.length)),
-  [images.length]);
-  const next  = useCallback(() =>
-    setActiveIndex((i) => (i === null ? null : (i + 1) % images.length)),
-  [images.length]);
+  const prev  = useCallback(() => {
+    setActiveIndex((i) => (i === null ? null : (i - 1 + images.length) % images.length));
+    setDlState("idle");
+  }, [images.length]);
+  const next  = useCallback(() => {
+    setActiveIndex((i) => (i === null ? null : (i + 1) % images.length));
+    setDlState("idle");
+  }, [images.length]);
 
   useEffect(() => {
     if (!isOpen) return;
-
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape")     close();
       if (e.key === "ArrowLeft")  prev();
       if (e.key === "ArrowRight") next();
     };
     window.addEventListener("keydown", onKey);
-
-    /*
-      iOS SAFARI SCROLL LOCK FIX:
-      Safari ignores document.body.style.overflow = "hidden" — the page
-      still scrolls behind the lightbox overlay.
-
-      The correct fix:
-        1. Record the current scroll position.
-        2. Fix the body at that position using position:fixed + top offset.
-           This prevents iOS from scrolling the body at all.
-        3. On close, restore position:static and scroll back to the saved Y.
-
-      This is the industry-standard pattern for iOS modal scroll locking.
-    */
     const scrollY = window.scrollY;
-    document.body.style.overflow   = "hidden";
-    document.body.style.position   = "fixed";
-    document.body.style.top        = `-${scrollY}px`;
-    document.body.style.width      = "100%";
-    document.body.style.left       = "0";
-
+    document.body.style.overflow = "hidden";
+    document.body.style.position = "fixed";
+    document.body.style.top      = `-${scrollY}px`;
+    document.body.style.width    = "100%";
+    document.body.style.left     = "0";
     return () => {
       window.removeEventListener("keydown", onKey);
-      // Restore body and scroll back to where the user was
-      document.body.style.overflow  = "";
-      document.body.style.position  = "";
-      document.body.style.top       = "";
-      document.body.style.width     = "";
-      document.body.style.left      = "";
+      document.body.style.overflow = "";
+      document.body.style.position = "";
+      document.body.style.top      = "";
+      document.body.style.width    = "";
+      document.body.style.left     = "";
       window.scrollTo(0, scrollY);
     };
   }, [isOpen, close, prev, next]);
 
   const current = activeIndex !== null ? images[activeIndex] : null;
 
+  // Derive the image ID from the href for direct download
+  // href is like /shop/slug/image-slug or /android/image-slug
+  // We use the detail page href — download happens on that page
+  // For direct download we need the image id which is in img.id
+  function handleDownloadClick() {
+    setDlState("done");
+  }
+
   return (
     <>
+      {/* Grid */}
       <div className="lb-grid">
         {images.map((img, i) => (
           <button
@@ -89,6 +84,7 @@ export default function LightboxGallery({ images }: Props) {
                 src={img.src}
                 alt={img.alt}
                 fill
+                loading="lazy"
                 sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
               />
             </div>
@@ -102,6 +98,7 @@ export default function LightboxGallery({ images }: Props) {
         ))}
       </div>
 
+      {/* Lightbox overlay */}
       {isOpen && current && (
         <div
           className="lb-overlay"
@@ -109,18 +106,19 @@ export default function LightboxGallery({ images }: Props) {
           role="dialog"
           aria-modal="true"
           aria-label={current.title}
-          style={{
-            // iOS Safari: touch-action:none stops the overlay from
-            // passing touch events through to the page behind it.
-            // overscroll-behavior:contain stops scroll chaining.
-            touchAction: "none",
-            overscrollBehavior: "contain",
-          }}
+          style={{ touchAction: "none", overscrollBehavior: "contain" }}
         >
-          <button className="lb-close" onClick={close} aria-label="Close lightbox" type="button">
-            ✕
-          </button>
+          {/* Close */}
+          <button className="lb-close" onClick={close} aria-label="Close lightbox" type="button">✕</button>
 
+          {/* Counter */}
+          {images.length > 1 && (
+            <div className="lb-counter">
+              {(activeIndex ?? 0) + 1} / {images.length}
+            </div>
+          )}
+
+          {/* Prev */}
           {images.length > 1 && (
             <button
               className="lb-arrow lb-arrow-prev"
@@ -130,11 +128,13 @@ export default function LightboxGallery({ images }: Props) {
             >‹</button>
           )}
 
+          {/* Image */}
           <div className="lb-img-wrap" onClick={(e) => e.stopPropagation()}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={current.src} alt={current.alt} key={current.id} />
           </div>
 
+          {/* Next */}
           {images.length > 1 && (
             <button
               className="lb-arrow lb-arrow-next"
@@ -144,6 +144,7 @@ export default function LightboxGallery({ images }: Props) {
             >›</button>
           )}
 
+          {/* Thumbnails */}
           {images.length > 1 && (
             <div className="lb-thumbs" onClick={(e) => e.stopPropagation()}>
               {images.map((img, i) => (
@@ -154,51 +155,133 @@ export default function LightboxGallery({ images }: Props) {
                   alt={img.alt}
                   className="lb-thumb"
                   data-active={i === activeIndex ? "true" : "false"}
-                  onClick={() => setActiveIndex(i)}
+                  onClick={() => { setActiveIndex(i); setDlState("idle"); }}
                 />
               ))}
             </div>
           )}
 
-          {/* FIX: caption now stacks on mobile so button is never pushed off screen */}
+          {/* Caption + Download */}
           <div
             className="lb-caption"
             onClick={(e) => e.stopPropagation()}
-            style={{
-              flexDirection: "column",
-              alignItems: "stretch",
-              gap: "8px",
-              padding: "12px 16px calc(12px + env(safe-area-inset-bottom))",
-            }}
           >
-            <span
-              className="lb-caption-title"
-              style={{
-                display: "-webkit-box",
-                WebkitLineClamp: 2,
-                WebkitBoxOrient: "vertical",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-              }}
-            >
-              {current.title}
-            </span>
-            <Link
-              href={current.href}
-              className="lb-caption-link"
-              onClick={close}
-              style={{
-                display: "block",
-                textAlign: "center",
-                width: "100%",
-                padding: "10px 16px",
-              }}
-            >
-              View &amp; Download →
-            </Link>
+            <span className="lb-caption-title">{current.title}</span>
+
+            <div className="lb-caption-actions">
+              {/* Direct download button — highest intent moment */}
+              <a
+                href={`/api/download/image/${current.id}`}
+                className="lb-download-btn"
+                onClick={handleDownloadClick}
+                download
+                aria-label={`Download ${current.title}`}
+              >
+                {dlState === "done" ? "✓ Downloaded" : "↓ Download Free"}
+              </a>
+
+              {/* View detail page */}
+              <Link
+                href={current.href}
+                className="lb-caption-link"
+                onClick={close}
+              >
+                View Page →
+              </Link>
+            </div>
           </div>
         </div>
       )}
+
+      <style>{`
+        .lb-counter {
+          position: absolute;
+          top: 20px;
+          left: 50%;
+          transform: translateX(-50%);
+          font-family: var(--font-space), monospace;
+          font-size: 0.6rem;
+          letter-spacing: 0.2em;
+          text-transform: uppercase;
+          color: rgba(240,236,255,0.5);
+          z-index: 10;
+          pointer-events: none;
+        }
+        .lb-caption {
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          background: linear-gradient(to top, rgba(5,5,10,0.97) 0%, rgba(5,5,10,0.85) 70%, transparent 100%);
+          padding: 32px 20px calc(16px + env(safe-area-inset-bottom));
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+        }
+        .lb-caption-title {
+          font-family: var(--font-cormorant), serif;
+          font-size: 1rem;
+          font-style: italic;
+          color: #f0ecff;
+          display: -webkit-box;
+          -webkit-line-clamp: 2;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+        }
+        .lb-caption-actions {
+          display: flex;
+          gap: 10px;
+          align-items: stretch;
+        }
+        /* THE DOWNLOAD BUTTON inside lightbox */
+        .lb-download-btn {
+          flex: 1;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          min-height: 48px;
+          padding: 0 16px;
+          background: #8b0000;
+          border: 1px solid #8b0000;
+          color: #ffffff !important;
+          font-family: var(--font-space), monospace;
+          font-size: 0.65rem;
+          font-weight: 700;
+          letter-spacing: 0.15em;
+          text-transform: uppercase;
+          text-decoration: none !important;
+          cursor: pointer;
+          transition: background-color 0.2s ease;
+          touch-action: manipulation;
+          -webkit-tap-highlight-color: transparent;
+          white-space: nowrap;
+        }
+        .lb-download-btn:hover { background: #a80000; }
+        .lb-download-btn:active { background: #6b0000; }
+        /* View page link */
+        .lb-caption-link {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          min-height: 48px;
+          padding: 0 16px;
+          border: 1px solid rgba(240,236,255,0.2);
+          color: #f0ecff !important;
+          font-family: var(--font-space), monospace;
+          font-size: 0.6rem;
+          letter-spacing: 0.15em;
+          text-transform: uppercase;
+          text-decoration: none !important;
+          transition: border-color 0.2s ease;
+          white-space: nowrap;
+          flex-shrink: 0;
+        }
+        .lb-caption-link:hover { border-color: rgba(240,236,255,0.5); }
+        @media (max-width: 479px) {
+          .lb-caption-actions { flex-direction: column; }
+          .lb-caption-link { flex-shrink: unset; }
+        }
+      `}</style>
     </>
   );
 }

@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface Props {
   href: string;
@@ -8,28 +8,64 @@ interface Props {
 }
 
 export default function DownloadButton({ href, viewCount, label }: Props) {
-  const [state, setState] = useState<"idle" | "loading" | "done">("idle");
+  const [state,     setState]     = useState<"idle" | "loading" | "done">("idle");
+  const [isMobile,  setIsMobile]  = useState(false);
+  const [canShare,  setCanShare]  = useState(false);
 
-  function handleClick(e: React.MouseEvent<HTMLAnchorElement>) {
+  useEffect(() => {
+    const mobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    setIsMobile(mobile);
+    setCanShare(mobile && typeof navigator.share === "function");
+  }, []);
+
+  function handleDownloadClick() {
     if (state === "done") return;
-    // Don't prevent default — let the download happen
     setState("loading");
     setTimeout(() => setState("done"), 1400);
   }
 
+  async function handleShare() {
+    // Try Web Share API first (native share sheet on mobile)
+    if (typeof navigator.share === "function") {
+      try {
+        // Fetch the image and share as file for "Set as Wallpaper" option
+        const response = await fetch(href);
+        const blob     = await response.blob();
+        const file     = new File([blob], "haunted-wallpaper.jpg", { type: blob.type });
+
+        if (navigator.canShare?.({ files: [file] })) {
+          await navigator.share({
+            files:  [file],
+            title:  "Haunted Wallpaper",
+            text:   "Free dark wallpaper from hauntedwallpapers.com",
+          });
+          setState("done");
+          return;
+        }
+        // Fallback: share URL only
+        await navigator.share({
+          title: "Haunted Wallpaper",
+          url:   window.location.href,
+        });
+        return;
+      } catch (err) {
+        // User cancelled or share failed — fall through to regular download
+        if ((err as Error).name === "AbortError") return;
+      }
+    }
+    // Final fallback: trigger download
+    handleDownloadClick();
+  }
+
   const buttonLabel =
-    state === "loading"
-      ? "Preparing Download…"
-      : state === "done"
-      ? "✓ Download Started"
-      : label ?? "↓ Download 4K · Free";
+    state === "loading" ? "Preparing…"
+    : state === "done"  ? "✓ Download Started"
+    : label             ?? "↓ Download 4K · Free";
 
   const bgColor =
-    state === "done"
-      ? "#1a5c35"
-      : state === "loading"
-      ? "#6b0000"
-      : "#8b0000";
+    state === "done"    ? "#1a5c35"
+    : state === "loading" ? "#6b0000"
+    : "#8b0000";
 
   return (
     <div className="download-btn-wrap">
@@ -47,17 +83,53 @@ export default function DownloadButton({ href, viewCount, label }: Props) {
         </span>
       </div>
 
-      {/* Main CTA */}
-      <a
-        href={state === "loading" ? "#" : href}
-        onClick={handleClick}
-        className="download-btn"
-        style={{ backgroundColor: bgColor, borderColor: bgColor }}
-        aria-label={buttonLabel}
-        download
-      >
-        {buttonLabel}
-      </a>
+      {/* Buttons row */}
+      <div style={{ display: "flex", gap: "10px" }}>
+        {/* Main download button */}
+        <a
+          href={state === "loading" ? "#" : href}
+          onClick={handleDownloadClick}
+          className="download-btn"
+          style={{ backgroundColor: bgColor, borderColor: bgColor, flex: 1 }}
+          aria-label={buttonLabel}
+          download
+        >
+          {buttonLabel}
+        </a>
+
+        {/* Mobile: "Set as Wallpaper" button via Web Share API */}
+        {isMobile && (
+          <button
+            type="button"
+            onClick={handleShare}
+            className="download-share-btn"
+            aria-label="Set as wallpaper"
+            title="Set as wallpaper"
+          >
+            {canShare ? (
+              /* Share icon */
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/>
+                <polyline points="16 6 12 2 8 6"/>
+                <line x1="12" y1="2" x2="12" y2="15"/>
+              </svg>
+            ) : (
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <rect x="3" y="3" width="18" height="18" rx="2"/>
+                <path d="M3 9h18"/>
+                <path d="M9 21V9"/>
+              </svg>
+            )}
+          </button>
+        )}
+      </div>
+
+      {/* Mobile hint */}
+      {isMobile && canShare && (
+        <p className="download-share-hint">
+          Tap ↑ to set directly as wallpaper
+        </p>
+      )}
 
       <p className="download-sublabel">
         JPEG · 4K resolution · No account · No watermark

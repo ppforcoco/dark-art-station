@@ -7,6 +7,7 @@ import Footer from "@/components/Footer";
 import HalloweenCountdown from "@/components/HalloweenCountdown";
 import Cursor from "@/components/Cursor";
 import ScrollToTop from "@/components/ScrollToTop";
+import CookieBanner from "@/components/CookieBanner";
 
 const cinzel = Cinzel_Decorative({
   weight: ["400", "700", "900"],
@@ -134,6 +135,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </div>
         <Footer />
         <ScrollToTop />
+        <CookieBanner />
       </body>
     </html>
   );

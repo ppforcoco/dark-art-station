@@ -7,7 +7,6 @@ interface AdSlotProps {
   width?: number;
   height?: number;
   className?: string;
-  /** "banner" = leaderboard 728x90 | "rectangle" = 300x250 | "auto" = responsive */
   format?: "banner" | "rectangle" | "auto";
 }
 
@@ -57,7 +56,6 @@ export default function AdSlot({
     };
   }, [isLive]);
 
-  // Dev placeholder — styled, not blank
   if (!isLive) {
     return (
       <div className={`ad-banner ad-banner--dev ${className}`}>
@@ -72,6 +70,10 @@ export default function AdSlot({
     );
   }
 
+  const insStyle = format !== "auto"
+    ? { display: "inline-block" as const, width: `${width}px`, height: `${height}px` }
+    : { display: "block" as const, width: "100%", height: "auto" };
+
   return (
     <div
       className={`ad-banner ${adLoaded ? "ad-banner--loaded" : "ad-banner--empty"} ${className}`}
@@ -82,14 +84,11 @@ export default function AdSlot({
         <ins
           ref={adRef}
           className="adsbygoogle"
-          style={{ display: "block", width: "100%", height: "auto" }}
+          style={insStyle}
           data-ad-client={pid}
           data-ad-slot={resolvedSlot}
           data-ad-format={format === "auto" ? "auto" : undefined}
           data-full-width-responsive={format === "auto" ? "true" : undefined}
-          {...(format !== "auto"
-            ? { style: { display: "inline-block", width: `${width}px`, height: `${height}px` } }
-            : {})}
         />
       </div>
       <span className="ad-label">Advertisement</span>

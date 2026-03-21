@@ -113,6 +113,9 @@ export default async function Home() {
       {/* ════════════════════════════ MARQUEE */}
       <MarqueeTicker />
 
+      {/* ════════════════════════════ AD SLOT — after marquee */}
+      <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_MAIN} width={728} height={90} />
+
       {/* ════════════════════════════ DAILY PICK */}
       {wotd && (() => {
         const devicePath = wotd.deviceType === "IPHONE"
@@ -222,6 +225,9 @@ export default async function Home() {
           })}
         </div>
       </section>
+
+      {/* ════════════════════════════ AD SLOT — after categories */}
+      <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_MAIN} width={728} height={90} />
 
       {/* ════════════════════════════ AD SLOT */}
       <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_MAIN} width={728} height={90} />
