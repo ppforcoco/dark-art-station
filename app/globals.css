@@ -4876,28 +4876,80 @@ p,
   color: #f0ecff;
   margin-top: 8px;
 }
-.rv-grid {
+/* Portrait grid — iPhone / Android cards (9:16) */
+.rv-grid--portrait {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
   gap: 12px;
+  margin-bottom: 20px;
 }
-.rv-card {
+
+/* Landscape grid — PC cards (16:9) — wider cards, fewer per row */
+.rv-grid--landscape {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+@media (max-width: 639px) {
+  .rv-grid--landscape {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.rv-section-label {
+  font-family: var(--font-space), monospace;
+  font-size: 0.55rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #4a445a;
+  margin-bottom: 10px;
+  margin-top: 4px;
+}
+
+/* Portrait card — 9:16 */
+.rv-card--portrait {
   position: relative;
-  aspect-ratio: 9/16;
+  aspect-ratio: 9 / 16;
   overflow: hidden;
   text-decoration: none;
   display: block;
   border: 1px solid #2a2535;
   transition: border-color 0.2s;
 }
-.rv-card:hover { border-color: rgba(192,0,26,0.5); }
-.rv-card img {
+
+/* Landscape card — 16:9, never cropped */
+.rv-card--landscape {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  text-decoration: none;
+  display: block;
+  border: 1px solid #2a2535;
+  transition: border-color 0.2s;
+  background: #0a0a0a;
+}
+
+.rv-card--portrait:hover,
+.rv-card--landscape:hover { border-color: rgba(192,0,26,0.5); }
+
+.rv-card--portrait img,
+.rv-card--landscape img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   transition: transform 0.4s ease;
 }
-.rv-card:hover img { transform: scale(1.06); }
+
+/* PC landscape images — contain so full image is visible, not cropped */
+.rv-card--landscape img {
+  object-fit: contain;
+  background: #0a0a0a;
+}
+
+.rv-card--portrait:hover img,
+.rv-card--landscape:hover img { transform: scale(1.04); }
+
 .rv-card-title {
   position: absolute;
   bottom: 0;
@@ -4909,7 +4961,6 @@ p,
   font-size: 0.5rem;
   letter-spacing: 0.08em;
   color: #d4cde8;
-  line-clamp: 2;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
@@ -5215,6 +5266,82 @@ a.download-btn:active {
 [data-theme="light"] .download-sublabel { color: #7a7468; }
 
 /* ── Product Card CTA ─────────────────────────────────────────*/
+
+
+/* ══════════════════════════════════════════════════════════════
+   PRODUCT CARD — consistent bottom-pinned button
+   ══════════════════════════════════════════════════════════════ */
+
+.product-card-wrap {
+  background: #2a2535;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  transition: transform 0.3s cubic-bezier(0.16,1,0.3,1),
+              box-shadow 0.3s cubic-bezier(0.16,1,0.3,1);
+}
+.product-card-wrap:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 0 0 1px rgba(192,0,26,0.35),
+              0 8px 32px rgba(192,0,26,0.22),
+              0 2px 8px rgba(0,0,0,0.4);
+}
+.product-card-info {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 16px 20px 20px;
+}
+.product-card-meta {
+  flex: 1;
+  margin-bottom: 12px;
+}
+.product-card-category {
+  font-family: var(--font-space), monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #c0001a;
+  display: block;
+  margin-bottom: 6px;
+}
+.product-card-title {
+  font-family: var(--font-cormorant), serif;
+  font-style: italic;
+  font-size: 1.05rem;
+  color: #f0ecff;
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.product-card-bottom {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: auto;
+  padding-top: 12px;
+  border-top: 1px solid rgba(42,37,53,0.5);
+}
+.product-card-price {
+  font-family: var(--font-space), monospace;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #c9a84c;
+}
+
+@media (max-width: 639px) {
+  .product-card-info    { padding: 10px 10px 12px; }
+  .product-card-meta    { margin-bottom: 8px; }
+  .product-card-title   { font-size: 0.95rem; }
+}
+
+[data-theme="light"] .product-card-wrap     { background: #e8e3d8; }
+[data-theme="light"] .product-card-category { color: #c0001a; }
+[data-theme="light"] .product-card-title    { color: #1a1814; }
+[data-theme="light"] .product-card-price    { color: #a07828; }
 
 .product-card-cta {
   display: block;

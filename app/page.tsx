@@ -227,10 +227,7 @@ export default async function Home() {
       </section>
 
       {/* ════════════════════════════ AD SLOT — after categories */}
-      <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_MAIN} width={728} height={90} />
-
-      {/* ════════════════════════════ AD SLOT */}
-      <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_MAIN} width={728} height={90} />
+      <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_FOOTER} width={728} height={90} />
 
       {/* ════════════════════════════ PRODUCTS */}
       <section className="section-pad products-bg">
