@@ -59,18 +59,18 @@ export default async function Home() {
         <div className="hero-left">
           <div className="hero-eyebrow fade-up-1">
             <span className="eyebrow-line" />
-            Dark Digital Sanctum
+            Dark Art Collection
           </div>
           <h1 className="hero-title fade-up-2">
             Art Born<br />From <span className="t-red">The</span><br />
             <span className="t-gold">Abyss</span>
           </h1>
           <p className="hero-subtitle fade-up-3">
-            Premium dark fantasy wallpapers, tarot art, and arcane designs for those
-            who dwell beyond the veil. Crafted for the dark and the ethereal alike.
+            Premium dark fantasy wallpapers for your phone and desktop.
+            Bold, original art — free to download.
           </p>
           <div className="hero-ctas fade-up-4">
-            <Link href="/shop" className="btn-primary"><span>Enter the Grimoire</span></Link>
+            <Link href="/shop" className="btn-primary"><span>Browse All Wallpapers</span></Link>
             <Link href="/shop?filter=free" className="btn-secondary">Free Downloads</Link>
           </div>
           <div className="hero-stats fade-up-5">
@@ -88,7 +88,7 @@ export default async function Home() {
       {/* ════════════════════════════ MARQUEE */}
       <MarqueeTicker />
 
-      {/* ════════════════════════════ DAILY SANCTUM */}
+      {/* ════════════════════════════ DAILY PICK */}
       {wotd && (() => {
         const devicePath = wotd.deviceType === "IPHONE"
           ? "iphone"
@@ -106,7 +106,7 @@ export default async function Home() {
               {/* Left — text */}
               <div>
                 <div className="wotd-label-block">
-                  <span className="wotd-eyebrow">Daily Sanctum</span>
+                  <span className="wotd-eyebrow">Daily Pick</span>
                   <span className="wotd-date">{todayStr}</span>
                 </div>
                 <h2 className="wotd-title">{wotd.title}</h2>
@@ -157,7 +157,7 @@ export default async function Home() {
         <div className="category-grid">
           {[
             { slug: "skeleton-card-collection",        icon: "🃏", title: "Tarot Cards",        tag: "Collection", bgClass: "p-bg-2" },
-          { slug: "dark-sorceress-collection",        icon: "💀", title: "Skulls & Skeletons", tag: "Collection", bgClass: "p-bg-1" },
+          { slug: "incognito-mode-collection",        icon: "🕵️", title: "Incognito Mode",    tag: "Collection", bgClass: "p-bg-1" },
             { slug: "dark-fantasy-art",                icon: "🐉", title: "Dark Fantasy",       tag: "Collection", bgClass: "p-bg-3" },
             { slug: "dark-minimal-horror",             icon: "🌑", title: "Dark Aesthetics",    tag: "Collection", bgClass: "p-bg-4" },
             { slug: "dark-humor-wallpaper-collection", icon: "😈", title: "Dark Humor",         tag: "Collection", bgClass: "p-bg-5" },
@@ -228,7 +228,7 @@ export default async function Home() {
           )) : (
             <p style={{ color:"#4a445a", fontFamily:"var(--font-space)", fontSize:"0.75rem",
               gridColumn:"1/-1", padding:"60px 0", textAlign:"center" }}>
-              Emerging from the abyss…
+              Loading collections…
             </p>
           )}
         </div>
@@ -236,25 +236,26 @@ export default async function Home() {
 
       {/* ════════════════════════════ MANIFESTO */}
       <section className="manifesto-section">
-        <div className="manifesto-vert-label">Our Creed</div>
+        <div className="manifesto-vert-label">Our Style</div>
         <div>
           <h2 className="manifesto-quote">
             Art that lives in the <span className="em">beautiful dark</span> — for
             those who see beauty where others see shadow.
           </h2>
           <p className="manifesto-text">
-            We create for the unconventional. The ones who hang skulls where others
-            hang flowers. Who find divinity in demons, humor in darkness, and power in
-            the arcane. Every wallpaper is a window into a world most dare not enter.
+            We create for the unconventional. The ones who go their own way, who find
+            beauty in the bold and the dark. Art that makes your screen feel like it
+            belongs to you — not to everyone else. Every wallpaper is a statement,
+            not just a background.
           </p>
         </div>
       </section>
 
       {/* ════════════════════════════ NEWSLETTER */}
       <div className="newsletter-section">
-        <h2 className="newsletter-title">Join the Dark Congregation</h2>
+        <h2 className="newsletter-title">Stay in the Loop</h2>
         <p className="newsletter-sub">
-          New arrivals, free downloads, and cursed deals — delivered to your crypt.
+          New drops, free wallpapers, and exclusive deals — straight to your inbox.
         </p>
         <NewsletterForm />
       </div>

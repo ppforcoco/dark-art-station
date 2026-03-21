@@ -3653,7 +3653,178 @@
         "dark"
       ],
       "ext": "jpeg",
-      "sortOrder": 1
-    }
+      "sortOrder": 0
+    },
+    {
+  "slug": "haunted-house-pattern-pc",
+  "title": "Haunted House Pattern",
+  "description": "A seamless gothic pattern featuring spooky mansions, glowing skulls, bare trees, and cobwebs on a deep black background. Perfect for a clean, minimalist desktop look.",
+  "deviceType": "PC",
+  "tags": ["pattern", "haunted house", "gothic", "halloween", "minimalist", "spooky", "dark wallpaper", "pc"],
+  "ext": "webp",
+  "sortOrder": 1
+},
+{
+  "slug": "skeleton-love-rose-pc",
+  "title": "Skeleton Love Rose",
+  "description": "A hauntingly romantic illustration of a skeleton and a goth girl sharing a rose amidst swirling dark smoke. A dark fantasy take on love and eternity.",
+  "deviceType": "PC",
+  "tags": ["skeleton", "goth", "romance", "rose", "dark fantasy", "smoke", "hd art", "pc"],
+  "ext": "webp",
+  "sortOrder": 2
+},
+{
+  "slug": "eternal-night-calling-pc",
+  "title": "Eternal Night Calling",
+  "description": "A glowing green vintage telephone ringing in the dark, with a spectral claw reaching out from the shadows. A high-contrast, eerie concept art piece for your desktop.",
+  "deviceType": "PC",
+  "tags": ["vintage", "horror", "glowing", "darkness", "eerie", "spectral", "hd art", "pc"],
+  "ext": "webp",
+  "sortOrder": 3
+},
+{
+  "slug": "shadow-fisherman-orbs-pc",
+  "title": "Shadow Fisherman",
+  "description": "A mysterious silhouette casting a line to fish for glowing, magical orbs in a dark void. A creative and calming minimalist piece with a touch of the arcane.",
+  "deviceType": "PC",
+  "tags": ["minimalist", "silhouette", "fishing", "arcane", "mystery", "dark art", "hd wallpaper", "pc"],
+  "ext": "webp",
+  "sortOrder": 4
+},
+{
+  "slug": "sorcerer-pearl-summoning-pc",
+  "title": "Sorcerer Pearl Summoning",
+  "description": "A dark witch conjuring a field of floating black pearls with swirling magical energy. A dramatic and symmetrical composition that works perfectly as a wide-format desktop background.",
+  "deviceType": "PC",
+  "tags": ["witch", "sorcerer", "magic", "pearls", "dark fantasy", "gothic", "hd wallpaper", "pc"],
+  "ext": "webp",
+  "sortOrder": 5
+},
+{
+  "slug": "haunted-forest-coven-pc",
+  "title": "Haunted Forest Coven",
+  "description": "A spooky graveyard scene featuring a skeleton in a top hat, a floating ghost, and glowing-eyed monsters in a dark forest. A high-detail, fun, and eerie dark-art wallpaper for desktop screens.",
+  "deviceType": "PC",
+  "tags": ["graveyard", "skeleton", "ghost", "halloween", "spooky", "cartoon horror", "dark wallpaper", "pc"],
+  "ext": "webp",
+  "sortOrder": 6
+},
+{
+  "slug": "shadow-genie-smartphone-pc",
+  "title": "Shadow Genie Summoner",
+  "description": "A powerful dark genie emerging from magical smoke, presenting a glowing smartphone. A sleek, mysterious digital art piece that blends fantasy elements with modern technology on a wide canvas.",
+  "deviceType": "PC",
+  "tags": ["genie", "magic", "dark fantasy", "smartphone", "smoke", "mysterious", "digital art", "pc"],
+  "ext": "webp",
+  "sortOrder": 7
+},
+{
+  "slug": "gothic-romance-frankenstein-pc",
+  "title": "Gothic Romance",
+  "description": "A darkly romantic scene featuring a monster offering a single black rose to a terrified woman. Deep, moody, and highly detailed art that captures the essence of classic gothic storytelling.",
+  "deviceType": "PC",
+  "tags": ["gothic", "romance", "monster", "rose", "dark fantasy", "horror", "artistic", "pc"],
+  "ext": "webp",
+  "sortOrder": 8
+},
+{
+  "slug": "skeletal-touch-rose-pc",
+  "title": "Skeletal Touch",
+  "description": "A hauntingly beautiful art piece showing a skeletal hand reaching out to touch the hand of a human woman, with a vibrant red rose suspended between them. Surrounded by bats and thorns, it is a striking gothic wallpaper.",
+  "deviceType": "PC",
+  "tags": ["skeleton", "rose", "gothic", "touch", "dark fantasy", "romantic horror", "hd art", "pc"],
+  "ext": "webp",
+  "sortOrder": 9
+},
+{
+  "slug": "monster-flower-offering-pc",
+  "title": "Monster Flower Offering",
+  "description": "A dark, spiky-furred monster with glowing red eyes timidly offering a bouquet of black roses to a wide-eyed girl in a dark forest. A charming yet eerie dark-humor fantasy illustration.",
+  "deviceType": "PC",
+  "tags": ["monster", "dark humor", "roses", "creepy cute", "dark fantasy", "forest", "illustration", "pc"],
+  "ext": "webp",
+  "sortOrder": 10
+},
+{
+  "slug": "gangster-skeleton-smoking-pc",
+  "title": "Gangster Skeleton Smoking",
+  "description": "A defiant skeleton in a leather jacket and fedora, smoking a cigar and giving the middle finger. A bold, street-style character illustration perfect for a desktop background.",
+  "deviceType": "PC",
+  "tags": ["skeleton", "gangster", "attitude", "cigar", "street style", "dark humor", "hd wallpaper", "pc"],
+  "ext": "webp",
+  "sortOrder": 11
+},
+{
+  "slug": "moon-light-night-pc",
+  "title": "Moonlight Night",
+  "description": "A charming, minimalist night scene featuring a smiling crescent moon hanging in a starry sky above dark, twisted trees. A peaceful yet spooky aesthetic for your desktop.",
+  "deviceType": "PC",
+  "tags": ["night sky", "crescent moon", "minimalist", "spooky", "dark art", "nighttime", "hd wallpaper", "pc"],
+  "ext": "webp",
+  "sortOrder": 12
+},
+{
+  "slug": "grim-reaper-scythe-pc",
+  "title": "Grim Reaper Scythe",
+  "description": "A classic hooded grim reaper standing with a scythe, eyes glowing red against a deep black void. A timeless and cinematic horror piece for your PC.",
+  "deviceType": "PC",
+  "tags": ["grim reaper", "horror", "death", "hooded", "dark aesthetic", "hd wallpaper", "pc"],
+  "ext": "webp",
+  "sortOrder": 13
+},
+{
+  "slug": "shadow-beast-grin-pc",
+  "title": "Shadow Beast Grin",
+  "description": "A dark, shadowy creature with glowing red eyes and a sharp, fanged grin, surrounded by writhing tendrils. An aggressive and intense piece of digital horror art.",
+  "deviceType": "PC",
+  "tags": ["shadow", "monster", "horror", "glowing eyes", "darkness", "minimalist", "hd art", "pc"],
+  "ext": "webp",
+  "sortOrder": 14
+},
+{
+  "slug": "thug-skeleton-smoking-pc",
+  "title": "Thug Skeleton Smoking",
+  "description": "A full-body skeleton in a leather jacket, gold chain, and snapback cap, reclining while smoking a cigar and flipping the bird. The ultimate attitude-filled desktop wallpaper.",
+  "deviceType": "PC",
+  "tags": ["skeleton", "thug life", "attitude", "streetwear", "smoking", "dark humor", "hd wallpaper", "pc"],
+  "ext": "webp",
+  "sortOrder": 15
+},
+{
+  "slug": "anatomical-heart-love-pc",
+  "title": "Anatomical Heart Love",
+  "description": "A dark, stylized illustration of an anatomical heart pierced by an arrow, surrounded by ghosts and skull party favors. A perfect blend of dark humor and gothic style for a unique desktop.",
+  "deviceType": "PC",
+  "tags": ["anatomical heart", "gothic", "dark humor", "ghost", "skull", "love", "hd wallpaper", "pc"],
+  "ext": "webp",
+  "sortOrder": 16
+},
+{
+  "slug": "grim-reaper-kneeling-pc",
+  "title": "Grim Reaper Kneeling",
+  "description": "A detailed dark fantasy illustration of the grim reaper kneeling, clutching a massive scythe. A brooding, iconic image that brings a sense of finality to any desktop setup.",
+  "deviceType": "PC",
+  "tags": ["grim reaper", "death", "dark fantasy", "hooded", "scythe", "moody", "hd wallpaper", "pc"],
+  "ext": "webp",
+  "sortOrder": 17
+},
+{
+  "slug": "rebel-skeleton-cigar-pc",
+  "title": "Rebel Skeleton Smoking",
+  "description": "An edgy skeleton in a leather jacket and fedora, smoking a cigar and giving the middle finger. High-contrast cartoon style with a rebellious, unapologetic vibe.",
+  "deviceType": "PC",
+  "tags": ["skeleton", "rebel", "attitude", "cigar", "leather jacket", "dark art", "hd wallpaper", "pc"],
+  "ext": "webp",
+  "sortOrder": 18
+},
+{
+  "slug": "outline-couple-heart-pc",
+  "title": "Outline Couple Heart",
+  "description": "A romantic, minimalist white-outline illustration of a couple standing head-to-head with a glowing heart between them against a starry black sky. Simple, elegant, and moody.",
+  "deviceType": "PC",
+  "tags": ["couple", "minimalist", "love", "outline", "starry night", "romantic", "dark art", "pc"],
+  "ext": "webp",
+  "sortOrder": 19
+}
   ]
 }

@@ -23,7 +23,7 @@ export default function AboutPage() {
             <h2>What Is HauntedWallpapers?</h2>
             <p>
               HauntedWallpapers is an independent digital art studio specialising in
-              dark, atmospheric, and arcane-inspired wallpapers for every screen — from
+              dark, atmospheric, and boldly styled wallpapers for every screen — from
               the phone in your pocket to the monitor on your desk.
             </p>
             <p>
@@ -45,8 +45,8 @@ export default function AboutPage() {
               possible way — make it to the site.
             </p>
             <p>
-              The result is a library of thousands of wallpapers spanning skulls,
-              dark goddesses, tarot archetypes, cyberpunk decay, cosmic horror, and
+              The result is a library of thousands of wallpapers spanning dark fantasy,
+              street art, horror aesthetics, cyberpunk decay, cosmic art, and
               everything that lives in the shadows between those genres.
             </p>
           </section>

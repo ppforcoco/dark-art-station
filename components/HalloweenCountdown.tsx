@@ -3,7 +3,6 @@
 import { useEffect, useState, useCallback } from "react";
 
 const BAR_HEIGHT = 36;
-const QUOTE_BAR_HEIGHT = 36;
 const HALLOWEEN_MONTH = 9;
 const HALLOWEEN_DAY   = 31;
 
@@ -57,11 +56,7 @@ export default function HalloweenCountdown() {
 
   const setTopbarVar = useCallback((px: number) => {
     document.documentElement.style.setProperty("--topbar-h", `${px}px`);
-    // Always include quote bar in total (DarkQuoteBar will override if dismissed)
-    const dqbH = parseInt(
-      document.documentElement.style.getPropertyValue("--dqb-h") || String(QUOTE_BAR_HEIGHT), 10
-    ) || QUOTE_BAR_HEIGHT;
-    document.documentElement.style.setProperty("--topbar-total", `${px + dqbH}px`);
+    document.documentElement.style.setProperty("--topbar-total", `${px}px`);
   }, []);
 
   useEffect(() => {

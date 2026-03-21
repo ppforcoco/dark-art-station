@@ -20,9 +20,8 @@ export default function Footer() {
             HAUNTED<span className="logo-red">WALLPAPERS</span>
           </Link>
           <p className="footer-brand-desc">
-            Premium dark art for the dark-hearted, the ethereal, and everyone gloriously
-            in between. AI-generated wallpapers and arcane designs for iPhone,
-            Android &amp; PC.
+            Premium dark art for those who appreciate bold, original aesthetics.
+            AI-generated wallpapers for iPhone, Android &amp; PC.
           </p>
         </div>
 
