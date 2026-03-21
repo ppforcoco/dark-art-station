@@ -21,6 +21,11 @@ export async function generateMetadata(
     description: q
       ? `Discover dark fantasy wallpapers matching "${q}". Curated for iPhone, Android & PC.`
       : "Search the full HauntedWallpapers collection.",
+    openGraph: {
+      title: q ? `"${q}" — Search Results | Haunted Wallpapers` : "Search | Haunted Wallpapers",
+      description: q ? `Discover dark fantasy wallpapers matching "${q}".` : "Search the full Haunted Wallpapers collection.",
+      images: [{ url: `${process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com"}/og-image.jpg`, width: 1200, height: 630 }],
+    },
   };
 }
 
@@ -184,7 +189,7 @@ export default async function SearchPage({
             </Link>
           </div>
         ) : (
-          <h1 className="search-header-title">Search the Sanctum</h1>
+          <h1 className="search-header-title">Search Wallpapers</h1>
         )}
         {hasResults && (
           <p className="search-header-count">

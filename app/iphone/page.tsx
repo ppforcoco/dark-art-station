@@ -140,7 +140,7 @@ export default async function IphonePage({ searchParams }: PageProps) {
                     </div>
                   </Link>
                 );
-                return card;)}
+              })}
             </div>
             <Pagination currentPage={page} totalPages={totalPages} baseUrl={baseUrl} />
           </>

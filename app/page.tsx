@@ -1,8 +1,33 @@
 // app/page.tsx
+import type { Metadata } from "next";
 import { db, getWallpaperOfTheDay } from "@/lib/db";
 import MarqueeTicker from "@/components/MarqueeTicker";
 import NewsletterForm from "@/components/NewsletterForm";
 import Image from "next/image";
+
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
+const OG_IMAGE = `${SITE_URL}/og-image.jpg`;
+
+export const metadata: Metadata = {
+  title: "Haunted Wallpapers | Free Dark Fantasy Wallpapers for iPhone, Android & PC",
+  description: "Free dark fantasy wallpapers for iPhone, Android and PC. Download high-resolution AI art — horror, gothic, street style, dark humor and more. No account required.",
+  metadataBase: new URL(SITE_URL),
+  openGraph: {
+    title: "Haunted Wallpapers | Free Dark Fantasy Wallpapers",
+    description: "Free dark fantasy wallpapers for iPhone, Android and PC. Download high-resolution AI art collections instantly.",
+    url: SITE_URL,
+    siteName: "Haunted Wallpapers",
+    type: "website",
+    images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: "Haunted Wallpapers — Dark Fantasy Art" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Haunted Wallpapers | Free Dark Fantasy Wallpapers",
+    description: "Free dark fantasy wallpapers for iPhone, Android and PC. Download high-resolution AI art collections instantly.",
+    images: [OG_IMAGE],
+  },
+  alternates: { canonical: SITE_URL },
+};
 import Link from "next/link";
 import ProductCard from "@/components/ProductCard";
 import AdSlot from "@/components/AdSlot";

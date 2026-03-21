@@ -7,9 +7,25 @@ import Pagination from "@/components/Pagination";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import AdSlot from "@/components/AdSlot";
 
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
+const OG_IMAGE = `${SITE_URL}/og-image.jpg`;
+
 export const metadata: Metadata = {
   title: "All Collections | Haunted Wallpapers",
   description: "Browse all dark fantasy wallpaper collections. Free high-resolution downloads for iPhone, Android and PC. New art added regularly.",
+  openGraph: {
+    title: "All Collections — Haunted Wallpapers",
+    description: "Browse all dark fantasy wallpaper collections. Free high-resolution downloads for iPhone, Android and PC.",
+    siteName: "Haunted Wallpapers",
+    type: "website",
+    images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: "Haunted Wallpapers" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "All Collections — Haunted Wallpapers",
+    description: "Browse all dark fantasy wallpaper collections. Free high-resolution downloads for iPhone, Android and PC.",
+    images: [OG_IMAGE],
+  },
 };
 
 export const dynamic = "force-dynamic";
@@ -68,7 +84,6 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
   return (
     <main className="shop-page" style={{ backgroundColor: "var(--bg-primary)", color: "var(--text-primary)" }}>
 
-      {/* ── Breadcrumb path bar ── */}
       <Breadcrumbs items={[
         { label: "Home",        href: "/"     },
         { label: "Collections", href: "/shop" },
@@ -76,9 +91,7 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
         ...(filter === "free" ? [{ label: "Free Downloads" }] : []),
       ]} />
 
-      {/* ── Page Header ── */}
       <div className="shop-header">
-        <span className="section-eyebrow">The Grimoire</span>
         <h1 className="section-title shop-page-title">
           {activeLabel}
           {page > 1 && <span className="shop-page-num"> — Page {page}</span>}
@@ -88,9 +101,8 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
         </p>
       </div>
 
-      {/* ── Filter Bar ── */}
       <div className="shop-filter-bar">
-        <Link href="/shop"            className="filter-pill" data-active={!category && !filter}>All</Link>
+        <Link href="/shop"             className="filter-pill" data-active={!category && !filter}>All</Link>
         <Link href="/shop?filter=free" className="filter-pill" data-active={filter === "free"}>Free</Link>
         {allCategories.map((c) => (
           <Link
@@ -104,7 +116,6 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
         ))}
       </div>
 
-      {/* ── Grid ── */}
       <div className="shop-grid-wrap">
         {collections.length > 0 ? (
           <div className="product-grid">
@@ -135,13 +146,12 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
           </div>
         ) : (
           <div className="shop-empty">
-            <p className="shop-empty-msg">Nothing stirs in this corner of the void.</p>
+            <p className="shop-empty-msg">Nothing here yet.</p>
             <Link href="/shop" className="section-link">Clear filters →</Link>
           </div>
         )}
       </div>
 
-      {/* ── Pagination ── */}
       {totalPages > 1 && (
         <Pagination currentPage={page} totalPages={totalPages} baseUrl={baseUrl} />
       )}
