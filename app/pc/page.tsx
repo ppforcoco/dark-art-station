@@ -31,14 +31,14 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
 
   const description = tag
     ? `Browse free 4K dark fantasy Android wallpapers tagged #${tag}. Download instantly, no account required.`
-    : "Free 4K dark fantasy & arcane wallpapers for PC. Portrait 9:16 optimised. New drops daily. No account required.";
+    : "Free 4K dark fantasy wallpapers for PC. Portrait 9:16 optimised. New drops daily. No account required.";
 
   const canonical = tag ? `${siteUrl}/pc?tag=${tag}` : `${siteUrl}/pc`;
 
   return {
     title,
     description,
-    keywords: ["pc wallpaper", "desktop wallpaper dark", "4k desktop wallpaper", "free pc wallpaper", "16:9 wallpaper", tag ?? "arcane", "dark fantasy"].filter(Boolean),
+    keywords: ["pc wallpaper", "desktop wallpaper dark", "4k desktop wallpaper", "free pc wallpaper", "16:9 wallpaper", tag ?? "dark", "dark fantasy"].filter(Boolean),
     openGraph: { title, description, url: canonical, siteName: "HAUNTED WALLPAPERS", type: "website" },
     twitter: { card: "summary_large_image", title, description },
     alternates: { canonical },

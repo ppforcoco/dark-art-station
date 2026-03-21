@@ -31,14 +31,14 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
 
   const description = tag
     ? `Browse free 4K dark fantasy Android wallpapers tagged #${tag}. Download instantly, no account required.`
-    : "Free 4K dark fantasy & arcane wallpapers for iPhone. Portrait 9:16 optimised. New drops daily. No account required.";
+    : "Free 4K dark fantasy wallpapers for iPhone. Portrait 9:16 optimised. New drops daily. No account required.";
 
   const canonical = tag ? `${siteUrl}/iphone?tag=${tag}` : `${siteUrl}/iphone`;
 
   return {
     title,
     description,
-    keywords: ["iphone wallpaper", "dark wallpaper iphone", "4k iphone wallpaper", "free iphone wallpaper", tag ?? "arcane", "dark fantasy"].filter(Boolean),
+    keywords: ["iphone wallpaper", "dark wallpaper iphone", "4k iphone wallpaper", "free iphone wallpaper", tag ?? "dark", "dark fantasy"].filter(Boolean),
     openGraph: { title, description, url: canonical, siteName: "HAUNTED WALLPAPERS", type: "website" },
     twitter: { card: "summary_large_image", title, description },
     alternates: { canonical },
