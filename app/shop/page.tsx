@@ -5,6 +5,7 @@ import Link from "next/link";
 import ProductCard from "@/components/ProductCard";
 import Pagination from "@/components/Pagination";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import AdSlot from "@/components/AdSlot";
 
 export const metadata: Metadata = {
   title: "All Collections | Haunted Wallpapers",
@@ -107,20 +108,30 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
       <div className="shop-grid-wrap">
         {collections.length > 0 ? (
           <div className="product-grid">
-            {collections.map((p) => (
-              <ProductCard
-                key={p.id}
-                slug={p.slug}
-                name={p.title}
-                category={p.category}
-                price={p.price}
-                isFree={p.isFree}
-                badge={parseBadge(p.badge)}
-                icon={p.icon}
-                bgClass={p.bgClass}
-                thumbnail={p.thumbnail ? `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/${p.thumbnail}` : null}
-              />
-            ))}
+            {collections.flatMap((p, idx) => {
+              const card = (
+                <ProductCard
+                  key={p.id}
+                  slug={p.slug}
+                  name={p.title}
+                  category={p.category}
+                  price={p.price}
+                  isFree={p.isFree}
+                  badge={parseBadge(p.badge)}
+                  icon={p.icon}
+                  bgClass={p.bgClass}
+                  thumbnail={p.thumbnail ? `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/${p.thumbnail}` : null}
+                />
+              );
+              if ((idx + 1) % 8 === 0) {
+                return [card, (
+                  <div key={`ad-${idx}`} className="flex items-center justify-center" style={{ minHeight: "100px", gridColumn: "1 / -1" }}>
+                    <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_MAIN} width={728} height={90} />
+                  </div>
+                )];
+              }
+              return [card];
+            })}
           </div>
         ) : (
           <div className="shop-empty">

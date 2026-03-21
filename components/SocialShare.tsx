@@ -1,26 +1,11 @@
 // components/SocialShare.tsx
 'use client';
 
-/**
- * SocialShare — Haunted Wallpapers
- *
- * Renders thumb-friendly share buttons for Pinterest, X (Twitter), WhatsApp.
- * Must be a Client Component because sharing URLs are built at runtime in the
- * browser (window.location is not available server-side).
- *
- * Props:
- *   title      — image title (used in X / WhatsApp text)
- *   imageUrl   — full public CDN URL of the image (used by Pinterest media= param)
- *   pageUrl    — canonical URL of the page (optional — defaults to window.href)
- */
-
 interface SocialShareProps {
   title:    string;
   imageUrl: string;
-  pageUrl?: string; // pass from server so it's available before hydration
+  pageUrl?: string;
 }
-
-// ─── Platform SVG icons (inline — no external icon lib needed) ────────────────
 
 function PinterestIcon() {
   return (
@@ -46,13 +31,17 @@ function WhatsAppIcon() {
   );
 }
 
-// ─── Component ────────────────────────────────────────────────────────────────
+function ShareIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true" style={{ width: "16px", height: "16px" }}>
+      <path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8M16 6l-4-4-4 4M12 2v13" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
 
 export default function SocialShare({ title, imageUrl, pageUrl }: SocialShareProps) {
-  // pageUrl is passed from the server — use it directly (avoids window access)
   const url = pageUrl ?? "";
-
-  const text    = `${title} — free dark fantasy wallpaper`;
+  const text = `${title} — free dark fantasy wallpaper`;
   const encoded = {
     url:   encodeURIComponent(url),
     text:  encodeURIComponent(text),
@@ -65,10 +54,37 @@ export default function SocialShare({ title, imageUrl, pageUrl }: SocialSharePro
     whatsapp:  `https://wa.me/?text=${encodeURIComponent(`${text} ${url}`)}`,
   };
 
+  // Web Share API — fires native share sheet on mobile
+  const handleNativeShare = async () => {
+    if (typeof navigator !== "undefined" && navigator.share) {
+      try {
+        await navigator.share({ title, text, url });
+      } catch {
+        // User cancelled or error — do nothing
+      }
+    }
+  };
+
+  const canShare = typeof navigator !== "undefined" && !!navigator.share;
+
   return (
     <div className="social-share">
       <p className="social-share-label">Share this wallpaper</p>
       <div className="social-share-btns">
+
+        {/* Web Share API — primary on mobile, hidden on desktop */}
+        {canShare && (
+          <button
+            type="button"
+            onClick={handleNativeShare}
+            className="social-btn social-btn--native"
+            aria-label="Share"
+            style={{ touchAction: "manipulation" }}
+          >
+            <ShareIcon />
+            Share
+          </button>
+        )}
 
         <a
           href={links.pinterest}

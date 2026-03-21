@@ -113,7 +113,7 @@ export default async function PcPage({ searchParams }: PageProps) {
               — {total} wallpapers · page {page} of {totalPages}
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {images.flatMap((img, idx) => {
+              {images.map((img) => {
                 const card = (
                   <Link
                     key={img.id}
@@ -140,15 +140,7 @@ export default async function PcPage({ searchParams }: PageProps) {
                     </div>
                   </Link>
                 );
-                if ((idx + 1) % 8 === 0) {
-                  return [card, (
-                    <div key={`ad-${idx}`} className="overflow-hidden flex items-center justify-center bg-transparent col-span-full" style={{ minHeight: "100px" }}>
-                      <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_MAIN} width={728} height={90} />
-                    </div>
-                  )];
-                }
-                return [card];
-              })}
+                return card;)}
             </div>
             <Pagination currentPage={page} totalPages={totalPages} baseUrl={baseUrl} />
           </>

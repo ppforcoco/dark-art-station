@@ -2764,6 +2764,8 @@ body::before {
 .social-btn--pinterest:hover { color: #e60023; border-color: #e60023; background: rgba(230,0,35,0.08); }
 .social-btn--x:hover          { color: #f0ecff; border-color: #555; background: rgba(255,255,255,0.05); }
 .social-btn--whatsapp:hover   { color: #25d366; border-color: #25d366; background: rgba(37,211,102,0.08); }
+.social-btn--native           { color: #c0001a; border-color: rgba(192,0,26,0.5); background: rgba(192,0,26,0.08); cursor: pointer; }
+.social-btn--native:hover     { color: #f0ecff; border-color: #c0001a; background: rgba(192,0,26,0.18); }
 @media (max-width: 479px) {
   .social-share-btns { gap: 6px; }
   .social-btn { padding: 10px 12px; font-size: 0.55rem; }

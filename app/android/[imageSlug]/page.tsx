@@ -11,6 +11,8 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 import RelatedWallpapers from "@/components/RelatedWallpapers";
 import DownloadButton from "@/components/DownloadButton";
 import RecentlyViewed from "@/components/RecentlyViewed";
+import SocialShare from "@/components/SocialShare";
+import PageTracker from "@/components/PageTracker";
 
 export const dynamicParams = true;
 
@@ -213,6 +215,17 @@ export default async function IphoneImagePage({ params }: PageProps) {
       <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_FOOTER} width={728} height={90} />
 
       <RelatedWallpapers images={related} heading="More Dark Art You'll Like" />
+      <PageTracker item={{
+        slug: image.slug,
+        title: image.title,
+        thumb: thumbUrl,
+        href: `/android/${imageSlug}`,
+      }} />
+      <SocialShare
+        title={image.title}
+        imageUrl={thumbUrl}
+        pageUrl={`${siteUrl}/android/${imageSlug}`}
+      />
       <RecentlyViewed />
 
       <script type="application/ld+json" dangerouslySetInnerHTML={{

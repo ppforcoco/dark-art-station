@@ -93,14 +93,14 @@ export default function ProductCard({
       <div className="p-5">
         <span className="font-mono text-[0.6rem] tracking-[0.15em] uppercase text-[#c0001a] mb-2 block">{category}</span>
         <div className="font-body italic text-[1.05rem] text-[#f0ecff] mb-3 leading-[1.3]">{name}</div>
-        <div className="flex items-center justify-between gap-2">
+        <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
           <span className={`font-mono text-[0.9rem] ${isFree ? "text-[#ff3c00]" : "text-[#c9a84c]"}`}>
             {isFree ? "Free" : typeof price === "number" ? `$${price.toFixed(2)}` : price}
           </span>
           <Link
             href={`/shop/${slug}`}
-            className="flex items-center justify-center font-mono text-[0.55rem] tracking-[0.1em] uppercase hover:bg-[#c0001a] hover:text-[#f0ecff] transition-all whitespace-nowrap border border-[#c0001a] text-[#c0001a] bg-transparent"
-            style={{ minWidth: "120px", height: "32px", padding: "0 12px", flexShrink: 0 }}
+            className="font-mono text-[0.55rem] tracking-[0.1em] uppercase hover:bg-[#c0001a] hover:text-[#f0ecff] transition-all border border-[#c0001a] text-[#c0001a] bg-transparent"
+            style={{ display: "block", width: "100%", textAlign: "center", height: "32px", lineHeight: "32px", boxSizing: "border-box" }}
             aria-label={`${ctaLabel} ${name}`}
           >
             {ctaLabel}

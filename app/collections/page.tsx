@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { db } from "@/lib/db";
+import AdSlot from "@/components/AdSlot";
 
 export const revalidate = 60;
 
@@ -38,7 +39,7 @@ export default async function CollectionsPage() {
       </div>
 
       <div style={{ padding: "60px" }}>
-        {Object.entries(grouped).map(([category, cols]) => (
+        {Object.entries(grouped).map(([category, cols], groupIdx) => (
           <div key={category} style={{ marginBottom: "60px" }}>
             <h2 style={{
               fontFamily: "var(--font-space)", fontSize: "0.65rem", letterSpacing: "0.3em",
@@ -65,6 +66,12 @@ export default async function CollectionsPage() {
                 </Link>
               ))}
             </div>
+            {/* In-feed ad after every other category group */}
+            {groupIdx % 2 === 1 && (
+              <div style={{ marginTop: "32px", display: "flex", justifyContent: "center" }}>
+                <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_MAIN} width={728} height={90} />
+              </div>
+            )}
           </div>
         ))}
 

@@ -113,7 +113,7 @@ export default async function IphonePage({ searchParams }: PageProps) {
               — {total} wallpapers · page {page} of {totalPages}
             </p>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
-              {images.flatMap((img, idx) => {
+              {images.map((img) => {
                 const card = (
                   <Link
                     key={img.id}
@@ -140,16 +140,7 @@ export default async function IphonePage({ searchParams }: PageProps) {
                     </div>
                   </Link>
                 );
-                // Inject in-feed ad every 8 cards
-                if ((idx + 1) % 8 === 0) {
-                  return [card, (
-                    <div key={`ad-${idx}`} className="overflow-hidden flex items-center justify-center bg-transparent" style={{ minHeight: "100px" }}>
-                      <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_MAIN} width={300} height={250} />
-                    </div>
-                  )];
-                }
-                return [card];
-              })}
+                return card;)}
             </div>
             <Pagination currentPage={page} totalPages={totalPages} baseUrl={baseUrl} />
           </>
