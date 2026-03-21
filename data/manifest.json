@@ -3310,6 +3310,141 @@
   "ext": "webp",
   "sortOrder": 6
 },
+{
+  "slug": "glowing-blue-eyes-iphone",
+  "title": "Glowing Blue Eyes",
+  "description": "A pair of intense, glowing blue eyes staring from an abyss of pure black. Minimal, sharp, and hauntingly atmospheric. Designed to make your lock screen pop with a cold, electric energy.",
+  "deviceType": "IPHONE",
+  "tags": ["glowing eyes", "minimalist dark", "blue aesthetic", "dark art", "nocturnal", "abstract", "hd wallpaper", "iphone"],
+  "ext": "webp",
+  "sortOrder": 7
+},
+{
+  "slug": "cyber-skull-shades-iphone",
+  "title": "Cyber Skull Shades",
+  "description": "A stylized skull wearing futuristic sunglasses with a glowing city skyline reflected in the lenses. Surrounded by abstract digital circuits and smoke, this piece blends dark tech and gothic vibes.",
+  "deviceType": "IPHONE",
+  "tags": ["cyberpunk", "skull", "neon", "digital art", "tech", "dark aesthetic", "hd wallpaper", "iphone"],
+  "ext": "webp",
+  "sortOrder": 8
+},
+{
+  "slug": "vampire-skull-lightning-iphone",
+  "title": "Vampire Skull Lightning",
+  "description": "A dark, cracked skull with fierce fangs and glowing red eyes, surrounded by jagged crimson lightning and swirling smoke. An aggressive, high-energy design for your lock screen.",
+  "deviceType": "IPHONE",
+  "tags": ["vampire", "skull", "lightning", "red glow", "dark horror", "edgy", "hd art", "iphone"],
+  "ext": "webp",
+  "sortOrder": 9
+},
+{
+  "slug": "demon-portal-abyss-iphone",
+  "title": "Demon Portal Abyss",
+  "description": "A horned, winged demon looms over a swirling dark vortex portal. A terrifying and epic fantasy scene set against a desolate landscape of dead trees and jagged rocks. A true portal to the dark side.",
+  "deviceType": "IPHONE",
+  "tags": ["demon", "dark fantasy", "vortex", "abyss", "horror", "epic", "hd wallpaper", "iphone"],
+  "ext": "webp",
+  "sortOrder": 10
+},
+{
+  "slug": "dark-knight-blood-blade-iphone",
+  "title": "Dark Knight Blood Blade",
+  "description": "An armored knight in skeletal dark plate armor stands under a haunting moonlight, gripping a glowing red blade. Shadows and eerie creatures haunt the landscape behind him. A masterpiece of dark fantasy.",
+  "deviceType": "IPHONE",
+  "tags": ["knight", "dark fantasy", "warrior", "gothic", "red blade", "epic", "moonlight", "iphone"],
+  "ext": "webp",
+  "sortOrder": 11
+},
+{
+  "slug": "void-stare-eyes-iphone",
+  "title": "Void Stare Eyes",
+  "description": "A pair of glowing, piercing eyes floating in a deep abyss of swirling shadows. A minimalist yet intense wallpaper that brings a sense of unease and mystery to your lock screen. Perfect for dark aesthetic lovers.",
+  "deviceType": "IPHONE",
+  "tags": ["void", "eyes", "darkness", "minimalist", "nocturnal", "glowing", "abstract", "hd wallpaper"],
+  "ext": "webp",
+  "sortOrder": 12
+},
+{
+  "slug": "necromancer-queen-iphone",
+  "title": "Necromancer Queen",
+  "description": "An eerie queen of the afterlife with flowing dark hair, flanked by two floating, smoking skulls. Her intense gaze and gothic robes evoke a powerful, dark fantasy atmosphere. A hauntingly detailed character illustration.",
+  "deviceType": "IPHONE",
+  "tags": ["witch", "necromancer", "dark fantasy", "skulls", "gothic", "horror", "character art", "hd wallpaper"],
+  "ext": "webp",
+  "sortOrder": 13
+},
+{
+  "slug": "moonlight-crescent-stroll-iphone",
+  "title": "Moonlight Crescent Stroll",
+  "description": "A whimsical yet dark scene featuring a crescent moon hanging by a thread, casting light on a twisted, gnarled forest path. Eerie glowing-eyed creatures lurk in the shadows, creating a perfect blend of dark fantasy and fairytale.",
+  "deviceType": "IPHONE",
+  "tags": ["moonlight", "crescent moon", "dark forest", "fantasy", "whimsical", "night", "hd wallpaper", "iphone"],
+  "ext": "webp",
+  "sortOrder": 14
+},
+{
+  "slug": "reaper-spire-iphone",
+  "title": "Reaper Spire",
+  "description": "A grim reaper figure hooded in tattered black robes stands atop a jagged obsidian spire, surrounded by rising dark mist. A menacing and cinematic silhouette that dominates your screen with quiet, deadly authority.",
+  "deviceType": "IPHONE",
+  "tags": ["grim reaper", "reaper", "darkness", "cliff", "moody", "fantasy", "hd wallpaper", "iphone"],
+  "ext": "webp",
+  "sortOrder": 15
+},
+{
+  "slug": "dark-castle-path-iphone",
+  "title": "Dark Castle Path",
+  "description": "A winding stone path leads toward a towering, ominous gothic castle lit by eerie red windows. Twisted trees with red leaves frame the path under a stormy, purple-tinged sky. An epic entry to your own dark realm.",
+  "deviceType": "IPHONE",
+  "tags": ["gothic castle", "dark fantasy", "moonlight", "stormy", "castle", "adventure", "hd wallpaper", "iphone"],
+  "ext": "webp",
+  "sortOrder": 16
+},
+{
+  "slug": "swamp-stalker-iphone",
+  "title": "Swamp Stalker",
+  "description": "A lean, hooded figure with glowing red eyes stands on a dark rocky outcrop in a misty, toxic-looking forest. A moody and atmospheric piece perfect for fans of dark gothic horror.",
+  "deviceType": "IPHONE",
+  "tags": ["dark fantasy", "hooded figure", "misty", "swamp", "eerie", "dark aesthetic", "iphone"],
+  "ext": "webp",
+  "sortOrder": 17
+},
+{
+  "slug": "thorn-demon-grin-iphone",
+  "title": "Thorn Demon Grin",
+  "description": "A terrifying, shadowed creature with glowing red eyes and a jagged, thorn-filled grin. The intense red lines and dark, scratchy texture make this an aggressive and eye-catching lock screen.",
+  "deviceType": "IPHONE",
+  "tags": ["monster", "demon", "red eyes", "horror", "sharp fangs", "dark art", "iphone"],
+  "ext": "webp",
+  "sortOrder": 18
+},
+{
+  "slug": "ethereal-storm-vortex-iphone",
+  "title": "Ethereal Storm Vortex",
+  "description": "A swirling cosmic vortex of deep purples and blues spinning into an abyss. This minimalist abstract design creates a sense of endless depth and energy, perfect for a sleek, modern home screen.",
+  "deviceType": "IPHONE",
+  "tags": ["vortex", "abstract", "cosmic", "storm", "purple", "minimalist", "hd wallpaper", "iphone"],
+  "ext": "webp",
+  "sortOrder": 19
+},
+{
+  "slug": "hoodie-laughing-skeleton-iphone",
+  "title": "Laughing Hoodie Skeleton",
+  "description": "A fun, cartoon-style skeleton in a bright red hoodie with a skull graphic. He is caught in a moment of genuine, loud laughter. A perfect blend of dark humor and colorful personality for your phone.",
+  "deviceType": "IPHONE",
+  "tags": ["skeleton", "laughing", "cartoon", "hoodie", "dark humor", "fun", "iphone"],
+  "ext": "webp",
+  "sortOrder": 20
+},
+{
+  "slug": "shadow-castle-abyss-iphone",
+  "title": "Shadow Castle Abyss",
+  "description": "A grand, dark gothic castle perched on high peaks under a swirling, hypnotic purple sky. Dark silhouettes of trees and glowing red windows complete this haunting fantasy landscape.",
+  "deviceType": "IPHONE",
+  "tags": ["gothic castle", "fantasy landscape", "dark sky", "moonlight", "spooky", "hd wallpaper", "iphone"],
+  "ext": "webp",
+  "sortOrder": 21
+},
     {
       "slug": "haunted-history-android",
       "title": "Haunted History",
