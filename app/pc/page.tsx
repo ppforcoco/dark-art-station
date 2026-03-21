@@ -142,7 +142,7 @@ export default async function PcPage({ searchParams }: PageProps) {
                 );
                 if ((idx + 1) % 8 === 0) {
                   return [card, (
-                    <div key={`ad-${idx}`} style={{ aspectRatio: "16/9" }} className="overflow-hidden">
+                    <div key={`ad-${idx}`} className="overflow-hidden flex items-center justify-center bg-transparent col-span-full" style={{ minHeight: "100px" }}>
                       <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_MAIN} width={728} height={90} />
                     </div>
                   )];

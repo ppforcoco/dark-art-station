@@ -41,13 +41,13 @@ function pad(n: number): string {
 
 // Returns a flavour label based on how many days remain
 function getPrefix(days: number): string {
-  if (days > 100) return "🕯 Halloween approaches — countdown in";
-  if (days > 30)  return "🕯 The darkness gathers — Halloween in";
-  if (days > 14)  return "🦇 The spirits stir — Halloween in";
-  if (days > 7)   return "🎃 Halloween is coming — countdown in";
-  if (days > 1)   return "🩸 Almost time — Halloween in";
-  if (days === 1) return "☠️ Tomorrow is Halloween — countdown in";
-  return "🩸 Tonight is Halloween — countdown in";
+  if (days > 100) return "🕯 Halloween — countdown";
+  if (days > 30)  return "🕯 Halloween — countdown";
+  if (days > 14)  return "🦇 Halloween — coming";
+  if (days > 7)   return "🎃 Halloween — coming";
+  if (days > 1)   return "🩸 Almost Halloween";
+  if (days === 1) return "☠️ Tomorrow — Halloween";
+  return "🩸 Tonight — Halloween";
 }
 
 export default function HalloweenCountdown() {
@@ -81,7 +81,7 @@ export default function HalloweenCountdown() {
     <div className="halloween-bar" aria-label="Halloween countdown">
       {halloween ? (
         <a href="/collections" className="hc-active">
-          🕯 The Veil Is Thin — Ritual Active · Enter the Sanctum →
+          🎃 It's Halloween! Browse the Collection →
         </a>
       ) : (
         <>

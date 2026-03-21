@@ -2879,8 +2879,8 @@ body::before {
 /* ── Mobile: hide Hours + Minutes + Seconds, show days only ── */
 @media (max-width: 479px) {
   .hc-hide-mobile { display: none; }
-  .halloween-bar  { gap: 10px; }
-  .hc-prefix      { display: none; }
+  .halloween-bar  { gap: 8px; padding: 0 12px; }
+  .hc-prefix      { font-size: 0.45rem; letter-spacing: 0.1em; margin-right: 2px; }
 }
 
 /* ──────────────────────────────────────────────────────────── */

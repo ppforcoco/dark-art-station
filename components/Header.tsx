@@ -48,6 +48,13 @@ export default function Header() {
 
   const handleRandom = useCallback(async () => {
     setRandomSpin(true);
+    // Trigger AdSense ad on shuffle — good placement for high-intent interaction
+    try {
+      const adsbygoogle = (window as unknown as { adsbygoogle?: unknown[] }).adsbygoogle;
+      if (adsbygoogle) {
+        adsbygoogle.push({});
+      }
+    } catch {}
     try {
       const res = await fetch("/api/random-wallpaper");
       if (res.ok) {

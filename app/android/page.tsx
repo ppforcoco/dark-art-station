@@ -143,7 +143,7 @@ export default async function AndroidPage({ searchParams }: PageProps) {
                 // Inject in-feed ad every 8 cards
                 if ((idx + 1) % 8 === 0) {
                   return [card, (
-                    <div key={`ad-${idx}`} style={{ aspectRatio: "9/16" }} className="overflow-hidden">
+                    <div key={`ad-${idx}`} className="overflow-hidden flex items-center justify-center bg-transparent" style={{ minHeight: "100px" }}>
                       <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_MAIN} width={300} height={250} />
                     </div>
                   )];

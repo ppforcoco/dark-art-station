@@ -99,7 +99,8 @@ export default function ProductCard({
           </span>
           <Link
             href={`/shop/${slug}`}
-            className="flex items-center px-3 h-8 bg-transparent border border-[#c0001a] text-[#c0001a] font-mono text-[0.55rem] tracking-[0.1em] uppercase hover:bg-[#c0001a] hover:text-[#f0ecff] transition-all whitespace-nowrap"
+            className="flex items-center justify-center font-mono text-[0.55rem] tracking-[0.1em] uppercase hover:bg-[#c0001a] hover:text-[#f0ecff] transition-all whitespace-nowrap border border-[#c0001a] text-[#c0001a] bg-transparent"
+            style={{ minWidth: "120px", height: "32px", padding: "0 12px", flexShrink: 0 }}
             aria-label={`${ctaLabel} ${name}`}
           >
             {ctaLabel}
