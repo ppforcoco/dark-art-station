@@ -1520,7 +1520,7 @@ body::before {
   display: flex; flex-direction: column; justify-content: flex-end;
   padding: 32px;
   text-decoration: none; color: #d4cde8;
-  aspect-ratio: 4/5;
+  aspect-ratio: 9/16;
   cursor: none;
   border: 1px solid rgba(255,255,255,0.04);
 }
@@ -1535,7 +1535,7 @@ body::before {
 @media (max-width: 767px) {
   .cat-card.featured {
     grid-row: span 1;
-    aspect-ratio: 4/5;
+    aspect-ratio: 9/16;
   }
 }
 
@@ -3926,8 +3926,8 @@ body::before {
   .category-grid {
     grid-template-columns: 1fr !important;
   }
-  .cat-card { aspect-ratio: 16/7 !important; }
-  .cat-card.featured { aspect-ratio: 16/9 !important; }
+  .cat-card { aspect-ratio: 9/16 !important; }
+  .cat-card.featured { aspect-ratio: 9/16 !important; }
 }
 
 /* ── Related wallpapers — better mobile spacing ─────────────── */

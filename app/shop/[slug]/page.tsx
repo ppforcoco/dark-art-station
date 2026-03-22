@@ -110,6 +110,9 @@ export default async function CollectionPage({ params }: PageProps) {
                   alt={displayTitle}
                   fill
                   priority
+                  quality={90}
+                  placeholder="blur"
+                  blurDataURL="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI5IiBoZWlnaHQ9IjE2Ij48cmVjdCB3aWR0aD0iOSIgaGVpZ2h0PSIxNiIgZmlsbD0iIzBjMGIxNCIvPjwvc3ZnPg=="
                   sizes="360px"
                   style={{ objectFit: "contain", objectPosition: "center center" }}
                 />

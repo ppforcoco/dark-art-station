@@ -112,7 +112,7 @@ export default async function IphoneImagePage({ params }: PageProps) {
 
           <DeviceMockup deviceType="PC">
             <div className="relative w-full h-full">
-              <Image src={thumbUrl} alt={image.title} fill className="object-cover" priority sizes="(max-width: 768px) 100vw, 65vw" />
+              <Image src={thumbUrl} alt={image.title} fill className="object-cover" priority quality={90} placeholder="blur" blurDataURL="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSI5Ij48cmVjdCB3aWR0aD0iMTYiIGhlaWdodD0iOSIgZmlsbD0iIzBjMGIxNCIvPjwvc3ZnPg==" sizes="(max-width: 768px) 100vw, 65vw" />
             </div>
           </DeviceMockup>
 

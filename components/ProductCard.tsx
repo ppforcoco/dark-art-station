@@ -5,6 +5,11 @@ import Image from "next/image";
 import Link from "next/link";
 import FavoriteButton from "@/components/FavoriteButton";
 
+// Dark 9:16 shimmer used as blur placeholder on all thumbnails.
+// No DB changes needed — a solid dark rect matches the site bg perfectly.
+const DARK_BLUR =
+  "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI5IiBoZWlnaHQ9IjE2Ij48cmVjdCB3aWR0aD0iOSIgaGVpZ2h0PSIxNiIgZmlsbD0iIzBjMGIxNCIvPjwvc3ZnPg==";
+
 interface ProductCardProps {
   slug: string;
   name: string;
@@ -52,8 +57,11 @@ export default function ProductCard({
             fill
             loading={priority ? "eager" : "lazy"}
             priority={priority}
+            quality={65}
+            placeholder="blur"
+            blurDataURL={DARK_BLUR}
             className="object-cover transition-transform duration-500 group-hover:scale-105"
-            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 20vw"
+            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 200px"
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center text-[3rem] transition-transform duration-500 group-hover:scale-105 select-none">

@@ -3,6 +3,10 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
+
+// PC wallpapers are 16:9 — use a landscape-proportioned dark placeholder
+const DARK_BLUR_PC =
+  "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSI5Ij48cmVjdCB3aWR0aD0iMTYiIGhlaWdodD0iOSIgZmlsbD0iIzBjMGIxNCIvPjwvc3ZnPg==";
 import { db } from "@/lib/db";
 import { getPublicUrl } from "@/lib/r2";
 import { getRankedTags } from "@/lib/tags";
@@ -148,6 +152,9 @@ export default async function PcPage({ searchParams }: PageProps) {
                     fill
                     loading={idx < 6 ? "eager" : "lazy"}
                     priority={idx < 6}
+                    quality={65}
+                    placeholder="blur"
+                    blurDataURL={DARK_BLUR_PC}
                     className="object-cover transition-transform duration-500 group-hover:scale-105"
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                   />
