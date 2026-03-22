@@ -2,7 +2,7 @@
 
 import { useState, useRef, useCallback } from "react";
 
-type ActiveTool = "resizer" | "darkener" | "upscaler";
+type ActiveTool = "resizer" | "darkener" | "upscaler" | "text" | "blur" | "split";
 type ImgFormat = "jpeg" | "png" | "webp";
 
 const FORMATS: { value: ImgFormat; label: string; ext: string }[] = [
@@ -484,6 +484,446 @@ function UpscalerTool() {
   );
 }
 
+// ─── Text Overlay Tool ────────────────────────────────────────────────────────
+const TEXT_FONTS = [
+  { label: "Serif",      value: "Georgia, serif"              },
+  { label: "Sans",       value: "Arial, sans-serif"           },
+  { label: "Mono",       value: "Courier New, monospace"      },
+  { label: "Display",    value: "Impact, sans-serif"          },
+];
+const TEXT_ALIGNS = ["left", "center", "right"] as const;
+const TEXT_POSITIONS = [
+  { label: "Top",    value: "top"    },
+  { label: "Middle", value: "middle" },
+  { label: "Bottom", value: "bottom" },
+] as const;
+
+function TextTool() {
+  const [img,      setImg]      = useState<HTMLImageElement | null>(null);
+  const [name,     setName]     = useState("");
+  const [text,     setText]     = useState("YOUR TEXT");
+  const [font,     setFont]     = useState(TEXT_FONTS[0].value);
+  const [size,     setSize]     = useState(80);
+  const [color,    setTextColor]= useState("#ffffff");
+  const [opacity,  setOpacity]  = useState(100);
+  const [align,    setAlign]    = useState<typeof TEXT_ALIGNS[number]>("center");
+  const [position, setPosition] = useState<typeof TEXT_POSITIONS[number]["value"]>("bottom");
+  const [shadow,   setShadow]   = useState(true);
+  const [fmt,      setFmt]      = useState<ImgFormat>("jpeg");
+  const [done,     setDone]     = useState(false);
+  const previewRef = useRef<HTMLCanvasElement>(null);
+
+  const render = useCallback((
+    image: HTMLImageElement, t: string, f: string, sz: number,
+    col: string, op: number, al: string, pos: string, sh: boolean
+  ) => {
+    const c = previewRef.current; if (!c) return;
+    const scale = Math.min(300 / image.width, 500 / image.height, 1);
+    c.width  = Math.round(image.width  * scale);
+    c.height = Math.round(image.height * scale);
+    const ctx = c.getContext("2d")!;
+    ctx.imageSmoothingQuality = "high";
+    ctx.drawImage(image, 0, 0, c.width, c.height);
+    if (!t.trim()) return;
+    const scaledSize = Math.round(sz * scale);
+    ctx.font = `bold ${scaledSize}px ${f}`;
+    ctx.textAlign = al as CanvasTextAlign;
+    ctx.globalAlpha = op / 100;
+    if (sh) {
+      ctx.shadowColor = "rgba(0,0,0,0.8)";
+      ctx.shadowBlur  = scaledSize * 0.3;
+      ctx.shadowOffsetX = 0; ctx.shadowOffsetY = 0;
+    }
+    ctx.fillStyle = col;
+    const x = al === "left" ? 20 * scale : al === "right" ? c.width - 20 * scale : c.width / 2;
+    const y = pos === "top" ? scaledSize + 20 * scale : pos === "middle" ? c.height / 2 : c.height - 30 * scale;
+    // Handle multiline
+    const lines = t.split("\n");
+    lines.forEach((line, i) => {
+      ctx.fillText(line, x, y + i * scaledSize * 1.2);
+    });
+    ctx.globalAlpha = 1; ctx.shadowColor = "transparent"; ctx.shadowBlur = 0;
+  }, []);
+
+  async function handleFile(file: File) {
+    const image = await loadImg(file);
+    setImg(image); setName(file.name.replace(/\.[^.]+$/, ""));
+    render(image, text, font, size, color, opacity, align, position, shadow);
+  }
+
+  function update(t=text, f=font, sz=size, col=color, op=opacity, al=align, pos=position, sh=shadow) {
+    setText(t); setFont(f); setSize(sz); setTextColor(col);
+    setOpacity(op); setAlign(al); setPosition(pos); setShadow(sh);
+    if (img) render(img, t, f, sz, col, op, al, pos, sh);
+  }
+
+  function download() {
+    if (!img) return;
+    const c = document.createElement("canvas");
+    c.width = img.width; c.height = img.height;
+    const ctx = c.getContext("2d")!;
+    ctx.imageSmoothingQuality = "high";
+    ctx.drawImage(img, 0, 0);
+    if (text.trim()) {
+      ctx.font = `bold ${size}px ${font}`;
+      ctx.textAlign = align as CanvasTextAlign;
+      ctx.globalAlpha = opacity / 100;
+      if (shadow) { ctx.shadowColor = "rgba(0,0,0,0.8)"; ctx.shadowBlur = size * 0.3; }
+      ctx.fillStyle = color;
+      const x = align === "left" ? 20 : align === "right" ? c.width - 20 : c.width / 2;
+      const y = position === "top" ? size + 20 : position === "middle" ? c.height / 2 : c.height - 30;
+      text.split("\n").forEach((line, i) => ctx.fillText(line, x, y + i * size * 1.2));
+      ctx.globalAlpha = 1; ctx.shadowBlur = 0; ctx.shadowColor = "transparent";
+    }
+    const ext = FORMATS.find(f => f.value === fmt)?.ext ?? "jpg";
+    downloadCanvas(c, `${name || "wallpaper"}-text.${ext}`, fmt);
+    setDone(true); setTimeout(() => setDone(false), 3000);
+  }
+
+  return (
+    <div className="tool-body">
+      <p className="tool-desc">Add custom text or quotes to any wallpaper. Choose font, size, colour, position and shadow. Use line breaks for multiple lines.</p>
+
+      <div className={`tool-drop ${img ? "tool-drop--filled" : ""}`}
+        onClick={() => document.getElementById("text-input")?.click()}
+        onDrop={e => { e.preventDefault(); const f = e.dataTransfer.files[0]; if (f?.type.startsWith("image/")) handleFile(f); }}
+        onDragOver={e => e.preventDefault()}
+      >
+        <input id="text-input" type="file" accept="image/*" style={{ display: "none" }}
+          onChange={e => { const f = e.target.files?.[0]; if (f) handleFile(f); }} />
+        {img ? (
+          <div className="tool-preview-wrap">
+            <canvas ref={previewRef} className="tool-canvas" />
+            <p className="tool-change-hint">Click to change image</p>
+          </div>
+        ) : (
+          <div className="tool-drop-empty">
+            <span className="tool-drop-icon">✦</span>
+            <p className="tool-drop-label">Drop image here or click to upload</p>
+            <p className="tool-drop-sub">Add your text on top of any image</p>
+          </div>
+        )}
+      </div>
+
+      {img && <>
+        <div className="tool-section">
+          <p className="tool-label">Text (use Enter for new line)</p>
+          <textarea
+            value={text}
+            onChange={e => update(e.target.value)}
+            rows={2}
+            style={{
+              width: "100%", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.1)",
+              color: "#f0ecff", padding: "10px 12px", fontFamily: "var(--font-space), monospace",
+              fontSize: "0.8rem", resize: "vertical", outline: "none",
+            }}
+          />
+        </div>
+
+        <div className="tool-section">
+          <p className="tool-label">Font</p>
+          <div className="tool-fit-row" style={{ flexWrap: "wrap" }}>
+            {TEXT_FONTS.map(f => (
+              <button key={f.value}
+                className={`tool-fit-btn ${font === f.value ? "tool-fit-btn--active" : ""}`}
+                style={{ fontFamily: f.value }}
+                onClick={() => update(text, f.value)}
+              >{f.label}</button>
+            ))}
+          </div>
+        </div>
+
+        <div className="tool-section">
+          <p className="tool-label">Font Size — <strong>{size}px</strong></p>
+          <input type="range" min={20} max={300} value={size} className="tool-range"
+            onChange={e => update(text, font, Number(e.target.value))} />
+        </div>
+
+        <div className="tool-section">
+          <p className="tool-label">Text Color</p>
+          <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+            <input type="color" value={color}
+              onChange={e => update(text, font, size, e.target.value)}
+              style={{ width: "44px", height: "36px", border: "none", background: "none", cursor: "pointer" }} />
+            <span style={{ fontFamily: "var(--font-space)", fontSize: "0.65rem", color: "#8a8099" }}>{color.toUpperCase()}</span>
+            {["#ffffff","#000000","#c0001a","#c9a84c","#8b00ff","#00cfff"].map(c => (
+              <button key={c} onClick={() => update(text, font, size, c)}
+                style={{ width: "24px", height: "24px", background: c, border: color === c ? "2px solid #fff" : "1px solid rgba(255,255,255,0.2)", cursor: "pointer", borderRadius: "2px" }} />
+            ))}
+          </div>
+        </div>
+
+        <div className="tool-section">
+          <p className="tool-label">Opacity — <strong>{opacity}%</strong></p>
+          <input type="range" min={10} max={100} value={opacity} className="tool-range"
+            onChange={e => update(text, font, size, color, Number(e.target.value))} />
+        </div>
+
+        <div className="tool-section">
+          <p className="tool-label">Position</p>
+          <div className="tool-fit-row">
+            {TEXT_POSITIONS.map(p => (
+              <button key={p.value}
+                className={`tool-fit-btn ${position === p.value ? "tool-fit-btn--active" : ""}`}
+                onClick={() => update(text, font, size, color, opacity, align, p.value)}
+              >{p.label}</button>
+            ))}
+          </div>
+        </div>
+
+        <div className="tool-section">
+          <p className="tool-label">Alignment</p>
+          <div className="tool-fit-row">
+            {TEXT_ALIGNS.map(a => (
+              <button key={a}
+                className={`tool-fit-btn ${align === a ? "tool-fit-btn--active" : ""}`}
+                onClick={() => update(text, font, size, color, opacity, a)}
+              >{a.charAt(0).toUpperCase() + a.slice(1)}</button>
+            ))}
+          </div>
+        </div>
+
+        <div className="tool-section">
+          <label style={{ display: "flex", alignItems: "center", gap: "10px", cursor: "pointer" }}>
+            <input type="checkbox" checked={shadow} onChange={e => update(text, font, size, color, opacity, align, position, e.target.checked)}
+              style={{ accentColor: "#c0001a", width: "16px", height: "16px" }} />
+            <span style={{ fontFamily: "var(--font-space)", fontSize: "0.6rem", letterSpacing: "0.12em", textTransform: "uppercase", color: "#8a8099" }}>
+              Drop Shadow (improves readability)
+            </span>
+          </label>
+        </div>
+
+        <div className="tool-section">
+          <p className="tool-label">Output Format</p>
+          <div className="tool-fit-row">
+            {FORMATS.map(f => (
+              <button key={f.value} className={`tool-fit-btn ${fmt === f.value ? "tool-fit-btn--active" : ""}`}
+                onClick={() => setFmt(f.value)}>{f.label}</button>
+            ))}
+          </div>
+        </div>
+
+        <button className="tool-action" onClick={download}>
+          {done ? "✓ Downloaded!" : "↓ Download with Text"}
+        </button>
+      </>}
+    </div>
+  );
+}
+
+// ─── Blur Tool ────────────────────────────────────────────────────────────────
+function BlurTool() {
+  const [img,    setImg]    = useState<HTMLImageElement | null>(null);
+  const [name,   setName]   = useState("");
+  const [amount, setAmount] = useState(8);
+  const [fmt,    setFmt]    = useState<ImgFormat>("jpeg");
+  const [done,   setDone]   = useState(false);
+  const previewRef = useRef<HTMLCanvasElement>(null);
+
+  const render = useCallback((image: HTMLImageElement, blur: number) => {
+    const c = previewRef.current; if (!c) return;
+    const scale = Math.min(300 / image.width, 500 / image.height, 1);
+    c.width  = Math.round(image.width  * scale);
+    c.height = Math.round(image.height * scale);
+    const ctx = c.getContext("2d")!;
+    ctx.filter = `blur(${blur * scale}px)`;
+    ctx.drawImage(image, -blur * scale * 2, -blur * scale * 2,
+      c.width + blur * scale * 4, c.height + blur * scale * 4);
+    ctx.filter = "none";
+  }, []);
+
+  async function handleFile(file: File) {
+    const image = await loadImg(file);
+    setImg(image); setName(file.name.replace(/\.[^.]+$/, ""));
+    render(image, amount);
+  }
+
+  function updateBlur(v: number) { setAmount(v); if (img) render(img, v); }
+
+  function download() {
+    if (!img) return;
+    const c = document.createElement("canvas");
+    c.width = img.width; c.height = img.height;
+    const ctx = c.getContext("2d")!;
+    ctx.filter = `blur(${amount}px)`;
+    ctx.drawImage(img, -amount * 2, -amount * 2,
+      c.width + amount * 4, c.height + amount * 4);
+    ctx.filter = "none";
+    const ext = FORMATS.find(f => f.value === fmt)?.ext ?? "jpg";
+    downloadCanvas(c, `${name || "wallpaper"}-blur${amount}.${ext}`, fmt);
+    setDone(true); setTimeout(() => setDone(false), 3000);
+  }
+
+  return (
+    <div className="tool-body">
+      <p className="tool-desc">Blur any image for a soft, frosted background effect. Great for widget wallpapers on iOS and Android where you want icons to stand out.</p>
+
+      <div className={`tool-drop ${img ? "tool-drop--filled" : ""}`}
+        onClick={() => document.getElementById("blur-input")?.click()}
+        onDrop={e => { e.preventDefault(); const f = e.dataTransfer.files[0]; if (f?.type.startsWith("image/")) handleFile(f); }}
+        onDragOver={e => e.preventDefault()}
+      >
+        <input id="blur-input" type="file" accept="image/*" style={{ display: "none" }}
+          onChange={e => { const f = e.target.files?.[0]; if (f) handleFile(f); }} />
+        {img ? (
+          <div className="tool-preview-wrap">
+            <canvas ref={previewRef} className="tool-canvas" />
+            <p className="tool-change-hint">Click to change image</p>
+          </div>
+        ) : (
+          <div className="tool-drop-empty">
+            <span className="tool-drop-icon">🌫</span>
+            <p className="tool-drop-label">Drop image here or click to upload</p>
+            <p className="tool-drop-sub">Create frosted glass wallpaper effects</p>
+          </div>
+        )}
+      </div>
+
+      {img && <>
+        <div className="tool-section">
+          <p className="tool-label">Blur Amount — <strong>{amount}px</strong></p>
+          <input type="range" min={1} max={40} value={amount} className="tool-range"
+            onChange={e => updateBlur(Number(e.target.value))} />
+          <p className="tool-hint">
+            {amount < 5 ? "Subtle soft focus." : amount < 15 ? "Medium blur — good for widgets." : "Heavy blur — frosted glass effect."}
+          </p>
+        </div>
+
+        <div className="tool-section">
+          <p className="tool-label">Output Format</p>
+          <div className="tool-fit-row">
+            {FORMATS.map(f => (
+              <button key={f.value} className={`tool-fit-btn ${fmt === f.value ? "tool-fit-btn--active" : ""}`}
+                onClick={() => setFmt(f.value)}>{f.label}</button>
+            ))}
+          </div>
+        </div>
+
+        <button className="tool-action" onClick={download}>
+          {done ? "✓ Downloaded!" : "↓ Download Blurred Image"}
+        </button>
+      </>}
+    </div>
+  );
+}
+
+// ─── Split Wallpaper Maker ────────────────────────────────────────────────────
+function SplitTool() {
+  const [img,    setImg]    = useState<HTMLImageElement | null>(null);
+  const [name,   setName]   = useState("");
+  const [fmt,    setFmt]    = useState<ImgFormat>("jpeg");
+  const [done,   setDone]   = useState<"" | "lock" | "home" | "both">("");
+  const lockRef = useRef<HTMLCanvasElement>(null);
+  const homeRef = useRef<HTMLCanvasElement>(null);
+
+  // Lock screen: left half | Home screen: right half
+  const render = useCallback((image: HTMLImageElement) => {
+    const half = image.width / 2;
+    const h    = image.height;
+    const previewScale = Math.min(140 / half, 240 / h, 1);
+
+    const draw = (ref: React.RefObject<HTMLCanvasElement>, sx: number) => {
+      const c = ref.current; if (!c) return;
+      c.width  = Math.round(half * previewScale);
+      c.height = Math.round(h    * previewScale);
+      const ctx = c.getContext("2d")!;
+      ctx.imageSmoothingQuality = "high";
+      ctx.drawImage(image, sx, 0, half, h, 0, 0, c.width, c.height);
+    };
+    draw(lockRef, 0);
+    draw(homeRef, half);
+  }, []);
+
+  async function handleFile(file: File) {
+    const image = await loadImg(file);
+    setImg(image); setName(file.name.replace(/\.[^.]+$/, "")); setDone("");
+    render(image);
+  }
+
+  function downloadSplit(side: "lock" | "home" | "both") {
+    if (!img) return;
+    const half = img.width / 2;
+    const ext  = FORMATS.find(f => f.value === fmt)?.ext ?? "jpg";
+
+    function makeSide(sx: number, label: string) {
+      const c = document.createElement("canvas");
+      c.width  = half; c.height = img!.height;
+      const ctx = c.getContext("2d")!;
+      ctx.imageSmoothingQuality = "high";
+      ctx.drawImage(img!, sx, 0, half, img!.height, 0, 0, half, img!.height);
+      downloadCanvas(c, `${name || "wallpaper"}-${label}.${ext}`, fmt);
+    }
+
+    if (side === "lock" || side === "both") makeSide(0, "lock-screen");
+    if (side === "home" || side === "both") setTimeout(() => makeSide(half, "home-screen"), side === "both" ? 300 : 0);
+    setDone(side); setTimeout(() => setDone(""), 3000);
+  }
+
+  return (
+    <div className="tool-body">
+      <p className="tool-desc">
+        Split any wide image into two matching wallpapers — one for your lock screen and one for your home screen.
+        Upload a landscape or wide portrait image for best results.
+      </p>
+
+      <div className={`tool-drop ${img ? "tool-drop--filled" : ""}`}
+        onClick={() => document.getElementById("split-input")?.click()}
+        onDrop={e => { e.preventDefault(); const f = e.dataTransfer.files[0]; if (f?.type.startsWith("image/")) handleFile(f); }}
+        onDragOver={e => e.preventDefault()}
+      >
+        <input id="split-input" type="file" accept="image/*" style={{ display: "none" }}
+          onChange={e => { const f = e.target.files?.[0]; if (f) handleFile(f); }} />
+        {img ? (
+          <div className="tool-preview-wrap" style={{ width: "100%" }}>
+            <div style={{ display: "flex", gap: "12px", justifyContent: "center", alignItems: "flex-start" }}>
+              <div style={{ textAlign: "center" }}>
+                <p style={{ fontFamily: "var(--font-space)", fontSize: "0.5rem", letterSpacing: "0.15em", textTransform: "uppercase", color: "#c9a84c", marginBottom: "6px" }}>Lock Screen</p>
+                <canvas ref={lockRef} className="tool-canvas" style={{ border: "1px solid rgba(192,0,26,0.4)" }} />
+              </div>
+              <div style={{ textAlign: "center" }}>
+                <p style={{ fontFamily: "var(--font-space)", fontSize: "0.5rem", letterSpacing: "0.15em", textTransform: "uppercase", color: "#c9a84c", marginBottom: "6px" }}>Home Screen</p>
+                <canvas ref={homeRef} className="tool-canvas" style={{ border: "1px solid rgba(192,0,26,0.4)" }} />
+              </div>
+            </div>
+            <p className="tool-change-hint" style={{ marginTop: "8px" }}>Click to change image</p>
+          </div>
+        ) : (
+          <div className="tool-drop-empty">
+            <span className="tool-drop-icon">⊟</span>
+            <p className="tool-drop-label">Drop a wide image here or click to upload</p>
+            <p className="tool-drop-sub">Best with landscape or panoramic images</p>
+          </div>
+        )}
+      </div>
+
+      {img && <>
+        <div className="tool-section">
+          <p className="tool-label">Output Format</p>
+          <div className="tool-fit-row">
+            {FORMATS.map(f => (
+              <button key={f.value} className={`tool-fit-btn ${fmt === f.value ? "tool-fit-btn--active" : ""}`}
+                onClick={() => setFmt(f.value)}>{f.label}</button>
+            ))}
+          </div>
+        </div>
+
+        <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
+          <button className="tool-action" onClick={() => downloadSplit("lock")}>
+            {done === "lock" ? "✓ Downloaded!" : "↓ Lock Screen"}
+          </button>
+          <button className="tool-action" onClick={() => downloadSplit("home")}>
+            {done === "home" ? "✓ Downloaded!" : "↓ Home Screen"}
+          </button>
+          <button className="tool-action" style={{ background: "#2a2535", borderColor: "#2a2535" }}
+            onClick={() => downloadSplit("both")}>
+            {done === "both" ? "✓ Both Downloaded!" : "↓ Download Both"}
+          </button>
+        </div>
+      </>}
+    </div>
+  );
+}
+
 // ─── Page ─────────────────────────────────────────────────────────────────────
 export default function ToolsPage() {
   const [active, setActive] = useState<ActiveTool>("resizer");
@@ -492,6 +932,9 @@ export default function ToolsPage() {
     { id: "resizer"  as const, icon: "⬛", label: "Wallpaper Resizer", sub: "Resize to any device"  },
     { id: "darkener" as const, icon: "🎨", label: "Color Darkener",    sub: "Darken any image"      },
     { id: "upscaler" as const, icon: "🔍", label: "Image Upscaler",    sub: "Enlarge up to 4×"      },
+    { id: "text"     as const, icon: "✦",  label: "Add Text",          sub: "Overlay text & quotes" },
+    { id: "blur"     as const, icon: "🌫", label: "Blur Tool",         sub: "Frosted glass effect"  },
+    { id: "split"    as const, icon: "⊟",  label: "Split Wallpaper",   sub: "Lock + home screen"    },
   ];
 
   return (
@@ -530,6 +973,9 @@ export default function ToolsPage() {
           {active === "resizer"  && <ResizerTool />}
           {active === "darkener" && <DarkenerTool />}
           {active === "upscaler" && <UpscalerTool />}
+          {active === "text"     && <TextTool />}
+          {active === "blur"     && <BlurTool />}
+          {active === "split"    && <SplitTool />}
         </div>
       </div>
 

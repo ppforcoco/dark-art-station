@@ -32,7 +32,7 @@ export default function DarkFantasyArtStylesPage() {
             <h2>What Is Dark Fantasy Art?</h2>
             <p>
               Dark fantasy art sits at the intersection of fantasy illustration and horror
-              aesthetics. It draws from mythology, folklore, occult imagery, and gothic
+              aesthetics. It draws from mythology, folklore, dark mystical imagery, and gothic
               architecture to create images that feel atmospheric, unsettling, and often
               beautiful in a way that mainstream art rarely is. It is a broad category —
               a skeletal figure in baroque armour, a moonlit ruined castle, or a cosmic
@@ -92,7 +92,7 @@ export default function DarkFantasyArtStylesPage() {
           </section>
 
           <section className="static-section">
-            <h2>Cosmic and Occult Dark Art</h2>
+            <h2>Cosmic Dark Art</h2>
             <p>
               Inspired by cosmic horror and dark visual traditions, cosmic dark
               art depicts entities, symbols, and voids at a scale that makes human figures
