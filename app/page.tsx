@@ -173,10 +173,9 @@ export default async function Home() {
       })()}
 
       {/* ════════════════════════════ CATEGORIES */}
-      <section className="section-pad" style={{ backgroundColor: "var(--bg-primary)" }}>
+      <section className="section-pad" style={{ backgroundColor: "var(--bg-primary)", scrollMarginTop: "80px" }}>
         <div className="section-header">
           <div>
-            <span className="section-eyebrow">Browse the Darkness</span>
             <h2 className="section-title">Choose Your<br />Obsession</h2>
           </div>
           <Link href="/collections" className="section-link">View All Collections →</Link>
