@@ -211,15 +211,21 @@ export default function LightboxGallery({ images }: Props) {
           pointer-events: none;
         }
         .lb-caption {
-          position: absolute;
+          position: fixed;
           bottom: 0;
           left: 0;
           right: 0;
-          background: linear-gradient(to top, rgba(5,5,10,0.98) 0%, rgba(5,5,10,0.9) 60%, transparent 100%);
-          padding: 40px 20px calc(20px + env(safe-area-inset-bottom));
+          z-index: 1210;
+          background: linear-gradient(to top, rgba(5,5,10,0.98) 0%, rgba(5,5,10,0.85) 65%, transparent 100%);
+          padding: 16px 20px calc(16px + env(safe-area-inset-bottom));
           display: flex;
           flex-direction: column;
           gap: 10px;
+        }
+        @media (max-width: 767px) {
+          .lb-caption {
+            padding: 14px 16px calc(14px + env(safe-area-inset-bottom));
+          }
         }
         .lb-caption-title {
           font-family: var(--font-cormorant), serif;

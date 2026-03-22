@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import AdSlot from "@/components/AdSlot";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
 
@@ -111,6 +112,9 @@ export default function GuidesPage() {
           </div>
         </div>
 
+      </div>
+      <div style={{ maxWidth: "1280px", margin: "0 auto", padding: "0 24px 60px" }}>
+        <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_FOOTER} width={728} height={90} />
       </div>
     </main>
   );

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import AdSlot from "@/components/AdSlot";
 
 export const metadata: Metadata = {
   title: "About — HauntedWallpapers",
@@ -90,6 +91,9 @@ export default function AboutPage() {
           </section>
 
         </div>
+      </div>
+      <div style={{ maxWidth: "1280px", margin: "0 auto", padding: "0 24px 60px" }}>
+        <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_FOOTER} width={728} height={90} />
       </div>
     </main>
   );

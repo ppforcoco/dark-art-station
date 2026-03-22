@@ -632,7 +632,9 @@ body::before {
 /* ── Path Bar — breadcrumb strip below nav ──────────────────── */
 .path-bar {
   position: sticky;
-  top: calc(var(--topbar-total, 0px) + var(--nav-h, 88px));
+  /* Fallback matches site-nav's own fallback (72px) so path-bar
+     always sits flush below the nav even before JS sets --topbar-total */
+  top: calc(var(--topbar-total, 72px) + var(--nav-h, 88px));
   z-index: 500;
   width: 100%;
   background: var(--bg-secondary);
@@ -642,7 +644,7 @@ body::before {
 }
 @media (max-width: 1279px) {
   .path-bar {
-    top: calc(var(--topbar-total, 0px) + var(--nav-h-mob, 72px));
+    top: calc(var(--topbar-total, 72px) + var(--nav-h-mob, 72px));
     padding: 8px 16px;
   }
 }
@@ -3045,12 +3047,16 @@ body::before {
   position: fixed;
   bottom: 0; left: 0; right: 0;
   z-index: 1210;
-  padding: 12px 24px;
-  background: linear-gradient(to top, rgba(5,5,16,0.92), transparent);
+  padding: 12px 24px calc(12px + env(safe-area-inset-bottom));
+  background: linear-gradient(to top, rgba(5,5,16,0.97) 0%, rgba(5,5,16,0.85) 70%, transparent 100%);
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
+  flex-direction: column;
+  gap: 10px;
+}
+@media (max-width: 767px) {
+  .lb-caption {
+    padding: 16px 16px calc(16px + env(safe-area-inset-bottom));
+  }
 }
 .lb-caption-title {
   font-family: var(--font-cormorant), Georgia, serif;

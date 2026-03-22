@@ -304,10 +304,6 @@ export default function PrivacyPage() {
                 Email:{" "}
                 <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
               </li>
-              <li>
-                Contact form:{" "}
-                <a href="/contact">hauntedwallpapers.com/contact</a>
-              </li>
             </ul>
           </section>
 
