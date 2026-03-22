@@ -70,10 +70,6 @@ function ResizerTool() {
   const [fmt,    setFmt]    = useState<ImgFormat>("jpeg");
   const [done,   setDone]   = useState(false);
   const previewRef = useRef<HTMLCanvasElement>(null);
-  // Render whenever img/preset/fit changes — useEffect runs after DOM update
-  useEffect(() => {
-    if (img) render(img, preset, fit);
-  }, [img, preset, fit, render]);
 
   const render = useCallback((image: HTMLImageElement, p: typeof preset, f: string) => {
     const c = previewRef.current; if (!c) return;
@@ -92,6 +88,11 @@ function ResizerTool() {
       ctx.drawImage(image, (c.width - dw) / 2, (c.height - dh) / 2, dw, dh);
     }
   }, []);
+
+  // Render whenever img/preset/fit changes — useEffect runs after DOM update
+  useEffect(() => {
+    if (img) render(img, preset, fit);
+  }, [img, preset, fit, render]);
 
   async function handleFile(file: File) {
     const image = await loadImg(file);
