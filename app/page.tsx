@@ -159,9 +159,7 @@ export default async function Home() {
                   alt={wotd.title}
                   fill
                   priority
-                  quality={90}
-                  placeholder="blur"
-                  blurDataURL="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI5IiBoZWlnaHQ9IjE2Ij48cmVjdCB3aWR0aD0iOSIgaGVpZ2h0PSIxNiIgZmlsbD0iIzBjMGIxNCIvPjwvc3ZnPg=="
+                  unoptimized
                   className="object-cover"
                   sizes="(max-width: 900px) 100vw, 50vw"
                 />
@@ -206,9 +204,7 @@ export default async function Home() {
                     src={`${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/${dbCat.thumbnail}`}
                     alt={cat.title}
                     fill
-                    quality={65}
-                    placeholder="blur"
-                    blurDataURL="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI5IiBoZWlnaHQ9IjE2Ij48cmVjdCB3aWR0aD0iOSIgaGVpZ2h0PSIxNiIgZmlsbD0iIzBjMGIxNCIvPjwvc3ZnPg=="
+                    unoptimized
                     className="object-cover"
                     sizes="(max-width: 479px) 100vw, (max-width: 767px) 50vw, (max-width: 1199px) 33vw, 200px"
                   />

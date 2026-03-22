@@ -167,8 +167,6 @@ export default async function ImagePage({ params }: PageProps) {
                 className="image-detail-img"
                 priority
                 quality={90}
-                placeholder="blur"
-                blurDataURL="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI5IiBoZWlnaHQ9IjE2Ij48cmVjdCB3aWR0aD0iOSIgaGVpZ2h0PSIxNiIgZmlsbD0iIzBjMGIxNCIvPjwvc3ZnPg=="
                 sizes="(max-width: 768px) 100vw, (max-width: 1280px) 480px, 480px"
                 style={{ objectFit: "contain", objectPosition: "center center" }}
               />
@@ -261,9 +259,7 @@ export default async function ImagePage({ params }: PageProps) {
                     alt={prevImage.title}
                     fill
                     className="object-cover"
-                    quality={65}
-                    placeholder="blur"
-                    blurDataURL="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI5IiBoZWlnaHQ9IjE2Ij48cmVjdCB3aWR0aD0iOSIgaGVpZ2h0PSIxNiIgZmlsbD0iIzBjMGIxNCIvPjwvc3ZnPg=="
+                    unoptimized
                     sizes="90px"
                     style={{ objectFit: "cover" }}
                   />
@@ -287,9 +283,7 @@ export default async function ImagePage({ params }: PageProps) {
                     alt={nextImage.title}
                     fill
                     className="object-cover"
-                    quality={65}
-                    placeholder="blur"
-                    blurDataURL="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI5IiBoZWlnaHQ9IjE2Ij48cmVjdCB3aWR0aD0iOSBoZWlnaHQ9IjE2IiBmaWxsPSIjMGMwYjE0Ii8+PC9zdmc+"
+                    unoptimized
                     sizes="90px"
                     style={{ objectFit: "cover" }}
                   />

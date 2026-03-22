@@ -13,11 +13,11 @@ const nextConfig: NextConfig = {
         pathname: "/**",
       },
     ],
-    // Prefer WebP/AVIF — smaller files, faster loads
-    formats: ["image/avif", "image/webp"],
+    // WebP only — AVIF encoding is CPU-intensive and stalls the image optimizer
+    // under load (24 concurrent conversions on a grid page kills response times).
+    // WebP is ~30% smaller than JPEG with near-zero encoding overhead.
+    formats: ["image/webp"],
     minimumCacheTTL: 31536000, // 1 year
-    // Tell Next.js the actual device widths we serve so it generates
-    // the right srcset breakpoints — avoids downloading oversized images
     deviceSizes: [390, 640, 768, 1024, 1280, 1920],
     imageSizes:  [64, 128, 256, 384, 512],
   },

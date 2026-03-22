@@ -11,9 +11,6 @@ import AdSlot from "@/components/AdSlot";
 import Pagination from "@/components/Pagination";
 import Breadcrumbs from "@/components/Breadcrumbs";
 
-const DARK_BLUR =
-  "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI5IiBoZWlnaHQ9IjE2Ij48cmVjdCB3aWR0aD0iOSIgaGVpZ2h0PSIxNiIgZmlsbD0iIzBjMGIxNCIvPjwvc3ZnPg==";
-
 export const revalidate = 60;
 
 const PAGE_SIZE = 24;
@@ -68,7 +65,7 @@ export default async function IphonePage({ searchParams }: PageProps) {
       skip,
     }),
     db.image.count({ where }),
-    getRankedTags("IPHONE"),
+    getRankedTags("IPHONE").then(t => t.slice(0, 10)),
   ]);
 
   const totalPages = Math.ceil(total / PAGE_SIZE);
@@ -151,9 +148,7 @@ export default async function IphonePage({ searchParams }: PageProps) {
                     fill
                     loading={idx < 10 ? "eager" : "lazy"}
                     priority={idx < 10}
-                    quality={65}
-                    placeholder="blur"
-                    blurDataURL={DARK_BLUR}
+                    unoptimized
                     className="object-cover transition-transform duration-500 group-hover:scale-105"
                     sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 20vw"
                   />

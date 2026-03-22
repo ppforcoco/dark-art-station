@@ -3,9 +3,6 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
-
-const DARK_BLUR =
-  "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI5IiBoZWlnaHQ9IjE2Ij48cmVjdCB3aWR0aD0iOSIgaGVpZ2h0PSIxNiIgZmlsbD0iIzBjMGIxNCIvPjwvc3ZnPg==";
 import { db } from "@/lib/db";
 import { getPublicUrl } from "@/lib/r2";
 import { getRankedTags } from "@/lib/tags";
@@ -68,7 +65,7 @@ export default async function AndroidPage({ searchParams }: PageProps) {
       skip,
     }),
     db.image.count({ where }),
-    getRankedTags("ANDROID"),
+    getRankedTags("ANDROID").then(t => t.slice(0, 10)),
   ]);
 
   const totalPages = Math.ceil(total / PAGE_SIZE);
@@ -151,9 +148,7 @@ export default async function AndroidPage({ searchParams }: PageProps) {
                     fill
                     loading={idx < 10 ? "eager" : "lazy"}
                     priority={idx < 10}
-                    quality={65}
-                    placeholder="blur"
-                    blurDataURL={DARK_BLUR}
+                    unoptimized
                     className="object-cover transition-transform duration-500 group-hover:scale-105"
                     sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 20vw"
                   />
