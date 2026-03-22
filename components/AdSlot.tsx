@@ -2,16 +2,6 @@
 
 import { useEffect, useRef, useState } from "react";
 
-const STORAGE_KEY = "hw-cookie-consent";
-
-function getConsent(): "accepted" | "declined" | null {
-  try {
-    return (localStorage.getItem(STORAGE_KEY) as "accepted" | "declined") ?? null;
-  } catch {
-    return null;
-  }
-}
-
 interface AdSlotProps {
   slotId?: string;
   width?: number;
@@ -30,30 +20,17 @@ export default function AdSlot({
   const adRef = useRef<HTMLModElement>(null);
   const initialized = useRef(false);
   const [adLoaded, setAdLoaded] = useState(false);
-  const [consent, setConsent] = useState<"accepted" | "declined" | null>(null);
 
-  const pid = process.env.NEXT_PUBLIC_ADSENSE_PID;
+  const pid          = process.env.NEXT_PUBLIC_ADSENSE_PID;
   const resolvedSlot = slotId ?? process.env.NEXT_PUBLIC_ADSENSE_SLOT_MAIN;
-  const isLive = Boolean(pid && resolvedSlot);
+  const isLive       = Boolean(pid && resolvedSlot);
 
-  // Read consent on mount, then listen for changes
+  // Push the ad unit on mount — no consent gate needed.
+  // The AdSense script is loaded unconditionally in layout.tsx,
+  // and Google Consent Mode v2 (also in layout.tsx) automatically
+  // serves non-personalized ads when consent is denied/unknown.
   useEffect(() => {
-    setConsent(getConsent());
-
-    function onConsentChange(e: Event) {
-      const detail = (e as CustomEvent).detail as "accepted" | "declined";
-      setConsent(detail);
-    }
-
-    window.addEventListener("hw-consent-change", onConsentChange);
-    return () => window.removeEventListener("hw-consent-change", onConsentChange);
-  }, []);
-
-  // Push ad unit once consent state is known (null = not yet decided, skip for now)
-  // With Consent Mode v2 set in layout.tsx, Google shows non-personalized ads
-  // to declined users automatically — we just need to push the slot.
-  useEffect(() => {
-    if (!isLive || consent === null || initialized.current) return;
+    if (!isLive || initialized.current) return;
     initialized.current = true;
 
     const observer = new MutationObserver(() => {
@@ -62,12 +39,11 @@ export default function AdSlot({
         observer.disconnect();
       }
     });
-
     if (adRef.current) {
       observer.observe(adRef.current, { childList: true, subtree: true });
     }
 
-    // Small delay to ensure AdSense script has loaded after consent injection
+    // Small delay to let the AdSense script initialise
     const timer = setTimeout(() => {
       try {
         (
@@ -77,7 +53,7 @@ export default function AdSlot({
       } catch (e) {
         console.warn("[AdSlot] push failed:", e);
       }
-    }, 300);
+    }, 200);
 
     const cleanupTimer = setTimeout(() => observer.disconnect(), 5000);
 
@@ -86,7 +62,7 @@ export default function AdSlot({
       clearTimeout(cleanupTimer);
       observer.disconnect();
     };
-  }, [isLive, consent]);
+  }, [isLive]);
 
   // Dev placeholder — no live PID set
   if (!isLive) {
@@ -101,12 +77,6 @@ export default function AdSlot({
         <span className="ad-label">Advertisement</span>
       </div>
     );
-  }
-
-  // consent === null means banner not yet dismissed — don't show ad yet
-  // consent === "accepted" or "declined" — render (Google handles personalization)
-  if (consent === null) {
-    return null;
   }
 
   const insStyle = format !== "auto"

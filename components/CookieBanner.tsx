@@ -39,7 +39,6 @@ export default function CookieBanner() {
           analytics_storage:  "granted",
         });
       }
-      injectAdSense();
     }
     // declined users: consent stays denied (already set as default in layout.tsx)
   }, []);
@@ -56,7 +55,6 @@ export default function CookieBanner() {
         analytics_storage:   "granted",
       });
     }
-    injectAdSense();
   }
 
   function decline() {
@@ -206,15 +204,4 @@ export default function CookieBanner() {
       `}</style>
     </>
   );
-}
-
-function injectAdSense() {
-  const pid = process.env.NEXT_PUBLIC_ADSENSE_PID;
-  if (!pid) return;
-  if (document.querySelector(`script[src*="adsbygoogle.js"]`)) return;
-  const script = document.createElement("script");
-  script.async = true;
-  script.crossOrigin = "anonymous";
-  script.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${pid}`;
-  document.head.appendChild(script);
 }
