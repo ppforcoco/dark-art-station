@@ -49,9 +49,11 @@ export default function AdSlot({
     return () => window.removeEventListener("hw-consent-change", onConsentChange);
   }, []);
 
-  // Only push the ad unit after consent has been given and AdSense script is loaded
+  // Push ad unit once consent state is known (null = not yet decided, skip for now)
+  // With Consent Mode v2 set in layout.tsx, Google shows non-personalized ads
+  // to declined users automatically — we just need to push the slot.
   useEffect(() => {
-    if (!isLive || consent !== "accepted" || initialized.current) return;
+    if (!isLive || consent === null || initialized.current) return;
     initialized.current = true;
 
     const observer = new MutationObserver(() => {
@@ -101,8 +103,9 @@ export default function AdSlot({
     );
   }
 
-  // Consent declined or not yet given — show nothing (no ad, no placeholder)
-  if (consent !== "accepted") {
+  // consent === null means banner not yet dismissed — don't show ad yet
+  // consent === "accepted" or "declined" — render (Google handles personalization)
+  if (consent === null) {
     return null;
   }
 

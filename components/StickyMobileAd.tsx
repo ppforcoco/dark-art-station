@@ -29,7 +29,9 @@ export default function StickyMobileAd() {
   const pid  = process.env.NEXT_PUBLIC_ADSENSE_PID;
   const slot = process.env.NEXT_PUBLIC_ADSENSE_SLOT_ANCHOR ?? process.env.NEXT_PUBLIC_ADSENSE_SLOT_FOOTER;
 
-  if (!isMobile || dismissed || consent !== "accepted" || !pid || !slot) return null;
+  // null = cookie banner not yet dismissed, don't show ad yet
+  // "accepted" or "declined" = show ad (Consent Mode v2 handles personalization)
+  if (!isMobile || dismissed || consent === null || !pid || !slot) return null;
 
   return (
     <div
