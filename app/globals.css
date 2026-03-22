@@ -2517,10 +2517,10 @@ body::before {
 .breadcrumbs {
   display: flex;
   align-items: center;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
   gap: 0;
   list-style: none;
-  overflow: hidden;
+  overflow: visible;
   max-width: 100%;
 }
 .breadcrumb-item {

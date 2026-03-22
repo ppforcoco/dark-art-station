@@ -305,6 +305,7 @@ export default function FavoritesPage() {
           border: 1px solid rgba(255,255,255,0.06);
           overflow: hidden;
           transition: border-color 0.2s, transform 0.2s;
+          height: 100%; /* ensure card fills grid cell */
         }
         .fav-card:hover {
           border-color: rgba(192,0,26,0.45);
@@ -347,6 +348,9 @@ export default function FavoritesPage() {
           display: flex;
           flex-direction: column;
           gap: 8px;
+          /* Push the action row to the bottom of the card */
+          flex: 1;
+          justify-content: space-between;
         }
         .fav-card-title {
           font-family: var(--font-cormorant), serif;
@@ -377,8 +381,12 @@ export default function FavoritesPage() {
           color: #c0001a;
           border: 1px solid rgba(192,0,26,0.45);
           text-align: center;
-          padding: 7px 10px;
+          padding: 9px 10px;
           transition: background 0.15s, color 0.15s;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          min-height: 36px;
         }
         .fav-card-cta:hover { background: #c0001a; color: #fff; }
 

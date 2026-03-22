@@ -18,20 +18,17 @@ interface Props {
 
 export default function LightboxGallery({ images }: Props) {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
-  const [dlState, setDlState] = useState<"idle" | "done">("idle");
   const touchStartX = useRef<number | null>(null);
   const touchStartY = useRef<number | null>(null);
   const isOpen = activeIndex !== null;
 
-  const open  = (i: number) => { setActiveIndex(i); setDlState("idle"); };
+  const open  = (i: number) => { setActiveIndex(i); };
   const close = useCallback(() => setActiveIndex(null), []);
   const prev  = useCallback(() => {
     setActiveIndex((i) => (i === null ? null : (i - 1 + images.length) % images.length));
-    setDlState("idle");
   }, [images.length]);
   const next  = useCallback(() => {
     setActiveIndex((i) => (i === null ? null : (i + 1) % images.length));
-    setDlState("idle");
   }, [images.length]);
 
   useEffect(() => {
@@ -193,16 +190,15 @@ export default function LightboxGallery({ images }: Props) {
             <span className="lb-caption-title">{current.title}</span>
 
             <div className="lb-caption-actions">
-              {/* Direct download button — highest intent moment */}
-              <a
-                href={`/api/download/image/${current.id}`}
+              {/* Download button — takes user to the wallpaper detail page to download */}
+              <Link
+                href={current.href}
                 className="lb-download-btn"
-                onClick={handleDownloadClick}
-                download
+                onClick={close}
                 aria-label={`Download ${current.title}`}
               >
-                {dlState === "done" ? "✓ Downloaded" : "↓ Download Free"}
-              </a>
+                ↓ Download Free
+              </Link>
 
               {/* View detail page */}
               <Link
