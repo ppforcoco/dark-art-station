@@ -58,14 +58,6 @@ export default function LightboxGallery({ images }: Props) {
 
   const current = activeIndex !== null ? images[activeIndex] : null;
 
-  // Derive the image ID from the href for direct download
-  // href is like /shop/slug/image-slug or /android/image-slug
-  // We use the detail page href — download happens on that page
-  // For direct download we need the image id which is in img.id
-  function handleDownloadClick() {
-    setDlState("done");
-  }
-
   return (
     <>
       {/* Grid */}
@@ -176,7 +168,7 @@ export default function LightboxGallery({ images }: Props) {
                   width={60}
                   height={107}
                   data-active={i === activeIndex ? "true" : "false"}
-                  onClick={() => { setActiveIndex(i); setDlState("idle"); }}
+                  onClick={() => { setActiveIndex(i); }}
                 />
               ))}
             </div>
