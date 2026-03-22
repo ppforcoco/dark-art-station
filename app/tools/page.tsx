@@ -2,7 +2,7 @@
 
 import { useState, useRef, useCallback } from "react";
 
-type ActiveTool = "resizer" | "darkener";
+type ActiveTool = "resizer" | "darkener" | "upscaler";
 
 // ─── Device presets ───────────────────────────────────────────────────────────
 const PRESETS = [
@@ -290,13 +290,151 @@ function DarkenerTool() {
   );
 }
 
+// ─── Image Upscaler ───────────────────────────────────────────────────────────
+const UPSCALE_FACTORS = [2, 3, 4] as const;
+type UpscaleFactor = typeof UPSCALE_FACTORS[number];
+
+function UpscalerTool() {
+  const [img,    setImg]    = useState<HTMLImageElement | null>(null);
+  const [name,   setName]   = useState("");
+  const [factor, setFactor] = useState<UpscaleFactor>(2);
+  const [status, setStatus] = useState<"idle" | "processing" | "done">("idle");
+  const previewRef = useRef<HTMLCanvasElement>(null);
+
+  const renderPreview = useCallback((image: HTMLImageElement) => {
+    const c = previewRef.current; if (!c) return;
+    const scale = Math.min(280 / image.width, 460 / image.height, 1);
+    c.width  = Math.round(image.width  * scale);
+    c.height = Math.round(image.height * scale);
+    const ctx = c.getContext("2d")!;
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = "high";
+    ctx.drawImage(image, 0, 0, c.width, c.height);
+  }, []);
+
+  async function handleFile(file: File) {
+    const image = await loadImg(file);
+    setImg(image);
+    setName(file.name.replace(/\.[^.]+$/, ""));
+    setStatus("idle");
+    renderPreview(image);
+  }
+
+  function upscale() {
+    if (!img) return;
+    setStatus("processing");
+
+    // Use setTimeout so UI can update before heavy canvas work
+    setTimeout(() => {
+      const targetW = img.width  * factor;
+      const targetH = img.height * factor;
+
+      // Step-up upscaling: double repeatedly for better quality than 1-step
+      let current: HTMLCanvasElement = document.createElement("canvas");
+      current.width  = img.width;
+      current.height = img.height;
+      const initCtx = current.getContext("2d")!;
+      initCtx.drawImage(img, 0, 0);
+
+      let w = img.width;
+      let h = img.height;
+
+      while (w < targetW || h < targetH) {
+        const next = document.createElement("canvas");
+        const stepW = Math.min(w * 2, targetW);
+        const stepH = Math.min(h * 2, targetH);
+        next.width  = stepW;
+        next.height = stepH;
+        const ctx = next.getContext("2d")!;
+        ctx.imageSmoothingEnabled = true;
+        ctx.imageSmoothingQuality = "high";
+        ctx.drawImage(current, 0, 0, stepW, stepH);
+        current = next;
+        w = stepW;
+        h = stepH;
+      }
+
+      downloadCanvas(current, `${name || "wallpaper"}-${factor}x-upscaled.jpg`);
+      setStatus("done");
+      setTimeout(() => setStatus("idle"), 3000);
+    }, 50);
+  }
+
+  const outW = img ? img.width  * factor : 0;
+  const outH = img ? img.height * factor : 0;
+
+  return (
+    <div className="tool-body">
+      <p className="tool-desc">
+        Enlarge any wallpaper up to 4× its original size using step-up canvas interpolation.
+        Best for images that need a resolution boost before setting as wallpaper.
+        Runs entirely in your browser — nothing is uploaded.
+      </p>
+
+      <div
+        className={`tool-drop ${img ? "tool-drop--filled" : ""}`}
+        onClick={() => document.getElementById("upscaler-input")?.click()}
+        onDrop={e => { e.preventDefault(); const f = e.dataTransfer.files[0]; if (f?.type.startsWith("image/")) handleFile(f); }}
+        onDragOver={e => e.preventDefault()}
+      >
+        <input id="upscaler-input" type="file" accept="image/*" style={{ display: "none" }}
+          onChange={e => { const f = e.target.files?.[0]; if (f) handleFile(f); }} />
+        {img ? (
+          <div className="tool-preview-wrap">
+            <canvas ref={previewRef} className="tool-canvas" />
+            <p className="tool-change-hint">Click to change image</p>
+          </div>
+        ) : (
+          <div className="tool-drop-empty">
+            <span className="tool-drop-icon">🔍</span>
+            <p className="tool-drop-label">Drop image here or click to upload</p>
+            <p className="tool-drop-sub">JPG · PNG · WEBP — upscaled on your device</p>
+          </div>
+        )}
+      </div>
+
+      {img && (
+        <>
+          <div className="tool-section">
+            <p className="tool-label">Upscale Factor</p>
+            <div className="tool-fit-row">
+              {UPSCALE_FACTORS.map(f => (
+                <button key={f}
+                  className={`tool-fit-btn ${factor === f ? "tool-fit-btn--active" : ""}`}
+                  onClick={() => setFactor(f)}
+                >
+                  {f}×
+                </button>
+              ))}
+            </div>
+            <p className="tool-hint">
+              Output: {img.width}×{img.height} → <strong style={{ color: "#c9a84c" }}>{outW}×{outH}px</strong>
+            </p>
+          </div>
+
+          <button
+            className="tool-action"
+            onClick={upscale}
+            disabled={status === "processing"}
+          >
+            {status === "processing" ? "⏳ Upscaling…"
+              : status === "done"      ? "✓ Downloaded!"
+              : `↑ Upscale ${factor}× & Download`}
+          </button>
+        </>
+      )}
+    </div>
+  );
+}
+
 // ─── Page ─────────────────────────────────────────────────────────────────────
 export default function ToolsPage() {
   const [active, setActive] = useState<ActiveTool>("resizer");
 
   const TOOLS = [
-    { id: "resizer"  as const, icon: "⬛", label: "Wallpaper Resizer", sub: "Resize to any device" },
-    { id: "darkener" as const, icon: "🎨", label: "Color Darkener",    sub: "Darken any image"    },
+    { id: "resizer"  as const, icon: "⬛", label: "Wallpaper Resizer", sub: "Resize to any device"  },
+    { id: "darkener" as const, icon: "🎨", label: "Color Darkener",    sub: "Darken any image"      },
+    { id: "upscaler" as const, icon: "🔍", label: "Image Upscaler",    sub: "Enlarge up to 4×"      },
   ];
 
   return (
@@ -334,6 +472,7 @@ export default function ToolsPage() {
           </h2>
           {active === "resizer"  && <ResizerTool />}
           {active === "darkener" && <DarkenerTool />}
+          {active === "upscaler" && <UpscalerTool />}
         </div>
       </div>
 
