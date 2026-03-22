@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { searchWallpapers, type SearchResultItem } from "@/lib/db";
 import Pagination from "@/components/Pagination";
 import SearchPageClient from "@/components/SearchPageClient";
@@ -48,13 +49,15 @@ function ResultCard({ item }: { item: SearchResultItem }) {
 
   return (
     <Link href={href} className="search-card">
-      <div className={`search-card-thumb ${item.bgClass ?? "p-bg-1"}`}>
-        <img
+      <div className={`search-card-thumb ${item.bgClass ?? "p-bg-1"}`} style={{ position: "relative" }}>
+        <Image
           src={r2Url(item.thumbnail)}
           alt={item.title}
-          className="search-card-img"
+          fill
           loading="lazy"
-          decoding="async"
+          unoptimized
+          style={{ objectFit: "cover" }}
+          sizes="(max-width: 640px) 50vw, 200px"
         />
         {item.badge && (
           <span className={`product-badge badge-${item.badge.toLowerCase()}`}>

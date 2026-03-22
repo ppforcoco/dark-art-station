@@ -39,12 +39,15 @@ export default function RelatedWallpapers({
 
           return (
             <Link key={img.id} href={href} className={landscape ? "related-card related-card--landscape" : "related-card"}>
-              <div className="related-card-img">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
+              <div className="related-card-img" style={{ position: "relative" }}>
+                <Image
                   src={getPublicUrl(img.r2Key)}
                   alt={img.title}
+                  fill
                   loading="lazy"
+                  unoptimized
+                  style={{ objectFit: "cover" }}
+                  sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 200px"
                 />
               </div>
               <div className="related-card-cap">

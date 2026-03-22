@@ -88,6 +88,7 @@ export default function LightboxGallery({ images }: Props) {
                 fill
                 loading={i < 8 ? "eager" : "lazy"}
                 priority={i < 8}
+                unoptimized
                 sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
               />
             </div>
