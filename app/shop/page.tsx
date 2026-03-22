@@ -132,6 +132,7 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
                   icon={p.icon}
                   bgClass={p.bgClass}
                   thumbnail={p.thumbnail ? `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/${p.thumbnail}` : null}
+                  priority={idx < 4}
                 />
               );
               if ((idx + 1) % 8 === 0) {

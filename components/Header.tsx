@@ -434,7 +434,7 @@ export default function Header() {
                   <span className="hw-dot">☽</span><span>Dark</span>
                 </button>
                 <button type="button" className={`hw-dropdown-item${theme === "blood" ? " hw-active" : ""}`} onClick={() => setThemeAndClose("blood")}>
-                  <span className="hw-dot">🩸</span><span>Blood Red</span>
+                  <span className="hw-dot">🔴</span><span>Crimson</span>
                 </button>
                 <button type="button" className={`hw-dropdown-item${theme === "light" ? " hw-active" : ""}`} onClick={() => setThemeAndClose("light")}>
                   <span className="hw-dot">☀</span><span>Light</span>
@@ -547,7 +547,7 @@ export default function Header() {
           <div className="mobile-theme-row" style={{ marginTop: "12px" }}>
             {(["dark", "blood", "light", "ghost", "ember"] as Theme[]).map(t => (
               <button key={t} type="button" className={`mobile-theme-pill${theme === t ? " active" : ""}`} onClick={() => setThemeAndClose(t)}>
-                {t === "dark" ? "☽ Dark" : t === "blood" ? "🩸 Blood" : t === "ghost" ? "👻 Ghost" : t === "ember" ? "🔥 Ember" : "☀ Light"}
+                {t === "dark" ? "☽ Dark" : t === "blood" ? "🔴 Crimson" : t === "ghost" ? "👻 Ghost" : t === "ember" ? "🔥 Ember" : "☀ Light"}
               </button>
             ))}
           </div>

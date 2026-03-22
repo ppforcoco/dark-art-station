@@ -14,6 +14,7 @@ interface ProductCardProps {
   icon: string;
   bgClass?: string;
   thumbnail?: string | null;
+  priority?: boolean;
 }
 
 export default function ProductCard({
@@ -26,6 +27,7 @@ export default function ProductCard({
   icon,
   bgClass = "p-bg-1",
   thumbnail,
+  priority = false,
 }: ProductCardProps) {
   const badgeStyles: Record<string, string> = {
     New:  "bg-[#c0001a] text-[#f0ecff]",
@@ -47,9 +49,10 @@ export default function ProductCard({
             src={thumbnail}
             alt={`${name} — free dark wallpaper 4K`}
             fill
-            loading="lazy"
+            loading={priority ? "eager" : "lazy"}
+            priority={priority}
             className="object-cover transition-transform duration-500 group-hover:scale-105"
-            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 20vw"
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center text-[3rem] transition-transform duration-500 group-hover:scale-105 select-none">

@@ -1491,7 +1491,9 @@ body::before {
 .section-title {
   font-family: var(--font-cinzel), cursive;
   font-size: clamp(1.8rem, 3vw, 3rem);
-  color: #f0ecff; line-height: 1.1;
+  font-weight: 900;
+  color: #f0ecff;
+  line-height: 1.1;
 }
 .section-link {
   font-family: var(--font-space), monospace;
@@ -1625,11 +1627,12 @@ body::before {
 .product-card-image {
   display: block;
   aspect-ratio: 9 / 16;
+  max-height: 560px; /* caps height on very wide screens so cards stay sensible */
 }
 @media (max-width: 639px) {
   /* Keep 9/16 portrait — never crop to 3/4 on mobile.
      Images like "YOU ARE NEXT" have top text that gets cut at 3/4. */
-  .product-card-image { aspect-ratio: 9 / 16; }
+  .product-card-image { aspect-ratio: 9 / 16; max-height: none; }
   .product-grid .p-5 { padding: 10px 10px 12px; }
 }
 

@@ -241,7 +241,7 @@ export default async function Home() {
         </div>
 
         <div className="product-grid">
-          {products.length > 0 ? products.map((p) => (
+          {products.length > 0 ? products.map((p, idx) => (
             <ProductCard
               key={p.id}
               slug={p.slug}
@@ -253,6 +253,7 @@ export default async function Home() {
               icon={p.icon}
               bgClass={p.bgClass}
               thumbnail={p.thumbnail ? `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/${p.thumbnail}` : null}
+              priority={idx < 4}
             />
           )) : (
             <p style={{ color:"#4a445a", fontFamily:"var(--font-space)", fontSize:"0.75rem",
