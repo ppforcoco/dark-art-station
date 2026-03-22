@@ -10,10 +10,6 @@ export const metadata: Metadata = {
 
 const CONTACT_EMAIL = "hello@hauntedwallpapers.com";
 
-// Contact form is a client component to handle state —
-// the outer page stays a server component for metadata.
-import ContactForm from "@/components/ContactForm";
-
 export default function ContactPage() {
   return (
     <main className="static-page">
@@ -46,17 +42,12 @@ export default function ContactPage() {
           </section>
 
           <section className="static-section">
-            <h2>Direct Email</h2>
+            <h2>Get in Touch</h2>
             <p>
-              Prefer to write directly?{" "}
-              <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
+              Send us an email directly at{" "}
+              <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a> and we
+              will get back to you within 1–3 business days.
             </p>
-          </section>
-
-          <section className="static-section">
-            <h2>Send a Message</h2>
-            {/* ContactForm is a 'use client' component */}
-            <ContactForm />
           </section>
 
         </div>
