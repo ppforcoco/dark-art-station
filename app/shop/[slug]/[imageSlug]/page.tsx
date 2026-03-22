@@ -14,6 +14,7 @@ import { getRelatedImages } from "@/lib/db";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import PageTracker from "@/components/PageTracker";
 import RecentlyViewed from "@/components/RecentlyViewed";
+import FavoriteButton from "@/components/FavoriteButton";
 
 interface PageProps {
   params: Promise<{ slug: string; imageSlug: string }>;
@@ -210,6 +211,22 @@ export default async function ImagePage({ params }: PageProps) {
               href={`/api/download/image/${image.id}`}
               viewCount={image.viewCount}
             />
+
+            {/* Save to favorites */}
+            <div className="detail-fav-row">
+              <FavoriteButton
+                size="md"
+                className="detail-fav-inline"
+                item={{
+                  slug:   imageSlug,
+                  title:  image.title,
+                  thumb:  thumbUrl,
+                  href:   `/shop/${slug}/${imageSlug}`,
+                  device: "collection",
+                }}
+              />
+              <span className="detail-fav-label">Save to Favorites</span>
+            </div>
 
             <SocialShare
               title={image.title}

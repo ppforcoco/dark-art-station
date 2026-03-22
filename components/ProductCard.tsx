@@ -3,6 +3,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import FavoriteButton from "@/components/FavoriteButton";
 
 interface ProductCardProps {
   slug: string;
@@ -64,6 +65,20 @@ export default function ProductCard({
           <span className={`absolute top-3 left-3 font-mono text-[0.55rem] tracking-[0.15em] uppercase px-[10px] py-[5px] z-10 ${badgeStyles[badge] ?? ""}`}>
             {badge}
           </span>
+        )}
+
+        {/* Heart / Favorite button */}
+        {thumbnail && (
+          <FavoriteButton
+            size="sm"
+            item={{
+              slug:   slug,
+              title:  name,
+              thumb:  thumbnail,
+              href:   `/shop/${slug}`,
+              device: "collection",
+            }}
+          />
         )}
 
         <span className="absolute bottom-[-40px] group-hover:bottom-0 left-0 right-0 bg-[rgba(7,7,16,0.9)] backdrop-blur-[10px] text-center py-3 font-mono text-[0.65rem] tracking-[0.15em] uppercase text-[#c9a84c] transition-all duration-300 z-10 pointer-events-none">

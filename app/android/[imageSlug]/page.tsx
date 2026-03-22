@@ -13,6 +13,7 @@ import DownloadButton from "@/components/DownloadButton";
 import RecentlyViewed from "@/components/RecentlyViewed";
 import SocialShare from "@/components/SocialShare";
 import PageTracker from "@/components/PageTracker";
+import FavoriteButton from "@/components/FavoriteButton";
 
 export const dynamicParams = true;
 
@@ -151,6 +152,22 @@ export default async function IphoneImagePage({ params }: PageProps) {
               href={`/api/download/image/${image.id}`}
               viewCount={image.viewCount}
             />
+
+            {/* Save to favorites */}
+            <div className="detail-fav-row">
+              <FavoriteButton
+                size="md"
+                className="detail-fav-inline"
+                item={{
+                  slug:   image.slug,
+                  title:  image.title,
+                  thumb:  thumbUrl,
+                  href:   `/android/${imageSlug}`,
+                  device: "android",
+                }}
+              />
+              <span className="detail-fav-label">Save to Favorites</span>
+            </div>
 
             {/* Ad unit — below download button for higher viewability */}
             <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_SIDEBAR} width={300} height={250} className="mt-2" />

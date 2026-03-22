@@ -1,90 +1,102 @@
-import { MetadataRoute } from "next";
-import { db } from "@/lib/db";
+// components/Footer.tsx
+import Link from "next/link";
+import type { JSX } from "react";
 
-const CDN = process.env.NEXT_PUBLIC_R2_PUBLIC_URL ?? "https://assets.hauntedwallpapers.com";
+const SOCIAL_LINKS = [
+  { label: "Instagram", href: "https://instagram.com/hauntedwallpapers" },
+  { label: "Pinterest", href: "https://pinterest.com/hauntedwallpapers" },
+  // Uncomment when profiles are live:
+  // { label: "TikTok",    href: "https://tiktok.com/@hauntedwallpapers" },
+  // { label: "ArtStation",href: "https://artstation.com/hauntedwallpapers" },
+];
 
-function r2Url(key: string) {
-  return `${CDN}/${key}`;
-}
+export default function Footer(): JSX.Element {
+  return (
+    <footer className="site-footer">
+      <div className="footer-grid">
 
-export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
+        {/* ── Brand ── */}
+        <div className="footer-col footer-col--brand">
+          <Link href="/" className="nav-logo">
+            HAUNTED<span className="logo-red">WALLPAPERS</span>
+          </Link>
+          <p className="footer-brand-desc">
+            Premium dark art for those who appreciate bold, original aesthetics.
+            AI-generated wallpapers for iPhone, Android &amp; PC.
+          </p>
+        </div>
 
-  const staticRoutes: MetadataRoute.Sitemap = [
-    { url: siteUrl,                    lastModified: new Date(), changeFrequency: "weekly"  as const, priority: 1.0  },
-    { url: `${siteUrl}/shop`,         lastModified: new Date(), changeFrequency: "daily"   as const, priority: 0.9  },
-    { url: `${siteUrl}/iphone`,       lastModified: new Date(), changeFrequency: "daily"   as const, priority: 0.85 },
-    { url: `${siteUrl}/android`,      lastModified: new Date(), changeFrequency: "daily"   as const, priority: 0.85 },
-    { url: `${siteUrl}/pc`,           lastModified: new Date(), changeFrequency: "daily"   as const, priority: 0.85 },
-    { url: `${siteUrl}/search`,       lastModified: new Date(), changeFrequency: "weekly"  as const, priority: 0.6  },
-    { url: `${siteUrl}/about`,        lastModified: new Date(), changeFrequency: "monthly" as const, priority: 0.5  },
-    { url: `${siteUrl}/faq`,          lastModified: new Date(), changeFrequency: "monthly" as const, priority: 0.5  },
-    { url: `${siteUrl}/contact`,      lastModified: new Date(), changeFrequency: "monthly" as const, priority: 0.4  },
-    { url: `${siteUrl}/licensing`,    lastModified: new Date(), changeFrequency: "monthly" as const, priority: 0.4  },
-    { url: `${siteUrl}/privacy`,      lastModified: new Date(), changeFrequency: "monthly" as const, priority: 0.3  },
-    { url: `${siteUrl}/terms`,        lastModified: new Date(), changeFrequency: "monthly" as const, priority: 0.3  },
-    { url: `${siteUrl}/guides`,       lastModified: new Date(), changeFrequency: "weekly"  as const, priority: 0.7  },
-    { url: `${siteUrl}/tools`,        lastModified: new Date(), changeFrequency: "monthly" as const, priority: 0.65 },
-    { url: `${siteUrl}/guides/how-to-set-wallpaper-iphone`,      lastModified: new Date(), changeFrequency: "monthly" as const, priority: 0.6 },
-    { url: `${siteUrl}/guides/how-to-set-wallpaper-android`,     lastModified: new Date(), changeFrequency: "monthly" as const, priority: 0.6 },
-    { url: `${siteUrl}/guides/best-dark-wallpapers-iphone`,      lastModified: new Date(), changeFrequency: "monthly" as const, priority: 0.6 },
-    { url: `${siteUrl}/guides/what-is-amoled-wallpaper`,         lastModified: new Date(), changeFrequency: "monthly" as const, priority: 0.6 },
-    { url: `${siteUrl}/guides/dark-fantasy-art-styles-explained`,lastModified: new Date(), changeFrequency: "monthly" as const, priority: 0.6 },
-  ];
+        {/* ── Collections ── */}
+        <div className="footer-col">
+          <h4 className="footer-col-title">Collections</h4>
+          <ul>
+            <li><Link href="/iphone">iPhone Wallpapers</Link></li>
+            <li><Link href="/android">Android Wallpapers</Link></li>
+            <li><Link href="/pc">PC &amp; Desktop</Link></li>
+            <li><Link href="/collections">All Collections</Link></li>
+            <li><Link href="/favorites">My Favorites ♡</Link></li>
+          </ul>
+        </div>
 
-  // Collection pages — include thumbnail image for Google Image Search
-  const collections = await db.collection.findMany({
-    select: { slug: true, title: true, thumbnail: true, updatedAt: true },
-    orderBy: { updatedAt: "desc" },
-  });
+        {/* ── Popular ── */}
+        <div className="footer-col">
+          <h4 className="footer-col-title">Popular</h4>
+          <ul>
+            <li><Link href="/shop/dark-humor-wallpaper-collection">Dark Humor</Link></li>
+            <li><Link href="/shop/incognito-mode-collection">Incognito Mode</Link></li>
+            <li><Link href="/shop/dark-fantasy-art">Dark Fantasy</Link></li>
+            <li><Link href="/shop/skull-peeking-collection">Skull Peeking</Link></li>
+            <li><Link href="/shop/horror-movie-posters">Horror Posters</Link></li>
+            <li><Link href="/shop/dark-minimal-horror">Dark Minimal</Link></li>
+          </ul>
+        </div>
 
-  const collectionRoutes: MetadataRoute.Sitemap = collections.map((c) => ({
-    url: `${siteUrl}/shop/${c.slug}`,
-    lastModified: c.updatedAt,
-    changeFrequency: "monthly" as const,
-    priority: 0.8,
-    ...(c.thumbnail ? {
-      images: [r2Url(c.thumbnail)],
-    } : {}),
-  }));
+        {/* ── Company ── */}
+        <div className="footer-col">
+          <h4 className="footer-col-title">Company</h4>
+          <ul>
+            <li><Link href="/about">About</Link></li>
+            <li><Link href="/guides">Guides &amp; Tips</Link></li>
+            <li><Link href="/tools">Free Tools</Link></li>
+            <li><Link href="/licensing">Licensing</Link></li>
+            <li><Link href="/faq">FAQ</Link></li>
+            <li><Link href="/contact">Contact</Link></li>
+          </ul>
+        </div>
 
-  // Collection image pages — include the wallpaper image
-  const collectionImages = await db.image.findMany({
-    select: {
-      slug: true, title: true, r2Key: true, updatedAt: true,
-      collection: { select: { slug: true } },
-    },
-    where: { collectionId: { not: null } },
-    orderBy: { updatedAt: "desc" },
-  });
+        {/* ── Legal ── */}
+        <div className="footer-col">
+          <h4 className="footer-col-title">Legal</h4>
+          <ul>
+            <li><Link href="/privacy">Privacy Policy</Link></li>
+            <li><Link href="/terms">Terms of Service</Link></li>
+            <li><Link href="/licensing">Licensing &amp; Usage</Link></li>
+            <li><Link href="/privacy#cookies">Cookie Policy</Link></li>
+            <li><Link href="/privacy#adsense">Advertising</Link></li>
+          </ul>
+        </div>
 
-  const imageRoutes: MetadataRoute.Sitemap = collectionImages
-    .filter((img) => img.collection?.slug)
-    .map((img) => ({
-      url: `${siteUrl}/shop/${img.collection?.slug}/${img.slug}`,
-      lastModified: img.updatedAt,
-      changeFrequency: "monthly" as const,
-      priority: 0.6,
-      images: [r2Url(img.r2Key)],
-    }));
+      </div>
 
-  // Standalone wallpaper pages — iphone/android/pc detail pages
-  const standalones = await db.image.findMany({
-    select: {
-      slug: true, title: true, r2Key: true, updatedAt: true,
-      deviceType: true,
-    },
-    where: { collectionId: null, deviceType: { not: null } },
-    orderBy: { updatedAt: "desc" },
-  });
-
-  const standaloneRoutes: MetadataRoute.Sitemap = standalones.map((img) => ({
-    url: `${siteUrl}/${img.deviceType!.toLowerCase()}/${img.slug}`,
-    lastModified: img.updatedAt,
-    changeFrequency: "monthly" as const,
-    priority: 0.65,
-    images: [r2Url(img.r2Key)],
-  }));
-
-  return [...staticRoutes, ...collectionRoutes, ...imageRoutes, ...standaloneRoutes];
+      <div className="footer-bottom">
+        <span className="footer-copy">
+          © {new Date().getFullYear()} HauntedWallpapers. All rights reserved.
+          Visions collected daily.
+        </span>
+        <div className="footer-socials">
+          {SOCIAL_LINKS.map(({ label, href }) => (
+            <a
+              key={label}
+              href={href}
+              className="social-link"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {label}
+            </a>
+          ))}
+        </div>
+      </div>
+    </footer>
+  );
 }

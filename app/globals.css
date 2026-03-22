@@ -5538,3 +5538,71 @@ a.download-btn:active {
   text-underline-offset: 3px;
 }
 .device-page-guide-link a:hover { color: #f0ecff; }
+/* ── Favorite (Heart) Button ────────────────────────────────────────────────── */
+.fav-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 20;
+  background: rgba(7,7,16,0.75);
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.18s, border-color 0.18s, transform 0.18s;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  color: rgba(240,236,255,0.55);
+}
+.fav-btn svg { display: block; transition: color 0.18s, transform 0.18s; }
+.fav-btn:hover { background: rgba(192,0,26,0.18); border-color: rgba(192,0,26,0.5); color: #c0001a; }
+.fav-btn--saved { background: rgba(192,0,26,0.85) !important; border-color: #c0001a !important; color: #fff !important; }
+.fav-btn--saved:hover { background: rgba(140,0,0,0.9) !important; }
+.fav-btn--pop svg { animation: fav-pop 0.4s cubic-bezier(0.36,0.07,0.19,0.97); }
+@keyframes fav-pop {
+  0%   { transform: scale(1); }
+  35%  { transform: scale(1.45); }
+  60%  { transform: scale(0.88); }
+  100% { transform: scale(1); }
+}
+/* sizes */
+.fav-btn--sm { width: 30px; height: 30px; }
+.fav-btn--sm svg { width: 14px; height: 14px; }
+.fav-btn--md { width: 36px; height: 36px; }
+.fav-btn--md svg { width: 17px; height: 17px; }
+.fav-btn--lg { width: 44px; height: 44px; top: 14px; right: 14px; }
+.fav-btn--lg svg { width: 22px; height: 22px; }
+/* light theme */
+[data-theme="light"] .fav-btn { background: rgba(244,241,234,0.85); border-color: rgba(0,0,0,0.12); color: rgba(80,70,90,0.6); }
+[data-theme="light"] .fav-btn--saved { background: rgba(192,0,26,0.9) !important; color: #fff !important; }
+
+/* ── Detail page inline favorites row ───────────────────────────────────────── */
+.detail-fav-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border: 1px solid rgba(255,255,255,0.07);
+  background: rgba(255,255,255,0.02);
+  cursor: pointer;
+}
+[data-theme="light"] .detail-fav-row { background: #f0ebe0; border-color: rgba(0,0,0,0.08); }
+.detail-fav-inline {
+  /* override absolute positioning — make it inline */
+  position: static !important;
+  top: auto !important;
+  right: auto !important;
+  flex-shrink: 0;
+}
+.detail-fav-label {
+  font-family: var(--font-space), monospace;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #8a8099;
+}
+[data-theme="light"] .detail-fav-label { color: #5a5058; }
