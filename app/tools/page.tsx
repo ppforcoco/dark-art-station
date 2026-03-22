@@ -821,17 +821,23 @@ function SplitTool() {
     const half = image.width / 2;
     const h    = image.height;
     const previewScale = Math.min(140 / half, 240 / h, 1);
+    const W = Math.round(half * previewScale);
+    const H = Math.round(h * previewScale);
 
-    const draw = (ref: React.RefObject<HTMLCanvasElement>, sx: number) => {
-      const c = ref.current; if (!c) return;
-      c.width  = Math.round(half * previewScale);
-      c.height = Math.round(h    * previewScale);
-      const ctx = c.getContext("2d")!;
+    const lock = lockRef.current;
+    if (lock) {
+      lock.width = W; lock.height = H;
+      const ctx = lock.getContext("2d")!;
       ctx.imageSmoothingQuality = "high";
-      ctx.drawImage(image, sx, 0, half, h, 0, 0, c.width, c.height);
-    };
-    draw(lockRef, 0);
-    draw(homeRef, half);
+      ctx.drawImage(image, 0, 0, half, h, 0, 0, W, H);
+    }
+    const home = homeRef.current;
+    if (home) {
+      home.width = W; home.height = H;
+      const ctx = home.getContext("2d")!;
+      ctx.imageSmoothingQuality = "high";
+      ctx.drawImage(image, half, 0, half, h, 0, 0, W, H);
+    }
   }, []);
 
   async function handleFile(file: File) {
