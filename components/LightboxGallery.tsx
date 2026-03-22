@@ -182,7 +182,7 @@ export default function LightboxGallery({ images }: Props) {
             <span className="lb-caption-title">{current.title}</span>
 
             <div className="lb-caption-actions">
-              {/* Download button — takes user to the wallpaper detail page to download */}
+              {/* Single CTA — goes to wallpaper page where user downloads */}
               <Link
                 href={current.href}
                 className="lb-download-btn"
@@ -190,15 +190,6 @@ export default function LightboxGallery({ images }: Props) {
                 aria-label={`Download ${current.title}`}
               >
                 ↓ Download Free
-              </Link>
-
-              {/* View detail page */}
-              <Link
-                href={current.href}
-                className="lb-caption-link"
-                onClick={close}
-              >
-                View Page →
               </Link>
             </div>
           </div>

@@ -33,7 +33,7 @@ export default function ContactPage() {
               <li>Custom commission requests</li>
               <li>Press and collaboration proposals</li>
               <li>Reporting a broken page or missing file</li>
-              <li>Privacy and data requests</li>
+              <li>Privacy and data requests (GDPR / CCPA)</li>
             </ul>
             <p>
               For answers to common questions, check our{" "}
@@ -44,9 +44,9 @@ export default function ContactPage() {
           <section className="static-section">
             <h2>Get in Touch</h2>
             <p>
-              Send us an email directly at{" "}
-              <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a> and we
-              will get back to you within 1–3 business days.
+              Email us directly at{" "}
+              <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>.
+              We respond within 1–3 business days.
             </p>
           </section>
 

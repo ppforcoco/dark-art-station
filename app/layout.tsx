@@ -99,6 +99,18 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {process.env.NEXT_PUBLIC_GSC_VERIFICATION && (
           <meta name="google-site-verification" content={process.env.NEXT_PUBLIC_GSC_VERIFICATION} />
         )}
+        {/* ── Google AdSense — load unconditionally so crawler sees it ── */}
+        {/* Consent Mode v2 above handles personalization gating          */}
+        {process.env.NEXT_PUBLIC_ADSENSE_PID && (
+          <>
+            <meta name="google-adsense-account" content={process.env.NEXT_PUBLIC_ADSENSE_PID} />
+            <script
+              async
+              src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${process.env.NEXT_PUBLIC_ADSENSE_PID}`}
+              crossOrigin="anonymous"
+            />
+          </>
+        )}
         {/* ── Google Consent Mode v2 — MUST be first, before gtag/AdSense ── */}
         {/* Sets default denied state so AdSense can show non-personalized  */}
         {/* ads to EVERYONE, even cookie decliners. CookieBanner updates     */}
