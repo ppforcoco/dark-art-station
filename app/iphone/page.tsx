@@ -95,6 +95,28 @@ export default async function IphonePage({ searchParams }: PageProps) {
         <p className="font-body text-[1rem] text-[#8a8099] italic mb-8 max-w-xl">
           Portrait 9:16 · 4K resolution · Instant download · No account required
         </p>
+
+        {/* Rich intro text — unique per page for AdSense content requirements */}
+        {!tag && (
+          <div className="device-page-intro">
+            <p>
+              Every wallpaper in this collection is designed specifically for iPhone screens —
+              portrait 9:16 format, optimised for the Super Retina XDR display found on iPhone 12
+              through iPhone 16. Images are generated at 4K resolution and downsampled cleanly,
+              so you get maximum sharpness without jagged edges or compression artefacts.
+            </p>
+            <p>
+              All wallpapers are free to download. No account required, no watermarks, no paywalls.
+              Tap any image to view it full-size and download directly to your Photos library.
+              New collections drop regularly — check back often or subscribe to get notified.
+            </p>
+            <div className="device-page-guide-link">
+              <span>New to setting wallpapers?</span>
+              <a href="/guides/how-to-set-wallpaper-iphone">Read our iPhone wallpaper guide →</a>
+            </div>
+          </div>
+        )}
+
         <Suspense fallback={null}>
           <TagCloud tags={rankedTags} />
         </Suspense>

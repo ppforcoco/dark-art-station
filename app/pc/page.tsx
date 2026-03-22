@@ -95,6 +95,28 @@ export default async function PcPage({ searchParams }: PageProps) {
         <p className="font-body text-[1rem] text-[#8a8099] italic mb-8 max-w-xl">
           Landscape 16:9 · 4K resolution · Instant download · No account required
         </p>
+
+        {!tag && (
+          <div className="device-page-intro">
+            <p>
+              PC and desktop wallpapers here are landscape 16:9 format, native 4K resolution
+              (3840×2160). They are designed for modern monitors including 1080p, 1440p, and 4K
+              displays, as well as ultrawide setups. The dark backgrounds work particularly well
+              on IPS and OLED monitors where deep blacks add to the atmosphere.
+            </p>
+            <p>
+              On Windows, right-click your desktop → Personalise → Background to apply any image.
+              On Mac, go to System Settings → Wallpaper and drag your downloaded file in.
+              Multi-monitor setups are supported — you can set a different wallpaper on each display.
+              Everything is free, instant, and requires no account.
+            </p>
+            <div className="device-page-guide-link">
+              <span>Want a step-by-step walkthrough?</span>
+              <a href="/guides/how-to-set-wallpaper-android">Read our wallpaper setup guide →</a>
+            </div>
+          </div>
+        )}
+
         <Suspense fallback={null}>
           <TagCloud tags={rankedTags} />
         </Suspense>

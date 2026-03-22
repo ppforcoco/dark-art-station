@@ -95,6 +95,28 @@ export default async function AndroidPage({ searchParams }: PageProps) {
         <p className="font-body text-[1rem] text-[#8a8099] italic mb-8 max-w-xl">
           Portrait 9:16 · 4K resolution · Instant download · No account required
         </p>
+
+        {!tag && (
+          <div className="device-page-intro">
+            <p>
+              All Android wallpapers here are portrait 9:16 format, sized for modern flagship
+              screens including Samsung Galaxy, Google Pixel, OnePlus, and Xiaomi devices.
+              Images are generated at 4K resolution — no upscaling, no visible compression.
+              AMOLED-optimised: near-black backgrounds let your OLED screen turn pixels completely
+              off, extending battery life while looking dramatically better than LCD-era wallpapers.
+            </p>
+            <p>
+              Download is instant — tap any image, tap download, and it saves directly to your
+              gallery. Set it from your gallery app or from Settings → Wallpaper. No account,
+              no watermarks, no limits.
+            </p>
+            <div className="device-page-guide-link">
+              <span>Need help setting it up?</span>
+              <a href="/guides/how-to-set-wallpaper-android">Read our Android wallpaper guide →</a>
+            </div>
+          </div>
+        )}
+
         <Suspense fallback={null}>
           <TagCloud tags={rankedTags} />
         </Suspense>

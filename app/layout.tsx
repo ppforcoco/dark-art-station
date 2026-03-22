@@ -8,6 +8,7 @@ import HalloweenCountdown from "@/components/HalloweenCountdown";
 import Cursor from "@/components/Cursor";
 import ScrollToTop from "@/components/ScrollToTop";
 import CookieBanner from "@/components/CookieBanner";
+import StickyMobileAd from "@/components/StickyMobileAd";
 
 const cinzel = Cinzel_Decorative({
   weight: ["400", "700", "900"],
@@ -95,8 +96,21 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <meta name="apple-mobile-web-app-title" content="Haunted WP" />
         <meta name="mobile-web-app-capable" content="yes" />
-        {/* AdSense script is injected lazily by CookieBanner after user consents.
-            Loading it here unconditionally would violate GDPR / AdSense policies. */}
+        {/* Google Search Console verification — replace with your actual token */}
+        {process.env.NEXT_PUBLIC_GSC_VERIFICATION && (
+          <meta name="google-site-verification" content={process.env.NEXT_PUBLIC_GSC_VERIFICATION} />
+        )}
+        {/* Google Analytics 4 — loads after consent via CookieBanner */}
+        {process.env.NEXT_PUBLIC_GA_ID && (
+          <>
+            <script async src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_ID}`} />
+            <script
+              dangerouslySetInnerHTML={{
+                __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${process.env.NEXT_PUBLIC_GA_ID}',{send_page_view:false});`,
+              }}
+            />
+          </>
+        )}
       </head>
       <body className={`${cormorant.variable} ${cinzel.variable} ${spaceMono.variable}`}>
         <script
@@ -139,6 +153,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Footer />
         <ScrollToTop />
         <CookieBanner />
+        <StickyMobileAd />
       </body>
     </html>
   );

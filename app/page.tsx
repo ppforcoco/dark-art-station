@@ -33,6 +33,7 @@ import ProductCard from "@/components/ProductCard";
 import AdSlot from "@/components/AdSlot";
 import { getPublicUrl } from "@/lib/r2";
 import HeroMosaic from "@/components/HeroMosaic";
+import RecentlyViewed from "@/components/RecentlyViewed";
 
 // ISR — revalidate every 60s so edits in Prisma Studio go live quickly
 export const revalidate = 60;
@@ -287,6 +288,9 @@ export default async function Home() {
         </p>
         <NewsletterForm />
       </div>
+
+      {/* ════════════════════════════ RECENTLY VIEWED */}
+      <RecentlyViewed />
 
       {/* ── ItemList JSON-LD: featured collections for Google Visual Gallery ── */}
       <script

@@ -23,6 +23,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${siteUrl}/licensing`,    lastModified: new Date(), changeFrequency: "monthly" as const, priority: 0.4  },
     { url: `${siteUrl}/privacy`,      lastModified: new Date(), changeFrequency: "monthly" as const, priority: 0.3  },
     { url: `${siteUrl}/terms`,        lastModified: new Date(), changeFrequency: "monthly" as const, priority: 0.3  },
+    { url: `${siteUrl}/guides`,       lastModified: new Date(), changeFrequency: "weekly"  as const, priority: 0.7  },
+    { url: `${siteUrl}/guides/how-to-set-wallpaper-iphone`,      lastModified: new Date(), changeFrequency: "monthly" as const, priority: 0.6 },
+    { url: `${siteUrl}/guides/how-to-set-wallpaper-android`,     lastModified: new Date(), changeFrequency: "monthly" as const, priority: 0.6 },
+    { url: `${siteUrl}/guides/best-dark-wallpapers-iphone`,      lastModified: new Date(), changeFrequency: "monthly" as const, priority: 0.6 },
+    { url: `${siteUrl}/guides/what-is-amoled-wallpaper`,         lastModified: new Date(), changeFrequency: "monthly" as const, priority: 0.6 },
+    { url: `${siteUrl}/guides/dark-fantasy-art-styles-explained`,lastModified: new Date(), changeFrequency: "monthly" as const, priority: 0.6 },
   ];
 
   // Collection pages — include thumbnail image for Google Image Search
