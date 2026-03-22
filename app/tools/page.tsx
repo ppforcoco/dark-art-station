@@ -1,0 +1,439 @@
+"use client";
+
+import { useState, useRef, useCallback } from "react";
+
+type ActiveTool = "resizer" | "darkener";
+
+// ─── Device presets ───────────────────────────────────────────────────────────
+const PRESETS = [
+  { label: "iPhone 16 Pro",      w: 1320, h: 2868 },
+  { label: "iPhone 14 / 15",     w: 1179, h: 2556 },
+  { label: "Samsung S24",        w: 1080, h: 2340 },
+  { label: "Google Pixel 9",     w: 1080, h: 2424 },
+  { label: "Android Generic",    w: 1080, h: 1920 },
+  { label: "PC 4K",              w: 3840, h: 2160 },
+  { label: "PC 1440p",           w: 2560, h: 1440 },
+  { label: "PC 1080p",           w: 1920, h: 1080 },
+  { label: "iPad Pro 12.9\"",    w: 2048, h: 2732 },
+];
+
+// ─── Overlay colour presets ───────────────────────────────────────────────────
+const COLORS = [
+  { label: "Crimson",  r: 192, g: 0,   b: 26  },
+  { label: "Void",     r: 0,   g: 0,   b: 0   },
+  { label: "Midnight", r: 10,  g: 8,   b: 30  },
+  { label: "Gold",     r: 201, g: 168, b: 76  },
+  { label: "Purple",   r: 80,  g: 0,   b: 120 },
+  { label: "Emerald",  r: 0,   g: 80,  b: 40  },
+  { label: "Slate",    r: 20,  g: 30,  b: 60  },
+  { label: "Ember",    r: 180, g: 60,  b: 0   },
+];
+
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+function loadImg(file: File): Promise<HTMLImageElement> {
+  return new Promise((res, rej) => {
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = () => { URL.revokeObjectURL(url); res(img); };
+    img.onerror = rej;
+    img.src = url;
+  });
+}
+
+function downloadCanvas(canvas: HTMLCanvasElement, name: string) {
+  canvas.toBlob(blob => {
+    if (!blob) return;
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = name;
+    a.click();
+    URL.revokeObjectURL(a.href);
+  }, "image/jpeg", 0.96);
+}
+
+// ─── Wallpaper Resizer ────────────────────────────────────────────────────────
+function ResizerTool() {
+  const [img,    setImg]    = useState<HTMLImageElement | null>(null);
+  const [name,   setName]   = useState("");
+  const [preset, setPreset] = useState(PRESETS[0]);
+  const [fit,    setFit]    = useState<"cover"|"contain"|"stretch">("cover");
+  const [done,   setDone]   = useState(false);
+  const previewRef = useRef<HTMLCanvasElement>(null);
+
+  const render = useCallback((image: HTMLImageElement, p: typeof preset, f: string) => {
+    const c = previewRef.current; if (!c) return;
+    const scale = Math.min(280 / p.w, 460 / p.h);
+    c.width  = Math.round(p.w * scale);
+    c.height = Math.round(p.h * scale);
+    const ctx = c.getContext("2d")!;
+    ctx.fillStyle = "#070710"; ctx.fillRect(0, 0, c.width, c.height);
+    if (f === "stretch") {
+      ctx.drawImage(image, 0, 0, c.width, c.height);
+    } else {
+      const r = f === "contain"
+        ? Math.min(c.width / image.width, c.height / image.height)
+        : Math.max(c.width / image.width, c.height / image.height);
+      const dw = image.width * r, dh = image.height * r;
+      ctx.drawImage(image, (c.width - dw) / 2, (c.height - dh) / 2, dw, dh);
+    }
+  }, []);
+
+  async function handleFile(file: File) {
+    const image = await loadImg(file);
+    setImg(image); setName(file.name.replace(/\.[^.]+$/, "")); setDone(false);
+    render(image, preset, fit);
+  }
+
+  function changePreset(p: typeof preset) { setPreset(p); if (img) render(img, p, fit); }
+  function changeFit(f: string) { setFit(f as typeof fit); if (img) render(img, preset, f); }
+
+  function download() {
+    if (!img) return;
+    const c = document.createElement("canvas");
+    c.width = preset.w; c.height = preset.h;
+    const ctx = c.getContext("2d")!;
+    ctx.fillStyle = "#070710"; ctx.fillRect(0, 0, c.width, c.height);
+    if (fit === "stretch") {
+      ctx.drawImage(img, 0, 0, c.width, c.height);
+    } else {
+      const r = fit === "contain"
+        ? Math.min(c.width / img.width, c.height / img.height)
+        : Math.max(c.width / img.width, c.height / img.height);
+      const dw = img.width * r, dh = img.height * r;
+      ctx.drawImage(img, (c.width - dw) / 2, (c.height - dh) / 2, dw, dh);
+    }
+    downloadCanvas(c, `${name || "wallpaper"}-${preset.label.replace(/[^a-z0-9]/gi,"-").toLowerCase()}.jpg`);
+    setDone(true); setTimeout(() => setDone(false), 3000);
+  }
+
+  return (
+    <div className="tool-body">
+      <p className="tool-desc">Upload any image and export it at the exact resolution of your device. Runs entirely in your browser — nothing is uploaded anywhere.</p>
+
+      {/* Drop zone */}
+      <div
+        className={`tool-drop ${img ? "tool-drop--filled" : ""}`}
+        onClick={() => document.getElementById("resizer-input")?.click()}
+        onDrop={e => { e.preventDefault(); const f = e.dataTransfer.files[0]; if (f?.type.startsWith("image/")) handleFile(f); }}
+        onDragOver={e => e.preventDefault()}
+      >
+        <input id="resizer-input" type="file" accept="image/*" style={{display:"none"}}
+          onChange={e => { const f = e.target.files?.[0]; if (f) handleFile(f); }} />
+        {img ? (
+          <div className="tool-preview-wrap">
+            <canvas ref={previewRef} className="tool-canvas" />
+            <p className="tool-change-hint">Click to change image</p>
+          </div>
+        ) : (
+          <div className="tool-drop-empty">
+            <span className="tool-drop-icon">↑</span>
+            <p className="tool-drop-label">Drop image here or click to upload</p>
+            <p className="tool-drop-sub">JPG · PNG · WEBP — stays on your device</p>
+          </div>
+        )}
+      </div>
+
+      {img && <>
+        {/* Device presets */}
+        <div className="tool-section">
+          <p className="tool-label">Target Device</p>
+          <div className="tool-preset-grid">
+            {PRESETS.map(p => (
+              <button key={p.label}
+                className={`tool-preset ${preset.label === p.label ? "tool-preset--active" : ""}`}
+                onClick={() => changePreset(p)}
+              >
+                <span className="tool-preset-name">{p.label}</span>
+                <span className="tool-preset-size">{p.w}×{p.h}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Fit mode */}
+        <div className="tool-section">
+          <p className="tool-label">Fit Mode</p>
+          <div className="tool-fit-row">
+            {(["cover","contain","stretch"] as const).map(f => (
+              <button key={f}
+                className={`tool-fit-btn ${fit === f ? "tool-fit-btn--active" : ""}`}
+                onClick={() => changeFit(f)}
+              >
+                {f === "cover" ? "Fill (Crop)" : f === "contain" ? "Fit (Bars)" : "Stretch"}
+              </button>
+            ))}
+          </div>
+          <p className="tool-hint">
+            {fit === "cover" ? "Image fills frame — edges may crop." : fit === "contain" ? "Full image visible — dark bars fill gaps." : "Image stretched to fill — may distort."}
+          </p>
+        </div>
+
+        <button className="tool-action" onClick={download}>
+          {done ? "✓ Downloaded!" : `↓ Download for ${preset.label}`}
+        </button>
+      </>}
+    </div>
+  );
+}
+
+// ─── Color Darkener ───────────────────────────────────────────────────────────
+function DarkenerTool() {
+  const [img,        setImg]        = useState<HTMLImageElement | null>(null);
+  const [name,       setName]       = useState("");
+  const [color,      setColor]      = useState(COLORS[0]);
+  const [opacity,    setOpacity]    = useState(40);
+  const [brightness, setBrightness] = useState(100);
+  const [done,       setDone]       = useState(false);
+  const previewRef = useRef<HTMLCanvasElement>(null);
+
+  const render = useCallback((image: HTMLImageElement, c: typeof color, op: number, br: number) => {
+    const canvas = previewRef.current; if (!canvas) return;
+    const scale = Math.min(280 / image.width, 460 / image.height, 1);
+    canvas.width  = Math.round(image.width  * scale);
+    canvas.height = Math.round(image.height * scale);
+    const ctx = canvas.getContext("2d")!;
+    ctx.filter = `brightness(${br}%)`;
+    ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+    ctx.filter = "none";
+    ctx.fillStyle = `rgba(${c.r},${c.g},${c.b},${op / 100})`;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+  }, []);
+
+  async function handleFile(file: File) {
+    const image = await loadImg(file);
+    setImg(image); setName(file.name.replace(/\.[^.]+$/, "")); setDone(false);
+    render(image, color, opacity, brightness);
+  }
+
+  function update(c: typeof color, op: number, br: number) {
+    setColor(c); setOpacity(op); setBrightness(br);
+    if (img) render(img, c, op, br);
+  }
+
+  function download() {
+    if (!img) return;
+    const c = document.createElement("canvas");
+    c.width = img.width; c.height = img.height;
+    const ctx = c.getContext("2d")!;
+    ctx.filter = `brightness(${brightness}%)`;
+    ctx.drawImage(img, 0, 0);
+    ctx.filter = "none";
+    ctx.fillStyle = `rgba(${color.r},${color.g},${color.b},${opacity / 100})`;
+    ctx.fillRect(0, 0, c.width, c.height);
+    downloadCanvas(c, `${name || "wallpaper"}-${color.label.toLowerCase()}-dark.jpg`);
+    setDone(true); setTimeout(() => setDone(false), 3000);
+  }
+
+  return (
+    <div className="tool-body">
+      <p className="tool-desc">Apply a dark colour tint to any image. Turn a bright photo into a dark wallpaper instantly. Adjust intensity and brightness with the sliders — the preview updates live.</p>
+
+      <div
+        className={`tool-drop ${img ? "tool-drop--filled" : ""}`}
+        onClick={() => document.getElementById("darkener-input")?.click()}
+        onDrop={e => { e.preventDefault(); const f = e.dataTransfer.files[0]; if (f?.type.startsWith("image/")) handleFile(f); }}
+        onDragOver={e => e.preventDefault()}
+      >
+        <input id="darkener-input" type="file" accept="image/*" style={{display:"none"}}
+          onChange={e => { const f = e.target.files?.[0]; if (f) handleFile(f); }} />
+        {img ? (
+          <div className="tool-preview-wrap">
+            <canvas ref={previewRef} className="tool-canvas" />
+            <p className="tool-change-hint">Click to change image</p>
+          </div>
+        ) : (
+          <div className="tool-drop-empty">
+            <span className="tool-drop-icon">🎨</span>
+            <p className="tool-drop-label">Drop image here or click to upload</p>
+            <p className="tool-drop-sub">Any image — add a dark overlay instantly</p>
+          </div>
+        )}
+      </div>
+
+      {img && <>
+        {/* Colour picker */}
+        <div className="tool-section">
+          <p className="tool-label">Overlay Colour</p>
+          <div className="tool-color-row">
+            {COLORS.map(c => (
+              <button key={c.label}
+                className={`tool-color-btn ${color.label === c.label ? "tool-color-btn--active" : ""}`}
+                onClick={() => update(c, opacity, brightness)}
+                title={c.label}
+              >
+                <span className="tool-color-swatch"
+                  style={{ background: `rgba(${c.r},${c.g},${c.b},0.85)` }} />
+                <span>{c.label}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Sliders */}
+        <div className="tool-section">
+          <p className="tool-label">Overlay Intensity — <strong>{opacity}%</strong></p>
+          <input type="range" min={0} max={90} value={opacity} className="tool-range"
+            onChange={e => update(color, Number(e.target.value), brightness)} />
+        </div>
+
+        <div className="tool-section">
+          <p className="tool-label">Source Brightness — <strong>{brightness}%</strong></p>
+          <input type="range" min={20} max={120} value={brightness} className="tool-range"
+            onChange={e => update(color, opacity, Number(e.target.value))} />
+        </div>
+
+        <button className="tool-action" onClick={download}>
+          {done ? "✓ Downloaded!" : "↓ Download Darkened Image"}
+        </button>
+      </>}
+    </div>
+  );
+}
+
+// ─── Page ─────────────────────────────────────────────────────────────────────
+export default function ToolsPage() {
+  const [active, setActive] = useState<ActiveTool>("resizer");
+
+  const TOOLS = [
+    { id: "resizer"  as const, icon: "⬛", label: "Wallpaper Resizer", sub: "Resize to any device" },
+    { id: "darkener" as const, icon: "🎨", label: "Color Darkener",    sub: "Darken any image"    },
+  ];
+
+  return (
+    <main className="tools-page">
+
+      <div className="tools-hero">
+        <span className="tools-eyebrow">Free Utilities</span>
+        <h1 className="tools-title">Wallpaper<br /><em>Tools</em></h1>
+        <p className="tools-sub">Browser-based tools for customising wallpapers. Nothing is uploaded — everything runs on your device.</p>
+      </div>
+
+      <div className="tools-layout">
+
+        {/* Sidebar */}
+        <nav className="tools-nav">
+          {TOOLS.map(t => (
+            <button key={t.id}
+              className={`tools-nav-btn ${active === t.id ? "tools-nav-btn--active" : ""}`}
+              onClick={() => setActive(t.id)}
+            >
+              <span className="tools-nav-icon">{t.icon}</span>
+              <span className="tools-nav-info">
+                <span className="tools-nav-label">{t.label}</span>
+                <span className="tools-nav-sub">{t.sub}</span>
+              </span>
+            </button>
+          ))}
+        </nav>
+
+        {/* Panel */}
+        <div className="tools-panel">
+          <h2 className="tools-panel-title">
+            {TOOLS.find(t => t.id === active)?.icon}{" "}
+            {TOOLS.find(t => t.id === active)?.label}
+          </h2>
+          {active === "resizer"  && <ResizerTool />}
+          {active === "darkener" && <DarkenerTool />}
+        </div>
+      </div>
+
+      <style>{`
+        /* ── Page ── */
+        .tools-page { max-width: 1100px; margin: 0 auto; padding: 0 24px 80px; }
+
+        .tools-hero { padding: 60px 0 48px; border-bottom: 1px solid rgba(192,0,26,0.2); margin-bottom: 40px; }
+        .tools-eyebrow { font-family: var(--font-space), monospace; font-size: 0.6rem; letter-spacing: 0.3em; text-transform: uppercase; color: #c0001a; display: block; margin-bottom: 12px; }
+        .tools-title { font-family: var(--font-cinzel), cursive; font-size: clamp(2rem,5vw,3.2rem); font-weight: 900; color: #f0ecff; line-height: 1.1; margin-bottom: 14px; }
+        .tools-title em { color: #c9a84c; font-style: italic; }
+        [data-theme="light"] .tools-title { color: #1a1814; }
+        .tools-sub { font-family: var(--font-cormorant), serif; font-size: 1.05rem; color: #8a8099; line-height: 1.7; max-width: 520px; margin: 0; }
+        [data-theme="light"] .tools-sub { color: #5a5058; }
+
+        /* ── Layout ── */
+        .tools-layout { display: grid; grid-template-columns: 200px 1fr; gap: 28px; align-items: start; }
+        @media (max-width: 680px) { .tools-layout { grid-template-columns: 1fr; } }
+
+        /* ── Sidebar ── */
+        .tools-nav { display: flex; flex-direction: column; gap: 4px; position: sticky; top: 80px; }
+        @media (max-width: 680px) { .tools-nav { flex-direction: row; position: static; } }
+        .tools-nav-btn { display: flex; align-items: center; gap: 10px; padding: 14px 16px; background: transparent; border: 1px solid rgba(255,255,255,0.06); cursor: pointer; text-align: left; transition: background .18s, border-color .18s; }
+        .tools-nav-btn:hover { background: rgba(255,255,255,0.03); border-color: rgba(192,0,26,0.3); }
+        .tools-nav-btn--active { background: rgba(192,0,26,0.08); border-color: rgba(192,0,26,0.5); }
+        [data-theme="light"] .tools-nav-btn { border-color: rgba(0,0,0,0.08); background: #f4f0e8; }
+        [data-theme="light"] .tools-nav-btn--active { background: rgba(192,0,26,0.06); border-color: rgba(192,0,26,0.3); }
+        .tools-nav-icon { font-size: 1.1rem; flex-shrink: 0; }
+        .tools-nav-info { display: flex; flex-direction: column; gap: 2px; }
+        .tools-nav-label { font-family: var(--font-space), monospace; font-size: 0.62rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #f0ecff; }
+        [data-theme="light"] .tools-nav-label { color: #1a1814; }
+        .tools-nav-sub { font-family: var(--font-cormorant), serif; font-size: 0.85rem; color: #6a6080; }
+
+        /* ── Panel ── */
+        .tools-panel { border: 1px solid rgba(255,255,255,0.07); background: rgba(255,255,255,0.02); padding: 28px; min-height: 480px; }
+        [data-theme="light"] .tools-panel { background: #f4f0e8; border-color: rgba(0,0,0,0.08); }
+        .tools-panel-title { font-family: var(--font-cinzel), cursive; font-size: 1.05rem; font-weight: 700; color: #f0ecff; margin-bottom: 20px; padding-bottom: 14px; border-bottom: 1px solid rgba(192,0,26,0.2); display: flex; align-items: center; gap: 10px; }
+        [data-theme="light"] .tools-panel-title { color: #1a1814; }
+
+        /* ── Tool body ── */
+        .tool-body { display: flex; flex-direction: column; gap: 20px; }
+        .tool-desc { font-family: var(--font-cormorant), serif; font-size: 1.05rem; color: #8a8099; line-height: 1.7; margin: 0; }
+        [data-theme="light"] .tool-desc { color: #5a5058; }
+
+        /* ── Drop zone ── */
+        .tool-drop { border: 2px dashed rgba(192,0,26,0.35); background: rgba(192,0,26,0.03); cursor: pointer; display: flex; align-items: center; justify-content: center; min-height: 160px; transition: border-color .2s, background .2s; }
+        .tool-drop:hover { border-color: rgba(192,0,26,0.65); background: rgba(192,0,26,0.06); }
+        .tool-drop--filled { border-style: solid; border-color: rgba(192,0,26,0.3); background: #070710; min-height: unset; }
+        [data-theme="light"] .tool-drop { background: #ede9e0; border-color: rgba(192,0,26,0.25); }
+        [data-theme="light"] .tool-drop--filled { background: #e0dbd0; }
+        .tool-drop-empty { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 40px 24px; text-align: center; }
+        .tool-drop-icon { font-size: 1.8rem; }
+        .tool-drop-label { font-family: var(--font-space), monospace; font-size: 0.68rem; letter-spacing: 0.1em; color: #8a8099; margin: 0; }
+        .tool-drop-sub { font-family: var(--font-space), monospace; font-size: 0.55rem; letter-spacing: 0.1em; color: #4a445a; margin: 0; }
+        .tool-preview-wrap { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 14px; }
+        .tool-canvas { max-width: 100%; display: block; }
+        .tool-change-hint { font-family: var(--font-space), monospace; font-size: 0.52rem; letter-spacing: 0.1em; text-transform: uppercase; color: #4a445a; margin: 0; }
+
+        /* ── Sections ── */
+        .tool-section { display: flex; flex-direction: column; gap: 10px; }
+        .tool-label { font-family: var(--font-space), monospace; font-size: 0.6rem; letter-spacing: 0.16em; text-transform: uppercase; color: #8a8099; margin: 0; }
+        [data-theme="light"] .tool-label { color: #5a5058; }
+        .tool-label strong { color: #f0ecff; }
+        [data-theme="light"] .tool-label strong { color: #1a1814; }
+        .tool-hint { font-family: var(--font-cormorant), serif; font-size: 0.9rem; color: #4a445a; font-style: italic; margin: 0; }
+
+        /* ── Preset grid ── */
+        .tool-preset-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 6px; }
+        .tool-preset { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; padding: 9px 12px; background: transparent; border: 1px solid rgba(255,255,255,0.08); cursor: pointer; text-align: left; transition: border-color .15s, background .15s; }
+        .tool-preset:hover { border-color: rgba(192,0,26,0.4); background: rgba(192,0,26,0.04); }
+        .tool-preset--active { border-color: #c0001a; background: rgba(192,0,26,0.1); }
+        [data-theme="light"] .tool-preset { border-color: rgba(0,0,0,0.1); }
+        .tool-preset-name { font-family: var(--font-space), monospace; font-size: 0.6rem; letter-spacing: 0.06em; color: #f0ecff; }
+        [data-theme="light"] .tool-preset-name { color: #1a1814; }
+        .tool-preset-size { font-family: var(--font-space), monospace; font-size: 0.5rem; color: #4a445a; }
+
+        /* ── Fit buttons ── */
+        .tool-fit-row { display: flex; gap: 8px; }
+        .tool-fit-btn { flex: 1; padding: 10px; background: transparent; border: 1px solid rgba(255,255,255,0.08); cursor: pointer; font-family: var(--font-space), monospace; font-size: 0.58rem; letter-spacing: 0.1em; text-transform: uppercase; color: #8a8099; transition: all .15s; }
+        .tool-fit-btn:hover { border-color: rgba(192,0,26,0.4); color: #f0ecff; }
+        .tool-fit-btn--active { border-color: #c0001a; background: rgba(192,0,26,0.1); color: #f0ecff; }
+        [data-theme="light"] .tool-fit-btn { border-color: rgba(0,0,0,0.1); color: #5a5058; }
+        [data-theme="light"] .tool-fit-btn--active { color: #1a1814; }
+
+        /* ── Color row ── */
+        .tool-color-row { display: flex; flex-wrap: wrap; gap: 6px; }
+        .tool-color-btn { display: flex; align-items: center; gap: 7px; padding: 7px 11px; background: transparent; border: 1px solid rgba(255,255,255,0.08); cursor: pointer; font-family: var(--font-space), monospace; font-size: 0.58rem; letter-spacing: 0.06em; color: #8a8099; transition: all .15s; }
+        .tool-color-btn:hover { border-color: rgba(192,0,26,0.4); color: #f0ecff; }
+        .tool-color-btn--active { border-color: #c0001a; color: #f0ecff; background: rgba(192,0,26,0.08); }
+        [data-theme="light"] .tool-color-btn { border-color: rgba(0,0,0,0.1); color: #5a5058; }
+        [data-theme="light"] .tool-color-btn--active { color: #1a1814; }
+        .tool-color-swatch { width: 14px; height: 14px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.15); flex-shrink: 0; display: block; }
+
+        /* ── Range ── */
+        .tool-range { width: 100%; accent-color: #c0001a; cursor: pointer; }
+
+        /* ── Action button ── */
+        .tool-action { padding: 0 24px; min-height: 50px; background: #c0001a; border: 1px solid #c0001a; color: #fff; font-family: var(--font-space), monospace; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; cursor: pointer; transition: background .2s; align-self: flex-start; }
+        .tool-action:hover { background: #a00014; }
+      `}</style>
+    </main>
+  );
+}

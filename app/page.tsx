@@ -227,14 +227,10 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* ════════════════════════════ AD SLOT — after categories */}
-      <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_FOOTER} width={728} height={90} />
-
       {/* ════════════════════════════ PRODUCTS */}
       <section className="section-pad products-bg">
         <div className="section-header">
           <div>
-            <span className="section-eyebrow">Freshly Summoned</span>
             <h2 className="section-title">Latest<br />Arrivals</h2>
           </div>
           <Link href="/shop" className="section-link">Browse All →</Link>

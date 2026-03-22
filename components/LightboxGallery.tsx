@@ -86,7 +86,8 @@ export default function LightboxGallery({ images }: Props) {
                 src={img.src}
                 alt={img.alt}
                 fill
-                loading="lazy"
+                loading={i < 8 ? "eager" : "lazy"}
+                priority={i < 8}
                 sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
               />
             </div>
