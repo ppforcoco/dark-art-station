@@ -92,7 +92,8 @@ function ResizerTool() {
   async function handleFile(file: File) {
     const image = await loadImg(file);
     setImg(image); setName(file.name.replace(/\.[^.]+$/, "")); setDone(false);
-    render(image, preset, fit);
+    // Defer render until after React re-renders the canvas into the DOM
+    setTimeout(() => render(image, preset, fit), 0);
   }
 
   function changePreset(p: typeof preset) { setPreset(p); if (img) render(img, p, fit); }
@@ -228,7 +229,7 @@ function DarkenerTool() {
   async function handleFile(file: File) {
     const image = await loadImg(file);
     setImg(image); setName(file.name.replace(/\.[^.]+$/, "")); setDone(false);
-    render(image, color, opacity, brightness);
+    setTimeout(() => render(image, color, opacity, brightness), 0);
   }
 
   function update(c: typeof color, op: number, br: number) {
@@ -358,7 +359,7 @@ function UpscalerTool() {
     setImg(image);
     setName(file.name.replace(/\.[^.]+$/, ""));
     setStatus("idle");
-    renderPreview(image);
+    setTimeout(() => renderPreview(image), 0);
   }
 
   function upscale() {
@@ -562,7 +563,7 @@ function TextTool() {
   async function handleFile(file: File) {
     const image = await loadImg(file);
     setImg(image); setName(file.name.replace(/\.[^.]+$/, ""));
-    render(image, text, font, size, color, opacity, align, position, shadow);
+    setTimeout(() => render(image, text, font, size, color, opacity, align, position, shadow), 0);
   }
 
   function update(t=text, f=font, sz=size, col=color, op=opacity, al=align, pos=position, sh=shadow) {
@@ -762,7 +763,7 @@ function BlurTool() {
   async function handleFile(file: File) {
     const image = await loadImg(file);
     setImg(image); setName(file.name.replace(/\.[^.]+$/, ""));
-    render(image, amount);
+    setTimeout(() => render(image, amount), 0);
   }
 
   function updateBlur(v: number) { setAmount(v); if (img) render(img, v); }
@@ -870,7 +871,7 @@ function SplitTool() {
   async function handleFile(file: File) {
     const image = await loadImg(file);
     setImg(image); setName(file.name.replace(/\.[^.]+$/, "")); setDone("");
-    render(image);
+    setTimeout(() => render(image), 0);
   }
 
   function downloadSplit(side: "lock" | "home" | "both") {
