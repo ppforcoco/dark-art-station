@@ -486,10 +486,12 @@ function UpscalerTool() {
 
 // ─── Text Overlay Tool ────────────────────────────────────────────────────────
 const TEXT_FONTS = [
-  { label: "Serif",      value: "Georgia, serif"              },
-  { label: "Sans",       value: "Arial, sans-serif"           },
-  { label: "Mono",       value: "Courier New, monospace"      },
-  { label: "Display",    value: "Impact, sans-serif"          },
+  { label: "Cinzel",     value: "var(--font-cinzel), 'Cinzel Decorative', cursive",          hint: "Gothic Title"   },
+  { label: "Cormorant",  value: "var(--font-cormorant), 'Cormorant Garamond', serif",         hint: "Elegant Serif"  },
+  { label: "Mono",       value: "var(--font-space), 'Space Mono', monospace",                 hint: "Haunted Mono"   },
+  { label: "Impact",     value: "Impact, 'Arial Narrow', sans-serif",                         hint: "Bold & Wide"    },
+  { label: "Georgia",    value: "Georgia, 'Times New Roman', serif",                          hint: "Classic Serif"  },
+  { label: "Arial",      value: "Arial, Helvetica, sans-serif",                               hint: "Clean Sans"     },
 ];
 const TEXT_ALIGNS = ["left", "center", "right"] as const;
 const TEXT_POSITIONS = [
@@ -622,13 +624,16 @@ function TextTool() {
 
         <div className="tool-section">
           <p className="tool-label">Font</p>
-          <div className="tool-fit-row" style={{ flexWrap: "wrap" }}>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
             {TEXT_FONTS.map(f => (
               <button key={f.value}
                 className={`tool-fit-btn ${font === f.value ? "tool-fit-btn--active" : ""}`}
-                style={{ fontFamily: f.value }}
+                style={{ fontFamily: f.value, display: "flex", flexDirection: "column", alignItems: "flex-start", gap: "2px", minWidth: "90px" }}
                 onClick={() => update(text, f.value)}
-              >{f.label}</button>
+              >
+                <span style={{ fontSize: "0.9rem" }}>{f.label}</span>
+                <span style={{ fontFamily: "var(--font-space), monospace", fontSize: "0.42rem", letterSpacing: "0.08em", color: font === f.value ? "#c9a84c" : "#4a445a", textTransform: "uppercase" }}>{f.hint}</span>
+              </button>
             ))}
           </div>
         </div>
