@@ -167,6 +167,7 @@ export default async function ImagePage({ params }: PageProps) {
                 className="image-detail-img"
                 priority
                 quality={90}
+                unoptimized
                 sizes="(max-width: 768px) 100vw, (max-width: 1280px) 480px, 480px"
                 style={{ objectFit: "contain", objectPosition: "center center" }}
               />

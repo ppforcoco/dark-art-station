@@ -112,7 +112,7 @@ export default async function IphoneImagePage({ params }: PageProps) {
 
           <DeviceMockup deviceType="ANDROID">
             <div className="relative w-full h-full">
-              <Image src={thumbUrl} alt={image.title} fill className="object-cover" priority quality={90} sizes="(max-width: 768px) 100vw, 65vw" />
+              <Image src={thumbUrl} alt={image.title} fill className="object-cover" priority quality={90} unoptimized sizes="(max-width: 768px) 100vw, 65vw" />
             </div>
           </DeviceMockup>
 
@@ -200,7 +200,7 @@ export default async function IphoneImagePage({ params }: PageProps) {
               <span className="font-mono text-[0.5rem] tracking-[0.2em] uppercase text-[#4a445a]">← Previous</span>
               <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                 <div style={{ position: "relative", width: "48px", height: "48px", flexShrink: 0, overflow: "hidden" }}>
-                  <Image src={getPublicUrl(prevImage.r2Key)} alt={prevImage.title} fill className="object-cover" sizes="48px" />
+                  <Image src={getPublicUrl(prevImage.r2Key)} alt={prevImage.title} fill className="object-cover" unoptimized sizes="48px" />
                 </div>
                 <span className="font-body italic text-[0.8rem] text-[#f0ecff]"
                   style={{ display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" as const, overflow: "hidden" }}>
@@ -221,7 +221,7 @@ export default async function IphoneImagePage({ params }: PageProps) {
                   {nextImage.title}
                 </span>
                 <div style={{ position: "relative", width: "48px", height: "48px", flexShrink: 0, overflow: "hidden" }}>
-                  <Image src={getPublicUrl(nextImage.r2Key)} alt={nextImage.title} fill className="object-cover" sizes="48px" />
+                  <Image src={getPublicUrl(nextImage.r2Key)} alt={nextImage.title} fill className="object-cover" unoptimized sizes="48px" />
                 </div>
               </div>
             </Link>

@@ -174,6 +174,10 @@ export default function LightboxGallery({ images }: Props) {
                   src={img.src}
                   alt={img.alt}
                   className="lb-thumb"
+                  loading="lazy"
+                  decoding="async"
+                  width={60}
+                  height={107}
                   data-active={i === activeIndex ? "true" : "false"}
                   onClick={() => { setActiveIndex(i); setDlState("idle"); }}
                 />

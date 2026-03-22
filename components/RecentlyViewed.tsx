@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 
 export interface RecentItem {
   slug:  string;
@@ -52,14 +53,24 @@ export default function RecentlyViewed() {
         <div className="rv-grid rv-grid--portrait">
           {portraitItems.map(item => (
             <Link key={item.slug} href={item.href} className="rv-card rv-card--portrait">
-              <img src={item.thumb} alt={item.title} loading="lazy" />
+              <div style={{ position: "relative", width: "100%", height: "100%" }}>
+                <Image
+                  src={item.thumb}
+                  alt={item.title}
+                  fill
+                  loading="lazy"
+                  unoptimized
+                  style={{ objectFit: "cover" }}
+                  sizes="(max-width: 640px) 50vw, 150px"
+                />
+              </div>
               <span className="rv-card-title">{item.title}</span>
             </Link>
           ))}
         </div>
       )}
 
-      {/* Landscape grid — PC (16:9) — separate row so they're never squeezed into portrait slots */}
+      {/* Landscape grid — PC (16:9) */}
       {landscapeItems.length > 0 && (
         <>
           <p className="rv-section-label">
@@ -68,7 +79,17 @@ export default function RecentlyViewed() {
           <div className="rv-grid rv-grid--landscape">
             {landscapeItems.map(item => (
               <Link key={item.slug} href={item.href} className="rv-card rv-card--landscape">
-                <img src={item.thumb} alt={item.title} loading="lazy" />
+                <div style={{ position: "relative", width: "100%", height: "100%" }}>
+                  <Image
+                    src={item.thumb}
+                    alt={item.title}
+                    fill
+                    loading="lazy"
+                    unoptimized
+                    style={{ objectFit: "cover" }}
+                    sizes="(max-width: 640px) 100vw, 250px"
+                  />
+                </div>
                 <span className="rv-card-title">{item.title}</span>
               </Link>
             ))}

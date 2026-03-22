@@ -86,6 +86,7 @@ export default function FavoritesPage() {
                         src={item.thumb}
                         alt={item.title}
                         fill
+                        unoptimized
                         className="object-cover fav-card-img"
                         sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 20vw"
                       />
@@ -124,6 +125,7 @@ export default function FavoritesPage() {
                         src={item.thumb}
                         alt={item.title}
                         fill
+                        unoptimized
                         className="object-cover fav-card-img"
                         sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                       />

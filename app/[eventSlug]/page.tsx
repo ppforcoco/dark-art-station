@@ -134,12 +134,15 @@ export default async function EventPage({ params }: PageProps) {
 
               return (
                 <Link key={img.id} href={href} className="seasonal-card">
-                  <div className="seasonal-card-inner">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
+                  <div className="seasonal-card-inner" style={{ position: "relative" }}>
+                    <Image
                       src={getPublicUrl(img.r2Key)}
                       alt={img.title}
+                      fill
                       loading="lazy"
+                      unoptimized
+                      style={{ objectFit: "cover" }}
+                      sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
                     />
                   </div>
                   <div className="seasonal-card-info">
