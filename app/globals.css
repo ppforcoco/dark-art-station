@@ -2517,16 +2517,17 @@ body::before {
 .breadcrumbs {
   display: flex;
   align-items: center;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 0;
   list-style: none;
-  /* removed margin-bottom: 20px — path-bar is a strip, not a section */
   overflow: hidden;
+  max-width: 100%;
 }
 .breadcrumb-item {
   display: flex;
   align-items: center;
-  min-width: 0; /* allow flex children to shrink and truncate */
+  min-width: 0;
+  flex-shrink: 1;
 }
 .breadcrumb-link {
   font-family: var(--font-space), monospace;
@@ -2539,10 +2540,10 @@ body::before {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 160px;
+  max-width: 120px;
 }
 @media (max-width: 479px) {
-  .breadcrumb-link { max-width: 90px; }
+  .breadcrumb-link { max-width: 70px; }
 }
 .breadcrumb-link:hover { color: var(--blood); }
 .breadcrumb-sep {
@@ -2569,7 +2570,7 @@ body::before {
   max-width: 200px;
 }
 @media (max-width: 479px) {
-  .breadcrumb-current { max-width: 120px; }
+  .breadcrumb-current { max-width: 160px; }
 }
 
 /* ──────────────────────────────────────────────────────────── */

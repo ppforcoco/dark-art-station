@@ -236,8 +236,8 @@ export default function LightboxGallery({ images }: Props) {
           bottom: 0;
           left: 0;
           right: 0;
-          background: linear-gradient(to top, rgba(5,5,10,0.97) 0%, rgba(5,5,10,0.85) 70%, transparent 100%);
-          padding: 32px 20px calc(16px + env(safe-area-inset-bottom));
+          background: linear-gradient(to top, rgba(5,5,10,0.98) 0%, rgba(5,5,10,0.9) 60%, transparent 100%);
+          padding: 40px 20px calc(20px + env(safe-area-inset-bottom));
           display: flex;
           flex-direction: column;
           gap: 10px;
