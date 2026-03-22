@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useCallback } from "react";
+import AdSlot from "@/components/AdSlot";
 
 type ActiveTool = "resizer" | "darkener" | "upscaler" | "text" | "blur" | "split";
 type ImgFormat = "jpeg" | "png" | "webp";
@@ -72,7 +73,7 @@ function ResizerTool() {
 
   const render = useCallback((image: HTMLImageElement, p: typeof preset, f: string) => {
     const c = previewRef.current; if (!c) return;
-    const scale = Math.min(280 / p.w, 460 / p.h);
+    const scale = Math.min(340 / p.w, 500 / p.h);
     c.width  = Math.round(p.w * scale);
     c.height = Math.round(p.h * scale);
     const ctx = c.getContext("2d")!;
@@ -213,7 +214,7 @@ function DarkenerTool() {
 
   const render = useCallback((image: HTMLImageElement, c: typeof color, op: number, br: number) => {
     const canvas = previewRef.current; if (!canvas) return;
-    const scale = Math.min(280 / image.width, 460 / image.height, 1);
+    const scale = Math.min(340 / image.width, 500 / image.height, 1);
     canvas.width  = Math.round(image.width  * scale);
     canvas.height = Math.round(image.height * scale);
     const ctx = canvas.getContext("2d")!;
@@ -343,7 +344,7 @@ function UpscalerTool() {
 
   const renderPreview = useCallback((image: HTMLImageElement) => {
     const c = previewRef.current; if (!c) return;
-    const scale = Math.min(280 / image.width, 460 / image.height, 1);
+    const scale = Math.min(340 / image.width, 500 / image.height, 1);
     c.width  = Math.round(image.width  * scale);
     c.height = Math.round(image.height * scale);
     const ctx = c.getContext("2d")!;
@@ -520,7 +521,7 @@ function TextTool() {
     col: string, op: number, al: string, pos: string, sh: boolean
   ) => {
     const c = previewRef.current; if (!c) return;
-    const scale = Math.min(300 / image.width, 500 / image.height, 1);
+    const scale = Math.min(340 / image.width, 500 / image.height, 1);
     c.width  = Math.round(image.width  * scale);
     c.height = Math.round(image.height * scale);
     const ctx = c.getContext("2d")!;
@@ -748,7 +749,7 @@ function BlurTool() {
 
   const render = useCallback((image: HTMLImageElement, blur: number) => {
     const c = previewRef.current; if (!c) return;
-    const scale = Math.min(300 / image.width, 500 / image.height, 1);
+    const scale = Math.min(340 / image.width, 500 / image.height, 1);
     c.width  = Math.round(image.width  * scale);
     c.height = Math.round(image.height * scale);
     const ctx = c.getContext("2d")!;
@@ -978,6 +979,11 @@ export default function ToolsPage() {
         <p className="tools-sub">Browser-based tools for customising wallpapers. Nothing is uploaded — everything runs on your device.</p>
       </div>
 
+      {/* Ad between hero and tools */}
+      <div style={{ marginBottom: "32px" }}>
+        <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_MAIN} width={728} height={90} />
+      </div>
+
       <div className="tools-layout">
 
         {/* Sidebar */}
@@ -1055,15 +1061,15 @@ export default function ToolsPage() {
         /* ── Drop zone ── */
         .tool-drop { border: 2px dashed rgba(192,0,26,0.35); background: rgba(192,0,26,0.03); cursor: pointer; display: flex; align-items: center; justify-content: center; min-height: 160px; transition: border-color .2s, background .2s; }
         .tool-drop:hover { border-color: rgba(192,0,26,0.65); background: rgba(192,0,26,0.06); }
-        .tool-drop--filled { border-style: solid; border-color: rgba(192,0,26,0.3); background: #070710; min-height: unset; }
+        .tool-drop--filled { border-style: solid; border-color: rgba(192,0,26,0.3); background: #0a0a14; min-height: 220px; }
         [data-theme="light"] .tool-drop { background: #ede9e0; border-color: rgba(192,0,26,0.25); }
         [data-theme="light"] .tool-drop--filled { background: #e0dbd0; }
         .tool-drop-empty { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 40px 24px; text-align: center; }
         .tool-drop-icon { font-size: 1.8rem; }
         .tool-drop-label { font-family: var(--font-space), monospace; font-size: 0.68rem; letter-spacing: 0.1em; color: #8a8099; margin: 0; }
         .tool-drop-sub { font-family: var(--font-space), monospace; font-size: 0.55rem; letter-spacing: 0.1em; color: #4a445a; margin: 0; }
-        .tool-preview-wrap { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 14px; }
-        .tool-canvas { max-width: 100%; display: block; }
+        .tool-preview-wrap { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 14px; width: 100%; }
+        .tool-canvas { max-width: 100%; max-height: 460px; display: block; margin: 0 auto; border: 1px solid rgba(255,255,255,0.08); }
         .tool-change-hint { font-family: var(--font-space), monospace; font-size: 0.52rem; letter-spacing: 0.1em; text-transform: uppercase; color: #4a445a; margin: 0; }
 
         /* ── Sections ── */
