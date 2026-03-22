@@ -486,12 +486,12 @@ function UpscalerTool() {
 
 // ─── Text Overlay Tool ────────────────────────────────────────────────────────
 const TEXT_FONTS = [
-  { label: "Cinzel",     value: "var(--font-cinzel), 'Cinzel Decorative', cursive",          hint: "Gothic Title"   },
-  { label: "Cormorant",  value: "var(--font-cormorant), 'Cormorant Garamond', serif",         hint: "Elegant Serif"  },
-  { label: "Mono",       value: "var(--font-space), 'Space Mono', monospace",                 hint: "Haunted Mono"   },
-  { label: "Impact",     value: "Impact, 'Arial Narrow', sans-serif",                         hint: "Bold & Wide"    },
-  { label: "Georgia",    value: "Georgia, 'Times New Roman', serif",                          hint: "Classic Serif"  },
-  { label: "Arial",      value: "Arial, Helvetica, sans-serif",                               hint: "Clean Sans"     },
+  { label: "Cinzel",     value: "'Cinzel Decorative', cursive",    hint: "Gothic Title"   },
+  { label: "Cormorant",  value: "'Cormorant Garamond', serif",      hint: "Elegant Serif"  },
+  { label: "Space Mono", value: "'Space Mono', monospace",          hint: "Haunted Mono"   },
+  { label: "Impact",     value: "Impact, 'Arial Narrow', sans-serif", hint: "Bold & Wide"  },
+  { label: "Georgia",    value: "Georgia, 'Times New Roman', serif", hint: "Classic Serif" },
+  { label: "Arial",      value: "Arial, Helvetica, sans-serif",     hint: "Clean Sans"     },
 ];
 const TEXT_ALIGNS = ["left", "center", "right"] as const;
 const TEXT_POSITIONS = [
@@ -505,7 +505,7 @@ function TextTool() {
   const [name,     setName]     = useState("");
   const [text,     setText]     = useState("YOUR TEXT");
   const [font,     setFont]     = useState(TEXT_FONTS[0].value);
-  const [size,     setSize]     = useState(80);
+  const [size,     setSize]     = useState(120);
   const [color,    setTextColor]= useState("#ffffff");
   const [opacity,  setOpacity]  = useState(100);
   const [align,    setAlign]    = useState<typeof TEXT_ALIGNS[number]>("center");
@@ -528,23 +528,34 @@ function TextTool() {
     ctx.drawImage(image, 0, 0, c.width, c.height);
     if (!t.trim()) return;
     const scaledSize = Math.round(sz * scale);
-    ctx.font = `bold ${scaledSize}px ${f}`;
-    ctx.textAlign = al as CanvasTextAlign;
-    ctx.globalAlpha = op / 100;
-    if (sh) {
-      ctx.shadowColor = "rgba(0,0,0,0.8)";
-      ctx.shadowBlur  = scaledSize * 0.3;
-      ctx.shadowOffsetX = 0; ctx.shadowOffsetY = 0;
+
+    const doDraw = () => {
+      // Redraw image first (font load may have cleared it)
+      ctx.drawImage(image, 0, 0, c.width, c.height);
+      ctx.font = `bold ${scaledSize}px ${f}`;
+      ctx.textAlign = al as CanvasTextAlign;
+      ctx.globalAlpha = op / 100;
+      if (sh) {
+        ctx.shadowColor = "rgba(0,0,0,0.8)";
+        ctx.shadowBlur  = scaledSize * 0.3;
+        ctx.shadowOffsetX = 0; ctx.shadowOffsetY = 0;
+      }
+      ctx.fillStyle = col;
+      const x = al === "left" ? 20 * scale : al === "right" ? c.width - 20 * scale : c.width / 2;
+      const y = pos === "top" ? scaledSize + 20 * scale : pos === "middle" ? c.height / 2 : c.height - 30 * scale;
+      const lines = t.split("\n");
+      lines.forEach((line, i) => {
+        ctx.fillText(line, x, y + i * scaledSize * 1.2);
+      });
+      ctx.globalAlpha = 1; ctx.shadowColor = "transparent"; ctx.shadowBlur = 0;
+    };
+
+    // Wait for font to be ready, then draw
+    if (document.fonts) {
+      document.fonts.load(`bold ${scaledSize}px ${f}`).then(doDraw).catch(doDraw);
+    } else {
+      doDraw();
     }
-    ctx.fillStyle = col;
-    const x = al === "left" ? 20 * scale : al === "right" ? c.width - 20 * scale : c.width / 2;
-    const y = pos === "top" ? scaledSize + 20 * scale : pos === "middle" ? c.height / 2 : c.height - 30 * scale;
-    // Handle multiline
-    const lines = t.split("\n");
-    lines.forEach((line, i) => {
-      ctx.fillText(line, x, y + i * scaledSize * 1.2);
-    });
-    ctx.globalAlpha = 1; ctx.shadowColor = "transparent"; ctx.shadowBlur = 0;
   }, []);
 
   async function handleFile(file: File) {
@@ -566,20 +577,30 @@ function TextTool() {
     const ctx = c.getContext("2d")!;
     ctx.imageSmoothingQuality = "high";
     ctx.drawImage(img, 0, 0);
-    if (text.trim()) {
-      ctx.font = `bold ${size}px ${font}`;
-      ctx.textAlign = align as CanvasTextAlign;
-      ctx.globalAlpha = opacity / 100;
-      if (shadow) { ctx.shadowColor = "rgba(0,0,0,0.8)"; ctx.shadowBlur = size * 0.3; }
-      ctx.fillStyle = color;
-      const x = align === "left" ? 20 : align === "right" ? c.width - 20 : c.width / 2;
-      const y = position === "top" ? size + 20 : position === "middle" ? c.height / 2 : c.height - 30;
-      text.split("\n").forEach((line, i) => ctx.fillText(line, x, y + i * size * 1.2));
-      ctx.globalAlpha = 1; ctx.shadowBlur = 0; ctx.shadowColor = "transparent";
+
+    const doDL = () => {
+      ctx.drawImage(img, 0, 0);
+      if (text.trim()) {
+        ctx.font = `bold ${size}px ${font}`;
+        ctx.textAlign = align as CanvasTextAlign;
+        ctx.globalAlpha = opacity / 100;
+        if (shadow) { ctx.shadowColor = "rgba(0,0,0,0.8)"; ctx.shadowBlur = size * 0.3; }
+        ctx.fillStyle = color;
+        const x = align === "left" ? 20 : align === "right" ? c.width - 20 : c.width / 2;
+        const y = position === "top" ? size + 20 : position === "middle" ? c.height / 2 : c.height - 30;
+        text.split("\n").forEach((line, i) => ctx.fillText(line, x, y + i * size * 1.2));
+        ctx.globalAlpha = 1; ctx.shadowBlur = 0; ctx.shadowColor = "transparent";
+      }
+      const ext = FORMATS.find(f => f.value === fmt)?.ext ?? "jpg";
+      downloadCanvas(c, `${name || "wallpaper"}-text.${ext}`, fmt);
+      setDone(true); setTimeout(() => setDone(false), 3000);
+    };
+
+    if (document.fonts) {
+      document.fonts.load(`bold ${size}px ${font}`).then(doDL).catch(doDL);
+    } else {
+      doDL();
     }
-    const ext = FORMATS.find(f => f.value === fmt)?.ext ?? "jpg";
-    downloadCanvas(c, `${name || "wallpaper"}-text.${ext}`, fmt);
-    setDone(true); setTimeout(() => setDone(false), 3000);
   }
 
   return (
@@ -639,8 +660,8 @@ function TextTool() {
         </div>
 
         <div className="tool-section">
-          <p className="tool-label">Font Size — <strong>{size}px</strong></p>
-          <input type="range" min={20} max={300} value={size} className="tool-range"
+          <p className="tool-label">Font Size — <strong>{size}px</strong> <span style={{ fontFamily: "var(--font-space)", fontSize: "0.5rem", color: "#4a445a" }}>(on full image)</span></p>
+          <input type="range" min={30} max={500} step={10} value={size} className="tool-range"
             onChange={e => update(text, font, Number(e.target.value))} />
         </div>
 
