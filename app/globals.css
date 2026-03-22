@@ -551,7 +551,7 @@ body {
 [data-theme="light"] .search-card-tags { color: #a00016 !important; }
 [data-theme="light"] .product-name { color: #1a1814 !important; }
 [data-theme="light"] .search-card-title { color: #1a1814 !important; }
-[data-theme="light"] .section-title { color: #1a1814 !important; font-size: inherit !important; }
+[data-theme="light"] .section-title { color: #1a1814 !important; }
 [data-theme="light"] .nav-links a { color: #3a3530 !important; }
 [data-theme="light"] .footer-col-title { color: #3a3530 !important; }
 [data-theme="light"] .footer-copy { color: #5a5450 !important; }
@@ -1627,12 +1627,9 @@ body::before {
 .product-card-image {
   display: block;
   aspect-ratio: 9 / 16;
-  max-height: 560px; /* caps height on very wide screens so cards stay sensible */
 }
 @media (max-width: 639px) {
-  /* Keep 9/16 portrait — never crop to 3/4 on mobile.
-     Images like "YOU ARE NEXT" have top text that gets cut at 3/4. */
-  .product-card-image { aspect-ratio: 9 / 16; max-height: none; }
+  .product-card-image { aspect-ratio: 9 / 16; }
   .product-grid .p-5 { padding: 10px 10px 12px; }
 }
 
