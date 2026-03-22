@@ -52,7 +52,7 @@ export default function DarkFantasyArtStylesPage() {
               Gothic art in the digital sense draws from the visual language of medieval
               European architecture and Victorian mourning culture. Pointed arches,
               gargoyles, candlelight, ravens, and skull motifs are recurring elements.
-              The color palette tends toward deep purples, blood reds, and cold stone
+              The color palette tends toward deep purples, crimson reds, and cold stone
               greys. Gothic wallpapers are ornate and detailed — they reward close
               inspection. The Skeleton Card Collection and Tarot-influenced collections
               on this site fall squarely into this tradition.
@@ -94,9 +94,9 @@ export default function DarkFantasyArtStylesPage() {
           <section className="static-section">
             <h2>Cosmic and Occult Dark Art</h2>
             <p>
-              Inspired by Lovecraftian horror and occult visual traditions, cosmic dark
+              Inspired by cosmic horror and dark visual traditions, cosmic dark
               art depicts entities, symbols, and voids at a scale that makes human figures
-              seem irrelevant. Deep space, ancient sigils, eldritch creatures, and ritual
+              seem irrelevant. Deep space, ancient symbols, eldritch creatures, and geometric
               circles are common motifs. The color palette often combines void black with
               spectral purples and greens. This style appeals to people who are drawn to
               the philosophical weight of insignificance — the idea that the universe is

@@ -3,6 +3,13 @@
 import { useState, useRef, useCallback } from "react";
 
 type ActiveTool = "resizer" | "darkener" | "upscaler";
+type ImgFormat = "jpeg" | "png" | "webp";
+
+const FORMATS: { value: ImgFormat; label: string; ext: string }[] = [
+  { value: "jpeg", label: "JPG",  ext: "jpg"  },
+  { value: "png",  label: "PNG",  ext: "png"  },
+  { value: "webp", label: "WEBP", ext: "webp" },
+];
 
 // ─── Device presets ───────────────────────────────────────────────────────────
 const PRESETS = [
@@ -40,7 +47,9 @@ function loadImg(file: File): Promise<HTMLImageElement> {
   });
 }
 
-function downloadCanvas(canvas: HTMLCanvasElement, name: string) {
+function downloadCanvas(canvas: HTMLCanvasElement, name: string, fmt: ImgFormat = "jpeg") {
+  const mime = `image/${fmt}`;
+  const quality = fmt === "png" ? undefined : 0.96;
   canvas.toBlob(blob => {
     if (!blob) return;
     const a = document.createElement("a");
@@ -48,7 +57,7 @@ function downloadCanvas(canvas: HTMLCanvasElement, name: string) {
     a.download = name;
     a.click();
     URL.revokeObjectURL(a.href);
-  }, "image/jpeg", 0.96);
+  }, mime, quality);
 }
 
 // ─── Wallpaper Resizer ────────────────────────────────────────────────────────
@@ -57,6 +66,7 @@ function ResizerTool() {
   const [name,   setName]   = useState("");
   const [preset, setPreset] = useState(PRESETS[0]);
   const [fit,    setFit]    = useState<"cover"|"contain"|"stretch">("cover");
+  const [fmt,    setFmt]    = useState<ImgFormat>("jpeg");
   const [done,   setDone]   = useState(false);
   const previewRef = useRef<HTMLCanvasElement>(null);
 
@@ -102,7 +112,7 @@ function ResizerTool() {
       const dw = img.width * r, dh = img.height * r;
       ctx.drawImage(img, (c.width - dw) / 2, (c.height - dh) / 2, dw, dh);
     }
-    downloadCanvas(c, `${name || "wallpaper"}-${preset.label.replace(/[^a-z0-9]/gi,"-").toLowerCase()}.jpg`);
+    downloadCanvas(c, `${name || "wallpaper"}-${preset.label.replace(/[^a-z0-9]/gi,"-").toLowerCase()}.${FORMATS.find(f=>f.value===fmt)?.ext ?? "jpg"}`, fmt);
     setDone(true); setTimeout(() => setDone(false), 3000);
   }
 
@@ -168,6 +178,20 @@ function ResizerTool() {
           </p>
         </div>
 
+        <div className="tool-section">
+          <p className="tool-label">Output Format</p>
+          <div className="tool-fit-row">
+            {FORMATS.map(f => (
+              <button key={f.value}
+                className={`tool-fit-btn ${fmt === f.value ? "tool-fit-btn--active" : ""}`}
+                onClick={() => setFmt(f.value)}
+              >
+                {f.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
         <button className="tool-action" onClick={download}>
           {done ? "✓ Downloaded!" : `↓ Download for ${preset.label}`}
         </button>
@@ -183,6 +207,7 @@ function DarkenerTool() {
   const [color,      setColor]      = useState(COLORS[0]);
   const [opacity,    setOpacity]    = useState(40);
   const [brightness, setBrightness] = useState(100);
+  const [fmt,        setFmt]        = useState<ImgFormat>("jpeg");
   const [done,       setDone]       = useState(false);
   const previewRef = useRef<HTMLCanvasElement>(null);
 
@@ -220,7 +245,7 @@ function DarkenerTool() {
     ctx.filter = "none";
     ctx.fillStyle = `rgba(${color.r},${color.g},${color.b},${opacity / 100})`;
     ctx.fillRect(0, 0, c.width, c.height);
-    downloadCanvas(c, `${name || "wallpaper"}-${color.label.toLowerCase()}-dark.jpg`);
+    downloadCanvas(c, `${name || "wallpaper"}-${color.label.toLowerCase()}-dark.${FORMATS.find(f=>f.value===fmt)?.ext ?? "jpg"}`, fmt);
     setDone(true); setTimeout(() => setDone(false), 3000);
   }
 
@@ -282,6 +307,20 @@ function DarkenerTool() {
             onChange={e => update(color, opacity, Number(e.target.value))} />
         </div>
 
+        <div className="tool-section">
+          <p className="tool-label">Output Format</p>
+          <div className="tool-fit-row">
+            {FORMATS.map(f => (
+              <button key={f.value}
+                className={`tool-fit-btn ${fmt === f.value ? "tool-fit-btn--active" : ""}`}
+                onClick={() => setFmt(f.value)}
+              >
+                {f.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
         <button className="tool-action" onClick={download}>
           {done ? "✓ Downloaded!" : "↓ Download Darkened Image"}
         </button>
@@ -298,6 +337,7 @@ function UpscalerTool() {
   const [img,    setImg]    = useState<HTMLImageElement | null>(null);
   const [name,   setName]   = useState("");
   const [factor, setFactor] = useState<UpscaleFactor>(2);
+  const [fmt,    setFmt]    = useState<ImgFormat>("jpeg");
   const [status, setStatus] = useState<"idle" | "processing" | "done">("idle");
   const previewRef = useRef<HTMLCanvasElement>(null);
 
@@ -329,11 +369,14 @@ function UpscalerTool() {
       const targetW = img.width  * factor;
       const targetH = img.height * factor;
 
-      // Step-up upscaling: double repeatedly for better quality than 1-step
+      // Step-up upscaling: always double in steps for best sharpness
+      // Each step uses high-quality smoothing to preserve detail
       let current: HTMLCanvasElement = document.createElement("canvas");
       current.width  = img.width;
       current.height = img.height;
       const initCtx = current.getContext("2d")!;
+      initCtx.imageSmoothingEnabled = true;
+      initCtx.imageSmoothingQuality = "high";
       initCtx.drawImage(img, 0, 0);
 
       let w = img.width;
@@ -345,7 +388,7 @@ function UpscalerTool() {
         const stepH = Math.min(h * 2, targetH);
         next.width  = stepW;
         next.height = stepH;
-        const ctx = next.getContext("2d")!;
+        const ctx = next.getContext("2d", { willReadFrequently: false })!;
         ctx.imageSmoothingEnabled = true;
         ctx.imageSmoothingQuality = "high";
         ctx.drawImage(current, 0, 0, stepW, stepH);
@@ -354,7 +397,7 @@ function UpscalerTool() {
         h = stepH;
       }
 
-      downloadCanvas(current, `${name || "wallpaper"}-${factor}x-upscaled.jpg`);
+      downloadCanvas(current, `${name || "wallpaper"}-${factor}x-upscaled.${FORMATS.find(f=>f.value===fmt)?.ext ?? "jpg"}`, fmt);
       setStatus("done");
       setTimeout(() => setStatus("idle"), 3000);
     }, 50);
@@ -410,6 +453,20 @@ function UpscalerTool() {
             <p className="tool-hint">
               Output: {img.width}×{img.height} → <strong style={{ color: "#c9a84c" }}>{outW}×{outH}px</strong>
             </p>
+          </div>
+
+          <div className="tool-section">
+            <p className="tool-label">Output Format</p>
+            <div className="tool-fit-row">
+              {FORMATS.map(f => (
+                <button key={f.value}
+                  className={`tool-fit-btn ${fmt === f.value ? "tool-fit-btn--active" : ""}`}
+                  onClick={() => setFmt(f.value)}
+                >
+                  {f.label}
+                </button>
+              ))}
+            </div>
           </div>
 
           <button

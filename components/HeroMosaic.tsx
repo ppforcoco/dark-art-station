@@ -10,7 +10,7 @@ const SEASONS = [
     id:    "halloween",
     href:  "/halloween",
     label: "Halloween",
-    sub:   "Ritual Season",
+    sub:   "Haunting Season",
     bg:    "linear-gradient(135deg, #1a0820 0%, #3d0a3a 30%, #0e0820 60%, #1a0010 100%)",
     icon: (
       <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" className="mosaic-svg-icon">
@@ -112,7 +112,7 @@ const SEASONS = [
     id:    "black-easter",
     href:  "/black-easter",
     label: "Black Easter",
-    sub:   "Dark Rebirth",
+    sub:   "Dark Spring",
     bg:    "linear-gradient(135deg, #0a0808 0%, #1a100a 40%, #0e0808 100%)",
     icon: (
       <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" className="mosaic-svg-icon">

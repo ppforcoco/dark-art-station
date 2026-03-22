@@ -25,7 +25,7 @@ const KNOWN_EVENTS: Record<string, EventConfig> = {
     title:       "Halloween Wallpapers",
     metaTitle:   "Best Free 4K Halloween Wallpapers 2026 | Haunted Wallpapers",
     description: "Free dark Halloween wallpapers for iPhone, Android & PC. Dark, moody and atmospheric imagery — 4K resolution, instant download.",
-    eyebrow:     "Ritual Season",
+    eyebrow:     "Haunting Season",
   },
   "dark-valentine": {
     tag:         "valentine",
@@ -38,7 +38,7 @@ const KNOWN_EVENTS: Record<string, EventConfig> = {
     tag:         "dayofthedead",
     title:       "Day of the Dead Wallpapers",
     metaTitle:   "Day of the Dead Wallpapers 4K | Haunted Wallpapers",
-    description: "Dia de los Muertos — vibrant art, marigolds, and ancestral energies in 4K dark fantasy wallpapers.",
+    description: "Dia de los Muertos — vibrant art, marigolds, and spirit celebrations in 4K dark fantasy wallpapers.",
     eyebrow:     "Día de Muertos",
   },
   "blood-moon": {
@@ -60,7 +60,7 @@ const KNOWN_EVENTS: Record<string, EventConfig> = {
     title:       "Black Easter Wallpapers",
     metaTitle:   "Black Easter Wallpapers 4K | Haunted Wallpapers",
     description: "The dark rebirth reimagined in shadow. Gothic Easter, gothic spring, and dark renewal wallpapers.",
-    eyebrow:     "The Dark Rebirth",
+    eyebrow:     "Dark Spring",
   },
 };
 

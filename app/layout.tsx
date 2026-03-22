@@ -144,7 +144,7 @@ gtag('set','url_passthrough',true);
                 name: SITE_NAME,
                 url: SITE_URL,
                 logo: { "@type": "ImageObject", url: OG_IMAGE, width: 1200, height: 630 },
-                sameAs: ["https://instagram.com/hauntedwallpapers","https://pinterest.com/hauntedwallpapers"],
+                sameAs: ["https://www.pinterest.com/TheFreemiumWallpapers/"],
                 description: "Free dark fantasy wallpapers for iPhone, Android and PC. Bold original AI art.",
               },
               {

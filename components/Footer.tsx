@@ -3,11 +3,7 @@ import Link from "next/link";
 import type { JSX } from "react";
 
 const SOCIAL_LINKS = [
-  { label: "Instagram", href: "https://instagram.com/hauntedwallpapers" },
-  { label: "Pinterest", href: "https://pinterest.com/hauntedwallpapers" },
-  // Uncomment when profiles are live:
-  // { label: "TikTok",    href: "https://tiktok.com/@hauntedwallpapers" },
-  // { label: "ArtStation",href: "https://artstation.com/hauntedwallpapers" },
+  { label: "Pinterest", href: "https://www.pinterest.com/TheFreemiumWallpapers/" },
 ];
 
 export default function Footer(): JSX.Element {
