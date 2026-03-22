@@ -70,6 +70,10 @@ function ResizerTool() {
   const [fmt,    setFmt]    = useState<ImgFormat>("jpeg");
   const [done,   setDone]   = useState(false);
   const previewRef = useRef<HTMLCanvasElement>(null);
+  // Render whenever img/preset/fit changes — useEffect runs after DOM update
+  useEffect(() => {
+    if (img) render(img, preset, fit);
+  }, [img, preset, fit, render]);
 
   const render = useCallback((image: HTMLImageElement, p: typeof preset, f: string) => {
     const c = previewRef.current; if (!c) return;
@@ -92,12 +96,10 @@ function ResizerTool() {
   async function handleFile(file: File) {
     const image = await loadImg(file);
     setImg(image); setName(file.name.replace(/\.[^.]+$/, "")); setDone(false);
-    // Defer render until after React re-renders the canvas into the DOM
-    setTimeout(() => render(image, preset, fit), 0);
   }
 
-  function changePreset(p: typeof preset) { setPreset(p); if (img) render(img, p, fit); }
-  function changeFit(f: string) { setFit(f as typeof fit); if (img) render(img, preset, f); }
+  function changePreset(p: typeof preset) { setPreset(p); }
+  function changeFit(f: string) { setFit(f as typeof fit); }
 
   function download() {
     if (!img) return;
@@ -226,10 +228,14 @@ function DarkenerTool() {
     ctx.fillRect(0, 0, canvas.width, canvas.height);
   }, []);
 
+  // Re-render when img first loads
+  useEffect(() => {
+    if (img) render(img, color, opacity, brightness);
+  }, [img]); // eslint-disable-line react-hooks/exhaustive-deps
+
   async function handleFile(file: File) {
     const image = await loadImg(file);
     setImg(image); setName(file.name.replace(/\.[^.]+$/, "")); setDone(false);
-    setTimeout(() => render(image, color, opacity, brightness), 0);
   }
 
   function update(c: typeof color, op: number, br: number) {
@@ -354,12 +360,13 @@ function UpscalerTool() {
     ctx.drawImage(image, 0, 0, c.width, c.height);
   }, []);
 
+  useEffect(() => { if (img) renderPreview(img); }, [img]); // eslint-disable-line react-hooks/exhaustive-deps
+
   async function handleFile(file: File) {
     const image = await loadImg(file);
     setImg(image);
     setName(file.name.replace(/\.[^.]+$/, ""));
     setStatus("idle");
-    setTimeout(() => renderPreview(image), 0);
   }
 
   function upscale() {
@@ -560,10 +567,13 @@ function TextTool() {
     }
   }, []);
 
+  useEffect(() => {
+    if (img) render(img, text, font, size, color, opacity, align, position, shadow);
+  }, [img]); // eslint-disable-line react-hooks/exhaustive-deps
+
   async function handleFile(file: File) {
     const image = await loadImg(file);
     setImg(image); setName(file.name.replace(/\.[^.]+$/, ""));
-    setTimeout(() => render(image, text, font, size, color, opacity, align, position, shadow), 0);
   }
 
   function update(t=text, f=font, sz=size, col=color, op=opacity, al=align, pos=position, sh=shadow) {
@@ -760,10 +770,11 @@ function BlurTool() {
     ctx.filter = "none";
   }, []);
 
+  useEffect(() => { if (img) render(img, amount); }, [img]); // eslint-disable-line react-hooks/exhaustive-deps
+
   async function handleFile(file: File) {
     const image = await loadImg(file);
     setImg(image); setName(file.name.replace(/\.[^.]+$/, ""));
-    setTimeout(() => render(image, amount), 0);
   }
 
   function updateBlur(v: number) { setAmount(v); if (img) render(img, v); }
@@ -868,10 +879,11 @@ function SplitTool() {
     }
   }, []);
 
+  useEffect(() => { if (img) render(img); }, [img]); // eslint-disable-line react-hooks/exhaustive-deps
+
   async function handleFile(file: File) {
     const image = await loadImg(file);
     setImg(image); setName(file.name.replace(/\.[^.]+$/, "")); setDone("");
-    setTimeout(() => render(image), 0);
   }
 
   function downloadSplit(side: "lock" | "home" | "both") {
