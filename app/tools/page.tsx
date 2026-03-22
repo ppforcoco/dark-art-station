@@ -350,12 +350,12 @@ export default function ToolsPage() {
         [data-theme="light"] .tools-sub { color: #5a5058; }
 
         /* ── Layout ── */
-        .tools-layout { display: grid; grid-template-columns: 200px 1fr; gap: 28px; align-items: start; }
-        @media (max-width: 680px) { .tools-layout { grid-template-columns: 1fr; } }
+        .tools-layout { display: grid; grid-template-columns: 220px 1fr; gap: 28px; align-items: start; }
+        @media (max-width: 767px) { .tools-layout { grid-template-columns: 1fr; } }
 
         /* ── Sidebar ── */
-        .tools-nav { display: flex; flex-direction: column; gap: 4px; position: sticky; top: 80px; }
-        @media (max-width: 680px) { .tools-nav { flex-direction: row; position: static; } }
+        .tools-nav { display: flex; flex-direction: column; gap: 6px; position: sticky; top: 80px; }
+        @media (max-width: 767px) { .tools-nav { flex-direction: row; position: static; overflow-x: auto; padding-bottom: 4px; } }
         .tools-nav-btn { display: flex; align-items: center; gap: 10px; padding: 14px 16px; background: transparent; border: 1px solid rgba(255,255,255,0.06); cursor: pointer; text-align: left; transition: background .18s, border-color .18s; }
         .tools-nav-btn:hover { background: rgba(255,255,255,0.03); border-color: rgba(192,0,26,0.3); }
         .tools-nav-btn--active { background: rgba(192,0,26,0.08); border-color: rgba(192,0,26,0.5); }

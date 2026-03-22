@@ -135,7 +135,7 @@ export default async function PcPage({ searchParams }: PageProps) {
               — {total} wallpapers · page {page} of {totalPages}
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {images.map((img) => (
+              {images.map((img, idx) => (
                 <Link
                   key={img.id}
                   href={`/pc/${img.slug}`}
@@ -146,6 +146,8 @@ export default async function PcPage({ searchParams }: PageProps) {
                     src={getPublicUrl(img.r2Key)}
                     alt={`${img.title} — free dark PC desktop wallpaper 4K`}
                     fill
+                    loading={idx < 6 ? "eager" : "lazy"}
+                    priority={idx < 6}
                     className="object-cover transition-transform duration-500 group-hover:scale-105"
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                   />

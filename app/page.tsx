@@ -2,7 +2,6 @@
 import type { Metadata } from "next";
 import { db, getWallpaperOfTheDay } from "@/lib/db";
 import MarqueeTicker from "@/components/MarqueeTicker";
-import NewsletterForm from "@/components/NewsletterForm";
 import Image from "next/image";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
@@ -276,15 +275,6 @@ export default async function Home() {
           </p>
         </div>
       </section>
-
-      {/* ════════════════════════════ NEWSLETTER */}
-      <div className="newsletter-section">
-        <h2 className="newsletter-title">Stay in the Loop</h2>
-        <p className="newsletter-sub">
-          New drops, free wallpapers, and exclusive deals — straight to your inbox.
-        </p>
-        <NewsletterForm />
-      </div>
 
       {/* ════════════════════════════ RECENTLY VIEWED */}
       <RecentlyViewed />

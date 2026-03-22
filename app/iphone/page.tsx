@@ -135,7 +135,7 @@ export default async function IphonePage({ searchParams }: PageProps) {
               — {total} wallpapers · page {page} of {totalPages}
             </p>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
-              {images.map((img) => (
+              {images.map((img, idx) => (
                 <Link
                   key={img.id}
                   href={`/iphone/${img.slug}`}
@@ -146,8 +146,10 @@ export default async function IphonePage({ searchParams }: PageProps) {
                     src={getPublicUrl(img.r2Key)}
                     alt={`${img.title} — free dark iPhone wallpaper 4K`}
                     fill
+                    loading={idx < 10 ? "eager" : "lazy"}
+                    priority={idx < 10}
                     className="object-cover transition-transform duration-500 group-hover:scale-105"
-                    sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
+                    sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 20vw"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-[rgba(5,5,5,0.92)] via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-3">
                     <div>
