@@ -73,6 +73,7 @@ export default async function Home() {
       id: true, slug: true, title: true, category: true,
       price: true, isFree: true, badge: true,
       icon: true, bgClass: true, thumbnail: true,
+      _count: { select: { downloads: true } },
     },
   });
 
@@ -251,6 +252,7 @@ export default async function Home() {
               bgClass={p.bgClass}
               thumbnail={p.thumbnail ? `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/${p.thumbnail}` : null}
               priority={idx < 4}
+              downloadCount={p._count.downloads}
             />
           )) : (
             <p style={{ color:"#4a445a", fontFamily:"var(--font-space)", fontSize:"0.75rem",
@@ -260,6 +262,9 @@ export default async function Home() {
           )}
         </div>
       </section>
+
+      {/* ════════════════════════════ AD SLOT — between products and manifesto */}
+      <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_FOOTER} width={728} height={90} />
 
       {/* ════════════════════════════ MANIFESTO */}
       <section className="manifesto-section">

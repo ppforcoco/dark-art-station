@@ -16,6 +16,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${siteUrl}/iphone`,       lastModified: new Date(), changeFrequency: "daily"   as const, priority: 0.85 },
     { url: `${siteUrl}/android`,      lastModified: new Date(), changeFrequency: "daily"   as const, priority: 0.85 },
     { url: `${siteUrl}/pc`,           lastModified: new Date(), changeFrequency: "daily"   as const, priority: 0.85 },
+    { url: `${siteUrl}/collections`,  lastModified: new Date(), changeFrequency: "weekly"  as const, priority: 0.8  },
     { url: `${siteUrl}/search`,       lastModified: new Date(), changeFrequency: "weekly"  as const, priority: 0.6  },
     { url: `${siteUrl}/about`,        lastModified: new Date(), changeFrequency: "monthly" as const, priority: 0.5  },
     { url: `${siteUrl}/faq`,          lastModified: new Date(), changeFrequency: "monthly" as const, priority: 0.5  },
@@ -26,6 +27,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${siteUrl}/guides`,       lastModified: new Date(), changeFrequency: "weekly"  as const, priority: 0.7  },
     { url: `${siteUrl}/tools`,        lastModified: new Date(), changeFrequency: "monthly" as const, priority: 0.65 },
     { url: `${siteUrl}/favorites`,    lastModified: new Date(), changeFrequency: "monthly" as const, priority: 0.5  },
+    // ── Seasonal event pages ────────────────────────────────────────────────
+    { url: `${siteUrl}/halloween`,              lastModified: new Date(), changeFrequency: "monthly" as const, priority: 0.75 },
+    { url: `${siteUrl}/dark-valentine`,         lastModified: new Date(), changeFrequency: "monthly" as const, priority: 0.7  },
+    { url: `${siteUrl}/day-of-the-dead`,        lastModified: new Date(), changeFrequency: "monthly" as const, priority: 0.7  },
+    { url: `${siteUrl}/blood-moon`,             lastModified: new Date(), changeFrequency: "monthly" as const, priority: 0.7  },
+    { url: `${siteUrl}/haunted-christmas`,      lastModified: new Date(), changeFrequency: "monthly" as const, priority: 0.7  },
+    { url: `${siteUrl}/black-easter`,           lastModified: new Date(), changeFrequency: "monthly" as const, priority: 0.7  },
+    // ── Guide pages ─────────────────────────────────────────────────────────
     { url: `${siteUrl}/guides/how-to-set-wallpaper-iphone`,      lastModified: new Date(), changeFrequency: "monthly" as const, priority: 0.6 },
     { url: `${siteUrl}/guides/how-to-set-wallpaper-android`,     lastModified: new Date(), changeFrequency: "monthly" as const, priority: 0.6 },
     { url: `${siteUrl}/guides/best-dark-wallpapers-iphone`,      lastModified: new Date(), changeFrequency: "monthly" as const, priority: 0.6 },

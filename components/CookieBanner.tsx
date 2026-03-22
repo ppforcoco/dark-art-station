@@ -26,18 +26,52 @@ export default function CookieBanner() {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    if (getConsent() === null) setVisible(true);
+    const existing = getConsent();
+    if (existing === null) {
+      setVisible(true);
+    } else if (existing === "accepted") {
+      // Returning user who already accepted — restore full consent
+      if (typeof (window as any).gtag === "function") {
+        (window as any).gtag("consent", "update", {
+          ad_storage:         "granted",
+          ad_user_data:       "granted",
+          ad_personalization: "granted",
+          analytics_storage:  "granted",
+        });
+      }
+      injectAdSense();
+    }
+    // declined users: consent stays denied (already set as default in layout.tsx)
   }, []);
 
   function accept() {
     setConsentValue("accepted");
     setVisible(false);
+    // Consent Mode v2 — upgrade to full personalized ads + analytics
+    if (typeof window !== "undefined" && typeof (window as any).gtag === "function") {
+      (window as any).gtag("consent", "update", {
+        ad_storage:          "granted",
+        ad_user_data:        "granted",
+        ad_personalization:  "granted",
+        analytics_storage:   "granted",
+      });
+    }
     injectAdSense();
   }
 
   function decline() {
     setConsentValue("declined");
     setVisible(false);
+    // Consent Mode v2 — keep denied but signal non-personalized ads are OK
+    // Google will still show non-personalized ads to this user
+    if (typeof window !== "undefined" && typeof (window as any).gtag === "function") {
+      (window as any).gtag("consent", "update", {
+        ad_storage:          "denied",
+        ad_user_data:        "denied",
+        ad_personalization:  "denied",
+        analytics_storage:   "denied",
+      });
+    }
   }
 
   if (!visible) return null;

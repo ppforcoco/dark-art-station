@@ -96,17 +96,37 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <meta name="apple-mobile-web-app-title" content="Haunted WP" />
         <meta name="mobile-web-app-capable" content="yes" />
-        {/* Google Search Console verification — replace with your actual token */}
         {process.env.NEXT_PUBLIC_GSC_VERIFICATION && (
           <meta name="google-site-verification" content={process.env.NEXT_PUBLIC_GSC_VERIFICATION} />
         )}
-        {/* Google Analytics 4 — loads after consent via CookieBanner */}
+        {/* ── Google Consent Mode v2 — MUST be first, before gtag/AdSense ── */}
+        {/* Sets default denied state so AdSense can show non-personalized  */}
+        {/* ads to EVERYONE, even cookie decliners. CookieBanner updates     */}
+        {/* these values when user accepts or declines.                       */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+window.dataLayer=window.dataLayer||[];
+function gtag(){dataLayer.push(arguments);}
+gtag('consent','default',{
+  ad_storage:'denied',
+  ad_user_data:'denied',
+  ad_personalization:'denied',
+  analytics_storage:'denied',
+  wait_for_update:500
+});
+gtag('set','ads_data_redaction',true);
+gtag('set','url_passthrough',true);
+`.trim(),
+          }}
+        />
+        {/* ── Google Analytics 4 ── */}
         {process.env.NEXT_PUBLIC_GA_ID && (
           <>
             <script async src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_ID}`} />
             <script
               dangerouslySetInnerHTML={{
-                __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${process.env.NEXT_PUBLIC_GA_ID}',{send_page_view:false});`,
+                __html: `gtag('js',new Date());gtag('config','${process.env.NEXT_PUBLIC_GA_ID}',{send_page_view:true});`,
               }}
             />
           </>

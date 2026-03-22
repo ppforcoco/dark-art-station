@@ -60,6 +60,7 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
         id: true, slug: true, title: true, category: true,
         price: true, isFree: true, badge: true,
         icon: true, bgClass: true, description: true, thumbnail: true,
+        _count: { select: { downloads: true } },
       },
       take: PAGE_SIZE,
       skip,
@@ -133,6 +134,7 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
                   bgClass={p.bgClass}
                   thumbnail={p.thumbnail ? `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/${p.thumbnail}` : null}
                   priority={idx < 4}
+                  downloadCount={p._count.downloads}
                 />
               );
               if ((idx + 1) % 8 === 0) {

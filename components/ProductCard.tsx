@@ -16,6 +16,7 @@ interface ProductCardProps {
   bgClass?: string;
   thumbnail?: string | null;
   priority?: boolean;
+  downloadCount?: number;
 }
 
 export default function ProductCard({
@@ -29,12 +30,18 @@ export default function ProductCard({
   bgClass = "p-bg-1",
   thumbnail,
   priority = false,
+  downloadCount,
 }: ProductCardProps) {
   const badgeStyles: Record<string, string> = {
     New:  "bg-[#c0001a] text-[#f0ecff]",
     Hot:  "bg-[#ff3c00] text-[#0a0a0a]",
     Free: "bg-[#c9a84c] text-[#0a0a0a]",
   };
+
+  function formatCount(n: number): string {
+    if (n >= 1000) return `${(n / 1000).toFixed(1).replace(/\.0$/, "")}K`;
+    return String(n);
+  }
 
   return (
     <div className="product-card-wrap group">
@@ -65,6 +72,16 @@ export default function ProductCard({
         {badge && (
           <span className={`absolute top-3 left-3 font-mono text-[0.55rem] tracking-[0.15em] uppercase px-[10px] py-[5px] z-10 ${badgeStyles[badge] ?? ""}`}>
             {badge}
+          </span>
+        )}
+
+        {/* Download count badge — top right, only when meaningful */}
+        {downloadCount !== undefined && downloadCount > 0 && (
+          <span
+            className="absolute top-3 right-3 font-mono text-[0.5rem] tracking-[0.1em] uppercase px-[8px] py-[4px] z-10"
+            style={{ background: "rgba(7,7,16,0.75)", color: "#c9a84c", backdropFilter: "blur(4px)" }}
+          >
+            ↓ {formatCount(downloadCount)}
           </span>
         )}
 
