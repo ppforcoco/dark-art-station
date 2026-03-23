@@ -51,7 +51,7 @@ export default function PrivacyPage() {
             </p>
             <ul>
               <li>Subscribe to our newsletter</li>
-              <li>Submit a contact form</li>
+              <li>Send us an email enquiry</li>
               <li>Complete a purchase or download</li>
             </ul>
             <p>
@@ -199,7 +199,7 @@ export default function PrivacyPage() {
               <li>Operate and maintain the Site</li>
               <li>Process downloads and purchases</li>
               <li>Send newsletters to subscribers who have opted in</li>
-              <li>Respond to enquiries submitted through our contact form</li>
+              <li>Respond to email enquiries</li>
               <li>Monitor and analyse usage trends to improve the Site</li>
               <li>Prevent fraudulent downloads and abuse</li>
               <li>Comply with legal obligations</li>

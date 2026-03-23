@@ -31,6 +31,37 @@ export default function LightboxGallery({ images }: Props) {
     setActiveIndex((i) => (i === null ? null : (i + 1) % images.length));
   }, [images.length]);
 
+  // Preload current image + adjacent ones so navigation feels instant.
+  // Uses <link rel="preload"> injected into <head> — browser fetches in
+  // background at high priority, so by the time user swipes it's cached.
+  useEffect(() => {
+    if (activeIndex === null) return;
+    const toPreload = [
+      activeIndex,
+      (activeIndex + 1) % images.length,
+      (activeIndex - 1 + images.length) % images.length,
+    ].filter((i, pos, arr) => arr.indexOf(i) === pos); // dedupe
+
+    const links: HTMLLinkElement[] = [];
+    toPreload.forEach((i) => {
+      const src = images[i]?.src;
+      if (!src) return;
+      // Skip if already preloaded
+      if (document.querySelector(`link[rel="preload"][href="${src}"]`)) return;
+      const link = document.createElement("link");
+      link.rel  = "preload";
+      link.as   = "image";
+      link.href = src;
+      link.setAttribute("fetchpriority", "high");
+      document.head.appendChild(link);
+      links.push(link);
+    });
+    // Clean up preload links when lightbox closes to avoid memory bloat
+    return () => {
+      links.forEach((l) => { try { document.head.removeChild(l); } catch {} });
+    };
+  }, [activeIndex, images]);
+
   useEffect(() => {
     if (!isOpen) return;
     const onKey = (e: KeyboardEvent) => {
@@ -58,6 +89,16 @@ export default function LightboxGallery({ images }: Props) {
 
   const current = activeIndex !== null ? images[activeIndex] : null;
 
+  // Preload on hover/touch — start fetching before user taps
+  function preloadImage(src: string) {
+    if (document.querySelector(`link[rel="preload"][href="${src}"]`)) return;
+    const link = document.createElement("link");
+    link.rel  = "preload";
+    link.as   = "image";
+    link.href = src;
+    document.head.appendChild(link);
+  }
+
   return (
     <>
       {/* Grid */}
@@ -67,6 +108,8 @@ export default function LightboxGallery({ images }: Props) {
             key={img.id}
             className="lb-grid-item"
             onClick={() => open(i)}
+            onMouseEnter={() => preloadImage(img.src)}
+            onTouchStart={() => preloadImage(img.src)}
             aria-label={`View ${img.title} in lightbox`}
             type="button"
           >
@@ -140,7 +183,15 @@ export default function LightboxGallery({ images }: Props) {
           {/* Image */}
           <div className="lb-img-wrap" onClick={(e) => e.stopPropagation()}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={current.src} alt={current.alt} key={current.id} />
+            <img
+              src={current.src}
+              alt={current.alt}
+              key={current.id}
+              loading="eager"
+              decoding="async"
+              // @ts-ignore — fetchpriority is valid HTML but TS types lag
+              fetchpriority="high"
+            />
           </div>
 
           {/* Next */}
@@ -168,6 +219,8 @@ export default function LightboxGallery({ images }: Props) {
                   width={60}
                   height={107}
                   data-active={i === activeIndex ? "true" : "false"}
+                  onMouseEnter={() => preloadImage(img.src)}
+                  onTouchStart={() => preloadImage(img.src)}
                   onClick={() => { setActiveIndex(i); }}
                 />
               ))}

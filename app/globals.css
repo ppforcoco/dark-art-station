@@ -7,7 +7,7 @@
 :root {
   /* Layout geometry — single source of truth for nav heights */
   --nav-h:      88px;   /* desktop nav height */
-  --nav-h-mob:  72px;   /* mobile nav height  */
+  --nav-h-mob:  84px;   /* mobile nav height — 20px top + 42px hamburger + 20px bottom + 2px border */
 
   /* Dark Drift — background tint shifts over time (set by DarkDrift component) */
   --drift-tint: transparent;
@@ -625,7 +625,7 @@ body::before {
 }
 @media (max-width: 1279px) {
   .content-wrapper {
-    padding-top: calc(var(--topbar-total, 72px) + var(--nav-h-mob, 72px));
+    padding-top: calc(var(--topbar-total, 72px) + var(--nav-h-mob, 84px));
   }
 }
 
@@ -644,7 +644,7 @@ body::before {
 }
 @media (max-width: 1279px) {
   .path-bar {
-    top: calc(var(--topbar-total, 72px) + var(--nav-h-mob, 72px));
+    top: calc(var(--topbar-total, 72px) + var(--nav-h-mob, 84px));
     padding: 8px 16px;
   }
 }
@@ -878,7 +878,7 @@ body::before {
   display: flex;
   flex-direction: column;
   /* Clear the full header: topbar + nav + small gap */
-  padding: calc(var(--topbar-total, 72px) + var(--nav-h-mob, 72px) + 12px) 40px calc(48px + env(safe-area-inset-bottom));
+  padding: calc(var(--topbar-total, 72px) + var(--nav-h-mob, 84px) + 12px) 40px calc(48px + env(safe-area-inset-bottom));
   transform: translateX(100%);
   transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   overflow-y: auto;
@@ -887,12 +887,12 @@ body::before {
 }
 @media (max-width: 479px) {
   .mobile-menu-panel {
-    padding: calc(var(--topbar-total, 72px) + var(--nav-h-mob, 72px) + 8px) 28px calc(32px + env(safe-area-inset-bottom));
+    padding: calc(var(--topbar-total, 72px) + var(--nav-h-mob, 84px) + 8px) 28px calc(32px + env(safe-area-inset-bottom));
   }
 }
 @media (max-height: 680px) {
   .mobile-menu-panel {
-    padding-top: calc(var(--topbar-total, 72px) + var(--nav-h-mob, 72px) + 4px);
+    padding-top: calc(var(--topbar-total, 72px) + var(--nav-h-mob, 84px) + 4px);
   }
 }
 .mobile-menu-open .mobile-menu-panel {
@@ -2971,13 +2971,11 @@ body::before {
   align-items: center;
   justify-content: center;
   animation: lb-fade-in 0.2s ease;
-  /* iOS Safari scroll-behind fix */
-  overflow: hidden;
-  touch-action: none;              /* block touch passthrough to page behind */
-  overscroll-behavior: contain;    /* stop scroll chaining on iOS */
-  /* Ensure overlay covers the full viewport including safe areas */
-  padding-top: env(safe-area-inset-top);
-  padding-bottom: env(safe-area-inset-bottom);
+  /* NOTE: overflow must NOT be hidden — it breaks position:fixed children
+     on iOS Safari (lb-caption, lb-close, lb-arrow all become clipped).
+     Use touch-action + overscroll-behavior instead for scroll lock. */
+  touch-action: none;
+  overscroll-behavior: contain;
 }
 @keyframes lb-fade-in {
   from { opacity: 0; }
@@ -4177,16 +4175,16 @@ body::before {
 /* ── 7. Mobile menu — top padding so first item clears header ─
    Fixes "01 IPHONE" touching the header border.                 */
 .mobile-menu-panel {
-  padding-top: calc(var(--topbar-h, 0px) + var(--nav-h-mob, 72px) + 32px) !important;
+  padding-top: calc(var(--topbar-h, 0px) + var(--nav-h-mob, 84px) + 32px) !important;
 }
 @media (max-width: 479px) {
   .mobile-menu-panel {
-    padding-top: calc(var(--topbar-h, 0px) + var(--nav-h-mob, 72px) + 24px) !important;
+    padding-top: calc(var(--topbar-h, 0px) + var(--nav-h-mob, 84px) + 24px) !important;
   }
 }
 @media (max-height: 680px) {
   .mobile-menu-panel {
-    padding-top: calc(var(--topbar-h, 0px) + var(--nav-h-mob, 72px) + 12px) !important;
+    padding-top: calc(var(--topbar-h, 0px) + var(--nav-h-mob, 84px) + 12px) !important;
   }
 }
 

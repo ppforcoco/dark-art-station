@@ -9,6 +9,7 @@ import Cursor from "@/components/Cursor";
 import ScrollToTop from "@/components/ScrollToTop";
 import CookieBanner from "@/components/CookieBanner";
 import StickyMobileAd from "@/components/StickyMobileAd";
+import ScrollReset from "@/components/ScrollReset";
 
 const cinzel = Cinzel_Decorative({
   weight: ["400", "700", "900"],
@@ -177,6 +178,7 @@ gtag('set','url_passthrough',true);
           }}
         />
         <Cursor />
+        <ScrollReset />
         <HalloweenCountdown />
         <Header />
         <div className="content-wrapper">

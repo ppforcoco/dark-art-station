@@ -1,25 +1,19 @@
 'use client';
 
-import { useEffect, useState } from "react";
+// ScrollReset — scrolls to the top of the page whenever the route changes.
+// Next.js App Router doesn't do this automatically for same-layout navigations.
+// Placed in layout.tsx so it runs on every page transition.
 
-export default function ScrollToTop() {
-  const [visible, setVisible] = useState(false);
+import { useEffect } from "react";
+import { usePathname } from "next/navigation";
+
+export default function ScrollReset() {
+  const pathname = usePathname();
 
   useEffect(() => {
-    const onScroll = () => setVisible(window.scrollY > 500);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+    // Instant scroll (no animation) so user immediately sees the top of the new page
+    window.scrollTo(0, 0);
+  }, [pathname]);
 
-  if (!visible) return null;
-
-  return (
-    <button
-      className="scroll-top-btn"
-      onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-      aria-label="Scroll to top"
-    >
-      ↑
-    </button>
-  );
+  return null; // renders nothing — side-effect only
 }

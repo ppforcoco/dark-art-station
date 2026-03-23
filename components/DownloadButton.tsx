@@ -25,35 +25,21 @@ export default function DownloadButton({ href, viewCount, label }: Props) {
   }
 
   async function handleShare() {
-    // Try Web Share API first (native share sheet on mobile)
     if (typeof navigator.share === "function") {
       try {
-        // Fetch the image and share as file for "Set as Wallpaper" option
-        const response = await fetch(href);
-        const blob     = await response.blob();
-        const file     = new File([blob], "haunted-wallpaper.jpg", { type: blob.type });
-
-        if (navigator.canShare?.({ files: [file] })) {
-          await navigator.share({
-            files:  [file],
-            title:  "Haunted Wallpaper",
-            text:   "Free dark wallpaper from hauntedwallpapers.com",
-          });
-          setState("done");
-          return;
-        }
-        // Fallback: share URL only
+        // Share the page URL directly — instant, no blob download needed.
+        // User can save from the share sheet; we don't need to pre-fetch the file.
         await navigator.share({
           title: "Haunted Wallpaper",
+          text:  "Free dark wallpaper from hauntedwallpapers.com",
           url:   window.location.href,
         });
         return;
       } catch (err) {
-        // User cancelled or share failed — fall through to regular download
         if ((err as Error).name === "AbortError") return;
       }
     }
-    // Final fallback: trigger download
+    // Fallback: trigger direct download
     handleDownloadClick();
   }
 
