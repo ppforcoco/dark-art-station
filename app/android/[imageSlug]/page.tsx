@@ -107,7 +107,7 @@ export default async function IphoneImagePage({ params }: PageProps) {
       <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_MAIN} width={728} height={90} />
 
       {/* ── Main layout: stacks on mobile, side-by-side on md+ ── */}
-      <section style={{ maxWidth: "1280px", margin: "0 auto", padding: "40px 24px" }}>
+      <section style={{ maxWidth: "1280px", margin: "0 auto", padding: "16px 24px 40px" }}>
         <div style={{ display: "flex", flexDirection: "column", gap: "32px" }}>
 
           <DeviceMockup deviceType="ANDROID">
