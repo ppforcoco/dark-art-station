@@ -5619,3 +5619,8 @@ a.download-btn:active {
   color: #8a8099;
 }
 [data-theme="light"] .detail-fav-label { color: #5a5058; }
+@media (max-width: 1023px) {
+  .image-detail-panel {
+    padding-bottom: 80px;
+  }
+}
