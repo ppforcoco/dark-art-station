@@ -32,7 +32,7 @@ export default function StickyMobileAd() {
     return () => clearTimeout(timer);
   }, [isMobile, dismissed, pushed, pid, slot]);
 
-  if (!isMobile || dismissed || !pid || !slot) return null;
+  return null; // Sticky mobile ad disabled — was covering download button
 
   return (
     <div
