@@ -61,10 +61,11 @@ export default function AboutPage() {
               morning. For anyone who has ever felt more at home in the dark.
             </p>
             <p>
-              Most of our library is completely free. Our belief is that great dark
+              Our entire library is completely free. Our belief is that great dark
               art should be accessible to everyone — not locked behind a paywall.
-              Premium bundles exist for those who want full-resolution packs and
-              exclusive drops, but you will never be forced to pay to enjoy this place.
+              Premium collections are in development for those who want exclusive
+              drops and curated full-resolution packs, but you will never be forced
+              to pay to enjoy this place.
             </p>
           </section>
 
@@ -75,8 +76,8 @@ export default function AboutPage() {
               the internet — and to keep it free for the people who need it most.
             </p>
             <p>
-              We are funded entirely by advertising revenue and optional premium
-              purchases. No subscriptions. No tracking walls. No dark patterns.
+              We are funded entirely by advertising revenue. No subscriptions.
+              No tracking walls. No dark patterns.
             </p>
           </section>
 
