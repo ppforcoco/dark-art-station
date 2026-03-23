@@ -7,6 +7,7 @@ import Footer from "@/components/Footer";
 import HalloweenCountdown from "@/components/HalloweenCountdown";
 import Cursor from "@/components/Cursor";
 import ScrollToTop from "@/components/ScrollToTop";
+import ScrollToTopButton from "@/components/ScrollToTopButton";
 import CookieBanner from "@/components/CookieBanner";
 import StickyMobileAd from "@/components/StickyMobileAd";
 import ScrollReset from "@/components/ScrollReset";
@@ -185,7 +186,7 @@ gtag('set','url_passthrough',true);
           {children}
         </div>
         <Footer />
-        <ScrollToTop />
+        <ScrollToTopButton />
         <CookieBanner />
         <StickyMobileAd />
       </body>

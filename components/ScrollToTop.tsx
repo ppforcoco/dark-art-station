@@ -1,11 +1,24 @@
 'use client';
-import { useEffect } from "react";
-import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 
-// Scrolls to top on every page navigation.
-// Next.js App Router doesn't reset scroll automatically for same-layout routes.
-export default function ScrollReset() {
-  const pathname = usePathname();
-  useEffect(() => { window.scrollTo(0, 0); }, [pathname]);
-  return null;
+export default function ScrollToTopButton() {
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setVisible(window.scrollY > 400);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  if (!visible) return null;
+
+  return (
+    <button
+      className="scroll-top-btn"
+      onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+      aria-label="Back to top"
+    >
+      ↑
+    </button>
+  );
 }

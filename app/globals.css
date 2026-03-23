@@ -5187,6 +5187,11 @@ body::after {
   margin-top: 12px;
   width: 100%;
 }
+@media (max-width: 767px) {
+  .download-btn-wrap {
+    padding-bottom: 72px;
+  }
+}
 
 .download-stats-row {
   display: flex;
