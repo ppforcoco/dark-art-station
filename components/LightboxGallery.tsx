@@ -235,15 +235,16 @@ export default function LightboxGallery({ images }: Props) {
             <span className="lb-caption-title">{current.title}</span>
 
             <div className="lb-caption-actions">
-              {/* Single CTA — goes to wallpaper page where user downloads */}
-              <Link
-                href={current.href}
+              {/* Direct download via API using the image id */}
+              <a
+                href={`/api/download/image/${current.id}`}
                 className="lb-download-btn"
+                download
                 onClick={close}
                 aria-label={`Download ${current.title}`}
               >
                 ↓ Download Free
-              </Link>
+              </a>
             </div>
           </div>
         </div>

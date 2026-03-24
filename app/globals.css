@@ -30,7 +30,7 @@
   --bg-primary:   var(--void);
   --bg-secondary: var(--black);
   --text-primary: #e8e4f5;
-  --text-muted:   #9490a8;
+  --text-muted:   #b8b4cc;
   --border-dim:   #2a2535;
   --nav-bg:       rgba(12,11,20,0.92);
 }
@@ -49,7 +49,7 @@
   --bg-primary:   #f4f1ea;
   --bg-secondary: #ece8df;
   --text-primary: #1a1814;
-  --text-muted:   #5a5450;
+  --text-muted:   #3a3430;
   --border-dim:   #cdc8bc;
   --nav-bg:       rgba(244,241,234,0.96);
 
@@ -123,7 +123,7 @@
 [data-theme="ember"] .site-nav { background: rgba(10,6,0,0.97) !important; border-bottom-color: rgba(255,102,0,0.25) !important; }
 [data-theme="ember"] .nav-logo { color: #ff8800 !important; }
 [data-theme="ember"] .logo-red { color: #ff4400 !important; text-shadow: 0 0 16px rgba(255,68,0,0.5) !important; }
-[data-theme="ember"] .nav-links a { color: #c07030 !important; }
+[data-theme="ember"] .nav-links a { color: #d88040 !important; }
 [data-theme="ember"] .nav-links a:hover { color: #fff0e0 !important; }
 [data-theme="ember"] .section-title { color: #ffe8d0 !important; }
 [data-theme="ember"] .section-eyebrow { color: #ff6600 !important; }
@@ -680,7 +680,7 @@ body::before {
   font-size: 0.75rem;
   letter-spacing: 0.15em;
   text-transform: uppercase;
-  color: #8a8099;
+  color: #c9c4dd;
   text-decoration: none;
   transition: color 0.2s;
 }

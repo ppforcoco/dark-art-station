@@ -12,6 +12,7 @@ const NAV_LINKS = [
   { label: "PC",          href: "/pc"          },
   { label: "Collections", href: "/collections" },
   { label: "Blog",        href: "/blog"        },
+  { label: "Guides",      href: "/blog"        },
 ];
 
 type Theme = "dark" | "blood" | "light" | "ghost" | "ember";
@@ -157,7 +158,7 @@ export default function Header() {
         [data-theme="blood"] .site-nav             { border-bottom-color: rgba(192,0,0,0.35) !important; }
         [data-theme="blood"] .nav-logo             { color: #ff5555 !important; }
         [data-theme="blood"] .logo-red             { color: #ff0000 !important; text-shadow: 0 0 18px rgba(255,0,0,0.65) !important; }
-        [data-theme="blood"] .nav-links a          { color: #aa5858 !important; }
+        [data-theme="blood"] .nav-links a          { color: #cc7070 !important; }
         [data-theme="blood"] .nav-links a:hover    { color: #fff0f0 !important; }
         [data-theme="blood"] .btn-primary          { background: #cc0000 !important; }
         [data-theme="blood"] .btn-primary::before  { background: #ff2200 !important; }
@@ -226,7 +227,7 @@ export default function Header() {
           width: 36px; height: 36px;
           background: transparent;
           border: 1px solid rgba(139,0,0,0.3);
-          color: #8a8099;
+          color: #c9c4dd;
           cursor: none;
           transition: border-color 0.2s, color 0.2s;
           flex-shrink: 0;
@@ -242,7 +243,7 @@ export default function Header() {
           height: 36px; padding: 0 12px;
           background: transparent;
           border: 1px solid rgba(139,0,0,0.3);
-          color: #8a8099;
+          color: #c9c4dd;
           font-family: var(--font-space, monospace);
           font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase;
           cursor: none; white-space: nowrap;
@@ -267,7 +268,7 @@ export default function Header() {
           display: flex; align-items: center; gap: 10px;
           width: 100%; padding: 10px 14px;
           background: transparent; border: none;
-          color: #6a6480;
+          color: #b8b4cc;
           font-family: var(--font-space, monospace);
           font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase;
           cursor: none; text-align: left;
@@ -355,7 +356,7 @@ export default function Header() {
         }
         .search-hint-btn {
           background: rgba(192,0,26,0.08); border: 1px solid rgba(192,0,26,0.2);
-          color: #6a6080; padding: 6px 14px;
+          color: #b8b4cc; padding: 6px 14px;
           font-family: var(--font-space, monospace);
           font-size: 0.56rem; letter-spacing: 0.12em; text-transform: uppercase;
           cursor: pointer; transition: background 0.15s, color 0.15s, border-color 0.15s;
@@ -384,7 +385,7 @@ export default function Header() {
           display: flex; align-items: center; gap: 12px;
           width: 100%; padding: 12px 16px;
           background: rgba(192,0,26,0.06); border: 1px solid rgba(192,0,26,0.18);
-          color: #8a8099; font-family: var(--font-space, monospace);
+          color: #c9c4dd; font-family: var(--font-space, monospace);
           font-size: 0.6rem; letter-spacing: 0.14em; text-transform: uppercase;
           cursor: pointer; text-align: left;
           transition: background 0.15s, color 0.15s, border-color 0.15s;
@@ -394,7 +395,7 @@ export default function Header() {
         .mobile-theme-row { display: flex; gap: 5px; padding: 0 0 4px; flex-wrap: wrap; }
         .mobile-theme-pill {
           flex: 1; min-width: calc(33% - 4px); padding: 9px 3px; background: transparent;
-          border: 1px solid rgba(139,0,0,0.25); color: #4a445a;
+          border: 1px solid rgba(139,0,0,0.25); color: #a09ab8;
           font-family: var(--font-space, monospace);
           font-size: 0.5rem; letter-spacing: 0.08em; text-transform: uppercase;
           cursor: pointer; text-align: center;

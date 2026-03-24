@@ -18,8 +18,11 @@ export default function DownloadButton({ href, viewCount, label }: Props) {
     setCanShare(mobile && typeof navigator.share === "function");
   }, []);
 
-  function handleDownloadClick() {
-    if (state === "done") return;
+  function handleDownloadClick(e: React.MouseEvent<HTMLAnchorElement>) {
+    if (state === "loading" || state === "done") {
+      e.preventDefault();
+      return;
+    }
     setState("loading");
     setTimeout(() => setState("done"), 1400);
   }
@@ -73,7 +76,7 @@ export default function DownloadButton({ href, viewCount, label }: Props) {
       <div style={{ display: "flex", gap: "10px" }}>
         {/* Main download button */}
         <a
-          href={state === "loading" ? "#" : href}
+          href={href}
           onClick={handleDownloadClick}
           className="download-btn"
           style={{ backgroundColor: bgColor, borderColor: bgColor, flex: 1 }}
