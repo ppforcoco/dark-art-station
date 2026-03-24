@@ -51,14 +51,20 @@ const jsonLd = {
   mainEntityOfPage: { "@type": "WebPage", "@id": `${SITE_URL}/guides/best-dark-wallpapers-for-halloween` },
 };
 
-// ─── small reusable image block ──────────────────────────────────────────────
-function BlogImage({ src, alt, caption, height = 380 }: { src: string; alt: string; caption: string; height?: number }) {
+// ─── 9:16 Portrait Image Block ───────────────────────────────────────────────
+function BlogImage({ src, alt, caption }: { src: string; alt: string; caption: string }) {
   return (
-    <div style={{ margin: "32px 0", borderRadius: "4px", overflow: "hidden" }}>
+    <div style={{ margin: "32px auto", maxWidth: "360px", borderRadius: "4px", overflow: "hidden" }}>
       <img
         src={src}
         alt={alt}
-        style={{ width: "100%", height: `${height}px`, objectFit: "cover", display: "block" }}
+        style={{
+          width: "100%",
+          aspectRatio: "9 / 16",
+          objectFit: "cover",
+          display: "block",
+          borderRadius: "4px",
+        }}
         loading="lazy"
       />
       <p style={{
@@ -67,6 +73,7 @@ function BlogImage({ src, alt, caption, height = 380 }: { src: string; alt: stri
         padding: "6px 0",
         fontFamily: "var(--font-space)",
         letterSpacing: "0.1em",
+        textAlign: "center",
       }}>
         {caption}
       </p>
@@ -93,12 +100,18 @@ export default function HalloweenWallpapersGuide() {
           </p>
         </header>
 
-        {/* ── Hero image ── */}
-        <div style={{ marginBottom: "12px", borderRadius: "4px", overflow: "hidden" }}>
+        {/* ── Hero image — 9:16 portrait, centred, max 360px wide ── */}
+        <div style={{ margin: "0 auto 12px", maxWidth: "360px", borderRadius: "4px", overflow: "hidden" }}>
           <img
             src={HERO_IMAGE}
             alt="Haunted gothic castle with lightning and bats — dark Halloween wallpaper"
-            style={{ width: "100%", height: "460px", objectFit: "cover", display: "block" }}
+            style={{
+              width: "100%",
+              aspectRatio: "9 / 16",
+              objectFit: "cover",
+              display: "block",
+              borderRadius: "4px",
+            }}
             loading="eager"
           />
           <p style={{
@@ -107,6 +120,7 @@ export default function HalloweenWallpapersGuide() {
             padding: "6px 0",
             fontFamily: "var(--font-space)",
             letterSpacing: "0.1em",
+            textAlign: "center",
           }}>
             A haunted castle splits the sky with lightning — the perfect lock-screen mood for Halloween
           </p>
@@ -173,7 +187,6 @@ export default function HalloweenWallpapersGuide() {
               src={HERO_IMAGE}
               alt="Gothic haunted castle with dramatic lightning and bats — Halloween wallpaper"
               caption="Gothic castle, lightning sky, and bats — original art from Haunted Wallpapers"
-              height={420}
             />
 
             <p>
@@ -216,7 +229,6 @@ export default function HalloweenWallpapersGuide() {
               src={SKULL_IMAGE}
               alt="Ornate gothic skull surrounded by pumpkins and glowing candles — Halloween wallpaper"
               caption="Baroque gothic skull with carved pumpkins and candlelight — original Haunted Wallpapers art"
-              height={420}
             />
 
             <p>
@@ -266,7 +278,6 @@ export default function HalloweenWallpapersGuide() {
               src={GRAVE_IMAGE}
               alt="Moonlit graveyard with jack-o-lantern and glowing full moon — Halloween wallpaper"
               caption="A moonlit Halloween graveyard — where peace and horror are one and the same"
-              height={420}
             />
 
             <p>
@@ -312,7 +323,6 @@ export default function HalloweenWallpapersGuide() {
               src={CATHEDRAL_IMG}
               alt="Gothic cathedral with glowing stained glass windows at midnight — dark Halloween wallpaper"
               caption="A gothic cathedral bathed in moonlight — the wallpaper that asks questions you don't want answered"
-              height={420}
             />
 
             <p>
@@ -323,10 +333,9 @@ export default function HalloweenWallpapersGuide() {
               wondering what&apos;s inside, even though you know the building should be empty.
             </p>
             <p>
-              This image is also one of the strongest AdSense-friendly images in this collection,
-              if you&apos;re looking to monetise a dark art or wallpaper site. The subject matter
-              is universally recognisable, the composition is editorial-quality, and there&apos;s
-              nothing remotely problematic — just beautiful, dramatic architecture photography
+              This image is also one of the strongest AdSense-friendly images in this collection.
+              The subject matter is universally recognisable, the composition is editorial-quality,
+              and there&apos;s nothing remotely problematic — just beautiful, dramatic architecture
               reimagined through AI art.
             </p>
             <p>
@@ -357,7 +366,6 @@ export default function HalloweenWallpapersGuide() {
               src={VINES_IMAGE}
               alt="Dark tangled vines with glowing ghost spirits and skulls — gothic Halloween wallpaper"
               caption="Glowing spirits drift through dark vines — original Haunted Wallpapers art"
-              height={420}
             />
 
             <p>
