@@ -18,6 +18,7 @@ export default function DownloadButton({ href, viewCount, label }: Props) {
     setCanShare(mobile && typeof navigator.share === "function");
   }, []);
 
+  // Called by the <a> tag onClick — keeps the real href intact, just blocks double-clicks
   function handleDownloadClick(e: React.MouseEvent<HTMLAnchorElement>) {
     if (state === "loading" || state === "done") {
       e.preventDefault();
@@ -27,11 +28,16 @@ export default function DownloadButton({ href, viewCount, label }: Props) {
     setTimeout(() => setState("done"), 1400);
   }
 
+  // Internal helper — sets loading state without needing a mouse event
+  function triggerDownloadState() {
+    if (state === "loading" || state === "done") return;
+    setState("loading");
+    setTimeout(() => setState("done"), 1400);
+  }
+
   async function handleShare() {
     if (typeof navigator.share === "function") {
       try {
-        // Share the page URL directly — instant, no blob download needed.
-        // User can save from the share sheet; we don't need to pre-fetch the file.
         await navigator.share({
           title: "Haunted Wallpaper",
           text:  "Free dark wallpaper from hauntedwallpapers.com",
@@ -42,8 +48,8 @@ export default function DownloadButton({ href, viewCount, label }: Props) {
         if ((err as Error).name === "AbortError") return;
       }
     }
-    // Fallback: trigger direct download
-    handleDownloadClick();
+    // Fallback: trigger download state (no event needed)
+    triggerDownloadState();
   }
 
   const buttonLabel =
@@ -74,7 +80,7 @@ export default function DownloadButton({ href, viewCount, label }: Props) {
 
       {/* Buttons row */}
       <div style={{ display: "flex", gap: "10px" }}>
-        {/* Main download button */}
+        {/* Main download button — href is always the real API URL */}
         <a
           href={href}
           onClick={handleDownloadClick}
@@ -96,7 +102,6 @@ export default function DownloadButton({ href, viewCount, label }: Props) {
             title="Set as wallpaper"
           >
             {canShare ? (
-              /* Share icon */
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                 <path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/>
                 <polyline points="16 6 12 2 8 6"/>
