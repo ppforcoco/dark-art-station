@@ -19,6 +19,12 @@ export const metadata: Metadata = {
 
 const GUIDES = [
   {
+    slug:    "best-dark-wallpapers-for-halloween",
+    title:   "Best Dark Wallpapers for Halloween 2025",
+    desc:    "Gothic skulls, haunted mansions, dark forest horror, and illustration art — the ultimate free Halloween wallpaper guide for iPhone and Android.",
+    label:   "Halloween",
+  },
+  {
     slug:    "how-to-set-wallpaper-iphone",
     title:   "How to Set a Wallpaper on iPhone",
     desc:    "Step-by-step guide to setting a custom wallpaper on any iPhone model, including lock screen and home screen tips.",
