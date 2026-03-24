@@ -4,24 +4,30 @@ import AdSlot from "@/components/AdSlot";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
 
+const HERO_IMAGE    = "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/halloween-haunted-castle-lightning.webp";
+const SKULL_IMAGE   = "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/halloween-gothic-skull-pumpkins.webp";
+const GRAVE_IMAGE   = "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/halloween-graveyard-pumpkin-moon.webp";
+const CATHEDRAL_IMG = "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/halloween-gothic-cathedral-moonlight.webp";
+const VINES_IMAGE   = "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/halloween-dark-vines-glowing-ghosts.webp";
+
 export const metadata: Metadata = {
   title: "Best Dark Wallpapers for Halloween 2025 | Haunted Wallpapers",
   description:
-    "Discover the best dark and Halloween wallpapers for iPhone and Android. Haunted mansions, gothic skulls, horror art, and more — all free to download.",
+    "Discover the best dark and Halloween wallpapers for iPhone and Android. Haunted castles, gothic skulls, moonlit graveyards, glowing ghosts, and more — all free to download.",
   alternates: { canonical: `${SITE_URL}/guides/best-dark-wallpapers-for-halloween` },
   openGraph: {
     title: "Best Dark Wallpapers for Halloween 2025 | Haunted Wallpapers",
     description:
-      "Free dark Halloween wallpapers for iPhone and Android. Gothic skulls, haunted mansions, horror art, and more.",
+      "Free dark Halloween wallpapers for iPhone and Android. Gothic skulls, haunted castles, glowing ghosts, moonlit graveyards, and more.",
     url: `${SITE_URL}/guides/best-dark-wallpapers-for-halloween`,
     siteName: "Haunted Wallpapers",
     type: "article",
     images: [
       {
-        url: "https://images.unsplash.com/photo-1509557965875-b88c97052f0e?w=1200&q=80",
+        url: HERO_IMAGE,
         width: 1200,
         height: 630,
-        alt: "Dark Halloween wallpaper — candles and gothic fog",
+        alt: "Haunted castle with lightning and bats — dark Halloween wallpaper",
       },
     ],
   },
@@ -32,8 +38,8 @@ const jsonLd = {
   "@type": "Article",
   headline: "Best Dark Wallpapers for Halloween 2025",
   description:
-    "A curated guide to the best dark Halloween wallpapers for iPhone and Android — haunted mansions, gothic skulls, horror art, and more.",
-  image: "https://images.unsplash.com/photo-1509557965875-b88c97052f0e?w=1200&q=80",
+    "A curated guide to the best dark Halloween wallpapers for iPhone and Android — haunted castles, gothic skulls, moonlit graveyards, glowing ghosts, and cathedral art.",
+  image: HERO_IMAGE,
   datePublished: "2025-09-01T00:00:00Z",
   dateModified: "2025-10-01T00:00:00Z",
   author: { "@type": "Organization", name: "Haunted Wallpapers" },
@@ -45,6 +51,29 @@ const jsonLd = {
   mainEntityOfPage: { "@type": "WebPage", "@id": `${SITE_URL}/guides/best-dark-wallpapers-for-halloween` },
 };
 
+// ─── small reusable image block ──────────────────────────────────────────────
+function BlogImage({ src, alt, caption, height = 380 }: { src: string; alt: string; caption: string; height?: number }) {
+  return (
+    <div style={{ margin: "32px 0", borderRadius: "4px", overflow: "hidden" }}>
+      <img
+        src={src}
+        alt={alt}
+        style={{ width: "100%", height: `${height}px`, objectFit: "cover", display: "block" }}
+        loading="lazy"
+      />
+      <p style={{
+        fontSize: "0.7rem",
+        color: "#6b6480",
+        padding: "6px 0",
+        fontFamily: "var(--font-space)",
+        letterSpacing: "0.1em",
+      }}>
+        {caption}
+      </p>
+    </div>
+  );
+}
+
 export default function HalloweenWallpapersGuide() {
   return (
     <main className="static-page">
@@ -52,42 +81,59 @@ export default function HalloweenWallpapersGuide() {
 
       <div className="static-page-inner">
 
-        {/* Hero */}
+        {/* ── Hero ── */}
         <header className="static-page-header">
           <p className="static-page-label">Halloween Guide · 2025</p>
           <h1 className="static-page-title">
             Best Dark Wallpapers<br /><em>for Halloween</em>
           </h1>
           <p className="static-page-meta">
-            Gothic skulls, haunted mansions, candle-lit horror, and pure darkness —
-            the ultimate collection of free Halloween wallpapers for iPhone and Android.
+            Gothic skulls, haunted castles, moonlit graveyards, glowing spirits, and pure
+            darkness — the ultimate collection of free Halloween wallpapers for iPhone and Android.
           </p>
         </header>
 
-        {/* Hero image */}
-        <div style={{ marginBottom: "40px", borderRadius: "4px", overflow: "hidden" }}>
+        {/* ── Hero image ── */}
+        <div style={{ marginBottom: "12px", borderRadius: "4px", overflow: "hidden" }}>
           <img
-            src="https://images.unsplash.com/photo-1509557965875-b88c97052f0e?w=1200&q=80"
-            alt="Dark Halloween atmosphere — candles, fog, and gothic shadows"
-            style={{ width: "100%", height: "420px", objectFit: "cover", display: "block" }}
+            src={HERO_IMAGE}
+            alt="Haunted gothic castle with lightning and bats — dark Halloween wallpaper"
+            style={{ width: "100%", height: "460px", objectFit: "cover", display: "block" }}
             loading="eager"
           />
-          <p style={{ fontSize: "0.7rem", color: "#6b6480", padding: "6px 0", fontFamily: "var(--font-space)", letterSpacing: "0.1em" }}>
-            Dark gothic atmosphere — the essence of Halloween wallpaper art
+          <p style={{
+            fontSize: "0.7rem",
+            color: "#6b6480",
+            padding: "6px 0",
+            fontFamily: "var(--font-space)",
+            letterSpacing: "0.1em",
+          }}>
+            A haunted castle splits the sky with lightning — the perfect lock-screen mood for Halloween
           </p>
         </div>
 
-        {/* AdSense — top */}
+        {/* ── AdSense top ── */}
         <div style={{ marginBottom: "40px" }}>
           <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_MAIN} width={728} height={90} />
         </div>
 
-        {/* Table of Contents */}
         <div className="static-page-body">
+
+          {/* ── Intro ── */}
+          <p style={{ marginBottom: "24px", lineHeight: "1.8" }}>
+            Halloween is the one time of year when your phone lock screen can be genuinely
+            terrifying — and people will think you have incredible taste. But finding high-quality
+            dark wallpapers that actually look good on an OLED screen, that aren&apos;t
+            watermarked to death, and that capture the real spirit of Halloween is harder than
+            it sounds. We&apos;ve put together the five best categories of dark Halloween
+            wallpapers, with our own original AI artwork for each one. Everything is free to download.
+          </p>
+
+          {/* ── Table of Contents ── */}
           <div style={{
             border: "1px solid #2a2535",
             padding: "24px",
-            marginBottom: "40px",
+            marginBottom: "48px",
             background: "rgba(192,0,26,0.04)",
           }}>
             <p style={{
@@ -101,184 +147,262 @@ export default function HalloweenWallpapersGuide() {
               In This Guide
             </p>
             <ol style={{ paddingLeft: "20px", margin: 0, lineHeight: "2.2" }}>
-              <li><a href="#gothic-skulls" style={{ color: "#c0a0ff", textDecoration: "none" }}>Gothic Skull Wallpapers</a></li>
-              <li><a href="#haunted-mansions" style={{ color: "#c0a0ff", textDecoration: "none" }}>Haunted Mansion &amp; Fog</a></li>
-              <li><a href="#dark-forest" style={{ color: "#c0a0ff", textDecoration: "none" }}>Dark Forest &amp; Nature Horror</a></li>
-              <li><a href="#horror-art" style={{ color: "#c0a0ff", textDecoration: "none" }}>Horror Illustration Art</a></li>
-              <li><a href="#how-to-set" style={{ color: "#c0a0ff", textDecoration: "none" }}>How to Set on iPhone &amp; Android</a></li>
+              <li><a href="#haunted-castle"    style={{ color: "#c0a0ff", textDecoration: "none" }}>Haunted Castle &amp; Lightning</a></li>
+              <li><a href="#gothic-skulls"     style={{ color: "#c0a0ff", textDecoration: "none" }}>Gothic Skull Wallpapers</a></li>
+              <li><a href="#moonlit-graveyard" style={{ color: "#c0a0ff", textDecoration: "none" }}>Moonlit Graveyard</a></li>
+              <li><a href="#gothic-cathedral"  style={{ color: "#c0a0ff", textDecoration: "none" }}>Gothic Cathedral at Night</a></li>
+              <li><a href="#glowing-ghosts"    style={{ color: "#c0a0ff", textDecoration: "none" }}>Dark Vines &amp; Glowing Ghosts</a></li>
+              <li><a href="#how-to-set"        style={{ color: "#c0a0ff", textDecoration: "none" }}>How to Set on iPhone &amp; Android</a></li>
             </ol>
           </div>
 
-          {/* SECTION 1 */}
-          <section className="static-section" id="gothic-skulls">
-            <h2>1. Gothic Skull Wallpapers</h2>
+          {/* ════════════════════════════════════════════
+              SECTION 1 — Haunted Castle
+          ════════════════════════════════════════════ */}
+          <section className="static-section" id="haunted-castle">
+            <h2>1. Haunted Castle &amp; Lightning Wallpapers</h2>
             <p>
-              The skull is the ultimate Halloween symbol — and in dark digital art, it transforms
-              into something far beyond a cliché. Gothic skull wallpapers combine ornate Victorian
-              detail with deep shadows, candlelight, and floral decay. On an OLED iPhone screen,
-              the contrast between the illuminated bone and the pure black background is genuinely
-              breathtaking.
+              Nothing sets the Halloween mood faster than a gothic castle silhouetted against
+              a sky being torn apart by lightning. This is the wallpaper that makes someone
+              pick up your phone and immediately ask where you got it. The drama lives in the
+              contrast — the cold stone tower against the electric sky, the bats scattered by
+              the crack of thunder, the sense that something ancient is waking up inside those walls.
             </p>
 
-            {/* Skull image */}
-            <div style={{ margin: "24px 0", borderRadius: "4px", overflow: "hidden" }}>
-              <img
-                src="https://images.unsplash.com/photo-1602513445106-53ba2ac9ee39?w=900&q=80"
-                alt="Gothic skull with dark atmospheric lighting — Halloween wallpaper"
-                style={{ width: "100%", height: "320px", objectFit: "cover", display: "block" }}
-                loading="lazy"
-              />
-              <p style={{ fontSize: "0.7rem", color: "#6b6480", padding: "6px 0", fontFamily: "var(--font-space)", letterSpacing: "0.1em" }}>
-                Gothic skull art — perfect for OLED displays with true black contrast
-              </p>
-            </div>
+            <BlogImage
+              src={HERO_IMAGE}
+              alt="Gothic haunted castle with dramatic lightning and bats — Halloween wallpaper"
+              caption="Gothic castle, lightning sky, and bats — original art from Haunted Wallpapers"
+              height={420}
+            />
 
             <p>
-              Our skull collections span multiple moods: clean and minimal for those who prefer
-              something subtle, ornate and baroque for maximalists, and glitch-corrupted skull
-              art for a modern horror aesthetic. All images are cropped and optimised for both
-              iPhone portrait and Android portrait ratios.
+              On a modern iPhone or Samsung OLED display, the deep blacks in this image simply
+              disappear into the screen, making the bright lightning feel like it&apos;s actually
+              flashing. That&apos;s the magic of OLED wallpaper art — when the blacks are true
+              black, not just dark grey, the image stops being a picture and starts being a window.
             </p>
             <p>
-              <strong>Best pick for iPhone:</strong> Look for skull wallpapers where 80%+ of the
-              image is deep black or shadow. This leverages OLED pixel-off technology for maximum
-              contrast and minimal battery drain.
+              This works beautifully as a lock screen because the focal point — the castle — sits
+              in the centre of the frame, which is exactly where your notification text appears.
+              The lightning frames it from above, and the dark foreground gives your clock room
+              to breathe.
             </p>
             <p>
-              <Link href="/shop/dark-fantasy-art" style={{ color: "#c0001a" }}>
-                Browse Dark Fantasy Art Collection →
+              <strong>Best for:</strong> iPhone lock screen, Samsung lock screen, OLED displays.
+              Works at any resolution from 1080p to 4K.
+            </p>
+            <p>
+              <Link href="/iphone" style={{ color: "#c0001a" }}>
+                Browse iPhone Halloween Wallpapers →
               </Link>
             </p>
           </section>
 
-          {/* SECTION 2 */}
-          <section className="static-section" id="haunted-mansions">
-            <h2>2. Haunted Mansion &amp; Fog Wallpapers</h2>
+          {/* ════════════════════════════════════════════
+              SECTION 2 — Gothic Skulls
+          ════════════════════════════════════════════ */}
+          <section className="static-section" id="gothic-skulls">
+            <h2>2. Gothic Skull Wallpapers</h2>
             <p>
-              There is nothing quite like a Victorian mansion silhouetted against a full moon,
-              surrounded by rolling fog, to set the Halloween mood on your phone lock screen.
-              These wallpapers evoke classic horror cinema — the kind of image that makes
-              you look twice every time you unlock your device.
+              The skull has been a symbol of Halloween for centuries — but modern digital art
+              has transformed it into something far beyond a costume-shop cliché. Ornate gothic
+              skulls surrounded by pumpkins, candles, roses, and shadow take the most familiar
+              Halloween image and make it feel genuinely eerie. This is the wallpaper for someone
+              who celebrates Halloween properly, not just ironically.
             </p>
 
-            {/* Mansion image */}
-            <div style={{ margin: "24px 0", borderRadius: "4px", overflow: "hidden" }}>
-              <img
-                src="https://images.unsplash.com/photo-1570868023-f5e65394ee93?w=900&q=80"
-                alt="Haunted mansion in fog at night — dark Halloween wallpaper"
-                style={{ width: "100%", height: "320px", objectFit: "cover", display: "block" }}
-                loading="lazy"
-              />
-              <p style={{ fontSize: "0.7rem", color: "#6b6480", padding: "6px 0", fontFamily: "var(--font-space)", letterSpacing: "0.1em" }}>
-                Haunted mansion silhouette — a classic Halloween wallpaper aesthetic
-              </p>
-            </div>
+            <BlogImage
+              src={SKULL_IMAGE}
+              alt="Ornate gothic skull surrounded by pumpkins and glowing candles — Halloween wallpaper"
+              caption="Baroque gothic skull with carved pumpkins and candlelight — original Haunted Wallpapers art"
+              height={420}
+            />
 
             <p>
-              Architecture horror is a surprisingly powerful wallpaper aesthetic. Unlike character
-              or creature art, an imposing building creates a sense of scale — you feel small
-              looking at it, which is exactly the feeling that good horror is built on.
+              What separates a great skull wallpaper from a mediocre one is the detail in the
+              surrounding environment. Here, the pumpkins aren&apos;t flat orange blobs — they
+              glow from within with warm amber light, casting shadows across the skull that
+              give the whole image a cinematic depth. The floating spirits in the background
+              add a sense of movement, like you caught this scene just as something stirred.
             </p>
             <p>
-              For Android users with always-on displays, a fog-heavy wallpaper with a central
-              illuminated subject (like a lit mansion window) works especially well because the
-              always-on display shows just enough to intrigue without draining the battery.
+              Skull wallpapers also work exceptionally well as tablet home screens. On a large
+              display, the baroque detail — every crack in the bone, every curl of candle smoke
+              — is visible in a way that&apos;s completely lost on a phone. If you have an iPad
+              or Android tablet, this is the wallpaper to use.
+            </p>
+            <p>
+              <strong>Best for:</strong> iPhone home screen, Android home screen, iPad and tablet,
+              AMOLED displays. The dark background saves battery on every OLED device.
+            </p>
+            <p>
+              <Link href="/collections" style={{ color: "#c0001a" }}>
+                Browse Collections →
+              </Link>
             </p>
           </section>
 
-          {/* Mid AdSense */}
+          {/* ── Mid AdSense ── */}
           <div style={{ margin: "40px 0" }}>
             <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_SIDEBAR} width={728} height={90} />
           </div>
 
-          {/* SECTION 3 */}
-          <section className="static-section" id="dark-forest">
-            <h2>3. Dark Forest &amp; Nature Horror</h2>
+          {/* ════════════════════════════════════════════
+              SECTION 3 — Moonlit Graveyard
+          ════════════════════════════════════════════ */}
+          <section className="static-section" id="moonlit-graveyard">
+            <h2>3. Moonlit Graveyard Wallpapers</h2>
             <p>
-              The dark forest is one of the most primal Halloween images. There is something
-              deeply unsettling about trees that seem to reach toward you, paths that disappear
-              into impenetrable shadow, and moonlight that illuminates just enough to make
-              you aware of what you cannot see.
+              Graveyards at night have a different energy to every other dark image. It&apos;s
+              not just the associations — death, mystery, the unknown. It&apos;s the specific
+              quality of moonlight on stone. The way a full moon turns a graveyard from
+              frightening to hauntingly beautiful. A carved pumpkin burning at the foot of a
+              tombstone somehow makes the whole scene more peaceful rather than more terrifying.
+              That contradiction is what makes these wallpapers so compelling.
             </p>
 
-            {/* Forest image */}
-            <div style={{ margin: "24px 0", borderRadius: "4px", overflow: "hidden" }}>
-              <img
-                src="https://images.unsplash.com/photo-1448375240586-882707db888b?w=900&q=80"
-                alt="Dark foggy forest at night — horror nature wallpaper for phone"
-                style={{ width: "100%", height: "340px", objectFit: "cover", display: "block" }}
-                loading="lazy"
-              />
-              <p style={{ fontSize: "0.7rem", color: "#6b6480", padding: "6px 0", fontFamily: "var(--font-space)", letterSpacing: "0.1em" }}>
-                Dark forest in fog — nature horror at its most atmospheric
-              </p>
-            </div>
+            <BlogImage
+              src={GRAVE_IMAGE}
+              alt="Moonlit graveyard with jack-o-lantern and glowing full moon — Halloween wallpaper"
+              caption="A moonlit Halloween graveyard — where peace and horror are one and the same"
+              height={420}
+            />
 
             <p>
-              Nature horror wallpapers have a cinematic quality that works particularly well as
-              a home screen background on Android, where the grid of app icons sits over the
-              image. A dark forest creates natural depth behind your icons, making your home
-              screen feel like a portal into another world rather than just a grid of shortcuts.
+              This image captures something that&apos;s hard to achieve in wallpaper art: mood
+              without action. Nothing is jumping out at you. Nothing is threatening. It&apos;s
+              simply beautiful in the most melancholy, Gothic way possible. The jack-o-lantern
+              glows with warm light, the moon hangs perfectly framed, and the old stone crosses
+              stand silent in the mist.
             </p>
             <p>
-              <strong>Tip:</strong> Pair a dark forest wallpaper with a minimal icon pack on
-              Android to get the full horror-movie aesthetic. On iPhone, use it as your lock
-              screen with a blur-depth widget overlay for best effect.
-            </p>
-          </section>
-
-          {/* SECTION 4 */}
-          <section className="static-section" id="horror-art">
-            <h2>4. Horror Illustration Art</h2>
-            <p>
-              Beyond photography and 3D renders, illustrated horror art brings a unique quality
-              to Halloween wallpapers. The hand-crafted feel of illustration — even when generated
-              digitally — adds warmth and detail that purely procedural art cannot replicate.
-              You see the texture, the brushstroke, the decision behind every shadow.
-            </p>
-
-            {/* Horror art image */}
-            <div style={{ margin: "24px 0", borderRadius: "4px", overflow: "hidden" }}>
-              <img
-                src="https://images.unsplash.com/photo-1603791440384-56cd371ee9a7?w=900&q=80"
-                alt="Dark horror illustration art — Halloween wallpaper aesthetic"
-                style={{ width: "100%", height: "320px", objectFit: "cover", display: "block" }}
-                loading="lazy"
-              />
-              <p style={{ fontSize: "0.7rem", color: "#6b6480", padding: "6px 0", fontFamily: "var(--font-space)", letterSpacing: "0.1em" }}>
-                Horror illustration — where artistry meets the macabre
-              </p>
-            </div>
-
-            <p>
-              Our horror illustration collection covers a range of styles: ink-wash Japanese
-              horror, European gothic engraving, comic book splatter, and painterly dark fantasy.
-              Each image is original AI art created specifically for wallpaper use at 4K resolution,
-              so it looks sharp on every screen from the oldest Android to the latest iPhone Pro Max.
+              For wallpaper purposes, this is the most versatile image in the collection. The
+              composition works both vertically (phone portrait) and horizontally (PC desktop).
+              The moon provides a natural focal point that sits above your clock or taskbar,
+              and the bottom of the frame — where tombstones fade into shadow — gives room for
+              app icons or a dock without cluttering the most important part of the image.
             </p>
             <p>
-              Horror illustration wallpapers also perform extremely well as tablet wallpapers,
-              since the extra screen real estate lets you appreciate the detail that would be
-              cramped on a phone screen.
+              <strong>Best for:</strong> PC desktop, iPhone lock screen, Android home screen,
+              any display. This is the most adaptable wallpaper in this collection.
+            </p>
+            <p>
+              <Link href="/pc" style={{ color: "#c0001a" }}>
+                Browse PC Halloween Wallpapers →
+              </Link>
             </p>
           </section>
 
-          {/* SECTION 5 — How to set wallpaper */}
+          {/* ════════════════════════════════════════════
+              SECTION 4 — Gothic Cathedral
+          ════════════════════════════════════════════ */}
+          <section className="static-section" id="gothic-cathedral">
+            <h2>4. Gothic Cathedral at Night</h2>
+            <p>
+              Architecture horror works differently to creature or skeleton imagery. A gothic
+              cathedral at midnight doesn&apos;t threaten you directly — instead it makes you
+              feel the weight of centuries, the cold of stone that has never been warm, the
+              silence of a building designed for awe and kept that way long after anyone
+              stopped coming. Stained glass that glows at 3am raises an obvious question:
+              who lit those candles inside?
+            </p>
+
+            <BlogImage
+              src={CATHEDRAL_IMG}
+              alt="Gothic cathedral with glowing stained glass windows at midnight — dark Halloween wallpaper"
+              caption="A gothic cathedral bathed in moonlight — the wallpaper that asks questions you don't want answered"
+              height={420}
+            />
+
+            <p>
+              The stained glass windows in this image do something particularly clever: they
+              provide the only warm light in an otherwise cold scene. That contrast — warmth
+              behind old glass, coldness everywhere else — is what makes gothic architecture
+              so compelling as a wallpaper subject. Your eye is drawn to those glowing windows,
+              wondering what&apos;s inside, even though you know the building should be empty.
+            </p>
+            <p>
+              This image is also one of the strongest AdSense-friendly images in this collection,
+              if you&apos;re looking to monetise a dark art or wallpaper site. The subject matter
+              is universally recognisable, the composition is editorial-quality, and there&apos;s
+              nothing remotely problematic — just beautiful, dramatic architecture photography
+              reimagined through AI art.
+            </p>
+            <p>
+              <strong>Best for:</strong> PC widescreen desktop, iPad landscape, phone lock screen.
+              Particularly striking on high-PPI screens where the stonework detail is visible.
+            </p>
+            <p>
+              <Link href="/android" style={{ color: "#c0001a" }}>
+                Browse Android Halloween Wallpapers →
+              </Link>
+            </p>
+          </section>
+
+          {/* ════════════════════════════════════════════
+              SECTION 5 — Dark Vines & Ghosts
+          ════════════════════════════════════════════ */}
+          <section className="static-section" id="glowing-ghosts">
+            <h2>5. Dark Vines &amp; Glowing Ghosts</h2>
+            <p>
+              The final image in this collection is the most otherworldly. Dark, reaching vines
+              twisted through shadow, with small glowing spirits drifting between the branches —
+              the kind of scene that belongs deep in a haunted forest at the edge of a village
+              that everyone stopped visiting years ago. This is Halloween wallpaper art for
+              people who take the aesthetic seriously.
+            </p>
+
+            <BlogImage
+              src={VINES_IMAGE}
+              alt="Dark tangled vines with glowing ghost spirits and skulls — gothic Halloween wallpaper"
+              caption="Glowing spirits drift through dark vines — original Haunted Wallpapers art"
+              height={420}
+            />
+
+            <p>
+              What makes this image work as a wallpaper specifically — as opposed to just
+              general dark art — is the distribution of light. The glowing ghosts and skulls
+              are scattered across the frame rather than concentrated in one area. This means
+              that wherever your app icons or widgets land on top of this image, there will
+              be something glowing nearby, making the interface feel integrated with the art
+              rather than just sitting on top of it.
+            </p>
+            <p>
+              The dark vines also provide natural structure. On an Android home screen where
+              icons are arranged in a grid, the branching pattern of the vines mirrors the grid
+              structure without competing with it. It&apos;s one of those rare wallpapers that
+              looks better with a full screen of app icons than it does on its own.
+            </p>
+            <p>
+              <strong>Best for:</strong> Android home screen with icons, iPhone home screen,
+              dark-theme app setups, AMOLED displays. The near-black background means almost
+              zero battery impact on OLED devices.
+            </p>
+            <p>
+              <Link href="/collections" style={{ color: "#c0001a" }}>
+                Explore Full Collections →
+              </Link>
+            </p>
+          </section>
+
+          {/* ════════════════════════════════════════════
+              SECTION 6 — How to Set
+          ════════════════════════════════════════════ */}
           <section className="static-section" id="how-to-set">
-            <h2>5. How to Set a Halloween Wallpaper</h2>
+            <h2>6. How to Set a Halloween Wallpaper</h2>
             <p>
-              Once you have downloaded your Halloween wallpaper, setting it correctly takes
-              about 30 seconds. The process differs slightly between iPhone and Android.
+              Once you have downloaded your wallpaper, setting it correctly takes about
+              thirty seconds. The steps differ slightly between iPhone and Android.
             </p>
 
-            {/* Two columns comparison */}
             <div style={{
               display: "grid",
               gridTemplateColumns: "1fr 1fr",
               gap: "16px",
               margin: "24px 0",
             }}>
-              {/* iPhone card */}
+              {/* iPhone */}
               <div style={{ border: "1px solid #2a2535", padding: "20px" }}>
                 <p style={{
                   fontFamily: "var(--font-space)",
@@ -293,10 +417,10 @@ export default function HalloweenWallpapersGuide() {
                 <ol style={{ paddingLeft: "18px", lineHeight: "2", margin: 0, fontSize: "0.9rem" }}>
                   <li>Download image to Photos</li>
                   <li>Open Settings → Wallpaper</li>
-                  <li>Tap "Add New Wallpaper"</li>
+                  <li>Tap &quot;Add New Wallpaper&quot;</li>
                   <li>Select Photos</li>
                   <li>Choose your image</li>
-                  <li>Tap "Add" to set both screens</li>
+                  <li>Tap &quot;Add&quot; to set both screens</li>
                 </ol>
                 <p style={{ marginTop: "12px" }}>
                   <Link href="/guides/how-to-set-wallpaper-iphone" style={{ color: "#c0001a", fontSize: "0.85rem" }}>
@@ -305,7 +429,7 @@ export default function HalloweenWallpapersGuide() {
                 </p>
               </div>
 
-              {/* Android card */}
+              {/* Android */}
               <div style={{ border: "1px solid #2a2535", padding: "20px" }}>
                 <p style={{
                   fontFamily: "var(--font-space)",
@@ -320,10 +444,10 @@ export default function HalloweenWallpapersGuide() {
                 <ol style={{ paddingLeft: "18px", lineHeight: "2", margin: 0, fontSize: "0.9rem" }}>
                   <li>Download image to Gallery</li>
                   <li>Long-press your home screen</li>
-                  <li>Tap "Wallpapers"</li>
-                  <li>Tap "My photos"</li>
+                  <li>Tap &quot;Wallpapers&quot;</li>
+                  <li>Tap &quot;My photos&quot;</li>
                   <li>Select your image</li>
-                  <li>Set for Lock screen or Home screen</li>
+                  <li>Set for Lock or Home screen</li>
                 </ol>
                 <p style={{ marginTop: "12px" }}>
                   <Link href="/guides/how-to-set-wallpaper-android" style={{ color: "#c0001a", fontSize: "0.85rem" }}>
@@ -332,17 +456,33 @@ export default function HalloweenWallpapersGuide() {
                 </p>
               </div>
             </div>
+
+            <p>
+              One tip worth knowing: on iPhone, always set your Halloween wallpaper as the
+              <strong> Lock Screen</strong> first, then the Home Screen. The lock screen version
+              lets you use the depth effect to make elements like the clock appear to float in
+              front of the image — which, with a castle-and-lightning wallpaper, looks genuinely
+              spectacular. On Android, if your launcher supports it, use a wallpaper scrolling
+              effect to give the image a subtle parallax feel when you swipe between home screens.
+            </p>
           </section>
 
-          {/* Closing CTA */}
+          {/* ── Closing CTA ── */}
           <section className="static-section">
             <h2>Browse the Full Halloween Collection</h2>
             <p>
-              All wallpapers on Haunted Wallpapers are free to download at full resolution.
-              No watermarks, no sign-up required. Browse by device type to find images
-              sized specifically for your screen.
+              Every wallpaper on Haunted Wallpapers is free to download at full resolution —
+              no watermarks, no sign-up required, no strings attached. Browse by device to find
+              images sized perfectly for your screen, or explore our Halloween-specific collections
+              for the full range of dark seasonal art.
             </p>
-            <div style={{ display: "flex", gap: "12px", flexWrap: "wrap", marginTop: "16px" }}>
+            <p style={{ marginTop: "12px" }}>
+              All five images featured in this guide — the haunted castle, gothic skull,
+              moonlit graveyard, gothic cathedral, and glowing spirits — are available as
+              free downloads. We publish new dark art every week, so check back as Halloween
+              approaches for the freshest drops.
+            </p>
+            <div style={{ display: "flex", gap: "12px", flexWrap: "wrap", marginTop: "24px" }}>
               <Link href="/iphone" style={{
                 display: "inline-block",
                 padding: "12px 24px",
