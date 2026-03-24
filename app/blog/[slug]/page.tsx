@@ -4,6 +4,9 @@ import Link from "next/link";
 import AdSlot from "@/components/AdSlot";
 import { PrismaClient } from "@prisma/client";
 
+// This ensures the page is generated on-demand, not at build time
+export const dynamic = "force-dynamic";
+
 const prisma = new PrismaClient();
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
 

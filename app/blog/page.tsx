@@ -3,6 +3,9 @@ import Link from "next/link";
 import AdSlot from "@/components/AdSlot";
 import { PrismaClient } from "@prisma/client";
 
+// ADD THIS LINE for Dynamic Rendering
+export const dynamic = "force-dynamic";
+
 const prisma = new PrismaClient();
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
 
@@ -10,13 +13,6 @@ export const metadata: Metadata = {
   title: "Blog | Haunted Wallpapers",
   description: "Dark wallpaper guides, tips, and gothic art deep-dives from Haunted Wallpapers.",
   alternates: { canonical: `${SITE_URL}/blog` },
-  openGraph: {
-    title: "Blog | Haunted Wallpapers",
-    description: "Dark wallpaper guides, tips, and gothic art deep-dives.",
-    url: `${SITE_URL}/blog`,
-    siteName: "Haunted Wallpapers",
-    type: "website",
-  },
 };
 
 export default async function BlogPage() {
@@ -49,69 +45,25 @@ export default async function BlogPage() {
           ) : (
             <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
               {posts.map((post) => {
-                // Strip HTML tags for excerpt preview
                 const excerpt = post.content
                   .replace(/<[^>]*>/g, " ")
                   .replace(/\s+/g, " ")
                   .trim()
                   .slice(0, 140);
-
                 const dateStr = new Date(post.createdAt).toLocaleDateString("en-US", {
                   year: "numeric", month: "long", day: "numeric",
                 });
-
                 return (
-                  <Link
-                    key={post.slug}
-                    href={`/blog/${post.slug}`}
-                    style={{
-                      display: "block",
-                      padding: "20px 24px",
-                      border: "1px solid #2a2535",
-                      textDecoration: "none",
-                      transition: "border-color 0.2s",
-                    }}
-                    className="hover:border-[rgba(192,0,26,0.5)]"
-                  >
-                    <span style={{
-                      fontFamily: "var(--font-space)",
-                      fontSize: "0.55rem",
-                      letterSpacing: "0.2em",
-                      textTransform: "uppercase",
-                      color: "#c0001a",
-                      display: "block",
-                      marginBottom: "6px",
-                    }}>
-                      {post.label} · {dateStr}
-                    </span>
-                    <span style={{
-                      fontFamily: "var(--font-cinzel)",
-                      fontSize: "1rem",
-                      color: "#f0ecff",
-                      display: "block",
-                      marginBottom: "6px",
-                    }}>
-                      {post.title}
-                    </span>
-                    <span style={{
-                      fontFamily: "var(--font-cormorant)",
-                      fontStyle: "italic",
-                      fontSize: "0.95rem",
-                      color: "#8a8099",
-                      display: "block",
-                    }}>
-                      {excerpt}…
-                    </span>
+                  <Link key={post.slug} href={`/blog/${post.slug}`} className="hover:border-[rgba(192,0,26,0.5)]" style={{ display: "block", padding: "20px 24px", border: "1px solid #2a2535", textDecoration: "none" }}>
+                    <span style={{ fontSize: "0.55rem", letterSpacing: "0.2em", color: "#c0001a", textTransform: "uppercase" }}>{post.label} · {dateStr}</span>
+                    <span style={{ display: "block", fontSize: "1rem", color: "#f0ecff", margin: "6px 0" }}>{post.title}</span>
+                    <span style={{ fontSize: "0.95rem", color: "#8a8099", fontStyle: "italic" }}>{excerpt}…</span>
                   </Link>
                 );
               })}
             </div>
           )}
         </div>
-      </div>
-
-      <div style={{ maxWidth: "1280px", margin: "0 auto", padding: "0 24px 60px" }}>
-        <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_FOOTER} width={728} height={90} />
       </div>
     </main>
   );
