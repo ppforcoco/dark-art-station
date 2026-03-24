@@ -201,7 +201,7 @@ function HtmlToolbar({ onInsert }: { onInsert: (before: string, after: string) =
     { label: "IMG",    title: "Image",           before: '<img src="YOUR-R2-URL.webp" alt="Description" style="width:100%;aspect-ratio:9/16;object-fit:cover;border-radius:4px;margin:16px 0;" />', after: "" },
     { label: "UL",     title: "Bullet List",     before: "<ul>\n  <li>", after: "</li>\n</ul>" },
     { label: "OL",     title: "Numbered List",   before: "<ol>\n  <li>", after: "</li>\n</ol>" },
-    { label: "HR",     title: "Divider Line",    before: "<hr style=\"border-color:#2a2535;margin:32px 0;\" />", after: "" },
+    { label: "HR",     title: "Divider Line",    before: '<hr style="border-color:#2a2535;margin:32px 0;" />', after: "" },
     { label: "AD",     title: "Ad Slot (mid)",   before: '<div style="margin:32px 0;text-align:center;background:#1a1825;padding:20px;color:#6b6480;font-size:0.75rem;">[ Ad Slot — AdSense will render here ]</div>', after: "" },
   ];
   return (
@@ -236,7 +236,7 @@ function BlogTab({ password }: { password: string }) {
   const [title, setTitle]         = useState("");
   const [slug, setSlug]           = useState("");
   const [content, setContent]     = useState("");
-  const [label, setLabel]         = useState("Guide");
+  const [label, setLabel]         = useState("Wallpaper Guides");
   const [saving, setSaving]       = useState(false);
   const [message, setMessage]     = useState("");
   const [editorMode, setEditorMode] = useState<"html" | "preview">("html");
@@ -262,7 +262,6 @@ function BlogTab({ password }: { password: string }) {
     setSlug(val.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""));
   }
 
-  // Insert HTML at cursor position in textarea
   function handleInsert(before: string, after: string) {
     if (!textareaRef) {
       setContent((c) => c + before + after);
@@ -298,7 +297,7 @@ function BlogTab({ password }: { password: string }) {
       });
       if (res.ok) {
         setMessage(`✓ Published! Live at /blog/${slug}`);
-        setTitle(""); setSlug(""); setContent(""); setLabel("Guide");
+        setTitle(""); setSlug(""); setContent(""); setLabel("Wallpaper Guides");
         loadPosts();
       } else {
         const err = await res.json();
@@ -320,18 +319,7 @@ function BlogTab({ password }: { password: string }) {
     loadPosts();
   }
 
-  const starterTemplate = `<p>Your intro paragraph here. Write 2–3 sentences to hook the reader.</p>
-
-<h2>First Section Title</h2>
-<p>Your section content here. Keep writing — the more detail the better for AdSense.</p>
-
-<img src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/YOUR-IMAGE.webp" alt="Describe the image" style="width:100%;aspect-ratio:9/16;object-fit:cover;border-radius:4px;margin:16px 0;" />
-
-<h2>Second Section Title</h2>
-<p>More content here. Aim for at least 600 words total.</p>
-
-<h2>Conclusion</h2>
-<p>Wrap it up. Tell them where to find wallpapers on your site.</p>`;
+  const starterTemplate = `<p>Your intro paragraph here. Write 2–3 sentences to hook the reader.</p>\n\n<h2>First Section Title</h2>\n<p>Your section content here. Keep writing — the more detail the better for AdSense.</p>\n\n<img src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/YOUR-IMAGE.webp" alt="Describe the image" style="width:100%;aspect-ratio:9/16;object-fit:cover;border-radius:4px;margin:16px 0;" />\n\n<h2>Second Section Title</h2>\n<p>More content here. Aim for at least 600 words total.</p>\n\n<h2>Conclusion</h2>\n<p>Wrap it up. Tell them where to find wallpapers on your site.</p>`;
 
   return (
     <div>
@@ -340,7 +328,6 @@ function BlogTab({ password }: { password: string }) {
         Use the toolbar to add HTML formatting, headings, and images.
       </p>
 
-      {/* Quick image guide */}
       <div style={{ background: "#0e0c18", border: "1px solid #2a2535", padding: "14px 16px", marginBottom: "24px", fontSize: "0.78rem", color: "#8a8099" }}>
         <strong style={{ color: "#c0a0ff" }}>📸 To add an image:</strong>{" "}
         Upload your AI image to Cloudflare R2 → copy its URL → click <strong style={{ color: "#c0a0ff" }}>IMG</strong> button above → replace <code style={{ color: "#ffd080" }}>YOUR-R2-URL.webp</code> with your URL.
@@ -369,13 +356,13 @@ function BlogTab({ password }: { password: string }) {
             />
           </div>
           <div>
-            <label style={labelStyle}>Label</label>
+            <label style={labelStyle}>Label / Category</label>
             <select
               value={label}
               onChange={(e) => setLabel(e.target.value)}
               style={{ ...inputStyle, cursor: "pointer" }}
             >
-              {["Guide", "Halloween", "Tips", "Art", "Explainer", "News"].map((l) => (
+              {["Wallpaper Guides", "Dark Aesthetics", "News & Updates", "Community Spotlights"].map((l) => (
                 <option key={l} value={l}>{l}</option>
               ))}
             </select>

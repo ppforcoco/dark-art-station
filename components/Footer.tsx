@@ -41,7 +41,6 @@ export default function Footer(): JSX.Element {
             <li><Link href="/shop/dark-humor-wallpaper-collection">Dark Humor</Link></li>
             <li><Link href="/shop/incognito-mode-collection">Incognito Mode</Link></li>
             <li><Link href="/shop/dark-fantasy-art">Dark Fantasy</Link></li>
-            <li><Link href="/shop/skull-peeking-collection">Skull Peeking</Link></li>
             <li><Link href="/shop/horror-movie-posters">Horror Posters</Link></li>
             <li><Link href="/shop/dark-minimal-horror">Dark Minimal</Link></li>
           </ul>
@@ -52,7 +51,7 @@ export default function Footer(): JSX.Element {
           <h4 className="footer-col-title">Company</h4>
           <ul>
             <li><Link href="/about">About</Link></li>
-            <li><Link href="/guides">Guides &amp; Tips</Link></li>
+            <li><Link href="/blog">Blog &amp; Guides</Link></li>
             <li><Link href="/tools">Free Tools</Link></li>
             <li><Link href="/licensing">Licensing</Link></li>
             <li><Link href="/faq">FAQ</Link></li>
