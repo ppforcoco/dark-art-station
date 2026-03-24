@@ -19,10 +19,9 @@ model Collection {
   title       String
   description String
   category    String
-  thumbnail   String   // R2 key: thumbnails/<slug>.webp  (collection cover)
-  downloadUrl String?  // R2 key: files/<slug>.zip  (optional bundle ZIP)
+  thumbnail   String
+  downloadUrl String?
 
-  // ── UI / display fields ──────────────────────────────
   price       Float    @default(0)
   isFree      Boolean  @default(false)
   badge       String?
@@ -31,7 +30,6 @@ model Collection {
   tag         String   @default("Collection")
   featured    Boolean  @default(false)
 
-  // ── Relations ────────────────────────────────────────
   images      Image[]
   downloads   Download[]
 
@@ -41,19 +39,18 @@ model Collection {
 
 model Image {
   id            String     @id @default(uuid())
-  slug          String     @unique   // e.g. "hecate-moonrise" — unique across all images
+  slug          String     @unique
   title         String
   description   String?
-  r2Key         String     // thumbnails/<collection-slug>/<image-slug>.webp
-  highResKey    String     // high-res/<collection-slug>/<image-slug>.png
+  r2Key         String
+  highResKey    String
   viewCount     Int        @default(0)
-  sortOrder     Int        @default(0)   // controls display order within collection
+  sortOrder     Int        @default(0)
 
   collection    Collection? @relation(fields: [collectionId], references: [id], onDelete: Cascade)
   collectionId  String?
 
-  // ── Standalone fields ────────────────────────────────
-  deviceType    DeviceType?         // IPHONE | ANDROID | PC — set only for standalone images
+  deviceType    DeviceType?
   tags          String[]            @default([])
 
   downloads     Download[]
@@ -65,7 +62,6 @@ model Image {
   @@index([deviceType])
 }
 
-// Tracks download events — works for both collection ZIPs and individual images
 model Download {
   id           String      @id @default(uuid())
   collection   Collection? @relation(fields: [collectionId], references: [id])
@@ -75,4 +71,16 @@ model Download {
   email        String?
   ipHash       String?
   createdAt    DateTime    @default(now())
+}
+
+// ── Blog Posts ────────────────────────────────────────────────────────────────
+model BlogPost {
+  id        String   @id @default(uuid())
+  slug      String   @unique
+  title     String
+  label     String   @default("Guide")
+  content   String   // HTML content
+  published Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

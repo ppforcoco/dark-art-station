@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import fs from "fs";
-import path from "path";
+import { PrismaClient } from "@prisma/client";
 
-const BLOGS_FILE = path.join(process.cwd(), "public", "hw-blogs.json");
+const prisma = new PrismaClient();
 
 function checkAuth(req: NextRequest) {
   const pw = req.headers.get("x-admin-password");
@@ -10,28 +9,16 @@ function checkAuth(req: NextRequest) {
   return pw === correct;
 }
 
-function loadBlogs(): { slug: string; title: string; label: string; content: string; date: string }[] {
-  try {
-    if (fs.existsSync(BLOGS_FILE)) {
-      return JSON.parse(fs.readFileSync(BLOGS_FILE, "utf-8"));
-    }
-  } catch {}
-  return [];
-}
-
-function saveBlogs(blogs: { slug: string; title: string; label: string; content: string; date: string }[]) {
-  fs.writeFileSync(BLOGS_FILE, JSON.stringify(blogs, null, 2), "utf-8");
-}
-
 // GET — list all posts
 export async function GET(req: NextRequest) {
   if (!checkAuth(req)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
-  const blogs = loadBlogs();
-  return NextResponse.json({
-    posts: blogs.map((b) => ({ slug: b.slug, title: b.title, date: b.date })),
+  const posts = await prisma.blogPost.findMany({
+    orderBy: { createdAt: "desc" },
+    select: { slug: true, title: true, label: true, createdAt: true },
   });
+  return NextResponse.json({ posts });
 }
 
 // POST — create a new post
@@ -47,30 +34,25 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "title, slug, and content are required" }, { status: 400 });
     }
 
-    // Validate slug
     if (!/^[a-z0-9-]+$/.test(slug)) {
       return NextResponse.json({ error: "Slug can only contain lowercase letters, numbers, and hyphens" }, { status: 400 });
     }
 
-    const blogs = loadBlogs();
-
-    // Check for duplicate slug
-    if (blogs.find((b) => b.slug === slug)) {
+    const existing = await prisma.blogPost.findUnique({ where: { slug } });
+    if (existing) {
       return NextResponse.json({ error: `A post with slug "${slug}" already exists` }, { status: 409 });
     }
 
-    const newPost = {
-      slug,
-      title,
-      label: label ?? "Guide",
-      content,
-      date: new Date().toISOString().split("T")[0],
-    };
+    const post = await prisma.blogPost.create({
+      data: {
+        slug,
+        title,
+        label: label ?? "Guide",
+        content,
+      },
+    });
 
-    blogs.unshift(newPost); // newest first
-    saveBlogs(blogs);
-
-    return NextResponse.json({ ok: true, slug });
+    return NextResponse.json({ ok: true, slug: post.slug });
   } catch (err) {
     console.error("[admin/blogs POST]", err);
     return NextResponse.json({ error: "Failed to save post" }, { status: 500 });
@@ -84,8 +66,7 @@ export async function DELETE(req: NextRequest) {
   }
   try {
     const { slug } = await req.json();
-    const blogs = loadBlogs().filter((b) => b.slug !== slug);
-    saveBlogs(blogs);
+    await prisma.blogPost.delete({ where: { slug } });
     return NextResponse.json({ ok: true });
   } catch {
     return NextResponse.json({ error: "Failed to delete" }, { status: 500 });
