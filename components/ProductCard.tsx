@@ -5,6 +5,12 @@ import Image from "next/image";
 import Link from "next/link";
 import FavoriteButton from "@/components/FavoriteButton";
 
+// Collections that require an 18+ warning label on the grid card thumbnail
+const ADULT_COLLECTION_SLUGS = [
+  "skull-warning-collection",
+  "bone-hands-collection",
+];
+
 interface ProductCardProps {
   slug: string;
   name: string;
@@ -32,6 +38,8 @@ export default function ProductCard({
   priority = false,
   downloadCount,
 }: ProductCardProps) {
+  const isAdult = ADULT_COLLECTION_SLUGS.includes(slug);
+
   const badgeStyles: Record<string, string> = {
     New:  "bg-[#c0001a] text-[#f0ecff]",
     Hot:  "bg-[#ff3c00] text-[#0a0a0a]",
@@ -97,6 +105,61 @@ export default function ProductCard({
               device: "collection",
             }}
           />
+        )}
+
+        {/* 18+ Parental Advisory overlay — shown on adult collections */}
+        {isAdult && (
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+              zIndex: 12,
+              pointerEvents: "none",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "flex-end",
+              justifyContent: "flex-end",
+              padding: "10px",
+            }}
+          >
+            {/* Parental Advisory sticker bottom-right */}
+            <div
+              style={{
+                background: "#000",
+                border: "2px solid #fff",
+                padding: "3px 6px",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                lineHeight: 1,
+              }}
+            >
+              <span
+                style={{
+                  fontFamily: "var(--font-space), monospace",
+                  fontSize: "0.38rem",
+                  letterSpacing: "0.05em",
+                  textTransform: "uppercase",
+                  color: "#fff",
+                  fontWeight: 700,
+                }}
+              >
+                Parental Advisory
+              </span>
+              <span
+                style={{
+                  fontFamily: "var(--font-space), monospace",
+                  fontSize: "0.55rem",
+                  letterSpacing: "0.08em",
+                  textTransform: "uppercase",
+                  color: "#fff",
+                  fontWeight: 900,
+                }}
+              >
+                18+ Only
+              </span>
+            </div>
+          </div>
         )}
 
         <span className="absolute bottom-[-40px] group-hover:bottom-0 left-0 right-0 bg-[rgba(7,7,16,0.9)] backdrop-blur-[10px] text-center py-3 font-mono text-[0.65rem] tracking-[0.15em] uppercase text-[#c9a84c] transition-all duration-300 z-10 pointer-events-none">
