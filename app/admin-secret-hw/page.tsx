@@ -177,7 +177,7 @@ Analyze this wallpaper image and return a JSON object with exactly these fields:
   "tags": ["array", "of", "3-6", "relevant", "tags", "from", "the", "allowed", "list"]
 }
 
-Allowed tags (ONLY use from this list): ${", ".join(ALL_TAG_LIST)}
+Allowed tags (ONLY use from this list): ${ALL_TAG_LIST.join(", ")}
 
 Rules:
 - Title: no generic words like "wallpaper" or "background" — focus on the actual content
