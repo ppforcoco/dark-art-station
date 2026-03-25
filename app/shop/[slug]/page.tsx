@@ -105,7 +105,38 @@ export default async function CollectionPage({ params }: PageProps) {
 
       <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_MAIN} width={728} height={90} />
 
-      {/* ── Collection Header ── */}
+      {/* ── Collection Info Box ── */}
+      <div className="coll-info-box">
+        <div className="coll-info-box-inner">
+          <div className="coll-info-meta">
+            <span className="coll-info-eyebrow">
+              {collection.images.length} Wallpaper{collection.images.length !== 1 ? "s" : ""} · Free Download
+            </span>
+            <h2 className="coll-info-name">{collection.title}</h2>
+            {collection.description && (
+              <p className="coll-info-desc">{collection.description}</p>
+            )}
+          </div>
+          <div className="coll-info-badges">
+            <div className="coll-info-badge">
+              <span className="coll-info-badge-icon">↓</span>
+              <span className="coll-info-badge-label">Free<br/>Download</span>
+            </div>
+            <div className="coll-info-badge">
+              <span className="coll-info-badge-icon">✦</span>
+              <span className="coll-info-badge-label">4K<br/>Resolution</span>
+            </div>
+            <div className="coll-info-badge">
+              <span className="coll-info-badge-icon">◈</span>
+              <span className="coll-info-badge-label">AMOLED<br/>Ready</span>
+            </div>
+            <div className="coll-info-badge">
+              <span className="coll-info-badge-icon">⬡</span>
+              <span className="coll-info-badge-label">No<br/>Watermark</span>
+            </div>
+          </div>
+        </div>
+      </div>
       <div className="coll-header">
         <div className="coll-header-inner">
           {coverUrl && (
@@ -184,6 +215,107 @@ export default async function CollectionPage({ params }: PageProps) {
       <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_FOOTER} width={728} height={90} />
 
       <style>{`
+        /* ── Collection Info Box ── */
+        .coll-info-box {
+          border-bottom: 1px solid var(--border-dim, #2a2535);
+          background: linear-gradient(135deg, rgba(139,0,0,0.05) 0%, transparent 70%);
+          padding: 28px 24px 32px;
+        }
+        .coll-info-box-inner {
+          max-width: 1280px;
+          margin: 0 auto;
+          display: flex;
+          align-items: flex-start;
+          justify-content: space-between;
+          gap: 28px;
+          flex-wrap: wrap;
+        }
+        .coll-info-meta { flex: 1; min-width: 240px; }
+        .coll-info-eyebrow {
+          display: block;
+          font-family: var(--font-space), monospace;
+          font-size: 0.52rem;
+          letter-spacing: 0.28em;
+          text-transform: uppercase;
+          color: #c0001a;
+          margin-bottom: 10px;
+        }
+        .coll-info-name {
+          font-family: var(--font-cinzel), cursive;
+          font-size: clamp(1.15rem, 2.5vw, 1.7rem);
+          font-weight: 900;
+          color: var(--text-primary);
+          margin: 0 0 10px;
+          line-height: 1.1;
+        }
+        .coll-info-desc {
+          font-family: var(--font-cormorant), serif;
+          font-size: 1rem;
+          color: var(--text-muted);
+          line-height: 1.65;
+          margin: 0;
+          max-width: 580px;
+        }
+        .coll-info-badges {
+          display: flex;
+          gap: 8px;
+          flex-wrap: wrap;
+          flex-shrink: 0;
+          align-items: stretch;
+        }
+        .coll-info-badge {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          gap: 6px;
+          padding: 14px 18px;
+          border: 1px solid rgba(139,0,0,0.22);
+          background: rgba(139,0,0,0.06);
+          min-width: 78px;
+          transition: background 0.2s, border-color 0.2s;
+        }
+        .coll-info-badge:hover {
+          background: rgba(139,0,0,0.1);
+          border-color: rgba(139,0,0,0.4);
+        }
+        [data-theme="light"] .coll-info-badge {
+          border-color: rgba(139,0,0,0.14);
+          background: rgba(139,0,0,0.04);
+        }
+        [data-theme="light"] .coll-info-badge:hover {
+          background: rgba(139,0,0,0.07);
+          border-color: rgba(139,0,0,0.25);
+        }
+        [data-theme="ghost"] .coll-info-badge {
+          border-color: rgba(248,248,255,0.1);
+          background: rgba(248,248,255,0.03);
+        }
+        [data-theme="ember"] .coll-info-badge {
+          border-color: rgba(255,102,0,0.2);
+          background: rgba(255,68,0,0.06);
+        }
+        .coll-info-badge-icon {
+          font-size: 1.1rem;
+          color: #c0001a;
+          line-height: 1;
+        }
+        [data-theme="ember"] .coll-info-badge-icon { color: #ff4400; }
+        [data-theme="ghost"] .coll-info-badge-icon { color: #c0001a; }
+        .coll-info-badge-label {
+          font-family: var(--font-space), monospace;
+          font-size: 0.43rem;
+          letter-spacing: 0.12em;
+          text-transform: uppercase;
+          color: var(--text-muted);
+          text-align: center;
+          line-height: 1.5;
+        }
+        @media (max-width: 639px) {
+          .coll-info-badges { width: 100%; justify-content: flex-start; }
+          .coll-info-badge { min-width: 64px; padding: 10px 12px; }
+        }
+
         /* ── Collection Header ── */
         .coll-header {
           border-bottom: 1px solid var(--border-dim, #2a2535);

@@ -307,6 +307,19 @@ export default async function CollectionImagePage({ params }: PageProps) {
           border: 1px solid rgba(139,0,0,0.3);
           background: rgba(7,7,16,0.6);
         }
+        [data-theme="light"] .download-section {
+          background: #f0ebe0;
+          border: 1px solid rgba(139,0,0,0.2);
+          box-shadow: 0 2px 14px rgba(0,0,0,0.07), inset 0 1px 0 rgba(255,255,255,0.5);
+        }
+        [data-theme="ghost"] .download-section {
+          background: rgba(26,26,30,0.8);
+          border-color: rgba(248,248,255,0.1);
+        }
+        [data-theme="ember"] .download-section {
+          background: rgba(10,6,0,0.8);
+          border-color: rgba(255,102,0,0.25);
+        }
 
         /* Setup Guide Link */
         .setup-guide-link {
@@ -326,13 +339,14 @@ export default async function CollectionImagePage({ params }: PageProps) {
 
         .download-note {
           font-family: var(--font-space), monospace;
-          font-size: 0.5rem;
+          font-size: 0.52rem;
           letter-spacing: 0.1em;
           text-transform: uppercase;
-          color: #4a445a;
+          color: var(--text-muted, #4a445a);
           margin: 0;
           text-align: center;
         }
+        [data-theme="light"] .download-note { color: #7a7468; }
 
         /* Fav row */
         .detail-fav-row {
@@ -345,48 +359,89 @@ export default async function CollectionImagePage({ params }: PageProps) {
           font-size: 0.6rem;
           letter-spacing: 0.15em;
           text-transform: uppercase;
-          color: #6b6480;
+          color: var(--text-muted, #6b6480);
+        }
+        [data-theme="light"] .detail-fav-label { color: #7a7468; }
+
+        /* ── Prev / Next navigation ── */
+        .prev-next-nav {
+          max-width: 1280px;
+          margin: 0 auto;
+          padding: 0 24px 40px;
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 12px;
+        }
+        .prev-next-link {
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+          padding: 16px;
+          border: 1px solid rgba(42,37,53,0.9);
+          text-decoration: none;
+          background: rgba(7,7,16,0.5);
+          transition: border-color 0.2s, background 0.2s;
+          overflow: hidden;
+        }
+        .prev-next-link:hover {
+          border-color: rgba(139,0,0,0.5);
+          background: rgba(12,11,20,0.8);
+        }
+        [data-theme="light"] .prev-next-link {
+          background: #f0ebe0;
+          border-color: #cdc8bc;
+        }
+        [data-theme="light"] .prev-next-link:hover {
+          border-color: rgba(139,0,0,0.4);
+          background: #e8e3d8;
+        }
+        [data-theme="ghost"] .prev-next-link {
+          background: rgba(26,26,30,0.7);
+          border-color: rgba(255,255,255,0.08);
+        }
+        [data-theme="ember"] .prev-next-link {
+          background: rgba(10,6,0,0.6);
+          border-color: rgba(255,102,0,0.15);
+        }
+        .prev-next-label {
+          font-family: var(--font-space), monospace;
+          font-size: 0.52rem;
+          letter-spacing: 0.2em;
+          text-transform: uppercase;
+          color: #4a445a;
+        }
+        [data-theme="light"] .prev-next-label { color: #8a8468; }
+        .prev-next-thumb-wrap {
+          position: relative;
+          width: 100%;
+          aspect-ratio: 9 / 16;
+          overflow: hidden;
+          max-width: 150px;
+          margin: 0 auto;
+          border: 1px solid rgba(255,255,255,0.04);
+          flex-shrink: 0;
+        }
+        [data-theme="light"] .prev-next-thumb-wrap { border-color: rgba(0,0,0,0.06); }
+        .prev-next-title {
+          font-family: var(--font-cormorant), serif;
+          font-style: italic;
+          font-size: 0.85rem;
+          color: var(--text-primary);
+          line-height: 1.35;
+          display: -webkit-box;
+          -webkit-line-clamp: 2;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
         }
       `}</style>
 
       {/* ── Prev / Next within collection ── */}
       {(prevImage || nextImage) && (
-        <nav
-          style={{
-            maxWidth: "1280px",
-            margin: "0 auto",
-            padding: "0 24px 40px",
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr",
-            gap: "12px",
-          }}
-        >
+        <nav className="prev-next-nav">
           {prevImage ? (
-            <Link
-              href={`/shop/${slug}/${prevImage.slug}`}
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                gap: "8px",
-                padding: "12px",
-                border: "1px solid #2a2535",
-                textDecoration: "none",
-              }}
-              className="hover:border-[rgba(139,0,0,0.5)] transition-colors"
-            >
-              <span className="font-mono text-[0.5rem] tracking-[0.2em] uppercase text-[#4a445a]">
-                ← Previous
-              </span>
-              <div
-                style={{
-                  position: "relative",
-                  width: "100%",
-                  aspectRatio: "9/16",
-                  overflow: "hidden",
-                  maxWidth: "170px",
-                  margin: "0 auto",
-                }}
-              >
+            <Link href={`/shop/${slug}/${prevImage.slug}`} className="prev-next-link">
+              <span className="prev-next-label">← Previous</span>
+              <div className="prev-next-thumb-wrap">
                 <Image
                   src={getPublicUrl(prevImage.r2Key)}
                   alt={prevImage.title}
@@ -396,17 +451,7 @@ export default async function CollectionImagePage({ params }: PageProps) {
                   sizes="(max-width: 640px) 45vw, 200px"
                 />
               </div>
-              <span
-                className="font-body italic text-[0.8rem] text-[#f0ecff]"
-                style={{
-                  display: "-webkit-box",
-                  WebkitLineClamp: 2,
-                  WebkitBoxOrient: "vertical" as const,
-                  overflow: "hidden",
-                }}
-              >
-                {prevImage.title}
-              </span>
+              <span className="prev-next-title">{prevImage.title}</span>
             </Link>
           ) : (
             <div />
@@ -415,30 +460,11 @@ export default async function CollectionImagePage({ params }: PageProps) {
           {nextImage ? (
             <Link
               href={`/shop/${slug}/${nextImage.slug}`}
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                gap: "8px",
-                padding: "12px",
-                border: "1px solid #2a2535",
-                textDecoration: "none",
-                textAlign: "right",
-              }}
-              className="hover:border-[rgba(139,0,0,0.5)] transition-colors"
+              className="prev-next-link"
+              style={{ textAlign: "right" }}
             >
-              <span className="font-mono text-[0.5rem] tracking-[0.2em] uppercase text-[#4a445a]">
-                Next →
-              </span>
-              <div
-                style={{
-                  position: "relative",
-                  width: "100%",
-                  aspectRatio: "9/16",
-                  overflow: "hidden",
-                  maxWidth: "170px",
-                  margin: "0 auto",
-                }}
-              >
+              <span className="prev-next-label">Next →</span>
+              <div className="prev-next-thumb-wrap">
                 <Image
                   src={getPublicUrl(nextImage.r2Key)}
                   alt={nextImage.title}
@@ -448,17 +474,7 @@ export default async function CollectionImagePage({ params }: PageProps) {
                   sizes="(max-width: 640px) 45vw, 200px"
                 />
               </div>
-              <span
-                className="font-body italic text-[0.8rem] text-[#f0ecff]"
-                style={{
-                  display: "-webkit-box",
-                  WebkitLineClamp: 2,
-                  WebkitBoxOrient: "vertical" as const,
-                  overflow: "hidden",
-                }}
-              >
-                {nextImage.title}
-              </span>
+              <span className="prev-next-title">{nextImage.title}</span>
             </Link>
           ) : (
             <div />

@@ -49,7 +49,7 @@ export default async function BlogPage() {
   }, {});
 
   return (
-    <main className="blog-index-page">
+    <main className="blog-index-page" data-force-blog="true">
 
       <header className="blog-index-hero">
         <div className="blog-index-hero-inner">

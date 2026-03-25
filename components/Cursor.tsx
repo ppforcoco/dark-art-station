@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 
 export default function Cursor() {
   const ringRef = useRef<HTMLDivElement>(null);
@@ -7,80 +7,63 @@ export default function Cursor() {
   const mx      = useRef(0);
   const my      = useRef(0);
   const raf     = useRef<number>(0);
-  const [hovered, setHovered] = useState(false);
-  const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    // Never show on touch/mobile — only real pointer devices
+    // Only on real pointer devices, never on touch screens
     if (!window.matchMedia("(pointer: fine)").matches) return;
 
-    // Inject a style tag that hides the native cursor everywhere on this page.
-    // More reliable than per-element CSS — covers iframes, portals, dynamic elements.
+    const ring = ringRef.current;
+    const dot  = dotRef.current;
+    if (!ring || !dot) return;
+
+    // Hide native cursor site-wide
     const style = document.createElement("style");
     style.id = "cursor-hide-native";
-    style.textContent = `
-      html, body, *, *::before, *::after {
-        cursor: none !important;
-      }
-    `;
+    style.textContent = "html,body,*,*::before,*::after{cursor:none!important}";
     document.head.appendChild(style);
 
-    const onMove = (e: MouseEvent) => {
-      mx.current = e.clientX;
-      my.current = e.clientY;
-      setVisible(true);
-    };
+    // Show elements
+    ring.style.display = "block";
+    dot.style.display  = "block";
+    ring.style.opacity = "0";
+    dot.style.opacity  = "0";
 
-    // Keep cursor visually in place during scroll (clientX/Y stays the same,
-    // but the rAF loop already pins to those values, so scroll is handled.)
-    // However we need to prevent the cursor from freezing — trigger a synthetic
-    // position refresh so the dot stays put relative to the viewport.
-    const onScroll = () => {
-      if (ringRef.current) {
-        ringRef.current.style.left = `${mx.current}px`;
-        ringRef.current.style.top  = `${my.current}px`;
-      }
-      if (dotRef.current) {
-        dotRef.current.style.left = `${mx.current}px`;
-        dotRef.current.style.top  = `${my.current}px`;
-      }
-    };
-
+    // rAF loop — runs every frame, always positions from refs (no React state)
     const loop = () => {
-      if (ringRef.current) {
-        ringRef.current.style.left = `${mx.current}px`;
-        ringRef.current.style.top  = `${my.current}px`;
-      }
-      if (dotRef.current) {
-        dotRef.current.style.left = `${mx.current}px`;
-        dotRef.current.style.top  = `${my.current}px`;
-      }
+      ring.style.left = `${mx.current}px`;
+      ring.style.top  = `${my.current}px`;
+      dot.style.left  = `${mx.current}px`;
+      dot.style.top   = `${my.current}px`;
       raf.current = requestAnimationFrame(loop);
     };
     raf.current = requestAnimationFrame(loop);
 
-    const onOver = (e: MouseEvent) => {
-      setHovered(!!(e.target as Element)?.closest("a, button, [data-hover]"));
+    const onMove = (e: MouseEvent) => {
+      mx.current = e.clientX;
+      my.current = e.clientY;
+      ring.style.opacity = "1";
+      dot.style.opacity  = "1";
     };
 
-    const onLeave = () => setVisible(false);
-    const onEnter = () => setVisible(true);
+    const onOver = (e: MouseEvent) => {
+      const hovering = !!(e.target as Element)?.closest("a, button, [data-hover]");
+      ring.style.transform = `translate(-50%, -50%) scale(${hovering ? 2 : 1})`;
+    };
 
-    document.addEventListener("mousemove", onMove);
-    document.addEventListener("mouseover", onOver);
+    const onLeave = () => {
+      ring.style.opacity = "0";
+      dot.style.opacity  = "0";
+    };
+
+    const onEnter = () => {
+      ring.style.opacity = "1";
+      dot.style.opacity  = "1";
+    };
+
+    document.addEventListener("mousemove", onMove,  { passive: true });
+    document.addEventListener("mouseover", onOver,  { passive: true });
     document.addEventListener("mouseleave", onLeave);
     document.addEventListener("mouseenter", onEnter);
-    // Keep dot pinned to viewport position while page scrolls
-    window.addEventListener("scroll", () => {
-      if (ringRef.current) {
-        ringRef.current.style.left = `${mx.current}px`;
-        ringRef.current.style.top  = `${my.current}px`;
-      }
-      if (dotRef.current) {
-        dotRef.current.style.left = `${mx.current}px`;
-        dotRef.current.style.top  = `${my.current}px`;
-      }
-    }, { passive: true });
 
     return () => {
       document.removeEventListener("mousemove", onMove);
@@ -94,35 +77,38 @@ export default function Cursor() {
 
   return (
     <>
-      {/* Red ring — follows mouse, scales up on hover */}
+      {/* Ring — follows mouse, scales on hover */}
       <div
         ref={ringRef}
         style={{
-          position: "fixed",
+          position:      "fixed",
           pointerEvents: "none",
-          zIndex: 9999,
-          width: 20,
-          height: 20,
-          border: "1px solid #c0001a",
-          borderRadius: "50%",
-          transform: `translate(-50%, -50%) scale(${hovered ? 2 : 1})`,
-          transition: "transform 0.15s ease",
-          display: visible ? "block" : "none",
+          zIndex:        9999,
+          width:         20,
+          height:        20,
+          border:        "1px solid #c0001a",
+          borderRadius:  "50%",
+          transform:     "translate(-50%, -50%) scale(1)",
+          transition:    "transform 0.15s ease, opacity 0.15s ease",
+          display:       "none",   // shown by JS after mount
+          willChange:    "left, top",
         }}
       />
       {/* Centre dot */}
       <div
         ref={dotRef}
         style={{
-          position: "fixed",
-          pointerEvents: "none",
-          zIndex: 10000,
-          width: 4,
-          height: 4,
+          position:        "fixed",
+          pointerEvents:   "none",
+          zIndex:          10000,
+          width:           4,
+          height:          4,
           backgroundColor: "#c0001a",
-          borderRadius: "50%",
-          transform: "translate(-50%, -50%)",
-          display: visible ? "block" : "none",
+          borderRadius:    "50%",
+          transform:       "translate(-50%, -50%)",
+          transition:      "opacity 0.15s ease",
+          display:         "none",  // shown by JS after mount
+          willChange:      "left, top",
         }}
       />
     </>

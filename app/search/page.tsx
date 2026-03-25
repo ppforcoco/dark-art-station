@@ -78,10 +78,16 @@ function ResultCard({ item }: { item: SearchResultItem }) {
       <div className="search-card-info">
         <p className="search-card-title">{item.title}</p>
         {item.kind === "standalone" && item.tags && item.tags.length > 0 && (
-          <p className="search-card-tags">{item.tags.slice(0, 3).join(" · ")}</p>
+          <div className="search-card-tags-row">
+            {item.tags.slice(0, 3).map(tag => (
+              <span key={tag} className="search-card-tag-pill">#{tag}</span>
+            ))}
+          </div>
         )}
         {item.kind === "collection" && item.category && (
-          <p className="search-card-tags">{item.category}</p>
+          <div className="search-card-tags-row">
+            <span className="search-card-tag-pill">{item.category}</span>
+          </div>
         )}
       </div>
     </Link>

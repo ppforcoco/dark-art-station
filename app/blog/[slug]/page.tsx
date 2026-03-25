@@ -64,7 +64,7 @@ export default async function BlogPostPage(
   };
 
   return (
-    <main className="static-page">
+    <main className="static-page" data-force-blog="true">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
       <div className="static-page-inner">
