@@ -136,7 +136,7 @@ const ALT_TEXT_PROMPT =
   "describe what is actually in the image, end without a period. " +
   "Reply with ONLY the alt text, nothing else.";
 
-async function generateAltTextWithGemini(file: File): Promise<string> {
+async function generateAltTextWithGemini(file: File, attempt = 1): Promise<string> {
   const reader = new FileReader();
   const base64 = await new Promise<string>((resolve, reject) => {
     reader.onload  = () => resolve((reader.result as string).split(",")[1]);
@@ -150,12 +150,7 @@ async function generateAltTextWithGemini(file: File): Promise<string> {
     body: JSON.stringify({
       contents: [{
         parts: [
-          {
-            inline_data: {
-              mime_type: file.type,
-              data: base64,
-            },
-          },
+          { inline_data: { mime_type: file.type, data: base64 } },
           { text: ALT_TEXT_PROMPT },
         ],
       }],
@@ -163,10 +158,23 @@ async function generateAltTextWithGemini(file: File): Promise<string> {
     }),
   });
 
-  if (!res.ok) throw new Error(`Gemini API error: ${res.status}`);
+  // 429 = rate limited — wait and retry up to 3 times
+  if (res.status === 429) {
+    if (attempt >= 3) {
+      throw new Error("Gemini rate limit hit. Wait 60 seconds and try again.");
+    }
+    const waitMs = attempt * 8000; // 8s, 16s
+    await new Promise((r) => setTimeout(r, waitMs));
+    return generateAltTextWithGemini(file, attempt + 1);
+  }
+
+  if (res.status === 400) throw new Error("Gemini rejected the image. Try a JPG or PNG under 5 MB.");
+  if (res.status === 403) throw new Error("Gemini API key invalid or quota exhausted. Check NEXT_PUBLIC_GEMINI_API_KEY.");
+  if (!res.ok) throw new Error(`Gemini error ${res.status} — try again in a moment.`);
+
   const data = await res.json();
   const text = data?.candidates?.[0]?.content?.parts?.[0]?.text?.trim() ?? "";
-  if (!text) throw new Error("Gemini returned empty response");
+  if (!text) throw new Error("Gemini returned empty response. Try again.");
   return text;
 }
 
@@ -367,11 +375,15 @@ function ImageUploaderTab({ password }: { password: string }) {
   async function handleGenerateAlt() {
     if (!file) return;
     setGeneratingAlt(true);
+    setMessage(null);
     try {
       const text = await generateAltTextWithGemini(file);
       setAltText(text);
+      setMessage({ type: "ok", text: "✓ Alt text generated! Edit if needed, then upload." });
     } catch (err) {
-      setMessage({ type: "err", text: `Could not generate alt text: ${(err as Error).message}` });
+      const msg = (err as Error).message;
+      // Show friendly message — alt text is optional so still allow upload
+      setMessage({ type: "err", text: `⚠ Alt text skipped: ${msg} You can still upload without it.` });
     }
     setGeneratingAlt(false);
   }
@@ -521,14 +533,14 @@ function ImageUploaderTab({ password }: { password: string }) {
                   fontSize: "0.65rem", letterSpacing: "0.1em", textTransform: "uppercase",
                   fontFamily: "monospace", transition: "all 0.2s", whiteSpace: "nowrap",
                 }}>
-                {generatingAlt ? "✨ Generating…" : "✨ AI Generate Alt Text (Gemini)"}
+                {generatingAlt ? "✨ Generating… (auto-retries if rate limited)" : "✨ AI Generate Alt Text (Gemini)"}
               </button>
             </div>
             <input value={altText} onChange={e => setAltText(e.target.value)}
               placeholder="Dark gothic forest wallpaper with moonlit trees and misty shadows — free 4K download"
               style={{ ...inputStyle, fontSize: "0.85rem" }} />
             <p style={{ color: "#6b6480", fontSize: "0.68rem", marginTop: "4px" }}>
-              ℹ️ Powered by Google Gemini 2.0 Flash — analyses your image and writes a perfect SEO alt tag automatically.
+              ℹ️ Powered by Google Gemini 2.0 Flash. Auto-retries on rate limit (429). Alt text is optional — you can skip and upload without it.
             </p>
           </div>
 

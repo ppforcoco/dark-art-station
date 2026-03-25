@@ -249,14 +249,14 @@ export default function LightboxGallery({ images }: Props) {
             <span className="lb-caption-title">{current.title}</span>
 
             <div className="lb-caption-actions">
-              {/* View the individual image page */}
+              {/* View the individual image page — full width, prominent */}
               <button
-                className="lb-caption-link"
+                className="lb-view-page-btn"
                 onClick={() => navigateTo(current.href)}
                 aria-label={`View ${current.title} page`}
                 type="button"
               >
-                View Page ↗
+                ↗ View Full Page &amp; Download
               </button>
             </div>
           </div>
@@ -334,29 +334,30 @@ export default function LightboxGallery({ images }: Props) {
         }
         .lb-download-btn:hover { background: #a80000; }
         .lb-download-btn:active { background: #6b0000; }
-        /* View page link */
-        .lb-caption-link {
+        /* View Full Page button — full width, prominent */
+        .lb-view-page-btn {
+          width: 100%;
           display: flex;
           align-items: center;
           justify-content: center;
-          min-height: 48px;
-          padding: 0 16px;
-          border: 1px solid rgba(240,236,255,0.2);
-          color: #f0ecff !important;
+          gap: 8px;
+          min-height: 56px;
+          padding: 0 20px;
+          background: #8b0000;
+          border: 1px solid #8b0000;
+          color: #ffffff !important;
           font-family: var(--font-space), monospace;
-          font-size: 0.6rem;
-          letter-spacing: 0.15em;
+          font-size: 0.78rem;
+          font-weight: 700;
+          letter-spacing: 0.18em;
           text-transform: uppercase;
-          text-decoration: none !important;
-          transition: border-color 0.2s ease;
-          white-space: nowrap;
-          flex-shrink: 0;
+          cursor: pointer;
+          transition: background-color 0.2s ease, filter 0.2s ease;
+          touch-action: manipulation;
+          -webkit-tap-highlight-color: transparent;
         }
-        .lb-caption-link:hover { border-color: rgba(240,236,255,0.5); }
-        @media (max-width: 479px) {
-          .lb-caption-actions { flex-direction: column; }
-          .lb-caption-link { flex-shrink: unset; }
-        }
+        .lb-view-page-btn:hover { background: #a80000; filter: brightness(1.1); }
+        .lb-view-page-btn:active { background: #6b0000; }
       `}</style>
     </>
   );

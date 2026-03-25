@@ -35,12 +35,19 @@ function r2Url(key: string) { return `${CDN_BASE}/${key}`; }
 
 // ── Result Card ───────────────────────────────────────────────
 function ResultCard({ item }: { item: SearchResultItem }) {
+  const devicePath =
+    item.deviceType === "IPHONE"  ? "iphone"  :
+    item.deviceType === "ANDROID" ? "android" :
+    item.deviceType === "PC"      ? "pc"       : null;
+
   const href =
     item.kind === "collection"
       ? `/shop/${item.slug}`
       : item.collectionSlug
         ? `/shop/${item.collectionSlug}/${item.slug}`
-        : `/shop/${item.slug}`;
+        : devicePath
+          ? `/${devicePath}/${item.slug}`
+          : `/shop/${item.slug}`;
 
   const deviceLabel =
     item.kind === "standalone" && item.deviceType
