@@ -101,6 +101,84 @@ const modeBtn: React.CSSProperties = {
   cursor: "pointer", fontSize: "0.65rem", letterSpacing: "0.1em", fontFamily: "monospace",
 };
 
+// ─── 18+ Label Badge ──────────────────────────────────────────────────────────
+// Renders the exact same badge shown on blog posts and collections
+function AdultBadge({ size = "sm" }: { size?: "sm" | "lg" }) {
+  const isLg = size === "lg";
+  return (
+    <span style={{
+      display: "inline-flex",
+      alignItems: "center",
+      gap: isLg ? "6px" : "4px",
+      background: "#c0001a",
+      color: "#fff",
+      fontFamily: "monospace",
+      fontWeight: 900,
+      fontSize: isLg ? "0.75rem" : "0.6rem",
+      letterSpacing: isLg ? "0.08em" : "0.05em",
+      padding: isLg ? "4px 12px" : "2px 7px",
+      border: "1px solid #ff2040",
+      textTransform: "uppercase",
+    }}>
+      ⚠ 18+
+    </span>
+  );
+}
+
+// ─── Gemini alt-text helper ───────────────────────────────────────────────────
+const GEMINI_API_KEY = process.env.NEXT_PUBLIC_GEMINI_API_KEY ?? "";
+const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`;
+
+const ALT_TEXT_PROMPT =
+  "You are an SEO expert for a dark wallpaper website called Haunted Wallpapers. " +
+  "Generate a single alt text description for this image. Rules: " +
+  "exactly 130–150 characters, descriptive for SEO, include relevant dark/gothic keywords naturally, " +
+  "describe what is actually in the image, end without a period. " +
+  "Reply with ONLY the alt text, nothing else.";
+
+async function generateAltTextWithGemini(file: File): Promise<string> {
+  const reader = new FileReader();
+  const base64 = await new Promise<string>((resolve, reject) => {
+    reader.onload  = () => resolve((reader.result as string).split(",")[1]);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+
+  const res = await fetch(GEMINI_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      contents: [{
+        parts: [
+          {
+            inline_data: {
+              mime_type: file.type,
+              data: base64,
+            },
+          },
+          { text: ALT_TEXT_PROMPT },
+        ],
+      }],
+      generationConfig: { maxOutputTokens: 200 },
+    }),
+  });
+
+  if (!res.ok) throw new Error(`Gemini API error: ${res.status}`);
+  const data = await res.json();
+  const text = data?.candidates?.[0]?.content?.parts?.[0]?.text?.trim() ?? "";
+  if (!text) throw new Error("Gemini returned empty response");
+  return text;
+}
+
+async function generateAltTextFromUrl(url: string): Promise<string> {
+  // For URL-based images, we fetch the image and convert to base64
+  const proxyRes = await fetch(url);
+  if (!proxyRes.ok) throw new Error("Could not fetch image from URL");
+  const blob = await proxyRes.blob();
+  const file = new File([blob], "image.jpg", { type: blob.type || "image/jpeg" });
+  return generateAltTextWithGemini(file);
+}
+
 // ─── Password Gate ────────────────────────────────────────────────────────────
 function PasswordGate({ onAuth }: { onAuth: () => void }) {
   const [pw, setPw]           = useState("");
@@ -215,9 +293,6 @@ function AnalyticsTab({ password }: { password: string }) {
 
       <div style={{ border: "1px solid #2a2535", padding: "24px", marginBottom: "24px" }}>
         <p style={eyebrowStyle}>AdSense Approval Checklist</p>
-        <p style={{ color: "#6b6480", fontSize: "0.78rem", marginBottom: "16px" }}>
-          Tick these off before applying.
-        </p>
         {ADSENSE_CHECKLIST.map((item, i) => (
           <div key={i} style={{ display: "flex", gap: "10px", padding: "7px 0", borderBottom: "1px solid #1a1825", fontSize: "0.82rem" }}>
             <span style={{ color: item.done ? "#4caf50" : "#c0001a", flexShrink: 0 }}>{item.done ? "✅" : "☐"}</span>
@@ -231,7 +306,6 @@ function AnalyticsTab({ password }: { password: string }) {
 
       <div style={{ border: "1px solid #2a2535", padding: "20px" }}>
         <p style={eyebrowStyle}>Google Analytics 4</p>
-        <p style={{ color: "#8a8099", fontSize: "0.85rem", marginBottom: "12px" }}>For traffic, bounce rate, and country breakdown.</p>
         <a href="https://analytics.google.com" target="_blank" rel="noopener noreferrer"
           style={{ display: "inline-block", background: "#c0001a", color: "#fff", padding: "10px 20px", textDecoration: "none", fontSize: "0.75rem", letterSpacing: "0.1em", textTransform: "uppercase" }}>
           Open GA4 Dashboard →
@@ -249,9 +323,11 @@ function ImageUploaderTab({ password }: { password: string }) {
   const [slug, setSlug]                   = useState("");
   const [title, setTitle]                 = useState("");
   const [altText, setAltText]             = useState("");
+  const [description, setDescription]     = useState("");
   const [deviceType, setDeviceType]       = useState<"IPHONE" | "ANDROID" | "PC" | "">("");
   const [selectedTags, setSelectedTags]   = useState<string[]>([]);
   const [collectionId, setCollectionId]   = useState("");
+  const [isAdult, setIsAdult]             = useState(false);
   const [uploading, setUploading]         = useState(false);
   const [generatingAlt, setGeneratingAlt] = useState(false);
   const [message, setMessage]             = useState<{ type: "ok" | "err"; text: string } | null>(null);
@@ -292,36 +368,10 @@ function ImageUploaderTab({ password }: { password: string }) {
     if (!file) return;
     setGeneratingAlt(true);
     try {
-      const reader = new FileReader();
-      const base64 = await new Promise<string>((resolve, reject) => {
-        reader.onload  = () => resolve((reader.result as string).split(",")[1]);
-        reader.onerror = reject;
-        reader.readAsDataURL(file);
-      });
-
-      const res = await fetch("https://api.anthropic.com/v1/messages", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          model: "claude-sonnet-4-20250514",
-          max_tokens: 200,
-          system: "You are an SEO expert for a dark wallpaper website called Haunted Wallpapers. Generate a single alt text description for the image. It must be: exactly 130–150 characters, descriptive for SEO, include relevant dark/gothic keywords naturally, describe what is actually in the image, end without a period. Reply with ONLY the alt text, nothing else.",
-          messages: [{
-            role: "user",
-            content: [
-              { type: "image", source: { type: "base64", media_type: file.type as "image/jpeg" | "image/png" | "image/webp" | "image/gif", data: base64 } },
-              { type: "text",  text: "Write the alt text for this wallpaper image." },
-            ],
-          }],
-        }),
-      });
-
-      if (!res.ok) throw new Error("API error");
-      const data = await res.json();
-      const generated = data.content?.[0]?.text?.trim() ?? "";
-      if (generated) setAltText(generated);
-    } catch {
-      setMessage({ type: "err", text: "Could not generate alt text. Check your Anthropic API key." });
+      const text = await generateAltTextWithGemini(file);
+      setAltText(text);
+    } catch (err) {
+      setMessage({ type: "err", text: `Could not generate alt text: ${(err as Error).message}` });
     }
     setGeneratingAlt(false);
   }
@@ -338,7 +388,9 @@ function ImageUploaderTab({ password }: { password: string }) {
       form.append("slug", slug);
       form.append("title", title);
       form.append("altText", altText);
+      form.append("description", description);
       form.append("tags", JSON.stringify(selectedTags));
+      form.append("isAdult", String(isAdult));
       if (deviceType) form.append("deviceType", deviceType);
       if (collectionId.trim()) form.append("collectionId", collectionId.trim());
 
@@ -352,8 +404,8 @@ function ImageUploaderTab({ password }: { password: string }) {
       if (res.ok) {
         setUploadedUrl(json.url);
         setMessage({ type: "ok", text: `✓ Uploaded! Slug: ${json.slug}` });
-        setFile(null); setPreview(""); setSlug(""); setTitle("");
-        setAltText(""); setDeviceType(""); setSelectedTags([]); setCollectionId("");
+        setFile(null); setPreview(""); setSlug(""); setTitle(""); setDescription("");
+        setAltText(""); setDeviceType(""); setSelectedTags([]); setCollectionId(""); setIsAdult(false);
         if (fileInputRef.current) fileInputRef.current.value = "";
       } else {
         setMessage({ type: "err", text: json.error ?? "Upload failed." });
@@ -366,6 +418,8 @@ function ImageUploaderTab({ password }: { password: string }) {
 
   const altLen = altText.length;
   const altOk  = altLen >= 130 && altLen <= 150;
+  const descWords = description.split(/\s+/).filter(Boolean).length;
+  const descOk    = descWords >= 180 && descWords <= 220;
   const ext    = file?.name.split(".").pop() ?? "jpg";
 
   return (
@@ -374,7 +428,7 @@ function ImageUploaderTab({ password }: { password: string }) {
       <div style={{ background: "#0e0c18", border: "1px solid #c0001a", padding: "14px 18px", fontSize: "0.82rem" }}>
         <strong style={{ color: "#ffd080" }}>📤 Image Uploader</strong>
         <span style={{ color: "#8a8099", marginLeft: "8px" }}>
-          Drop an image → fill in details → upload to R2 + save to DB in one click. No manifest.json editing needed.
+          Drop an image → fill in details → upload to R2 + save to DB in one click.
         </span>
       </div>
 
@@ -388,19 +442,12 @@ function ImageUploaderTab({ password }: { password: string }) {
         style={{
           border: `2px dashed ${dragging ? "#c0001a" : file ? "#4caf50" : "#2a2535"}`,
           background: dragging ? "rgba(192,0,26,0.06)" : "#0a0812",
-          padding: "40px 24px",
-          textAlign: "center",
-          cursor: "pointer",
-          transition: "all 0.2s",
+          padding: "40px 24px", textAlign: "center",
+          cursor: "pointer", transition: "all 0.2s",
         }}
       >
-        <input
-          ref={fileInputRef}
-          type="file"
-          accept="image/*"
-          style={{ display: "none" }}
-          onChange={e => { const f = e.target.files?.[0]; if (f) handleFileSelect(f); }}
-        />
+        <input ref={fileInputRef} type="file" accept="image/*" style={{ display: "none" }}
+          onChange={e => { const f = e.target.files?.[0]; if (f) handleFileSelect(f); }} />
 
         {preview ? (
           <div style={{ display: "flex", gap: "24px", alignItems: "flex-start", justifyContent: "center", flexWrap: "wrap" }}>
@@ -430,18 +477,33 @@ function ImageUploaderTab({ password }: { password: string }) {
             <div>
               <label style={labelStyle}>Image Title</label>
               <input value={title} onChange={e => setTitle(e.target.value)}
-                placeholder="Dark Gothic Forest Wallpaper"
-                style={inputStyle} />
+                placeholder="Dark Gothic Forest Wallpaper" style={inputStyle} />
             </div>
             <div>
               <label style={labelStyle}>URL Slug (auto-generated)</label>
               <input value={slug} onChange={e => setSlug(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ""))}
-                placeholder="dark-gothic-forest"
-                style={inputStyle} />
+                placeholder="dark-gothic-forest" style={inputStyle} />
             </div>
           </div>
 
-          {/* Alt Text + AI button */}
+          {/* Description — 200 words */}
+          <div>
+            <label style={labelStyle}>
+              Description (SEO){" "}
+              <span style={{ color: descOk ? "#4caf50" : descWords > 0 ? "#ffd080" : "#6b6480" }}>
+                ({descWords} / 200 words{descOk ? " ✓" : " — aim for ~200 words"})
+              </span>
+            </label>
+            <textarea
+              value={description}
+              onChange={e => setDescription(e.target.value)}
+              placeholder="Write a detailed ~200-word description of this wallpaper for SEO and the wallpaper detail page. Describe the art style, mood, colours, and what makes it unique…"
+              rows={6}
+              style={{ ...inputStyle, resize: "vertical", lineHeight: "1.6" }}
+            />
+          </div>
+
+          {/* Alt Text + Gemini button */}
           <div>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "6px" }}>
               <label style={{ ...labelStyle, marginBottom: 0 }}>
@@ -450,36 +512,101 @@ function ImageUploaderTab({ password }: { password: string }) {
                   ({altLen}/150 chars{altOk ? " ✓" : " — aim for 130–150"})
                 </span>
               </label>
-              <button
-                type="button"
-                onClick={handleGenerateAlt}
-                disabled={generatingAlt}
+              <button type="button" onClick={handleGenerateAlt} disabled={generatingAlt}
                 style={{
                   background: generatingAlt ? "#1a1825" : "rgba(192,0,26,0.15)",
                   border: "1px solid rgba(192,0,26,0.5)",
                   color: generatingAlt ? "#6b6480" : "#f0ecff",
-                  padding: "5px 14px",
-                  cursor: generatingAlt ? "not-allowed" : "pointer",
-                  fontSize: "0.65rem",
+                  padding: "5px 14px", cursor: generatingAlt ? "not-allowed" : "pointer",
+                  fontSize: "0.65rem", letterSpacing: "0.1em", textTransform: "uppercase",
+                  fontFamily: "monospace", transition: "all 0.2s", whiteSpace: "nowrap",
+                }}>
+                {generatingAlt ? "✨ Generating…" : "✨ AI Generate Alt Text (Gemini)"}
+              </button>
+            </div>
+            <input value={altText} onChange={e => setAltText(e.target.value)}
+              placeholder="Dark gothic forest wallpaper with moonlit trees and misty shadows — free 4K download"
+              style={{ ...inputStyle, fontSize: "0.85rem" }} />
+            <p style={{ color: "#6b6480", fontSize: "0.68rem", marginTop: "4px" }}>
+              ℹ️ Powered by Google Gemini 2.0 Flash — analyses your image and writes a perfect SEO alt tag automatically.
+            </p>
+          </div>
+
+          {/* 18+ Adult Content toggle */}
+          <div style={{
+            border: `1px solid ${isAdult ? "#c0001a" : "#2a2535"}`,
+            padding: "14px 18px",
+            background: isAdult ? "rgba(192,0,26,0.08)" : "transparent",
+            transition: "all 0.2s",
+          }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "16px" }}>
+              <div>
+                <p style={{ ...eyebrowStyle, marginBottom: "4px" }}>
+                  {isAdult ? <AdultBadge size="sm" /> : null}
+                  {" "}18+ Adult / Mature Content
+                </p>
+                <p style={{ color: "#6b6480", fontSize: "0.72rem" }}>
+                  Mark this image as adult content. It will show the 18+ warning badge on the gallery and detail page, and require age confirmation before viewing.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsAdult(!isAdult)}
+                style={{
+                  background: isAdult ? "#c0001a" : "transparent",
+                  border: `1px solid ${isAdult ? "#c0001a" : "#2a2535"}`,
+                  color: isAdult ? "#fff" : "#6b6480",
+                  padding: "8px 18px",
+                  cursor: "pointer",
+                  fontSize: "0.7rem",
                   letterSpacing: "0.1em",
                   textTransform: "uppercase",
                   fontFamily: "monospace",
+                  flexShrink: 0,
                   transition: "all 0.2s",
-                  whiteSpace: "nowrap",
                 }}
               >
-                {generatingAlt ? "✨ Generating…" : "✨ AI Generate Alt Text"}
+                {isAdult ? "✓ 18+ ON" : "Mark as 18+"}
               </button>
             </div>
-            <input
-              value={altText}
-              onChange={e => setAltText(e.target.value)}
-              placeholder="Dark gothic forest wallpaper with moonlit trees and misty shadows — free 4K download"
-              style={{ ...inputStyle, fontSize: "0.85rem" }}
-            />
-            <p style={{ color: "#6b6480", fontSize: "0.68rem", marginTop: "4px" }}>
-              ℹ️ Click &quot;AI Generate Alt Text&quot; — Claude analyses your image and writes a perfect SEO alt tag automatically.
-            </p>
+
+            {isAdult && (
+              <div style={{ marginTop: "12px", display: "flex", flexWrap: "wrap", gap: "8px", alignItems: "center" }}>
+                <span style={{ color: "#8a8099", fontSize: "0.65rem", letterSpacing: "0.1em", textTransform: "uppercase" }}>
+                  Badge preview:
+                </span>
+                {/* Preview all 18+ badge styles */}
+                {/* Style 1: Warning bar */}
+                <span style={{
+                  display: "inline-flex", alignItems: "center", gap: "6px",
+                  background: "#c0001a", color: "#fff",
+                  fontFamily: "monospace", fontWeight: 900,
+                  fontSize: "0.65rem", letterSpacing: "0.05em",
+                  padding: "3px 10px",
+                }}>⚠ 18+</span>
+                {/* Style 2: Parental Advisory */}
+                <span style={{
+                  display: "inline-flex", alignItems: "center", gap: "6px",
+                  background: "#000", border: "2px solid #fff",
+                  color: "#fff", fontFamily: "monospace",
+                  fontSize: "0.55rem", fontWeight: 700,
+                  letterSpacing: "0.1em", padding: "3px 8px",
+                  textTransform: "uppercase",
+                }}>
+                  <span style={{ color: "#c0001a", fontWeight: 900 }}>18+</span>
+                  PARENTAL ADVISORY
+                </span>
+                {/* Style 3: Mature tag */}
+                <span style={{
+                  display: "inline-flex", alignItems: "center",
+                  border: "1px solid #c0001a",
+                  color: "#ff6b6b", fontFamily: "monospace",
+                  fontSize: "0.6rem", letterSpacing: "0.1em",
+                  padding: "2px 8px",
+                  textTransform: "uppercase",
+                }}>MATURE</span>
+              </div>
+            )}
           </div>
 
           {/* Device Type */}
@@ -487,23 +614,15 @@ function ImageUploaderTab({ password }: { password: string }) {
             <label style={labelStyle}>Device Type</label>
             <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
               {(["", "IPHONE", "ANDROID", "PC"] as const).map(d => (
-                <button
-                  key={d}
-                  type="button"
-                  onClick={() => setDeviceType(d)}
+                <button key={d} type="button" onClick={() => setDeviceType(d)}
                   style={{
                     background: "transparent",
                     border: `1px solid ${deviceType === d ? "#c0001a" : "#2a2535"}`,
                     color: deviceType === d ? "#f0ecff" : "#6b6480",
-                    padding: "8px 20px",
-                    cursor: "pointer",
-                    fontSize: "0.7rem",
-                    letterSpacing: "0.1em",
-                    textTransform: "uppercase",
-                    fontFamily: "monospace",
-                    transition: "all 0.15s",
-                  }}
-                >
+                    padding: "8px 20px", cursor: "pointer",
+                    fontSize: "0.7rem", letterSpacing: "0.1em",
+                    textTransform: "uppercase", fontFamily: "monospace", transition: "all 0.15s",
+                  }}>
                   {d === "" ? "Any" : d === "IPHONE" ? "📱 iPhone" : d === "ANDROID" ? "🤖 Android" : "🖥️ PC"}
                 </button>
               ))}
@@ -515,22 +634,15 @@ function ImageUploaderTab({ password }: { password: string }) {
             <label style={labelStyle}>Tags ({selectedTags.length} selected)</label>
             <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
               {ALL_TAGS.map(tag => (
-                <button
-                  key={tag}
-                  type="button"
-                  onClick={() => toggleTag(tag)}
+                <button key={tag} type="button" onClick={() => toggleTag(tag)}
                   style={{
                     background: selectedTags.includes(tag) ? "rgba(192,0,26,0.2)" : "transparent",
                     border: `1px solid ${selectedTags.includes(tag) ? "#c0001a" : "#2a2535"}`,
                     color: selectedTags.includes(tag) ? "#f0ecff" : "#6b6480",
-                    padding: "5px 12px",
-                    cursor: "pointer",
-                    fontSize: "0.65rem",
-                    letterSpacing: "0.08em",
-                    fontFamily: "monospace",
-                    transition: "all 0.15s",
-                  }}
-                >
+                    padding: "5px 12px", cursor: "pointer",
+                    fontSize: "0.65rem", letterSpacing: "0.08em",
+                    fontFamily: "monospace", transition: "all 0.15s",
+                  }}>
                   {selectedTags.includes(tag) ? "✓ " : ""}{tag}
                 </button>
               ))}
@@ -540,12 +652,12 @@ function ImageUploaderTab({ password }: { password: string }) {
           {/* Collection ID */}
           <div>
             <label style={labelStyle}>Collection ID (optional)</label>
-            <input
-              value={collectionId}
-              onChange={e => setCollectionId(e.target.value)}
+            <input value={collectionId} onChange={e => setCollectionId(e.target.value)}
               placeholder="Paste a Collection UUID to attach this image to a collection"
-              style={{ ...inputStyle, fontSize: "0.82rem" }}
-            />
+              style={{ ...inputStyle, fontSize: "0.82rem" }} />
+            <p style={{ color: "#6b6480", fontSize: "0.65rem", marginTop: "4px" }}>
+              Find it via: <code style={{ color: "#c0a0ff" }}>npx prisma studio</code> → Collection table → copy the <code style={{ color: "#c0a0ff" }}>id</code> field.
+            </p>
           </div>
 
           {/* Upload Summary */}
@@ -557,10 +669,11 @@ function ImageUploaderTab({ password }: { password: string }) {
                 { label: "R2 high-res key",  value: `high-res/${slug}/${slug}.${ext}` },
                 { label: "Device",           value: deviceType || "Any" },
                 { label: "Tags",             value: selectedTags.join(", ") || "none" },
+                { label: "18+ Adult",        value: isAdult ? "⚠ YES" : "No" },
               ].map(row => (
                 <div key={row.label} style={{ display: "flex", gap: "12px" }}>
                   <span style={{ color: "#6b6480", minWidth: "140px", flexShrink: 0 }}>{row.label}:</span>
-                  <span style={{ color: "#c9c4dd", wordBreak: "break-all" }}>{row.value}</span>
+                  <span style={{ color: row.label === "18+ Adult" && isAdult ? "#ff6b6b" : "#c9c4dd", wordBreak: "break-all" }}>{row.value}</span>
                 </div>
               ))}
             </div>
@@ -579,25 +692,15 @@ function ImageUploaderTab({ password }: { password: string }) {
           )}
 
           {/* Upload Button */}
-          <button
-            type="button"
-            onClick={handleUpload}
-            disabled={uploading}
+          <button type="button" onClick={handleUpload} disabled={uploading}
             style={{
               background: uploading ? "#1a1825" : "#c0001a",
-              color: "#fff",
-              border: "none",
-              padding: "14px 32px",
-              cursor: uploading ? "not-allowed" : "pointer",
-              fontSize: "0.8rem",
-              letterSpacing: "0.15em",
-              textTransform: "uppercase",
-              opacity: uploading ? 0.7 : 1,
-              alignSelf: "flex-start",
-              fontFamily: "monospace",
-              transition: "background 0.2s",
-            }}
-          >
+              color: "#fff", border: "none",
+              padding: "14px 32px", cursor: uploading ? "not-allowed" : "pointer",
+              fontSize: "0.8rem", letterSpacing: "0.15em", textTransform: "uppercase",
+              opacity: uploading ? 0.7 : 1, alignSelf: "flex-start",
+              fontFamily: "monospace", transition: "background 0.2s",
+            }}>
             {uploading ? "Uploading to R2…" : "↑ Upload to R2 & Save to DB"}
           </button>
         </>
@@ -622,6 +725,7 @@ function HtmlToolbar({ onInsert }: { onInsert: (b: string, a: string) => void })
     { label: "QUOTE", title: "Blockquote",      before: '<blockquote style="border-left:3px solid #c0001a;margin:24px 0;padding:12px 20px;color:#c9c4dd;font-style:italic;">', after: "</blockquote>" },
     { label: "TABLE", title: "Table",           before: '<table style="width:100%;border-collapse:collapse;margin:24px 0;">\n<tr><th style="border:1px solid #2a2535;padding:10px;">Header 1</th><th style="border:1px solid #2a2535;padding:10px;">Header 2</th></tr>\n<tr><td style="border:1px solid #2a2535;padding:10px;">Cell 1</td><td style="border:1px solid #2a2535;padding:10px;">Cell 2</td></tr>', after: "\n</table>" },
     { label: "CTA",   title: "Call to Action",  before: '<div style="background:#1a0a0a;border:1px solid #c0001a;padding:20px 24px;margin:32px 0;text-align:center;">\n<p style="color:#f0ecff;margin-bottom:12px;">Ready to download? Browse our free 4K dark wallpapers.</p>\n<a href="/iphone" style="display:inline-block;background:#c0001a;color:#fff;padding:10px 24px;text-decoration:none;font-size:0.8rem;letter-spacing:0.1em;">Browse Wallpapers →</a>\n</div>', after: "" },
+    { label: "18+",   title: "18+ Warning Banner", before: '<div style="display:flex;align-items:center;gap:12px;background:rgba(192,0,26,0.12);border:1px solid rgba(192,0,26,0.5);padding:14px 18px;margin:24px 0;">\n<span style="background:#c0001a;color:#fff;font-family:monospace;font-size:0.75rem;font-weight:900;padding:3px 10px;flex-shrink:0;">⚠ 18+</span>\n<p style="font-family:monospace;font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:#a89bc0;margin:0;">This content contains mature themes. Intended for adult audiences only.</p>\n</div>', after: "" },
     { label: "FAQ",   title: "FAQ Section",     before: '<div style="margin:32px 0;">\n<h3>Frequently Asked Questions</h3>\n<details style="border:1px solid #2a2535;padding:12px 16px;margin-bottom:8px;">\n<summary style="cursor:pointer;color:#f0ecff;">Your question here?</summary>\n<p style="margin-top:10px;color:#c9c4dd;">Your answer here.</p>\n</details>', after: "\n</div>" },
     { label: "AD",    title: "Ad Slot",         before: '<div style="margin:32px 0;text-align:center;background:#1a1825;padding:20px;color:#6b6480;font-size:0.75rem;">[ Ad Slot — AdSense will render here ]</div>', after: "" },
   ];
@@ -629,7 +733,14 @@ function HtmlToolbar({ onInsert }: { onInsert: (b: string, a: string) => void })
     <div style={{ display: "flex", flexWrap: "wrap", gap: "5px", marginBottom: "8px" }}>
       {tools.map((t) => (
         <button key={t.label} title={t.title} type="button" onClick={() => onInsert(t.before, t.after)}
-          style={{ background: "#1a1825", border: "1px solid #2a2535", color: "#c0a0ff", padding: "4px 10px", cursor: "pointer", fontSize: "0.7rem", fontFamily: "monospace", letterSpacing: "0.04em", borderRadius: "2px" }}>
+          style={{
+            background: t.label === "18+" ? "rgba(192,0,26,0.2)" : "#1a1825",
+            border: t.label === "18+" ? "1px solid #c0001a" : "1px solid #2a2535",
+            color: t.label === "18+" ? "#ff8080" : "#c0a0ff",
+            padding: "4px 10px", cursor: "pointer",
+            fontSize: "0.7rem", fontFamily: "monospace",
+            letterSpacing: "0.04em", borderRadius: "2px",
+          }}>
           {t.label}
         </button>
       ))}
@@ -656,14 +767,17 @@ function BlogIdeasTab({ onUseIdea }: { onUseIdea: (title: string, label: string)
       </div>
 
       <p style={eyebrowStyle}>Ready-to-Write Blog Ideas ({BLOG_IDEAS.length})</p>
-      <p style={{ color: "#6b6480", fontSize: "0.78rem", marginBottom: "16px" }}>Click &quot;Use This&quot; to load it directly into the blog editor.</p>
 
       {BLOG_IDEAS.map((idea, i) => (
         <div key={i} style={{ border: "1px solid #2a2535", padding: "14px 16px", marginBottom: "8px", display: "flex", justifyContent: "space-between", alignItems: "center", gap: "16px" }}>
           <div style={{ flex: 1 }}>
             <p style={{ color: "#f0ecff", fontSize: "0.88rem", marginBottom: "4px" }}>{idea.title}</p>
             <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
-              <span style={{ background: "#1a1825", border: "1px solid #2a2535", color: "#c0a0ff", padding: "2px 8px", fontSize: "0.65rem", letterSpacing: "0.08em" }}>{idea.label}</span>
+              {idea.label === "18+ Mature Content" ? (
+                <AdultBadge size="sm" />
+              ) : (
+                <span style={{ background: "#1a1825", border: "1px solid #2a2535", color: "#c0a0ff", padding: "2px 8px", fontSize: "0.65rem" }}>{idea.label}</span>
+              )}
               <span style={{ color: "#6b6480", fontSize: "0.72rem" }}>{idea.reason}</span>
             </div>
           </div>
@@ -694,13 +808,14 @@ function BlogTab({ password, prefillTitle, prefillLabel, onPrefillUsed }:
   const [wordCount, setWordCount]   = useState(0);
   const [lastSavedSlug, setLastSavedSlug] = useState("");
 
-  // AI alt-text for blog images
   const [altImageUrl, setAltImageUrl]     = useState("");
   const [altImageFile, setAltImageFile]   = useState<File | null>(null);
   const [generatedAlt, setGeneratedAlt]   = useState("");
   const [generatingAlt, setGeneratingAlt] = useState(false);
   const altFileRef                        = useRef<HTMLInputElement>(null);
   const textareaRef                       = useRef<HTMLTextAreaElement | null>(null);
+
+  const isAdultLabel = label === "18+ Mature Content";
 
   useEffect(() => {
     if (prefillTitle) {
@@ -750,46 +865,20 @@ function BlogTab({ password, prefillTitle, prefillLabel, onPrefillUsed }:
     if (!altImageFile && !altImageUrl) return;
     setGeneratingAlt(true); setGeneratedAlt("");
     try {
-      let imagePayload: object;
+      let text: string;
       if (altImageFile) {
-        const reader = new FileReader();
-        const base64 = await new Promise<string>((resolve, reject) => {
-          reader.onload  = () => resolve((reader.result as string).split(",")[1]);
-          reader.onerror = reject;
-          reader.readAsDataURL(altImageFile);
-        });
-        imagePayload = { type: "base64", media_type: altImageFile.type, data: base64 };
+        text = await generateAltTextWithGemini(altImageFile);
       } else {
-        imagePayload = { type: "url", url: altImageUrl };
+        text = await generateAltTextFromUrl(altImageUrl);
       }
-
-      const res = await fetch("https://api.anthropic.com/v1/messages", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          model: "claude-sonnet-4-20250514",
-          max_tokens: 200,
-          system: "You are an SEO expert for a dark wallpaper website called Haunted Wallpapers. Generate a single alt text description for the image. It must be: exactly 130–150 characters, descriptive for SEO, include relevant dark/gothic keywords naturally, describe what is actually in the image, end without a period. Reply with ONLY the alt text, nothing else.",
-          messages: [{
-            role: "user",
-            content: [
-              { type: "image", source: imagePayload },
-              { type: "text",  text: "Write the SEO alt text for this wallpaper." },
-            ],
-          }],
-        }),
-      });
-
-      if (!res.ok) throw new Error("API error");
-      const data = await res.json();
-      setGeneratedAlt(data.content?.[0]?.text?.trim() ?? "Error — no text returned.");
-    } catch {
-      setGeneratedAlt("Error — check Anthropic API key in environment.");
+      setGeneratedAlt(text);
+    } catch (err) {
+      setGeneratedAlt(`Error: ${(err as Error).message}`);
     }
     setGeneratingAlt(false);
   }
 
-  const starterTemplate = `<p>Write your intro here — 2 to 3 sentences that hook the reader and include your main keyword naturally.</p>\n\n<h2>Why These Wallpapers Stand Out</h2>\n<p>Explain the topic in detail. What makes these wallpapers special? Who are they for?</p>\n\n<img src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/YOUR-IMAGE.webp" alt="Dark aesthetic wallpaper free download" style="width:100%;aspect-ratio:9/16;object-fit:cover;border-radius:4px;margin:16px 0;" />\n\n<h2>How to Download and Set Your Wallpaper</h2>\n<p>Step by step instructions here. Link to your wallpaper pages.</p>\n\n<ol>\n  <li>Browse our <a href="/iphone">iPhone wallpapers</a> or <a href="/android">Android wallpapers</a></li>\n  <li>Tap the image you love to open it</li>\n  <li>Hit the red Download Free button</li>\n  <li>Set it from your Photos app</li>\n</ol>\n\n<h2>Top Picks from Our Collection</h2>\n<p>Highlight 3–5 specific wallpapers from your site here. Internal links boost SEO.</p>\n\n<div style="background:#1a0a0a;border:1px solid #c0001a;padding:20px 24px;margin:32px 0;text-align:center;">\n<p style="color:#f0ecff;margin-bottom:12px;">Ready to download? Browse our full free 4K dark wallpaper collection.</p>\n<a href="/iphone" style="display:inline-block;background:#c0001a;color:#fff;padding:10px 24px;text-decoration:none;font-size:0.8rem;letter-spacing:0.1em;">Browse Wallpapers →</a>\n</div>\n\n<h2>Frequently Asked Questions</h2>\n<details style="border:1px solid #2a2535;padding:12px 16px;margin-bottom:8px;">\n<summary style="cursor:pointer;color:#f0ecff;">Are these wallpapers free?</summary>\n<p style="margin-top:10px;color:#c9c4dd;">Yes — every wallpaper on Haunted Wallpapers is completely free to download in 4K resolution. No account required.</p>\n</details>\n<details style="border:1px solid #2a2535;padding:12px 16px;margin-bottom:8px;">\n<summary style="cursor:pointer;color:#f0ecff;">What resolution are your wallpapers?</summary>\n<p style="margin-top:10px;color:#c9c4dd;">All wallpapers are available in 4K resolution, optimised for iPhone, Android, and PC screens.</p>\n</details>`;
+  const starterTemplate = `<p>Write your intro here — 2 to 3 sentences that hook the reader and include your main keyword naturally.</p>\n\n<h2>Why These Wallpapers Stand Out</h2>\n<p>Explain the topic in detail. What makes these wallpapers special? Who are they for?</p>\n\n<img src="https://assets.hauntedwallpapers.com/thumbnails/YOUR-IMAGE.jpeg" alt="Dark aesthetic wallpaper free download" style="width:100%;aspect-ratio:9/16;object-fit:cover;border-radius:4px;margin:16px 0;" />\n\n<h2>How to Download and Set Your Wallpaper</h2>\n<p>Step by step instructions here.</p>\n\n<ol>\n  <li>Browse our <a href="/iphone">iPhone wallpapers</a> or <a href="/android">Android wallpapers</a></li>\n  <li>Tap the image you love to open it</li>\n  <li>Hit the red Download Free button</li>\n  <li>Set it from your Photos app</li>\n</ol>\n\n<h2>Top Picks from Our Collection</h2>\n<p>Highlight 3–5 specific wallpapers from your site here.</p>\n\n<div style="background:#1a0a0a;border:1px solid #c0001a;padding:20px 24px;margin:32px 0;text-align:center;">\n<p style="color:#f0ecff;margin-bottom:12px;">Ready to download? Browse our full free 4K dark wallpaper collection.</p>\n<a href="/iphone" style="display:inline-block;background:#c0001a;color:#fff;padding:10px 24px;text-decoration:none;font-size:0.8rem;letter-spacing:0.1em;">Browse Wallpapers →</a>\n</div>\n\n<h2>Frequently Asked Questions</h2>\n<details style="border:1px solid #2a2535;padding:12px 16px;margin-bottom:8px;">\n<summary style="cursor:pointer;color:#f0ecff;">Are these wallpapers free?</summary>\n<p style="margin-top:10px;color:#c9c4dd;">Yes — every wallpaper on Haunted Wallpapers is completely free to download in 4K resolution. No account required.</p>\n</details>`;
 
   async function handlePublish() {
     if (!title || !slug || !content) { setMessage("Please fill in title, slug, and content."); return; }
@@ -853,23 +942,55 @@ function BlogTab({ password, prefillTitle, prefillLabel, onPrefillUsed }:
           </div>
           <div>
             <label style={labelStyle}>Label / Category</label>
-            <select value={label} onChange={(e) => setLabel(e.target.value)} style={{ ...inputStyle, cursor: "pointer",
-              ...(label === "18+ Mature Content" ? { borderColor: "#c0001a", color: "#ff6b6b" } : {})
-            }}>
+            <select value={label} onChange={(e) => setLabel(e.target.value)}
+              style={{
+                ...inputStyle, cursor: "pointer",
+                ...(isAdultLabel ? { borderColor: "#c0001a", color: "#ff6b6b" } : {}),
+              }}>
               {ALL_LABELS.map((l) => <option key={l} value={l}>{l}</option>)}
             </select>
-            {label === "18+ Mature Content" && (
+
+            {/* 18+ warning box under the label selector */}
+            {isAdultLabel && (
               <div style={{
-                marginTop: "6px",
-                display: "flex", alignItems: "center", gap: "8px",
+                marginTop: "8px",
                 background: "rgba(192,0,26,0.1)",
-                border: "1px solid rgba(192,0,26,0.4)",
-                padding: "6px 10px",
-                fontSize: "0.62rem", fontFamily: "monospace",
-                color: "#ff8080", letterSpacing: "0.08em",
+                border: "1px solid rgba(192,0,26,0.5)",
+                padding: "10px 14px",
               }}>
-                <span style={{ fontSize: "0.9rem" }}>⚠</span>
-                This post will be tagged as adult content. Make sure the blog content is appropriate for 18+ audiences only.
+                <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "8px" }}>
+                  <AdultBadge size="lg" />
+                  <span style={{ color: "#ff8080", fontSize: "0.7rem", fontFamily: "monospace", letterSpacing: "0.1em" }}>
+                    Mature Content — Blog Post
+                  </span>
+                </div>
+                <p style={{ color: "#8a8099", fontSize: "0.65rem", fontFamily: "monospace", letterSpacing: "0.06em", margin: 0, lineHeight: 1.6 }}>
+                  This post will be labelled 18+ Mature Content across the site. An age-warning banner
+                  will appear at the top of the blog post. Make sure content is appropriate for adult audiences only.
+                </p>
+
+                {/* Preview of the blog page warning banner */}
+                <div style={{
+                  marginTop: "12px",
+                  display: "flex", alignItems: "center", gap: "12px",
+                  background: "rgba(192,0,26,0.08)",
+                  border: "1px solid rgba(192,0,26,0.4)",
+                  padding: "10px 14px",
+                }}>
+                  <span style={{
+                    background: "#c0001a", color: "#fff",
+                    fontFamily: "monospace", fontWeight: 900,
+                    fontSize: "0.8rem", padding: "4px 10px",
+                    letterSpacing: "0.05em", flexShrink: 0,
+                  }}>18+</span>
+                  <p style={{
+                    fontFamily: "monospace", fontSize: "0.55rem",
+                    letterSpacing: "0.1em", textTransform: "uppercase",
+                    color: "#a89bc0", margin: 0, lineHeight: 1.5,
+                  }}>
+                    ← Preview of the warning banner that will appear at the top of this blog post
+                  </p>
+                </div>
               </div>
             )}
           </div>
@@ -887,11 +1008,11 @@ function BlogTab({ password, prefillTitle, prefillLabel, onPrefillUsed }:
             style={{ ...inputStyle, fontSize: "0.82rem" }} />
         </div>
 
-        {/* ── AI Alt-Text Generator for Blog Images ── */}
+        {/* ── AI Alt-Text Generator for Blog Images (Gemini) ── */}
         <div style={{ border: "1px solid #2a2535", padding: "16px 18px", background: "#0a0812" }}>
-          <p style={eyebrowStyle}>✨ AI Alt-Text Generator for Blog Images</p>
+          <p style={eyebrowStyle}>✨ AI Alt-Text Generator for Blog Images (Gemini)</p>
           <p style={{ color: "#6b6480", fontSize: "0.75rem", marginBottom: "14px" }}>
-            Upload or paste a URL for any image in your blog post. Claude will write a perfect 130–150 char SEO alt tag.
+            Upload or paste a URL for any image in your blog post. Gemini 2.0 Flash will write a perfect 130–150 char SEO alt tag.
           </p>
 
           <div style={{ display: "flex", gap: "12px", alignItems: "flex-end", flexWrap: "wrap", marginBottom: "12px" }}>
@@ -900,7 +1021,7 @@ function BlogTab({ password, prefillTitle, prefillLabel, onPrefillUsed }:
               <input
                 value={altImageUrl}
                 onChange={e => { setAltImageUrl(e.target.value); setAltImageFile(null); }}
-                placeholder="https://pub-....r2.dev/thumbnails/..."
+                placeholder="https://assets.hauntedwallpapers.com/thumbnails/..."
                 style={{ ...inputStyle, fontSize: "0.8rem" }}
               />
             </div>
@@ -915,9 +1036,7 @@ function BlogTab({ password, prefillTitle, prefillLabel, onPrefillUsed }:
             </div>
           </div>
 
-          <button
-            type="button"
-            onClick={handleGenerateBlogAlt}
+          <button type="button" onClick={handleGenerateBlogAlt}
             disabled={generatingAlt || (!altImageFile && !altImageUrl)}
             style={{
               background: generatingAlt ? "#1a1825" : "rgba(192,0,26,0.15)",
@@ -925,14 +1044,10 @@ function BlogTab({ password, prefillTitle, prefillLabel, onPrefillUsed }:
               color: generatingAlt ? "#6b6480" : "#f0ecff",
               padding: "8px 20px",
               cursor: (generatingAlt || (!altImageFile && !altImageUrl)) ? "not-allowed" : "pointer",
-              fontSize: "0.7rem",
-              letterSpacing: "0.1em",
-              textTransform: "uppercase",
-              fontFamily: "monospace",
-              marginBottom: "12px",
-            }}
-          >
-            {generatingAlt ? "✨ Analysing image…" : "✨ Generate Alt Text with AI"}
+              fontSize: "0.7rem", letterSpacing: "0.1em", textTransform: "uppercase",
+              fontFamily: "monospace", marginBottom: "12px",
+            }}>
+            {generatingAlt ? "✨ Analysing image with Gemini…" : "✨ Generate Alt Text with Gemini"}
           </button>
 
           {generatedAlt && (
@@ -941,11 +1056,8 @@ function BlogTab({ password, prefillTitle, prefillLabel, onPrefillUsed }:
                 Generated ({generatedAlt.length} chars)
               </p>
               <p style={{ color: "#f0ecff", fontSize: "0.85rem", marginBottom: "10px" }}>{generatedAlt}</p>
-              <button
-                type="button"
-                onClick={() => navigator.clipboard.writeText(generatedAlt)}
-                style={{ background: "transparent", border: "1px solid #2a2535", color: "#8a8099", padding: "4px 12px", cursor: "pointer", fontSize: "0.65rem", fontFamily: "monospace" }}
-              >
+              <button type="button" onClick={() => navigator.clipboard.writeText(generatedAlt)}
+                style={{ background: "transparent", border: "1px solid #2a2535", color: "#8a8099", padding: "4px 12px", cursor: "pointer", fontSize: "0.65rem", fontFamily: "monospace" }}>
                 Copy to clipboard
               </button>
             </div>
@@ -1031,6 +1143,7 @@ function BlogTab({ password, prefillTitle, prefillLabel, onPrefillUsed }:
         </button>
       </div>
 
+      {/* Published posts list */}
       {posts.length > 0 && (
         <div style={{ marginTop: "40px" }}>
           <p style={eyebrowStyle}>Published Posts ({posts.length})</p>
@@ -1038,19 +1151,18 @@ function BlogTab({ password, prefillTitle, prefillLabel, onPrefillUsed }:
             <div key={p.slug} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 0", borderBottom: "1px solid #1a1825", gap: "12px" }}>
               <div style={{ flex: 1, minWidth: 0 }}>
                 <span style={{ color: "#f0ecff", fontSize: "0.88rem" }}>{p.title}</span>
-                <div style={{ display: "flex", gap: "8px", marginTop: "3px", alignItems: "center" }}>
+                <div style={{ display: "flex", gap: "8px", marginTop: "4px", alignItems: "center", flexWrap: "wrap" }}>
+                  {/* 18+ label badge on published posts */}
                   {p.label === "18+ Mature Content" ? (
                     <span style={{
-                      display: "inline-flex", alignItems: "center", gap: "4px",
-                      background: "rgba(192,0,26,0.15)",
-                      border: "1px solid #c0001a",
-                      color: "#ff6b6b",
-                      padding: "1px 7px",
-                      fontSize: "0.6rem",
-                      letterSpacing: "0.1em",
-                      fontWeight: 700,
+                      display: "inline-flex", alignItems: "center", gap: "5px",
+                      background: "#c0001a", color: "#fff",
+                      fontFamily: "monospace", fontWeight: 900,
+                      fontSize: "0.58rem", letterSpacing: "0.08em",
+                      padding: "2px 8px", textTransform: "uppercase",
+                      border: "1px solid #ff2040",
                     }}>
-                      ⚠ 18+ Mature Content
+                      ⚠ 18+
                     </span>
                   ) : (
                     <span style={{ background: "#1a1825", border: "1px solid #2a2535", color: "#c0a0ff", padding: "1px 6px", fontSize: "0.6rem" }}>{p.label}</span>
