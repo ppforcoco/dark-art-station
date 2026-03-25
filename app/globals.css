@@ -6414,7 +6414,7 @@ a.download-btn:active {
 [data-theme="light"] .download-note { color: #7a7468 !important; }
 
 /* ── Light: format badge pills (JPEG · 4K · 9:16) ── */
-[data-theme="light"] .font-mono.text-\\[\\#4a445a\\].border.border-\\[\\#2a2535\\] {
+[data-theme="light"] [class*="font-mono"][class*="text-\[#4a445a\]"][class*="border"][class*="border-\[#2a2535\]"] {
   color: #5a5450 !important;
   border-color: #b8b4aa !important;
   background: rgba(0,0,0,0.04) !important;
