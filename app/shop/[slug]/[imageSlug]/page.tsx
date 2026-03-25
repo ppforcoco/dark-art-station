@@ -227,33 +227,20 @@ export default async function CollectionImagePage({ params }: PageProps) {
 
             {/* ── DOWNLOAD SECTION ── */}
             <div className="download-section">
-              <p className="download-section-label">Choose your device:</p>
-
-              {/* iPhone download */}
-              <a
+              {/* Single Download Button */}
+              <DownloadButton
                 href={`/api/download/image/${image.id}`}
-                className="device-download-btn iphone-btn"
-                download
               >
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                  <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/>
-                  <line x1="12" y1="18" x2="12.01" y2="18"/>
-                </svg>
-                ↓ Download for iPhone
-              </a>
+                ↓ Download Free
+              </DownloadButton>
 
-              {/* Android download */}
-              <a
-                href={`/api/download/image/${image.id}`}
-                className="device-download-btn android-btn"
-                download
+              {/* Setup Guide Link */}
+              <Link 
+                href="/blog/how-to-set-wallpaper" 
+                className="setup-guide-link"
               >
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/>
-                  <path d="M8 12h8M12 8v8"/>
-                </svg>
-                ↓ Download for Android
-              </a>
+                How to set wallpaper on iPhone, Android & PC →
+              </Link>
 
               <p className="download-note">
                 JPEG · 4K resolution · No account · No watermark · Instant download
@@ -315,68 +302,35 @@ export default async function CollectionImagePage({ params }: PageProps) {
         .download-section {
           display: flex;
           flex-direction: column;
-          gap: 10px;
+          gap: 12px;
           padding: 20px;
           border: 1px solid rgba(139,0,0,0.3);
           background: rgba(7,7,16,0.6);
         }
-        .download-section-label {
+
+        /* Setup Guide Link */
+        .setup-guide-link {
           font-family: var(--font-space), monospace;
-          font-size: 0.6rem;
-          letter-spacing: 0.2em;
-          text-transform: uppercase;
-          color: #6b6480;
-          margin: 0 0 4px;
+          font-size: 0.65rem;
+          letter-spacing: 0.1em;
+          color: #9a90a9;
+          text-decoration: underline;
+          text-underline-offset: 2px;
+          transition: color 0.2s ease;
+          text-align: center;
+          display: inline-block;
+        }
+        .setup-guide-link:hover {
+          color: #f0ecff;
         }
 
-        /* Device buttons */
-        .device-download-btn {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 10px;
-          width: 100%;
-          min-height: 56px;
-          padding: 0 20px;
-          box-sizing: border-box;
-          font-family: var(--font-space), monospace;
-          font-size: 0.72rem;
-          font-weight: 700;
-          letter-spacing: 0.15em;
-          text-transform: uppercase;
-          text-decoration: none !important;
-          text-align: center;
-          transition: background-color 0.2s ease, filter 0.2s ease;
-          -webkit-tap-highlight-color: transparent;
-          touch-action: manipulation;
-          cursor: pointer;
-          border: 1px solid;
-        }
-        .iphone-btn {
-          background-color: #8b0000;
-          border-color: #8b0000;
-          color: #ffffff !important;
-        }
-        .iphone-btn:hover {
-          background-color: #a80000;
-          filter: brightness(1.1);
-        }
-        .android-btn {
-          background-color: transparent;
-          border-color: #2a7a3a;
-          color: #5db870 !important;
-        }
-        .android-btn:hover {
-          background-color: rgba(42,122,58,0.15);
-          border-color: #5db870;
-        }
         .download-note {
           font-family: var(--font-space), monospace;
           font-size: 0.5rem;
           letter-spacing: 0.1em;
           text-transform: uppercase;
           color: #4a445a;
-          margin: 4px 0 0;
+          margin: 0;
           text-align: center;
         }
 
