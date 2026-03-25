@@ -4,11 +4,12 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import Image from "next/image";
 
 export interface LightboxImage {
-  id:    string;
-  src:   string;
-  alt:   string;
-  title: string;
-  href:  string;
+  id:        string;
+  src:       string;
+  alt:       string;
+  title:     string;
+  href:      string;
+  downloadId?: string; // image DB id for direct download
 }
 
 interface Props {
@@ -248,14 +249,26 @@ export default function LightboxGallery({ images }: Props) {
             <span className="lb-caption-title">{current.title}</span>
 
             <div className="lb-caption-actions">
-              {/* Navigate to individual image page — user lands there and downloads */}
-              <button
+              {/* Direct download — hits API immediately, no page nav */}
+              <a
+                href={current.downloadId
+                  ? `/api/download/image/${current.downloadId}`
+                  : current.href}
                 className="lb-download-btn"
+                aria-label={`Download ${current.title}`}
+                download
+              >
+                ↓ Download Free
+              </a>
+
+              {/* View the individual image page */}
+              <button
+                className="lb-caption-link"
                 onClick={() => navigateTo(current.href)}
-                aria-label={`View and download ${current.title}`}
+                aria-label={`View ${current.title} page`}
                 type="button"
               >
-                ↓ View &amp; Download Free
+                View Page ↗
               </button>
             </div>
           </div>

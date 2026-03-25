@@ -1,83 +1,137 @@
-// app/shop/[slug]/page.tsx
+// app/shop/[slug]/[imageSlug]/page.tsx
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { db } from "@/lib/db";
+import { db, getRelatedImages } from "@/lib/db";
 import { getPublicUrl } from "@/lib/r2";
 import AdSlot from "@/components/AdSlot";
-import LightboxGallery from "@/components/LightboxGallery";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import DownloadButton from "@/components/DownloadButton";
+import RelatedWallpapers from "@/components/RelatedWallpapers";
+import SocialShare from "@/components/SocialShare";
+import FavoriteButton from "@/components/FavoriteButton";
+import PageTracker from "@/components/PageTracker";
+import RecentlyViewed from "@/components/RecentlyViewed";
+
+export const dynamicParams = true;
 
 interface PageProps {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ slug: string; imageSlug: string }>;
 }
 
-// Display title overrides — fix DB title mismatches without a DB migration
-const TITLE_OVERRIDES: Record<string, string> = {
-  "dark-sorceress-collection": "Skulls & Skeletons",
-};
-
-// Collections that show an 18+ content warning banner
-const ADULT_COLLECTION_SLUGS = [
-  "skull-warning-collection",
-  "bone-hands-collection",
-];
-
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const { slug } = await params;
+  const { slug, imageSlug } = await params;
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
+
+  const image = await db.image.findFirst({
+    where: { slug: imageSlug, collection: { slug } },
+    select: { title: true, description: true, r2Key: true, tags: true },
+  });
   const collection = await db.collection.findUnique({
     where: { slug },
-    select: { title: true, description: true, thumbnail: true, category: true },
+    select: { title: true },
   });
-  if (!collection) return { title: "Not Found | Haunted Wallpapers" };
-  const displayTitle = TITLE_OVERRIDES[slug] ?? collection.title;
-  const ogImage = collection.thumbnail ? getPublicUrl(collection.thumbnail) : `${siteUrl}/og-default.jpg`;
+
+  if (!image) return { title: "Not Found | Haunted Wallpapers" };
+
+  const ogImage = getPublicUrl(image.r2Key);
+  const tagLine = image.tags.slice(0, 3).map((t) => `#${t}`).join(" ");
+
   return {
-    title: `${displayTitle} | Free Download | Haunted Wallpapers`,
-    description: `${collection.description} Download all ${displayTitle} wallpapers free — no account required.`,
-    keywords: [collection.category, "dark wallpaper", "dark art", "dark fantasy", "free download", displayTitle],
+    title: `${image.title} — Free Dark Wallpaper | Haunted Wallpapers`,
+    description:
+      image.description ??
+      `${image.title} — free 4K dark wallpaper from the ${collection?.title ?? "Haunted"} collection. ${tagLine}. Download for iPhone, Android or PC instantly.`,
+    keywords: [
+      "dark wallpaper",
+      "free wallpaper download",
+      image.title,
+      collection?.title ?? "",
+      ...image.tags,
+    ],
     openGraph: {
-      title: `${displayTitle} | Haunted Wallpapers`,
-      description: collection.description,
-      url: `${siteUrl}/shop/${slug}`,
+      title: `${image.title} | Haunted Wallpapers`,
+      description:
+        image.description ?? `Free 4K dark wallpaper: ${image.title}`,
+      url: `${siteUrl}/shop/${slug}/${imageSlug}`,
       siteName: "Haunted Wallpapers",
-      images: [{ url: ogImage, width: 1200, height: 630, alt: displayTitle }],
+      images: [{ url: ogImage, width: 1080, height: 1920, alt: image.title }],
       type: "website",
     },
     twitter: {
       card: "summary_large_image",
-      title: `${displayTitle} | Haunted Wallpapers`,
-      description: collection.description,
+      title: `${image.title} | Haunted Wallpapers`,
+      description:
+        image.description ?? `Free 4K dark wallpaper: ${image.title}`,
       images: [ogImage],
     },
-    alternates: { canonical: `${siteUrl}/shop/${slug}` },
+    alternates: { canonical: `${siteUrl}/shop/${slug}/${imageSlug}` },
   };
 }
 
 export async function generateStaticParams() {
-  const collections = await db.collection.findMany({ select: { slug: true } });
-  return collections.map((c) => ({ slug: c.slug }));
+  const collections = await db.collection.findMany({
+    select: { slug: true, images: { select: { slug: true } } },
+  });
+  return collections.flatMap((c) =>
+    c.images.map((img) => ({ slug: c.slug, imageSlug: img.slug }))
+  );
 }
 
-export default async function CollectionPage({ params }: PageProps) {
-  const { slug } = await params;
-  const collection = await db.collection.findUnique({
-    where: { slug },
-    include: {
-      images: { orderBy: { sortOrder: "asc" } },
-      _count: { select: { downloads: true } },
+export default async function CollectionImagePage({ params }: PageProps) {
+  const { slug, imageSlug } = await params;
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
+
+  // Find image that belongs to this collection
+  const image = await db.image.findFirst({
+    where: { slug: imageSlug, collection: { slug } },
+    select: {
+      id: true,
+      slug: true,
+      title: true,
+      description: true,
+      r2Key: true,
+      highResKey: true,
+      tags: true,
+      viewCount: true,
+      sortOrder: true,
+      collectionId: true,
     },
   });
+
+  if (!image) notFound();
+
+  const collection = await db.collection.findUnique({
+    where: { slug },
+    select: {
+      id: true,
+      slug: true,
+      title: true,
+      images: {
+        orderBy: { sortOrder: "asc" },
+        select: { slug: true, title: true, r2Key: true, sortOrder: true },
+      },
+    },
+  });
+
   if (!collection) notFound();
 
-  const displayTitle = TITLE_OVERRIDES[slug] ?? collection.title;
-  const thumbnailUrl = collection.thumbnail ? getPublicUrl(collection.thumbnail) : null;
-  const hasImages = collection.images.length > 0;
-  // First image used as fallback download target when no bundle ZIP exists
-  const firstImage = collection.images[0] ?? null;
-  const isAdult = ADULT_COLLECTION_SLUGS.includes(slug);
+  // Fire-and-forget view count increment
+  db.image
+    .update({ where: { id: image.id }, data: { viewCount: { increment: 1 } } })
+    .catch(() => {});
+
+  const thumbUrl = getPublicUrl(image.r2Key);
+
+  // Prev/next within the same collection
+  const siblings = collection.images;
+  const currentIdx = siblings.findIndex((s) => s.slug === imageSlug);
+  const prevImage = currentIdx > 0 ? siblings[currentIdx - 1] : null;
+  const nextImage =
+    currentIdx < siblings.length - 1 ? siblings[currentIdx + 1] : null;
+
+  const related = await getRelatedImages(image.id, image.tags, 6);
 
   return (
     <main
@@ -86,142 +140,156 @@ export default async function CollectionPage({ params }: PageProps) {
     >
       <Breadcrumbs
         items={[
-          { label: "Home",        href: "/" },
-          { label: "Collections", href: "/shop" },
-          { label: displayTitle },
+          { label: "Home", href: "/" },
+          { label: "Collections", href: "/collections" },
+          { label: collection.title, href: `/shop/${slug}` },
+          { label: image.title },
         ]}
       />
 
-      {/* ── 18+ Age Warning Banner ── */}
-      {isAdult && (
-        <div
-          style={{
-            maxWidth: "1280px",
-            margin: "0 auto",
-            padding: "0 24px",
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "14px",
-              background: "rgba(139,0,0,0.15)",
-              border: "1px solid rgba(139,0,0,0.5)",
-              padding: "14px 20px",
-              marginBottom: "8px",
-            }}
-          >
-            <span
-              style={{
-                fontFamily: "var(--font-space), monospace",
-                fontSize: "0.85rem",
-                fontWeight: 900,
-                color: "#c0001a",
-                flexShrink: 0,
-                border: "2px solid #c0001a",
-                padding: "2px 8px",
-                letterSpacing: "0.05em",
-              }}
-            >
-              18+
-            </span>
-            <p
-              style={{
-                fontFamily: "var(--font-space), monospace",
-                fontSize: "0.6rem",
-                letterSpacing: "0.12em",
-                textTransform: "uppercase",
-                color: "#a89bc0",
-                margin: 0,
-              }}
-            >
-              This collection contains graphic skull and skeleton imagery. Intended for mature audiences only.
-              Viewer discretion is advised.
-            </p>
-          </div>
-        </div>
-      )}
+      <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_MAIN} width={728} height={90} />
 
-      {/* ── Collection Header ── */}
-      <section style={{ maxWidth: "1280px", margin: "0 auto", padding: "40px 24px" }}>
-        <div
-          style={{ display: "grid", gridTemplateColumns: "1fr", gap: "32px" }}
-          className="collection-header-grid"
-        >
-          {/* Thumbnail */}
-          <div
-            style={{
-              width: "100%",
-              maxWidth: "360px",
-              margin: "0 auto",
-              background: "#070710",
-              border: "1px solid rgba(139,0,0,0.3)",
-              overflow: "hidden",
-              position: "relative",
-            }}
-          >
-            <div style={{ position: "relative", width: "100%", paddingTop: "177.78%" }}>
-              {thumbnailUrl ? (
-                <Image
-                  src={thumbnailUrl}
-                  alt={displayTitle}
-                  fill
-                  priority
-                  quality={90}
-                  sizes="360px"
-                  style={{ objectFit: "contain", objectPosition: "center center" }}
-                />
-              ) : (
-                <div
-                  className={`w-full h-full flex items-center justify-center text-8xl ${collection.bgClass}`}
-                  style={{ position: "absolute", inset: 0 }}
-                >
-                  {collection.icon}
-                </div>
-              )}
+      {/* ── Main layout ── */}
+      <section style={{ maxWidth: "1280px", margin: "0 auto", padding: "16px 24px 40px" }}>
+        <div className="image-detail-grid">
+
+          {/* ── Left: image preview ── */}
+          <div style={{ position: "relative", width: "100%", maxWidth: "480px", margin: "0 auto" }}>
+            <div
+              style={{
+                position: "relative",
+                width: "100%",
+                paddingTop: "177.78%", // 9:16 portrait
+                background: "#070710",
+                border: "1px solid rgba(139,0,0,0.3)",
+                overflow: "hidden",
+              }}
+            >
+              <Image
+                src={thumbUrl}
+                alt={image.title}
+                fill
+                priority
+                quality={90}
+                unoptimized
+                sizes="(max-width: 768px) 100vw, 480px"
+                style={{ objectFit: "cover", objectPosition: "center" }}
+              />
             </div>
-            {collection.badge && (
-              <span
-                style={{ position: "absolute", top: "16px", left: "16px", zIndex: 10 }}
-                className="font-mono text-[0.6rem] tracking-[0.2em] uppercase bg-[#8b0000] text-white px-3 py-1"
-              >
-                {collection.badge}
-              </span>
-            )}
           </div>
 
-          {/* Info + Download */}
+          {/* ── Right: info + download ── */}
           <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
             <div>
-              <span className="font-mono text-[0.6rem] tracking-[0.25em] uppercase text-[#8b0000]">
-                {collection.category}
-              </span>
-              <h1 className="font-display text-3xl font-bold mt-2 leading-tight">
-                {displayTitle}
+              <Link
+                href={`/shop/${slug}`}
+                className="font-mono text-[0.6rem] tracking-[0.25em] uppercase text-[#8b0000] hover:text-[#c0001a] transition-colors"
+              >
+                ← {collection.title}
+              </Link>
+              <h1 className="font-display text-2xl md:text-3xl font-bold mt-3 leading-tight">
+                {image.title}
               </h1>
             </div>
 
-            <p className="font-body text-[1.05rem] text-[#a89bc0] leading-relaxed">
-              {collection.description}
-            </p>
+            {image.description && (
+              <p className="font-body text-[1rem] text-[#a89bc0] leading-relaxed">
+                {image.description}
+              </p>
+            )}
 
-            {/* Meta tags row */}
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "10px", alignItems: "center" }}>
-              <span className="font-mono text-[0.6rem] tracking-[0.2em] uppercase text-[#4a445a] border border-[#2a2535] px-3 py-1">
-                {collection.tag}
-              </span>
-              {hasImages && (
-                <span className="font-mono text-[0.6rem] tracking-[0.2em] uppercase text-[#4a445a] border border-[#2a2535] px-3 py-1">
-                  {collection.images.length} images
-                </span>
-              )}
+            {/* Tags */}
+            {image.tags.length > 0 && (
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+                {image.tags.map((tag) => (
+                  <span
+                    key={tag}
+                    className="font-mono text-[0.55rem] tracking-[0.15em] uppercase border border-[#2a2535] px-3 py-1 text-[#8a8099]"
+                  >
+                    #{tag}
+                  </span>
+                ))}
+              </div>
+            )}
+
+            {/* Format badge */}
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "12px", alignItems: "center" }}>
               <span className="font-mono text-[0.6rem] tracking-[0.2em] uppercase text-[#4a445a] border border-[#2a2535] px-3 py-1">
                 4K · Free
               </span>
+              <span className="font-mono text-[0.6rem] tracking-[0.2em] uppercase text-[#4a445a] border border-[#2a2535] px-3 py-1">
+                JPEG
+              </span>
+              <span className="font-mono text-[0.6rem] tracking-[0.2em] uppercase text-[#4a445a] border border-[#2a2535] px-3 py-1">
+                9:16 Portrait
+              </span>
             </div>
 
-            {/* AdSense sidebar unit */}
+            {/* ── DOWNLOAD SECTION ── */}
+            <div className="download-section">
+              <p className="download-section-label">Choose your device:</p>
+
+              {/* iPhone download */}
+              <a
+                href={`/api/download/image/${image.id}`}
+                className="device-download-btn iphone-btn"
+                download
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/>
+                  <line x1="12" y1="18" x2="12.01" y2="18"/>
+                </svg>
+                ↓ Download for iPhone
+              </a>
+
+              {/* Android download */}
+              <a
+                href={`/api/download/image/${image.id}`}
+                className="device-download-btn android-btn"
+                download
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/>
+                  <path d="M8 12h8M12 8v8"/>
+                </svg>
+                ↓ Download for Android
+              </a>
+
+              {/* PC / Desktop download */}
+              <a
+                href={`/api/download/image/${image.id}`}
+                className="device-download-btn pc-btn"
+                download
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <rect x="2" y="3" width="20" height="14" rx="2"/>
+                  <line x1="8" y1="21" x2="16" y2="21"/>
+                  <line x1="12" y1="17" x2="12" y2="21"/>
+                </svg>
+                ↓ Download for PC
+              </a>
+
+              <p className="download-note">
+                JPEG · 4K resolution · No account · No watermark · Instant download
+              </p>
+            </div>
+
+            {/* Save to favorites */}
+            <div className="detail-fav-row">
+              <FavoriteButton
+                size="md"
+                className="detail-fav-inline"
+                item={{
+                  slug: image.slug,
+                  title: image.title,
+                  thumb: thumbUrl,
+                  href: `/shop/${slug}/${imageSlug}`,
+                  device: "collection",
+                }}
+              />
+              <span className="detail-fav-label">Save to Favorites</span>
+            </div>
+
             <AdSlot
               slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_SIDEBAR}
               format="rectangle"
@@ -233,37 +301,62 @@ export default async function CollectionPage({ params }: PageProps) {
         </div>
       </section>
 
-      {/* Responsive grid CSS */}
+      {/* ── Styles ── */}
       <style>{`
+        .image-detail-grid {
+          display: flex;
+          flex-direction: column;
+          gap: 32px;
+        }
         @media (min-width: 768px) {
-          .collection-header-grid {
-            grid-template-columns: 1fr 1fr !important;
-            align-items: start;
+          .image-detail-grid {
+            flex-direction: row;
+            align-items: flex-start;
+            gap: 48px;
+          }
+          .image-detail-grid > *:first-child {
+            flex: 1;
+            max-width: 480px !important;
+            position: sticky;
+            top: 100px;
+          }
+          .image-detail-grid > *:last-child {
+            flex: 1;
           }
         }
 
-        /* ── Collection download button ── */
-        .collection-download-wrap {
+        /* ── Download section ── */
+        .download-section {
           display: flex;
           flex-direction: column;
           gap: 10px;
-          margin-top: 4px;
+          padding: 20px;
+          border: 1px solid rgba(139,0,0,0.3);
+          background: rgba(7,7,16,0.6);
         }
-        .collection-download-btn {
+        .download-section-label {
+          font-family: var(--font-space), monospace;
+          font-size: 0.6rem;
+          letter-spacing: 0.2em;
+          text-transform: uppercase;
+          color: #6b6480;
+          margin: 0 0 4px;
+        }
+
+        /* Device buttons */
+        .device-download-btn {
           display: flex;
           align-items: center;
           justify-content: center;
+          gap: 10px;
           width: 100%;
-          min-height: 60px;
-          padding: 0 24px;
+          min-height: 56px;
+          padding: 0 20px;
           box-sizing: border-box;
-          background-color: #8b0000;
-          border: 1px solid #8b0000;
-          color: #ffffff !important;
           font-family: var(--font-space), monospace;
           font-size: 0.72rem;
           font-weight: 700;
-          letter-spacing: 0.18em;
+          letter-spacing: 0.15em;
           text-transform: uppercase;
           text-decoration: none !important;
           text-align: center;
@@ -271,243 +364,199 @@ export default async function CollectionPage({ params }: PageProps) {
           -webkit-tap-highlight-color: transparent;
           touch-action: manipulation;
           cursor: pointer;
-          white-space: nowrap;
+          border: 1px solid;
         }
-        .collection-download-btn:hover {
+        .iphone-btn {
+          background-color: #8b0000;
+          border-color: #8b0000;
+          color: #ffffff !important;
+        }
+        .iphone-btn:hover {
           background-color: #a80000;
           filter: brightness(1.1);
         }
-        .collection-download-btn:active {
-          filter: brightness(0.9);
+        .android-btn {
+          background-color: transparent;
+          border-color: #2a7a3a;
+          color: #5db870 !important;
         }
-        .collection-download-note {
+        .android-btn:hover {
+          background-color: rgba(42,122,58,0.15);
+          border-color: #5db870;
+        }
+        .pc-btn {
+          background-color: transparent;
+          border-color: #2a2535;
+          color: #a89bc0 !important;
+        }
+        .pc-btn:hover {
+          background-color: rgba(255,255,255,0.05);
+          border-color: #4a445a;
+        }
+        .download-note {
           font-family: var(--font-space), monospace;
           font-size: 0.5rem;
-          letter-spacing: 0.12em;
+          letter-spacing: 0.1em;
           text-transform: uppercase;
           color: #4a445a;
-          margin: 0;
+          margin: 4px 0 0;
           text-align: center;
         }
-      `}</style>
 
-      {/* Main ad banner */}
-      <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_MAIN} width={728} height={90} />
-
-      {/* ── About This Collection — unique per-collection content ── */}
-      {(() => {
-        // Build a unique tag sentence from the first 8 image tags across the collection
-        const allTags = Array.from(
-          new Set(collection.images.flatMap((img) => img.tags ?? []))
-        ).slice(0, 8);
-        const tagSentence = allTags.length > 0
-          ? `Themes in this collection include ${allTags.map(t => `#${t}`).join(", ")}.`
-          : "";
-
-        // Paragraph 2 — use the real DB description (always unique per collection)
-        const descPara = collection.description;
-
-        // Paragraph 3 — device hint based on category
-        const cat = (collection.category ?? "").toLowerCase();
-        const deviceHint = cat.includes("pc") || cat.includes("desktop")
-          ? "These wallpapers are optimised for widescreen desktop and ultrawide monitors."
-          : cat.includes("iphone") || cat.includes("ios")
-          ? "These wallpapers are sized for iPhone screens — portrait 9:16, perfect for lock screen and home screen."
-          : cat.includes("android")
-          ? "These wallpapers are sized for Android devices — portrait 9:16, no cropping required."
-          : "Each wallpaper is optimised for phone screens (portrait 9:16) and can also be used on desktop.";
-
-        return (
-          <section style={{ maxWidth: "1280px", margin: "0 auto", padding: "0 24px 48px" }}>
-            <div className="collection-about-grid">
-
-              {/* Left — unique text */}
-              <div className="collection-about-text">
-                <h2 className="collection-about-heading">About This Collection</h2>
-                <p className="collection-about-body">
-                  {descPara}
-                </p>
-                {tagSentence && (
-                  <p className="collection-about-body">{tagSentence}</p>
-                )}
-                <p className="collection-about-body">
-                  {deviceHint} All {collection.images.length} wallpapers are free to download — no account,
-                  no watermark, no paywall. See our{" "}
-                  <a href="/faq" className="collection-about-link">FAQ</a>{" "}
-                  for step-by-step instructions on setting a wallpaper on any device.
-                </p>
-              </div>
-
-              {/* Right — meta box */}
-              <div className="collection-about-meta">
-                <div className="collection-meta-header">
-                  <span className="collection-meta-header-text">Collection Details</span>
-                </div>
-                {[
-                  { label: "Title",      value: displayTitle },
-                  { label: "Works",      value: `${collection.images.length} artworks` },
-                  { label: "Category",   value: collection.category },
-                  { label: "Resolution", value: "Up to 4K" },
-                  { label: "Format",     value: "WEBP / JPEG" },
-                  { label: "Price",      value: "Free" },
-                  { label: "Licence",    value: "Personal use" },
-                ].map(({ label, value }) => (
-                  <div key={label} className="collection-meta-item">
-                    <span className="collection-meta-label">{label}</span>
-                    <span className="collection-meta-value">{value}</span>
-                  </div>
-                ))}
-              </div>
-
-            </div>
-          </section>
-        );
-      })()}
-
-      <style>{`
-        .collection-about-grid {
-          display: grid;
-          grid-template-columns: 1fr;
-          gap: 32px;
-          border-top: 1px solid rgba(192,0,26,0.2);
-          padding-top: 40px;
+        /* Fav row */
+        .detail-fav-row {
+          display: flex;
+          align-items: center;
+          gap: 10px;
         }
-        @media (min-width: 768px) {
-          .collection-about-grid { grid-template-columns: 2fr 1fr; align-items: start; }
-        }
-        .collection-about-heading {
-          font-family: var(--font-cinzel), cursive;
-          font-size: 1rem;
-          font-weight: 700;
-          color: #f0ecff;
-          margin-bottom: 16px;
-          letter-spacing: 0.06em;
-          text-transform: uppercase;
-        }
-        [data-theme="light"] .collection-about-heading { color: #1a1814; }
-
-        .collection-about-body {
-          font-family: var(--font-cormorant), Georgia, serif;
-          font-size: 1.08rem;
-          line-height: 1.8;
-          color: #c4bdd8;
-          margin-bottom: 14px;
-        }
-        [data-theme="light"] .collection-about-body { color: #3a3450; }
-
-        .collection-about-link {
-          color: #c9a84c;
-          text-decoration: underline;
-          text-underline-offset: 3px;
-        }
-        .collection-about-link:hover { color: #f0ecff; }
-        [data-theme="light"] .collection-about-link { color: #8b6914; }
-
-        /* ── Meta box ── */
-        .collection-about-meta {
-          border: 1px solid rgba(192,0,26,0.35);
-          background: rgba(12,8,20,0.6);
-          overflow: hidden;
-        }
-        [data-theme="light"] .collection-about-meta {
-          background: #f0ebe0;
-          border-color: rgba(192,0,26,0.25);
-        }
-        [data-theme="ghost"] .collection-about-meta {
-          background: rgba(30,30,40,0.7);
-          border-color: rgba(248,248,255,0.12);
-        }
-        [data-theme="ember"] .collection-about-meta {
-          background: rgba(20,10,0,0.7);
-          border-color: rgba(255,102,0,0.3);
-        }
-        [data-theme="blood"] .collection-about-meta {
-          background: rgba(12,0,0,0.7);
-          border-color: rgba(192,0,0,0.35);
-        }
-
-        .collection-meta-header {
-          background: #c0001a;
-          padding: 10px 20px;
-        }
-        [data-theme="ghost"] .collection-meta-header { background: #2a2a3a; }
-        [data-theme="ember"] .collection-meta-header { background: #8b3a00; }
-        [data-theme="blood"] .collection-meta-header { background: #8b0000; }
-        [data-theme="light"] .collection-meta-header { background: #c0001a; }
-
-        .collection-meta-header-text {
+        .detail-fav-label {
           font-family: var(--font-space), monospace;
           font-size: 0.6rem;
-          font-weight: 700;
-          letter-spacing: 0.2em;
+          letter-spacing: 0.15em;
           text-transform: uppercase;
-          color: #ffffff;
+          color: #6b6480;
         }
-
-        .collection-meta-item {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          padding: 11px 20px;
-          border-bottom: 1px solid rgba(255,255,255,0.05);
-        }
-        .collection-meta-item:last-child { border-bottom: none; }
-        [data-theme="light"] .collection-meta-item { border-bottom-color: rgba(0,0,0,0.07); }
-
-        .collection-meta-label {
-          font-family: var(--font-space), monospace;
-          font-size: 0.58rem;
-          letter-spacing: 0.16em;
-          text-transform: uppercase;
-          color: #7a7090;
-        }
-        [data-theme="light"] .collection-meta-label { color: #7a6a5a; }
-
-        .collection-meta-value {
-          font-family: var(--font-space), monospace;
-          font-size: 0.65rem;
-          font-weight: 700;
-          letter-spacing: 0.08em;
-          color: #f0ecff;
-          text-align: right;
-        }
-        [data-theme="light"] .collection-meta-value { color: #1a1814; }
-        [data-theme="ghost"] .collection-meta-value { color: #e8e8ff; }
-        [data-theme="ember"] .collection-meta-value { color: #ffd4a0; }
-        [data-theme="blood"] .collection-meta-value { color: #fff0f0; }
       `}</style>
 
-      {/* Image gallery */}
-      {hasImages && (
-        <section style={{ maxWidth: "1280px", margin: "0 auto", padding: "48px 24px" }}>
-          <h2 className="font-mono text-[0.7rem] tracking-[0.3em] uppercase text-[#4a445a] mb-8">
-            — {collection.images.length} Works in this Collection
-          </h2>
-          <LightboxGallery
-            images={collection.images.map((img) => ({
-              id:    img.id,
-              src:   getPublicUrl(img.r2Key),
-              alt:   img.title,
-              title: img.title,
-              href:  `/shop/${slug}/${img.slug}`,
-            }))}
-          />
-        </section>
+      {/* ── Prev / Next within collection ── */}
+      {(prevImage || nextImage) && (
+        <nav
+          style={{
+            maxWidth: "1280px",
+            margin: "0 auto",
+            padding: "0 24px 40px",
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr",
+            gap: "12px",
+          }}
+        >
+          {prevImage ? (
+            <Link
+              href={`/shop/${slug}/${prevImage.slug}`}
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "8px",
+                padding: "12px",
+                border: "1px solid #2a2535",
+                textDecoration: "none",
+              }}
+              className="hover:border-[rgba(139,0,0,0.5)] transition-colors"
+            >
+              <span className="font-mono text-[0.5rem] tracking-[0.2em] uppercase text-[#4a445a]">
+                ← Previous
+              </span>
+              <div
+                style={{
+                  position: "relative",
+                  width: "100%",
+                  aspectRatio: "9/16",
+                  overflow: "hidden",
+                  maxWidth: "170px",
+                  margin: "0 auto",
+                }}
+              >
+                <Image
+                  src={getPublicUrl(prevImage.r2Key)}
+                  alt={prevImage.title}
+                  fill
+                  className="object-cover"
+                  unoptimized
+                  sizes="(max-width: 640px) 45vw, 200px"
+                />
+              </div>
+              <span
+                className="font-body italic text-[0.8rem] text-[#f0ecff]"
+                style={{
+                  display: "-webkit-box",
+                  WebkitLineClamp: 2,
+                  WebkitBoxOrient: "vertical" as const,
+                  overflow: "hidden",
+                }}
+              >
+                {prevImage.title}
+              </span>
+            </Link>
+          ) : (
+            <div />
+          )}
+
+          {nextImage ? (
+            <Link
+              href={`/shop/${slug}/${nextImage.slug}`}
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "8px",
+                padding: "12px",
+                border: "1px solid #2a2535",
+                textDecoration: "none",
+                textAlign: "right",
+              }}
+              className="hover:border-[rgba(139,0,0,0.5)] transition-colors"
+            >
+              <span className="font-mono text-[0.5rem] tracking-[0.2em] uppercase text-[#4a445a]">
+                Next →
+              </span>
+              <div
+                style={{
+                  position: "relative",
+                  width: "100%",
+                  aspectRatio: "9/16",
+                  overflow: "hidden",
+                  maxWidth: "170px",
+                  margin: "0 auto",
+                }}
+              >
+                <Image
+                  src={getPublicUrl(nextImage.r2Key)}
+                  alt={nextImage.title}
+                  fill
+                  className="object-cover"
+                  unoptimized
+                  sizes="(max-width: 640px) 45vw, 200px"
+                />
+              </div>
+              <span
+                className="font-body italic text-[0.8rem] text-[#f0ecff]"
+                style={{
+                  display: "-webkit-box",
+                  WebkitLineClamp: 2,
+                  WebkitBoxOrient: "vertical" as const,
+                  overflow: "hidden",
+                }}
+              >
+                {nextImage.title}
+              </span>
+            </Link>
+          ) : (
+            <div />
+          )}
+        </nav>
       )}
 
-      {/* Multiplex / native content ad — after gallery, highest CTR position */}
-      {hasImages && (
-        <div style={{ maxWidth: "1280px", margin: "0 auto", padding: "0 24px 40px" }}>
-          <AdSlot
-            slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_MULTIPLEX ?? process.env.NEXT_PUBLIC_ADSENSE_SLOT_FOOTER}
-            format="auto"
-            width={728}
-            height={90}
-          />
-        </div>
-      )}
+      <AdSlot
+        slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_FOOTER}
+        width={728}
+        height={90}
+      />
 
-      <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_FOOTER} width={728} height={90} className="mt-8" />
+      <RelatedWallpapers images={related} heading="More Dark Art You'll Like" />
+
+      <PageTracker
+        item={{
+          slug: image.slug,
+          title: image.title,
+          thumb: thumbUrl,
+          href: `/shop/${slug}/${imageSlug}`,
+        }}
+      />
+      <SocialShare
+        title={image.title}
+        imageUrl={thumbUrl}
+        pageUrl={`${siteUrl}/shop/${slug}/${imageSlug}`}
+      />
+      <RecentlyViewed />
 
       <script
         type="application/ld+json"
@@ -515,16 +564,59 @@ export default async function CollectionPage({ params }: PageProps) {
           __html: JSON.stringify({
             "@context": "https://schema.org",
             "@type": "Product",
-            name: displayTitle,
-            description: collection.description,
-            url: `${process.env.NEXT_PUBLIC_SITE_URL}/shop/${slug}`,
+            "@id": `${siteUrl}/shop/${slug}/${imageSlug}#product`,
+            name: image.title,
+            description:
+              image.description ??
+              `${image.title} — free 4K dark wallpaper.`,
+            url: `${siteUrl}/shop/${slug}/${imageSlug}`,
+            brand: {
+              "@type": "Brand",
+              name: "HAUNTED WALLPAPERS",
+              url: siteUrl,
+            },
+            category: "Digital Products > Wallpapers",
+            image: [
+              {
+                "@type": "ImageObject",
+                url: thumbUrl,
+                contentUrl: thumbUrl,
+                caption: image.title,
+              },
+            ],
+            additionalProperty: [
+              {
+                "@type": "PropertyValue",
+                name: "Format",
+                value: "JPEG (4K High Resolution)",
+              },
+              {
+                "@type": "PropertyValue",
+                name: "Aspect Ratio",
+                value: "9:16 Portrait",
+              },
+              {
+                "@type": "PropertyValue",
+                name: "Instant Download",
+                value: "Yes",
+              },
+            ],
             offers: {
               "@type": "Offer",
+              url: `${siteUrl}/shop/${slug}/${imageSlug}`,
               price: "0.00",
               priceCurrency: "USD",
               availability: "https://schema.org/InStock",
+              seller: {
+                "@type": "Organization",
+                name: "HAUNTED WALLPAPERS",
+                url: siteUrl,
+              },
             },
-            image: thumbnailUrl ?? undefined,
+            potentialAction: {
+              "@type": "DownloadAction",
+              target: `${siteUrl}/api/download/image/${image.id}`,
+            },
           }),
         }}
       />

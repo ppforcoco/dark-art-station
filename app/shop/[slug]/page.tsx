@@ -488,11 +488,12 @@ export default async function CollectionPage({ params }: PageProps) {
           </h2>
           <LightboxGallery
             images={collection.images.map((img) => ({
-              id:    img.id,
-              src:   getPublicUrl(img.r2Key),
-              alt:   img.title,
-              title: img.title,
-              href:  `/shop/${slug}/${img.slug}`,
+              id:         img.id,
+              src:        getPublicUrl(img.r2Key),
+              alt:        img.title,
+              title:      img.title,
+              href:       `/shop/${slug}/${img.slug}`,
+              downloadId: img.id,
             }))}
           />
         </section>
