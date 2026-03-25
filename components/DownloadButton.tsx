@@ -1,13 +1,14 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, ReactNode } from "react";
 
 interface Props {
   href: string;
-  viewCount: number;
+  viewCount?: number;
   label?: string;
+  children?: ReactNode;
 }
 
-export default function DownloadButton({ href, viewCount, label }: Props) {
+export default function DownloadButton({ href, viewCount, label, children }: Props) {
   const [state,     setState]     = useState<"idle" | "loading" | "done">("idle");
   const [isMobile,  setIsMobile]  = useState(false);
   const [canShare,  setCanShare]  = useState(false);
@@ -52,10 +53,12 @@ export default function DownloadButton({ href, viewCount, label }: Props) {
     triggerDownloadState();
   }
 
-  const buttonLabel =
-    state === "loading" ? "Preparing…"
-    : state === "done"  ? "✓ Download Started"
-    : label             ?? "↓ Download 4K · Free";
+  // Resolve button label: children > label prop > default
+  const resolvedLabel = children
+    ? (state === "loading" ? "Preparing…" : state === "done" ? "✓ Download Started" : children)
+    : (state === "loading" ? "Preparing…"
+      : state === "done"  ? "✓ Download Started"
+      : label             ?? "↓ Download 4K · Free");
 
   const bgColor =
     state === "done"    ? "#1a5c35"
@@ -64,19 +67,21 @@ export default function DownloadButton({ href, viewCount, label }: Props) {
 
   return (
     <div className="download-btn-wrap">
-      {/* Stats row */}
-      <div className="download-stats-row">
-        <span className="download-stat">
-          👁 {viewCount.toLocaleString()} views
-        </span>
-        <span
-          className="download-saved-msg"
-          style={{ opacity: state === "done" ? 1 : 0 }}
-          aria-live="polite"
-        >
-          ✓ Check your downloads folder
-        </span>
-      </div>
+      {/* Stats row — only shown when viewCount is provided */}
+      {viewCount !== undefined && (
+        <div className="download-stats-row">
+          <span className="download-stat">
+            👁 {viewCount.toLocaleString()} views
+          </span>
+          <span
+            className="download-saved-msg"
+            style={{ opacity: state === "done" ? 1 : 0 }}
+            aria-live="polite"
+          >
+            ✓ Check your downloads folder
+          </span>
+        </div>
+      )}
 
       {/* Buttons row */}
       <div style={{ display: "flex", gap: "10px" }}>
@@ -86,10 +91,10 @@ export default function DownloadButton({ href, viewCount, label }: Props) {
           onClick={handleDownloadClick}
           className="download-btn"
           style={{ backgroundColor: bgColor, borderColor: bgColor, flex: 1 }}
-          aria-label={buttonLabel}
+          aria-label={typeof resolvedLabel === "string" ? resolvedLabel : "Download"}
           download
         >
-          {buttonLabel}
+          {resolvedLabel}
         </a>
 
         {/* Mobile: "Set as Wallpaper" button via Web Share API */}

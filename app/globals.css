@@ -5069,6 +5069,13 @@ p,
   -webkit-box-orient: vertical;
   overflow: hidden;
   word-break: break-word;
+  /* Hide by default, reveal on hover */
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.rv-card--portrait:hover .rv-card-title,
+.rv-card--landscape:hover .rv-card-title {
+  opacity: 1;
 }
 
 /* ── Origins / Setup static pages ─────────────────────────── */
@@ -6026,18 +6033,19 @@ a.download-btn:active {
 [data-theme="light"] .blog-index-subtitle { color: #5a5450; }
 [data-theme="light"] .blog-featured-card {
   border-color: #cdc8bc;
-  background: rgba(192,0,26,0.02);
+  background: #f4f1ea;
 }
 [data-theme="light"] .blog-featured-card:hover {
   border-color: #c0001a;
-  background: rgba(192,0,26,0.04);
+  background: #f0ede4;
 }
 [data-theme="light"] .blog-featured-title { color: #1a1814; }
 [data-theme="light"] .blog-featured-excerpt { color: #5a5450; }
 [data-theme="light"] .blog-post-card {
   border-color: #cdc8bc;
+  background: #f4f1ea;
 }
-[data-theme="light"] .blog-post-card:hover { border-color: #c0001a; }
+[data-theme="light"] .blog-post-card:hover { border-color: #c0001a; background: #f0ede4; }
 [data-theme="light"] .blog-post-card-title { color: #1a1814; }
 [data-theme="light"] .blog-post-card-excerpt { color: #7a7468; }
 [data-theme="light"] .blog-post-card-date { color: #9a9288; }
