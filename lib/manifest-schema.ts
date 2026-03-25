@@ -199,7 +199,7 @@ export function validateManifest(raw: unknown): ValidatedManifest {
   // 1. Run structural Zod validation (field types, lengths, per-collection duplicate slugs)
   const result = ManifestStructureSchema.safeParse(raw);
   if (!result.success) {
-    const messages = result.error.errors
+    const messages = result.error.issues
       .map((e) => `  [${e.path.join(".")}] ${e.message}`)
       .join("\n");
     throw new Error(`❌ manifest.json validation failed:\n${messages}`);

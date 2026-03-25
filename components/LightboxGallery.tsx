@@ -249,18 +249,6 @@ export default function LightboxGallery({ images }: Props) {
             <span className="lb-caption-title">{current.title}</span>
 
             <div className="lb-caption-actions">
-              {/* Direct download — hits API immediately, no page nav */}
-              <a
-                href={current.downloadId
-                  ? `/api/download/image/${current.downloadId}`
-                  : current.href}
-                className="lb-download-btn"
-                aria-label={`Download ${current.title}`}
-                download
-              >
-                ↓ Download Free
-              </a>
-
               {/* View the individual image page */}
               <button
                 className="lb-caption-link"
