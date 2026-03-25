@@ -2251,6 +2251,8 @@ body::before {
   margin: 2.2em 0 0.6em;
 }
 .blog-html-content h1 { font-size: clamp(1.6rem, 3vw, 2.2rem); }
+/* Hide the first h1 inside blog content — it duplicates the page's <h1 class="static-page-title"> */
+.blog-html-content h1:first-child { display: none; }
 .blog-html-content h2 {
   font-size: clamp(1.2rem, 2.5vw, 1.55rem);
   padding-bottom: 12px;
@@ -5417,6 +5419,16 @@ a.download-btn:active {
 /* Light theme */
 [data-theme="light"] .download-stat    { color: #7a7468; }
 [data-theme="light"] .download-sublabel { color: #7a7468; }
+
+/* ── Image preview frame (download page) ── */
+.image-preview-frame {
+  background: #070710;
+  border: 1px solid rgba(139,0,0,0.3);
+}
+[data-theme="light"] .image-preview-frame {
+  background: #e8e3d8;
+  border-color: rgba(139,0,0,0.2);
+}
 
 /* ── Product Card CTA ─────────────────────────────────────────*/
 
