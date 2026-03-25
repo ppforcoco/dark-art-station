@@ -26,6 +26,7 @@ const ALL_LABELS = [
   "Minimalist Dark", "Cyberpunk & Neon", "Halloween Special", "Seasonal Picks",
   "Top Lists", "New Releases", "Community Spotlights", "News & Updates",
   "Free Wallpapers", "4K Wallpapers", "Lock Screen Ideas",
+  "18+ Mature Content",
 ];
 
 // ─── Tag bank ─────────────────────────────────────────────────────────────────
@@ -852,9 +853,25 @@ function BlogTab({ password, prefillTitle, prefillLabel, onPrefillUsed }:
           </div>
           <div>
             <label style={labelStyle}>Label / Category</label>
-            <select value={label} onChange={(e) => setLabel(e.target.value)} style={{ ...inputStyle, cursor: "pointer" }}>
+            <select value={label} onChange={(e) => setLabel(e.target.value)} style={{ ...inputStyle, cursor: "pointer",
+              ...(label === "18+ Mature Content" ? { borderColor: "#c0001a", color: "#ff6b6b" } : {})
+            }}>
               {ALL_LABELS.map((l) => <option key={l} value={l}>{l}</option>)}
             </select>
+            {label === "18+ Mature Content" && (
+              <div style={{
+                marginTop: "6px",
+                display: "flex", alignItems: "center", gap: "8px",
+                background: "rgba(192,0,26,0.1)",
+                border: "1px solid rgba(192,0,26,0.4)",
+                padding: "6px 10px",
+                fontSize: "0.62rem", fontFamily: "monospace",
+                color: "#ff8080", letterSpacing: "0.08em",
+              }}>
+                <span style={{ fontSize: "0.9rem" }}>⚠</span>
+                This post will be tagged as adult content. Make sure the blog content is appropriate for 18+ audiences only.
+              </div>
+            )}
           </div>
         </div>
 
@@ -1022,7 +1039,22 @@ function BlogTab({ password, prefillTitle, prefillLabel, onPrefillUsed }:
               <div style={{ flex: 1, minWidth: 0 }}>
                 <span style={{ color: "#f0ecff", fontSize: "0.88rem" }}>{p.title}</span>
                 <div style={{ display: "flex", gap: "8px", marginTop: "3px", alignItems: "center" }}>
-                  <span style={{ background: "#1a1825", border: "1px solid #2a2535", color: "#c0a0ff", padding: "1px 6px", fontSize: "0.6rem" }}>{p.label}</span>
+                  {p.label === "18+ Mature Content" ? (
+                    <span style={{
+                      display: "inline-flex", alignItems: "center", gap: "4px",
+                      background: "rgba(192,0,26,0.15)",
+                      border: "1px solid #c0001a",
+                      color: "#ff6b6b",
+                      padding: "1px 7px",
+                      fontSize: "0.6rem",
+                      letterSpacing: "0.1em",
+                      fontWeight: 700,
+                    }}>
+                      ⚠ 18+ Mature Content
+                    </span>
+                  ) : (
+                    <span style={{ background: "#1a1825", border: "1px solid #2a2535", color: "#c0a0ff", padding: "1px 6px", fontSize: "0.6rem" }}>{p.label}</span>
+                  )}
                   <span style={{ color: "#6b6480", fontSize: "0.72rem" }}>
                     {new Date(p.createdAt).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })}
                   </span>

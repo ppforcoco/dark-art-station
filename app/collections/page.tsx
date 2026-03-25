@@ -2,10 +2,20 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { db } from "@/lib/db";
 import AdSlot from "@/components/AdSlot";
+import AgeGateLink from "@/components/AgeGateLink";
 
 export const revalidate = 60;
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
+
+// Collections that show the 18+ badge on the grid
+const ADULT_COLLECTION_SLUGS = [
+  "skull-warning-collection",
+  "bone-hands-collection",
+  "dark-humor-wallpaper-collection",
+  "skull-street-collection",
+  "bone-street-collection",
+];
 
 export const metadata: Metadata = {
   title: "All Collections | Free Dark Wallpapers | Haunted Wallpapers",
@@ -66,22 +76,70 @@ export default async function CollectionsPage() {
               — {category}
             </h2>
             <div className="category-grid">
-              {cols.map((col) => (
-                <Link
-                  key={col.id}
-                  href={`/shop/${col.slug}`}
-                  className={`cat-card${col.featured ? " featured" : ""}`}
-                >
-                  <div className={`cat-bg-layer ${col.bgClass}`} />
-                  <div className="cat-icon-el">{col.icon}</div>
-                  <div className="cat-overlay" />
-                  <div className="cat-content">
-                    <span className="cat-tag">{col.tag}</span>
-                    <div className="cat-name">{col.title}</div>
-                    <div className="cat-count">{col._count.images} images</div>
-                  </div>
-                </Link>
-              ))}
+              {cols.map((col) => {
+                const isAdult = ADULT_COLLECTION_SLUGS.includes(col.slug);
+                const cardInner = (
+                  <>
+                    <div className={`cat-bg-layer ${col.bgClass}`} />
+                    <div className="cat-icon-el">{col.icon}</div>
+                    <div className="cat-overlay" />
+                    <div className="cat-content">
+                      <span className="cat-tag">{col.tag}</span>
+                      <div className="cat-name">{col.title}</div>
+                      <div className="cat-count">{col._count.images} images</div>
+                    </div>
+                    {/* 18+ badge — only on adult collections */}
+                    {isAdult && (
+                      <div style={{
+                        position: "absolute", bottom: 0, left: 0, right: 0,
+                        zIndex: 10, pointerEvents: "none",
+                        display: "flex", alignItems: "center", justifyContent: "center",
+                        gap: "8px",
+                        background: "#000",
+                        borderTop: "2px solid #fff",
+                        padding: "6px 10px",
+                      }}>
+                        <span style={{
+                          background: "#c0001a",
+                          color: "#fff",
+                          fontFamily: "monospace",
+                          fontSize: "0.7rem", fontWeight: 900,
+                          letterSpacing: "0.05em",
+                          padding: "2px 8px",
+                          flexShrink: 0,
+                        }}>18+</span>
+                        <div style={{ display: "flex", flexDirection: "column", lineHeight: 1.2 }}>
+                          <span style={{ fontFamily: "monospace", fontSize: "0.38rem", letterSpacing: "0.12em", textTransform: "uppercase", color: "#ccc", fontWeight: 700 }}>Parental Advisory</span>
+                          <span style={{ fontFamily: "monospace", fontSize: "0.38rem", letterSpacing: "0.1em", textTransform: "uppercase", color: "#fff", fontWeight: 900 }}>Mature Content</span>
+                        </div>
+                      </div>
+                    )}
+                  </>
+                );
+
+                if (isAdult) {
+                  return (
+                    <AgeGateLink
+                      key={col.id}
+                      slug={col.slug}
+                      className={`cat-card${col.featured ? " featured" : ""}`}
+                      style={{ position: "relative" }}
+                    >
+                      {cardInner}
+                    </AgeGateLink>
+                  );
+                }
+
+                return (
+                  <Link
+                    key={col.id}
+                    href={`/shop/${col.slug}`}
+                    className={`cat-card${col.featured ? " featured" : ""}`}
+                  >
+                    {cardInner}
+                  </Link>
+                );
+              })}
             </div>
             {/* In-feed ad after every other category group */}
             {groupIdx % 2 === 1 && (

@@ -2,8 +2,6 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import Image from "next/image";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
 
 export interface LightboxImage {
   id:    string;
@@ -18,7 +16,6 @@ interface Props {
 }
 
 export default function LightboxGallery({ images }: Props) {
-  const router = useRouter();
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const touchStartX = useRef<number | null>(null);
   const touchStartY = useRef<number | null>(null);
@@ -27,17 +24,19 @@ export default function LightboxGallery({ images }: Props) {
   const open  = (i: number) => { setActiveIndex(i); };
   const close = useCallback(() => setActiveIndex(null), []);
 
-  // Navigate to individual image page: restore body scroll first, then push route
+  // Navigate to individual image page: restore body scroll first, then hard-navigate
+  // Using window.location.href instead of router.push to avoid Next.js scroll
+  // restoration fighting with the fixed-body scroll-lock we apply in the lightbox.
   const navigateTo = useCallback((href: string) => {
-    // Manually restore body scroll state (same as the cleanup in useEffect)
     document.body.style.overflow = "";
     document.body.style.position = "";
     document.body.style.top      = "";
     document.body.style.width    = "";
     document.body.style.left     = "";
     setActiveIndex(null);
-    router.push(href);
-  }, [router]);
+    // Small tick lets React flush the state before we navigate
+    setTimeout(() => { window.location.href = href; }, 10);
+  }, []);
   const prev  = useCallback(() => {
     setActiveIndex((i) => (i === null ? null : (i - 1 + images.length) % images.length));
   }, [images.length]);

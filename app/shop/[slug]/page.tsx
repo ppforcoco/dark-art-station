@@ -23,6 +23,8 @@ const ADULT_COLLECTION_SLUGS = [
   "skull-warning-collection",
   "bone-hands-collection",
   "dark-humor-wallpaper-collection",
+  "skull-street-collection",
+  "bone-street-collection",
 ];
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {

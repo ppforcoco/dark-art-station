@@ -3,6 +3,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
 import FavoriteButton from "@/components/FavoriteButton";
 
 // Collections that require an 18+ warning label on the grid card thumbnail
@@ -10,6 +11,8 @@ const ADULT_COLLECTION_SLUGS = [
   "skull-warning-collection",
   "bone-hands-collection",
   "dark-humor-wallpaper-collection",
+  "skull-street-collection",
+  "bone-street-collection",
 ];
 
 interface ProductCardProps {
@@ -40,6 +43,7 @@ export default function ProductCard({
   downloadCount,
 }: ProductCardProps) {
   const isAdult = ADULT_COLLECTION_SLUGS.includes(slug);
+  const [showAgeGate, setShowAgeGate] = useState(false);
 
   const badgeStyles: Record<string, string> = {
     New:  "bg-[#c0001a] text-[#f0ecff]",
@@ -53,10 +57,103 @@ export default function ProductCard({
   }
 
   return (
+    <>
+      {/* ── Age Gate Modal ── */}
+      {showAgeGate && (
+        <div
+          style={{
+            position: "fixed", inset: 0, zIndex: 9999,
+            background: "rgba(5,5,10,0.92)",
+            backdropFilter: "blur(8px)",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            padding: "20px",
+          }}
+          onClick={() => setShowAgeGate(false)}
+        >
+          <div
+            style={{
+              background: "#0c0812",
+              border: "1px solid #c0001a",
+              maxWidth: "400px", width: "100%",
+              padding: "36px 32px",
+              textAlign: "center",
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Big 18+ icon */}
+            <div style={{
+              display: "inline-flex", alignItems: "center", justifyContent: "center",
+              width: "64px", height: "64px",
+              border: "3px solid #c0001a",
+              borderRadius: "50%",
+              marginBottom: "20px",
+            }}>
+              <span style={{
+                fontFamily: "var(--font-space), monospace",
+                fontWeight: 900, fontSize: "1.3rem",
+                color: "#c0001a", letterSpacing: "-0.02em",
+              }}>18+</span>
+            </div>
+
+            <h2 style={{
+              fontFamily: "var(--font-space), monospace",
+              fontSize: "0.75rem", letterSpacing: "0.2em",
+              textTransform: "uppercase", color: "#f0ecff",
+              marginBottom: "12px",
+            }}>
+              Mature Content Warning
+            </h2>
+            <p style={{
+              fontFamily: "var(--font-space), monospace",
+              fontSize: "0.65rem", letterSpacing: "0.06em",
+              color: "#a89bc0", lineHeight: 1.7,
+              marginBottom: "28px",
+            }}>
+              This collection contains graphic skull, skeleton, and dark humour imagery.
+              It is intended for audiences aged 18 and above only.
+            </p>
+
+            <div style={{ display: "flex", gap: "12px" }}>
+              <button
+                onClick={() => setShowAgeGate(false)}
+                style={{
+                  flex: 1, padding: "12px",
+                  background: "transparent",
+                  border: "1px solid #2a2535",
+                  color: "#6b6480",
+                  fontFamily: "var(--font-space), monospace",
+                  fontSize: "0.6rem", letterSpacing: "0.15em",
+                  textTransform: "uppercase", cursor: "pointer",
+                }}
+              >
+                ← Go Back
+              </button>
+              <a
+                href={`/shop/${slug}`}
+                style={{
+                  flex: 1, padding: "12px",
+                  background: "#c0001a",
+                  border: "1px solid #c0001a",
+                  color: "#fff",
+                  fontFamily: "var(--font-space), monospace",
+                  fontSize: "0.6rem", letterSpacing: "0.15em",
+                  textTransform: "uppercase", cursor: "pointer",
+                  textDecoration: "none",
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                }}
+              >
+                I am 18+ — Continue →
+              </a>
+            </div>
+          </div>
+        </div>
+      )}
+
     <div className="product-card-wrap group">
       {/* Image */}
       <Link
-        href={`/shop/${slug}`}
+        href={isAdult ? "#" : `/shop/${slug}`}
+        onClick={isAdult ? (e) => { e.preventDefault(); setShowAgeGate(true); } : undefined}
         className={`product-card-image relative overflow-hidden block ${!thumbnail ? bgClass : ""}`}
         aria-label={`View ${name} collection`}
         tabIndex={-1}
@@ -202,7 +299,8 @@ export default function ProductCard({
               : price}
           </span>
           <Link
-            href={`/shop/${slug}`}
+            href={isAdult ? "#" : `/shop/${slug}`}
+            onClick={isAdult ? (e) => { e.preventDefault(); setShowAgeGate(true); } : undefined}
             className="product-card-cta"
             aria-label={isFree ? `Download ${name} free` : `View ${name} collection`}
           >
@@ -211,5 +309,6 @@ export default function ProductCard({
         </div>
       </div>
     </div>
+    </>
   );
 }
