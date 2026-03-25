@@ -97,7 +97,6 @@ export default async function Home() {
           </p>
           <div className="hero-ctas fade-up-4">
             <Link href="/shop" className="btn-primary"><span>Browse All Wallpapers</span></Link>
-            <Link href="/shop?filter=free" className="btn-secondary">Free Downloads</Link>
           </div>
           <div className="hero-stats fade-up-5">
             <div><span className="stat-num">500+</span><span className="stat-label">Dark Artworks</span></div>

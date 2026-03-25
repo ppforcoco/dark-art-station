@@ -241,6 +241,7 @@
 
 /* ── Nav ── */
 [data-theme="light"] .site-nav {
+  background: rgba(244,241,234,0.97) !important;
   border-bottom-color: rgba(139,0,0,0.15) !important;
 }
 [data-theme="light"] .nav-links a {
@@ -272,6 +273,94 @@
 [data-theme="light"] .footer-col a:hover { color: #1a1814 !important; }
 [data-theme="light"] .footer-copy      { color: #7a7468 !important; }
 [data-theme="light"] .footer-brand-desc { color: #7a7468 !important; }
+
+/* ── Light Theme: Header icon buttons & theme dropdown ── */
+[data-theme="light"] .hw-nav-icon {
+  border-color: rgba(139,0,0,0.2) !important;
+  color: #5a5450 !important;
+}
+[data-theme="light"] .hw-nav-icon:hover {
+  border-color: #c0001a !important;
+  color: #c0001a !important;
+}
+[data-theme="light"] .hw-dropdown-btn {
+  border-color: rgba(139,0,0,0.2) !important;
+  color: #5a5450 !important;
+}
+[data-theme="light"] .hw-dropdown-btn:hover {
+  border-color: #c0001a !important;
+  color: #c0001a !important;
+}
+[data-theme="light"] .hw-dropdown {
+  background: #f0ebe0 !important;
+  border-color: rgba(192,0,26,0.3) !important;
+  box-shadow: 0 12px 48px rgba(0,0,0,0.12) !important;
+}
+[data-theme="light"] .hw-dropdown-item {
+  color: #5a5450 !important;
+}
+[data-theme="light"] .hw-dropdown-item:hover {
+  background: rgba(192,0,26,0.08) !important;
+  color: #1a1814 !important;
+}
+[data-theme="light"] .hw-dropdown-item.hw-active { color: #c0001a !important; }
+[data-theme="light"] .mobile-theme-pill {
+  border-color: rgba(139,0,0,0.2) !important;
+  color: #7a7468 !important;
+}
+[data-theme="light"] .mobile-theme-pill.active {
+  border-color: #c0001a !important;
+  color: #c0001a !important;
+  background: rgba(192,0,26,0.08) !important;
+}
+[data-theme="light"] .mobile-menu-panel {
+  background: rgba(244,241,234,0.99) !important;
+  border-color: rgba(139,0,0,0.2) !important;
+}
+[data-theme="light"] .mobile-menu-link {
+  color: #1a1814 !important;
+  border-bottom-color: rgba(0,0,0,0.06) !important;
+}
+[data-theme="light"] .mobile-menu-link:hover { color: #c0001a !important; }
+[data-theme="light"] .mobile-link-index { color: #c0001a !important; }
+[data-theme="light"] .mobile-action-btn {
+  background: rgba(192,0,26,0.04) !important;
+  border-color: rgba(192,0,26,0.15) !important;
+  color: #3a3430 !important;
+}
+[data-theme="light"] .mobile-action-btn:hover {
+  background: rgba(192,0,26,0.1) !important;
+  color: #1a1814 !important;
+}
+[data-theme="light"] .hw-search-backdrop {
+  background: rgba(244,241,234,0.94) !important;
+}
+[data-theme="light"] .hw-search-form-box {
+  background: rgba(255,252,248,0.99) !important;
+  border-color: rgba(192,0,26,0.4) !important;
+}
+[data-theme="light"] .hw-search-big-input {
+  color: #1a1814 !important;
+}
+[data-theme="light"] .search-hint-btn {
+  background: rgba(192,0,26,0.05) !important;
+  border-color: rgba(192,0,26,0.18) !important;
+  color: #5a5450 !important;
+}
+[data-theme="light"] .search-hint-btn:hover {
+  background: rgba(192,0,26,0.12) !important;
+  color: #1a1814 !important;
+  border-color: rgba(192,0,26,0.4) !important;
+}
+[data-theme="light"] .hw-search-close-btn {
+  color: #1a1814 !important;
+  border-color: rgba(192,0,26,0.35) !important;
+}
+[data-theme="light"] .hw-search-close-btn:hover {
+  background: rgba(192,0,26,0.12) !important;
+  border-color: #c0001a !important;
+  color: #1a1814 !important;
+}
 
 /* ── Buttons ── */
 [data-theme="light"] .btn-secondary {

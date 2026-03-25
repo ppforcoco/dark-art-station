@@ -31,6 +31,21 @@ export default function Cursor() {
       setVisible(true);
     };
 
+    // Keep cursor visually in place during scroll (clientX/Y stays the same,
+    // but the rAF loop already pins to those values, so scroll is handled.)
+    // However we need to prevent the cursor from freezing — trigger a synthetic
+    // position refresh so the dot stays put relative to the viewport.
+    const onScroll = () => {
+      if (ringRef.current) {
+        ringRef.current.style.left = `${mx.current}px`;
+        ringRef.current.style.top  = `${my.current}px`;
+      }
+      if (dotRef.current) {
+        dotRef.current.style.left = `${mx.current}px`;
+        dotRef.current.style.top  = `${my.current}px`;
+      }
+    };
+
     const loop = () => {
       if (ringRef.current) {
         ringRef.current.style.left = `${mx.current}px`;
@@ -55,6 +70,17 @@ export default function Cursor() {
     document.addEventListener("mouseover", onOver);
     document.addEventListener("mouseleave", onLeave);
     document.addEventListener("mouseenter", onEnter);
+    // Keep dot pinned to viewport position while page scrolls
+    window.addEventListener("scroll", () => {
+      if (ringRef.current) {
+        ringRef.current.style.left = `${mx.current}px`;
+        ringRef.current.style.top  = `${my.current}px`;
+      }
+      if (dotRef.current) {
+        dotRef.current.style.left = `${mx.current}px`;
+        dotRef.current.style.top  = `${my.current}px`;
+      }
+    }, { passive: true });
 
     return () => {
       document.removeEventListener("mousemove", onMove);

@@ -8,6 +8,7 @@ import { getFavorites, toggleFavorite, type FavoriteItem } from "@/components/Fa
 export default function FavoritesPage() {
   const [items, setItems] = useState<FavoriteItem[]>([]);
   const [loaded, setLoaded] = useState(false);
+  const [showClearDialog, setShowClearDialog] = useState(false);
 
   useEffect(() => {
     setItems(getFavorites());
@@ -21,16 +22,15 @@ export default function FavoritesPage() {
   }, []);
 
   function handleRemove(item: FavoriteItem) {
-    toggleFavorite(item); // dispatches change event, updates items via listener
+    toggleFavorite(item);
   }
 
   function handleClearAll() {
-    if (!confirm("Remove all saved wallpapers?")) return;
     try { localStorage.removeItem("hw-favorites"); } catch {}
     window.dispatchEvent(new CustomEvent("hw-favorites-change", { detail: [] }));
+    setShowClearDialog(false);
   }
 
-  // Group by device type for nicer display
   const portrait  = items.filter(i => i.device !== "pc");
   const landscape = items.filter(i => i.device === "pc");
 
@@ -69,7 +69,7 @@ export default function FavoritesPage() {
             <p className="fav-actions-note">
               Saves are stored on this device only. Clearing your browser data will remove them.
             </p>
-            <button className="fav-clear-btn" onClick={handleClearAll}>Clear All</button>
+            <button className="fav-clear-btn" onClick={() => setShowClearDialog(true)}>Clear All</button>
           </div>
 
           {/* Portrait wallpapers (iPhone / Android / collections) */}
@@ -406,7 +406,119 @@ export default function FavoritesPage() {
         }
         .fav-remove-btn:hover { color: #c0001a; border-color: rgba(192,0,26,0.4); }
         [data-theme="light"] .fav-remove-btn { border-color: rgba(0,0,0,0.1); color: #8a8090; }
+
+        /* ── Custom Clear-All Dialog ── */
+        .fav-dialog-backdrop {
+          position: fixed; inset: 0; z-index: 1000;
+          background: rgba(4,3,12,0.88);
+          backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+          display: flex; align-items: center; justify-content: center;
+          padding: 24px;
+          animation: fav-dialog-in 0.2s cubic-bezier(0.22,1,0.36,1);
+        }
+        @keyframes fav-dialog-in {
+          from { opacity: 0; }
+          to   { opacity: 1; }
+        }
+        [data-theme="light"] .fav-dialog-backdrop {
+          background: rgba(244,241,234,0.88);
+        }
+        .fav-dialog {
+          position: relative;
+          background: #0e0c18;
+          border: 1px solid rgba(192,0,26,0.45);
+          padding: 40px 36px 32px;
+          max-width: 420px; width: 100%;
+          box-shadow: 0 24px 80px rgba(0,0,0,0.9);
+          animation: fav-dialog-slide 0.22s cubic-bezier(0.22,1,0.36,1);
+        }
+        @keyframes fav-dialog-slide {
+          from { opacity: 0; transform: translateY(-16px) scale(0.97); }
+          to   { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        [data-theme="light"] .fav-dialog {
+          background: #f0ebe0;
+          border-color: rgba(192,0,26,0.3);
+          box-shadow: 0 24px 80px rgba(0,0,0,0.25);
+        }
+        .fav-dialog-icon {
+          font-size: 2rem;
+          display: block;
+          margin-bottom: 16px;
+          line-height: 1;
+        }
+        .fav-dialog-title {
+          font-family: var(--font-cinzel), cursive;
+          font-size: 1.15rem;
+          font-weight: 700;
+          color: #f0ecff;
+          margin: 0 0 10px;
+          line-height: 1.25;
+        }
+        [data-theme="light"] .fav-dialog-title { color: #1a1814; }
+        .fav-dialog-body {
+          font-family: var(--font-cormorant), serif;
+          font-size: 1rem;
+          color: #8a8099;
+          line-height: 1.65;
+          margin: 0 0 28px;
+        }
+        [data-theme="light"] .fav-dialog-body { color: #5a5450; }
+        .fav-dialog-actions {
+          display: flex; gap: 10px; flex-wrap: wrap;
+        }
+        .fav-dialog-cancel {
+          flex: 1;
+          font-family: var(--font-space), monospace;
+          font-size: 0.6rem; letter-spacing: 0.14em; text-transform: uppercase;
+          background: transparent;
+          border: 1px solid rgba(255,255,255,0.1);
+          color: #8a8099;
+          padding: 12px 16px; cursor: pointer;
+          transition: border-color 0.15s, color 0.15s;
+          min-height: 44px;
+        }
+        .fav-dialog-cancel:hover { border-color: rgba(255,255,255,0.25); color: #f0ecff; }
+        [data-theme="light"] .fav-dialog-cancel {
+          border-color: rgba(0,0,0,0.12); color: #7a7468;
+        }
+        [data-theme="light"] .fav-dialog-cancel:hover {
+          border-color: rgba(0,0,0,0.3); color: #1a1814;
+        }
+        .fav-dialog-confirm {
+          flex: 1;
+          font-family: var(--font-space), monospace;
+          font-size: 0.6rem; letter-spacing: 0.14em; text-transform: uppercase;
+          background: #c0001a;
+          border: 1px solid #c0001a;
+          color: #fff;
+          padding: 12px 16px; cursor: pointer;
+          transition: background 0.15s, border-color 0.15s;
+          min-height: 44px;
+        }
+        .fav-dialog-confirm:hover { background: #a80016; border-color: #a80016; }
       `}</style>
+
+      {/* ── Custom Clear-All Confirmation Dialog ── */}
+      {showClearDialog && (
+        <div className="fav-dialog-backdrop" onClick={(e) => { if (e.target === e.currentTarget) setShowClearDialog(false); }}>
+          <div className="fav-dialog" role="dialog" aria-modal="true" aria-labelledby="fav-dialog-title">
+            <span className="fav-dialog-icon">🖤</span>
+            <h2 className="fav-dialog-title" id="fav-dialog-title">Clear All Saved Wallpapers?</h2>
+            <p className="fav-dialog-body">
+              This will remove all {items.length} saved wallpaper{items.length !== 1 ? "s" : ""} from your collection. This action cannot be undone.
+            </p>
+            <div className="fav-dialog-actions">
+              <button className="fav-dialog-cancel" onClick={() => setShowClearDialog(false)}>
+                Keep Collection
+              </button>
+              <button className="fav-dialog-confirm" onClick={handleClearAll}>
+                Clear All
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </main>
   );
 }
