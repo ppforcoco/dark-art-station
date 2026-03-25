@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export interface LightboxImage {
   id:    string;
@@ -17,6 +18,7 @@ interface Props {
 }
 
 export default function LightboxGallery({ images }: Props) {
+  const router = useRouter();
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const touchStartX = useRef<number | null>(null);
   const touchStartY = useRef<number | null>(null);
@@ -24,6 +26,18 @@ export default function LightboxGallery({ images }: Props) {
 
   const open  = (i: number) => { setActiveIndex(i); };
   const close = useCallback(() => setActiveIndex(null), []);
+
+  // Navigate to individual image page: restore body scroll first, then push route
+  const navigateTo = useCallback((href: string) => {
+    // Manually restore body scroll state (same as the cleanup in useEffect)
+    document.body.style.overflow = "";
+    document.body.style.position = "";
+    document.body.style.top      = "";
+    document.body.style.width    = "";
+    document.body.style.left     = "";
+    setActiveIndex(null);
+    router.push(href);
+  }, [router]);
   const prev  = useCallback(() => {
     setActiveIndex((i) => (i === null ? null : (i - 1 + images.length) % images.length));
   }, [images.length]);
@@ -236,14 +250,14 @@ export default function LightboxGallery({ images }: Props) {
 
             <div className="lb-caption-actions">
               {/* Navigate to individual image page — user lands there and downloads */}
-              <Link
-                href={current.href}
+              <button
                 className="lb-download-btn"
-                onClick={close}
+                onClick={() => navigateTo(current.href)}
                 aria-label={`View and download ${current.title}`}
+                type="button"
               >
                 ↓ View &amp; Download Free
-              </Link>
+              </button>
             </div>
           </div>
         </div>

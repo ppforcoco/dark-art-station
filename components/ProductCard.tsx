@@ -9,6 +9,7 @@ import FavoriteButton from "@/components/FavoriteButton";
 const ADULT_COLLECTION_SLUGS = [
   "skull-warning-collection",
   "bone-hands-collection",
+  "dark-humor-wallpaper-collection",
 ];
 
 interface ProductCardProps {
@@ -117,47 +118,65 @@ export default function ProductCard({
               pointerEvents: "none",
               display: "flex",
               flexDirection: "column",
-              alignItems: "flex-end",
+              alignItems: "center",
               justifyContent: "flex-end",
               padding: "10px",
             }}
           >
-            {/* Parental Advisory sticker bottom-right */}
+            {/* Parental Advisory sticker — full width, hard to miss */}
             <div
               style={{
+                width: "100%",
                 background: "#000",
                 border: "2px solid #fff",
-                padding: "3px 6px",
+                padding: "5px 8px",
                 display: "flex",
-                flexDirection: "column",
                 alignItems: "center",
-                lineHeight: 1,
+                justifyContent: "center",
+                gap: "8px",
               }}
             >
+              {/* Red 18+ pill */}
               <span
                 style={{
-                  fontFamily: "var(--font-space), monospace",
-                  fontSize: "0.38rem",
-                  letterSpacing: "0.05em",
-                  textTransform: "uppercase",
+                  background: "#c0001a",
                   color: "#fff",
-                  fontWeight: 700,
-                }}
-              >
-                Parental Advisory
-              </span>
-              <span
-                style={{
                   fontFamily: "var(--font-space), monospace",
-                  fontSize: "0.55rem",
-                  letterSpacing: "0.08em",
-                  textTransform: "uppercase",
-                  color: "#fff",
+                  fontSize: "0.75rem",
                   fontWeight: 900,
+                  letterSpacing: "0.05em",
+                  padding: "2px 7px",
+                  flexShrink: 0,
                 }}
               >
-                18+ Only
+                18+
               </span>
+              <div style={{ display: "flex", flexDirection: "column", lineHeight: 1.1 }}>
+                <span
+                  style={{
+                    fontFamily: "var(--font-space), monospace",
+                    fontSize: "0.42rem",
+                    letterSpacing: "0.12em",
+                    textTransform: "uppercase",
+                    color: "#ccc",
+                    fontWeight: 700,
+                  }}
+                >
+                  Parental Advisory
+                </span>
+                <span
+                  style={{
+                    fontFamily: "var(--font-space), monospace",
+                    fontSize: "0.42rem",
+                    letterSpacing: "0.1em",
+                    textTransform: "uppercase",
+                    color: "#fff",
+                    fontWeight: 900,
+                  }}
+                >
+                  Mature Content
+                </span>
+              </div>
             </div>
           </div>
         )}

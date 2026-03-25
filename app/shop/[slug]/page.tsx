@@ -18,6 +18,13 @@ const TITLE_OVERRIDES: Record<string, string> = {
   "dark-sorceress-collection": "Skulls & Skeletons",
 };
 
+// Collections that show an 18+ content warning banner
+const ADULT_COLLECTION_SLUGS = [
+  "skull-warning-collection",
+  "bone-hands-collection",
+  "dark-humor-wallpaper-collection",
+];
+
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
@@ -71,6 +78,7 @@ export default async function CollectionPage({ params }: PageProps) {
   const hasImages = collection.images.length > 0;
   // First image used as fallback download target when no bundle ZIP exists
   const firstImage = collection.images[0] ?? null;
+  const isAdult = ADULT_COLLECTION_SLUGS.includes(slug);
 
   return (
     <main
@@ -84,6 +92,57 @@ export default async function CollectionPage({ params }: PageProps) {
           { label: displayTitle },
         ]}
       />
+
+      {/* ── 18+ Age Warning Banner ── */}
+      {isAdult && (
+        <div
+          style={{
+            maxWidth: "1280px",
+            margin: "0 auto",
+            padding: "0 24px",
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "14px",
+              background: "rgba(139,0,0,0.15)",
+              border: "1px solid rgba(139,0,0,0.5)",
+              padding: "14px 20px",
+              marginBottom: "8px",
+            }}
+          >
+            <span
+              style={{
+                fontFamily: "var(--font-space), monospace",
+                fontSize: "0.85rem",
+                fontWeight: 900,
+                color: "#c0001a",
+                flexShrink: 0,
+                border: "2px solid #c0001a",
+                padding: "2px 8px",
+                letterSpacing: "0.05em",
+              }}
+            >
+              18+
+            </span>
+            <p
+              style={{
+                fontFamily: "var(--font-space), monospace",
+                fontSize: "0.6rem",
+                letterSpacing: "0.12em",
+                textTransform: "uppercase",
+                color: "#a89bc0",
+                margin: 0,
+              }}
+            >
+              This collection contains graphic skull and skeleton imagery. Intended for mature audiences only.
+              Viewer discretion is advised.
+            </p>
+          </div>
+        </div>
+      )}
 
       {/* ── Collection Header ── */}
       <section style={{ maxWidth: "1280px", margin: "0 auto", padding: "40px 24px" }}>
