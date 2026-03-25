@@ -11,8 +11,7 @@ const NAV_LINKS = [
   { label: "Android",     href: "/android"     },
   { label: "PC",          href: "/pc"          },
   { label: "Collections", href: "/collections" },
-  { label: "Blog",        href: "/blog"        },
-  { label: "Guides",      href: "/blog"        },
+  { label: "Blog & Guides", href: "/blog"      },
 ];
 
 type Theme = "dark" | "blood" | "light" | "ghost" | "ember";

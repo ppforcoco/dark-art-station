@@ -163,35 +163,7 @@ export default async function CollectionPage({ params }: PageProps) {
               </span>
             </div>
 
-            {/* ── DOWNLOAD CTA ── */}
-            <div className="collection-download-wrap">
-              {collection.downloadUrl ? (
-                /* Full ZIP bundle exists → download the whole thing */
-                <a
-                  href={`/api/download/${collection.id}`}
-                  className="collection-download-btn"
-                  download
-                >
-                  ↓ Download Bundle · Free
-                </a>
-              ) : firstImage ? (
-                /* No ZIP → lead user to the first image detail page */
-                <Link
-                  href={`/shop/${slug}/${firstImage.slug}`}
-                  className="collection-download-btn"
-                >
-                  ↓ Download Free
-                </Link>
-              ) : null}
-
-              <p className="collection-download-note">
-                {collection.downloadUrl
-                  ? "ZIP archive · 4K JPEG · No account · No watermark"
-                  : "Tap any image below to download individually · 4K · Free"}
-              </p>
-            </div>
-
-            {/* AdSense sidebar unit — right beside the download CTA */}
+            {/* AdSense sidebar unit */}
             <AdSlot
               slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_SIDEBAR}
               format="rectangle"
