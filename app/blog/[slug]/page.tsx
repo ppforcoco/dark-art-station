@@ -83,10 +83,21 @@ export default async function BlogPostPage(
           dangerouslySetInnerHTML={{ __html: post.content }}
         />
 
-        <div style={{ maxWidth: "720px", margin: "40px auto 0", paddingTop: "24px", borderTop: "1px solid #2a2535" }}>
-          <Link href="/blog" style={{ color: "#c0001a", textDecoration: "none", fontSize: "0.85rem" }}>
-            ← All Blog Posts
+        <div style={{ maxWidth: "720px", margin: "48px auto 0", paddingTop: "28px", borderTop: "1px solid #2a2535", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "12px" }}>
+          <Link href="/blog" style={{ color: "#c0001a", textDecoration: "none", fontSize: "0.8rem", fontFamily: "monospace", letterSpacing: "0.1em", textTransform: "uppercase" }}>
+            ← Blog &amp; Guides
           </Link>
+          <div style={{ display: "flex", gap: "16px", flexWrap: "wrap" }}>
+            <Link href="/iphone" style={{ color: "#6b6480", textDecoration: "none", fontSize: "0.72rem", fontFamily: "monospace", letterSpacing: "0.08em" }}>
+              iPhone Wallpapers →
+            </Link>
+            <Link href="/android" style={{ color: "#6b6480", textDecoration: "none", fontSize: "0.72rem", fontFamily: "monospace", letterSpacing: "0.08em" }}>
+              Android →
+            </Link>
+            <Link href="/pc" style={{ color: "#6b6480", textDecoration: "none", fontSize: "0.72rem", fontFamily: "monospace", letterSpacing: "0.08em" }}>
+              PC →
+            </Link>
+          </div>
         </div>
       </div>
 

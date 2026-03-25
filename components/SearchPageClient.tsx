@@ -7,7 +7,7 @@ import { Search, X } from "lucide-react";
 const SUGGESTIONS = [
   "dark art", "dark fantasy", "dark humor", "incognito", "tarot",
   "gothic", "horror", "street style", "patterns", "hooded",
-  "grim reaper", "dark humor", "patterns", "horror", "hooded",
+  "grim reaper", "skull", "cyberpunk", "witch", "moonlight",
 ];
 
 interface Props {

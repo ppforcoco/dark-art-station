@@ -112,7 +112,7 @@ export default async function IphonePage({ searchParams }: PageProps) {
             </p>
             <div className="device-page-guide-link">
               <span>New to setting wallpapers?</span>
-              <a href="/guides/how-to-set-wallpaper-iphone">Read our iPhone wallpaper guide →</a>
+              <a href="/blog/how-to-set-a-wallpaper-on-iphone-16-step-by-step">Read our iPhone wallpaper guide →</a>
             </div>
           </div>
         )}

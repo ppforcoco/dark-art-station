@@ -112,7 +112,7 @@ export default async function PcPage({ searchParams }: PageProps) {
             </p>
             <div className="device-page-guide-link">
               <span>Want a step-by-step walkthrough?</span>
-              <a href="/guides/how-to-set-wallpaper-android">Read our wallpaper setup guide →</a>
+              <a href="/blog/best-4k-wallpapers-for-pc-desktop-dark-theme">Read our PC wallpaper guide →</a>
             </div>
           </div>
         )}

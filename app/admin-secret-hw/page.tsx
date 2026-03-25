@@ -125,66 +125,115 @@ function AdultBadge({ size = "sm" }: { size?: "sm" | "lg" }) {
   );
 }
 
-// ─── Gemini alt-text helper ───────────────────────────────────────────────────
-const GEMINI_API_KEY = process.env.NEXT_PUBLIC_GEMINI_API_KEY ?? "";
-const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`;
-
-const ALT_TEXT_PROMPT =
-  "You are an SEO expert for a dark wallpaper website called Haunted Wallpapers. " +
-  "Generate a single alt text description for this image. Rules: " +
-  "exactly 130–150 characters, descriptive for SEO, include relevant dark/gothic keywords naturally, " +
-  "describe what is actually in the image, end without a period. " +
-  "Reply with ONLY the alt text, nothing else.";
-
-async function generateAltTextWithGemini(file: File, attempt = 1): Promise<string> {
+// ─── Claude Vision AI helper ─────────────────────────────────────────────────
+// Converts a File to base64 string
+async function fileToBase64(file: File): Promise<string> {
   const reader = new FileReader();
-  const base64 = await new Promise<string>((resolve, reject) => {
+  return new Promise<string>((resolve, reject) => {
     reader.onload  = () => resolve((reader.result as string).split(",")[1]);
     reader.onerror = reject;
     reader.readAsDataURL(file);
   });
+}
 
-  const res = await fetch(GEMINI_URL, {
+// Converts a URL image to base64 string
+async function urlToBase64(url: string): Promise<{ data: string; mediaType: string }> {
+  const res = await fetch(url);
+  if (!res.ok) throw new Error("Could not fetch image from URL");
+  const blob = await res.blob();
+  const file = new File([blob], "image.jpg", { type: blob.type || "image/jpeg" });
+  const data = await fileToBase64(file);
+  return { data, mediaType: file.type };
+}
+
+interface ClaudeImageAnalysis {
+  title: string;
+  description: string;
+  altText: string;
+  tags: string[];
+}
+
+const CLAUDE_API_URL = "https://api.anthropic.com/v1/messages";
+const CLAUDE_MODEL   = "claude-sonnet-4-6";
+
+const ALL_TAG_LIST = [
+  "dark","gothic","horror","fantasy","minimal","amoled","neon",
+  "cyberpunk","nature","abstract","skull","moon","forest","city",
+  "demon","angel","witch","fire","ice","space","ocean","halloween",
+  "anime","street","pattern","texture","portrait","landscape",
+];
+
+async function analyzeImageWithClaude(
+  base64: string,
+  mediaType: string
+): Promise<ClaudeImageAnalysis> {
+  const prompt = `You are an SEO expert for "Haunted Wallpapers" — a dark gothic wallpaper website.
+
+Analyze this wallpaper image and return a JSON object with exactly these fields:
+{
+  "title": "Compelling wallpaper title (4-8 words, descriptive, capitalize each word)",
+  "description": "Detailed SEO description of this wallpaper (~200 words). Describe art style, mood, colors, atmosphere, what makes it unique. Write as flowing prose, not bullet points.",
+  "altText": "Single alt text exactly 130-150 characters. Descriptive for SEO with dark/gothic keywords. NO period at end.",
+  "tags": ["array", "of", "3-6", "relevant", "tags", "from", "the", "allowed", "list"]
+}
+
+Allowed tags (ONLY use from this list): ${", ".join(ALL_TAG_LIST)}
+
+Rules:
+- Title: no generic words like "wallpaper" or "background" — focus on the actual content
+- Description: exactly ~200 words, flowing prose, SEO-rich
+- AltText: MUST be 130-150 chars, check length carefully
+- Tags: 3-6 tags only from the allowed list above
+
+Return ONLY valid JSON, no markdown, no explanation.`;
+
+  const res = await fetch(CLAUDE_API_URL, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      contents: [{
-        parts: [
-          { inline_data: { mime_type: file.type, data: base64 } },
-          { text: ALT_TEXT_PROMPT },
+      model: CLAUDE_MODEL,
+      max_tokens: 1000,
+      messages: [{
+        role: "user",
+        content: [
+          {
+            type: "image",
+            source: { type: "base64", media_type: mediaType, data: base64 },
+          },
+          { type: "text", text: prompt },
         ],
       }],
-      generationConfig: { maxOutputTokens: 200 },
     }),
   });
 
-  // 429 = rate limited — wait and retry up to 3 times
-  if (res.status === 429) {
-    if (attempt >= 3) {
-      throw new Error("Gemini rate limit hit. Wait 60 seconds and try again.");
-    }
-    const waitMs = attempt * 8000; // 8s, 16s
-    await new Promise((r) => setTimeout(r, waitMs));
-    return generateAltTextWithGemini(file, attempt + 1);
+  if (!res.ok) {
+    const errText = await res.text().catch(() => "");
+    throw new Error(`Claude API error ${res.status}: ${errText.slice(0, 200)}`);
   }
 
-  if (res.status === 400) throw new Error("Gemini rejected the image. Try a JPG or PNG under 5 MB.");
-  if (res.status === 403) throw new Error("Gemini API key invalid or quota exhausted. Check NEXT_PUBLIC_GEMINI_API_KEY.");
-  if (!res.ok) throw new Error(`Gemini error ${res.status} — try again in a moment.`);
-
   const data = await res.json();
-  const text = data?.candidates?.[0]?.content?.parts?.[0]?.text?.trim() ?? "";
-  if (!text) throw new Error("Gemini returned empty response. Try again.");
-  return text;
+  const raw  = data?.content?.[0]?.text?.trim() ?? "";
+  if (!raw) throw new Error("Claude returned empty response. Try again.");
+
+  try {
+    const clean = raw.replace(/^```json\n?|```$/g, "").trim();
+    return JSON.parse(clean) as ClaudeImageAnalysis;
+  } catch {
+    throw new Error("Claude response could not be parsed. Try again.");
+  }
+}
+
+// For backward compat — just alt text (blog alt generator still uses this)
+async function generateAltTextWithClaude(file: File): Promise<string> {
+  const base64 = await fileToBase64(file);
+  const result = await analyzeImageWithClaude(base64, file.type);
+  return result.altText;
 }
 
 async function generateAltTextFromUrl(url: string): Promise<string> {
-  // For URL-based images, we fetch the image and convert to base64
-  const proxyRes = await fetch(url);
-  if (!proxyRes.ok) throw new Error("Could not fetch image from URL");
-  const blob = await proxyRes.blob();
-  const file = new File([blob], "image.jpg", { type: blob.type || "image/jpeg" });
-  return generateAltTextWithGemini(file);
+  const { data, mediaType } = await urlToBase64(url);
+  const result = await analyzeImageWithClaude(data, mediaType);
+  return result.altText;
 }
 
 // ─── Password Gate ────────────────────────────────────────────────────────────
@@ -372,17 +421,35 @@ function ImageUploaderTab({ password }: { password: string }) {
     setSelectedTags(prev => prev.includes(tag) ? prev.filter(t => t !== tag) : [...prev, tag]);
   }
 
+  async function handleGenerateAll() {
+    if (!file) return;
+    setGeneratingAlt(true);
+    setMessage(null);
+    try {
+      const base64 = await fileToBase64(file);
+      const result = await analyzeImageWithClaude(base64, file.type);
+      if (result.title) { setTitle(result.title); setSlug(result.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")); }
+      if (result.description) setDescription(result.description);
+      if (result.altText) setAltText(result.altText);
+      if (result.tags && result.tags.length) setSelectedTags(result.tags.filter(t => ALL_TAGS.includes(t)));
+      setMessage({ type: "ok", text: "✓ Claude AI generated title, description, alt text & tags! Review and edit if needed." });
+    } catch (err) {
+      const msg = (err as Error).message;
+      setMessage({ type: "err", text: `⚠ AI generation failed: ${msg} You can still fill in manually and upload.` });
+    }
+    setGeneratingAlt(false);
+  }
+
   async function handleGenerateAlt() {
     if (!file) return;
     setGeneratingAlt(true);
     setMessage(null);
     try {
-      const text = await generateAltTextWithGemini(file);
+      const text = await generateAltTextWithClaude(file);
       setAltText(text);
       setMessage({ type: "ok", text: "✓ Alt text generated! Edit if needed, then upload." });
     } catch (err) {
       const msg = (err as Error).message;
-      // Show friendly message — alt text is optional so still allow upload
       setMessage({ type: "err", text: `⚠ Alt text skipped: ${msg} You can still upload without it.` });
     }
     setGeneratingAlt(false);
@@ -484,6 +551,29 @@ function ImageUploaderTab({ password }: { password: string }) {
 
       {file && (
         <>
+          {/* AI Auto-Fill button */}
+          <div style={{ background: "rgba(192,0,26,0.08)", border: "1px solid rgba(192,0,26,0.4)", padding: "14px 18px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: "16px", flexWrap: "wrap" }}>
+            <div>
+              <p style={{ color: "#ffd080", fontSize: "0.75rem", fontFamily: "monospace", marginBottom: "4px" }}>
+                ✨ AI Auto-Fill (Claude Vision)
+              </p>
+              <p style={{ color: "#6b6480", fontSize: "0.68rem", fontFamily: "monospace" }}>
+                Looks at your image and generates title, 200-word description, SEO alt text & tags automatically.
+              </p>
+            </div>
+            <button type="button" onClick={handleGenerateAll} disabled={generatingAlt}
+              style={{
+                background: generatingAlt ? "#1a1825" : "#c0001a",
+                border: "none", color: "#fff",
+                padding: "10px 20px", cursor: generatingAlt ? "not-allowed" : "pointer",
+                fontSize: "0.72rem", letterSpacing: "0.1em", textTransform: "uppercase",
+                fontFamily: "monospace", whiteSpace: "nowrap", flexShrink: 0,
+                opacity: generatingAlt ? 0.7 : 1, transition: "all 0.2s",
+              }}>
+              {generatingAlt ? "✨ Analysing with Claude…" : "✨ Generate All Fields"}
+            </button>
+          </div>
+
           {/* Title + Slug */}
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
             <div>
@@ -515,7 +605,7 @@ function ImageUploaderTab({ password }: { password: string }) {
             />
           </div>
 
-          {/* Alt Text + Gemini button */}
+          {/* Alt Text + Claude button */}
           <div>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "6px" }}>
               <label style={{ ...labelStyle, marginBottom: 0 }}>
@@ -533,14 +623,14 @@ function ImageUploaderTab({ password }: { password: string }) {
                   fontSize: "0.65rem", letterSpacing: "0.1em", textTransform: "uppercase",
                   fontFamily: "monospace", transition: "all 0.2s", whiteSpace: "nowrap",
                 }}>
-                {generatingAlt ? "✨ Generating… (auto-retries if rate limited)" : "✨ AI Generate Alt Text (Gemini)"}
+                {generatingAlt ? "✨ Analysing with Claude…" : "✨ AI Generate Alt Text (Claude)"}
               </button>
             </div>
             <input value={altText} onChange={e => setAltText(e.target.value)}
               placeholder="Dark gothic forest wallpaper with moonlit trees and misty shadows — free 4K download"
               style={{ ...inputStyle, fontSize: "0.85rem" }} />
             <p style={{ color: "#6b6480", fontSize: "0.68rem", marginTop: "4px" }}>
-              ℹ️ Powered by Google Gemini 2.0 Flash. Auto-retries on rate limit (429). Alt text is optional — you can skip and upload without it.
+              ℹ️ Powered by Claude AI (claude-sonnet). Alt text is optional — you can skip and upload without it.
             </p>
           </div>
 
@@ -879,7 +969,7 @@ function BlogTab({ password, prefillTitle, prefillLabel, onPrefillUsed }:
     try {
       let text: string;
       if (altImageFile) {
-        text = await generateAltTextWithGemini(altImageFile);
+        text = await generateAltTextWithClaude(altImageFile);
       } else {
         text = await generateAltTextFromUrl(altImageUrl);
       }
@@ -1020,11 +1110,11 @@ function BlogTab({ password, prefillTitle, prefillLabel, onPrefillUsed }:
             style={{ ...inputStyle, fontSize: "0.82rem" }} />
         </div>
 
-        {/* ── AI Alt-Text Generator for Blog Images (Gemini) ── */}
+        {/* ── AI Alt-Text Generator for Blog Images (Claude) ── */}
         <div style={{ border: "1px solid #2a2535", padding: "16px 18px", background: "#0a0812" }}>
-          <p style={eyebrowStyle}>✨ AI Alt-Text Generator for Blog Images (Gemini)</p>
+          <p style={eyebrowStyle}>✨ AI Alt-Text Generator for Blog Images (Claude)</p>
           <p style={{ color: "#6b6480", fontSize: "0.75rem", marginBottom: "14px" }}>
-            Upload or paste a URL for any image in your blog post. Gemini 2.0 Flash will write a perfect 130–150 char SEO alt tag.
+            Upload or paste a URL for any image in your blog post. Claude Vision AI will write a perfect 130–150 char SEO alt tag.
           </p>
 
           <div style={{ display: "flex", gap: "12px", alignItems: "flex-end", flexWrap: "wrap", marginBottom: "12px" }}>
@@ -1059,7 +1149,7 @@ function BlogTab({ password, prefillTitle, prefillLabel, onPrefillUsed }:
               fontSize: "0.7rem", letterSpacing: "0.1em", textTransform: "uppercase",
               fontFamily: "monospace", marginBottom: "12px",
             }}>
-            {generatingAlt ? "✨ Analysing image with Gemini…" : "✨ Generate Alt Text with Gemini"}
+            {generatingAlt ? "✨ Analysing image with Claude…" : "✨ Generate Alt Text with Claude"}
           </button>
 
           {generatedAlt && (
@@ -1199,8 +1289,173 @@ function BlogTab({ password, prefillTitle, prefillLabel, onPrefillUsed }:
   );
 }
 
+// ─── Manage 18+ Tab ───────────────────────────────────────────────────────────
+// Pre-seeded list of images to mark as 18+
+const ADULT_IMAGES_TO_MARK = [
+  // Android
+  { title: "Sweet Screams Hoodie",     device: "ANDROID", note: "Mark as 18+ Adult" },
+  { title: "Skeletal King Defiance",   device: "ANDROID", note: "Mark as 18+ Adult" },
+  // PC
+  { title: "Gangster Skull",           device: "PC",      note: "Mark as 18+ Adult" },
+  { title: "Gangster Skeleton Smoking",device: "PC",      note: "Mark as 18+ Adult" },
+  { title: "Thug Skeleton Smoking",    device: "PC",      note: "Mark as 18+ Adult" },
+  { title: "Rebel Skeleton Smoking",   device: "PC",      note: "Mark as 18+ Adult" },
+];
+
+function Manage18Tab({ password }: { password: string }) {
+  const [results, setResults]   = useState<Record<string, { status: string; msg: string }>>({});
+  const [loading, setLoading]   = useState<Record<string, boolean>>({});
+  const [allDone, setAllDone]   = useState(false);
+
+  async function markAdult(title: string) {
+    setLoading(prev => ({ ...prev, [title]: true }));
+    try {
+      const res = await fetch("/api/hw-admin/mark-adult", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "x-admin-password": password },
+        body: JSON.stringify({ title }),
+      });
+      const json = await res.json();
+      if (res.ok) {
+        setResults(prev => ({ ...prev, [title]: { status: "ok", msg: `✓ Marked 18+ (${json.updated} image${json.updated !== 1 ? "s" : ""} updated)` } }));
+      } else {
+        setResults(prev => ({ ...prev, [title]: { status: "err", msg: json.error ?? "Failed" } }));
+      }
+    } catch {
+      setResults(prev => ({ ...prev, [title]: { status: "err", msg: "Network error" } }));
+    }
+    setLoading(prev => ({ ...prev, [title]: false }));
+  }
+
+  async function markAll() {
+    setAllDone(false);
+    for (const item of ADULT_IMAGES_TO_MARK) {
+      await markAdult(item.title);
+      await new Promise(r => setTimeout(r, 300));
+    }
+    setAllDone(true);
+  }
+
+  const doneCount = Object.values(results).filter(r => r.status === "ok").length;
+
+  return (
+    <div>
+      <div style={{ background: "rgba(192,0,26,0.08)", border: "1px solid rgba(192,0,26,0.5)", padding: "14px 18px", marginBottom: "24px" }}>
+        <p style={{ color: "#ffd080", fontSize: "0.78rem", fontFamily: "monospace", marginBottom: "6px" }}>
+          ⚠ 18+ Content Manager
+        </p>
+        <p style={{ color: "#8a8099", fontSize: "0.72rem", fontFamily: "monospace" }}>
+          Mark images as 18+ Adult Content. This searches by title (partial match) and sets <code style={{ color: "#c0a0ff" }}>isAdult: true</code> in the database.
+          The gallery will show an 18+ badge and require age confirmation before viewing.
+        </p>
+      </div>
+
+      <div style={{ marginBottom: "20px", display: "flex", alignItems: "center", gap: "16px", flexWrap: "wrap" }}>
+        <button onClick={markAll}
+          style={{ background: "#c0001a", border: "none", color: "#fff", padding: "10px 24px", cursor: "pointer", fontSize: "0.72rem", letterSpacing: "0.12em", textTransform: "uppercase", fontFamily: "monospace" }}>
+          ⚠ Mark All 6 as 18+
+        </button>
+        {doneCount > 0 && (
+          <span style={{ color: "#4caf50", fontSize: "0.75rem", fontFamily: "monospace" }}>
+            ✓ {doneCount} / {ADULT_IMAGES_TO_MARK.length} done
+          </span>
+        )}
+        {allDone && (
+          <span style={{ color: "#4caf50", fontSize: "0.75rem", fontFamily: "monospace" }}>
+            ✓ All marked!
+          </span>
+        )}
+      </div>
+
+      <p style={eyebrowStyle}>Images to Mark ({ADULT_IMAGES_TO_MARK.length})</p>
+
+      {ADULT_IMAGES_TO_MARK.map((item) => {
+        const res = results[item.title];
+        const isLoading = loading[item.title];
+        return (
+          <div key={item.title} style={{ border: `1px solid ${res?.status === "ok" ? "#4caf50" : res?.status === "err" ? "#c0001a" : "#2a2535"}`, padding: "14px 16px", marginBottom: "8px", display: "flex", justifyContent: "space-between", alignItems: "center", gap: "16px", flexWrap: "wrap" }}>
+            <div>
+              <p style={{ color: "#f0ecff", fontSize: "0.9rem", marginBottom: "4px" }}>{item.title}</p>
+              <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+                <span style={{ background: "#1a1825", border: "1px solid #2a2535", color: "#c0a0ff", padding: "2px 8px", fontSize: "0.62rem", fontFamily: "monospace" }}>
+                  {item.device}
+                </span>
+                <AdultBadge size="sm" />
+                {res && (
+                  <span style={{ color: res.status === "ok" ? "#4caf50" : "#ff8080", fontSize: "0.72rem", fontFamily: "monospace" }}>
+                    {res.msg}
+                  </span>
+                )}
+              </div>
+            </div>
+            <button onClick={() => markAdult(item.title)} disabled={isLoading || res?.status === "ok"}
+              style={{
+                background: res?.status === "ok" ? "transparent" : isLoading ? "#1a1825" : "rgba(192,0,26,0.2)",
+                border: `1px solid ${res?.status === "ok" ? "#4caf50" : "#c0001a"}`,
+                color: res?.status === "ok" ? "#4caf50" : isLoading ? "#6b6480" : "#f0ecff",
+                padding: "7px 16px", cursor: (isLoading || res?.status === "ok") ? "not-allowed" : "pointer",
+                fontSize: "0.7rem", letterSpacing: "0.1em", textTransform: "uppercase",
+                fontFamily: "monospace", flexShrink: 0,
+              }}>
+              {res?.status === "ok" ? "✓ Done" : isLoading ? "Updating…" : "Mark 18+"}
+            </button>
+          </div>
+        );
+      })}
+
+      <div style={{ marginTop: "32px", border: "1px solid #2a2535", padding: "16px 18px", background: "#0a0812" }}>
+        <p style={eyebrowStyle}>Mark Any Image by Title</p>
+        <ManualMarkAdult password={password} />
+      </div>
+    </div>
+  );
+}
+
+function ManualMarkAdult({ password }: { password: string }) {
+  const [titleInput, setTitleInput] = useState("");
+  const [result, setResult]         = useState<{ status: string; msg: string } | null>(null);
+  const [loading, setLoading]       = useState(false);
+
+  async function handle() {
+    if (!titleInput.trim()) return;
+    setLoading(true); setResult(null);
+    try {
+      const res = await fetch("/api/hw-admin/mark-adult", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "x-admin-password": password },
+        body: JSON.stringify({ title: titleInput.trim() }),
+      });
+      const json = await res.json();
+      if (res.ok) setResult({ status: "ok", msg: `✓ Marked 18+ (${json.updated} image${json.updated !== 1 ? "s" : ""} updated)` });
+      else setResult({ status: "err", msg: json.error ?? "Failed" });
+    } catch { setResult({ status: "err", msg: "Network error" }); }
+    setLoading(false);
+  }
+
+  return (
+    <div style={{ display: "flex", gap: "10px", alignItems: "flex-end", flexWrap: "wrap" }}>
+      <div style={{ flex: 1, minWidth: "200px" }}>
+        <label style={labelStyle}>Search by title (partial match)</label>
+        <input value={titleInput} onChange={e => setTitleInput(e.target.value)}
+          onKeyDown={e => e.key === "Enter" && handle()}
+          placeholder="e.g. Skull King"
+          style={inputStyle} />
+      </div>
+      <button onClick={handle} disabled={loading}
+        style={{ background: "#c0001a", border: "none", color: "#fff", padding: "10px 18px", cursor: loading ? "not-allowed" : "pointer", fontSize: "0.7rem", letterSpacing: "0.1em", textTransform: "uppercase", fontFamily: "monospace", opacity: loading ? 0.7 : 1 }}>
+        {loading ? "Updating…" : "Mark 18+"}
+      </button>
+      {result && (
+        <span style={{ color: result.status === "ok" ? "#4caf50" : "#ff8080", fontSize: "0.78rem", fontFamily: "monospace" }}>
+          {result.msg}
+        </span>
+      )}
+    </div>
+  );
+}
+
 // ─── Main Admin Page ──────────────────────────────────────────────────────────
-type Tab = "analytics" | "upload" | "blog" | "ideas";
+type Tab = "analytics" | "upload" | "blog" | "ideas" | "manage18";
 
 export default function AdminPage() {
   const [authed, setAuthed]             = useState(false);
@@ -1232,6 +1487,7 @@ export default function AdminPage() {
     { key: "upload",    label: "📤 Upload Image" },
     { key: "blog",      label: "✍️ Blog Posts"   },
     { key: "ideas",     label: "💡 Blog Ideas"   },
+    { key: "manage18",  label: "⚠ 18+ Manage"   },
   ];
 
   return (
@@ -1277,6 +1533,7 @@ export default function AdminPage() {
           />
         )}
         {tab === "ideas" && <BlogIdeasTab onUseIdea={handleUseIdea} />}
+        {tab === "manage18" && <Manage18Tab password={password} />}
       </div>
     </div>
   );

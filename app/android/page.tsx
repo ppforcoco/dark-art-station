@@ -112,7 +112,7 @@ export default async function AndroidPage({ searchParams }: PageProps) {
             </p>
             <div className="device-page-guide-link">
               <span>Need help setting it up?</span>
-              <a href="/guides/how-to-set-wallpaper-android">Read our Android wallpaper guide →</a>
+              <a href="/blog/how-to-set-wallpaper-on-android-all-phones-2026">Read our Android wallpaper guide →</a>
             </div>
           </div>
         )}

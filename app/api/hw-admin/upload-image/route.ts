@@ -25,6 +25,8 @@ export async function POST(req: NextRequest) {
     const tags         = formData.get("tags") as string;       // JSON array string
     const collectionId = formData.get("collectionId") as string | null;
     const altText      = formData.get("altText") as string | null;
+    const description  = formData.get("description") as string | null;
+    const isAdult      = formData.get("isAdult") === "true";
 
     if (!file || !slug || !title) {
       return NextResponse.json({ error: "file, slug, and title are required" }, { status: 400 });
@@ -73,13 +75,17 @@ export async function POST(req: NextRequest) {
     // ── Parse tags ───────────────────────────────────────────────────────────
     let parsedTags: string[] = [];
     try { parsedTags = tags ? JSON.parse(tags) : []; } catch {}
+    // If marked as adult, add "18plus" marker tag
+    if (isAdult && !parsedTags.includes("18plus")) {
+      parsedTags.push("18plus");
+    }
 
     // ── Save to DB ───────────────────────────────────────────────────────────
     const image = await db.image.create({
       data: {
         slug,
         title,
-        description: altText ?? undefined,
+        description: description || altText || undefined,
         r2Key,
         highResKey,
         deviceType:   (deviceType as "IPHONE" | "ANDROID" | "PC" | null) ?? undefined,

@@ -106,15 +106,18 @@ export default async function IphoneImagePage({ params }: PageProps) {
 
       <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_MAIN} width={728} height={90} />
 
-      {/* ── Main layout: stacks on mobile, side-by-side on md+ ── */}
-      <section style={{ maxWidth: "1280px", margin: "0 auto", padding: "16px 24px 40px" }}>
-        <div style={{ display: "flex", flexDirection: "column", gap: "32px" }}>
+      {/* ── Main layout: image centered on mobile, side-by-side on md+ ── */}
+      <section style={{ maxWidth: "1280px", margin: "0 auto", padding: "24px 24px 40px" }}>
+        <div className="iphone-detail-grid" style={{ display: "flex", flexDirection: "column", gap: "40px" }}>
 
-          <DeviceMockup deviceType="IPHONE">
-            <div className="relative w-full h-full">
-              <Image src={thumbUrl} alt={image.title} fill className="object-cover" priority quality={90} unoptimized sizes="(max-width: 768px) 100vw, 65vw" />
-            </div>
-          </DeviceMockup>
+          {/* Image — hero size */}
+          <div className="iphone-detail-image-wrap">
+            <DeviceMockup deviceType="IPHONE">
+              <div className="relative w-full h-full">
+                <Image src={thumbUrl} alt={image.title} fill className="object-cover" priority quality={90} unoptimized sizes="(max-width: 768px) 100vw, 65vw" />
+              </div>
+            </DeviceMockup>
+          </div>
 
           <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
             <div>
@@ -177,10 +180,17 @@ export default async function IphoneImagePage({ params }: PageProps) {
 
       {/* Desktop two-column layout via CSS */}
       <style>{`
+        .iphone-detail-image-wrap {
+          display: flex;
+          justify-content: center;
+        }
         @media (min-width: 768px) {
-          .iphone-detail-grid { flex-direction: row !important; align-items: flex-start; }
-          .iphone-detail-grid > *:first-child { flex: 1; }
-          .iphone-detail-grid > *:last-child { width: 360px; flex-shrink: 0; position: sticky; top: 100px; }
+          .iphone-detail-grid { flex-direction: row !important; align-items: flex-start; gap: 56px !important; }
+          .iphone-detail-image-wrap { flex: 0 0 420px; justify-content: flex-start; }
+          .iphone-detail-grid > div:last-child { flex: 1; position: sticky; top: 100px; }
+        }
+        @media (min-width: 1024px) {
+          .iphone-detail-image-wrap { flex: 0 0 480px; }
         }
       `}</style>
 
