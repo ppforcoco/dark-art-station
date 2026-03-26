@@ -154,7 +154,7 @@ export default async function CollectionImagePage({ params }: PageProps) {
         <div className="image-detail-grid">
 
           {/* ── Left: image preview ── */}
-          <div style={{ position: "relative", width: "100%", maxWidth: "480px", margin: "0 auto" }}>
+          <div style={{ position: "relative", width: "100%", maxWidth: "480px", margin: "0 auto", overflow: "hidden" }}>
             <div
               style={{
                 position: "relative",
@@ -292,6 +292,8 @@ export default async function CollectionImagePage({ params }: PageProps) {
             max-width: 480px !important;
             position: sticky;
             top: 100px;
+            z-index: 1;
+            align-self: flex-start;
           }
           .image-detail-grid > *:last-child {
             flex: 1;
@@ -372,6 +374,8 @@ export default async function CollectionImagePage({ params }: PageProps) {
           grid-template-columns: 1fr 1fr;
           gap: 16px;
           border-top: 1px solid rgba(42,37,53,0.6);
+          position: relative;
+          z-index: 2;
         }
         [data-theme="light"] .prev-next-nav { border-top-color: #ddd8ce; }
         .prev-next-link {
