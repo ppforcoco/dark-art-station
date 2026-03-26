@@ -367,7 +367,7 @@ export default async function CollectionPage({ params }: PageProps) {
           width: 100%;
           flex-shrink: 0;
           padding: 24px 16px;
-          order: 2;
+          order: -1;
         }
         @media (min-width: 1100px) {
           .coll-sidebar {
