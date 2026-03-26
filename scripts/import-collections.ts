@@ -106,6 +106,9 @@ async function main() {
     }
 
     for (const img of data.images) {
+      const imgTags: string[] = [];
+      if (img.isAdult || data.isAdult) imgTags.push("18plus");
+
       const imagePayload = {
         slug:         img.slug,
         title:        img.title,
@@ -114,6 +117,7 @@ async function main() {
         highResKey:   imageHighResKey(data.slug, img.slug, img.highResExt ?? "jpeg"),
         sortOrder:    img.sortOrder,
         collectionId,
+        ...(imgTags.length > 0 && { tags: imgTags }),
       };
 
       try {
@@ -153,6 +157,9 @@ async function main() {
     const data: StandaloneInput = result.data;
     const ext = data.ext ?? "jpeg";
 
+    const standaloneTags = [...(data.tags ?? [])];
+    if (data.isAdult && !standaloneTags.includes("18plus")) standaloneTags.push("18plus");
+
     const imagePayload = {
       slug:        data.slug,
       title:       data.title,
@@ -160,7 +167,7 @@ async function main() {
       r2Key:       standaloneThumbnailKey(data.deviceType, data.slug, ext),
       highResKey:  standaloneHighResKey(data.deviceType, data.slug, ext),
       deviceType:  data.deviceType,
-      tags:        data.tags,
+      tags:        standaloneTags,
       sortOrder:   data.sortOrder,
       // collectionId intentionally omitted — standalone image
     };

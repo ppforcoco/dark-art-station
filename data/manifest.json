@@ -3,6 +3,7 @@
     {
       "slug": "skeleton-rebellion-collection",
       "title": "Skeleton Rebellion Collection",
+      "isAdult": true,
       "description": "A bold series of 16 edgy skeleton illustrations featuring attitude, cigars, and street style aesthetics.",
       "category": "Character Illustrations",
       "thumbnailR2Key": "thumbnails/skeleton-rebellion-collection/skeleton-rebellion-collection.jpeg",
@@ -3267,6 +3268,7 @@
     },
     {
   "slug": "glowing-duality-eyes-iphone",
+  "isAdult": true,
   "title": "Glowing Duality Eyes",
   "description": "Two striking, glowing eyes emerge from deep shadow. The balance of emerald green and amber gold creates a sharp, high-contrast look for your lock screen. This design captures the allure of the unknown with a minimalist, immersive aesthetic. Sleek and artistic, it makes your device feel modern and mysterious.",
   "deviceType": "IPHONE",

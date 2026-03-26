@@ -1,4 +1,3 @@
-// app/android/[imageSlug]/page.tsx
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Image from "next/image";
@@ -188,39 +187,43 @@ export default async function IphoneImagePage({ params }: PageProps) {
       {(prevImage || nextImage) && (
         <nav style={{
           maxWidth: "1280px", margin: "0 auto",
-          padding: "40px 24px 40px",
+          padding: "48px 24px 40px",
           display: "grid",
           gridTemplateColumns: "1fr 1fr",
           gap: "12px",
-          borderTop: "1px solid #2a2535",
+          borderTop: "1px solid #1e1b2e",
         }}>
           {prevImage ? (
             <Link href={`/android/${prevImage.slug}`}
-              style={{ display: "flex", flexDirection: "column", gap: "8px", padding: "12px", border: "1px solid #2a2535", textDecoration: "none" }}
+              style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: "12px", padding: "10px", border: "1px solid #2a2535", textDecoration: "none" }}
               className="hover:border-[rgba(139,0,0,0.5)] transition-colors">
-              <span className="font-mono text-[0.5rem] tracking-[0.2em] uppercase text-[#4a445a]">← Previous</span>
-              <div style={{ position: "relative", width: "100%", aspectRatio: "9/16", overflow: "hidden", maxWidth: "170px", margin: "0 auto" }}>
-                <Image src={getPublicUrl(prevImage.r2Key)} alt={prevImage.title} fill className="object-cover" unoptimized sizes="(max-width: 640px) 45vw, 200px" />
+              <div style={{ position: "relative", flexShrink: 0, width: "48px", height: "86px", overflow: "hidden", borderRadius: "4px" }}>
+                <Image src={getPublicUrl(prevImage.r2Key)} alt={prevImage.title} fill className="object-cover" unoptimized sizes="48px" />
               </div>
-              <span className="font-body italic text-[0.8rem] text-[#f0ecff]"
-                style={{ display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" as const, overflow: "hidden" }}>
-                {prevImage.title}
-              </span>
+              <div style={{ display: "flex", flexDirection: "column", gap: "4px", minWidth: 0 }}>
+                <span className="font-mono text-[0.5rem] tracking-[0.2em] uppercase text-[#4a445a]">← Previous</span>
+                <span className="font-body italic text-[0.75rem] text-[#f0ecff]"
+                  style={{ display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" as const, overflow: "hidden" }}>
+                  {prevImage.title}
+                </span>
+              </div>
             </Link>
           ) : <div />}
 
           {nextImage ? (
             <Link href={`/android/${nextImage.slug}`}
-              style={{ display: "flex", flexDirection: "column", gap: "8px", padding: "12px", border: "1px solid #2a2535", textDecoration: "none", textAlign: "right" }}
+              style={{ display: "flex", flexDirection: "row-reverse", alignItems: "center", gap: "12px", padding: "10px", border: "1px solid #2a2535", textDecoration: "none" }}
               className="hover:border-[rgba(139,0,0,0.5)] transition-colors">
-              <span className="font-mono text-[0.5rem] tracking-[0.2em] uppercase text-[#4a445a]">Next →</span>
-              <div style={{ position: "relative", width: "100%", aspectRatio: "9/16", overflow: "hidden", maxWidth: "170px", margin: "0 auto" }}>
-                <Image src={getPublicUrl(nextImage.r2Key)} alt={nextImage.title} fill className="object-cover" unoptimized sizes="(max-width: 640px) 45vw, 200px" />
+              <div style={{ position: "relative", flexShrink: 0, width: "48px", height: "86px", overflow: "hidden", borderRadius: "4px" }}>
+                <Image src={getPublicUrl(nextImage.r2Key)} alt={nextImage.title} fill className="object-cover" unoptimized sizes="48px" />
               </div>
-              <span className="font-body italic text-[0.8rem] text-[#f0ecff]"
-                style={{ display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" as const, overflow: "hidden" }}>
-                {nextImage.title}
-              </span>
+              <div style={{ display: "flex", flexDirection: "column", gap: "4px", minWidth: 0, textAlign: "right" }}>
+                <span className="font-mono text-[0.5rem] tracking-[0.2em] uppercase text-[#4a445a]">Next →</span>
+                <span className="font-body italic text-[0.75rem] text-[#f0ecff]"
+                  style={{ display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" as const, overflow: "hidden" }}>
+                  {nextImage.title}
+                </span>
+              </div>
             </Link>
           ) : <div />}
         </nav>
