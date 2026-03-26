@@ -33,11 +33,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const tagLine = image.tags.slice(0, 3).map((t) => `#${t}`).join(" ");
   return {
     title: `${image.title} — Free PC Wallpaper | HAUNTED WALLPAPERS`,
-    description: image.description ?? `${image.title} — free 4K dark fantasy PC wallpaper. ${tagLine}. Download instantly, no account required.`,
-    keywords: ["pc wallpaper", "dark wallpaper pc", "4k pc wallpaper", image.title, ...image.tags],
+    description: image.description ?? `${image.title} — free dark fantasy PC wallpaper. ${tagLine}. Download instantly, no account required.`,
+    keywords: ["pc wallpaper", "dark wallpaper pc", "hd pc wallpaper", image.title, ...image.tags],
     openGraph: {
       title: `${image.title} | HAUNTED WALLPAPERS`,
-      description: image.description ?? `Free 4K PC wallpaper: ${image.title}`,
+      description: image.description ?? `Free HD PC wallpaper: ${image.title}`,
       url: `${siteUrl}/pc/${imageSlug}`,
       siteName: "HAUNTED WALLPAPERS",
       images: [{ url: ogImage, width: 1920, height: 1080, alt: image.title }],
@@ -46,7 +46,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     twitter: {
       card: "summary_large_image",
       title: `${image.title} | HAUNTED WALLPAPERS`,
-      description: image.description ?? `Free 4K PC wallpaper: ${image.title}`,
+      description: image.description ?? `Free HD PC wallpaper: ${image.title}`,
       images: [ogImage],
     },
     alternates: { canonical: `${siteUrl}/pc/${imageSlug}` },
@@ -251,13 +251,13 @@ export default async function IphoneImagePage({ params }: PageProps) {
           "@type": "Product",
           "@id": `${siteUrl}/pc/${imageSlug}#product`,
           name: image.title,
-          description: image.description ?? `${image.title} — free 4K dark fantasy PC wallpaper.`,
+          description: image.description ?? `${image.title} — free dark fantasy PC wallpaper.`,
           url: `${siteUrl}/pc/${imageSlug}`,
           brand: { "@type": "Brand", name: "HAUNTED WALLPAPERS", url: siteUrl },
           category: "Digital Products > Wallpapers > PC",
           image: [{ "@type": "ImageObject", url: thumbUrl, contentUrl: thumbUrl, caption: image.title }],
           additionalProperty: [
-            { "@type": "PropertyValue", name: "Format", value: "JPEG (4K High Resolution)" },
+            { "@type": "PropertyValue", name: "Format", value: "JPEG (High Resolution)" },
             { "@type": "PropertyValue", name: "Device", value: "PC" },
             { "@type": "PropertyValue", name: "Aspect Ratio", value: "16:9 Landscape" },
             { "@type": "PropertyValue", name: "Instant Download", value: "Yes" },

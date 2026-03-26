@@ -33,7 +33,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     title: `${collection.title} — Free Dark Wallpapers | Haunted Wallpapers`,
     description:
       collection.description ??
-      `Browse all wallpapers in the ${collection.title} collection. Free 4K dark art downloads for iPhone, Android and PC.`,
+      `Browse all wallpapers in the ${collection.title} collection. Free high-quality dark art downloads for iPhone, Android and PC.`,
     openGraph: {
       title: `${collection.title} | Haunted Wallpapers`,
       description: collection.description ?? `Free dark wallpapers — ${collection.title}`,
@@ -190,20 +190,6 @@ export default async function CollectionPage({ params }: PageProps) {
         <aside className="coll-sidebar">
           <div className="coll-sidebar-inner">
 
-            {/* Thumbnail preview */}
-            {coverUrl && (
-              <div className="coll-sidebar-thumb">
-                <Image
-                  src={coverUrl}
-                  alt={collection.title}
-                  fill
-                  unoptimized
-                  className="object-cover"
-                  sizes="280px"
-                />
-              </div>
-            )}
-
             {/* Collection details */}
             <div className="coll-sidebar-details">
               <span className="coll-sidebar-eyebrow">Collection Details</span>
@@ -351,8 +337,14 @@ export default async function CollectionPage({ params }: PageProps) {
           max-width: 1400px;
           margin: 0 auto;
           display: flex;
+          flex-direction: column;
           gap: 0;
           align-items: flex-start;
+        }
+        @media (min-width: 1100px) {
+          .coll-layout {
+            flex-direction: row;
+          }
         }
 
         /* ── Grid Section ── */
@@ -372,15 +364,21 @@ export default async function CollectionPage({ params }: PageProps) {
 
         /* ── Sidebar ── */
         .coll-sidebar {
-          display: none;
-          width: 300px;
+          width: 100%;
           flex-shrink: 0;
-          padding: 28px 24px 64px 0;
-          position: sticky;
-          top: 80px;
-          align-self: flex-start;
+          padding: 24px 16px;
+          order: 2;
         }
-        @media (min-width: 1100px) { .coll-sidebar { display: block; } }
+        @media (min-width: 1100px) {
+          .coll-sidebar {
+            width: 300px;
+            padding: 28px 24px 64px 0;
+            position: sticky;
+            top: 80px;
+            align-self: flex-start;
+            order: unset;
+          }
+        }
 
         .coll-sidebar-inner {
           display: flex;
@@ -404,17 +402,7 @@ export default async function CollectionPage({ params }: PageProps) {
           border-color: rgba(255,102,0,0.12);
         }
 
-        /* Sidebar thumbnail — 9:16 */
-        .coll-sidebar-thumb {
-          position: relative;
-          width: 100%;
-          aspect-ratio: 9 / 16;
-          overflow: hidden;
-          max-height: 200px;
-          /* cap height so it doesn't take too much space */
-          aspect-ratio: unset;
-          height: 180px;
-        }
+        
 
         /* Sidebar details */
         .coll-sidebar-details {

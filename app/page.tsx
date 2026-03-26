@@ -112,7 +112,7 @@ export default async function Home() {
           <div className="hero-stats fade-up-5">
             <div><span className="stat-num">{formatStatCount(totalImages)}</span><span className="stat-label">Dark Artworks</span></div>
             <div><span className="stat-num">Free</span><span className="stat-label">Always Free</span></div>
-            <div><span className="stat-num">4K</span><span className="stat-label">Resolution Art</span></div>
+            <div><span className="stat-num">HD</span><span className="stat-label">Resolution Art</span></div>
           </div>
         </div>
 

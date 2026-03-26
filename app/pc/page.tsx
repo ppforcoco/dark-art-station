@@ -26,18 +26,18 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
 
   const title = tag
     ? `Trending Dark #${tag} Desktop Wallpapers for PC${pageLabel} | HAUNTED WALLPAPERS`
-    : `Free Dark Desktop Wallpapers 4K${pageLabel} | HAUNTED WALLPAPERS`;
+    : `Free Dark Desktop Wallpapers HD${pageLabel} | HAUNTED WALLPAPERS`;
 
   const description = tag
-    ? `Browse free 4K dark fantasy desktop wallpapers tagged #${tag}. Download instantly, no account required.`
-    : "Free 4K dark fantasy wallpapers for PC. Portrait 9:16 optimised. New drops daily. No account required.";
+    ? `Browse free dark fantasy desktop wallpapers tagged #${tag}. Download instantly, no account required.`
+    : "Free dark fantasy HD wallpapers for PC. Portrait 9:16 optimised. New drops daily. No account required.";
 
   const canonical = tag ? `${siteUrl}/pc?tag=${tag}` : `${siteUrl}/pc`;
 
   return {
     title,
     description,
-    keywords: ["pc wallpaper", "desktop wallpaper dark", "4k desktop wallpaper", "free pc wallpaper", "16:9 wallpaper", tag ?? "dark", "dark fantasy"].filter(Boolean),
+    keywords: ["pc wallpaper", "desktop wallpaper dark", "hd desktop wallpaper", "free pc wallpaper", "16:9 wallpaper", tag ?? "dark", "dark fantasy"].filter(Boolean),
     openGraph: { title, description, url: canonical, siteName: "HAUNTED WALLPAPERS", type: "website" },
     twitter: { card: "summary_large_image", title, description },
     alternates: { canonical },
@@ -92,14 +92,14 @@ export default async function PcPage({ searchParams }: PageProps) {
           {page > 1 && <span className="text-[#4a445a] text-2xl"> — Page {page}</span>}
         </h1>
         <p className="font-body text-[1rem] text-[#8a8099] italic mb-8 max-w-xl">
-          Landscape 16:9 · 4K resolution · Instant download · No account required
+          Landscape 16:9 · HD resolution · Instant download · No account required
         </p>
 
         {!tag && (
           <div className="device-page-intro">
             <p>
-              PC and desktop wallpapers here are landscape 16:9 format, native 4K resolution
-              (3840×2160). They are designed for modern monitors including 1080p, 1440p, and 4K
+              PC and desktop wallpapers here are landscape 16:9 format, high-resolution
+              masters. They are designed for modern monitors including 1080p and 1440p displays.
               displays, as well as ultrawide setups. The dark backgrounds work particularly well
               on IPS and OLED monitors where deep blacks add to the atmosphere.
             </p>
@@ -140,7 +140,7 @@ export default async function PcPage({ searchParams }: PageProps) {
                     key={img.id}
                     href={`/pc/${img.slug}`}
                     src={getPublicUrl(img.r2Key)}
-                    alt={`${img.title} — free dark PC desktop wallpaper 4K`}
+                    alt={`${img.title} — free dark PC desktop wallpaper`}
                     title={img.title}
                     tags={img.tags}
                     isAdult={img.isAdult}

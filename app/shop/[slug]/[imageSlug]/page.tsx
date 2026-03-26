@@ -42,7 +42,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     title: `${image.title} — Free Dark Wallpaper | Haunted Wallpapers`,
     description:
       image.description ??
-      `${image.title} — free 4K dark wallpaper from the ${collection?.title ?? "Haunted"} collection. ${tagLine}. Download for iPhone, Android or PC instantly.`,
+      `${image.title} — free dark wallpaper from the ${collection?.title ?? "Haunted"} collection. ${tagLine}. Download for iPhone, Android or PC instantly.`,
     keywords: [
       "dark wallpaper",
       "free wallpaper download",
@@ -53,7 +53,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     openGraph: {
       title: `${image.title} | Haunted Wallpapers`,
       description:
-        image.description ?? `Free 4K dark wallpaper: ${image.title}`,
+        image.description ?? `Free dark wallpaper: ${image.title}`,
       url: `${siteUrl}/shop/${slug}/${imageSlug}`,
       siteName: "Haunted Wallpapers",
       images: [{ url: ogImage, width: 1080, height: 1920, alt: image.title }],
@@ -63,7 +63,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       card: "summary_large_image",
       title: `${image.title} | Haunted Wallpapers`,
       description:
-        image.description ?? `Free 4K dark wallpaper: ${image.title}`,
+        image.description ?? `Free dark wallpaper: ${image.title}`,
       images: [ogImage],
     },
     alternates: { canonical: `${siteUrl}/shop/${slug}/${imageSlug}` },
@@ -215,7 +215,7 @@ export default async function CollectionImagePage({ params }: PageProps) {
             {/* Format badge */}
             <div style={{ display: "flex", flexWrap: "wrap", gap: "12px", alignItems: "center" }}>
               <span className="font-mono text-[0.6rem] tracking-[0.2em] uppercase text-[#4a445a] border border-[#2a2535] px-3 py-1">
-                4K · Free
+                HD · Free
               </span>
               <span className="font-mono text-[0.6rem] tracking-[0.2em] uppercase text-[#4a445a] border border-[#2a2535] px-3 py-1">
                 JPEG
@@ -243,7 +243,7 @@ export default async function CollectionImagePage({ params }: PageProps) {
               </Link>
 
               <p className="download-note">
-                JPEG · 4K resolution · No account · No watermark · Instant download
+                JPEG · HD resolution · No account · No watermark · Instant download
               </p>
             </div>
 
@@ -550,7 +550,7 @@ export default async function CollectionImagePage({ params }: PageProps) {
             name: image.title,
             description:
               image.description ??
-              `${image.title} — free 4K dark wallpaper.`,
+              `${image.title} — free dark wallpaper.`,
             url: `${siteUrl}/shop/${slug}/${imageSlug}`,
             brand: {
               "@type": "Brand",
@@ -570,7 +570,7 @@ export default async function CollectionImagePage({ params }: PageProps) {
               {
                 "@type": "PropertyValue",
                 name: "Format",
-                value: "JPEG (4K High Resolution)",
+                value: "JPEG (High Resolution)",
               },
               {
                 "@type": "PropertyValue",
