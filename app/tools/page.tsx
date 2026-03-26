@@ -441,7 +441,7 @@ function UpscalerTool() {
           <div className="tool-drop-empty">
             <span className="tool-drop-icon">🔍</span>
             <p className="tool-drop-label">Drop image here or click to upload</p>
-            <p className="tool-drop-sub">JPG · PNG · WEBP — upscaled on your device</p>
+            <p className="tool-drop-sub">JPG · PNG · WEBP — enlarged on your device</p>
           </div>
         )}
       </div>
@@ -449,7 +449,7 @@ function UpscalerTool() {
       {img && (
         <>
           <div className="tool-section">
-            <p className="tool-label">Upscale Factor</p>
+            <p className="tool-label">Enlarge Factor</p>
             <div className="tool-fit-row">
               {UPSCALE_FACTORS.map(f => (
                 <button key={f}
@@ -486,7 +486,7 @@ function UpscalerTool() {
           >
             {status === "processing" ? "⏳ Upscaling…"
               : status === "done"      ? "✓ Downloaded!"
-              : `↑ Upscale ${factor}× & Download`}
+              : `↑ Enlarge ${factor}× & Download`}
           </button>
         </>
       )}
@@ -978,7 +978,7 @@ export default function ToolsPage() {
   const TOOLS = [
     { id: "resizer"  as const, icon: "⬛", label: "Wallpaper Resizer", sub: "Resize to any device"  },
     { id: "darkener" as const, icon: "🎨", label: "Color Darkener",    sub: "Darken any image"      },
-    { id: "upscaler" as const, icon: "🔍", label: "Image Upscaler",    sub: "Enlarge up to 4×"      },
+    { id: "upscaler" as const, icon: "🔍", label: "Image Enlarger",    sub: "Enlarge up to 4×"      },
     { id: "text"     as const, icon: "✦",  label: "Add Text",          sub: "Overlay text & quotes" },
     { id: "blur"     as const, icon: "🌫", label: "Blur Tool",         sub: "Frosted glass effect"  },
     { id: "split"    as const, icon: "⊟",  label: "Split Wallpaper",   sub: "Lock + home screen"    },

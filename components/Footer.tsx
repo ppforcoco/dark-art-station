@@ -53,7 +53,6 @@ export default function Footer(): JSX.Element {
             <li><Link href="/about">About</Link></li>
             <li><Link href="/blog">Blog &amp; Guides</Link></li>
             <li><Link href="/tools">Free Tools</Link></li>
-            <li><Link href="/licensing">Licensing</Link></li>
             <li><Link href="/faq">FAQ</Link></li>
             <li><Link href="/contact">Contact</Link></li>
           </ul>

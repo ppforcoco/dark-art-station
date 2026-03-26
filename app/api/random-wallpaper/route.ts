@@ -14,7 +14,7 @@ async function getIdPool(): Promise<string[]> {
   const rows = await db.image.findMany({
     select: { id: true },
     // Only standalone images that have a known device page
-    where: { deviceType: { not: null }, collectionId: null },
+    where: { deviceType: { not: null }, collectionId: null, isAdult: false },
   });
 
   cachedIds  = rows.map((r) => r.id);

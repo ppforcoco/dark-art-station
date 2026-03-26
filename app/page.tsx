@@ -79,6 +79,7 @@ export default async function Home() {
   const products = await db.collection.findMany({
     orderBy: { createdAt: "desc" },
     take: 8,
+    where: { isAdult: false },
     select: {
       id: true, slug: true, title: true, category: true,
       price: true, isFree: true, badge: true,
@@ -99,7 +100,7 @@ export default async function Home() {
           </div>
           <h1 className="hero-title fade-up-2">
             Art Born<br />From <span className="t-red">The</span><br />
-            <span className="t-gold">Abyss</span>
+            <span className="t-gold">Darkness</span>
           </h1>
           <p className="hero-subtitle fade-up-3">
             Premium dark fantasy wallpapers for your phone and desktop.

@@ -126,6 +126,7 @@ export async function searchWallpapers(
   // description is nullable on Image — use { contains } only when
   // the field is guaranteed non-null (Collection.description is required).
   const collectionWhere = {
+    isAdult: false,
     OR: [
       { title:       { contains: q, mode: "insensitive" as const } },
       { description: { contains: q, mode: "insensitive" as const } },
@@ -134,11 +135,9 @@ export async function searchWallpapers(
     ],
   };
 
-  // For Image, guard description with a nested AND so null rows are skipped
   const imageWhere = {
     collectionId: null,
-    // Exclude PC wallpapers from global search — PC has its own search page.
-    // PC thumbnails are landscape (16:9) and look distorted in portrait grids.
+    isAdult: false,
     deviceType: { in: [DeviceType.IPHONE, DeviceType.ANDROID] },
     OR: [
       { title: { contains: q, mode: "insensitive" as const } },
