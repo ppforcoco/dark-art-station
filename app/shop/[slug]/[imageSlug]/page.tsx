@@ -416,10 +416,11 @@ export default async function CollectionImagePage({ params }: PageProps) {
         .prev-next-thumb-wrap {
           position: relative;
           flex-shrink: 0;
-          width: 48px;
-          aspect-ratio: 9 / 16;
+          width: 40px;
+          height: 71px;
           overflow: hidden;
           border: 1px solid rgba(255,255,255,0.07);
+          border-radius: 3px;
         }
         [data-theme="light"] .prev-next-thumb-wrap { border-color: rgba(0,0,0,0.1); }
 
@@ -454,7 +455,7 @@ export default async function CollectionImagePage({ params }: PageProps) {
         @media (max-width: 479px) {
           .prev-next-nav { gap: 10px; }
           .prev-next-link { padding: 10px 12px; gap: 10px; min-height: 64px; }
-          .prev-next-thumb-wrap { width: 36px; }
+          .prev-next-thumb-wrap { width: 32px; height: 57px; }
           .prev-next-title { font-size: 0.78rem; }
         }
       `}</style>
