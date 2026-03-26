@@ -616,6 +616,7 @@
     {
       "slug": "dark-humor-wallpaper-collection",
       "title": "Dark Humor Wallpaper Collection",
+      "isAdult": true,
       "description": "A bold series of 20 dark humor phone wallpapers featuring edgy skulls, ghosts, skeletons, and creepy characters delivering snarky, threatening, and funny messages perfect for lock screens and wallpapers.",
       "category": "Character Illustrations",
       "thumbnailR2Key": "thumbnails/dark-humor-wallpaper-collection/dark-humor-wallpaper-collection.jpeg",
@@ -918,6 +919,7 @@
     {
       "slug": "bone-street-collection",
       "title": "Bone Street Collection",
+      "isAdult": true,
       "description": "A bold series of 15 edgy skeleton illustrations featuring attitude, cigars, and street style aesthetics set against dark backgrounds with aggressive horror typography.",
       "category": "Character Illustrations",
       "thumbnailR2Key": "thumbnails/bone-street-collection/bone-street-collection.jpeg",
@@ -1049,6 +1051,7 @@
     {
       "slug": "skull-street-collection",
       "title": "Skull Street Collection",
+      "isAdult": true,
       "description": "A bold series of 15 edgy skeleton illustrations featuring street style, graffiti walls, chains, smoke, and unapologetic attitude across dark urban backgrounds.",
       "category": "Character Illustrations",
       "thumbnailR2Key": "thumbnails/skull-street-collection/skull-street-collection.jpeg",
@@ -1180,6 +1183,7 @@
     {
       "slug": "bone-hands-collection",
       "title": "Bone Hands Collection",
+      "isAdult": true,
       "description": "A bold series of 10 dark skeleton hand illustrations featuring spiked cuffs, chains, skull rings, and defiant gestures against black backgrounds.",
       "category": "Character Illustrations",
       "thumbnailR2Key": "thumbnails/bone-hands-collection/bone-hands-collection.jpeg",
@@ -1271,6 +1275,7 @@
     {
       "slug": "goth-witch-collection",
       "title": "Goth Witch & Vampire Badass Female Characters Collection",
+      "isAdult": true,
       "description": "A bold series of 19 edgy goth witch and punk vampire illustrations featuring attitude, dark magic, and street style aesthetics. Perfect for dark fantasy fans and alternative art lovers.",
       "category": "Character Illustrations",
       "thumbnailR2Key": "thumbnails/goth-witch-collection/goth-witch-collection.jpeg",
@@ -2966,6 +2971,7 @@
   {
     "slug": "skull-warning-collection",
     "title": "Skull Warning Collection",
+    "isAdult": true,
     "description": "A bold series of 13 edgy skull and skeleton horror illustrations featuring dark humor, street style attitude, and menacing poses against pure black backgrounds.",
     "category": "Character Illustrations",
     "thumbnailR2Key": "thumbnails/skull-warning-collection/skull-warning-collection.jpeg",
@@ -3268,7 +3274,6 @@
     },
     {
   "slug": "glowing-duality-eyes-iphone",
-  "isAdult": true,
   "title": "Glowing Duality Eyes",
   "description": "Two striking, glowing eyes emerge from deep shadow. The balance of emerald green and amber gold creates a sharp, high-contrast look for your lock screen. This design captures the allure of the unknown with a minimalist, immersive aesthetic. Sleek and artistic, it makes your device feel modern and mysterious.",
   "deviceType": "IPHONE",
@@ -3769,6 +3774,7 @@
 },
 {
   "slug": "skeletal-queen-middle-finger-android",
+  "isAdult": true,
   "title": "Skeletal Queen Middle Finger",
   "description": "A gothic queen skeleton wearing a dark crown, surrounded by swirling shadows, making an iconic defiant gesture. A dark, rebellious piece with incredible detail and a gothic vibe.",
   "deviceType": "ANDROID",
@@ -3787,6 +3793,7 @@
 },
 {
   "slug": "sweet-screams-hoodie-android",
+  "isAdult": true,
   "title": "Sweet Screams Hoodie",
   "description": "A rebellious skeleton in a black hoodie making a defiant gesture, under the 'Sweet Screams' horror-style text. An edgy mix of street style and dark, ghostly vibes for your screen.",
   "deviceType": "ANDROID",
@@ -3868,6 +3875,7 @@
 },
 {
   "slug": "skeleton-king-defiance-android",
+  "isAdult": true,
   "title": "Skeletal King Defiance",
   "description": "A regal skeleton king wearing a sharp black crown and holding a jagged scepter, raising a defiant middle finger gesture. Dark, gritty, and rebellious art style for those who live by their own rules.",
   "deviceType": "ANDROID",
@@ -4131,6 +4139,7 @@
 },
     {
       "slug": "gangster-skull-pc",
+      "isAdult": true,
       "title": "Gangster Skull",
       "description": "Cartoon skeleton in a suit lounging with a cigar, gold chain, and awesome attitude.",
       "deviceType": "PC",
@@ -4236,6 +4245,7 @@
 },
 {
   "slug": "gangster-skeleton-smoking-pc",
+  "isAdult": true,
   "title": "Gangster Skeleton Smoking",
   "description": "A defiant skeleton in a leather jacket and fedora, smoking a cigar and giving the middle finger. A bold, street-style character illustration perfect for a desktop background.",
   "deviceType": "PC",
@@ -4299,6 +4309,7 @@
 },
 {
   "slug": "rebel-skeleton-cigar-pc",
+  "isAdult": true,
   "title": "Rebel Skeleton Smoking",
   "description": "An edgy skeleton in a leather jacket and fedora, smoking a cigar and giving the middle finger. High-contrast cartoon style with a rebellious, unapologetic vibe.",
   "deviceType": "PC",
