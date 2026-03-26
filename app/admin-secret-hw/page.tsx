@@ -1,10 +1,3 @@
-import type { Metadata } from "next";
-
-export const metadata: Metadata = {
-  title: "Admin",
-  robots: { index: false, follow: false },
-};
-
 "use client";
 import { useState, useEffect, useCallback, useRef } from "react";
 
@@ -109,7 +102,6 @@ const modeBtn: React.CSSProperties = {
 };
 
 // ─── 18+ Label Badge ──────────────────────────────────────────────────────────
-// Renders the exact same badge shown on blog posts and collections
 function AdultBadge({ size = "sm" }: { size?: "sm" | "lg" }) {
   const isLg = size === "lg";
   return (
@@ -133,7 +125,6 @@ function AdultBadge({ size = "sm" }: { size?: "sm" | "lg" }) {
 }
 
 // ─── Claude Vision AI helper ─────────────────────────────────────────────────
-// Converts a File to base64 string
 async function fileToBase64(file: File): Promise<string> {
   const reader = new FileReader();
   return new Promise<string>((resolve, reject) => {
@@ -143,7 +134,6 @@ async function fileToBase64(file: File): Promise<string> {
   });
 }
 
-// Converts a URL image to base64 string
 async function urlToBase64(url: string): Promise<{ data: string; mediaType: string }> {
   const res = await fetch(url);
   if (!res.ok) throw new Error("Could not fetch image from URL");
@@ -230,7 +220,6 @@ Return ONLY valid JSON, no markdown, no explanation.`;
   }
 }
 
-// For backward compat — just alt text (blog alt generator still uses this)
 async function generateAltTextWithClaude(file: File): Promise<string> {
   const base64 = await fileToBase64(file);
   const result = await analyzeImageWithClaude(base64, file.type);
@@ -595,7 +584,7 @@ function ImageUploaderTab({ password }: { password: string }) {
             </div>
           </div>
 
-          {/* Description — 200 words */}
+          {/* Description */}
           <div>
             <label style={labelStyle}>
               Description (SEO){" "}
@@ -606,13 +595,13 @@ function ImageUploaderTab({ password }: { password: string }) {
             <textarea
               value={description}
               onChange={e => setDescription(e.target.value)}
-              placeholder="Write a detailed ~200-word description of this wallpaper for SEO and the wallpaper detail page. Describe the art style, mood, colours, and what makes it unique…"
+              placeholder="Write a detailed ~200-word description of this wallpaper for SEO…"
               rows={6}
               style={{ ...inputStyle, resize: "vertical", lineHeight: "1.6" }}
             />
           </div>
 
-          {/* Alt Text + Claude button */}
+          {/* Alt Text */}
           <div>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "6px" }}>
               <label style={{ ...labelStyle, marginBottom: 0 }}>
@@ -655,7 +644,7 @@ function ImageUploaderTab({ password }: { password: string }) {
                   {" "}18+ Adult / Mature Content
                 </p>
                 <p style={{ color: "#6b6480", fontSize: "0.72rem" }}>
-                  Mark this image as adult content. It will show the 18+ warning badge on the gallery and detail page, and require age confirmation before viewing.
+                  Mark this image as adult content. It will show the 18+ warning badge and require age confirmation before viewing.
                 </p>
               </div>
               <button
@@ -678,44 +667,6 @@ function ImageUploaderTab({ password }: { password: string }) {
                 {isAdult ? "✓ 18+ ON" : "Mark as 18+"}
               </button>
             </div>
-
-            {isAdult && (
-              <div style={{ marginTop: "12px", display: "flex", flexWrap: "wrap", gap: "8px", alignItems: "center" }}>
-                <span style={{ color: "#5a5070", fontSize: "0.65rem", letterSpacing: "0.1em", textTransform: "uppercase" }}>
-                  Badge preview:
-                </span>
-                {/* Preview all 18+ badge styles */}
-                {/* Style 1: Warning bar */}
-                <span style={{
-                  display: "inline-flex", alignItems: "center", gap: "6px",
-                  background: "#c0001a", color: "#fff",
-                  fontFamily: "monospace", fontWeight: 900,
-                  fontSize: "0.65rem", letterSpacing: "0.05em",
-                  padding: "3px 10px",
-                }}>⚠ 18+</span>
-                {/* Style 2: Parental Advisory */}
-                <span style={{
-                  display: "inline-flex", alignItems: "center", gap: "6px",
-                  background: "#000", border: "2px solid #fff",
-                  color: "#fff", fontFamily: "monospace",
-                  fontSize: "0.55rem", fontWeight: 700,
-                  letterSpacing: "0.1em", padding: "3px 8px",
-                  textTransform: "uppercase",
-                }}>
-                  <span style={{ color: "#c0001a", fontWeight: 900 }}>18+</span>
-                  PARENTAL ADVISORY
-                </span>
-                {/* Style 3: Mature tag */}
-                <span style={{
-                  display: "inline-flex", alignItems: "center",
-                  border: "1px solid #c0001a",
-                  color: "#ff6b6b", fontFamily: "monospace",
-                  fontSize: "0.6rem", letterSpacing: "0.1em",
-                  padding: "2px 8px",
-                  textTransform: "uppercase",
-                }}>MATURE</span>
-              </div>
-            )}
           </div>
 
           {/* Device Type */}
@@ -1059,7 +1010,6 @@ function BlogTab({ password, prefillTitle, prefillLabel, onPrefillUsed }:
               {ALL_LABELS.map((l) => <option key={l} value={l}>{l}</option>)}
             </select>
 
-            {/* 18+ warning box under the label selector */}
             {isAdultLabel && (
               <div style={{
                 marginTop: "8px",
@@ -1074,32 +1024,8 @@ function BlogTab({ password, prefillTitle, prefillLabel, onPrefillUsed }:
                   </span>
                 </div>
                 <p style={{ color: "#5a5070", fontSize: "0.65rem", fontFamily: "monospace", letterSpacing: "0.06em", margin: 0, lineHeight: 1.6 }}>
-                  This post will be labelled 18+ Mature Content across the site. An age-warning banner
-                  will appear at the top of the blog post. Make sure content is appropriate for adult audiences only.
+                  This post will be labelled 18+ Mature Content across the site.
                 </p>
-
-                {/* Preview of the blog page warning banner */}
-                <div style={{
-                  marginTop: "12px",
-                  display: "flex", alignItems: "center", gap: "12px",
-                  background: "rgba(192,0,26,0.08)",
-                  border: "1px solid rgba(192,0,26,0.4)",
-                  padding: "10px 14px",
-                }}>
-                  <span style={{
-                    background: "#c0001a", color: "#fff",
-                    fontFamily: "monospace", fontWeight: 900,
-                    fontSize: "0.8rem", padding: "4px 10px",
-                    letterSpacing: "0.05em", flexShrink: 0,
-                  }}>18+</span>
-                  <p style={{
-                    fontFamily: "monospace", fontSize: "0.55rem",
-                    letterSpacing: "0.1em", textTransform: "uppercase",
-                    color: "#4a4060", margin: 0, lineHeight: 1.5,
-                  }}>
-                    ← Preview of the warning banner that will appear at the top of this blog post
-                  </p>
-                </div>
               </div>
             )}
           </div>
@@ -1117,7 +1043,7 @@ function BlogTab({ password, prefillTitle, prefillLabel, onPrefillUsed }:
             style={{ ...inputStyle, fontSize: "0.82rem" }} />
         </div>
 
-        {/* ── AI Alt-Text Generator for Blog Images (Claude) ── */}
+        {/* AI Alt-Text Generator for Blog Images */}
         <div style={{ border: "1px solid #d0cce0", padding: "16px 18px", background: "#f0f0f0" }}>
           <p style={eyebrowStyle}>✨ AI Alt-Text Generator for Blog Images (Claude)</p>
           <p style={{ color: "#6b6480", fontSize: "0.75rem", marginBottom: "14px" }}>
@@ -1261,18 +1187,8 @@ function BlogTab({ password, prefillTitle, prefillLabel, onPrefillUsed }:
               <div style={{ flex: 1, minWidth: 0 }}>
                 <span style={{ color: "#1a1625", fontSize: "0.88rem" }}>{p.title}</span>
                 <div style={{ display: "flex", gap: "8px", marginTop: "4px", alignItems: "center", flexWrap: "wrap" }}>
-                  {/* 18+ label badge on published posts */}
                   {p.label === "18+ Mature Content" ? (
-                    <span style={{
-                      display: "inline-flex", alignItems: "center", gap: "5px",
-                      background: "#c0001a", color: "#fff",
-                      fontFamily: "monospace", fontWeight: 900,
-                      fontSize: "0.58rem", letterSpacing: "0.08em",
-                      padding: "2px 8px", textTransform: "uppercase",
-                      border: "1px solid #ff2040",
-                    }}>
-                      ⚠ 18+
-                    </span>
+                    <AdultBadge size="sm" />
                   ) : (
                     <span style={{ background: "#e8e4f0", border: "1px solid #d0cce0", color: "#7c3aed", padding: "1px 6px", fontSize: "0.6rem" }}>{p.label}</span>
                   )}
@@ -1297,12 +1213,9 @@ function BlogTab({ password, prefillTitle, prefillLabel, onPrefillUsed }:
 }
 
 // ─── Manage 18+ Tab ───────────────────────────────────────────────────────────
-// Pre-seeded list of images to mark as 18+
 const ADULT_IMAGES_TO_MARK = [
-  // Android
   { title: "Sweet Screams Hoodie",     device: "ANDROID", note: "Mark as 18+ Adult" },
   { title: "Skeletal King Defiance",   device: "ANDROID", note: "Mark as 18+ Adult" },
-  // PC
   { title: "Gangster Skull",           device: "PC",      note: "Mark as 18+ Adult" },
   { title: "Gangster Skeleton Smoking",device: "PC",      note: "Mark as 18+ Adult" },
   { title: "Thug Skeleton Smoking",    device: "PC",      note: "Mark as 18+ Adult" },
@@ -1353,7 +1266,6 @@ function Manage18Tab({ password }: { password: string }) {
         </p>
         <p style={{ color: "#5a5070", fontSize: "0.72rem", fontFamily: "monospace" }}>
           Mark images as 18+ Adult Content. This searches by title (partial match) and sets <code style={{ color: "#7c3aed" }}>isAdult: true</code> in the database.
-          The gallery will show an 18+ badge and require age confirmation before viewing.
         </p>
       </div>
 
@@ -1461,10 +1373,10 @@ function ManualMarkAdult({ password }: { password: string }) {
   );
 }
 
-// ─── Main Admin Page ──────────────────────────────────────────────────────────
+// ─── Main Admin Client ────────────────────────────────────────────────────────
 type Tab = "analytics" | "upload" | "blog" | "ideas" | "manage18";
 
-export default function AdminPage() {
+export default function AdminClient() {
   const [authed, setAuthed]             = useState(false);
   const [password, setPw]               = useState("");
   const [tab, setTab]                   = useState<Tab>("analytics");
