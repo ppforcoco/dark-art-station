@@ -1,22 +1,17 @@
 # ════════════════════════════════════════════════════════════════
 # Ads.txt file for HauntedWallpapers.com
 # Generated: 2025-03-26
-# For AdSense PUB ID: pub-4048523199842586
+# For AdSense PUB ID: ca-pub-4048523199842586
 # ════════════════════════════════════════════════════════════════
 
-# ── Google AdSense (Direct) ──────────────────────────────────────
-google.com, pub-4048523199842586, DIRECT, f08c47fec0942fa0
-
-# ── Google AdExchange (OpenBidding) ──────────────────────────────
+# ── Google AdSense (Authorized Seller) ──────────────────────────
 google.com, ca-pub-4048523199842586, DIRECT, f08c47fec0942fa0
 
-# ── Cloudflare (if using their monetization) ────────────────────
-# cloudflare.com, d1234abcd, RESELLER
+# ── Cloudflare (optional - keep commented unless active) ────────
+# cloudflare.com, [YOUR_ID], RESELLER
 
-# ── Additional verification note ─────────────────────────────────
-# This ads.txt file is regularly monitored and updated to ensure
-# only authorized inventory is sold. Third-party sellers may be
-# added as verified partnerships are established.
-#
+# ════════════════════════════════════════════════════════════════
+# This ads.txt file is used to authorize sellers of your ad
+# inventory on the web. 
 # For more information, visit: https://iabtechlab.com/ads-txt/
 # ════════════════════════════════════════════════════════════════

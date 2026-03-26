@@ -29,15 +29,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${siteUrl}/terms`,         lastModified: new Date(), changeFrequency: "monthly" as const, priority: 0.3  },
     { url: `${siteUrl}/dmca`,          lastModified: new Date(), changeFrequency: "yearly"  as const, priority: 0.3  },
     { url: `${siteUrl}/favorites`,     lastModified: new Date(), changeFrequency: "monthly" as const, priority: 0.5  },
-    // ── Guide pages (ONLY if pages exist) ─────────────────────────────────
-    { url: `${siteUrl}/guides/how-to-set-wallpaper-iphone`,        lastModified: new Date(), changeFrequency: "monthly" as const, priority: 0.6 },
-    { url: `${siteUrl}/guides/how-to-set-wallpaper-android`,       lastModified: new Date(), changeFrequency: "monthly" as const, priority: 0.6 },
-    { url: `${siteUrl}/guides/best-dark-wallpapers-iphone`,        lastModified: new Date(), changeFrequency: "monthly" as const, priority: 0.6 },
-    { url: `${siteUrl}/guides/what-is-amoled-wallpaper`,           lastModified: new Date(), changeFrequency: "monthly" as const, priority: 0.6 },
-    { url: `${siteUrl}/guides/dark-fantasy-art-styles-explained`,  lastModified: new Date(), changeFrequency: "monthly" as const, priority: 0.6 },
   ];
 
-  // Collection pages — include thumbnail image for Google Image Search
+  // Collection pages
   const collections = await db.collection.findMany({
     select: { slug: true, title: true, thumbnail: true, updatedAt: true },
     orderBy: { updatedAt: "desc" },
@@ -53,7 +47,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     } : {}),
   }));
 
-  // Collection image pages — include the wallpaper image
+  // Collection image pages
   const collectionImages = await db.image.findMany({
     select: {
       slug: true, title: true, r2Key: true, updatedAt: true,
@@ -73,7 +67,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       images: [r2Url(img.r2Key)],
     }));
 
-  // Standalone wallpaper pages — iphone/android/pc detail pages
+  // Standalone wallpaper pages
   const standalones = await db.image.findMany({
     select: {
       slug: true, title: true, r2Key: true, updatedAt: true,
