@@ -6333,9 +6333,24 @@ body:has([data-force-blog="true"]) .halloween-bar {
 [data-theme="light"] .blog-categories-heading { color: #1a1814; }
 [data-theme="light"] .blog-index-hero { border-bottom-color: #cdc8bc; }
 [data-theme="light"] .blog-index-categories { border-top-color: #cdc8bc; }
-[data-theme="light"] .blog-category-item { border-bottom-color: #e8e2d8; }
+[data-theme="light"] .blog-category-group {
+  background: #f4f1ea;
+  border: 1px solid #ddd8ce;
+  border-radius: 4px;
+  padding: 16px 20px;
+}
+[data-theme="light"] .blog-category-label { color: inherit; }
+[data-theme="light"] .blog-category-item {
+  border-bottom-color: #e2ddd3;
+  padding-left: 0;
+}
+[data-theme="light"] .blog-category-item:hover {
+  padding-left: 6px;
+  background: rgba(139,0,0,0.04);
+}
 [data-theme="light"] .blog-category-item-title { color: #3a3430; }
 [data-theme="light"] .blog-category-item:hover .blog-category-item-title { color: #1a1814; }
+[data-theme="light"] .blog-category-item-date { color: #9a9288; }
 [data-theme="light"] .blog-category-count {
   background: rgba(0,0,0,0.04);
   border-color: #cdc8bc;

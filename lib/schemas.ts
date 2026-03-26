@@ -46,6 +46,7 @@ export const CollectionSchema = z.object({
   bgClass: z.string().default("p-bg-1"),
   tag: z.string().default("Collection"),
   featured: z.boolean().default(false),
+  isAdult: z.boolean().optional().default(false),
 
   // Inline image definitions
   images: z.array(z.object({
@@ -60,6 +61,7 @@ export const CollectionSchema = z.object({
     // Per-image extension — defaults to jpeg, override per image if needed
     thumbExt:   z.enum(["webp", "jpg", "jpeg", "png"]).optional().default("jpeg"),
     highResExt: z.enum(["webp", "jpg", "jpeg", "png"]).optional().default("jpeg"),
+    isAdult: z.boolean().optional().default(false),
   })).optional().default([]),
 
 }).superRefine((data, ctx) => {
@@ -133,6 +135,7 @@ export const StandaloneSchema = z.object({
   ext: z.enum(["webp", "jpg", "jpeg", "png"]).optional().default("jpeg"),
 
   sortOrder: z.number().int().min(0).default(0),
+  isAdult: z.boolean().optional().default(false),
 });
 
 export type StandaloneInput = z.infer<typeof StandaloneSchema>;

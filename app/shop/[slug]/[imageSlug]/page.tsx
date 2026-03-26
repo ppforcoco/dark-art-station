@@ -236,7 +236,7 @@ export default async function CollectionImagePage({ params }: PageProps) {
 
               {/* Setup Guide Link */}
               <Link
-                href="/blog/how-to-set-wallpaper"
+                href="/blog/the-dark-aesthetic-a-complete-guide-to-customizing-your-devices"
                 className="setup-guide-link"
               >
                 How to set wallpaper on iPhone, Android & PC →
