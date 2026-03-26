@@ -35,7 +35,7 @@ export default async function CollectionsPage() {
     orderBy: [{ featured: "desc" }, { createdAt: "desc" }],
     select: {
       id: true, slug: true, title: true, category: true,
-      tag: true, icon: true, bgClass: true, featured: true,
+      tag: true, icon: true, bgClass: true, featured: true, isAdult: true,
       _count: { select: { images: true } },
     },
   });
