@@ -17,7 +17,8 @@ export default function AdSlot({
   className = "",
   format = "auto",
 }: AdSlotProps) {
-  const adRef = useRef<HTMLModElement>(null);
+  const adRef       = useRef<HTMLModElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const initialized = useRef(false);
   const [adLoaded, setAdLoaded] = useState(false);
 
@@ -25,23 +26,27 @@ export default function AdSlot({
   const resolvedSlot = slotId ?? process.env.NEXT_PUBLIC_ADSENSE_SLOT_MAIN;
   const isLive       = Boolean(pid && resolvedSlot);
 
-  // Push the ad unit on mount — no consent gate needed.
-  // The AdSense script is loaded unconditionally in layout.tsx,
-  // and Google Consent Mode v2 (also in layout.tsx) automatically
-  // serves non-personalized ads when consent is denied/unknown.
   useEffect(() => {
     if (!isLive || initialized.current) return;
+
+    const container = containerRef.current;
+    const adEl      = adRef.current;
+    if (!container || !adEl) return;
+
+    // Guard: if the container has zero width, AdSense will throw
+    // "No slot size for availableWidth=0". Skip push entirely in that case.
+    const containerWidth = container.getBoundingClientRect().width;
+    if (containerWidth < 1) return;
+
     initialized.current = true;
 
     const observer = new MutationObserver(() => {
-      if (adRef.current && adRef.current.innerHTML.trim() !== "") {
+      if (adEl && adEl.innerHTML.trim() !== "") {
         setAdLoaded(true);
         observer.disconnect();
       }
     });
-    if (adRef.current) {
-      observer.observe(adRef.current, { childList: true, subtree: true });
-    }
+    observer.observe(adEl, { childList: true, subtree: true });
 
     // Small delay to let the AdSense script initialise
     const timer = setTimeout(() => {
@@ -85,6 +90,7 @@ export default function AdSlot({
 
   return (
     <div
+      ref={containerRef}
       className={`ad-banner ${adLoaded ? "ad-banner--loaded" : "ad-banner--empty"} ${className}`}
       style={{ overflow: "hidden", width: "100%", maxWidth: "100%" }}
     >

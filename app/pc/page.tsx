@@ -1,7 +1,5 @@
 // app/pc/page.tsx
 import type { Metadata } from "next";
-import Image from "next/image";
-import Link from "next/link";
 import { Suspense } from "react";
 import { db } from "@/lib/db";
 import { getPublicUrl } from "@/lib/r2";
@@ -10,6 +8,7 @@ import TagCloud from "@/components/TagCloud";
 import AdSlot from "@/components/AdSlot";
 import Pagination from "@/components/Pagination";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import DeviceImageCard from "@/components/DeviceImageCard";
 
 export const revalidate = 60;
 
@@ -30,7 +29,7 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
     : `Free Dark Desktop Wallpapers 4K${pageLabel} | HAUNTED WALLPAPERS`;
 
   const description = tag
-    ? `Browse free 4K dark fantasy Android wallpapers tagged #${tag}. Download instantly, no account required.`
+    ? `Browse free 4K dark fantasy desktop wallpapers tagged #${tag}. Download instantly, no account required.`
     : "Free 4K dark fantasy wallpapers for PC. Portrait 9:16 optimised. New drops daily. No account required.";
 
   const canonical = tag ? `${siteUrl}/pc?tag=${tag}` : `${siteUrl}/pc`;
@@ -60,7 +59,7 @@ export default async function PcPage({ searchParams }: PageProps) {
     db.image.findMany({
       where,
       orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
-      select: { id: true, slug: true, title: true, r2Key: true, viewCount: true, tags: true },
+      select: { id: true, slug: true, title: true, r2Key: true, viewCount: true, tags: true, isAdult: true },
       take: PAGE_SIZE,
       skip,
     }),
@@ -75,8 +74,8 @@ export default async function PcPage({ searchParams }: PageProps) {
     <main className="min-h-screen" style={{ backgroundColor: "var(--bg-primary)", color: "var(--text-primary)" }}>
 
       <Breadcrumbs items={[
-        { label: "Home",    href: "/"        },
-        { label: "PC",   href: "/pc" },
+        { label: "Home", href: "/"    },
+        { label: "PC",   href: "/pc"  },
         ...(tag ? [{ label: `#${tag}` }] : []),
       ]} />
 
@@ -137,33 +136,18 @@ export default async function PcPage({ searchParams }: PageProps) {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {images.map((img, idx) => (
                 <>
-                  <Link
+                  <DeviceImageCard
                     key={img.id}
                     href={`/pc/${img.slug}`}
-                    className="group relative overflow-hidden bg-[#0a0a0a] border border-[#2a2535] hover:border-[rgba(192,0,26,0.6)] transition-colors duration-300"
-                    style={{ aspectRatio: "16/9" }}
-                  >
-                    <Image
-                      src={getPublicUrl(img.r2Key)}
-                      alt={`${img.title} — free dark PC desktop wallpaper 4K`}
-                      fill
-                      loading={idx < 6 ? "eager" : "lazy"}
-                      priority={idx < 6}
-                      unoptimized
-                      className="object-cover transition-transform duration-500 group-hover:scale-105"
-                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[rgba(5,5,5,0.92)] via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-3">
-                      <div>
-                        <p className="font-body italic text-[0.85rem] text-white leading-tight">{img.title}</p>
-                        <div className="flex flex-wrap gap-1 mt-1">
-                          {img.tags.slice(0, 3).map((t) => (
-                            <span key={t} className="font-mono text-[0.45rem] tracking-[0.1em] text-[#c9a84c]">#{t}</span>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  </Link>
+                    src={getPublicUrl(img.r2Key)}
+                    alt={`${img.title} — free dark PC desktop wallpaper 4K`}
+                    title={img.title}
+                    tags={img.tags}
+                    isAdult={img.isAdult}
+                    priority={idx < 6}
+                    aspectRatio="16/9"
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                  />
                   {idx === 5 && (
                     <div className="col-span-1 sm:col-span-2 lg:col-span-3 my-2">
                       <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_MAIN} width={728} height={90} />

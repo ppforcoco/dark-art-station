@@ -57,6 +57,13 @@ const CollectionImageSchema = z.object({
 
   thumbExt:   z.enum(["webp", "jpg", "jpeg", "png"]).optional().default("jpeg"),
   highResExt: z.enum(["webp", "jpg", "jpeg", "png"]).optional().default("jpeg"),
+
+  /**
+   * Mark this individual image as adult/18+ content.
+   * Default: false. Set to true manually in the manifest for images that are mature.
+   * Used on iPhone, Android and PC pages to gate content behind an age check.
+   */
+  isAdult: z.boolean().optional().default(false),
 });
 
 const CollectionSchema = z.object({
@@ -83,124 +90,109 @@ const CollectionSchema = z.object({
 
   thumbnailR2Key: z
     .string()
-    .refine(
-      (val) => val.startsWith("thumbnails/") && imageExt.test(val),
-      { message: "thumbnailR2Key must start with 'thumbnails/' and end in .webp/.jpg/.jpeg/.png" }
-    ),
+    .min(3)
+    .max(300)
+    .regex(imageExt, "thumbnailR2Key must end in .webp, .jpg, .jpeg or .png"),
 
-  fullResR2Key: z
+  downloadR2Key: z
     .string()
-    .refine(
-      (val) => val.startsWith("files/") && archiveOrImageExt.test(val),
-      { message: "fullResR2Key must start with 'files/' and end in .zip/.webp/.jpg/.jpeg/.png" }
-    )
+    .min(3)
+    .max(300)
+    .regex(archiveOrImageExt, "downloadR2Key must end in .zip, .webp, .jpg, .jpeg or .png")
     .optional(),
 
-  price:    z.number().min(0).optional().default(0),
-  isFree:   z.boolean().optional().default(true),
-  badge:    z.enum(["New", "Hot", "Free"]).nullable().optional(),
-  icon:     z.string().default("🌙"),
-  bgClass:  z.string().default("p-bg-1"),
-  tag:      z.string().default("Collection"),
-  featured: z.boolean().default(false),
+  price: z.number().min(0).default(0),
+  isFree: z.boolean().default(true),
+  badge: z.enum(["New", "Hot", "Free"]).optional(),
+  icon: z.string().emoji().optional().default("🌙"),
+  bgClass: z.string().optional().default("p-bg-1"),
+  tag: z.string().optional().default("Collection"),
+  featured: z.boolean().optional().default(false),
+
+  /**
+   * Mark this entire collection as adult/18+ content.
+   * Default: false. Set to true manually for collections that are mature.
+   * Used on the Shop grid to gate content behind a flip-to-reveal age check.
+   * Also gates entry to the collection page itself.
+   */
+  isAdult: z.boolean().optional().default(false),
 
   images: z.array(CollectionImageSchema).optional().default([]),
-
-}).superRefine((data, ctx) => {
-  // Cover thumbnail filename must match the collection slug
-  const thumbFilename =
-    data.thumbnailR2Key.split("/").pop()?.replace(/\.[^.]+$/, "") ?? "";
-  if (thumbFilename !== data.slug) {
-    ctx.addIssue({
-      code: z.ZodIssueCode.custom,
-      path: ["thumbnailR2Key"],
-      message: `Cover filename must match slug: expected "${data.slug}.<ext>", got "${thumbFilename}.<ext>"`,
-    });
-  }
-
-  // Bundle zip basename must also match slug
-  if (data.fullResR2Key) {
-    const fileBasename =
-      data.fullResR2Key.split("/").pop()?.replace(/\.[^.]+$/, "") ?? "";
-    if (fileBasename !== data.slug) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        path: ["fullResR2Key"],
-        message: `File basename must match slug: expected "${data.slug}.<ext>", got "${fileBasename}.<ext>"`,
-      });
-    }
-  }
-
-  // No duplicate image slugs within this collection
-  const imageSlugs = (data.images ?? []).map((img) => img.slug);
-  const seenImageSlugs = new Set<string>();
-  imageSlugs.forEach((s, idx) => {
-    if (seenImageSlugs.has(s)) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        path: ["images", idx, "slug"],
-        message: `Duplicate image slug within collection "${data.slug}": "${s}"`,
-      });
-    }
-    seenImageSlugs.add(s);
-  });
 });
 
-const DeviceTypeValues = ["IPHONE", "ANDROID", "PC"] as const;
-
-const StandaloneSchema = z.object({
+const StandaloneImageSchema = z.object({
   slug: z
     .string()
-    .min(3, "Standalone slug must be at least 3 characters")
-    .max(80, "Standalone slug must be at most 80 characters")
+    .min(3)
+    .max(80)
     .regex(slugRegex, "Standalone slug must be lowercase and hyphenated"),
 
-  title:       z.string().min(3).max(120),
+  title: z
+    .string()
+    .min(3)
+    .max(120),
+
   description: z.string().max(500).optional(),
 
-  deviceType: z.enum(DeviceTypeValues),
-  tags: z
-    .array(z.string().min(1).max(40))
-    .min(1, "At least one tag required for standalone images"),
+  r2Key: z
+    .string()
+    .min(3)
+    .max(300)
+    .regex(imageExt, "r2Key must end in .webp, .jpg, .jpeg or .png"),
 
-  ext:       z.enum(["webp", "jpg", "jpeg", "png"]).optional().default("jpeg"),
+  highResKey: z
+    .string()
+    .min(3)
+    .max(300)
+    .regex(imageExt, "highResKey must end in .webp, .jpg, .jpeg or .png"),
+
+  deviceType: z.enum(["IPHONE", "ANDROID", "PC"]).optional(),
+  tags: z.array(z.string()).optional().default([]),
   sortOrder: z.number().int().min(0).default(0),
+
+  thumbExt:   z.enum(["webp", "jpg", "jpeg", "png"]).optional().default("jpeg"),
+  highResExt: z.enum(["webp", "jpg", "jpeg", "png"]).optional().default("jpeg"),
+
+  /**
+   * Mark this standalone image as adult/18+ content.
+   * Default: false. Set to true manually.
+   */
+  isAdult: z.boolean().optional().default(false),
 });
 
-// ─── Root manifest schema (structure only) ───────────────────────────────────
-
-const ManifestStructureSchema = z.object({
-  collections: z.array(CollectionSchema).optional().default([]),
-  standalone:  z.array(StandaloneSchema).optional().default([]),
+const ManifestSchema = z.object({
+  collections: z.array(CollectionSchema),
+  standalone:  z.array(StandaloneImageSchema).optional().default([]),
 });
 
-// ─── Duplicate-detection across the whole manifest ───────────────────────────
+// ─── Exported types ───────────────────────────────────────────────────────────
+
+export type CollectionImage  = z.infer<typeof CollectionImageSchema>;
+export type Collection       = z.infer<typeof CollectionSchema>;
+export type StandaloneImage  = z.infer<typeof StandaloneImageSchema>;
+export type Manifest         = z.infer<typeof ManifestSchema>;
+
+// ─── Helpers ─────────────────────────────────────────────────────────────────
 
 function findDuplicates(arr: string[]): string[] {
   const seen = new Set<string>();
   const dupes = new Set<string>();
-  for (const val of arr) {
-    if (seen.has(val)) dupes.add(val);
-    seen.add(val);
+  for (const v of arr) {
+    if (seen.has(v)) dupes.add(v);
+    else seen.add(v);
   }
   return [...dupes];
 }
 
-// ─── Public validator ─────────────────────────────────────────────────────────
+// ─── Main validator ───────────────────────────────────────────────────────────
 
-export type ValidatedManifest = z.infer<typeof ManifestStructureSchema>;
+export function validateManifest(raw: unknown): Manifest {
+  // 1. Schema validation via Zod
+  const result = ManifestSchema.safeParse(raw);
 
-/**
- * Validates a raw manifest object against all rules.
- * Throws a descriptive Error on any violation.
- * Returns the fully-typed, parsed manifest on success.
- */
-export function validateManifest(raw: unknown): ValidatedManifest {
-  // 1. Run structural Zod validation (field types, lengths, per-collection duplicate slugs)
-  const result = ManifestStructureSchema.safeParse(raw);
   if (!result.success) {
     const messages = result.error.issues
-      .map((e) => `  [${e.path.join(".")}] ${e.message}`)
+      .map((i) => `  • [${i.path.join(".")}] ${i.message}`)
       .join("\n");
     throw new Error(`❌ manifest.json validation failed:\n${messages}`);
   }

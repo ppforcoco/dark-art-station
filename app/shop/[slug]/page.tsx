@@ -69,6 +69,8 @@ export default async function CollectionPage({ params }: PageProps) {
       description: true,
       thumbnail: true,
       icon: true,
+      category: true,
+      isAdult: true,
       images: {
         orderBy: { sortOrder: "asc" },
         select: {
@@ -105,38 +107,7 @@ export default async function CollectionPage({ params }: PageProps) {
 
       <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_MAIN} width={728} height={90} />
 
-      {/* ── Collection Info Box ── */}
-      <div className="coll-info-box">
-        <div className="coll-info-box-inner">
-          <div className="coll-info-meta">
-            <span className="coll-info-eyebrow">
-              {collection.images.length} Wallpaper{collection.images.length !== 1 ? "s" : ""} · Free Download
-            </span>
-            <h2 className="coll-info-name">{collection.title}</h2>
-            {collection.description && (
-              <p className="coll-info-desc">{collection.description}</p>
-            )}
-          </div>
-          <div className="coll-info-badges">
-            <div className="coll-info-badge">
-              <span className="coll-info-badge-icon">↓</span>
-              <span className="coll-info-badge-label">Free<br/>Download</span>
-            </div>
-            <div className="coll-info-badge">
-              <span className="coll-info-badge-icon">✦</span>
-              <span className="coll-info-badge-label">4K<br/>Resolution</span>
-            </div>
-            <div className="coll-info-badge">
-              <span className="coll-info-badge-icon">◈</span>
-              <span className="coll-info-badge-label">AMOLED<br/>Ready</span>
-            </div>
-            <div className="coll-info-badge">
-              <span className="coll-info-badge-icon">⬡</span>
-              <span className="coll-info-badge-label">No<br/>Watermark</span>
-            </div>
-          </div>
-        </div>
-      </div>
+      {/* ── Page header with title ── */}
       <div className="coll-header">
         <div className="coll-header-inner">
           {coverUrl && (
@@ -153,197 +124,195 @@ export default async function CollectionPage({ params }: PageProps) {
             </div>
           )}
           <div className="coll-header-text">
-            <span className="coll-eyebrow">Collection</span>
+            <span className="coll-eyebrow">Collection · {collection.category}</span>
             <h1 className="coll-title">{collection.title}</h1>
-            {collection.description && (
-              <p className="coll-desc">{collection.description}</p>
-            )}
             <p className="coll-meta">
               {collection.images.length} wallpaper{collection.images.length !== 1 ? "s" : ""}
               {" · "}
               {collection._count.downloads} downloads
+              {collection.isAdult && (
+                <span className="coll-adult-badge">· 18+</span>
+              )}
             </p>
           </div>
         </div>
       </div>
 
-      {/* ── Image Grid ── */}
-      <section className="coll-grid-section">
-        <div className="coll-grid">
-          {collection.images.map((img, idx) => {
-            const thumbUrl = getPublicUrl(img.r2Key);
-            return (
-              <Link
-                key={img.id}
-                href={`/shop/${slug}/${img.slug}`}
-                className="coll-card"
-                aria-label={img.title}
-              >
-                <div className="coll-card-img-wrap">
-                  <Image
-                    src={thumbUrl}
-                    alt={img.title}
-                    fill
-                    unoptimized
-                    className="object-cover coll-card-img"
-                    sizes="(max-width: 479px) 50vw, (max-width: 767px) 33vw, (max-width: 1199px) 25vw, 20vw"
-                    priority={idx < 4}
-                  />
-                  <div className="coll-card-overlay">
-                    <span className="coll-card-view-label">View & Download →</span>
-                  </div>
-                </div>
-                <div className="coll-card-info">
-                  <span className="coll-card-title">{img.title}</span>
-                  {img.tags.length > 0 && (
-                    <span className="coll-card-tag">#{img.tags[0]}</span>
-                  )}
-                </div>
-              </Link>
-            );
-          })}
-        </div>
+      {/* ── Main layout: grid + sidebar ── */}
+      <div className="coll-layout">
 
-        {collection.images.length === 0 && (
-          <div className="coll-empty">
-            <span style={{ fontSize: "2.5rem" }}>{collection.icon ?? "🖤"}</span>
-            <p className="coll-empty-text">No wallpapers in this collection yet. Check back soon.</p>
+        {/* ── Image Grid ── */}
+        <section className="coll-grid-section">
+          <div className="coll-grid">
+            {collection.images.map((img, idx) => {
+              const thumbUrl = getPublicUrl(img.r2Key);
+              return (
+                <Link
+                  key={img.id}
+                  href={`/shop/${slug}/${img.slug}`}
+                  className="coll-card"
+                  aria-label={img.title}
+                >
+                  <div className="coll-card-img-wrap">
+                    <Image
+                      src={thumbUrl}
+                      alt={img.title}
+                      fill
+                      unoptimized
+                      className="object-cover coll-card-img"
+                      sizes="(max-width: 479px) 50vw, (max-width: 767px) 33vw, (max-width: 1199px) 25vw, 20vw"
+                      priority={idx < 4}
+                    />
+                    <div className="coll-card-overlay">
+                      <span className="coll-card-view-label">View & Download →</span>
+                    </div>
+                  </div>
+                  <div className="coll-card-info">
+                    <span className="coll-card-title">{img.title}</span>
+                    {img.tags.length > 0 && (
+                      <span className="coll-card-tag">#{img.tags[0]}</span>
+                    )}
+                  </div>
+                </Link>
+              );
+            })}
           </div>
-        )}
-      </section>
+
+          {collection.images.length === 0 && (
+            <div className="coll-empty">
+              <span style={{ fontSize: "2.5rem" }}>{collection.icon ?? "🖤"}</span>
+              <p className="coll-empty-text">No wallpapers in this collection yet. Check back soon.</p>
+            </div>
+          )}
+        </section>
+
+        {/* ── Side Info Panel ── */}
+        <aside className="coll-sidebar">
+          <div className="coll-sidebar-inner">
+
+            {/* Thumbnail preview */}
+            {coverUrl && (
+              <div className="coll-sidebar-thumb">
+                <Image
+                  src={coverUrl}
+                  alt={collection.title}
+                  fill
+                  unoptimized
+                  className="object-cover"
+                  sizes="280px"
+                />
+              </div>
+            )}
+
+            {/* Collection details */}
+            <div className="coll-sidebar-details">
+              <span className="coll-sidebar-eyebrow">Collection Details</span>
+              <h2 className="coll-sidebar-title">{collection.title}</h2>
+
+              {collection.description && (
+                <p className="coll-sidebar-desc">{collection.description}</p>
+              )}
+
+              {/* Stats row */}
+              <div className="coll-sidebar-stats">
+                <div className="coll-sidebar-stat">
+                  <span className="coll-sidebar-stat-num">{collection.images.length}</span>
+                  <span className="coll-sidebar-stat-label">Wallpapers</span>
+                </div>
+                <div className="coll-sidebar-stat">
+                  <span className="coll-sidebar-stat-num">{collection._count.downloads}</span>
+                  <span className="coll-sidebar-stat-label">Downloads</span>
+                </div>
+              </div>
+
+              {/* Feature badges */}
+              <div className="coll-sidebar-badges">
+                <div className="coll-sidebar-badge">
+                  <span className="coll-sidebar-badge-icon">↓</span>
+                  <span className="coll-sidebar-badge-label">Free<br/>Download</span>
+                </div>
+                <div className="coll-sidebar-badge">
+                  <span className="coll-sidebar-badge-icon">✦</span>
+                  <span className="coll-sidebar-badge-label">4K<br/>Resolution</span>
+                </div>
+                <div className="coll-sidebar-badge">
+                  <span className="coll-sidebar-badge-icon">◈</span>
+                  <span className="coll-sidebar-badge-label">AMOLED<br/>Ready</span>
+                </div>
+                <div className="coll-sidebar-badge">
+                  <span className="coll-sidebar-badge-icon">⬡</span>
+                  <span className="coll-sidebar-badge-label">No<br/>Watermark</span>
+                </div>
+              </div>
+
+              {/* Category tag */}
+              <div className="coll-sidebar-meta-row">
+                <span className="coll-sidebar-meta-key">Category</span>
+                <span className="coll-sidebar-meta-val">{collection.category}</span>
+              </div>
+              <div className="coll-sidebar-meta-row">
+                <span className="coll-sidebar-meta-key">Format</span>
+                <span className="coll-sidebar-meta-val">JPEG · 9:16 Portrait</span>
+              </div>
+              <div className="coll-sidebar-meta-row">
+                <span className="coll-sidebar-meta-key">License</span>
+                <span className="coll-sidebar-meta-val">Free Personal Use</span>
+              </div>
+              {collection.isAdult && (
+                <div className="coll-sidebar-meta-row">
+                  <span className="coll-sidebar-meta-key">Rating</span>
+                  <span className="coll-sidebar-meta-val coll-sidebar-adult">18+ Mature</span>
+                </div>
+              )}
+            </div>
+
+            {/* AdSense sidebar slot */}
+            <div className="coll-sidebar-ad">
+              <AdSlot
+                slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_SIDEBAR}
+                format="rectangle"
+                width={300}
+                height={250}
+              />
+            </div>
+          </div>
+        </aside>
+
+      </div>
 
       <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_FOOTER} width={728} height={90} />
 
       <style>{`
-        /* ── Collection Info Box ── */
-        .coll-info-box {
-          border-bottom: 1px solid var(--border-dim, #2a2535);
-          background: linear-gradient(135deg, rgba(139,0,0,0.05) 0%, transparent 70%);
-          padding: 28px 24px 32px;
-        }
-        .coll-info-box-inner {
-          max-width: 1280px;
-          margin: 0 auto;
-          display: flex;
-          align-items: flex-start;
-          justify-content: space-between;
-          gap: 28px;
-          flex-wrap: wrap;
-        }
-        .coll-info-meta { flex: 1; min-width: 240px; }
-        .coll-info-eyebrow {
-          display: block;
-          font-family: var(--font-space), monospace;
-          font-size: 0.52rem;
-          letter-spacing: 0.28em;
-          text-transform: uppercase;
-          color: #c0001a;
-          margin-bottom: 10px;
-        }
-        .coll-info-name {
-          font-family: var(--font-cinzel), cursive;
-          font-size: clamp(1.15rem, 2.5vw, 1.7rem);
-          font-weight: 900;
-          color: var(--text-primary);
-          margin: 0 0 10px;
-          line-height: 1.1;
-        }
-        .coll-info-desc {
-          font-family: var(--font-cormorant), serif;
-          font-size: 1rem;
-          color: var(--text-muted);
-          line-height: 1.65;
-          margin: 0;
-          max-width: 580px;
-        }
-        .coll-info-badges {
-          display: flex;
-          gap: 8px;
-          flex-wrap: wrap;
-          flex-shrink: 0;
-          align-items: stretch;
-        }
-        .coll-info-badge {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          gap: 6px;
-          padding: 14px 18px;
-          border: 1px solid rgba(139,0,0,0.22);
-          background: rgba(139,0,0,0.06);
-          min-width: 78px;
-          transition: background 0.2s, border-color 0.2s;
-        }
-        .coll-info-badge:hover {
-          background: rgba(139,0,0,0.1);
-          border-color: rgba(139,0,0,0.4);
-        }
-        [data-theme="light"] .coll-info-badge {
-          border-color: rgba(139,0,0,0.14);
-          background: rgba(139,0,0,0.04);
-        }
-        [data-theme="light"] .coll-info-badge:hover {
-          background: rgba(139,0,0,0.07);
-          border-color: rgba(139,0,0,0.25);
-        }
-        [data-theme="ghost"] .coll-info-badge {
-          border-color: rgba(248,248,255,0.1);
-          background: rgba(248,248,255,0.03);
-        }
-        [data-theme="ember"] .coll-info-badge {
-          border-color: rgba(255,102,0,0.2);
-          background: rgba(255,68,0,0.06);
-        }
-        .coll-info-badge-icon {
-          font-size: 1.1rem;
-          color: #c0001a;
-          line-height: 1;
-        }
-        [data-theme="ember"] .coll-info-badge-icon { color: #ff4400; }
-        [data-theme="ghost"] .coll-info-badge-icon { color: #c0001a; }
-        .coll-info-badge-label {
-          font-family: var(--font-space), monospace;
-          font-size: 0.43rem;
-          letter-spacing: 0.12em;
-          text-transform: uppercase;
-          color: var(--text-muted);
-          text-align: center;
-          line-height: 1.5;
-        }
-        @media (max-width: 639px) {
-          .coll-info-badges { width: 100%; justify-content: flex-start; }
-          .coll-info-badge { min-width: 64px; padding: 10px 12px; }
-        }
-
         /* ── Collection Header ── */
         .coll-header {
           border-bottom: 1px solid var(--border-dim, #2a2535);
-          padding: 40px 24px 32px;
+          padding: 32px 24px 28px;
+          background: linear-gradient(135deg, rgba(139,0,0,0.04) 0%, transparent 60%);
         }
         .coll-header-inner {
-          max-width: 1280px;
+          max-width: 1400px;
           margin: 0 auto;
           display: flex;
           align-items: flex-start;
-          gap: 24px;
+          gap: 20px;
         }
         .coll-cover-wrap {
           position: relative;
           flex-shrink: 0;
-          width: 100px;
-          height: 100px;
+          width: 72px;
+          /* 9:16 aspect ratio */
+          aspect-ratio: 9 / 16;
           overflow: hidden;
           border: 1px solid var(--border-dim, #2a2535);
         }
-        @media (max-width: 479px) {
-          .coll-cover-wrap { width: 72px; height: 72px; }
+        @media (min-width: 640px) {
+          .coll-cover-wrap { width: 100px; }
         }
-        .coll-header-text { display: flex; flex-direction: column; gap: 8px; }
+        .coll-header-text { display: flex; flex-direction: column; gap: 6px; }
         .coll-eyebrow {
           font-family: var(--font-space), monospace;
-          font-size: 0.55rem;
-          letter-spacing: 0.3em;
+          font-size: 0.52rem;
+          letter-spacing: 0.28em;
           text-transform: uppercase;
           color: #c0001a;
         }
@@ -356,15 +325,6 @@ export default async function CollectionPage({ params }: PageProps) {
           margin: 0;
         }
         [data-theme="light"] .coll-title { color: #1a1814; }
-        .coll-desc {
-          font-family: var(--font-cormorant), serif;
-          font-size: 1rem;
-          color: #8a8099;
-          line-height: 1.65;
-          margin: 0;
-          max-width: 600px;
-        }
-        [data-theme="light"] .coll-desc { color: #5a5450; }
         .coll-meta {
           font-family: var(--font-space), monospace;
           font-size: 0.58rem;
@@ -372,23 +332,237 @@ export default async function CollectionPage({ params }: PageProps) {
           color: #4a445a;
           margin: 0;
           text-transform: uppercase;
+          display: flex;
+          align-items: center;
+          gap: 6px;
         }
         [data-theme="light"] .coll-meta { color: #8a8468; }
+        .coll-adult-badge {
+          background: rgba(192,0,26,0.12);
+          border: 1px solid rgba(192,0,26,0.35);
+          color: #c0001a;
+          padding: 1px 6px;
+          font-size: 0.5rem;
+          letter-spacing: 0.1em;
+        }
+
+        /* ── Main layout ── */
+        .coll-layout {
+          max-width: 1400px;
+          margin: 0 auto;
+          display: flex;
+          gap: 0;
+          align-items: flex-start;
+        }
 
         /* ── Grid Section ── */
         .coll-grid-section {
-          max-width: 1280px;
-          margin: 0 auto;
-          padding: 32px 24px 64px;
+          flex: 1;
+          min-width: 0;
+          padding: 28px 24px 64px;
         }
         .coll-grid {
           display: grid;
           grid-template-columns: repeat(5, 1fr);
-          gap: 16px;
+          gap: 14px;
         }
         @media (max-width: 1199px) { .coll-grid { grid-template-columns: repeat(4, 1fr); } }
-        @media (max-width: 767px)  { .coll-grid { grid-template-columns: repeat(3, 1fr); gap: 12px; } }
-        @media (max-width: 479px)  { .coll-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; } }
+        @media (max-width: 767px)  { .coll-grid { grid-template-columns: repeat(3, 1fr); gap: 10px; } }
+        @media (max-width: 479px)  { .coll-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; } }
+
+        /* ── Sidebar ── */
+        .coll-sidebar {
+          display: none;
+          width: 300px;
+          flex-shrink: 0;
+          padding: 28px 24px 64px 0;
+          position: sticky;
+          top: 80px;
+          align-self: flex-start;
+        }
+        @media (min-width: 1100px) { .coll-sidebar { display: block; } }
+
+        .coll-sidebar-inner {
+          display: flex;
+          flex-direction: column;
+          gap: 0;
+          border: 1px solid rgba(255,255,255,0.06);
+          background: rgba(12,8,20,0.7);
+          backdrop-filter: blur(8px);
+          overflow: hidden;
+        }
+        [data-theme="light"] .coll-sidebar-inner {
+          background: rgba(240,235,224,0.95);
+          border-color: rgba(0,0,0,0.08);
+        }
+        [data-theme="ghost"] .coll-sidebar-inner {
+          background: rgba(26,26,30,0.85);
+          border-color: rgba(255,255,255,0.07);
+        }
+        [data-theme="ember"] .coll-sidebar-inner {
+          background: rgba(15,8,0,0.85);
+          border-color: rgba(255,102,0,0.12);
+        }
+
+        /* Sidebar thumbnail — 9:16 */
+        .coll-sidebar-thumb {
+          position: relative;
+          width: 100%;
+          aspect-ratio: 9 / 16;
+          overflow: hidden;
+          max-height: 200px;
+          /* cap height so it doesn't take too much space */
+          aspect-ratio: unset;
+          height: 180px;
+        }
+
+        /* Sidebar details */
+        .coll-sidebar-details {
+          padding: 20px;
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+        }
+        .coll-sidebar-eyebrow {
+          font-family: var(--font-space), monospace;
+          font-size: 0.48rem;
+          letter-spacing: 0.28em;
+          text-transform: uppercase;
+          color: #c0001a;
+        }
+        [data-theme="ember"] .coll-sidebar-eyebrow { color: #ff4400; }
+        .coll-sidebar-title {
+          font-family: var(--font-cinzel), cursive;
+          font-size: clamp(0.9rem, 1.5vw, 1.15rem);
+          font-weight: 900;
+          color: #f0ecff;
+          line-height: 1.2;
+          margin: 0;
+        }
+        [data-theme="light"] .coll-sidebar-title { color: #1a1814; }
+        .coll-sidebar-desc {
+          font-family: var(--font-cormorant), serif;
+          font-size: 0.9rem;
+          color: #8a8099;
+          line-height: 1.65;
+          margin: 0;
+        }
+        [data-theme="light"] .coll-sidebar-desc { color: #5a5450; }
+
+        /* Stats */
+        .coll-sidebar-stats {
+          display: flex;
+          gap: 12px;
+          padding: 14px 0;
+          border-top: 1px solid rgba(255,255,255,0.05);
+          border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        [data-theme="light"] .coll-sidebar-stats {
+          border-color: rgba(0,0,0,0.07);
+        }
+        .coll-sidebar-stat {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          gap: 2px;
+          align-items: center;
+        }
+        .coll-sidebar-stat-num {
+          font-family: var(--font-space), monospace;
+          font-size: 1.2rem;
+          font-weight: 700;
+          color: #c0001a;
+          line-height: 1;
+        }
+        [data-theme="ember"] .coll-sidebar-stat-num { color: #ff4400; }
+        .coll-sidebar-stat-label {
+          font-family: var(--font-space), monospace;
+          font-size: 0.42rem;
+          letter-spacing: 0.15em;
+          text-transform: uppercase;
+          color: #4a445a;
+        }
+        [data-theme="light"] .coll-sidebar-stat-label { color: #8a8468; }
+
+        /* Feature badges */
+        .coll-sidebar-badges {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 6px;
+        }
+        .coll-sidebar-badge {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 5px;
+          padding: 10px 8px;
+          border: 1px solid rgba(139,0,0,0.2);
+          background: rgba(139,0,0,0.05);
+          transition: background 0.2s, border-color 0.2s;
+        }
+        .coll-sidebar-badge:hover {
+          background: rgba(139,0,0,0.1);
+          border-color: rgba(139,0,0,0.4);
+        }
+        [data-theme="light"] .coll-sidebar-badge {
+          border-color: rgba(139,0,0,0.12);
+          background: rgba(139,0,0,0.03);
+        }
+        .coll-sidebar-badge-icon {
+          font-size: 0.95rem;
+          color: #c0001a;
+          line-height: 1;
+        }
+        [data-theme="ember"] .coll-sidebar-badge-icon { color: #ff4400; }
+        .coll-sidebar-badge-label {
+          font-family: var(--font-space), monospace;
+          font-size: 0.4rem;
+          letter-spacing: 0.1em;
+          text-transform: uppercase;
+          color: var(--text-muted);
+          text-align: center;
+          line-height: 1.5;
+        }
+
+        /* Meta rows */
+        .coll-sidebar-meta-row {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 5px 0;
+          border-bottom: 1px solid rgba(255,255,255,0.04);
+        }
+        [data-theme="light"] .coll-sidebar-meta-row {
+          border-color: rgba(0,0,0,0.05);
+        }
+        .coll-sidebar-meta-key {
+          font-family: var(--font-space), monospace;
+          font-size: 0.45rem;
+          letter-spacing: 0.15em;
+          text-transform: uppercase;
+          color: #4a445a;
+        }
+        [data-theme="light"] .coll-sidebar-meta-key { color: #8a8468; }
+        .coll-sidebar-meta-val {
+          font-family: var(--font-space), monospace;
+          font-size: 0.48rem;
+          letter-spacing: 0.08em;
+          color: #c4bdd8;
+        }
+        [data-theme="light"] .coll-sidebar-meta-val { color: #3a3450; }
+        .coll-sidebar-adult {
+          color: #c0001a !important;
+          background: rgba(192,0,26,0.1);
+          border: 1px solid rgba(192,0,26,0.3);
+          padding: 1px 6px;
+        }
+
+        /* Sidebar ad */
+        .coll-sidebar-ad {
+          border-top: 1px solid rgba(255,255,255,0.04);
+          padding: 16px;
+        }
+        [data-theme="light"] .coll-sidebar-ad { border-color: rgba(0,0,0,0.05); }
 
         /* ── Cards ── */
         .coll-card {
@@ -413,6 +587,7 @@ export default async function CollectionPage({ params }: PageProps) {
         }
         .coll-card-img-wrap {
           position: relative;
+          /* Correct 9:16 aspect ratio as requested */
           aspect-ratio: 9 / 16;
           overflow: hidden;
         }

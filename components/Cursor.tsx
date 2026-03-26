@@ -7,6 +7,7 @@ export default function Cursor() {
   const mx      = useRef(0);
   const my      = useRef(0);
   const raf     = useRef<number>(0);
+  const dragging = useRef(false);
 
   useEffect(() => {
     // Only on real pointer devices, never on touch screens
@@ -41,11 +42,15 @@ export default function Cursor() {
     const onMove = (e: MouseEvent) => {
       mx.current = e.clientX;
       my.current = e.clientY;
-      ring.style.opacity = "1";
-      dot.style.opacity  = "1";
+      // Only show cursor if not dragging
+      if (!dragging.current) {
+        ring.style.opacity = "1";
+        dot.style.opacity  = "1";
+      }
     };
 
     const onOver = (e: MouseEvent) => {
+      if (dragging.current) return;
       const hovering = !!(e.target as Element)?.closest("a, button, [data-hover]");
       ring.style.transform = `translate(-50%, -50%) scale(${hovering ? 2 : 1})`;
     };
@@ -56,20 +61,40 @@ export default function Cursor() {
     };
 
     const onEnter = () => {
+      if (!dragging.current) {
+        ring.style.opacity = "1";
+        dot.style.opacity  = "1";
+      }
+    };
+
+    // Hide cursor when mouse button held down (slider drag)
+    const onMouseDown = () => {
+      dragging.current = true;
+      ring.style.opacity = "0";
+      dot.style.opacity  = "0";
+    };
+
+    // Show cursor when mouse button released
+    const onMouseUp = () => {
+      dragging.current = false;
       ring.style.opacity = "1";
       dot.style.opacity  = "1";
     };
 
-    document.addEventListener("mousemove", onMove,  { passive: true });
-    document.addEventListener("mouseover", onOver,  { passive: true });
+    document.addEventListener("mousemove",  onMove,     { passive: true });
+    document.addEventListener("mouseover",  onOver,     { passive: true });
     document.addEventListener("mouseleave", onLeave);
     document.addEventListener("mouseenter", onEnter);
+    document.addEventListener("mousedown",  onMouseDown);
+    document.addEventListener("mouseup",    onMouseUp);
 
     return () => {
-      document.removeEventListener("mousemove", onMove);
-      document.removeEventListener("mouseover", onOver);
+      document.removeEventListener("mousemove",  onMove);
+      document.removeEventListener("mouseover",  onOver);
       document.removeEventListener("mouseleave", onLeave);
       document.removeEventListener("mouseenter", onEnter);
+      document.removeEventListener("mousedown",  onMouseDown);
+      document.removeEventListener("mouseup",    onMouseUp);
       cancelAnimationFrame(raf.current);
       document.getElementById("cursor-hide-native")?.remove();
     };

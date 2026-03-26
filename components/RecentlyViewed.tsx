@@ -24,15 +24,27 @@ export function recordView(item: RecentItem) {
   } catch {}
 }
 
-export default function RecentlyViewed() {
+interface RecentlyViewedProps {
+  /** Slug of the item currently being viewed — excluded from the list */
+  currentSlug?: string;
+}
+
+export default function RecentlyViewed({ currentSlug }: RecentlyViewedProps) {
   const [items, setItems] = useState<RecentItem[]>([]);
 
   useEffect(() => {
     try {
       const raw = localStorage.getItem(KEY);
-      if (raw) setItems(JSON.parse(raw));
+      if (raw) {
+        const all: RecentItem[] = JSON.parse(raw);
+        // Filter out the current page so clicking it doesn't do nothing
+        const filtered = currentSlug
+          ? all.filter(i => i.slug !== currentSlug)
+          : all;
+        setItems(filtered);
+      }
     } catch {}
-  }, []);
+  }, [currentSlug]);
 
   if (items.length < 2) return null;
 

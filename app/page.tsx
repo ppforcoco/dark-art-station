@@ -47,6 +47,16 @@ export default async function Home() {
   // Wallpaper of the Day — deterministic daily rotation
   const wotd = await getWallpaperOfTheDay();
 
+  // Real total image count for the hero stat
+  const totalImages = await db.image.count();
+
+  // Format: "500+", "1.2K+", etc.
+  function formatStatCount(n: number): string {
+    if (n >= 1000) return `${Math.floor(n / 100) / 10}K+`;
+    // Round down to nearest 50 so it never over-claims
+    return `${Math.floor(n / 50) * 50}+`;
+  }
+
   // Fetch exactly the 6 category collections we display, by slug
   const CATEGORY_SLUGS = [
     "skeleton-card-collection",
@@ -99,7 +109,7 @@ export default async function Home() {
             <Link href="/shop" className="btn-primary"><span>Browse All Wallpapers</span></Link>
           </div>
           <div className="hero-stats fade-up-5">
-            <div><span className="stat-num">500+</span><span className="stat-label">Dark Artworks</span></div>
+            <div><span className="stat-num">{formatStatCount(totalImages)}</span><span className="stat-label">Dark Artworks</span></div>
             <div><span className="stat-num">Free</span><span className="stat-label">Always Free</span></div>
             <div><span className="stat-num">4K</span><span className="stat-label">Resolution Art</span></div>
           </div>

@@ -30,6 +30,10 @@ model Collection {
   tag         String   @default("Collection")
   featured    Boolean  @default(false)
 
+  /// Set to true for collections with mature/18+ content.
+  /// All false by default — update manually in Prisma Studio or via admin panel.
+  isAdult     Boolean  @default(false)
+
   images      Image[]
   downloads   Download[]
 
@@ -52,6 +56,10 @@ model Image {
 
   deviceType    DeviceType?
   tags          String[]            @default([])
+
+  /// Set to true for individual images with mature/18+ content (iPhone, Android, PC pages).
+  /// All false by default — update manually in Prisma Studio or via admin panel.
+  isAdult       Boolean    @default(false)
 
   downloads     Download[]
 

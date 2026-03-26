@@ -6,15 +6,6 @@ import Link from "next/link";
 import { useState } from "react";
 import FavoriteButton from "@/components/FavoriteButton";
 
-// Collections that require an 18+ flip-to-reveal on the grid card
-const ADULT_COLLECTION_SLUGS = [
-  "skull-warning-collection",
-  "bone-hands-collection",
-  "dark-humor-wallpaper-collection",
-  "skull-street-collection",
-  "bone-street-collection",
-];
-
 interface ProductCardProps {
   slug: string;
   name: string;
@@ -27,6 +18,8 @@ interface ProductCardProps {
   thumbnail?: string | null;
   priority?: boolean;
   downloadCount?: number;
+  /** Comes from the isAdult field in the DB — never hardcoded here */
+  isAdult?: boolean;
 }
 
 export default function ProductCard({
@@ -41,10 +34,11 @@ export default function ProductCard({
   thumbnail,
   priority = false,
   downloadCount,
+  isAdult = false,
 }: ProductCardProps) {
-  const isAdult = ADULT_COLLECTION_SLUGS.includes(slug);
   const [showAgeGate, setShowAgeGate] = useState(false);
-  const [revealed, setRevealed] = useState(false);
+  const [revealed,   setRevealed]    = useState(false);
+  const [flipping,   setFlipping]    = useState(false);
 
   const badgeStyles: Record<string, string> = {
     New:  "bg-[#c0001a] text-[#f0ecff]",
@@ -55,6 +49,14 @@ export default function ProductCard({
   function formatCount(n: number): string {
     if (n >= 1000) return `${(n / 1000).toFixed(1).replace(/\.0$/, "")}K`;
     return String(n);
+  }
+
+  function handleReveal() {
+    setFlipping(true);
+    setTimeout(() => {
+      setRevealed(true);
+      setFlipping(false);
+    }, 350);
   }
 
   return (
@@ -68,6 +70,7 @@ export default function ProductCard({
             backdropFilter: "blur(8px)",
             display: "flex", alignItems: "center", justifyContent: "center",
             padding: "20px",
+            animation: "fadeIn 0.2s ease",
           }}
           onClick={() => setShowAgeGate(false)}
         >
@@ -78,6 +81,7 @@ export default function ProductCard({
               maxWidth: "400px", width: "100%",
               padding: "36px 32px",
               textAlign: "center",
+              animation: "slideUp 0.25s ease",
             }}
             onClick={(e) => e.stopPropagation()}
           >
@@ -110,7 +114,7 @@ export default function ProductCard({
               color: "#a89bc0", lineHeight: 1.7,
               marginBottom: "28px",
             }}>
-              This collection contains graphic skull, skeleton, and dark humour imagery.
+              This collection contains mature dark art imagery.
               It is intended for audiences aged 18 and above only.
             </p>
 
@@ -153,11 +157,14 @@ export default function ProductCard({
       <div className="product-card-wrap group">
         {/* ── Image area ── */}
         {isAdult && !revealed ? (
-          /* ── Adult card: FLIP-TO-REVEAL front face ── */
+          /* ── Adult card: flip-to-reveal (beautiful animation) ── */
           <div
             className={`product-card-image relative overflow-hidden block ${!thumbnail ? bgClass : ""}`}
-            style={{ cursor: "pointer" }}
-            onClick={() => setRevealed(true)}
+            style={{
+              cursor: "pointer",
+              perspective: "800px",
+            }}
+            onClick={handleReveal}
             role="button"
             aria-label="Tap to reveal mature content"
           >
@@ -170,7 +177,11 @@ export default function ProductCard({
                 loading="lazy"
                 unoptimized
                 className="object-cover"
-                style={{ filter: "blur(18px) brightness(0.25)", transform: "scale(1.1)" }}
+                style={{
+                  filter: "blur(20px) brightness(0.2)",
+                  transform: flipping ? "scale(1.15) rotateY(90deg)" : "scale(1.1)",
+                  transition: "transform 0.35s ease, filter 0.35s ease",
+                }}
                 sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 200px"
                 aria-hidden="true"
               />
@@ -182,13 +193,17 @@ export default function ProductCard({
               display: "flex", flexDirection: "column",
               alignItems: "center", justifyContent: "center",
               gap: "14px",
+              opacity: flipping ? 0 : 1,
+              transition: "opacity 0.2s ease",
             }}>
-              {/* Circle badge */}
+              {/* Pulsing circle badge */}
               <div style={{
                 width: "56px", height: "56px",
                 border: "2.5px solid #c0001a",
                 borderRadius: "50%",
                 display: "flex", alignItems: "center", justifyContent: "center",
+                boxShadow: "0 0 18px rgba(192,0,26,0.35)",
+                animation: "adultPulse 2s ease-in-out infinite",
               }}>
                 <span style={{
                   fontFamily: "var(--font-space), monospace",
@@ -207,6 +222,15 @@ export default function ProductCard({
                 Tap to Reveal
               </span>
             </div>
+
+            <style>{`
+              @keyframes adultPulse {
+                0%, 100% { box-shadow: 0 0 12px rgba(192,0,26,0.3); }
+                50% { box-shadow: 0 0 28px rgba(192,0,26,0.6), 0 0 8px rgba(192,0,26,0.4); }
+              }
+              @keyframes fadeIn { from { opacity:0 } to { opacity:1 } }
+              @keyframes slideUp { from { opacity:0; transform:translateY(16px) } to { opacity:1; transform:translateY(0) } }
+            `}</style>
           </div>
         ) : (
           /* ── Normal card (or adult after reveal) ── */

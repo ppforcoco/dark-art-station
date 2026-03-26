@@ -235,8 +235,8 @@ export default async function CollectionImagePage({ params }: PageProps) {
               </DownloadButton>
 
               {/* Setup Guide Link */}
-              <Link 
-                href="/blog/how-to-set-wallpaper" 
+              <Link
+                href="/blog/how-to-set-wallpaper"
                 className="setup-guide-link"
               >
                 How to set wallpaper on iPhone, Android & PC →
@@ -363,25 +363,31 @@ export default async function CollectionImagePage({ params }: PageProps) {
         }
         [data-theme="light"] .detail-fav-label { color: #7a7468; }
 
-        /* ── Prev / Next navigation ── */
+        /* ── Prev / Next navigation — fully redesigned, no overlap ── */
         .prev-next-nav {
           max-width: 1280px;
           margin: 0 auto;
           padding: 0 24px 40px;
           display: grid;
           grid-template-columns: 1fr 1fr;
-          gap: 12px;
+          gap: 16px;
         }
         .prev-next-link {
           display: flex;
-          flex-direction: column;
-          gap: 10px;
-          padding: 16px;
+          flex-direction: row;
+          align-items: center;
+          gap: 14px;
+          padding: 14px 16px;
           border: 1px solid rgba(42,37,53,0.9);
           text-decoration: none;
           background: rgba(7,7,16,0.5);
           transition: border-color 0.2s, background 0.2s;
+          min-height: 80px;
           overflow: hidden;
+        }
+        .prev-next-link--next {
+          flex-direction: row-reverse;
+          text-align: right;
         }
         .prev-next-link:hover {
           border-color: rgba(139,0,0,0.5);
@@ -403,25 +409,34 @@ export default async function CollectionImagePage({ params }: PageProps) {
           background: rgba(10,6,0,0.6);
           border-color: rgba(255,102,0,0.15);
         }
+
+        /* Thumbnail inside prev/next — contained, no overlap */
+        .prev-next-thumb-wrap {
+          position: relative;
+          flex-shrink: 0;
+          width: 48px;
+          aspect-ratio: 9 / 16;
+          overflow: hidden;
+          border: 1px solid rgba(255,255,255,0.07);
+        }
+        [data-theme="light"] .prev-next-thumb-wrap { border-color: rgba(0,0,0,0.1); }
+
+        .prev-next-text {
+          display: flex;
+          flex-direction: column;
+          gap: 4px;
+          min-width: 0;
+          flex: 1;
+        }
         .prev-next-label {
           font-family: var(--font-space), monospace;
-          font-size: 0.52rem;
+          font-size: 0.48rem;
           letter-spacing: 0.2em;
           text-transform: uppercase;
           color: #4a445a;
-        }
-        [data-theme="light"] .prev-next-label { color: #8a8468; }
-        .prev-next-thumb-wrap {
-          position: relative;
-          width: 100%;
-          aspect-ratio: 9 / 16;
-          overflow: hidden;
-          max-width: 150px;
-          margin: 0 auto;
-          border: 1px solid rgba(255,255,255,0.04);
           flex-shrink: 0;
         }
-        [data-theme="light"] .prev-next-thumb-wrap { border-color: rgba(0,0,0,0.06); }
+        [data-theme="light"] .prev-next-label { color: #8a8468; }
         .prev-next-title {
           font-family: var(--font-cormorant), serif;
           font-style: italic;
@@ -433,6 +448,13 @@ export default async function CollectionImagePage({ params }: PageProps) {
           -webkit-box-orient: vertical;
           overflow: hidden;
         }
+
+        @media (max-width: 479px) {
+          .prev-next-nav { gap: 10px; }
+          .prev-next-link { padding: 10px 12px; gap: 10px; min-height: 64px; }
+          .prev-next-thumb-wrap { width: 36px; }
+          .prev-next-title { font-size: 0.78rem; }
+        }
       `}</style>
 
       {/* ── Prev / Next within collection ── */}
@@ -440,7 +462,6 @@ export default async function CollectionImagePage({ params }: PageProps) {
         <nav className="prev-next-nav">
           {prevImage ? (
             <Link href={`/shop/${slug}/${prevImage.slug}`} className="prev-next-link">
-              <span className="prev-next-label">← Previous</span>
               <div className="prev-next-thumb-wrap">
                 <Image
                   src={getPublicUrl(prevImage.r2Key)}
@@ -448,10 +469,13 @@ export default async function CollectionImagePage({ params }: PageProps) {
                   fill
                   className="object-cover"
                   unoptimized
-                  sizes="(max-width: 640px) 45vw, 200px"
+                  sizes="60px"
                 />
               </div>
-              <span className="prev-next-title">{prevImage.title}</span>
+              <div className="prev-next-text">
+                <span className="prev-next-label">← Previous</span>
+                <span className="prev-next-title">{prevImage.title}</span>
+              </div>
             </Link>
           ) : (
             <div />
@@ -460,10 +484,8 @@ export default async function CollectionImagePage({ params }: PageProps) {
           {nextImage ? (
             <Link
               href={`/shop/${slug}/${nextImage.slug}`}
-              className="prev-next-link"
-              style={{ textAlign: "right" }}
+              className="prev-next-link prev-next-link--next"
             >
-              <span className="prev-next-label">Next →</span>
               <div className="prev-next-thumb-wrap">
                 <Image
                   src={getPublicUrl(nextImage.r2Key)}
@@ -471,10 +493,13 @@ export default async function CollectionImagePage({ params }: PageProps) {
                   fill
                   className="object-cover"
                   unoptimized
-                  sizes="(max-width: 640px) 45vw, 200px"
+                  sizes="60px"
                 />
               </div>
-              <span className="prev-next-title">{nextImage.title}</span>
+              <div className="prev-next-text">
+                <span className="prev-next-label">Next →</span>
+                <span className="prev-next-title">{nextImage.title}</span>
+              </div>
             </Link>
           ) : (
             <div />
@@ -503,7 +528,8 @@ export default async function CollectionImagePage({ params }: PageProps) {
         imageUrl={thumbUrl}
         pageUrl={`${siteUrl}/shop/${slug}/${imageSlug}`}
       />
-      <RecentlyViewed />
+      {/* Pass currentSlug so the current page is not shown in recently viewed */}
+      <RecentlyViewed currentSlug={image.slug} />
 
       <script
         type="application/ld+json"
