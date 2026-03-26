@@ -5978,87 +5978,8 @@ body:has([data-force-blog="true"]) .halloween-bar {
   .blog-topnav-link { font-size: 0.5rem; padding: 5px 7px; }
 }
 
-[data-force-blog="true"] {
-  background: #f4f1ea !important;
-  color: #1a1814 !important;
-}
-[data-force-blog="true"] .blog-index-hero,
-[data-force-blog="true"] .static-page-header {
-  background: linear-gradient(to bottom, rgba(139,0,0,0.04), transparent) !important;
-  border-bottom-color: #cdc8bc !important;
-}
-[data-force-blog="true"] .blog-index-title,
-[data-force-blog="true"] .static-page-title { color: #1a1814 !important; }
-[data-force-blog="true"] .blog-index-subtitle,
-[data-force-blog="true"] .static-page-meta { color: #5a5450 !important; }
-[data-force-blog="true"] .blog-index-count { color: #7a7468 !important; }
-[data-force-blog="true"] .blog-index-eyebrow,
-[data-force-blog="true"] .static-page-label { color: #c0001a !important; }
-[data-force-blog="true"] .blog-index-body { background: #f4f1ea !important; }
-[data-force-blog="true"] .blog-featured-card {
-  background: #ece8df !important;
-  border-color: #cdc8bc !important;
-}
-[data-force-blog="true"] .blog-featured-card:hover {
-  border-color: rgba(139,0,0,0.3) !important;
-  background: #e8e3d8 !important;
-}
-[data-force-blog="true"] .blog-featured-title { color: #1a1814 !important; }
-[data-force-blog="true"] .blog-featured-excerpt { color: #5a5450 !important; }
-[data-force-blog="true"] .blog-featured-cta { color: #8b0000 !important; }
-[data-force-blog="true"] .blog-post-card {
-  background: #ece8df !important;
-  border-color: #cdc8bc !important;
-}
-[data-force-blog="true"] .blog-post-card:hover {
-  background: #e4dfd4 !important;
-  border-color: rgba(139,0,0,0.25) !important;
-}
-[data-force-blog="true"] .blog-post-card-title { color: #1a1814 !important; }
-[data-force-blog="true"] .blog-post-card-excerpt { color: #5a5450 !important; }
-[data-force-blog="true"] .blog-post-card-date { color: #7a7468 !important; }
-[data-force-blog="true"] .blog-category-group {
-  border: 1px solid #cdc8bc !important;
-  background: #ece8df !important;
-  border-radius: 4px !important;
-  padding: 16px 20px !important;
-}
-[data-force-blog="true"] .blog-category-label { background: transparent !important; }
-[data-force-blog="true"] .blog-category-item {
-  border-bottom: 1px solid #d8d3ca !important;
-  color: #3a3430 !important;
-}
-[data-force-blog="true"] .blog-category-item:last-child { border-bottom: none !important; }
-[data-force-blog="true"] .blog-category-item:hover { background: rgba(139,0,0,0.05) !important; padding-left: 6px !important; color: #1a1814 !important; }
-[data-force-blog="true"] .blog-category-item-title { color: #3a3430 !important; }
-[data-force-blog="true"] .blog-category-item:hover .blog-category-item-title { color: #1a1814 !important; }
-[data-force-blog="true"] .blog-category-item-date { color: #7a7468 !important; }
-[data-force-blog="true"] .blog-index-categories { border-color: #cdc8bc !important; }
-[data-force-blog="true"] .blog-categories-heading { color: #1a1814 !important; }
-[data-force-blog="true"] .blog-html-content { color: #2a2520 !important; background: #f4f1ea !important; }
-[data-force-blog="true"] .blog-html-content p { color: #3a3430 !important; }
-[data-force-blog="true"] .blog-html-content h1,
-[data-force-blog="true"] .blog-html-content h2,
-[data-force-blog="true"] .blog-html-content h3,
-[data-force-blog="true"] .blog-html-content h4 { color: #1a1814 !important; }
-[data-force-blog="true"] .blog-html-content h3 { color: #8b0000 !important; }
-[data-force-blog="true"] .blog-html-content li { color: #3a3430 !important; }
-[data-force-blog="true"] .blog-html-content a { color: #8b0000 !important; }
-[data-force-blog="true"] .blog-html-content blockquote {
-  border-left-color: rgba(139,0,0,0.3) !important;
-  color: #5a5450 !important;
-  background: rgba(139,0,0,0.04) !important;
-}
-[data-force-blog="true"] .static-page-body { color: #2a2520 !important; }
-[data-force-blog="true"] .static-section h2 { color: #1a1814 !important; border-bottom-color: #cdc8bc !important; }
-[data-force-blog="true"] .static-section h3 { color: #8b0000 !important; }
-[data-force-blog="true"] .static-section p,
-[data-force-blog="true"] .static-section li { color: #3a3430 !important; }
-[data-force-blog="true"] .static-section a { color: #8b0000 !important; }
-[data-force-blog="true"] .path-bar {
-  background: #ece8df !important;
-  border-bottom-color: #cdc8bc !important;
-}
+/* Blog pages now follow the user's selected theme (dark/ghost/ember/light).
+   The forced paper-white override has been removed so theme toggles apply correctly. */
 
 /* Hero */
 .blog-index-hero {
@@ -6630,4 +6551,3 @@ body:has([data-force-blog="true"]) .halloween-bar {
 [data-theme="light"] .social-share-label { color: #7a7468 !important; }
 [data-theme="light"] .social-share-btn   { border-color: #cdc8bc !important; color: #5a5450 !important; background: #f0ebe0 !important; }
 [data-theme="light"] .social-share-btn:hover { border-color: #8b0000 !important; color: #8b0000 !important; }
-

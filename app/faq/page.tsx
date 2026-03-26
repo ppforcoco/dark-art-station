@@ -21,18 +21,7 @@ const FAQS: { q: string; a: React.ReactNode }[] = [
       </>
     ),
   },
-  {
-    q: "What resolution are the wallpapers?",
-    a: (
-      <>
-        Standard downloads are provided at a resolution suitable for the intended
-        device (e.g. 1170×2532 for iPhone 14, 1440×3200 for flagship Android
-        devices, and 3840×2160 for 4K desktop). Premium bundles include the
-        highest available resolution, often 4K or above, generated natively by
-        our AI pipeline.
-      </>
-    ),
-  },
+
   {
     q: "How do I set a wallpaper on iPhone?",
     a: (

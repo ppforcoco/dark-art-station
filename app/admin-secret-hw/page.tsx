@@ -84,8 +84,8 @@ const ADSENSE_CHECKLIST = [
 
 // ─── Shared styles ────────────────────────────────────────────────────────────
 const inputStyle: React.CSSProperties = {
-  width: "100%", background: "transparent", border: "1px solid #2a2535",
-  color: "#f0ecff", padding: "10px 12px", fontSize: "0.9rem",
+  width: "100%", background: "transparent", border: "1px solid #d0cce0",
+  color: "#1a1625", padding: "10px 12px", fontSize: "0.9rem",
   fontFamily: "monospace", boxSizing: "border-box",
 };
 const labelStyle: React.CSSProperties = {
@@ -97,7 +97,7 @@ const eyebrowStyle: React.CSSProperties = {
   textTransform: "uppercase", marginBottom: "12px",
 };
 const modeBtn: React.CSSProperties = {
-  background: "transparent", border: "1px solid", padding: "3px 10px",
+  background: "#ffffff", border: "1px solid", padding: "3px 10px",
   cursor: "pointer", fontSize: "0.65rem", letterSpacing: "0.1em", fontFamily: "monospace",
 };
 
@@ -257,14 +257,14 @@ function PasswordGate({ onAuth }: { onAuth: () => void }) {
   }
 
   return (
-    <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#0c0b14", fontFamily: "monospace" }}>
-      <div style={{ border: "1px solid #2a2535", padding: "40px", width: "360px", textAlign: "center" }}>
+    <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#f5f4fa", fontFamily: "monospace" }}>
+      <div style={{ border: "1px solid #d0cce0", padding: "40px", width: "360px", textAlign: "center" }}>
         <p style={{ color: "#c0001a", fontSize: "0.7rem", letterSpacing: "0.2em", marginBottom: "8px" }}>HAUNTED WALLPAPERS</p>
-        <h1 style={{ color: "#f0ecff", fontSize: "1.4rem", marginBottom: "32px", fontWeight: 400 }}>Admin Access</h1>
+        <h1 style={{ color: "#1a1625", fontSize: "1.4rem", marginBottom: "32px", fontWeight: 400 }}>Admin Access</h1>
         <input type="password" placeholder="Enter password" value={pw}
           onChange={(e) => setPw(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && handleLogin()}
-          style={{ width: "100%", background: "transparent", border: "1px solid #2a2535", color: "#f0ecff", padding: "12px", fontSize: "1rem", marginBottom: "16px", fontFamily: "monospace", boxSizing: "border-box" }}
+          style={{ width: "100%", background: "#ffffff", border: "1px solid #d0cce0", color: "#1a1625", padding: "12px", fontSize: "1rem", marginBottom: "16px", fontFamily: "monospace", boxSizing: "border-box" }}
         />
         {error && <p style={{ color: "#c0001a", marginBottom: "12px", fontSize: "0.85rem" }}>{error}</p>}
         <button onClick={handleLogin} disabled={loading}
@@ -306,7 +306,7 @@ function AnalyticsTab({ password }: { password: string }) {
           { label: "This Week",       value: data.weekDownloads.toLocaleString() },
           { label: "Today",           value: data.todayDownloads.toLocaleString() },
         ].map((s) => (
-          <div key={s.label} style={{ border: "1px solid #2a2535", padding: "20px", textAlign: "center" }}>
+          <div key={s.label} style={{ border: "1px solid #d0cce0", padding: "20px", textAlign: "center" }}>
             <p style={eyebrowStyle}>{s.label}</p>
             <p style={{ color: "#c0001a", fontSize: "2rem", fontWeight: 700 }}>{s.value}</p>
           </div>
@@ -317,8 +317,8 @@ function AnalyticsTab({ password }: { password: string }) {
         <div>
           <p style={eyebrowStyle}>Top Wallpapers</p>
           {data.topWallpapers.map((w, i) => (
-            <div key={i} style={{ display: "flex", justifyContent: "space-between", padding: "8px 0", borderBottom: "1px solid #1a1825", fontSize: "0.85rem" }}>
-              <span style={{ color: "#f0ecff" }}>{w.title}</span>
+            <div key={i} style={{ display: "flex", justifyContent: "space-between", padding: "8px 0", borderBottom: "1px solid #e8e4f0", fontSize: "0.85rem" }}>
+              <span style={{ color: "#1a1625" }}>{w.title}</span>
               <span style={{ color: "#c0001a", fontWeight: 700 }}>{w.downloads}</span>
             </div>
           ))}
@@ -326,8 +326,8 @@ function AnalyticsTab({ password }: { password: string }) {
         <div>
           <p style={eyebrowStyle}>Top Collections</p>
           {data.topCollections.map((c, i) => (
-            <div key={i} style={{ display: "flex", justifyContent: "space-between", padding: "8px 0", borderBottom: "1px solid #1a1825", fontSize: "0.85rem" }}>
-              <span style={{ color: "#f0ecff" }}>{c.title}</span>
+            <div key={i} style={{ display: "flex", justifyContent: "space-between", padding: "8px 0", borderBottom: "1px solid #e8e4f0", fontSize: "0.85rem" }}>
+              <span style={{ color: "#1a1625" }}>{c.title}</span>
               <span style={{ color: "#c0001a", fontWeight: 700 }}>{c.downloads}</span>
             </div>
           ))}
@@ -337,31 +337,31 @@ function AnalyticsTab({ password }: { password: string }) {
       <div style={{ marginBottom: "32px" }}>
         <p style={eyebrowStyle}>Recent Downloads</p>
         {data.recentActivity.map((a, i) => (
-          <div key={i} style={{ display: "flex", gap: "16px", padding: "8px 0", borderBottom: "1px solid #1a1825", fontSize: "0.8rem" }}>
+          <div key={i} style={{ display: "flex", gap: "16px", padding: "8px 0", borderBottom: "1px solid #e8e4f0", fontSize: "0.8rem" }}>
             <span style={{ color: "#6b6480", flexShrink: 0 }}>{a.time}</span>
-            <span style={{ color: "#f0ecff" }}>{a.title}</span>
+            <span style={{ color: "#1a1625" }}>{a.title}</span>
           </div>
         ))}
       </div>
 
-      <button onClick={load} style={{ background: "transparent", border: "1px solid #2a2535", color: "#8a8099", padding: "8px 20px", cursor: "pointer", fontSize: "0.75rem", letterSpacing: "0.1em", marginBottom: "32px" }}>
+      <button onClick={load} style={{ background: "transparent", border: "1px solid #d0cce0", color: "#5a5070", padding: "8px 20px", cursor: "pointer", fontSize: "0.75rem", letterSpacing: "0.1em", marginBottom: "32px" }}>
         ↻ Refresh
       </button>
 
-      <div style={{ border: "1px solid #2a2535", padding: "24px", marginBottom: "24px" }}>
+      <div style={{ border: "1px solid #d0cce0", padding: "24px", marginBottom: "24px" }}>
         <p style={eyebrowStyle}>AdSense Approval Checklist</p>
         {ADSENSE_CHECKLIST.map((item, i) => (
-          <div key={i} style={{ display: "flex", gap: "10px", padding: "7px 0", borderBottom: "1px solid #1a1825", fontSize: "0.82rem" }}>
+          <div key={i} style={{ display: "flex", gap: "10px", padding: "7px 0", borderBottom: "1px solid #e8e4f0", fontSize: "0.82rem" }}>
             <span style={{ color: item.done ? "#4caf50" : "#c0001a", flexShrink: 0 }}>{item.done ? "✅" : "☐"}</span>
             <span style={{ color: item.done ? "#a0e0a0" : "#c9c4dd" }}>{item.item}</span>
           </div>
         ))}
-        <div style={{ marginTop: "16px", background: "#0e0c18", padding: "12px 16px", borderLeft: "3px solid #c0001a", fontSize: "0.8rem", color: "#8a8099" }}>
+        <div style={{ marginTop: "16px", background: "#f8f8f8", padding: "12px 16px", borderLeft: "3px solid #c0001a", fontSize: "0.8rem", color: "#5a5070" }}>
           💡 <strong style={{ color: "#ffd080" }}>Pro tip:</strong> Publish 20 high-quality blog posts (800+ words) over 6–8 weeks before applying.
         </div>
       </div>
 
-      <div style={{ border: "1px solid #2a2535", padding: "20px" }}>
+      <div style={{ border: "1px solid #d0cce0", padding: "20px" }}>
         <p style={eyebrowStyle}>Google Analytics 4</p>
         <a href="https://analytics.google.com" target="_blank" rel="noopener noreferrer"
           style={{ display: "inline-block", background: "#c0001a", color: "#fff", padding: "10px 20px", textDecoration: "none", fontSize: "0.75rem", letterSpacing: "0.1em", textTransform: "uppercase" }}>
@@ -504,9 +504,9 @@ function ImageUploaderTab({ password }: { password: string }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
 
-      <div style={{ background: "#0e0c18", border: "1px solid #c0001a", padding: "14px 18px", fontSize: "0.82rem" }}>
+      <div style={{ background: "#f8f8f8", border: "1px solid #c0001a", padding: "14px 18px", fontSize: "0.82rem" }}>
         <strong style={{ color: "#ffd080" }}>📤 Image Uploader</strong>
-        <span style={{ color: "#8a8099", marginLeft: "8px" }}>
+        <span style={{ color: "#5a5070", marginLeft: "8px" }}>
           Drop an image → fill in details → upload to R2 + save to DB in one click.
         </span>
       </div>
@@ -519,8 +519,8 @@ function ImageUploaderTab({ password }: { password: string }) {
         onDrop={onDrop}
         onClick={() => fileInputRef.current?.click()}
         style={{
-          border: `2px dashed ${dragging ? "#c0001a" : file ? "#4caf50" : "#2a2535"}`,
-          background: dragging ? "rgba(192,0,26,0.06)" : "#0a0812",
+          border: `2px dashed ${dragging ? "#c0001a" : file ? "#4caf50" : "#d0cce0"}`,
+          background: dragging ? "rgba(192,0,26,0.06)" : "#f8f8f8",
           padding: "40px 24px", textAlign: "center",
           cursor: "pointer", transition: "all 0.2s",
         }}
@@ -530,10 +530,10 @@ function ImageUploaderTab({ password }: { password: string }) {
 
         {preview ? (
           <div style={{ display: "flex", gap: "24px", alignItems: "flex-start", justifyContent: "center", flexWrap: "wrap" }}>
-            <img src={preview} alt="Preview" style={{ maxHeight: "200px", maxWidth: "180px", objectFit: "contain", border: "1px solid #2a2535" }} />
+            <img src={preview} alt="Preview" style={{ maxHeight: "200px", maxWidth: "180px", objectFit: "contain", border: "1px solid #d0cce0" }} />
             <div style={{ textAlign: "left" }}>
               <p style={{ color: "#4caf50", fontSize: "0.75rem", marginBottom: "6px" }}>✓ File ready</p>
-              <p style={{ color: "#f0ecff", fontSize: "0.85rem", marginBottom: "4px" }}>{file?.name}</p>
+              <p style={{ color: "#1a1625", fontSize: "0.85rem", marginBottom: "4px" }}>{file?.name}</p>
               <p style={{ color: "#6b6480", fontSize: "0.75rem" }}>{file ? (file.size / 1024 / 1024).toFixed(2) + " MB" : ""}</p>
               <p style={{ color: "#6b6480", fontSize: "0.72rem", marginTop: "8px" }}>Click to replace</p>
             </div>
@@ -541,7 +541,7 @@ function ImageUploaderTab({ password }: { password: string }) {
         ) : (
           <>
             <p style={{ fontSize: "2.5rem", marginBottom: "12px" }}>🖼️</p>
-            <p style={{ color: "#f0ecff", fontSize: "0.95rem", marginBottom: "6px" }}>
+            <p style={{ color: "#1a1625", fontSize: "0.95rem", marginBottom: "6px" }}>
               {dragging ? "Drop it!" : "Drag & drop your image here"}
             </p>
             <p style={{ color: "#6b6480", fontSize: "0.75rem" }}>or click to browse · JPG, PNG, WEBP · max 20 MB</p>
@@ -563,7 +563,7 @@ function ImageUploaderTab({ password }: { password: string }) {
             </div>
             <button type="button" onClick={handleGenerateAll} disabled={generatingAlt}
               style={{
-                background: generatingAlt ? "#1a1825" : "#c0001a",
+                background: generatingAlt ? "#e8e4f0" : "#c0001a",
                 border: "none", color: "#fff",
                 padding: "10px 20px", cursor: generatingAlt ? "not-allowed" : "pointer",
                 fontSize: "0.72rem", letterSpacing: "0.1em", textTransform: "uppercase",
@@ -616,9 +616,9 @@ function ImageUploaderTab({ password }: { password: string }) {
               </label>
               <button type="button" onClick={handleGenerateAlt} disabled={generatingAlt}
                 style={{
-                  background: generatingAlt ? "#1a1825" : "rgba(192,0,26,0.15)",
+                  background: generatingAlt ? "#e8e4f0" : "rgba(192,0,26,0.10)",
                   border: "1px solid rgba(192,0,26,0.5)",
-                  color: generatingAlt ? "#6b6480" : "#f0ecff",
+                  color: generatingAlt ? "#6b6480" : "#1a1625",
                   padding: "5px 14px", cursor: generatingAlt ? "not-allowed" : "pointer",
                   fontSize: "0.65rem", letterSpacing: "0.1em", textTransform: "uppercase",
                   fontFamily: "monospace", transition: "all 0.2s", whiteSpace: "nowrap",
@@ -636,7 +636,7 @@ function ImageUploaderTab({ password }: { password: string }) {
 
           {/* 18+ Adult Content toggle */}
           <div style={{
-            border: `1px solid ${isAdult ? "#c0001a" : "#2a2535"}`,
+            border: `1px solid ${isAdult ? "#c0001a" : "#d0cce0"}`,
             padding: "14px 18px",
             background: isAdult ? "rgba(192,0,26,0.08)" : "transparent",
             transition: "all 0.2s",
@@ -656,7 +656,7 @@ function ImageUploaderTab({ password }: { password: string }) {
                 onClick={() => setIsAdult(!isAdult)}
                 style={{
                   background: isAdult ? "#c0001a" : "transparent",
-                  border: `1px solid ${isAdult ? "#c0001a" : "#2a2535"}`,
+                  border: `1px solid ${isAdult ? "#c0001a" : "#d0cce0"}`,
                   color: isAdult ? "#fff" : "#6b6480",
                   padding: "8px 18px",
                   cursor: "pointer",
@@ -674,7 +674,7 @@ function ImageUploaderTab({ password }: { password: string }) {
 
             {isAdult && (
               <div style={{ marginTop: "12px", display: "flex", flexWrap: "wrap", gap: "8px", alignItems: "center" }}>
-                <span style={{ color: "#8a8099", fontSize: "0.65rem", letterSpacing: "0.1em", textTransform: "uppercase" }}>
+                <span style={{ color: "#5a5070", fontSize: "0.65rem", letterSpacing: "0.1em", textTransform: "uppercase" }}>
                   Badge preview:
                 </span>
                 {/* Preview all 18+ badge styles */}
@@ -719,8 +719,8 @@ function ImageUploaderTab({ password }: { password: string }) {
                 <button key={d} type="button" onClick={() => setDeviceType(d)}
                   style={{
                     background: "transparent",
-                    border: `1px solid ${deviceType === d ? "#c0001a" : "#2a2535"}`,
-                    color: deviceType === d ? "#f0ecff" : "#6b6480",
+                    border: `1px solid ${deviceType === d ? "#c0001a" : "#d0cce0"}`,
+                    color: deviceType === d ? "#1a1625" : "#6b6480",
                     padding: "8px 20px", cursor: "pointer",
                     fontSize: "0.7rem", letterSpacing: "0.1em",
                     textTransform: "uppercase", fontFamily: "monospace", transition: "all 0.15s",
@@ -739,8 +739,8 @@ function ImageUploaderTab({ password }: { password: string }) {
                 <button key={tag} type="button" onClick={() => toggleTag(tag)}
                   style={{
                     background: selectedTags.includes(tag) ? "rgba(192,0,26,0.2)" : "transparent",
-                    border: `1px solid ${selectedTags.includes(tag) ? "#c0001a" : "#2a2535"}`,
-                    color: selectedTags.includes(tag) ? "#f0ecff" : "#6b6480",
+                    border: `1px solid ${selectedTags.includes(tag) ? "#c0001a" : "#d0cce0"}`,
+                    color: selectedTags.includes(tag) ? "#1a1625" : "#6b6480",
                     padding: "5px 12px", cursor: "pointer",
                     fontSize: "0.65rem", letterSpacing: "0.08em",
                     fontFamily: "monospace", transition: "all 0.15s",
@@ -758,12 +758,12 @@ function ImageUploaderTab({ password }: { password: string }) {
               placeholder="Paste a Collection UUID to attach this image to a collection"
               style={{ ...inputStyle, fontSize: "0.82rem" }} />
             <p style={{ color: "#6b6480", fontSize: "0.65rem", marginTop: "4px" }}>
-              Find it via: <code style={{ color: "#c0a0ff" }}>npx prisma studio</code> → Collection table → copy the <code style={{ color: "#c0a0ff" }}>id</code> field.
+              Find it via: <code style={{ color: "#7c3aed" }}>npx prisma studio</code> → Collection table → copy the <code style={{ color: "#7c3aed" }}>id</code> field.
             </p>
           </div>
 
           {/* Upload Summary */}
-          <div style={{ background: "#0a0812", border: "1px solid #2a2535", padding: "14px 16px", fontSize: "0.8rem" }}>
+          <div style={{ background: "#f0f0f0", border: "1px solid #d0cce0", padding: "14px 16px", fontSize: "0.8rem" }}>
             <p style={eyebrowStyle}>Upload Summary</p>
             <div style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
               {[
@@ -796,7 +796,7 @@ function ImageUploaderTab({ password }: { password: string }) {
           {/* Upload Button */}
           <button type="button" onClick={handleUpload} disabled={uploading}
             style={{
-              background: uploading ? "#1a1825" : "#c0001a",
+              background: uploading ? "#e8e4f0" : "#c0001a",
               color: "#fff", border: "none",
               padding: "14px 32px", cursor: uploading ? "not-allowed" : "pointer",
               fontSize: "0.8rem", letterSpacing: "0.15em", textTransform: "uppercase",
@@ -836,8 +836,8 @@ function HtmlToolbar({ onInsert }: { onInsert: (b: string, a: string) => void })
       {tools.map((t) => (
         <button key={t.label} title={t.title} type="button" onClick={() => onInsert(t.before, t.after)}
           style={{
-            background: t.label === "18+" ? "rgba(192,0,26,0.2)" : "#1a1825",
-            border: t.label === "18+" ? "1px solid #c0001a" : "1px solid #2a2535",
+            background: t.label === "18+" ? "rgba(192,0,26,0.15)" : "#f0f0f0",
+            border: t.label === "18+" ? "1px solid #c0001a" : "1px solid #d0cce0",
             color: t.label === "18+" ? "#ff8080" : "#c0a0ff",
             padding: "4px 10px", cursor: "pointer",
             fontSize: "0.7rem", fontFamily: "monospace",
@@ -854,31 +854,31 @@ function HtmlToolbar({ onInsert }: { onInsert: (b: string, a: string) => void })
 function BlogIdeasTab({ onUseIdea }: { onUseIdea: (title: string, label: string) => void }) {
   return (
     <div>
-      <div style={{ background: "#0e0c18", border: "1px solid #c0001a", padding: "16px 20px", marginBottom: "24px", fontSize: "0.82rem" }}>
+      <div style={{ background: "#f8f8f8", border: "1px solid #c0001a", padding: "16px 20px", marginBottom: "24px", fontSize: "0.82rem" }}>
         <strong style={{ color: "#ffd080" }}>💡 AdSense Strategy:</strong>
-        <span style={{ color: "#8a8099", marginLeft: "8px" }}>
+        <span style={{ color: "#5a5070", marginLeft: "8px" }}>
           Write 2–3 posts per week. Focus on 💰 posts first — they drive the highest CPC.
         </span>
       </div>
 
-      <div style={{ border: "1px solid #2a2535", padding: "20px", marginBottom: "28px" }}>
+      <div style={{ border: "1px solid #d0cce0", padding: "20px", marginBottom: "28px" }}>
         <p style={eyebrowStyle}>SEO Checklist for Every Post</p>
         {SEO_TIPS.map((tip, i) => (
-          <div key={i} style={{ padding: "6px 0", borderBottom: "1px solid #1a1825", fontSize: "0.82rem", color: "#c9c4dd" }}>{tip}</div>
+          <div key={i} style={{ padding: "6px 0", borderBottom: "1px solid #e8e4f0", fontSize: "0.82rem", color: "#5a5070" }}>{tip}</div>
         ))}
       </div>
 
       <p style={eyebrowStyle}>Ready-to-Write Blog Ideas ({BLOG_IDEAS.length})</p>
 
       {BLOG_IDEAS.map((idea, i) => (
-        <div key={i} style={{ border: "1px solid #2a2535", padding: "14px 16px", marginBottom: "8px", display: "flex", justifyContent: "space-between", alignItems: "center", gap: "16px" }}>
+        <div key={i} style={{ border: "1px solid #d0cce0", padding: "14px 16px", marginBottom: "8px", display: "flex", justifyContent: "space-between", alignItems: "center", gap: "16px" }}>
           <div style={{ flex: 1 }}>
-            <p style={{ color: "#f0ecff", fontSize: "0.88rem", marginBottom: "4px" }}>{idea.title}</p>
+            <p style={{ color: "#1a1625", fontSize: "0.88rem", marginBottom: "4px" }}>{idea.title}</p>
             <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
               {idea.label === "18+ Mature Content" ? (
                 <AdultBadge size="sm" />
               ) : (
-                <span style={{ background: "#1a1825", border: "1px solid #2a2535", color: "#c0a0ff", padding: "2px 8px", fontSize: "0.65rem" }}>{idea.label}</span>
+                <span style={{ background: "#e8e4f0", border: "1px solid #d0cce0", color: "#7c3aed", padding: "2px 8px", fontSize: "0.65rem" }}>{idea.label}</span>
               )}
               <span style={{ color: "#6b6480", fontSize: "0.72rem" }}>{idea.reason}</span>
             </div>
@@ -1024,8 +1024,8 @@ function BlogTab({ password, prefillTitle, prefillLabel, onPrefillUsed }:
 
   return (
     <div>
-      <p style={{ color: "#8a8099", fontSize: "0.82rem", marginBottom: "16px" }}>
-        Posts go live at <strong style={{ color: "#f0ecff" }}>/blog/[slug]</strong> immediately. Aim for <strong style={{ color: "#c0a0ff" }}>800+ words</strong> per post.
+      <p style={{ color: "#5a5070", fontSize: "0.82rem", marginBottom: "16px" }}>
+        Posts go live at <strong style={{ color: "#1a1625" }}>/blog/[slug]</strong> immediately. Aim for <strong style={{ color: "#7c3aed" }}>800+ words</strong> per post.
       </p>
 
       <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
@@ -1066,7 +1066,7 @@ function BlogTab({ password, prefillTitle, prefillLabel, onPrefillUsed }:
                     Mature Content — Blog Post
                   </span>
                 </div>
-                <p style={{ color: "#8a8099", fontSize: "0.65rem", fontFamily: "monospace", letterSpacing: "0.06em", margin: 0, lineHeight: 1.6 }}>
+                <p style={{ color: "#5a5070", fontSize: "0.65rem", fontFamily: "monospace", letterSpacing: "0.06em", margin: 0, lineHeight: 1.6 }}>
                   This post will be labelled 18+ Mature Content across the site. An age-warning banner
                   will appear at the top of the blog post. Make sure content is appropriate for adult audiences only.
                 </p>
@@ -1088,7 +1088,7 @@ function BlogTab({ password, prefillTitle, prefillLabel, onPrefillUsed }:
                   <p style={{
                     fontFamily: "monospace", fontSize: "0.55rem",
                     letterSpacing: "0.1em", textTransform: "uppercase",
-                    color: "#a89bc0", margin: 0, lineHeight: 1.5,
+                    color: "#4a4060", margin: 0, lineHeight: 1.5,
                   }}>
                     ← Preview of the warning banner that will appear at the top of this blog post
                   </p>
@@ -1111,7 +1111,7 @@ function BlogTab({ password, prefillTitle, prefillLabel, onPrefillUsed }:
         </div>
 
         {/* ── AI Alt-Text Generator for Blog Images (Claude) ── */}
-        <div style={{ border: "1px solid #2a2535", padding: "16px 18px", background: "#0a0812" }}>
+        <div style={{ border: "1px solid #d0cce0", padding: "16px 18px", background: "#f0f0f0" }}>
           <p style={eyebrowStyle}>✨ AI Alt-Text Generator for Blog Images (Claude)</p>
           <p style={{ color: "#6b6480", fontSize: "0.75rem", marginBottom: "14px" }}>
             Upload or paste a URL for any image in your blog post. Claude Vision AI will write a perfect 130–150 char SEO alt tag.
@@ -1132,7 +1132,7 @@ function BlogTab({ password, prefillTitle, prefillLabel, onPrefillUsed }:
               <input ref={altFileRef} type="file" accept="image/*" style={{ display: "none" }}
                 onChange={e => { const f = e.target.files?.[0]; if (f) { setAltImageFile(f); setAltImageUrl(""); } }} />
               <button type="button" onClick={() => altFileRef.current?.click()}
-                style={{ background: "transparent", border: "1px solid #2a2535", color: altImageFile ? "#4caf50" : "#8a8099", padding: "10px 16px", cursor: "pointer", fontSize: "0.7rem", fontFamily: "monospace" }}>
+                style={{ background: "transparent", border: "1px solid #d0cce0", color: altImageFile ? "#4caf50" : "#8a8099", padding: "10px 16px", cursor: "pointer", fontSize: "0.7rem", fontFamily: "monospace" }}>
                 {altImageFile ? `✓ ${altImageFile.name.slice(0, 22)}` : "Upload image file"}
               </button>
             </div>
@@ -1141,9 +1141,9 @@ function BlogTab({ password, prefillTitle, prefillLabel, onPrefillUsed }:
           <button type="button" onClick={handleGenerateBlogAlt}
             disabled={generatingAlt || (!altImageFile && !altImageUrl)}
             style={{
-              background: generatingAlt ? "#1a1825" : "rgba(192,0,26,0.15)",
+              background: generatingAlt ? "#e8e4f0" : "rgba(192,0,26,0.10)",
               border: "1px solid rgba(192,0,26,0.5)",
-              color: generatingAlt ? "#6b6480" : "#f0ecff",
+              color: generatingAlt ? "#6b6480" : "#1a1625",
               padding: "8px 20px",
               cursor: (generatingAlt || (!altImageFile && !altImageUrl)) ? "not-allowed" : "pointer",
               fontSize: "0.7rem", letterSpacing: "0.1em", textTransform: "uppercase",
@@ -1153,13 +1153,13 @@ function BlogTab({ password, prefillTitle, prefillLabel, onPrefillUsed }:
           </button>
 
           {generatedAlt && (
-            <div style={{ background: "#0e0c18", border: "1px solid #4caf50", padding: "12px 14px" }}>
+            <div style={{ background: "#f8f8f8", border: "1px solid #4caf50", padding: "12px 14px" }}>
               <p style={{ color: "#4caf50", fontSize: "0.6rem", letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: "6px" }}>
                 Generated ({generatedAlt.length} chars)
               </p>
-              <p style={{ color: "#f0ecff", fontSize: "0.85rem", marginBottom: "10px" }}>{generatedAlt}</p>
+              <p style={{ color: "#1a1625", fontSize: "0.85rem", marginBottom: "10px" }}>{generatedAlt}</p>
               <button type="button" onClick={() => navigator.clipboard.writeText(generatedAlt)}
-                style={{ background: "transparent", border: "1px solid #2a2535", color: "#8a8099", padding: "4px 12px", cursor: "pointer", fontSize: "0.65rem", fontFamily: "monospace" }}>
+                style={{ background: "transparent", border: "1px solid #d0cce0", color: "#5a5070", padding: "4px 12px", cursor: "pointer", fontSize: "0.65rem", fontFamily: "monospace" }}>
                 Copy to clipboard
               </button>
             </div>
@@ -1176,10 +1176,10 @@ function BlogTab({ password, prefillTitle, prefillLabel, onPrefillUsed }:
               </span>
             </label>
             <div style={{ display: "flex", gap: "4px" }}>
-              <button type="button" onClick={() => setEditorMode("html")} style={{ ...modeBtn, borderColor: editorMode === "html" ? "#c0001a" : "#2a2535", color: editorMode === "html" ? "#f0ecff" : "#6b6480" }}>HTML</button>
-              <button type="button" onClick={() => setEditorMode("preview")} style={{ ...modeBtn, borderColor: editorMode === "preview" ? "#c0001a" : "#2a2535", color: editorMode === "preview" ? "#f0ecff" : "#6b6480" }}>Preview</button>
+              <button type="button" onClick={() => setEditorMode("html")} style={{ ...modeBtn, borderColor: editorMode === "html" ? "#c0001a" : "#d0cce0", color: editorMode === "html" ? "#1a1625" : "#6b6480" }}>HTML</button>
+              <button type="button" onClick={() => setEditorMode("preview")} style={{ ...modeBtn, borderColor: editorMode === "preview" ? "#c0001a" : "#d0cce0", color: editorMode === "preview" ? "#1a1625" : "#6b6480" }}>Preview</button>
               {!content && (
-                <button type="button" onClick={() => handleContentChange(starterTemplate)} style={{ ...modeBtn, borderColor: "#c0a0ff", color: "#c0a0ff" }}>
+                <button type="button" onClick={() => handleContentChange(starterTemplate)} style={{ ...modeBtn, borderColor: "#c0a0ff", color: "#7c3aed" }}>
                   Insert Template
                 </button>
               )}
@@ -1200,7 +1200,7 @@ function BlogTab({ password, prefillTitle, prefillLabel, onPrefillUsed }:
             </>
           ) : (
             <div
-              style={{ minHeight: "400px", border: "1px solid #2a2535", padding: "20px", background: "#08060f", color: "#f0ecff", lineHeight: "1.9", fontSize: "0.95rem" }}
+              style={{ minHeight: "400px", border: "1px solid #d0cce0", padding: "20px", background: "#08060f", color: "#1a1625", lineHeight: "1.9", fontSize: "0.95rem" }}
               dangerouslySetInnerHTML={{ __html: content || "<p style='color:#6b6480'>Nothing to preview yet…</p>" }}
             />
           )}
@@ -1208,7 +1208,7 @@ function BlogTab({ password, prefillTitle, prefillLabel, onPrefillUsed }:
 
         {/* SEO quick-check */}
         {(title || content) && (
-          <div style={{ border: "1px solid #2a2535", padding: "14px 16px", background: "#0a0812" }}>
+          <div style={{ border: "1px solid #d0cce0", padding: "14px 16px", background: "#f0f0f0" }}>
             <p style={eyebrowStyle}>SEO Quick Check</p>
             <div style={{ display: "flex", flexWrap: "wrap", gap: "8px", marginTop: "4px" }}>
               {[
@@ -1250,9 +1250,9 @@ function BlogTab({ password, prefillTitle, prefillLabel, onPrefillUsed }:
         <div style={{ marginTop: "40px" }}>
           <p style={eyebrowStyle}>Published Posts ({posts.length})</p>
           {posts.map((p) => (
-            <div key={p.slug} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 0", borderBottom: "1px solid #1a1825", gap: "12px" }}>
+            <div key={p.slug} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 0", borderBottom: "1px solid #e8e4f0", gap: "12px" }}>
               <div style={{ flex: 1, minWidth: 0 }}>
-                <span style={{ color: "#f0ecff", fontSize: "0.88rem" }}>{p.title}</span>
+                <span style={{ color: "#1a1625", fontSize: "0.88rem" }}>{p.title}</span>
                 <div style={{ display: "flex", gap: "8px", marginTop: "4px", alignItems: "center", flexWrap: "wrap" }}>
                   {/* 18+ label badge on published posts */}
                   {p.label === "18+ Mature Content" ? (
@@ -1267,7 +1267,7 @@ function BlogTab({ password, prefillTitle, prefillLabel, onPrefillUsed }:
                       ⚠ 18+
                     </span>
                   ) : (
-                    <span style={{ background: "#1a1825", border: "1px solid #2a2535", color: "#c0a0ff", padding: "1px 6px", fontSize: "0.6rem" }}>{p.label}</span>
+                    <span style={{ background: "#e8e4f0", border: "1px solid #d0cce0", color: "#7c3aed", padding: "1px 6px", fontSize: "0.6rem" }}>{p.label}</span>
                   )}
                   <span style={{ color: "#6b6480", fontSize: "0.72rem" }}>
                     {new Date(p.createdAt).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })}
@@ -1344,8 +1344,8 @@ function Manage18Tab({ password }: { password: string }) {
         <p style={{ color: "#ffd080", fontSize: "0.78rem", fontFamily: "monospace", marginBottom: "6px" }}>
           ⚠ 18+ Content Manager
         </p>
-        <p style={{ color: "#8a8099", fontSize: "0.72rem", fontFamily: "monospace" }}>
-          Mark images as 18+ Adult Content. This searches by title (partial match) and sets <code style={{ color: "#c0a0ff" }}>isAdult: true</code> in the database.
+        <p style={{ color: "#5a5070", fontSize: "0.72rem", fontFamily: "monospace" }}>
+          Mark images as 18+ Adult Content. This searches by title (partial match) and sets <code style={{ color: "#7c3aed" }}>isAdult: true</code> in the database.
           The gallery will show an 18+ badge and require age confirmation before viewing.
         </p>
       </div>
@@ -1373,11 +1373,11 @@ function Manage18Tab({ password }: { password: string }) {
         const res = results[item.title];
         const isLoading = loading[item.title];
         return (
-          <div key={item.title} style={{ border: `1px solid ${res?.status === "ok" ? "#4caf50" : res?.status === "err" ? "#c0001a" : "#2a2535"}`, padding: "14px 16px", marginBottom: "8px", display: "flex", justifyContent: "space-between", alignItems: "center", gap: "16px", flexWrap: "wrap" }}>
+          <div key={item.title} style={{ border: `1px solid ${res?.status === "ok" ? "#4caf50" : res?.status === "err" ? "#c0001a" : "#d0cce0"}`, padding: "14px 16px", marginBottom: "8px", display: "flex", justifyContent: "space-between", alignItems: "center", gap: "16px", flexWrap: "wrap" }}>
             <div>
-              <p style={{ color: "#f0ecff", fontSize: "0.9rem", marginBottom: "4px" }}>{item.title}</p>
+              <p style={{ color: "#1a1625", fontSize: "0.9rem", marginBottom: "4px" }}>{item.title}</p>
               <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
-                <span style={{ background: "#1a1825", border: "1px solid #2a2535", color: "#c0a0ff", padding: "2px 8px", fontSize: "0.62rem", fontFamily: "monospace" }}>
+                <span style={{ background: "#e8e4f0", border: "1px solid #d0cce0", color: "#7c3aed", padding: "2px 8px", fontSize: "0.62rem", fontFamily: "monospace" }}>
                   {item.device}
                 </span>
                 <AdultBadge size="sm" />
@@ -1390,9 +1390,9 @@ function Manage18Tab({ password }: { password: string }) {
             </div>
             <button onClick={() => markAdult(item.title)} disabled={isLoading || res?.status === "ok"}
               style={{
-                background: res?.status === "ok" ? "transparent" : isLoading ? "#1a1825" : "rgba(192,0,26,0.2)",
+                background: res?.status === "ok" ? "transparent" : isLoading ? "#e8e4f0" : "rgba(192,0,26,0.15)",
                 border: `1px solid ${res?.status === "ok" ? "#4caf50" : "#c0001a"}`,
-                color: res?.status === "ok" ? "#4caf50" : isLoading ? "#6b6480" : "#f0ecff",
+                color: res?.status === "ok" ? "#4caf50" : isLoading ? "#6b6480" : "#1a1625",
                 padding: "7px 16px", cursor: (isLoading || res?.status === "ok") ? "not-allowed" : "pointer",
                 fontSize: "0.7rem", letterSpacing: "0.1em", textTransform: "uppercase",
                 fontFamily: "monospace", flexShrink: 0,
@@ -1403,7 +1403,7 @@ function Manage18Tab({ password }: { password: string }) {
         );
       })}
 
-      <div style={{ marginTop: "32px", border: "1px solid #2a2535", padding: "16px 18px", background: "#0a0812" }}>
+      <div style={{ marginTop: "32px", border: "1px solid #d0cce0", padding: "16px 18px", background: "#f0f0f0" }}>
         <p style={eyebrowStyle}>Mark Any Image by Title</p>
         <ManualMarkAdult password={password} />
       </div>
@@ -1491,8 +1491,8 @@ export default function AdminPage() {
   ];
 
   return (
-    <div style={{ minHeight: "100vh", background: "#0c0b14", fontFamily: "monospace", color: "#f0ecff" }}>
-      <div style={{ borderBottom: "1px solid #2a2535", padding: "16px 32px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+    <div style={{ minHeight: "100vh", background: "#ffffff", fontFamily: "monospace", color: "#1a1625" }}>
+      <div style={{ borderBottom: "1px solid #d0cce0", padding: "16px 32px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
         <div>
           <span style={{ color: "#c0001a", fontSize: "0.6rem", letterSpacing: "0.2em", textTransform: "uppercase" }}>Haunted Wallpapers</span>
           <span style={{ color: "#6b6480", marginLeft: "12px", fontSize: "0.9rem" }}>Admin</span>
@@ -1506,12 +1506,12 @@ export default function AdminPage() {
         </div>
       </div>
 
-      <div style={{ borderBottom: "1px solid #2a2535", padding: "0 32px", display: "flex", overflowX: "auto" }}>
+      <div style={{ borderBottom: "1px solid #d0cce0", padding: "0 32px", display: "flex", overflowX: "auto" }}>
         {TABS.map(({ key, label }) => (
           <button key={key} onClick={() => setTab(key)} style={{
             background: "transparent", border: "none",
             borderBottom: tab === key ? "2px solid #c0001a" : "2px solid transparent",
-            color: tab === key ? "#f0ecff" : "#6b6480",
+            color: tab === key ? "#1a1625" : "#6b6480",
             padding: "14px 24px", cursor: "pointer",
             fontSize: "0.75rem", letterSpacing: "0.1em", textTransform: "uppercase",
             whiteSpace: "nowrap",
