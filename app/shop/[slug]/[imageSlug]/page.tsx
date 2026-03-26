@@ -150,11 +150,11 @@ export default async function CollectionImagePage({ params }: PageProps) {
       <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_MAIN} width={728} height={90} />
 
       {/* ── Main layout ── */}
-      <section style={{ maxWidth: "1280px", margin: "0 auto", padding: "16px 24px 40px" }}>
+      <section style={{ maxWidth: "1280px", margin: "0 auto", padding: "16px 24px 0" }}>
         <div className="image-detail-grid">
 
           {/* ── Left: image preview ── */}
-          <div style={{ position: "relative", width: "100%", maxWidth: "480px", margin: "0 auto", overflow: "hidden" }}>
+          <div style={{ position: "relative", width: "100%", maxWidth: "480px", margin: "0 auto", alignSelf: "flex-start" }}>
             <div
               style={{
                 position: "relative",
@@ -280,6 +280,7 @@ export default async function CollectionImagePage({ params }: PageProps) {
           display: flex;
           flex-direction: column;
           gap: 32px;
+          align-items: flex-start;
         }
         @media (min-width: 768px) {
           .image-detail-grid {
@@ -369,13 +370,14 @@ export default async function CollectionImagePage({ params }: PageProps) {
         .prev-next-nav {
           max-width: 1280px;
           margin: 0 auto;
-          padding: 48px 24px 40px;
+          padding: 40px 24px 40px;
           display: grid;
           grid-template-columns: 1fr 1fr;
           gap: 16px;
           border-top: 1px solid rgba(42,37,53,0.6);
           position: relative;
-          z-index: 2;
+          z-index: 10;
+          background: var(--bg-primary, #0c0b14);
         }
         [data-theme="light"] .prev-next-nav { border-top-color: #ddd8ce; }
         .prev-next-link {
