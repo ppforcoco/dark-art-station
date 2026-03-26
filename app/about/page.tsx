@@ -4,8 +4,8 @@ import AdSlot from "@/components/AdSlot";
 export const metadata: Metadata = {
   title: "About — HauntedWallpapers",
   description:
-    "The story behind HauntedWallpapers — an AI art studio obsessed with darkness, " +
-    "atmosphere, and the beauty that lives at the edge of the unknown.",
+    "Two siblings raised on horror stories, graveyard houses, and jungle spirits. " +
+    "HauntedWallpapers is not a studio — it's an obsession. The story behind the dark art.",
 };
 
 export default function AboutPage() {
@@ -15,78 +15,92 @@ export default function AboutPage() {
 
         <header className="static-page-header">
           <p className="static-page-label">Our Story</p>
-          <h1 className="static-page-title">The Art Factory<br /><em>at the Edge of the Dark</em></h1>
+          <h1 className="static-page-title">Born in the Dark,<br /><em>Built for the Dark</em></h1>
         </header>
 
         <div className="static-page-body">
 
           <section className="static-section">
-            <h2>What Is HauntedWallpapers?</h2>
+            <h2>We Are Not a Studio. We Are Obsessed.</h2>
             <p>
-              HauntedWallpapers is an independent digital art studio specialising in
-              dark, atmospheric, and boldly styled wallpapers for every screen — from
-              the phone in your pocket to the monitor on your desk.
+              HauntedWallpapers was built by two siblings — a brother and sister —
+              who have loved horror since before they understood why. We grew up
+              talking about ghosts, watching horror movies back to back, and
+              genuinely never being scared. Not detached — <em>obsessed</em>.
+              The dark was never something to run from. It was something to run
+              <em> toward</em>.
             </p>
             <p>
-              Every image is crafted using advanced AI generation pipelines,
-              hand-curated and post-processed to ensure each piece feels intentional,
-              not accidental. We do not sell photographs. We do not sell clip art. We
-              build worlds — then we shrink them down to fit your screen.
-            </p>
-          </section>
-
-          <section className="static-section">
-            <h2>The AI Art Factory</h2>
-            <p>
-              We use a combination of modern diffusion models, custom-trained style
-              embeddings, and iterative curation to generate art that sits in a space
-              between illustration and imagination. Prompts are developed over dozens
-              of iterations. Images that don&apos;t reach our quality bar are
-              discarded. Only the ones that genuinely unsettle us — in the best
-              possible way — make it to the site.
-            </p>
-            <p>
-              The result is a library of thousands of wallpapers spanning dark fantasy,
-              street art, horror aesthetics, cyberpunk decay, cosmic art, and
-              everything that lives in the shadows between those genres.
+              This site is the result of that obsession. Every wallpaper on here
+              was curated by people who actually feel something when they look at
+              dark art — not by an algorithm chasing clicks.
             </p>
           </section>
 
           <section className="static-section">
-            <h2>Who Is This For?</h2>
+            <h2>Where It Comes From</h2>
             <p>
-              For the person who has never related to bright, cheerful phone themes.
-              For the desktop user who wants their setup to feel like a statement.
-              For the art lover who wants something original on their screen every
-              morning. For anyone who has ever felt more at home in the dark.
+              Our father used to walk kilometres through the jungle at night. He
+              described a presence that would follow him — not physical, nothing
+              you could touch, but undeniably <em>there</em>. He&apos;d arrive home
+              and the entity would stay, crying through the night, keeping him from
+              sleep. He told us these stories like they were ordinary. They were not.
             </p>
             <p>
-              Our entire library is completely free. Our belief is that great dark
-              art should be accessible to everyone — not locked behind a paywall.
-              Premium collections are in development for those who want exclusive
-              drops and curated full-resolution packs, but you will never be forced
-              to pay to enjoy this place.
+              Our aunt&apos;s house sat on the edge of a graveyard. She told us
+              about the abandoned hospital nearby — the strange sounds that came
+              from empty corridors at hours when no one should be there.
+            </p>
+            <p>
+              And then there was the witch. She was sitting in a wheelchair on a
+              rooftop. Hair covering her face, head tilted down, completely still.
+              The kind of image that burns itself into you at a young age and never
+              fully leaves. You don&apos;t forget something like that.
+            </p>
+            <p>
+              We didn&apos;t grow up reading about horror. We grew up <em>inside</em> it.
+              That&apos;s the difference.
             </p>
           </section>
 
           <section className="static-section">
-            <h2>The Mission</h2>
+            <h2>What We Build</h2>
             <p>
-              To build the largest, highest-quality library of dark art wallpapers on
-              the internet — and to keep it free for the people who need it most.
+              HauntedWallpapers is an independent dark art studio. Every image is
+              crafted using AI generation pipelines — diffusion models, custom-trained
+              style embeddings, iterative curation — shaped by people who have a
+              genuine sense of what dark art should <em>feel</em> like. Not just
+              look like. Feel like.
             </p>
             <p>
-              We are funded entirely by advertising revenue. No subscriptions.
-              No tracking walls. No dark patterns.
+              We cover dark fantasy, horror aesthetics, street art, cyberpunk decay,
+              cosmic dread, gothic atmosphere, and everything living in the shadows
+              between those genres. iPhone, Android, PC — every screen. Thousands
+              of wallpapers. All free.
+            </p>
+          </section>
+
+          <section className="static-section">
+            <h2>Who This Is For</h2>
+            <p>
+              For the person who never related to bright, cheerful phone themes.
+              For whoever has a desktop that should feel like a statement, not a
+              screensaver. For the art lover who wants something that actually
+              unsettles them — in the best possible way — every morning. For anyone
+              who has always felt more at home in the dark.
+            </p>
+            <p>
+              We are funded by advertising. No paywalls. No subscriptions.
+              No dark patterns. Great dark art should be free.
             </p>
           </section>
 
           <section className="static-section">
             <h2>Contact &amp; Community</h2>
             <p>
-              We are a small, independent operation. If you have questions, requests,
-              or want to report an issue, visit our{" "}
-              <a href="/contact">Contact page</a>. For licensing questions, see our{" "}
+              Small team. Real people. If you have questions, requests, or something
+              to report — visit our{" "}
+              <a href="/contact">Contact page</a>. For licensing questions, see{" "}
               <a href="/licensing">Licensing &amp; Terms</a>.
             </p>
           </section>

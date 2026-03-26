@@ -34,15 +34,15 @@ export default function Footer(): JSX.Element {
           </ul>
         </div>
 
-        {/* ── Popular ── */}
+        {/* ── Explore ── */}
         <div className="footer-col">
-          <h4 className="footer-col-title">Popular</h4>
+          <h4 className="footer-col-title">Explore</h4>
           <ul>
-            <li><Link href="/shop/dark-humor-wallpaper-collection">Dark Humor</Link></li>
-            <li><Link href="/shop/incognito-mode-collection">Incognito Mode</Link></li>
             <li><Link href="/shop/dark-fantasy-art">Dark Fantasy</Link></li>
             <li><Link href="/shop/horror-movie-posters">Horror Posters</Link></li>
             <li><Link href="/shop/dark-minimal-horror">Dark Minimal</Link></li>
+            <li><Link href="/shop/dark-humor-wallpaper-collection">Dark Humor</Link></li>
+            <li><Link href="/gacha">Wallpaper Gacha 🎲</Link></li>
           </ul>
         </div>
 
