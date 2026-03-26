@@ -367,11 +367,13 @@ export default async function CollectionImagePage({ params }: PageProps) {
         .prev-next-nav {
           max-width: 1280px;
           margin: 0 auto;
-          padding: 0 24px 40px;
+          padding: 48px 24px 40px;
           display: grid;
           grid-template-columns: 1fr 1fr;
           gap: 16px;
+          border-top: 1px solid rgba(42,37,53,0.6);
         }
+        [data-theme="light"] .prev-next-nav { border-top-color: #ddd8ce; }
         .prev-next-link {
           display: flex;
           flex-direction: row;

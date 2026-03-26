@@ -79,6 +79,7 @@ async function main() {
       bgClass:     data.bgClass,
       tag:         data.tag,
       featured:    data.featured,
+      isAdult:     data.isAdult ?? false,
     };
 
     let collectionId: string;
@@ -117,6 +118,7 @@ async function main() {
         highResKey:   imageHighResKey(data.slug, img.slug, img.highResExt ?? "jpeg"),
         sortOrder:    img.sortOrder,
         collectionId,
+        isAdult:      !!(img.isAdult || data.isAdult),
         ...(imgTags.length > 0 && { tags: imgTags }),
       };
 
@@ -169,6 +171,7 @@ async function main() {
       deviceType:  data.deviceType,
       tags:        standaloneTags,
       sortOrder:   data.sortOrder,
+      isAdult:     data.isAdult ?? false,
       // collectionId intentionally omitted — standalone image
     };
 

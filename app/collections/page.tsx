@@ -9,13 +9,6 @@ export const revalidate = 60;
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
 
 // Collections that show the 18+ badge on the grid
-const ADULT_COLLECTION_SLUGS = [
-  "skull-warning-collection",
-  "bone-hands-collection",
-  "dark-humor-wallpaper-collection",
-  "skull-street-collection",
-  "bone-street-collection",
-];
 
 export const metadata: Metadata = {
   title: "All Collections | Free Dark Wallpapers | Haunted Wallpapers",
@@ -77,7 +70,7 @@ export default async function CollectionsPage() {
             </h2>
             <div className="category-grid">
               {cols.map((col) => {
-                const isAdult = ADULT_COLLECTION_SLUGS.includes(col.slug);
+                const isAdult = col.isAdult;
                 const cardInner = (
                   <>
                     <div className={`cat-bg-layer ${col.bgClass}`} />
