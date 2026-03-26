@@ -1,8 +1,14 @@
 // app/not-found.tsx
+import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { db } from "@/lib/db";
 import { getPublicUrl } from "@/lib/r2";
+
+export const metadata: Metadata = {
+  title: "404 - Not Found | Haunted Wallpapers",
+  robots: { index: false, follow: true },
+};
 
 export default async function NotFound() {
   let suggestions: {
