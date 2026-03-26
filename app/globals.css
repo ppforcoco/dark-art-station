@@ -6551,3 +6551,213 @@ body:has([data-force-blog="true"]) .halloween-bar {
 [data-theme="light"] .social-share-label { color: #7a7468 !important; }
 [data-theme="light"] .social-share-btn   { border-color: #cdc8bc !important; color: #5a5450 !important; background: #f0ebe0 !important; }
 [data-theme="light"] .social-share-btn:hover { border-color: #8b0000 !important; color: #8b0000 !important; }
+
+/* ═══════════════════════════════════════════════════════════════════
+   BLOG & GUIDES — FORCE LIGHT THEME
+   Overrides ALL user themes (dark / ghost / ember / crimson / etc.)
+   Triggered by data-force-blog="true" on the <main> element.
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* 1. Force light CSS variables on the root when a blog page is active */
+body:has([data-force-blog="true"]) {
+  --void:    #f4f1ea !important;
+  --black:   #ece8df !important;
+  --deep:    #e4dfd4 !important;
+  --ash:     #cdc8bc !important;
+  --smoke:   #7a7468 !important;
+  --ghost:   #5a5450 !important;
+  --pale:    #1a1814 !important;
+  --white:   #0a0908 !important;
+
+  --bg-primary:   #f4f1ea !important;
+  --bg-secondary: #ece8df !important;
+  --text-primary: #1a1814 !important;
+  --text-muted:   #3a3430 !important;
+  --border-dim:   #cdc8bc !important;
+  --nav-bg:       rgba(244,241,234,0.96) !important;
+
+  --crimson: #8b0000 !important;
+  --blood:   #c0001a !important;
+  --ember:   #cc3000 !important;
+  --gold:    #a07828 !important;
+}
+
+/* 2. Force background + text on body and main */
+body:has([data-force-blog="true"]),
+body:has([data-force-blog="true"]) main[data-force-blog="true"] {
+  background-color: #f4f1ea !important;
+  color: #1a1814 !important;
+}
+
+/* 3. Page-level wrapper */
+body:has([data-force-blog="true"]) .content-wrapper {
+  background-color: #f4f1ea !important;
+}
+
+/* 4. Blog top nav — light style */
+body:has([data-force-blog="true"]) .blog-topnav {
+  background: #f4f1ea !important;
+  border-bottom-color: #cdc8bc !important;
+}
+body:has([data-force-blog="true"]) .blog-topnav-logo-text {
+  color: #1a1814 !important;
+}
+body:has([data-force-blog="true"]) .blog-topnav-logo-text span {
+  color: #c0001a !important;
+}
+body:has([data-force-blog="true"]) .blog-topnav-link {
+  color: #7a7468 !important;
+}
+body:has([data-force-blog="true"]) .blog-topnav-link:hover {
+  color: #1a1814 !important;
+  border-color: #cdc8bc !important;
+}
+
+/* 5. Hero section */
+body:has([data-force-blog="true"]) .blog-index-hero {
+  border-bottom-color: #cdc8bc !important;
+  background: linear-gradient(to bottom, rgba(192,0,26,0.03), transparent) !important;
+}
+body:has([data-force-blog="true"]) .blog-index-title {
+  color: #1a1814 !important;
+}
+body:has([data-force-blog="true"]) .blog-index-subtitle {
+  color: #7a7468 !important;
+}
+body:has([data-force-blog="true"]) .blog-index-count {
+  color: #a09888 !important;
+}
+
+/* 6. Featured card */
+body:has([data-force-blog="true"]) .blog-featured-card {
+  background: rgba(192,0,26,0.03) !important;
+  border-color: #cdc8bc !important;
+}
+body:has([data-force-blog="true"]) .blog-featured-card:hover {
+  border-color: rgba(192,0,26,0.4) !important;
+  background: rgba(192,0,26,0.05) !important;
+}
+body:has([data-force-blog="true"]) .blog-featured-title {
+  color: #1a1814 !important;
+}
+body:has([data-force-blog="true"]) .blog-featured-excerpt {
+  color: #5a5450 !important;
+}
+body:has([data-force-blog="true"]) .blog-featured-cta {
+  color: #8b0000 !important;
+}
+
+/* 7. Post grid cards */
+body:has([data-force-blog="true"]) .blog-post-card {
+  background: #ece8df !important;
+  border-color: #cdc8bc !important;
+}
+body:has([data-force-blog="true"]) .blog-post-card:hover {
+  border-color: rgba(192,0,26,0.4) !important;
+  background: #e4dfd4 !important;
+}
+body:has([data-force-blog="true"]) .blog-post-card-title {
+  color: #1a1814 !important;
+}
+body:has([data-force-blog="true"]) .blog-post-card-excerpt {
+  color: #5a5450 !important;
+}
+body:has([data-force-blog="true"]) .blog-post-card-date {
+  color: #a09888 !important;
+}
+
+/* 8. Category groups */
+body:has([data-force-blog="true"]) .blog-categories-heading {
+  color: #1a1814 !important;
+  border-bottom-color: #cdc8bc !important;
+}
+body:has([data-force-blog="true"]) .blog-category-group {
+  background: #ece8df !important;
+  border-color: #cdc8bc !important;
+}
+body:has([data-force-blog="true"]) .blog-category-count {
+  background: #e4dfd4 !important;
+  color: #7a7468 !important;
+}
+body:has([data-force-blog="true"]) .blog-category-item {
+  border-top-color: #d8d3c8 !important;
+}
+body:has([data-force-blog="true"]) .blog-category-item:hover {
+  background: #e4dfd4 !important;
+}
+body:has([data-force-blog="true"]) .blog-category-item-title {
+  color: #3a3430 !important;
+}
+body:has([data-force-blog="true"]) .blog-category-item-date {
+  color: #a09888 !important;
+}
+
+/* 9. Blog post article page */
+body:has([data-force-blog="true"]) .blog-post-page {
+  background-color: #f4f1ea !important;
+}
+body:has([data-force-blog="true"]) .blog-post-header {
+  border-bottom-color: #cdc8bc !important;
+}
+body:has([data-force-blog="true"]) .blog-post-title {
+  color: #1a1814 !important;
+}
+body:has([data-force-blog="true"]) .blog-post-meta {
+  color: #7a7468 !important;
+  border-bottom-color: #cdc8bc !important;
+}
+body:has([data-force-blog="true"]) .blog-post-back {
+  color: #8b0000 !important;
+}
+body:has([data-force-blog="true"]) .blog-post-back:hover {
+  color: #c0001a !important;
+}
+
+/* 10. HTML content within blog posts */
+body:has([data-force-blog="true"]) .blog-html-content {
+  color: #2a2520 !important;
+}
+body:has([data-force-blog="true"]) .blog-html-content p {
+  color: #3a3430 !important;
+}
+body:has([data-force-blog="true"]) .blog-html-content h1,
+body:has([data-force-blog="true"]) .blog-html-content h2,
+body:has([data-force-blog="true"]) .blog-html-content h3,
+body:has([data-force-blog="true"]) .blog-html-content h4 {
+  color: #1a1814 !important;
+}
+body:has([data-force-blog="true"]) .blog-html-content h3 { color: #8b0000 !important; }
+body:has([data-force-blog="true"]) .blog-html-content strong { color: #0a0908 !important; }
+body:has([data-force-blog="true"]) .blog-html-content em { color: #8b0000 !important; }
+body:has([data-force-blog="true"]) .blog-html-content a { color: #8b0000 !important; border-color: rgba(139,0,0,0.3) !important; }
+body:has([data-force-blog="true"]) .blog-html-content a:hover { color: #c0001a !important; }
+body:has([data-force-blog="true"]) .blog-html-content li { color: #3a3430 !important; }
+body:has([data-force-blog="true"]) .blog-html-content blockquote {
+  border-left-color: #8b0000 !important;
+  background: rgba(139,0,0,0.05) !important;
+  color: #5a5450 !important;
+}
+body:has([data-force-blog="true"]) .blog-html-content code {
+  background: #e4dfd4 !important;
+  color: #8b0000 !important;
+}
+body:has([data-force-blog="true"]) .blog-html-content hr {
+  border-color: #cdc8bc !important;
+}
+
+/* 11. Footer on blog pages */
+body:has([data-force-blog="true"]) .site-footer {
+  background: #ece8df !important;
+  border-color: #cdc8bc !important;
+}
+body:has([data-force-blog="true"]) .footer-bottom {
+  border-color: #cdc8bc !important;
+}
+
+/* 12. Scrollbar on blog pages */
+body:has([data-force-blog="true"]) ::-webkit-scrollbar-track {
+  background: #ece8df !important;
+}
+body:has([data-force-blog="true"]) ::-webkit-scrollbar-thumb {
+  background: #cdc8bc !important;
+}

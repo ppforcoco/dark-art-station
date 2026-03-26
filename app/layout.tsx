@@ -42,25 +42,53 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
+  colorScheme: "dark",
+  themeColor: "#0c0b14",
 };
 
 export const metadata: Metadata = {
   title: "Haunted Wallpapers | Free Dark Fantasy Wallpapers",
   description:
     "Free dark fantasy wallpapers for iPhone, Android and PC. Download high-resolution AI art — horror, gothic, street style, dark humor and more.",
+  keywords: [
+    "dark wallpapers",
+    "horror wallpapers",
+    "gothic wallpapers",
+    "iPhone wallpapers",
+    "Android wallpapers",
+    "4K wallpapers",
+    "AI art",
+    "dark fantasy",
+    "free wallpapers",
+    "AMOLED wallpapers",
+  ],
   metadataBase: new URL(SITE_URL),
+  robots: {
+    index: true,
+    follow: true,
+    nocache: false,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
+  },
   openGraph: {
     title:       "Haunted Wallpapers | Free Dark Fantasy Wallpapers",
     description: "Free dark fantasy wallpapers for iPhone, Android and PC. Download high-resolution AI art collections.",
     url:         SITE_URL,
     siteName:    SITE_NAME,
     type:        "website",
+    locale:      "en_US",
     images: [
       {
         url:    OG_IMAGE,
         width:  1200,
         height: 630,
         alt:    "Haunted Wallpapers — Dark Fantasy & Horror Art",
+        type:   "image/jpeg",
       },
     ],
   },
@@ -69,14 +97,31 @@ export const metadata: Metadata = {
     title:       "Haunted Wallpapers | Free Dark Fantasy Wallpapers",
     description: "Free dark fantasy wallpapers for iPhone, Android and PC. Download high-resolution AI art collections.",
     images:      [OG_IMAGE],
+    creator:     "@hauntedwallpapers",
   },
-  alternates: { canonical: SITE_URL },
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+    ],
+    apple: "/apple-touch-icon.png",
+  },
+  alternates: { 
+    canonical: SITE_URL,
+    languages: {
+      "en-US": SITE_URL,
+    },
+  },
+  verification: {
+    google: process.env.NEXT_PUBLIC_GSC_VERIFICATION || undefined,
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" dir="ltr">
       <head>
+        {/* ── Dark mode + Night mode scripts ────────────────────────────── */}
         <script
           dangerouslySetInnerHTML={{
             __html: `(function(){try{var t=localStorage.getItem('hw-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();`,
@@ -87,66 +132,85 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             __html: `(function(){try{var h=new Date().getHours();if(h>=20||h<6)document.documentElement.setAttribute('data-night','true');}catch(e){}})();`,
           }}
         />
+        
+        {/* ── Preconnect to CDN for faster asset loading ─────────────────── */}
         <link rel="preconnect" href="https://assets.hauntedwallpapers.com" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://assets.hauntedwallpapers.com" />
+        <link rel="preconnect" href="https://pagead2.googlesyndication.com" />
+        <link rel="preconnect" href="https://www.googletagmanager.com" />
+        
+        {/* ── PWA & Icons ──────────────────────────────────────────────────── */}
         <link rel="manifest" href="/manifest.json" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <link rel="icon" type="image/x-icon" href="/favicon.ico" />
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+        
+        {/* ── Theme & Mobile Settings ──────────────────────────────────────── */}
         <meta name="theme-color" content="#0c0b14" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <meta name="apple-mobile-web-app-title" content="Haunted WP" />
         <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="format-detection" content="telephone=no" />
+        
+        {/* ── Google Site Verification ────────────────────────────────────── */}
         {process.env.NEXT_PUBLIC_GSC_VERIFICATION && (
           <meta name="google-site-verification" content={process.env.NEXT_PUBLIC_GSC_VERIFICATION} />
         )}
-        {/* ── Google AdSense — load unconditionally so crawler sees it ── */}
-        {/* Consent Mode v2 above handles personalization gating          */}
+        
+        {/* ── Google AdSense Account Verification ──────────────────────────── */}
         {process.env.NEXT_PUBLIC_ADSENSE_PID && (
-          <>
-            <meta name="google-adsense-account" content={process.env.NEXT_PUBLIC_ADSENSE_PID} />
-            <script
-              async
-              src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${process.env.NEXT_PUBLIC_ADSENSE_PID}`}
-              crossOrigin="anonymous"
-            />
-          </>
+          <meta name="google-adsense-account" content={process.env.NEXT_PUBLIC_ADSENSE_PID} />
         )}
-        {/* ── Google Consent Mode v2 — MUST be first, before gtag/AdSense ── */}
-        {/* Sets default denied state so AdSense can show non-personalized  */}
-        {/* ads to EVERYONE, even cookie decliners. CookieBanner updates     */}
-        {/* these values when user accepts or declines.                       */}
+        
+        {/* ── Google AdSense Script (loads unconditionally for crawler) ────── */}
+        {/* Consent Mode v2 gates personalization, not ad serving ────────────── */}
+        {process.env.NEXT_PUBLIC_ADSENSE_PID && (
+          <script
+            async
+            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${process.env.NEXT_PUBLIC_ADSENSE_PID}`}
+            crossOrigin="anonymous"
+          />
+        )}
+        
+        {/* ── Google Consent Mode v2 (MUST be first) ──────────────────────── */}
+        {/* Sets default DENIED for privacy-first approach ──────────────────── */}
+        {/* CookieBanner component updates these on user interaction ──────────── */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
 window.dataLayer=window.dataLayer||[];
 function gtag(){dataLayer.push(arguments);}
 gtag('consent','default',{
-  ad_storage:'denied',
-  ad_user_data:'denied',
-  ad_personalization:'denied',
-  analytics_storage:'denied',
-  wait_for_update:500
+  'ad_storage':'denied',
+  'ad_user_data':'denied',
+  'ad_personalization':'denied',
+  'analytics_storage':'denied',
+  'functionality_storage':'denied',
+  'personalization_storage':'denied',
+  'security_storage':'granted',
+  'wait_for_update':500
 });
 gtag('set','ads_data_redaction',true);
 gtag('set','url_passthrough',true);
 `.trim(),
           }}
         />
-        {/* ── Google Analytics 4 ── */}
+        
+        {/* ── Google Analytics 4 (respects consent) ──────────────────────── */}
         {process.env.NEXT_PUBLIC_GA_ID && (
           <>
             <script async src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_ID}`} />
             <script
               dangerouslySetInnerHTML={{
-                __html: `gtag('js',new Date());gtag('config','${process.env.NEXT_PUBLIC_GA_ID}',{send_page_view:true});`,
+                __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${process.env.NEXT_PUBLIC_GA_ID}',{send_page_view:true,anonymize_ip:true});`,
               }}
             />
           </>
         )}
       </head>
       <body className={`${cormorant.variable} ${cinzel.variable} ${spaceMono.variable}`}>
+        {/* ── Structured Data - Organization ────────────────────────────── */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -157,9 +221,20 @@ gtag('set','url_passthrough',true);
                 "@id": `${SITE_URL}/#organization`,
                 name: SITE_NAME,
                 url: SITE_URL,
-                logo: { "@type": "ImageObject", url: OG_IMAGE, width: 1200, height: 630 },
+                logo: { 
+                  "@type": "ImageObject", 
+                  url: OG_IMAGE, 
+                  width: 1200, 
+                  height: 630 
+                },
                 sameAs: ["https://www.pinterest.com/TheFreemiumWallpapers/"],
                 description: "Free dark fantasy wallpapers for iPhone, Android and PC. Bold original AI art.",
+                contactPoint: {
+                  "@type": "ContactPoint",
+                  url: `${SITE_URL}/contact`,
+                  contactType: "Customer Support",
+                  availableLanguage: "en"
+                }
               },
               {
                 "@context": "https://schema.org",
@@ -171,13 +246,42 @@ gtag('set','url_passthrough',true);
                 publisher: { "@id": `${SITE_URL}/#organization` },
                 potentialAction: {
                   "@type": "SearchAction",
-                  target: { "@type": "EntryPoint", urlTemplate: `${SITE_URL}/search?q={search_term_string}` },
+                  target: { 
+                    "@type": "EntryPoint", 
+                    urlTemplate: `${SITE_URL}/search?q={search_term_string}` 
+                  },
                   "query-input": "required name=search_term_string",
                 },
               },
+              {
+                "@context": "https://schema.org",
+                "@type": "BreadcrumbList",
+                itemListElement: [
+                  {
+                    "@type": "ListItem",
+                    position: 1,
+                    name: "Home",
+                    item: SITE_URL
+                  },
+                  {
+                    "@type": "ListItem",
+                    position: 2,
+                    name: "Shop",
+                    item: `${SITE_URL}/shop`
+                  },
+                  {
+                    "@type": "ListItem",
+                    position: 3,
+                    name: "Collections",
+                    item: `${SITE_URL}/collections`
+                  }
+                ]
+              }
             ]),
           }}
         />
+        
+        {/* ── Layout Components ──────────────────────────────────────────── */}
         <Cursor />
         <ScrollReset />
         <HalloweenCountdown />
