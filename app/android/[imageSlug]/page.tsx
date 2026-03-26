@@ -188,10 +188,11 @@ export default async function IphoneImagePage({ params }: PageProps) {
       {(prevImage || nextImage) && (
         <nav style={{
           maxWidth: "1280px", margin: "0 auto",
-          padding: "0 24px 40px",
+          padding: "40px 24px 40px",
           display: "grid",
           gridTemplateColumns: "1fr 1fr",
           gap: "12px",
+          borderTop: "1px solid #2a2535",
         }}>
           {prevImage ? (
             <Link href={`/android/${prevImage.slug}`}
@@ -239,7 +240,7 @@ export default async function IphoneImagePage({ params }: PageProps) {
         imageUrl={thumbUrl}
         pageUrl={`${siteUrl}/android/${imageSlug}`}
       />
-      <RecentlyViewed />
+      <RecentlyViewed currentSlug={image.slug} />
 
       <script type="application/ld+json" dangerouslySetInnerHTML={{
         __html: JSON.stringify({

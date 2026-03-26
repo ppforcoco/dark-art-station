@@ -5910,6 +5910,74 @@ a.download-btn:active {
 /* ── Blog & guides: always readable light mode ─────────────────
    We force a warm paper-white background regardless of the user's
    chosen theme so blog articles stay legible at all times.       */
+
+/* ── Hide global nav + countdown on all blog pages ── */
+body:has([data-force-blog="true"]) .site-nav,
+body:has([data-force-blog="true"]) .halloween-bar {
+  display: none !important;
+}
+
+/* ── Blog top nav (replaces global header on blog pages) ── */
+.blog-topnav {
+  position: sticky;
+  top: 0;
+  z-index: 900;
+  background: #0c0b14;
+  border-bottom: 1px solid #1e1b2e;
+  padding: 0 24px;
+}
+.blog-topnav-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 56px;
+  gap: 16px;
+}
+.blog-topnav-logo {
+  text-decoration: none;
+  flex-shrink: 0;
+}
+.blog-topnav-logo-text {
+  font-family: var(--font-cinzel), serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: #f0ecff;
+  text-transform: uppercase;
+}
+.blog-topnav-logo-text span {
+  color: #c0001a;
+}
+.blog-topnav-links {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+}
+.blog-topnav-link {
+  font-family: var(--font-space), monospace;
+  font-size: 0.55rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #a89bc0;
+  text-decoration: none;
+  padding: 6px 10px;
+  border: 1px solid transparent;
+  transition: color 0.2s, border-color 0.2s;
+  white-space: nowrap;
+}
+.blog-topnav-link:hover {
+  color: #f0ecff;
+  border-color: #2a2535;
+}
+@media (max-width: 480px) {
+  .blog-topnav-links { gap: 2px; }
+  .blog-topnav-link { font-size: 0.5rem; padding: 5px 7px; }
+}
+
 [data-force-blog="true"] {
   background: #f4f1ea !important;
   color: #1a1814 !important;

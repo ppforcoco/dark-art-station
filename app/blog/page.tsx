@@ -51,6 +51,20 @@ export default async function BlogPage() {
   return (
     <main className="blog-index-page" data-force-blog="true">
 
+      <nav className="blog-topnav">
+        <div className="blog-topnav-inner">
+          <Link href="/" className="blog-topnav-logo">
+            <span className="blog-topnav-logo-text">HAUNTED<span>WALLPAPERS</span></span>
+          </Link>
+          <div className="blog-topnav-links">
+            <Link href="/collections" className="blog-topnav-link">Collections</Link>
+            <Link href="/iphone" className="blog-topnav-link">iPhone</Link>
+            <Link href="/android" className="blog-topnav-link">Android</Link>
+            <Link href="/pc" className="blog-topnav-link">PC</Link>
+          </div>
+        </div>
+      </nav>
+
       <header className="blog-index-hero">
         <div className="blog-index-hero-inner">
           <p className="blog-index-eyebrow">Dark Knowledge</p>

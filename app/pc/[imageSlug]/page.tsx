@@ -243,7 +243,7 @@ export default async function IphoneImagePage({ params }: PageProps) {
         imageUrl={thumbUrl}
         pageUrl={`${siteUrl}/pc/${imageSlug}`}
       />
-      <RecentlyViewed />
+      <RecentlyViewed currentSlug={image.slug} />
 
       <script type="application/ld+json" dangerouslySetInnerHTML={{
         __html: JSON.stringify({
