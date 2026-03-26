@@ -16,7 +16,7 @@ export default function robots(): MetadataRoute.Robots {
           "/*.json",         // JSON files (except those public-facing)
           "/*?*search*",     // Dynamic search parameters
         ],
-        crawlDelay: 0,
+        crawlDelay: 0.5,  // ✅ Moved inside the rule
       },
       // ── GoogleBot — Aggressive crawling allowed ──────────────────────
       {
@@ -51,6 +51,6 @@ export default function robots(): MetadataRoute.Robots {
       },
     ],
     sitemap: `${siteUrl}/sitemap.xml`,
-    crawlDelay: 0.5,
+    // ❌ Removed crawlDelay from root level (not a valid property)
   };
 }
