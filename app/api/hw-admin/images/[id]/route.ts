@@ -9,12 +9,12 @@ function checkAuth(req: NextRequest) {
 
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   if (!checkAuth(req))
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { id } = params;
+  const { id } = await params;
   if (!id)
     return NextResponse.json({ error: "id required" }, { status: 400 });
 
@@ -29,12 +29,12 @@ export async function DELETE(
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   if (!checkAuth(req))
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { id } = params;
+  const { id } = await params;
   try {
     const image = await db.image.findUnique({ where: { id } });
     if (!image)
@@ -48,12 +48,12 @@ export async function GET(
 
 export async function PATCH(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   if (!checkAuth(req))
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { id } = params;
+  const { id } = await params;
   try {
     const body = await req.json();
     const { title, description, tags, isAdult, deviceType, sortOrder, highResKey } = body;
