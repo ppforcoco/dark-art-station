@@ -122,7 +122,7 @@ export default function GachaPage() {
           One pull. One fate. The void chooses for you.
         </p>
         {pullCount > 0 && (
-          <p className="gacha-pull-count">Pull #{pullCount}</p>
+          <p className="gacha-pull-count">Draw #{pullCount}</p>
         )}
       </header>
 
@@ -260,15 +260,15 @@ export default function GachaPage() {
           className={`gacha-pull-btn ${phase === "pulling" || phase === "revealing" ? "gacha-pull-btn--disabled" : ""}`}
           onClick={pull}
           disabled={phase === "pulling" || phase === "revealing"}
-          aria-label={phase === "done" ? "Pull Again" : "Pull Wallpaper"}
+          aria-label={phase === "done" ? "Draw Again" : "Draw Wallpaper"}
         >
           {phase === "pulling"
-            ? "Pulling…"
+            ? "Drawing…"
             : phase === "revealing"
             ? "Revealing…"
             : phase === "done"
-            ? "🎲 Pull Again"
-            : "🎲 Pull Wallpaper"}
+            ? "🔮 Draw Again"
+            : "🔮 Draw Wallpaper"}
         </button>
 
         {phase === "idle" && (
@@ -278,7 +278,7 @@ export default function GachaPage() {
         )}
         {phase === "done" && (
           <p className="gacha-pull-note">
-            {pullCount} pull{pullCount !== 1 ? "s" : ""} so far · Keep going…
+            {pullCount} draw{pullCount !== 1 ? "s" : ""} so far · Keep going…
           </p>
         )}
       </div>
@@ -286,7 +286,7 @@ export default function GachaPage() {
       {/* ── Recent Pulls (Session History) ── */}
       {history.length > 1 && (
         <section className="gacha-history">
-          <h3 className="gacha-history-heading">Recent Pulls</h3>
+          <h3 className="gacha-history-heading">Recent Draws</h3>
           <div className="gacha-history-grid">
             {history.slice(1).map((item, i) => {
               const url = `${r2PublicBase}/${item.r2Key}`;
@@ -322,7 +322,7 @@ export default function GachaPage() {
             </div>
             <div className="gacha-explainer-card gacha-explainer-card--highlight">
               <span className="gacha-explainer-icon">🎲</span>
-              <strong>Wallpaper Gacha</strong>
+              <strong>Destiny Draw</strong>
               <p>Reveals wallpapers here with animation, rarity system & pull history. A game.</p>
             </div>
           </div>

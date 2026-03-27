@@ -42,7 +42,7 @@ export default function Footer(): JSX.Element {
             <li><Link href="/shop/horror-movie-posters">Horror Posters</Link></li>
             <li><Link href="/shop/dark-minimal-horror">Dark Minimal</Link></li>
             <li><Link href="/shop/dark-humor-wallpaper-collection">Dark Humor</Link></li>
-            <li><Link href="/gacha">Wallpaper Gacha 🎲</Link></li>
+            <li><Link href="/gacha">Destiny Draw 🔮</Link></li>
           </ul>
         </div>
 
