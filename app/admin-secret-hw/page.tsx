@@ -617,14 +617,12 @@ function ImageUploaderTab({ password }: { password: string }) {
                 { label: "<B>", wrap: ["<strong>", "</strong>"] },
                 { label: "<I>", wrap: ["<em>", "</em>"] },
                 { label: "<H2>", wrap: ["<h2>", "</h2>"] },
-                { label: "<H3>", wrap: ["<h3 style="color:#c0001a">", "</h3>"] },
+                { label: "<H3>", wrap: ["<h3 style='color:#c0001a'>", "</h3>"] },
                 { label: "<P>", wrap: ["<p>", "</p>"] },
-                { label: "<UL>", wrap: ["<ul>
-  <li>", "</li>
-</ul>"] },
-                { label: "<SPAN red>", wrap: ["<span style="color:#c0001a">", "</span>"] },
-                { label: "<SPAN gold>", wrap: ["<span style="color:#c9a84c">", "</span>"] },
-                { label: "<BLOCKQUOTE>", wrap: ["<blockquote style="border-left:3px solid #c0001a;padding:8px 16px;margin:12px 0;font-style:italic;">", "</blockquote>"] },
+                { label: "<UL>", wrap: ["<ul>\n  <li>", "</li>\n</ul>"] },
+                { label: "<SPAN red>", wrap: ["<span style='color:#c0001a'>", "</span>"] },
+                { label: "<SPAN gold>", wrap: ["<span style='color:#c9a84c'>", "</span>"] },
+                { label: "<BLOCKQUOTE>", wrap: ["<blockquote style='border-left:3px solid #c0001a;padding:8px 16px;margin:12px 0;font-style:italic;'>", "</blockquote>"] },
               ].map(({ label, wrap }) => {
                 const descRef2 = document.getElementById("desc-textarea") as HTMLTextAreaElement | null;
                 return (

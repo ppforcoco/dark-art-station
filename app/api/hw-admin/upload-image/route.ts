@@ -110,8 +110,3 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Upload failed" }, { status: 500 });
   }
 }
-
-// Max file size: 20 MB
-export const config = {
-  api: { bodyParser: false },
-};
