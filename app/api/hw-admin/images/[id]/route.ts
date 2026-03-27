@@ -1,4 +1,3 @@
-cat > /Users/drrabbbit/MY\ FIRST\ PROJECT/dark-art-station/app/api/hw-admin/images/route.ts << 'EOF'
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 
@@ -8,56 +7,56 @@ function checkAuth(req: NextRequest) {
   return pw === correct;
 }
 
-export async function GET(req: NextRequest) {
-  if (!checkAuth(req)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+export async function DELETE(
+  req: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  if (!checkAuth(req))
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { searchParams } = new URL(req.url);
-  const page = Math.max(1, parseInt(searchParams.get("page") ?? "1", 10));
-  const limit = 24;
-  const skip = (page - 1) * limit;
-  const q = searchParams.get("q") ?? "";
-
-  const where = q
-    ? { OR: [{ title: { contains: q, mode: "insensitive" as const } }, { slug: { contains: q } }] }
-    : {};
-
-  const [images, total] = await Promise.all([
-    db.image.findMany({
-      where,
-      orderBy: { createdAt: "desc" },
-      skip,
-      take: limit,
-      select: {
-        id: true,
-        slug: true,
-        title: true,
-        r2Key: true,
-        description: true,
-        tags: true,
-        deviceType: true,
-        isAdult: true,
-        createdAt: true,
-        collectionId: true,
-        viewCount: true,
-        sortOrder: true,
-        highResKey: true,
-        collection: { select: { title: true, slug: true } },
-      },
-    }),
-    db.image.count({ where }),
-  ]);
-
-  return NextResponse.json({ images, total, page, pages: Math.ceil(total / limit) });
-}
-
-export async function PATCH(req: NextRequest) {
-  if (!checkAuth(req)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const { id } = params;
+  if (!id)
+    return NextResponse.json({ error: "id required" }, { status: 400 });
 
   try {
-    const body = await req.json();
-    const { id, title, description, tags, isAdult, deviceType } = body;
+    await db.image.delete({ where: { id } });
+    return NextResponse.json({ ok: true });
+  } catch (err) {
+    console.error("[images DELETE]", err);
+    return NextResponse.json({ error: "Delete failed" }, { status: 500 });
+  }
+}
 
-    if (!id) return NextResponse.json({ error: "id required" }, { status: 400 });
+export async function GET(
+  req: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  if (!checkAuth(req))
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  const { id } = params;
+  try {
+    const image = await db.image.findUnique({ where: { id } });
+    if (!image)
+      return NextResponse.json({ error: "Not found" }, { status: 404 });
+    return NextResponse.json(image);
+  } catch (err) {
+    console.error("[images GET by id]", err);
+    return NextResponse.json({ error: "Fetch failed" }, { status: 500 });
+  }
+}
+
+export async function PATCH(
+  req: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  if (!checkAuth(req))
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  const { id } = params;
+  try {
+    const body = await req.json();
+    const { title, description, tags, isAdult, deviceType, sortOrder, highResKey } = body;
 
     const updated = await db.image.update({
       where: { id },
@@ -67,13 +66,14 @@ export async function PATCH(req: NextRequest) {
         ...(tags !== undefined && { tags }),
         ...(isAdult !== undefined && { isAdult }),
         ...(deviceType !== undefined && { deviceType }),
+        ...(sortOrder !== undefined && { sortOrder }),
+        ...(highResKey !== undefined && { highResKey }),
       },
     });
 
     return NextResponse.json({ ok: true, slug: updated.slug });
   } catch (err) {
-    console.error("[images PATCH]", err);
+    console.error("[images PATCH by id]", err);
     return NextResponse.json({ error: "Update failed" }, { status: 500 });
   }
 }
-EOF
