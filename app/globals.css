@@ -1690,11 +1690,12 @@ body::before {
 }
 @media (max-width: 767px) {
   .ad-banner {
-    padding: 12px 8px;
-    flex-direction: column;
+    padding: 10px 8px;
+    flex-direction: row;
     align-items: center;
+    justify-content: space-between;
     gap: 6px;
-    overflow-x: hidden; /* Prevent horizontal overflow on mobile */
+    overflow-x: hidden;
   }
 }
 .ad-label {
@@ -1703,27 +1704,13 @@ body::before {
   color: #4a445a; flex-shrink: 0;
   word-break: break-word; /* Handle long text gracefully */
 }
-/* Side labels: shown on desktop, hidden on mobile */
+/* Side labels: shown on desktop AND mobile */
 .ad-label--side {
   display: inline;
 }
-@media (max-width: 767px) {
-  .ad-label--side { display: none; }
-}
-/* Mobile label: hidden on desktop, shown below ad on mobile */
+/* Mobile label: hidden everywhere — we use side labels on all screens */
 .ad-label--mobile {
   display: none;
-  text-align: center;
-  width: 100%;
-  font-size: 0.45rem; /* Slightly smaller on mobile for better fit */
-  max-width: 100%;
-  word-break: break-word;
-}
-@media (max-width: 767px) {
-  .ad-label--mobile { 
-    display: block;
-    padding: 0 4px; /* Small padding for mobile safety */
-  }
 }
 .ad-content {
   flex: 1; display: flex; align-items: center; justify-content: center;
@@ -4321,7 +4308,7 @@ body::before {
     padding: 8px 20px;
   }
   .ad-banner--dev .ad-label {
-    display: none; /* hide "Sponsored / Advertisement" labels on mobile dev */
+    font-size: 0.45rem; /* smaller but visible on mobile dev */
   }
 }
 
@@ -5755,15 +5742,15 @@ a.download-btn:active {
 
 @media (max-width: 767px) {
   .ad-banner {
-    padding: 10px 16px;
+    padding: 10px 8px;
   }
   .ad-content {
     padding: 6px 0;
     border-left: none !important;
     border-right: none !important;
   }
-  .ad-label {
-    display: none; /* cleaner on mobile */
+  .ad-label--side {
+    font-size: 0.45rem; /* slightly smaller on mobile but still visible */
   }
 }
 

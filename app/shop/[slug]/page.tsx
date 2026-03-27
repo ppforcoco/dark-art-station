@@ -30,13 +30,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     : `${siteUrl}/og-image.jpg`;
 
   return {
-    title: `${collection.title} — Free Dark Wallpapers | Haunted Wallpapers`,
+    title: `${collection.title} Wallpapers for iPhone & Android | Haunted Wallpapers`,
     description:
       collection.description ??
-      `Browse all wallpapers in the ${collection.title} collection. Free high-quality dark art downloads for iPhone, Android and PC.`,
+      `Download ${collection.title} wallpapers free for iPhone, Android and PC. High-quality dark art wallpapers, instant download.`,
     openGraph: {
-      title: `${collection.title} | Haunted Wallpapers`,
-      description: collection.description ?? `Free dark wallpapers — ${collection.title}`,
+      title: `${collection.title} Wallpapers for iPhone & Android | Haunted Wallpapers`,
+      description: collection.description ?? `Free dark wallpapers — ${collection.title} collection for iPhone, Android and PC`,
       url: `${siteUrl}/shop/${slug}`,
       siteName: "Haunted Wallpapers",
       images: [{ url: ogImage, width: 1200, height: 630, alt: collection.title }],
@@ -44,8 +44,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     },
     twitter: {
       card: "summary_large_image",
-      title: `${collection.title} | Haunted Wallpapers`,
-      description: collection.description ?? `Free dark wallpapers — ${collection.title}`,
+      title: `${collection.title} Wallpapers for iPhone & Android | Haunted Wallpapers`,
+      description: collection.description ?? `Free dark wallpapers — ${collection.title} collection for iPhone, Android and PC`,
       images: [ogImage],
     },
     alternates: { canonical: `${siteUrl}/shop/${slug}` },

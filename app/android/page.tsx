@@ -25,12 +25,12 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
   const siteUrl   = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
 
   const title = tag
-    ? `Trending Dark #${tag} Wallpapers for Android${pageLabel} | HAUNTED WALLPAPERS`
-    : `Free Dark Android Wallpapers 4K${pageLabel} | HAUNTED WALLPAPERS`;
+    ? `Dark #${tag} Wallpapers for Android & iPhone${pageLabel} | HAUNTED WALLPAPERS`
+    : `Dark Android Wallpapers Free Download (iPhone & Android)${pageLabel} | HAUNTED WALLPAPERS`;
 
   const description = tag
-    ? `Browse free 4K dark fantasy Android wallpapers tagged #${tag}. Download instantly, no account required.`
-    : "Free 4K dark fantasy wallpapers for Android. Portrait 9:16 optimised. New drops daily. No account required.";
+    ? `Browse free dark fantasy Android and iPhone wallpapers tagged #${tag}. Download instantly, no account required.`
+    : "Free dark fantasy wallpapers for Android and iPhone. Portrait 9:16 optimised. New drops daily. No account required.";
 
   const canonical = tag ? `${siteUrl}/android?tag=${tag}` : `${siteUrl}/android`;
 

@@ -25,12 +25,12 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
   const siteUrl   = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
 
   const title = tag
-    ? `Trending Dark #${tag} Desktop Wallpapers for PC${pageLabel} | HAUNTED WALLPAPERS`
-    : `Free Dark Desktop Wallpapers HD${pageLabel} | HAUNTED WALLPAPERS`;
+    ? `Dark #${tag} Desktop Wallpapers for PC & iPhone${pageLabel} | HAUNTED WALLPAPERS`
+    : `Dark Desktop Wallpapers Free Download (PC & iPhone)${pageLabel} | HAUNTED WALLPAPERS`;
 
   const description = tag
     ? `Browse free dark fantasy desktop wallpapers tagged #${tag}. Download instantly, no account required.`
-    : "Free dark fantasy HD wallpapers for PC. Portrait 9:16 optimised. New drops daily. No account required.";
+    : "Free dark fantasy wallpapers for PC and desktop. Landscape 16:9 optimised. New drops daily. No account required.";
 
   const canonical = tag ? `${siteUrl}/pc?tag=${tag}` : `${siteUrl}/pc`;
 

@@ -39,21 +39,23 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const tagLine = image.tags.slice(0, 3).map((t) => `#${t}`).join(" ");
 
   return {
-    title: `${image.title} — Free Dark Wallpaper | Haunted Wallpapers`,
+    title: `${image.title} Wallpaper for iPhone & Android | Haunted Wallpapers`,
     description:
       image.description ??
-      `${image.title} — free dark wallpaper from the ${collection?.title ?? "Haunted"} collection. ${tagLine}. Download for iPhone, Android or PC instantly.`,
+      `${image.title} — free dark wallpaper for iPhone, Android and PC. Download instantly, no account required.`,
     keywords: [
       "dark wallpaper",
+      "iphone wallpaper",
+      "android wallpaper",
       "free wallpaper download",
       image.title,
       collection?.title ?? "",
       ...image.tags,
     ],
     openGraph: {
-      title: `${image.title} | Haunted Wallpapers`,
+      title: `${image.title} Wallpaper for iPhone & Android | Haunted Wallpapers`,
       description:
-        image.description ?? `Free dark wallpaper: ${image.title}`,
+        image.description ?? `Free dark wallpaper for iPhone & Android: ${image.title}`,
       url: `${siteUrl}/shop/${slug}/${imageSlug}`,
       siteName: "Haunted Wallpapers",
       images: [{ url: ogImage, width: 1080, height: 1920, alt: image.title }],
@@ -61,9 +63,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     },
     twitter: {
       card: "summary_large_image",
-      title: `${image.title} | Haunted Wallpapers`,
+      title: `${image.title} Wallpaper for iPhone & Android | Haunted Wallpapers`,
       description:
-        image.description ?? `Free dark wallpaper: ${image.title}`,
+        image.description ?? `Free dark wallpaper for iPhone & Android: ${image.title}`,
       images: [ogImage],
     },
     alternates: { canonical: `${siteUrl}/shop/${slug}/${imageSlug}` },
