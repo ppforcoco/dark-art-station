@@ -1,4 +1,4 @@
-// app/api/hw-admin/images/route.ts
+cat > /Users/drrabbbit/MY\ FIRST\ PROJECT/dark-art-station/app/api/hw-admin/images/route.ts << 'EOF'
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 
@@ -8,7 +8,6 @@ function checkAuth(req: NextRequest) {
   return pw === correct;
 }
 
-// GET — list all images (paginated, newest first)
 export async function GET(req: NextRequest) {
   if (!checkAuth(req)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
@@ -42,12 +41,7 @@ export async function GET(req: NextRequest) {
         viewCount: true,
         sortOrder: true,
         highResKey: true,
-        collection: {
-          select: {
-            title: true,
-            slug: true
-          }
-        },
+        collection: { select: { title: true, slug: true } },
       },
     }),
     db.image.count({ where }),
@@ -56,7 +50,6 @@ export async function GET(req: NextRequest) {
   return NextResponse.json({ images, total, page, pages: Math.ceil(total / limit) });
 }
 
-// PATCH — update image fields
 export async function PATCH(req: NextRequest) {
   if (!checkAuth(req)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
@@ -83,3 +76,4 @@ export async function PATCH(req: NextRequest) {
     return NextResponse.json({ error: "Update failed" }, { status: 500 });
   }
 }
+EOF

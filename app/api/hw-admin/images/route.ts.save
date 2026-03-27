@@ -1,4 +1,4 @@
-// app/api/hw-admin/images/route.ts
+≈// app/api/hw-admin/images/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 
