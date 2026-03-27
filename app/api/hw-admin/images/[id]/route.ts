@@ -1,7 +1,5 @@
-// app/api/hw-admin/images/[id]/route.ts
+// app/api/hw-admin/images/route.ts
 import { NextRequest, NextResponse } from "next/server";
-import { DeleteObjectCommand } from "@aws-sdk/client-s3";
-import { r2, BUCKET } from "@/lib/r2";
 import { db } from "@/lib/db";
 
 function checkAuth(req: NextRequest) {
@@ -10,41 +8,64 @@ function checkAuth(req: NextRequest) {
   return pw === correct;
 }
 
-export async function DELETE(
-  req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
+// GET — list all images (paginated, newest first)
+export async function GET(req: NextRequest) {
   if (!checkAuth(req)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { id } = await params;
+  const { searchParams } = new URL(req.url);
+  const page  = Math.max(1, parseInt(searchParams.get("page") ?? "1", 10));
+  const limit = 24;
+  const skip  = (page - 1) * limit;
+  const q     = searchParams.get("q") ?? "";
+
+  const where = q
+    ? { OR: [{ title: { contains: q, mode: "insensitive" as const } }, { slug: { contains: q } }] }
+    : {};
+
+  const [images, total] = await Promise.all([
+    db.image.findMany({
+      where,
+      orderBy: { createdAt: "desc" },
+      skip,
+      take: limit,
+      select: {
+        id: true, slug: true, title: true, r2Key: true,
+        description: true, tags: true,
+        deviceType: true, isAdult: true, createdAt: true,
+        collectionId: true, viewCount: true,
+        collection: { select: { title: true } },
+      },
+    }),
+    db.image.count({ where }),
+  ]);
+
+  return NextResponse.json({ images, total, page, pages: Math.ceil(total / limit) });
+}
+
+// PATCH — update image fields
+export async function PATCH(req: NextRequest) {
+  if (!checkAuth(req)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   try {
-    // Find image first to get R2 keys
-    const image = await db.image.findUnique({
+    const body = await req.json();
+    const { id, title, description, tags, isAdult, deviceType } = body;
+
+    if (!id) return NextResponse.json({ error: "id required" }, { status: 400 });
+
+    const updated = await db.image.update({
       where: { id },
-      select: { id: true, slug: true, r2Key: true, highResKey: true },
+      data: {
+        ...(title       !== undefined && { title }),
+        ...(description !== undefined && { description }),
+        ...(tags        !== undefined && { tags }),
+        ...(isAdult     !== undefined && { isAdult }),
+        ...(deviceType  !== undefined && { deviceType }),
+      },
     });
 
-    if (!image) return NextResponse.json({ error: "Image not found" }, { status: 404 });
-
-    // Delete from R2 (both keys)
-    const deletePromises = [
-      r2.send(new DeleteObjectCommand({ Bucket: BUCKET, Key: image.r2Key })),
-    ];
-    if (image.highResKey && image.highResKey !== image.r2Key) {
-      deletePromises.push(
-        r2.send(new DeleteObjectCommand({ Bucket: BUCKET, Key: image.highResKey }))
-      );
-    }
-
-    await Promise.allSettled(deletePromises); // don't fail if R2 key already gone
-
-    // Delete from DB
-    await db.image.delete({ where: { id } });
-
-    return NextResponse.json({ ok: true, deleted: image.slug });
+    return NextResponse.json({ ok: true, slug: updated.slug });
   } catch (err) {
-    console.error("[images DELETE]", err);
-    return NextResponse.json({ error: "Delete failed" }, { status: 500 });
+    console.error("[images PATCH]", err);
+    return NextResponse.json({ error: "Update failed" }, { status: 500 });
   }
 }
