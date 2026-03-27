@@ -13,10 +13,10 @@ export async function GET(req: NextRequest) {
   if (!checkAuth(req)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const { searchParams } = new URL(req.url);
-  const page  = Math.max(1, parseInt(searchParams.get("page") ?? "1", 10));
+  const page = Math.max(1, parseInt(searchParams.get("page") ?? "1", 10));
   const limit = 24;
-  const skip  = (page - 1) * limit;
-  const q     = searchParams.get("q") ?? "";
+  const skip = (page - 1) * limit;
+  const q = searchParams.get("q") ?? "";
 
   const where = q
     ? { OR: [{ title: { contains: q, mode: "insensitive" as const } }, { slug: { contains: q } }] }
@@ -29,11 +29,25 @@ export async function GET(req: NextRequest) {
       skip,
       take: limit,
       select: {
-        id: true, slug: true, title: true, r2Key: true,
-        description: true, tags: true,
-        deviceType: true, isAdult: true, createdAt: true,
-        collectionId: true, viewCount: true,
-        collection: { select: { title: true } },
+        id: true,
+        slug: true,
+        title: true,
+        r2Key: true,
+        description: true,
+        tags: true,
+        deviceType: true,
+        isAdult: true,
+        createdAt: true,
+        collectionId: true,
+        viewCount: true,
+        sortOrder: true,
+        highResKey: true,
+        collection: {
+          select: {
+            title: true,
+            slug: true
+          }
+        },
       },
     }),
     db.image.count({ where }),
@@ -55,11 +69,11 @@ export async function PATCH(req: NextRequest) {
     const updated = await db.image.update({
       where: { id },
       data: {
-        ...(title       !== undefined && { title }),
+        ...(title !== undefined && { title }),
         ...(description !== undefined && { description }),
-        ...(tags        !== undefined && { tags }),
-        ...(isAdult     !== undefined && { isAdult }),
-        ...(deviceType  !== undefined && { deviceType }),
+        ...(tags !== undefined && { tags }),
+        ...(isAdult !== undefined && { isAdult }),
+        ...(deviceType !== undefined && { deviceType }),
       },
     });
 
