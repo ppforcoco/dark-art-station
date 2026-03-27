@@ -1630,8 +1630,328 @@ function BackdateTab({ password }: { password: string }) {
   );
 }
 
+// ─── Published Images Tab ─────────────────────────────────────────────────────
+const ALL_SEO_TAGS = [
+  "dark","gothic","horror","fantasy","minimal","amoled","neon",
+  "cyberpunk","nature","abstract","skull","moon","forest","city",
+  "demon","angel","witch","fire","ice","space","ocean","halloween",
+  "anime","street","pattern","texture","portrait","landscape",
+  "skeleton","smoke","rose","blood","knife","darkness","void","crimson",
+  "black","white","aesthetic","edgy","rebel","grunge","punk","metal",
+];
+
+interface ImageRecord {
+  id: string; slug: string; title: string; r2Key: string;
+  description: string | null; tags: string[]; deviceType: string | null;
+  isAdult: boolean; createdAt: string; viewCount: number;
+  collection: { title: string } | null;
+}
+
+function PublishedImagesTab({ password }: { password: string }) {
+  const [images,   setImages]   = useState<ImageRecord[]>([]);
+  const [total,    setTotal]    = useState(0);
+  const [pages,    setPages]    = useState(1);
+  const [page,     setPage]     = useState(1);
+  const [q,        setQ]        = useState("");
+  const [loading,  setLoading]  = useState(true);
+  const [editing,  setEditing]  = useState<ImageRecord | null>(null);
+  const [saving,   setSaving]   = useState(false);
+  const [deleting, setDeleting] = useState<string | null>(null);
+  const [msg,      setMsg]      = useState<{ type: "ok"|"err"; text: string } | null>(null);
+
+  // Edit form state
+  const [eTitle,  setETitle]  = useState("");
+  const [eDesc,   setEDesc]   = useState("");
+  const [eTags,   setETags]   = useState<string[]>([]);
+  const [eAdult,  setEAdult]  = useState(false);
+  const [eDevice, setEDevice] = useState("");
+
+  const r2Base = process.env.NEXT_PUBLIC_R2_PUBLIC_URL ?? "";
+
+  const load = useCallback(async (p = page, search = q) => {
+    setLoading(true);
+    try {
+      const res = await fetch(`/api/hw-admin/images?page=${p}&q=${encodeURIComponent(search)}`, {
+        headers: { "x-admin-password": password },
+      });
+      if (!res.ok) throw new Error("Failed");
+      const data = await res.json();
+      setImages(data.images ?? []);
+      setTotal(data.total ?? 0);
+      setPages(data.pages ?? 1);
+    } catch { setMsg({ type: "err", text: "Could not load images." }); }
+    setLoading(false);
+  }, [password, page, q]);
+
+  useEffect(() => { load(); }, [load]);
+
+  function openEdit(img: ImageRecord) {
+    setEditing(img);
+    setETitle(img.title);
+    setEDesc(img.description ?? "");
+    setETags(img.tags.filter(t => t !== "18plus"));
+    setEAdult(img.isAdult);
+    setEDevice(img.deviceType ?? "");
+    setMsg(null);
+  }
+
+  async function handleSave() {
+    if (!editing) return;
+    setSaving(true);
+    const tags = eAdult ? [...eTags, "18plus"] : eTags;
+    try {
+      const res = await fetch("/api/hw-admin/images", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json", "x-admin-password": password },
+        body: JSON.stringify({ id: editing.id, title: eTitle, description: eDesc, tags, isAdult: eAdult, deviceType: eDevice || null }),
+      });
+      if (!res.ok) throw new Error("Save failed");
+      setMsg({ type: "ok", text: `✓ Saved "${eTitle}"` });
+      setEditing(null);
+      load(page, q);
+    } catch { setMsg({ type: "err", text: "Save failed." }); }
+    setSaving(false);
+  }
+
+  async function handleDelete(img: ImageRecord) {
+    if (!confirm(`Delete "${img.title}"?\n\nThis removes from R2 and database permanently.`)) return;
+    setDeleting(img.id);
+    try {
+      const res = await fetch(`/api/hw-admin/images/${img.id}`, {
+        method: "DELETE",
+        headers: { "x-admin-password": password },
+      });
+      if (!res.ok) throw new Error("Delete failed");
+      setMsg({ type: "ok", text: `✓ Deleted "${img.title}" from R2 + database.` });
+      load(page, q);
+    } catch { setMsg({ type: "err", text: "Delete failed." }); }
+    setDeleting(null);
+  }
+
+  const thumbUrl = (r2Key: string) =>
+    r2Base ? `${r2Base}/${r2Key}` : `/api/r2-proxy/${r2Key}`;
+
+  return (
+    <div>
+      {/* Header */}
+      <div style={{ background: "#f8f8f8", border: "1px solid #c0001a", padding: "14px 18px", fontSize: "0.82rem", marginBottom: "20px" }}>
+        <strong style={{ color: "#ffd080" }}>📸 Published Images</strong>
+        <span style={{ color: "#5a5070", marginLeft: "8px" }}>
+          View, edit tags/description, or delete images. Delete removes from R2 CDN + database permanently.
+        </span>
+      </div>
+
+      {msg && (
+        <div style={{ padding: "10px 14px", border: `1px solid ${msg.type === "ok" ? "#4caf50" : "#c0001a"}`, color: msg.type === "ok" ? "#4caf50" : "#ffd080", fontSize: "0.82rem", marginBottom: "16px" }}>
+          {msg.text}
+          <button onClick={() => setMsg(null)} style={{ float: "right", background: "none", border: "none", cursor: "pointer", color: "#6b6480", fontSize: "1rem" }}>×</button>
+        </div>
+      )}
+
+      {/* Search + count */}
+      <div style={{ display: "flex", gap: "12px", alignItems: "center", marginBottom: "20px", flexWrap: "wrap" }}>
+        <input
+          value={q}
+          onChange={e => { setQ(e.target.value); setPage(1); }}
+          onKeyDown={e => e.key === "Enter" && load(1, q)}
+          placeholder="Search by title or slug…"
+          style={{ ...inputStyle, maxWidth: "320px", flex: 1 }}
+        />
+        <button onClick={() => load(1, q)}
+          style={{ background: "#c0001a", border: "none", color: "#fff", padding: "10px 20px", cursor: "pointer", fontSize: "0.72rem", letterSpacing: "0.1em", textTransform: "uppercase", fontFamily: "monospace" }}>
+          Search
+        </button>
+        <span style={{ color: "#6b6480", fontSize: "0.72rem", marginLeft: "auto" }}>
+          {total} image{total !== 1 ? "s" : ""} total
+        </span>
+      </div>
+
+      {/* Edit Modal */}
+      {editing && (
+        <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.6)", zIndex: 1000, display: "flex", alignItems: "flex-start", justifyContent: "center", padding: "40px 16px", overflowY: "auto" }}>
+          <div style={{ background: "#fff", border: "1px solid #d0cce0", width: "100%", maxWidth: "680px", padding: "28px", fontFamily: "monospace" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "20px" }}>
+              <p style={{ ...eyebrowStyle, marginBottom: 0 }}>✏️ Edit Image</p>
+              <button onClick={() => setEditing(null)} style={{ background: "none", border: "none", cursor: "pointer", color: "#6b6480", fontSize: "1.4rem", lineHeight: 1 }}>×</button>
+            </div>
+
+            {/* Thumbnail preview */}
+            <div style={{ marginBottom: "16px", display: "flex", gap: "16px", alignItems: "flex-start" }}>
+              <img src={thumbUrl(editing.r2Key)} alt={editing.title}
+                style={{ width: "80px", height: "120px", objectFit: "cover", border: "1px solid #d0cce0", flexShrink: 0 }}
+                onError={e => { (e.target as HTMLImageElement).style.display = "none"; }}
+              />
+              <div style={{ flex: 1 }}>
+                <p style={{ ...labelStyle }}>Slug (read-only)</p>
+                <p style={{ color: "#7c3aed", fontFamily: "monospace", fontSize: "0.8rem", marginBottom: "8px" }}>{editing.slug}</p>
+                <p style={{ ...labelStyle }}>R2 Key</p>
+                <p style={{ color: "#6b6480", fontSize: "0.7rem", wordBreak: "break-all" }}>{editing.r2Key}</p>
+              </div>
+            </div>
+
+            {/* Title */}
+            <div style={{ marginBottom: "14px" }}>
+              <label style={labelStyle}>Title</label>
+              <input value={eTitle} onChange={e => setETitle(e.target.value)} style={inputStyle} />
+            </div>
+
+            {/* Device Type */}
+            <div style={{ marginBottom: "14px" }}>
+              <label style={labelStyle}>Device Type</label>
+              <div style={{ display: "flex", gap: "8px" }}>
+                {["", "IPHONE", "ANDROID", "PC"].map(d => (
+                  <button key={d} type="button" onClick={() => setEDevice(d)}
+                    style={{ background: eDevice === d ? "#c0001a" : "#f0f0f0", border: `1px solid ${eDevice === d ? "#c0001a" : "#d0cce0"}`, color: eDevice === d ? "#fff" : "#5a5070", padding: "5px 14px", cursor: "pointer", fontSize: "0.7rem", fontFamily: "monospace", letterSpacing: "0.05em" }}>
+                    {d || "Any"}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Description */}
+            <div style={{ marginBottom: "14px" }}>
+              <label style={labelStyle}>Description (SEO — HTML supported)</label>
+              <textarea value={eDesc} onChange={e => setEDesc(e.target.value)} rows={6}
+                style={{ ...inputStyle, resize: "vertical", lineHeight: "1.6", fontSize: "0.82rem" }} />
+            </div>
+
+            {/* SEO Tags */}
+            <div style={{ marginBottom: "14px" }}>
+              <label style={labelStyle}>SEO Tags ({eTags.length} selected)</label>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
+                {ALL_SEO_TAGS.map(tag => (
+                  <button key={tag} type="button"
+                    onClick={() => setETags(prev => prev.includes(tag) ? prev.filter(t => t !== tag) : [...prev, tag])}
+                    style={{
+                      background: eTags.includes(tag) ? "#c0001a" : "#f0f0f0",
+                      border: `1px solid ${eTags.includes(tag) ? "#c0001a" : "#d0cce0"}`,
+                      color: eTags.includes(tag) ? "#fff" : "#6b6480",
+                      padding: "4px 12px", cursor: "pointer",
+                      fontSize: "0.65rem", fontFamily: "monospace", letterSpacing: "0.06em",
+                    }}>
+                    {eTags.includes(tag) ? "✓ " : ""}{tag}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* 18+ */}
+            <div style={{ marginBottom: "20px", display: "flex", alignItems: "center", gap: "12px" }}>
+              <button type="button" onClick={() => setEAdult(a => !a)}
+                style={{ background: eAdult ? "#c0001a" : "#f0f0f0", border: `1px solid ${eAdult ? "#c0001a" : "#d0cce0"}`, color: eAdult ? "#fff" : "#6b6480", padding: "6px 16px", cursor: "pointer", fontSize: "0.7rem", fontFamily: "monospace" }}>
+                {eAdult ? "⚠ 18+ ON" : "18+ OFF"}
+              </button>
+              <span style={{ color: "#6b6480", fontSize: "0.7rem" }}>Mark as adult/mature content</span>
+            </div>
+
+            {/* Actions */}
+            <div style={{ display: "flex", gap: "10px" }}>
+              <button onClick={handleSave} disabled={saving}
+                style={{ background: saving ? "#e8e4f0" : "#c0001a", border: "none", color: "#fff", padding: "10px 28px", cursor: saving ? "not-allowed" : "pointer", fontSize: "0.75rem", letterSpacing: "0.12em", textTransform: "uppercase", fontFamily: "monospace", opacity: saving ? 0.7 : 1 }}>
+                {saving ? "Saving…" : "💾 Save Changes"}
+              </button>
+              <button onClick={() => setEditing(null)}
+                style={{ background: "transparent", border: "1px solid #d0cce0", color: "#6b6480", padding: "10px 20px", cursor: "pointer", fontSize: "0.75rem", letterSpacing: "0.1em", fontFamily: "monospace" }}>
+                Cancel
+              </button>
+              <a href={`/shop/${editing.collection?.title ? `${editing.slug}` : `..`}/${editing.slug}`}
+                target="_blank" rel="noopener noreferrer"
+                style={{ marginLeft: "auto", background: "transparent", border: "1px solid #4caf50", color: "#4caf50", padding: "10px 16px", textDecoration: "none", fontSize: "0.7rem", letterSpacing: "0.08em", fontFamily: "monospace" }}>
+                👁 View Live →
+              </a>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Grid */}
+      {loading ? (
+        <p style={{ color: "#6b6480", textAlign: "center", padding: "40px" }}>Loading images…</p>
+      ) : images.length === 0 ? (
+        <p style={{ color: "#6b6480" }}>No images found.</p>
+      ) : (
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))", gap: "16px", marginBottom: "32px" }}>
+          {images.map(img => (
+            <div key={img.id} style={{ border: "1px solid #d0cce0", background: "#fafaf8", position: "relative" }}>
+              {/* Thumbnail */}
+              <div style={{ position: "relative", aspectRatio: "9/16", background: "#1a1625", overflow: "hidden" }}>
+                <img
+                  src={thumbUrl(img.r2Key)}
+                  alt={img.title}
+                  style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+                  onError={e => {
+                    (e.target as HTMLImageElement).style.display = "none";
+                    const parent = (e.target as HTMLImageElement).parentElement;
+                    if (parent) parent.innerHTML = `<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#4a445a;font-size:0.7rem;font-family:monospace;padding:8px;text-align:center;">${img.slug}</div>`;
+                  }}
+                />
+                {img.isAdult && (
+                  <span style={{ position: "absolute", top: "6px", left: "6px", background: "#c0001a", color: "#fff", fontSize: "0.55rem", fontFamily: "monospace", fontWeight: 900, padding: "2px 6px" }}>18+</span>
+                )}
+                {img.deviceType && (
+                  <span style={{ position: "absolute", top: "6px", right: "6px", background: "rgba(0,0,0,0.7)", color: "#c9a84c", fontSize: "0.55rem", fontFamily: "monospace", padding: "2px 6px" }}>{img.deviceType}</span>
+                )}
+              </div>
+
+              {/* Info */}
+              <div style={{ padding: "10px" }}>
+                <p style={{ color: "#1a1625", fontSize: "0.75rem", fontWeight: 600, marginBottom: "4px", lineHeight: 1.3, wordBreak: "break-word" }}>{img.title}</p>
+                <p style={{ color: "#6b6480", fontSize: "0.6rem", fontFamily: "monospace", marginBottom: "6px", wordBreak: "break-all" }}>{img.slug}</p>
+
+                {/* Tags */}
+                {img.tags.filter(t => t !== "18plus").length > 0 && (
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: "3px", marginBottom: "8px" }}>
+                    {img.tags.filter(t => t !== "18plus").slice(0, 5).map(t => (
+                      <span key={t} style={{ background: "#e8e4f0", color: "#7c3aed", fontSize: "0.55rem", padding: "1px 6px", fontFamily: "monospace" }}>#{t}</span>
+                    ))}
+                    {img.tags.filter(t => t !== "18plus").length > 5 && (
+                      <span style={{ color: "#6b6480", fontSize: "0.55rem" }}>+{img.tags.filter(t => t !== "18plus").length - 5}</span>
+                    )}
+                  </div>
+                )}
+
+                {/* Views */}
+                <p style={{ color: "#6b6480", fontSize: "0.6rem", marginBottom: "8px" }}>👁 {img.viewCount} views</p>
+
+                {/* Actions */}
+                <div style={{ display: "flex", gap: "6px" }}>
+                  <button onClick={() => openEdit(img)}
+                    style={{ flex: 1, background: "#f0f0f0", border: "1px solid #d0cce0", color: "#1a1625", padding: "6px", cursor: "pointer", fontSize: "0.65rem", fontFamily: "monospace" }}>
+                    ✏️ Edit
+                  </button>
+                  <button onClick={() => handleDelete(img)} disabled={deleting === img.id}
+                    style={{ flex: 1, background: deleting === img.id ? "#e8e4f0" : "rgba(192,0,26,0.08)", border: "1px solid rgba(192,0,26,0.4)", color: "#c0001a", padding: "6px", cursor: deleting === img.id ? "not-allowed" : "pointer", fontSize: "0.65rem", fontFamily: "monospace" }}>
+                    {deleting === img.id ? "…" : "🗑 Delete"}
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Pagination */}
+      {pages > 1 && (
+        <div style={{ display: "flex", gap: "8px", alignItems: "center", justifyContent: "center" }}>
+          <button onClick={() => { const p = Math.max(1, page - 1); setPage(p); load(p, q); }} disabled={page <= 1}
+            style={{ background: "transparent", border: "1px solid #d0cce0", color: "#6b6480", padding: "8px 16px", cursor: page <= 1 ? "not-allowed" : "pointer", opacity: page <= 1 ? 0.4 : 1, fontSize: "0.75rem", fontFamily: "monospace" }}>
+            ← Prev
+          </button>
+          <span style={{ color: "#6b6480", fontSize: "0.75rem", fontFamily: "monospace" }}>
+            Page {page} / {pages}
+          </span>
+          <button onClick={() => { const p = Math.min(pages, page + 1); setPage(p); load(p, q); }} disabled={page >= pages}
+            style={{ background: "transparent", border: "1px solid #d0cce0", color: "#6b6480", padding: "8px 16px", cursor: page >= pages ? "not-allowed" : "pointer", opacity: page >= pages ? 0.4 : 1, fontSize: "0.75rem", fontFamily: "monospace" }}>
+            Next →
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ─── Main Admin Client ────────────────────────────────────────────────────────
-type Tab = "analytics" | "upload" | "blog" | "ideas" | "manage18" | "backdate";
+type Tab = "analytics" | "upload" | "published" | "blog" | "ideas" | "manage18" | "backdate";
 
 export default function AdminClient() {
   const [authed, setAuthed]             = useState(false);
@@ -1659,12 +1979,13 @@ export default function AdminClient() {
   if (!authed) return <PasswordGate onAuth={handleAuth} />;
 
   const TABS: { key: Tab; label: string }[] = [
-    { key: "analytics", label: "📊 Analytics"   },
-    { key: "upload",    label: "📤 Upload Image" },
-    { key: "blog",      label: "✍️ Blog Posts"   },
-    { key: "ideas",     label: "💡 Blog Ideas"   },
-    { key: "manage18",  label: "⚠ 18+ Manage"   },
-    { key: "backdate",  label: "📅 Backdate"     },
+    { key: "analytics",  label: "📊 Analytics"   },
+    { key: "upload",     label: "📤 Upload Image" },
+    { key: "published",  label: "📸 Published"    },
+    { key: "blog",       label: "✍️ Blog Posts"   },
+    { key: "ideas",      label: "💡 Blog Ideas"   },
+    { key: "manage18",   label: "⚠ 18+ Manage"   },
+    { key: "backdate",   label: "📅 Backdate"     },
   ];
 
   return (
@@ -1701,6 +2022,7 @@ export default function AdminClient() {
       <div style={{ padding: "32px", maxWidth: "1100px" }}>
         {tab === "analytics" && <AnalyticsTab password={password} />}
         {tab === "upload"    && <ImageUploaderTab password={password} />}
+        {tab === "published" && <PublishedImagesTab password={password} />}
         {tab === "blog"      && (
           <BlogTab
             password={password}
