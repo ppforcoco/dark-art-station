@@ -584,7 +584,7 @@ function ImageUploaderTab({ password }: { password: string }) {
             </div>
           </div>
 
-          {/* Description */}
+          {/* Description — Rich HTML Editor */}
           <div>
             <label style={labelStyle}>
               Description (SEO){" "}
@@ -592,13 +592,113 @@ function ImageUploaderTab({ password }: { password: string }) {
                 ({descWords} / 200 words{descOk ? " ✓" : " — aim for ~200 words"})
               </span>
             </label>
-            <textarea
-              value={description}
-              onChange={e => setDescription(e.target.value)}
-              placeholder="Write a detailed ~200-word description of this wallpaper for SEO…"
-              rows={6}
-              style={{ ...inputStyle, resize: "vertical", lineHeight: "1.6" }}
+
+            {/* Toolbar */}
+            <div style={{
+              display: "flex", flexWrap: "wrap", gap: "4px",
+              background: "#1a1625", border: "1px solid #2a2535",
+              borderBottom: "none", padding: "6px 8px",
+            }}>
+              {[
+                { label: "B",      cmd: "bold",          title: "Bold" },
+                { label: "I",      cmd: "italic",        title: "Italic" },
+                { label: "H2",     cmd: "h2",            title: "Heading 2" },
+                { label: "H3",     cmd: "h3",            title: "Heading 3" },
+                { label: "UL",     cmd: "ul",            title: "Bullet List" },
+                { label: "OL",     cmd: "ol",            title: "Numbered List" },
+                { label: "¶",      cmd: "p",             title: "Paragraph" },
+              ].map(({ label, cmd, title }) => (
+                <button
+                  key={cmd}
+                  type="button"
+                  title={title}
+                  onMouseDown={(e) => {
+                    e.preventDefault();
+                    const el = document.getElementById("desc-editor");
+                    if (!el) return;
+                    el.focus();
+                    const sel = window.getSelection();
+                    const selectedText = sel && sel.rangeCount > 0 ? sel.getRangeAt(0).toString() : "";
+                    if (cmd === "bold") {
+                      document.execCommand("bold", false);
+                    } else if (cmd === "italic") {
+                      document.execCommand("italic", false);
+                    } else if (cmd === "h2" || cmd === "h3") {
+                      document.execCommand("formatBlock", false, cmd);
+                    } else if (cmd === "ul") {
+                      document.execCommand("insertUnorderedList", false);
+                    } else if (cmd === "ol") {
+                      document.execCommand("insertOrderedList", false);
+                    } else if (cmd === "p") {
+                      document.execCommand("formatBlock", false, "p");
+                    }
+                    setDescription(el.innerHTML);
+                  }}
+                  style={{
+                    background: "rgba(192,0,26,0.10)",
+                    border: "1px solid rgba(192,0,26,0.3)",
+                    color: "#e8e4f8",
+                    padding: "3px 10px",
+                    cursor: "pointer",
+                    fontSize: cmd === "B" || cmd === "I" ? "0.85rem" : "0.65rem",
+                    fontWeight: cmd === "B" ? "bold" : "normal",
+                    fontStyle: cmd === "I" ? "italic" : "normal",
+                    fontFamily: "monospace",
+                    letterSpacing: "0.05em",
+                    minWidth: "30px",
+                  }}
+                >
+                  {label}
+                </button>
+              ))}
+              <span style={{ marginLeft: "auto", color: "#6b6480", fontSize: "0.6rem", alignSelf: "center", fontFamily: "monospace" }}>
+                HTML editor · renders on site
+              </span>
+            </div>
+
+            {/* Editable area */}
+            <div
+              id="desc-editor"
+              contentEditable
+              suppressContentEditableWarning
+              onInput={(e) => setDescription((e.target as HTMLDivElement).innerHTML)}
+              style={{
+                ...inputStyle,
+                minHeight: "160px",
+                resize: "vertical" as const,
+                lineHeight: "1.7",
+                whiteSpace: "pre-wrap",
+                overflowY: "auto",
+                outline: "none",
+              }}
+              dangerouslySetInnerHTML={undefined as never}
+              ref={(el) => {
+                if (el && el.innerHTML !== description) {
+                  // only sync from state on first mount
+                  if (el.innerHTML === "" && description !== "") {
+                    el.innerHTML = description;
+                  }
+                }
+              }}
             />
+
+            {/* Raw HTML toggle */}
+            <details style={{ marginTop: "6px" }}>
+              <summary style={{ color: "#6b6480", fontSize: "0.65rem", cursor: "pointer", fontFamily: "monospace", letterSpacing: "0.08em" }}>
+                &lt;/&gt; View / Edit Raw HTML
+              </summary>
+              <textarea
+                value={description}
+                onChange={(e) => {
+                  setDescription(e.target.value);
+                  const el = document.getElementById("desc-editor");
+                  if (el) el.innerHTML = e.target.value;
+                }}
+                rows={6}
+                spellCheck={false}
+                style={{ ...inputStyle, resize: "vertical", lineHeight: "1.5", fontFamily: "monospace", fontSize: "0.75rem", marginTop: "6px" }}
+              />
+            </details>
           </div>
 
           {/* Alt Text */}

@@ -195,9 +195,10 @@ export default async function CollectionImagePage({ params }: PageProps) {
             </div>
 
             {image.description && (
-              <p className="font-body text-[1rem] text-[#a89bc0] leading-relaxed">
-                {image.description}
-              </p>
+              <div
+                className="font-body text-[1rem] text-[#a89bc0] leading-relaxed image-description-html"
+                dangerouslySetInnerHTML={{ __html: image.description }}
+              />
             )}
 
             {/* Tags */}

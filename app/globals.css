@@ -6796,3 +6796,40 @@ body:has([data-force-blog="true"]) ::-webkit-scrollbar-track {
 body:has([data-force-blog="true"]) ::-webkit-scrollbar-thumb {
   background: #cdc8bc !important;
 }
+/* ── Image description HTML renderer ─────────────────────────────────────────
+   Styles for rich HTML descriptions written in the admin panel.             */
+.image-description-html { color: #a89bc0; line-height: 1.85; }
+.image-description-html p   { margin-bottom: 0.9em; }
+.image-description-html strong, .image-description-html b {
+  color: #e8e4f8; font-weight: 600;
+}
+.image-description-html em, .image-description-html i {
+  color: #c9a84c; font-style: italic;
+}
+.image-description-html h2 {
+  font-family: var(--font-display, serif);
+  font-size: 1.15rem; font-weight: 700;
+  color: #e8e4f8; margin: 1.4em 0 0.5em;
+  letter-spacing: 0.02em;
+}
+.image-description-html h3 {
+  font-family: var(--font-display, serif);
+  font-size: 1rem; font-weight: 600;
+  color: #c9a84c; margin: 1.2em 0 0.4em;
+  letter-spacing: 0.02em;
+}
+.image-description-html ul {
+  list-style: none; padding-left: 0; margin-bottom: 0.9em;
+}
+.image-description-html ul li::before {
+  content: "✦"; color: #c0001a; margin-right: 8px; font-size: 0.55rem;
+}
+.image-description-html ol {
+  padding-left: 1.4em; margin-bottom: 0.9em;
+}
+.image-description-html ol li { margin-bottom: 0.3em; }
+.image-description-html a {
+  color: #c9a84c; text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.image-description-html a:hover { color: #e8e4f8; }
