@@ -1,85 +1,94 @@
-// app/api/hw-admin/images/route.ts
-import { NextRequest, NextResponse } from "next/server";
-import { db } from "@/lib/db";
-
-function checkAuth(req: NextRequest) {
-  const pw = req.headers.get("x-admin-password");
-  const correct = process.env.ADMIN_PASSWORD ?? "haunted-admin-2025";
-  return pw === correct;
+generator client {
+  provider = "prisma-client-js"
 }
 
-// GET — list all images (paginated, newest first)
-export async function GET(req: NextRequest) {
-  if (!checkAuth(req)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-
-  const { searchParams } = new URL(req.url);
-  const page = Math.max(1, parseInt(searchParams.get("page") ?? "1", 10));
-  const limit = 24;
-  const skip = (page - 1) * limit;
-  const q = searchParams.get("q") ?? "";
-
-  const where = q
-    ? { OR: [{ title: { contains: q, mode: "insensitive" as const } }, { slug: { contains: q } }] }
-    : {};
-
-  const [images, total] = await Promise.all([
-    db.image.findMany({
-      where,
-      orderBy: { createdAt: "desc" },
-      skip,
-      take: limit,
-      select: {
-        id: true,
-        slug: true,
-        title: true,
-        r2Key: true,
-        description: true,
-        tags: true,
-        deviceType: true,
-        isAdult: true,
-        createdAt: true,
-        collectionId: true,
-        viewCount: true,
-        sortOrder: true,
-        highResKey: true,
-        collection: { 
-          select: { 
-            title: true,
-            slug: true 
-          } 
-        },
-      },
-    }),
-    db.image.count({ where }),
-  ]);
-
-  return NextResponse.json({ images, total, page, pages: Math.ceil(total / limit) });
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
-// PATCH — update image fields
-export async function PATCH(req: NextRequest) {
-  if (!checkAuth(req)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+enum DeviceType {
+  IPHONE
+  ANDROID
+  PC
+}
 
-  try {
-    const body = await req.json();
-    const { id, title, description, tags, isAdult, deviceType } = body;
+model Collection {
+  id          String   @id @default(uuid())
+  slug        String   @unique
+  title       String
+  description String
+  category    String
+  thumbnail   String
+  downloadUrl String?
 
-    if (!id) return NextResponse.json({ error: "id required" }, { status: 400 });
+  price       Float    @default(0)
+  isFree      Boolean  @default(false)
+  badge       String?
+  icon        String   @default("🌙")
+  bgClass     String   @default("p-bg-1")
+  tag         String   @default("Collection")
+  featured    Boolean  @default(false)
 
-    const updated = await db.image.update({
-      where: { id },
-      data: {
-        ...(title !== undefined && { title }),
-        ...(description !== undefined && { description }),
-        ...(tags !== undefined && { tags }),
-        ...(isAdult !== undefined && { isAdult }),
-        ...(deviceType !== undefined && { deviceType }),
-      },
-    });
+  /// Set to true for collections with mature/18+ content.
+  /// All false by default — update manually in Prisma Studio or via admin panel.
+  isAdult     Boolean  @default(false)
 
-    return NextResponse.json({ ok: true, slug: updated.slug });
-  } catch (err) {
-    console.error("[images PATCH]", err);
-    return NextResponse.json({ error: "Update failed" }, { status: 500 });
-  }
+  images      Image[]
+  downloads   Download[]
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Image {
+  id            String     @id @default(uuid())
+  slug          String     @unique
+  title         String
+  description   String?
+  r2Key         String
+  highResKey    String
+  viewCount     Int        @default(0)
+  sortOrder     Int        @default(0)
+
+  collection    Collection? @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+  collectionId  String?
+
+  deviceType    DeviceType?
+  tags          String[]            @default([])
+
+  /// Set to true for individual images with mature/18+ content (iPhone, Android, PC pages).
+  /// All false by default — update manually in Prisma Studio or via admin panel.
+  isAdult       Boolean    @default(false)
+
+  downloads     Download[]
+
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+
+  @@index([collectionId])
+  @@index([deviceType])
+}
+
+model Download {
+  id           String      @id @default(uuid())
+  collection   Collection? @relation(fields: [collectionId], references: [id])
+  collectionId String?
+  image        Image?      @relation(fields: [imageId], references: [id])
+  imageId      String?
+  email        String?
+  ipHash       String?
+  createdAt    DateTime    @default(now())
+}
+
+// ── Blog Posts ────────────────────────────────────────────────────────────────
+model BlogPost {
+  id        String   @id @default(uuid())
+  slug      String   @unique
+  title     String
+  label     String   @default("Guide")
+  content   String   // HTML content
+  published Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
