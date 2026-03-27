@@ -1676,6 +1676,8 @@ body::before {
 /* ──────────────────────────────────────────────────────────── */
 /*  AD SLOT                                                     */
 /* ──────────────────────────────────────────────────────────── */
+/* ── Ad banner — desktop: Sponsored | [ad] | Advertisement ── */
+/* ── Ad banner — mobile: [ad] + small "Advertisement" below  ── */
 .ad-banner {
   background: var(--bg-secondary);
   border-top: 1px solid rgba(139,0,0,0.4);
@@ -1683,16 +1685,47 @@ body::before {
   padding: 16px 60px;
   display: flex; align-items: center; justify-content: space-between; gap: 20px;
 }
-@media (max-width: 767px) { .ad-banner { padding: 16px 24px; } }
+@media (max-width: 767px) {
+  .ad-banner {
+    padding: 12px 16px;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+}
 .ad-label {
   font-family: var(--font-space), monospace;
   font-size: 0.55rem; letter-spacing: 0.15em; text-transform: uppercase;
   color: #4a445a; flex-shrink: 0;
 }
+/* Side labels: shown on desktop, hidden on mobile */
+.ad-label--side {
+  display: inline;
+}
+@media (max-width: 767px) {
+  .ad-label--side { display: none; }
+}
+/* Mobile label: hidden on desktop, shown below ad on mobile */
+.ad-label--mobile {
+  display: none;
+  text-align: center;
+  width: 100%;
+}
+@media (max-width: 767px) {
+  .ad-label--mobile { display: block; }
+}
 .ad-content {
   flex: 1; display: flex; align-items: center; justify-content: center;
   border-left: 1px solid #2a2535; border-right: 1px solid #2a2535;
   padding: 12px 40px; min-height: 60px;
+}
+@media (max-width: 767px) {
+  .ad-content {
+    border-left: none; border-right: none;
+    padding: 8px 0;
+    width: 100%;
+    min-height: 50px;
+  }
 }
 .ad-slot-text {
   font-family: var(--font-cormorant), serif;

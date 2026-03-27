@@ -1373,8 +1373,165 @@ function ManualMarkAdult({ password }: { password: string }) {
   );
 }
 
+// ─── Backdate Tab ─────────────────────────────────────────────────────────────
+function BackdateTab({ password }: { password: string }) {
+  const [posts, setPosts]     = useState<Post[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving]   = useState(false);
+  const [message, setMessage] = useState<{ type: "ok" | "err"; text: string } | null>(null);
+
+  // date assignments — slug → ISO date string
+  const [dates, setDates] = useState<Record<string, string>>({});
+
+  // Suggested spread: March 10 → March 26, evenly spaced
+  function suggestDates(slugList: string[]) {
+    const start = new Date("2026-03-10T10:00:00Z");
+    const end   = new Date("2026-03-26T18:00:00Z");
+    const range = end.getTime() - start.getTime();
+    const step  = slugList.length > 1 ? range / (slugList.length - 1) : 0;
+    const map: Record<string, string> = {};
+    slugList.forEach((slug, i) => {
+      const d = new Date(start.getTime() + step * i);
+      map[slug] = d.toISOString().slice(0, 16); // "YYYY-MM-DDTHH:mm"
+    });
+    return map;
+  }
+
+  useEffect(() => {
+    async function load() {
+      setLoading(true);
+      try {
+        const res = await fetch("/api/hw-admin/blogs", { headers: { "x-admin-password": password } });
+        if (res.ok) {
+          const j = await res.json();
+          const postList: Post[] = j.posts ?? [];
+          setPosts(postList);
+          // Pre-fill dates with suggested spread
+          setDates(suggestDates(postList.map((p) => p.slug)));
+        }
+      } catch {}
+      setLoading(false);
+    }
+    load();
+  }, [password]);
+
+  async function handleApplyAll() {
+    setSaving(true); setMessage(null);
+    const updates = posts.map((p) => ({
+      slug: p.slug,
+      createdAt: new Date(dates[p.slug] ?? p.createdAt).toISOString(),
+    }));
+    try {
+      const res = await fetch("/api/hw-admin/blogs", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json", "x-admin-password": password },
+        body: JSON.stringify({ updates }),
+      });
+      const json = await res.json();
+      if (res.ok || res.status === 207) {
+        const failed = (json.results ?? []).filter((r: { ok: boolean }) => !r.ok);
+        if (failed.length === 0) {
+          setMessage({ type: "ok", text: `✓ All ${updates.length} posts backdated successfully!` });
+        } else {
+          setMessage({ type: "err", text: `⚠ ${failed.length} post(s) failed. Others updated.` });
+        }
+      } else {
+        setMessage({ type: "err", text: json.error ?? "Failed to backdate." });
+      }
+    } catch {
+      setMessage({ type: "err", text: "Network error." });
+    }
+    setSaving(false);
+  }
+
+  async function handleSingleDate(slug: string) {
+    setSaving(true); setMessage(null);
+    try {
+      const res = await fetch("/api/hw-admin/blogs", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json", "x-admin-password": password },
+        body: JSON.stringify({ slug, createdAt: new Date(dates[slug]).toISOString() }),
+      });
+      const json = await res.json();
+      if (res.ok) setMessage({ type: "ok", text: `✓ "${slug}" backdated.` });
+      else setMessage({ type: "err", text: json.error ?? "Failed." });
+    } catch {
+      setMessage({ type: "err", text: "Network error." });
+    }
+    setSaving(false);
+  }
+
+  if (loading) return <p style={{ color: "#6b6480" }}>Loading posts…</p>;
+
+  return (
+    <div>
+      <div style={{ background: "rgba(192,0,26,0.06)", border: "1px solid rgba(192,0,26,0.4)", padding: "14px 18px", marginBottom: "24px" }}>
+        <p style={{ color: "#ffd080", fontSize: "0.78rem", fontFamily: "monospace", marginBottom: "6px" }}>
+          📅 Backdate Blog Posts
+        </p>
+        <p style={{ color: "#5a5070", fontSize: "0.72rem", fontFamily: "monospace", lineHeight: 1.6 }}>
+          Spread your posts over the last few weeks so they look like a natural publishing history.
+          Dates are pre-filled with an even spread from <strong style={{ color: "#c9c4dd" }}>March 10</strong> to <strong style={{ color: "#c9c4dd" }}>March 26</strong>.
+          Edit any date, then click <strong style={{ color: "#c9c4dd" }}>Apply All</strong> or update individually.
+        </p>
+      </div>
+
+      {posts.length === 0 ? (
+        <p style={{ color: "#6b6480", fontSize: "0.85rem" }}>No blog posts found. Publish some posts first.</p>
+      ) : (
+        <>
+          <div style={{ marginBottom: "20px", display: "flex", gap: "12px", alignItems: "center", flexWrap: "wrap" }}>
+            <button onClick={handleApplyAll} disabled={saving}
+              style={{ background: saving ? "#e8e4f0" : "#c0001a", border: "none", color: "#fff", padding: "10px 24px", cursor: saving ? "not-allowed" : "pointer", fontSize: "0.72rem", letterSpacing: "0.12em", textTransform: "uppercase", fontFamily: "monospace", opacity: saving ? 0.7 : 1 }}>
+              {saving ? "Saving…" : `📅 Apply All ${posts.length} Dates`}
+            </button>
+            <button onClick={() => setDates(suggestDates(posts.map(p => p.slug)))} disabled={saving}
+              style={{ background: "transparent", border: "1px solid #d0cce0", color: "#6b6480", padding: "10px 18px", cursor: "pointer", fontSize: "0.7rem", letterSpacing: "0.1em", textTransform: "uppercase", fontFamily: "monospace" }}>
+              ↺ Reset to Suggested
+            </button>
+          </div>
+
+          {message && (
+            <div style={{ padding: "10px 14px", border: `1px solid ${message.type === "ok" ? "#4caf50" : "#c0001a"}`, color: message.type === "ok" ? "#4caf50" : "#ffd080", fontSize: "0.82rem", marginBottom: "20px" }}>
+              {message.text}
+            </div>
+          )}
+
+          <p style={eyebrowStyle}>Posts ({posts.length}) — drag to adjust dates</p>
+
+          {posts.map((p, i) => (
+            <div key={p.slug} style={{ border: "1px solid #d0cce0", padding: "14px 16px", marginBottom: "8px", display: "flex", alignItems: "center", gap: "16px", flexWrap: "wrap" }}>
+              <span style={{ color: "#6b6480", fontSize: "0.65rem", fontFamily: "monospace", minWidth: "20px", flexShrink: 0 }}>
+                {String(i + 1).padStart(2, "0")}
+              </span>
+              <div style={{ flex: 1, minWidth: "200px" }}>
+                <p style={{ color: "#1a1625", fontSize: "0.85rem", marginBottom: "4px" }}>{p.title}</p>
+                <p style={{ color: "#6b6480", fontSize: "0.65rem", fontFamily: "monospace" }}>
+                  Current: {new Date(p.createdAt).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })}
+                </p>
+              </div>
+              <div style={{ display: "flex", gap: "8px", alignItems: "center", flexShrink: 0 }}>
+                <input
+                  type="datetime-local"
+                  value={dates[p.slug] ?? ""}
+                  onChange={e => setDates(prev => ({ ...prev, [p.slug]: e.target.value }))}
+                  style={{ background: "#f8f8f8", border: "1px solid #d0cce0", color: "#1a1625", padding: "6px 10px", fontSize: "0.75rem", fontFamily: "monospace" }}
+                />
+                <button onClick={() => handleSingleDate(p.slug)} disabled={saving}
+                  style={{ background: "transparent", border: "1px solid #c0001a", color: "#c0001a", padding: "6px 12px", cursor: saving ? "not-allowed" : "pointer", fontSize: "0.65rem", letterSpacing: "0.08em", textTransform: "uppercase", fontFamily: "monospace", flexShrink: 0 }}>
+                  Save
+                </button>
+              </div>
+            </div>
+          ))}
+        </>
+      )}
+    </div>
+  );
+}
+
 // ─── Main Admin Client ────────────────────────────────────────────────────────
-type Tab = "analytics" | "upload" | "blog" | "ideas" | "manage18";
+type Tab = "analytics" | "upload" | "blog" | "ideas" | "manage18" | "backdate";
 
 export default function AdminClient() {
   const [authed, setAuthed]             = useState(false);
@@ -1407,6 +1564,7 @@ export default function AdminClient() {
     { key: "blog",      label: "✍️ Blog Posts"   },
     { key: "ideas",     label: "💡 Blog Ideas"   },
     { key: "manage18",  label: "⚠ 18+ Manage"   },
+    { key: "backdate",  label: "📅 Backdate"     },
   ];
 
   return (
@@ -1453,6 +1611,7 @@ export default function AdminClient() {
         )}
         {tab === "ideas" && <BlogIdeasTab onUseIdea={handleUseIdea} />}
         {tab === "manage18" && <Manage18Tab password={password} />}
+        {tab === "backdate" && <BackdateTab password={password} />}
       </div>
     </div>
   );

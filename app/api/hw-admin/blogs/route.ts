@@ -21,14 +21,14 @@ export async function GET(req: NextRequest) {
   return NextResponse.json({ posts });
 }
 
-// POST — create a new post
+// POST — create a new post (supports optional createdAt for backdating)
 export async function POST(req: NextRequest) {
   if (!checkAuth(req)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   try {
-    const { title, slug, content, label } = await req.json();
+    const { title, slug, content, label, createdAt } = await req.json();
 
     if (!title || !slug || !content) {
       return NextResponse.json({ error: "title, slug, and content are required" }, { status: 400 });
@@ -49,6 +49,8 @@ export async function POST(req: NextRequest) {
         title,
         label: label ?? "Guide",
         content,
+        // Allow backdating — if no date provided, Prisma uses now()
+        ...(createdAt ? { createdAt: new Date(createdAt) } : {}),
       },
     });
 
@@ -56,6 +58,55 @@ export async function POST(req: NextRequest) {
   } catch (err) {
     console.error("[admin/blogs POST]", err);
     return NextResponse.json({ error: "Failed to save post" }, { status: 500 });
+  }
+}
+
+// PATCH — backdate one or many posts by slug
+// Body: { updates: [{ slug: string, createdAt: string (ISO date) }] }
+//   or: { slug: string, createdAt: string }
+export async function PATCH(req: NextRequest) {
+  if (!checkAuth(req)) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  try {
+    const body = await req.json();
+
+    // Support both single { slug, createdAt } and bulk { updates: [...] }
+    const updates: { slug: string; createdAt: string }[] = Array.isArray(body.updates)
+      ? body.updates
+      : [{ slug: body.slug, createdAt: body.createdAt }];
+
+    if (!updates.length || !updates[0].slug || !updates[0].createdAt) {
+      return NextResponse.json(
+        { error: "Provide { slug, createdAt } or { updates: [{ slug, createdAt }] }" },
+        { status: 400 }
+      );
+    }
+
+    const results = [];
+    for (const { slug, createdAt } of updates) {
+      const date = new Date(createdAt);
+      if (isNaN(date.getTime())) {
+        results.push({ slug, ok: false, error: "Invalid date" });
+        continue;
+      }
+      try {
+        await prisma.blogPost.update({
+          where: { slug },
+          data: { createdAt: date },
+        });
+        results.push({ slug, ok: true, createdAt: date.toISOString() });
+      } catch {
+        results.push({ slug, ok: false, error: "Post not found or DB error" });
+      }
+    }
+
+    const allOk = results.every((r) => r.ok);
+    return NextResponse.json({ ok: allOk, results }, { status: allOk ? 200 : 207 });
+  } catch (err) {
+    console.error("[admin/blogs PATCH]", err);
+    return NextResponse.json({ error: "Failed to backdate posts" }, { status: 500 });
   }
 }
 

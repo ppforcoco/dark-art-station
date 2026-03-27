@@ -98,13 +98,14 @@ export default function AdSlot({
   if (!isLive) {
     return (
       <div className={`ad-banner ad-banner--dev ${className}`} data-section={section}>
-        <span className="ad-label">Sponsored</span>
+        <span className="ad-label ad-label--side">Sponsored</span>
         <div className="ad-content">
           <span className="ad-slot-text">
             [{section.charAt(0).toUpperCase() + section.slice(1)} Ad Unit — {width}×{height}]
           </span>
         </div>
-        <span className="ad-label">Advertisement</span>
+        <span className="ad-label ad-label--side">Advertisement</span>
+        <span className="ad-label ad-label--mobile">Advertisement</span>
       </div>
     );
   }
@@ -117,7 +118,7 @@ export default function AdSlot({
         data-section={section}
         title={`Ad loading failed: ${adError}`}
       >
-        <span className="ad-label">Advertisement</span>
+        <span className="ad-label ad-label--mobile">Advertisement</span>
       </div>
     );
   }
@@ -149,7 +150,8 @@ export default function AdSlot({
         minHeight: format === "auto" ? "auto" : `${height}px`,
       }}
     >
-      <span className="ad-label">Sponsored</span>
+      {/* Side labels — hidden on mobile */}
+      <span className="ad-label ad-label--side">Sponsored</span>
       <div className="ad-content" style={{ overflow: "hidden", maxWidth: "100%" }}>
         <ins
           ref={adRef}
@@ -162,7 +164,10 @@ export default function AdSlot({
           data-ad-layout={section === "sidebar" ? "in-article" : undefined}
         />
       </div>
-      <span className="ad-label">Advertisement</span>
+      {/* Side labels — hidden on mobile */}
+      <span className="ad-label ad-label--side">Advertisement</span>
+      {/* Mobile only — single label below the ad */}
+      <span className="ad-label ad-label--mobile">Advertisement</span>
     </div>
   );
 }
