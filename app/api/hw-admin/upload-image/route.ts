@@ -51,7 +51,7 @@ export async function POST(req: NextRequest) {
     // Public thumbnail key  (served from CDN)
     const r2Key      = `thumbnails/${slug}/${slug}.${ext}`;
     // High-res key (same file for now — you can swap for a separate upload later)
-    const highResKey = `high-res/${slug}/${slug}.${ext}`;
+    const highResKey = `admin-wallpapers/${slug}/${slug}.${ext}`;
 
     // Upload thumbnail
     await r2.send(new PutObjectCommand({

@@ -35,6 +35,11 @@ const ALL_TAGS = [
   "cyberpunk", "nature", "abstract", "skull", "moon", "forest", "city",
   "demon", "angel", "witch", "fire", "ice", "space", "ocean", "halloween",
   "anime", "street", "pattern", "texture", "portrait", "landscape",
+  "skeleton", "smoke", "rose", "blood", "darkness", "void", "crimson",
+  "black", "white", "aesthetic", "edgy", "rebel", "grunge", "punk", "metal",
+  "vampire", "ghost", "reaper", "creepy", "mysterious", "shadow", "ethereal",
+  "art", "illustration", "wallpaper", "phone", "lockscreen", "4k", "hd",
+  "purple", "red", "green", "blue", "gold", "silver", "neon-green",
 ];
 
 // ─── Blog ideas ───────────────────────────────────────────────────────────────
@@ -381,6 +386,7 @@ function ImageUploaderTab({ password }: { password: string }) {
   const [selectedTags, setSelectedTags]   = useState<string[]>([]);
   const [collectionId, setCollectionId]   = useState("");
   const [isAdult, setIsAdult]             = useState(false);
+  const [descMode, setDescMode]           = useState<"html"|"preview">("html");
   const [uploading, setUploading]         = useState(false);
   const [generatingAlt, setGeneratingAlt] = useState(false);
   const [message, setMessage]             = useState<{ type: "ok" | "err"; text: string } | null>(null);
@@ -584,121 +590,82 @@ function ImageUploaderTab({ password }: { password: string }) {
             </div>
           </div>
 
-          {/* Description — Rich HTML Editor */}
+          {/* Description — HTML Editor with Preview */}
           <div>
-            <label style={labelStyle}>
-              Description (SEO){" "}
-              <span style={{ color: descOk ? "#4caf50" : descWords > 0 ? "#ffd080" : "#6b6480" }}>
-                ({descWords} / 200 words{descOk ? " ✓" : " — aim for ~200 words"})
-              </span>
-            </label>
-
-            {/* Toolbar */}
-            <div style={{
-              display: "flex", flexWrap: "wrap", gap: "4px",
-              background: "#1a1625", border: "1px solid #2a2535",
-              borderBottom: "none", padding: "6px 8px",
-            }}>
-              {[
-                { label: "B",      cmd: "bold",          title: "Bold" },
-                { label: "I",      cmd: "italic",        title: "Italic" },
-                { label: "H2",     cmd: "h2",            title: "Heading 2" },
-                { label: "H3",     cmd: "h3",            title: "Heading 3" },
-                { label: "UL",     cmd: "ul",            title: "Bullet List" },
-                { label: "OL",     cmd: "ol",            title: "Numbered List" },
-                { label: "¶",      cmd: "p",             title: "Paragraph" },
-              ].map(({ label, cmd, title }) => (
-                <button
-                  key={cmd}
-                  type="button"
-                  title={title}
-                  onMouseDown={(e) => {
-                    e.preventDefault();
-                    const el = document.getElementById("desc-editor");
-                    if (!el) return;
-                    el.focus();
-                    const sel = window.getSelection();
-                    const selectedText = sel && sel.rangeCount > 0 ? sel.getRangeAt(0).toString() : "";
-                    if (cmd === "bold") {
-                      document.execCommand("bold", false);
-                    } else if (cmd === "italic") {
-                      document.execCommand("italic", false);
-                    } else if (cmd === "h2" || cmd === "h3") {
-                      document.execCommand("formatBlock", false, cmd);
-                    } else if (cmd === "ul") {
-                      document.execCommand("insertUnorderedList", false);
-                    } else if (cmd === "ol") {
-                      document.execCommand("insertOrderedList", false);
-                    } else if (cmd === "p") {
-                      document.execCommand("formatBlock", false, "p");
-                    }
-                    setDescription(el.innerHTML);
-                  }}
-                  style={{
-                    background: "rgba(192,0,26,0.10)",
-                    border: "1px solid rgba(192,0,26,0.3)",
-                    color: "#e8e4f8",
-                    padding: "3px 10px",
-                    cursor: "pointer",
-                    fontSize: cmd === "B" || cmd === "I" ? "0.85rem" : "0.65rem",
-                    fontWeight: cmd === "B" ? "bold" : "normal",
-                    fontStyle: cmd === "I" ? "italic" : "normal",
-                    fontFamily: "monospace",
-                    letterSpacing: "0.05em",
-                    minWidth: "30px",
-                  }}
-                >
-                  {label}
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "6px" }}>
+              <label style={{ ...labelStyle, marginBottom: 0 }}>
+                Description (SEO) — HTML{" "}
+                <span style={{ color: descOk ? "#4caf50" : descWords > 0 ? "#ffd080" : "#6b6480" }}>
+                  ({descWords} / 200 words{descOk ? " ✓" : " — aim for ~200 words"})
+                </span>
+              </label>
+              <div style={{ display: "flex", gap: "4px" }}>
+                <button type="button" onClick={() => setDescMode("html")}
+                  style={{ background: descMode === "html" ? "#1a1625" : "transparent", border: "1px solid #d0cce0", color: descMode === "html" ? "#fff" : "#6b6480", padding: "3px 10px", cursor: "pointer", fontSize: "0.65rem", fontFamily: "monospace" }}>
+                  HTML
                 </button>
-              ))}
-              <span style={{ marginLeft: "auto", color: "#6b6480", fontSize: "0.6rem", alignSelf: "center", fontFamily: "monospace" }}>
-                HTML editor · renders on site
-              </span>
+                <button type="button" onClick={() => setDescMode("preview")}
+                  style={{ background: descMode === "preview" ? "#c0001a" : "transparent", border: "1px solid #d0cce0", color: descMode === "preview" ? "#fff" : "#6b6480", padding: "3px 10px", cursor: "pointer", fontSize: "0.65rem", fontFamily: "monospace" }}>
+                  👁 Preview
+                </button>
+              </div>
             </div>
 
-            {/* Editable area */}
-            <div
-              id="desc-editor"
-              contentEditable
-              suppressContentEditableWarning
-              onInput={(e) => setDescription((e.target as HTMLDivElement).innerHTML)}
-              style={{
-                ...inputStyle,
-                minHeight: "160px",
-                resize: "vertical" as const,
-                lineHeight: "1.7",
-                whiteSpace: "pre-wrap",
-                overflowY: "auto",
-                outline: "none",
-              }}
-              dangerouslySetInnerHTML={undefined as never}
-              ref={(el) => {
-                if (el && el.innerHTML !== description) {
-                  // only sync from state on first mount
-                  if (el.innerHTML === "" && description !== "") {
-                    el.innerHTML = description;
-                  }
-                }
-              }}
-            />
+            {/* Quick format buttons */}
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "4px", marginBottom: "4px" }}>
+              {[
+                { label: "<B>", wrap: ["<strong>", "</strong>"] },
+                { label: "<I>", wrap: ["<em>", "</em>"] },
+                { label: "<H2>", wrap: ["<h2>", "</h2>"] },
+                { label: "<H3>", wrap: ["<h3 style="color:#c0001a">", "</h3>"] },
+                { label: "<P>", wrap: ["<p>", "</p>"] },
+                { label: "<UL>", wrap: ["<ul>
+  <li>", "</li>
+</ul>"] },
+                { label: "<SPAN red>", wrap: ["<span style="color:#c0001a">", "</span>"] },
+                { label: "<SPAN gold>", wrap: ["<span style="color:#c9a84c">", "</span>"] },
+                { label: "<BLOCKQUOTE>", wrap: ["<blockquote style="border-left:3px solid #c0001a;padding:8px 16px;margin:12px 0;font-style:italic;">", "</blockquote>"] },
+              ].map(({ label, wrap }) => {
+                const descRef2 = document.getElementById("desc-textarea") as HTMLTextAreaElement | null;
+                return (
+                  <button key={label} type="button"
+                    onClick={() => {
+                      const el = document.getElementById("desc-textarea") as HTMLTextAreaElement | null;
+                      if (!el) { setDescription(d => d + wrap[0] + wrap[1]); return; }
+                      const start = el.selectionStart, end = el.selectionEnd;
+                      const selected = description.slice(start, end);
+                      const next = description.slice(0, start) + wrap[0] + selected + wrap[1] + description.slice(end);
+                      setDescription(next);
+                      setTimeout(() => { el.focus(); const pos = start + wrap[0].length + selected.length + wrap[1].length; el.setSelectionRange(pos, pos); }, 10);
+                    }}
+                    style={{ background: "#f0f0f0", border: "1px solid #d0cce0", color: "#7c3aed", padding: "3px 8px", cursor: "pointer", fontSize: "0.62rem", fontFamily: "monospace" }}>
+                    {label}
+                  </button>
+                );
+              })}
+            </div>
 
-            {/* Raw HTML toggle */}
-            <details style={{ marginTop: "6px" }}>
-              <summary style={{ color: "#6b6480", fontSize: "0.65rem", cursor: "pointer", fontFamily: "monospace", letterSpacing: "0.08em" }}>
-                &lt;/&gt; View / Edit Raw HTML
-              </summary>
+            {descMode === "html" ? (
               <textarea
+                id="desc-textarea"
                 value={description}
-                onChange={(e) => {
-                  setDescription(e.target.value);
-                  const el = document.getElementById("desc-editor");
-                  if (el) el.innerHTML = e.target.value;
-                }}
-                rows={6}
+                onChange={e => setDescription(e.target.value)}
+                placeholder={"<h2>About This Wallpaper</h2>\n<p>Your description here...</p>"}
+                rows={8}
                 spellCheck={false}
-                style={{ ...inputStyle, resize: "vertical", lineHeight: "1.5", fontFamily: "monospace", fontSize: "0.75rem", marginTop: "6px" }}
+                style={{ ...inputStyle, resize: "vertical", lineHeight: "1.6", fontFamily: "monospace", fontSize: "0.8rem" }}
               />
-            </details>
+            ) : (
+              <div style={{
+                minHeight: "200px", border: "1px solid #d0cce0", padding: "20px",
+                background: "#08060f", lineHeight: "1.9", fontSize: "0.95rem", color: "#e8e4f8",
+              }}
+                dangerouslySetInnerHTML={{ __html: description || "<p style='color:#6b6480'>Nothing to preview yet…</p>" }}
+              />
+            )}
+            <p style={{ color: "#6b6480", fontSize: "0.62rem", marginTop: "4px", fontFamily: "monospace" }}>
+              ℹ HTML is saved and rendered on site. Use &lt;h2&gt;, &lt;strong&gt;, &lt;span style=&quot;color:#c0001a&quot;&gt; for bold headings and colors.
+            </p>
           </div>
 
           {/* Alt Text */}
@@ -826,7 +793,7 @@ function ImageUploaderTab({ password }: { password: string }) {
             <div style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
               {[
                 { label: "R2 thumbnail key", value: `thumbnails/${slug}/${slug}.${ext}` },
-                { label: "R2 high-res key",  value: `high-res/${slug}/${slug}.${ext}` },
+                { label: "R2 admin key",      value: `admin-wallpapers/${slug}/${slug}.${ext}` },
                 { label: "Device",           value: deviceType || "Any" },
                 { label: "Tags",             value: selectedTags.join(", ") || "none" },
                 { label: "18+ Adult",        value: isAdult ? "⚠ YES" : "No" },
@@ -1638,6 +1605,11 @@ const ALL_SEO_TAGS = [
   "anime","street","pattern","texture","portrait","landscape",
   "skeleton","smoke","rose","blood","knife","darkness","void","crimson",
   "black","white","aesthetic","edgy","rebel","grunge","punk","metal",
+  "vampire","ghost","reaper","creepy","mysterious","shadow","ethereal",
+  "art","illustration","wallpaper","phone","lockscreen","4k","hd",
+  "purple","red","green","blue","gold","silver","neon-green",
+  "bones","claw","eye","bat","wolf","dragon","witch-hat","potion",
+  "graveyard","cemetery","coffin","chains","thorns","runes","magic",
 ];
 
 interface ImageRecord {
@@ -1700,10 +1672,10 @@ function PublishedImagesTab({ password }: { password: string }) {
     setSaving(true);
     const tags = eAdult ? [...eTags, "18plus"] : eTags;
     try {
-      const res = await fetch("/api/hw-admin/images", {
+      const res = await fetch(`/api/hw-admin/images/${editing.id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json", "x-admin-password": password },
-        body: JSON.stringify({ id: editing.id, title: eTitle, description: eDesc, tags, isAdult: eAdult, deviceType: eDevice || null }),
+        body: JSON.stringify({ title: eTitle, description: eDesc, tags, isAdult: eAdult, deviceType: eDevice || null }),
       });
       if (!res.ok) throw new Error("Save failed");
       setMsg({ type: "ok", text: `✓ Saved "${eTitle}"` });
