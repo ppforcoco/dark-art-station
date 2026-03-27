@@ -116,7 +116,7 @@ export default function GachaPage() {
       <header className="gacha-hero">
         <p className="gacha-eyebrow">🔮 Dark Art Station</p>
         <h1 className="gacha-title">
-          Wallpaper<br /><em>Gacha</em>
+          Wallpaper<br /><em>Destiny Draw</em>
         </h1>
         <p className="gacha-subtitle">
           One pull. One fate. The void chooses for you.
