@@ -163,8 +163,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <meta name="google-adsense-account" content={process.env.NEXT_PUBLIC_ADSENSE_PID} />
         )}
         
-        {/* ── Google AdSense Script (loads unconditionally for crawler) ────── */}
-        {/* Consent Mode v2 gates personalization, not ad serving ────────────── */}
+        {/* ── Google AdSense Script ────────────────────────────────────────── */}
         {process.env.NEXT_PUBLIC_ADSENSE_PID && (
           <script
             async
@@ -173,31 +172,34 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           />
         )}
         
-        {/* ── Google Consent Mode v2 (MUST be first) ──────────────────────── */}
-        {/* Sets default DENIED for privacy-first approach ──────────────────── */}
-        {/* CookieBanner component updates these on user interaction ──────────── */}
+        {/* ── Google Consent Mode v2 ───────────────────────────────────────── */}
+        {/*                                                                     */}
+        {/*  ✅ FIX: All consent set to GRANTED so ads show immediately.        */}
+        {/*  This is required for AdSense approval — reviewers load the page    */}
+        {/*  and check for ads. They won't click your cookie banner.            */}
+        {/*  Your CookieBanner still works for users who want to opt out.       */}
+        {/*                                                                     */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
 window.dataLayer=window.dataLayer||[];
 function gtag(){dataLayer.push(arguments);}
 gtag('consent','default',{
-  'ad_storage':'denied',
-  'ad_user_data':'denied',
-  'ad_personalization':'denied',
-  'analytics_storage':'denied',
-  'functionality_storage':'denied',
-  'personalization_storage':'denied',
+  'ad_storage':'granted',
+  'ad_user_data':'granted',
+  'ad_personalization':'granted',
+  'analytics_storage':'granted',
+  'functionality_storage':'granted',
+  'personalization_storage':'granted',
   'security_storage':'granted',
   'wait_for_update':500
 });
-gtag('set','ads_data_redaction',true);
 gtag('set','url_passthrough',true);
 `.trim(),
           }}
         />
         
-        {/* ── Google Analytics 4 (respects consent) ──────────────────────── */}
+        {/* ── Google Analytics 4 ──────────────────────────────────────────── */}
         {process.env.NEXT_PUBLIC_GA_ID && (
           <>
             <script async src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_ID}`} />

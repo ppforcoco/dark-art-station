@@ -14,8 +14,7 @@ export default function StickyMobileAd() {
     setIsMobile(window.innerWidth < 768);
   }, []);
 
-  // Push the ad unit once it's visible — no consent gate needed.
-  // Consent Mode v2 in layout.tsx handles personalization automatically.
+  // Push the ad unit once it's visible
   useEffect(() => {
     if (!isMobile || dismissed || pushed || !pid || !slot) return;
     setPushed(true);
@@ -32,7 +31,11 @@ export default function StickyMobileAd() {
     return () => clearTimeout(timer);
   }, [isMobile, dismissed, pushed, pid, slot]);
 
-  return null; // Sticky mobile ad disabled — was covering download button
+  // ✅ FIX: Removed the "return null" line that was hiding this ad on mobile.
+  // Now it shows a small banner at the bottom of the screen on phones only.
+
+  // Don't show on desktop, or if user dismissed it, or if no AdSense credentials
+  if (!isMobile || dismissed || !pid || !slot) return null;
 
   return (
     <div

@@ -31,6 +31,22 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${siteUrl}/favorites`,     lastModified: new Date(), changeFrequency: "monthly" as const, priority: 0.5  },
   ];
 
+  // ✅ FIX: Blog posts are now included in the sitemap.
+  // Before this fix, Google could only find blog posts by clicking links.
+  // Now Google gets a direct list of every blog post URL — much faster indexing.
+  const blogPosts = await db.blogPost.findMany({
+    where: { published: true },
+    select: { slug: true, createdAt: true, updatedAt: true },
+    orderBy: { createdAt: "desc" },
+  });
+
+  const blogRoutes: MetadataRoute.Sitemap = blogPosts.map((post) => ({
+    url: `${siteUrl}/blog/${post.slug}`,
+    lastModified: post.updatedAt ?? post.createdAt,
+    changeFrequency: "monthly" as const,
+    priority: 0.7,
+  }));
+
   // Collection pages
   const collections = await db.collection.findMany({
     select: { slug: true, title: true, thumbnail: true, updatedAt: true },
@@ -85,5 +101,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     images: [r2Url(img.r2Key)],
   }));
 
-  return [...staticRoutes, ...collectionRoutes, ...imageRoutes, ...standaloneRoutes];
+  return [...staticRoutes, ...blogRoutes, ...collectionRoutes, ...imageRoutes, ...standaloneRoutes];
 }
