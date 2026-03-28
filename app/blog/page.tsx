@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import Image from "next/image";
 import AdSlot from "@/components/AdSlot";
 import { PrismaClient } from "@prisma/client";
 
@@ -35,7 +34,7 @@ function getLabelColor(label: string) {
   return LABEL_COLORS[label] ?? "#c0001a";
 }
 
-// ── Fallback: extract first <img src="..."> from HTML content ─────────────────
+// Extract first <img src="..."> from the post's HTML content
 function extractFirstImageFromContent(html: string): string | null {
   const match = html.match(/<img[^>]+src=["']([^"']+)["']/i);
   return match?.[1] ?? null;
@@ -45,8 +44,14 @@ export default async function BlogPage() {
   const posts = await prisma.blogPost.findMany({
     where: { published: true },
     orderBy: { createdAt: "desc" },
-    // ✅ Added featuredImage to select
-    select: { slug: true, title: true, label: true, content: true, featuredImage: true, createdAt: true },
+    select: {
+      slug: true,
+      title: true,
+      label: true,
+      content: true,
+      featuredImage: true,
+      createdAt: true,
+    },
   });
 
   const grouped = posts.reduce<Record<string, typeof posts>>((acc, p) => {
@@ -101,7 +106,7 @@ export default async function BlogPage() {
           </div>
         ) : (
           <>
-            {/* ── Featured / latest post (large card with thumbnail) ─────── */}
+            {/* ── Featured / latest post ──────────────────────────────────── */}
             {posts[0] && (() => {
               const p = posts[0];
               const excerpt = p.content
@@ -112,28 +117,26 @@ export default async function BlogPage() {
               const dateStr = new Date(p.createdAt).toLocaleDateString("en-US", {
                 year: "numeric", month: "long", day: "numeric",
               });
-              // ✅ Resolve thumbnail: featuredImage field → first <img> in content → null
+              // featuredImage field first, then auto-extract from post HTML
               const thumb = p.featuredImage ?? extractFirstImageFromContent(p.content);
 
               return (
                 <div className="blog-index-featured">
                   <Link href={`/blog/${p.slug}`} className="blog-featured-card">
-                    {/* ✅ Featured image — only rendered when a thumbnail is available */}
                     {thumb && (
-                      <div className="blog-featured-thumb">
-                        <Image
+                      <div className="blog-featured-thumb-wrap">
+                        {/* Plain <img> — works for any domain without next/image config */}
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
                           src={thumb}
                           alt={p.title}
-                          fill
-                          sizes="(max-width: 768px) 100vw, 800px"
                           className="blog-featured-thumb-img"
-                          style={{ objectFit: "cover" }}
-                          priority
+                          loading="eager"
                         />
                         <div className="blog-featured-thumb-overlay" />
                       </div>
                     )}
-                    <div className={`blog-featured-body${thumb ? " blog-featured-body--over-image" : ""}`}>
+                    <div className="blog-featured-body">
                       <span className="blog-featured-eyebrow" style={{ color: getLabelColor(p.label) }}>
                         Latest · {p.label} · {dateStr}
                       </span>
@@ -146,7 +149,7 @@ export default async function BlogPage() {
               );
             })()}
 
-            {/* ── Grid of remaining posts (cards with optional thumbnail) ── */}
+            {/* ── Grid of remaining posts ─────────────────────────────────── */}
             {posts.length > 1 && (
               <div className="blog-index-grid">
                 {posts.slice(1).map((post) => {
@@ -158,22 +161,23 @@ export default async function BlogPage() {
                   const dateStr = new Date(post.createdAt).toLocaleDateString("en-US", {
                     year: "numeric", month: "short", day: "numeric",
                   });
-                  // ✅ Resolve thumbnail for grid cards too
                   const thumb = post.featuredImage ?? extractFirstImageFromContent(post.content);
 
                   return (
                     <Link key={post.slug} href={`/blog/${post.slug}`} className="blog-post-card">
-                      {/* ✅ Card thumbnail */}
-                      {thumb && (
-                        <div className="blog-post-card-thumb">
-                          <Image
+                      {thumb ? (
+                        <div className="blog-post-card-thumb-wrap">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img
                             src={thumb}
                             alt={post.title}
-                            fill
-                            sizes="(max-width: 768px) 100vw, 400px"
                             className="blog-post-card-thumb-img"
-                            style={{ objectFit: "cover" }}
+                            loading="lazy"
                           />
+                        </div>
+                      ) : (
+                        <div className="blog-post-card-thumb-placeholder">
+                          <span>✦</span>
                         </div>
                       )}
                       <div className="blog-post-card-content">
@@ -223,46 +227,44 @@ export default async function BlogPage() {
 
       </div>
 
-      {/* ── Scoped styles for thumbnails ── */}
+      {/* ── Thumbnail styles ── */}
       <style>{`
-        /* ── Featured card with thumbnail ── */
+
+        /* ── Featured card ── */
         .blog-featured-card {
-          position: relative;
-          overflow: hidden;
           display: block;
           text-decoration: none;
           border: 1px solid rgba(192,0,26,0.2);
+          overflow: hidden;
           transition: border-color 0.2s;
-          min-height: 200px;
         }
         .blog-featured-card:hover { border-color: rgba(192,0,26,0.5); }
 
-        .blog-featured-thumb {
+        .blog-featured-thumb-wrap {
           position: relative;
           width: 100%;
-          aspect-ratio: 16/7;
+          aspect-ratio: 16 / 7;
           overflow: hidden;
+          background: #0f0c1a;
         }
-        .blog-featured-thumb-img { transition: transform 0.4s ease; }
+        .blog-featured-thumb-img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          display: block;
+          transition: transform 0.4s ease;
+        }
         .blog-featured-card:hover .blog-featured-thumb-img { transform: scale(1.04); }
         .blog-featured-thumb-overlay {
           position: absolute;
           inset: 0;
-          background: linear-gradient(to bottom, transparent 30%, rgba(7,5,14,0.85) 100%);
+          background: linear-gradient(to bottom, transparent 30%, rgba(7,5,14,0.75) 100%);
+          pointer-events: none;
         }
 
         .blog-featured-body { padding: 24px; }
-        .blog-featured-body--over-image {
-          padding: 20px 24px 24px;
-          margin-top: -4px;
-          background: rgba(7,5,14,0.6);
-          backdrop-filter: blur(2px);
-        }
-        [data-theme="light"] .blog-featured-body--over-image {
-          background: rgba(242,237,225,0.75);
-        }
 
-        /* ── Grid card with thumbnail ── */
+        /* ── Grid cards ── */
         .blog-post-card {
           display: flex;
           flex-direction: column;
@@ -271,24 +273,59 @@ export default async function BlogPage() {
           overflow: hidden;
           transition: border-color 0.2s, transform 0.2s;
         }
-        .blog-post-card:hover { border-color: rgba(192,0,26,0.4); transform: translateY(-2px); }
+        .blog-post-card:hover {
+          border-color: rgba(192,0,26,0.4);
+          transform: translateY(-2px);
+        }
 
-        .blog-post-card-thumb {
-          position: relative;
+        .blog-post-card-thumb-wrap {
           width: 100%;
-          aspect-ratio: 16/9;
+          aspect-ratio: 16 / 9;
           overflow: hidden;
           background: #0f0c1a;
           flex-shrink: 0;
         }
-        .blog-post-card-thumb-img { transition: transform 0.35s ease; }
+        .blog-post-card-thumb-img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          display: block;
+          transition: transform 0.35s ease;
+        }
         .blog-post-card:hover .blog-post-card-thumb-img { transform: scale(1.05); }
 
-        .blog-post-card-content { padding: 16px; flex: 1; display: flex; flex-direction: column; gap: 6px; }
+        /* Placeholder when post has no images */
+        .blog-post-card-thumb-placeholder {
+          width: 100%;
+          aspect-ratio: 16 / 9;
+          background: linear-gradient(135deg, #0f0c1a 0%, #1a1228 100%);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: rgba(192,0,26,0.3);
+          font-size: 2rem;
+          flex-shrink: 0;
+        }
 
+        .blog-post-card-content {
+          padding: 16px;
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          gap: 6px;
+        }
+
+        /* Light theme */
         [data-theme="light"] .blog-post-card { border-color: rgba(0,0,0,0.08); }
         [data-theme="light"] .blog-post-card:hover { border-color: rgba(192,0,26,0.3); }
-        [data-theme="light"] .blog-post-card-thumb { background: #e8e4d8; }
+        [data-theme="light"] .blog-post-card-thumb-wrap,
+        [data-theme="light"] .blog-featured-thumb-wrap { background: #e8e4d8; }
+        [data-theme="light"] .blog-post-card-thumb-placeholder {
+          background: linear-gradient(135deg, #e8e4d8 0%, #d8d0c8 100%);
+        }
+        [data-theme="light"] .blog-featured-thumb-overlay {
+          background: linear-gradient(to bottom, transparent 30%, rgba(242,237,225,0.6) 100%);
+        }
       `}</style>
     </main>
   );
