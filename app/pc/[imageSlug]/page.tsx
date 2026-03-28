@@ -16,6 +16,7 @@ import PageTracker from "@/components/PageTracker";
 import FavoriteButton from "@/components/FavoriteButton";
 
 export const dynamicParams = true;
+export const revalidate = 0;
 
 interface PageProps {
   params: Promise<{ imageSlug: string }>;

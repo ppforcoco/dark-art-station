@@ -15,6 +15,7 @@ import PageTracker from "@/components/PageTracker";
 import RecentlyViewed from "@/components/RecentlyViewed";
 
 export const dynamicParams = true;
+export const revalidate = 0; // always fetch fresh from DB
 
 interface PageProps {
   params: Promise<{ slug: string; imageSlug: string }>;

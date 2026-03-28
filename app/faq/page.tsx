@@ -14,14 +14,12 @@ const FAQS: { q: string; a: React.ReactNode }[] = [
     q: "Are the wallpapers really free?",
     a: (
       <>
-        Yes. The vast majority of our library is completely free to download with
-        no account required. Some collections are marked <strong>Premium</strong> —
-        these require a one-time purchase for the full-resolution bundle. Free
-        versions of premium images are often still available at standard resolution.
+        Yes. Every wallpaper on HauntedWallpapers is completely free to download
+        with no account required. Simply browse, tap any image, and hit the
+        Download button — no sign-up, no payment.
       </>
     ),
   },
-
   {
     q: "How do I set a wallpaper on iPhone?",
     a: (
@@ -75,12 +73,10 @@ const FAQS: { q: string; a: React.ReactNode }[] = [
     q: "What file format are the downloads?",
     a: (
       <>
-        {/* ✅ FIX: removed "lossless quality" claim — WebP from AI images is lossy,
-            not lossless. Changed to accurate "high-quality" wording. */}
-        Most images are provided as high-quality <strong>JPEG</strong> files.
-        Some premium bundles include <strong>PNG</strong> or{" "}
-        <strong>WebP</strong> variants for additional quality options. ZIP bundles contain
-        all variants for a given collection.
+        All wallpapers are provided as high-quality <strong>JPEG</strong> files —
+        the standard format compatible with every device (iPhone, Android, PC,
+        Mac, tablet). JPEG gives excellent visual quality at a small file size,
+        making downloads fast. No special apps or converters are needed.
       </>
     ),
   },
@@ -152,8 +148,11 @@ const FAQS: { q: string; a: React.ReactNode }[] = [
     a: (
       <>
         We aim to release new collections and standalone images on a regular
-        basis. Subscribe to our newsletter at the bottom of the home page to be
-        notified of new drops as soon as they go live.
+        basis. Check back often or follow us on{" "}
+        <a href="https://www.pinterest.com/TheFreemiumWallpapers/" target="_blank" rel="noopener noreferrer">
+          Pinterest
+        </a>{" "}
+        to stay up to date with new drops.
       </>
     ),
   },
@@ -180,14 +179,12 @@ export default function FaqPage() {
         }}
       />
       <div className="static-page-inner">
-
         <header className="static-page-header">
           <p className="static-page-label">Help</p>
           <h1 className="static-page-title">
             Frequently<br /><em>Asked Questions</em>
           </h1>
         </header>
-
         <div className="static-page-body">
           <section className="faq-list">
             {FAQS.map(({ q, a }, i) => (
@@ -200,7 +197,6 @@ export default function FaqPage() {
               </details>
             ))}
           </section>
-
           <section className="static-section" style={{ marginTop: "60px" }}>
             <h2>Still need help?</h2>
             <p>

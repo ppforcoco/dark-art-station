@@ -9,6 +9,7 @@ import AdSlot from "@/components/AdSlot";
 import Breadcrumbs from "@/components/Breadcrumbs";
 
 export const dynamicParams = true;
+export const revalidate = 0;
 
 interface PageProps {
   params: Promise<{ slug: string }>;

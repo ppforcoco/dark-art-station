@@ -15,6 +15,7 @@ interface Post {
   slug:          string;
   title:         string;
   label:         string;
+  content?:      string;
   featuredImage?: string | null;
   createdAt:     string;
 }
@@ -901,6 +902,127 @@ function HtmlToolbar({ onInsert }: { onInsert: (b: string, a: string) => void })
   );
 }
 
+// ─── Link Checker ────────────────────────────────────────────────────────────
+function LinkChecker({ html }: { html: string }) {
+  const [results, setResults] = useState<{ url: string; status: string; ok: boolean }[]>([]);
+  const [checking, setChecking] = useState(false);
+
+  async function checkLinks() {
+    setChecking(true);
+    // Extract all hrefs and srcs from HTML
+    const hrefMatches = [...html.matchAll(/href=["']([^"']+)["']/g)].map(m => m[1]);
+    const srcMatches  = [...html.matchAll(/src=["']([^"']+)["']/g)].map(m => m[1]);
+    const allUrls = [...new Set([...hrefMatches, ...srcMatches])].filter(u => u.startsWith("http") || u.startsWith("/"));
+
+    if (allUrls.length === 0) { setResults([{ url: "No links found in content", status: "—", ok: true }]); setChecking(false); return; }
+
+    const checked: { url: string; status: string; ok: boolean }[] = [];
+    for (const url of allUrls) {
+      const fullUrl = url.startsWith("/") ? `https://hauntedwallpapers.com${url}` : url;
+      try {
+        const res = await fetch(`/api/hw-admin/check-link?url=${encodeURIComponent(fullUrl)}`);
+        const j = await res.json();
+        checked.push({ url, status: j.status ?? "?", ok: j.ok ?? false });
+      } catch {
+        checked.push({ url, status: "Error", ok: false });
+      }
+    }
+    setResults(checked);
+    setChecking(false);
+  }
+
+  return (
+    <div style={{ border: "1px solid #d0cce0", padding: "16px", background: "#f8f8f8" }}>
+      <p style={eyebrowStyle}>🔗 Link Checker</p>
+      <button type="button" onClick={checkLinks} disabled={checking}
+        style={{ background: checking ? "#e8e4f0" : "#0891b2", color: "#fff", border: "none", padding: "8px 20px", cursor: checking ? "not-allowed" : "pointer", fontSize: "0.72rem", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: "14px", fontFamily: "monospace" }}>
+        {checking ? "Checking…" : "▶ Check All Links & Images"}
+      </button>
+      {results.length > 0 && (
+        <div>
+          {results.map((r, i) => (
+            <div key={i} style={{ display: "flex", gap: "12px", padding: "7px 0", borderBottom: "1px solid #e8e4f0", fontSize: "0.78rem", alignItems: "center" }}>
+              <span style={{ color: r.ok ? "#4caf50" : "#c0001a", flexShrink: 0, fontSize: "0.9rem" }}>{r.ok ? "✓" : "✕"}</span>
+              <span style={{ color: r.ok ? "#4caf50" : "#ffd080", flexShrink: 0, minWidth: "50px", fontFamily: "monospace" }}>{r.status}</span>
+              <span style={{ color: "#1a1625", wordBreak: "break-all" }}>{r.url}</span>
+            </div>
+          ))}
+          <p style={{ marginTop: "10px", color: "#6b6480", fontSize: "0.7rem" }}>
+            ✓ {results.filter(r => r.ok).length} ok — ✕ {results.filter(r => !r.ok).length} broken
+          </p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── Word Scanner ─────────────────────────────────────────────────────────────
+const FLAGGED_WORDS = [
+  // Religious / holy
+  "god","gods","jesus","christ","allah","buddha","vishnu","shiva","brahma","krishna",
+  "holy","sacred","divine","blessed","prayer","worship","heaven","hell","satan","devil",
+  "demon","angel","spirit","soul","sin","salvation","gospel","bible","quran","torah",
+  "mosque","church","temple","shrine","altar","ritual","prophet","messiah","miracle",
+  "baptism","sermon","clergy","monk","nun","priest","imam","rabbi","sheikh",
+  // Violent
+  "kill","murder","suicide","rape","torture","massacre","genocide","slaughter",
+  "assault","abuse","violence","attack","stab","shoot","gun","bomb","weapon","blood",
+  "gore","dead","death","corpse","execute","lynching","terrorist","extremist",
+  // Hateful / slurs — listed as patterns only, not reproducing full words
+  "hate","racist","slur","ethnic","supremacist",
+];
+
+function WordScanner({ html }: { html: string }) {
+  const [results, setResults] = useState<{ word: string; count: number; flagged: boolean }[]>([]);
+  const [scanned, setScanned] = useState(false);
+
+  function scan() {
+    const text = html.replace(/<[^>]+>/g, " ").toLowerCase();
+    const words = text.split(/\W+/).filter(Boolean);
+    const freq: Record<string, number> = {};
+    for (const w of words) { freq[w] = (freq[w] || 0) + 1; }
+
+    const found: { word: string; count: number; flagged: boolean }[] = [];
+    for (const [word, count] of Object.entries(freq)) {
+      const isFlagged = FLAGGED_WORDS.some(f => word === f || word.includes(f));
+      if (isFlagged) found.push({ word, count, flagged: true });
+    }
+    found.sort((a, b) => b.count - a.count);
+    setResults(found);
+    setScanned(true);
+  }
+
+  return (
+    <div style={{ border: "1px solid #d0cce0", padding: "16px", background: "#f8f8f8" }}>
+      <p style={eyebrowStyle}>⚠ Religious / Violent Word Scanner</p>
+      <p style={{ color: "#6b6480", fontSize: "0.72rem", marginBottom: "12px" }}>
+        Scans for religious, sacred, violent, or sensitive words that might affect AdSense approval.
+      </p>
+      <button type="button" onClick={scan}
+        style={{ background: "#b45309", color: "#fff", border: "none", padding: "8px 20px", cursor: "pointer", fontSize: "0.72rem", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: "14px", fontFamily: "monospace" }}>
+        ▶ Scan Content
+      </button>
+      {scanned && (
+        results.length === 0 ? (
+          <p style={{ color: "#4caf50", fontSize: "0.82rem" }}>✓ No flagged words detected. Content looks clean.</p>
+        ) : (
+          <div>
+            <p style={{ color: "#ffd080", fontSize: "0.78rem", marginBottom: "10px" }}>
+              ⚠ {results.length} flagged word{results.length !== 1 ? "s" : ""} found — review before publishing:
+            </p>
+            {results.map((r, i) => (
+              <div key={i} style={{ display: "flex", gap: "16px", padding: "6px 0", borderBottom: "1px solid #e8e4f0", fontSize: "0.78rem", alignItems: "center" }}>
+                <span style={{ background: "rgba(192,0,26,0.1)", border: "1px solid rgba(192,0,26,0.4)", color: "#c0001a", padding: "2px 8px", fontFamily: "monospace", fontWeight: 700 }}>{r.word}</span>
+                <span style={{ color: "#6b6480" }}>×{r.count}</span>
+              </div>
+            ))}
+          </div>
+        )
+      )}
+    </div>
+  );
+}
+
 // ─── Blog Ideas Tab ───────────────────────────────────────────────────────────
 function BlogIdeasTab({ onUseIdea }: { onUseIdea: (title: string, label: string) => void }) {
   return (
@@ -958,7 +1080,7 @@ function BlogTab({ password, prefillTitle, prefillLabel, onPrefillUsed }:
 
   const [saving, setSaving]         = useState(false);
   const [message, setMessage]       = useState("");
-  const [editorMode, setEditorMode] = useState<"html" | "preview">("html");
+  const [editorMode, setEditorMode] = useState<"html" | "preview" | "livecheck" | "wordscan">("html");
   const [posts, setPosts]           = useState<Post[]>([]);
   const [charCount, setCharCount]   = useState(0);
   const [wordCount, setWordCount]   = useState(0);
@@ -1068,6 +1190,27 @@ function BlogTab({ password, prefillTitle, prefillLabel, onPrefillUsed }:
       body: JSON.stringify({ slug: s }),
     });
     loadPosts();
+  }
+
+  async function handleEditSave(slug: string) {
+    if (!editTitle || !editContent) { setEditMessage("Title and content are required."); return; }
+    setEditSaving(true); setEditMessage("");
+    try {
+      const res = await fetch("/api/hw-admin/blogs", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json", "x-admin-password": password },
+        body: JSON.stringify({ slug, title: editTitle, content: editContent, label: editLabel }),
+      });
+      if (res.ok) {
+        setEditMessage("✓ Post updated successfully!");
+        loadPosts();
+        setTimeout(() => setEditingPost(null), 1200);
+      } else {
+        const j = await res.json();
+        setEditMessage(j.error ?? "Failed to save.");
+      }
+    } catch { setEditMessage("Network error."); }
+    setEditSaving(false);
   }
 
   const metaDescLen = metaDesc.length;
@@ -1241,10 +1384,12 @@ function BlogTab({ password, prefillTitle, prefillLabel, onPrefillUsed }:
                   Insert Template
                 </button>
               )}
+              <button type="button" onClick={() => setEditorMode(editorMode === "livecheck" ? "html" : "livecheck")} style={{ ...modeBtn, borderColor: editorMode === "livecheck" ? "#0891b2" : "#d0cce0", color: editorMode === "livecheck" ? "#0891b2" : "#6b6480" }}>🔗 Links</button>
+              <button type="button" onClick={() => setEditorMode(editorMode === "wordscan" ? "html" : "wordscan")} style={{ ...modeBtn, borderColor: editorMode === "wordscan" ? "#b45309" : "#d0cce0", color: editorMode === "wordscan" ? "#b45309" : "#6b6480" }}>⚠ Words</button>
             </div>
           </div>
 
-          {editorMode === "html" ? (
+          {editorMode === "html" && (
             <>
               <HtmlToolbar onInsert={handleInsert} />
               <textarea
@@ -1256,12 +1401,15 @@ function BlogTab({ password, prefillTitle, prefillLabel, onPrefillUsed }:
                 style={{ ...inputStyle, resize: "vertical", lineHeight: "1.6", fontFamily: "monospace", fontSize: "0.8rem" }}
               />
             </>
-          ) : (
+          )}
+          {editorMode === "preview" && (
             <div
-              style={{ minHeight: "400px", border: "1px solid #d0cce0", padding: "20px", background: "#08060f", color: "#1a1625", lineHeight: "1.9", fontSize: "0.95rem" }}
+              style={{ minHeight: "400px", border: "1px solid #d0cce0", padding: "20px", background: "#08060f", color: "#f0ecff", lineHeight: "1.9", fontSize: "0.95rem" }}
               dangerouslySetInnerHTML={{ __html: content || "<p style='color:#6b6480'>Nothing to preview yet…</p>" }}
             />
           )}
+          {editorMode === "livecheck" && <LinkChecker html={content} />}
+          {editorMode === "wordscan" && <WordScanner html={content} />}
         </div>
 
         {/* SEO quick-check */}
@@ -1308,27 +1456,97 @@ function BlogTab({ password, prefillTitle, prefillLabel, onPrefillUsed }:
         <div style={{ marginTop: "40px" }}>
           <p style={eyebrowStyle}>Published Posts ({posts.length})</p>
           {posts.map((p) => (
-            <div key={p.slug} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 0", borderBottom: "1px solid #e8e4f0", gap: "12px" }}>
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <span style={{ color: "#1a1625", fontSize: "0.88rem" }}>{p.title}</span>
-                <div style={{ display: "flex", gap: "8px", marginTop: "4px", alignItems: "center", flexWrap: "wrap" }}>
-                  {p.label === "16+ Mature Content" ? (
-                    <AdultBadge size="sm" />
-                  ) : (
-                    <span style={{ background: "#e8e4f0", border: "1px solid #d0cce0", color: "#7c3aed", padding: "1px 6px", fontSize: "0.6rem" }}>{p.label}</span>
-                  )}
-                  <span style={{ color: "#6b6480", fontSize: "0.72rem" }}>
-                    {new Date(p.createdAt).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })}
-                  </span>
+            <div key={p.slug} style={{ border: "1px solid #d0cce0", marginBottom: "6px", overflow: "hidden" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 14px", gap: "12px" }}>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <span style={{ color: "#1a1625", fontSize: "0.88rem" }}>{p.title}</span>
+                  <div style={{ display: "flex", gap: "8px", marginTop: "4px", alignItems: "center", flexWrap: "wrap" }}>
+                    {p.label === "16+ Mature Content" ? (
+                      <AdultBadge size="sm" />
+                    ) : (
+                      <span style={{ background: "#e8e4f0", border: "1px solid #d0cce0", color: "#7c3aed", padding: "1px 6px", fontSize: "0.6rem" }}>{p.label}</span>
+                    )}
+                    <span style={{ color: "#6b6480", fontSize: "0.72rem" }}>
+                      {new Date(p.createdAt).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })}
+                    </span>
+                    <span style={{ color: "#6b6480", fontSize: "0.65rem", fontFamily: "monospace" }}>/blog/{p.slug}</span>
+                  </div>
+                </div>
+                <div style={{ display: "flex", gap: "8px", alignItems: "center", flexShrink: 0 }}>
+                  <a href={`/blog/${p.slug}`} target="_blank" rel="noopener noreferrer"
+                    style={{ color: "#4caf50", fontSize: "0.7rem", textDecoration: "none", border: "1px solid #4caf50", padding: "3px 10px" }}>
+                    👁 View
+                  </a>
+                  <button onClick={() => { setEditingPost(editingPost?.slug === p.slug ? null : p); setEditContent(p.content || ""); setEditTitle(p.title); setEditLabel(p.label); setEditMessage(""); }}
+                    style={{ background: editingPost?.slug === p.slug ? "#1a1625" : "transparent", border: "1px solid #6b6480", color: editingPost?.slug === p.slug ? "#f0ecff" : "#6b6480", cursor: "pointer", fontSize: "0.7rem", padding: "3px 10px" }}>
+                    ✏️ Edit
+                  </button>
+                  <button onClick={() => handleDelete(p.slug)}
+                    style={{ background: "transparent", border: "1px solid #c0001a", color: "#c0001a", cursor: "pointer", fontSize: "0.7rem", padding: "3px 8px" }}>
+                    🗑
+                  </button>
                 </div>
               </div>
-              <div style={{ display: "flex", gap: "10px", alignItems: "center", flexShrink: 0 }}>
-                <a href={`/blog/${p.slug}`} target="_blank" rel="noopener noreferrer" style={{ color: "#c0001a", fontSize: "0.75rem", textDecoration: "none" }}>View →</a>
-                <button onClick={() => handleDelete(p.slug)}
-                  style={{ background: "transparent", border: "1px solid #3a2535", color: "#6b6480", cursor: "pointer", fontSize: "0.7rem", padding: "2px 8px" }}>
-                  Delete
-                </button>
-              </div>
+              {/* Inline editor */}
+              {editingPost?.slug === p.slug && (
+                <div style={{ borderTop: "1px solid #d0cce0", padding: "16px", background: "#fafaf8" }}>
+                  <div style={{ marginBottom: "12px" }}>
+                    <label style={labelStyle}>Title</label>
+                    <input value={editTitle} onChange={e => setEditTitle(e.target.value)} style={inputStyle} />
+                  </div>
+                  <div style={{ marginBottom: "12px" }}>
+                    <label style={labelStyle}>Label</label>
+                    <select value={editLabel} onChange={e => setEditLabel(e.target.value)} style={{ ...inputStyle, cursor: "pointer" }}>
+                      {ALL_LABELS.map(l => <option key={l} value={l}>{l}</option>)}
+                    </select>
+                  </div>
+                  <div style={{ marginBottom: "8px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                    <label style={{ ...labelStyle, marginBottom: 0 }}>
+                      Content (HTML) — {editContent.replace(/<[^>]+>/g," ").trim().split(" ").filter(Boolean).length} words
+                    </label>
+                    <div style={{ display: "flex", gap: "4px" }}>
+                      <button type="button" onClick={() => setEditMode("html")} style={{ ...modeBtn, borderColor: editMode === "html" ? "#c0001a" : "#d0cce0", color: editMode === "html" ? "#1a1625" : "#6b6480" }}>HTML</button>
+                      <button type="button" onClick={() => setEditMode("preview")} style={{ ...modeBtn, borderColor: editMode === "preview" ? "#c0001a" : "#d0cce0", color: editMode === "preview" ? "#1a1625" : "#6b6480" }}>Preview</button>
+                      <button type="button" onClick={() => setEditMode("livecheck")} style={{ ...modeBtn, borderColor: editMode === "livecheck" ? "#0891b2" : "#d0cce0", color: editMode === "livecheck" ? "#0891b2" : "#6b6480" }}>🔗 Links</button>
+                      <button type="button" onClick={() => setEditMode("wordscan")} style={{ ...modeBtn, borderColor: editMode === "wordscan" ? "#b45309" : "#d0cce0", color: editMode === "wordscan" ? "#b45309" : "#6b6480" }}>⚠ Words</button>
+                    </div>
+                  </div>
+                  {editMode === "html" && (
+                    <>
+                      <HtmlToolbar onInsert={(b, a) => {
+                        setEditContent(prev => prev + b + a);
+                      }} />
+                      <textarea value={editContent} onChange={e => setEditContent(e.target.value)}
+                        rows={18} style={{ ...inputStyle, resize: "vertical", lineHeight: "1.6", fontFamily: "monospace", fontSize: "0.8rem" }} />
+                    </>
+                  )}
+                  {editMode === "preview" && (
+                    <div style={{ minHeight: "300px", border: "1px solid #d0cce0", padding: "20px", background: "#08060f", color: "#f0ecff", lineHeight: "1.9", fontSize: "0.95rem" }}
+                      dangerouslySetInnerHTML={{ __html: editContent || "<p style='color:#6b6480'>Empty content.</p>" }} />
+                  )}
+                  {editMode === "livecheck" && (
+                    <LinkChecker html={editContent} />
+                  )}
+                  {editMode === "wordscan" && (
+                    <WordScanner html={editContent} />
+                  )}
+                  {editMessage && (
+                    <p style={{ color: editMessage.startsWith("✓") ? "#4caf50" : "#ffd080", fontSize: "0.82rem", padding: "8px 12px", border: `1px solid ${editMessage.startsWith("✓") ? "#4caf50" : "#c0001a"}`, marginTop: "10px" }}>
+                      {editMessage}
+                    </p>
+                  )}
+                  <div style={{ display: "flex", gap: "10px", marginTop: "12px" }}>
+                    <button onClick={() => handleEditSave(p.slug)} disabled={editSaving}
+                      style={{ background: editSaving ? "#e8e4f0" : "#c0001a", color: "#fff", border: "none", padding: "10px 24px", cursor: editSaving ? "not-allowed" : "pointer", fontSize: "0.75rem", letterSpacing: "0.12em", textTransform: "uppercase", opacity: editSaving ? 0.7 : 1 }}>
+                      {editSaving ? "Saving…" : "💾 Save Changes"}
+                    </button>
+                    <button onClick={() => setEditingPost(null)}
+                      style={{ background: "transparent", border: "1px solid #d0cce0", color: "#6b6480", padding: "10px 18px", cursor: "pointer", fontSize: "0.75rem" }}>
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           ))}
         </div>
@@ -2060,8 +2278,86 @@ function PublishedImagesTab({ password }: { password: string }) {
   );
 }
 
+// ─── Live Blog Preview ───────────────────────────────────────────────────────
+function LiveBlogPreview() {
+  const [activeUrl, setActiveUrl] = useState("/blog");
+  const [customUrl, setCustomUrl] = useState("");
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+
+  const QUICK_LINKS = [
+    { label: "Blog Index", url: "/blog" },
+    { label: "Home", url: "/" },
+    { label: "iPhone", url: "/iphone" },
+    { label: "Android", url: "/android" },
+    { label: "PC", url: "/pc" },
+    { label: "About", url: "/about" },
+    { label: "FAQ", url: "/faq" },
+    { label: "Privacy", url: "/privacy" },
+    { label: "Terms", url: "/terms" },
+    { label: "Contact", url: "/contact" },
+    { label: "Collections", url: "/collections" },
+  ];
+
+  function navigate(url: string) {
+    const full = url.startsWith("http") ? url : `https://hauntedwallpapers.com${url}`;
+    setActiveUrl(url);
+    if (iframeRef.current) iframeRef.current.src = full;
+  }
+
+  return (
+    <div>
+      <div style={{ background: "#f8f8f8", border: "1px solid #c0001a", padding: "14px 18px", marginBottom: "16px", fontSize: "0.82rem" }}>
+        <strong style={{ color: "#ffd080" }}>🌐 Live Site Preview</strong>
+        <span style={{ color: "#5a5070", marginLeft: "8px" }}>
+          Browse your live site in-panel. Check links, layout, and published blog posts.
+        </span>
+      </div>
+
+      {/* Quick nav */}
+      <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", marginBottom: "12px" }}>
+        {QUICK_LINKS.map(({ label, url }) => (
+          <button key={url} onClick={() => navigate(url)}
+            style={{ background: activeUrl === url ? "#c0001a" : "#f0f0f0", border: `1px solid ${activeUrl === url ? "#c0001a" : "#d0cce0"}`, color: activeUrl === url ? "#fff" : "#5a5070", padding: "4px 12px", cursor: "pointer", fontSize: "0.68rem", fontFamily: "monospace", letterSpacing: "0.05em" }}>
+            {label}
+          </button>
+        ))}
+      </div>
+
+      {/* Custom URL bar */}
+      <div style={{ display: "flex", gap: "8px", marginBottom: "14px" }}>
+        <input value={customUrl} onChange={e => setCustomUrl(e.target.value)}
+          onKeyDown={e => e.key === "Enter" && navigate(customUrl)}
+          placeholder="/blog/your-post-slug or https://hauntedwallpapers.com/..."
+          style={{ flex: 1, background: "#fff", border: "1px solid #d0cce0", color: "#1a1625", padding: "8px 12px", fontSize: "0.8rem", fontFamily: "monospace" }} />
+        <button onClick={() => navigate(customUrl || "/blog")}
+          style={{ background: "#c0001a", color: "#fff", border: "none", padding: "8px 18px", cursor: "pointer", fontSize: "0.72rem", letterSpacing: "0.1em", textTransform: "uppercase", fontFamily: "monospace" }}>
+          Go →
+        </button>
+        <a href={`https://hauntedwallpapers.com${activeUrl.startsWith("/") ? activeUrl : "/" + activeUrl}`}
+          target="_blank" rel="noopener noreferrer"
+          style={{ display: "flex", alignItems: "center", background: "transparent", border: "1px solid #6b6480", color: "#6b6480", padding: "8px 14px", textDecoration: "none", fontSize: "0.7rem", fontFamily: "monospace" }}>
+          ↗ Open
+        </a>
+      </div>
+
+      {/* iframe */}
+      <div style={{ border: "1px solid #d0cce0", overflow: "hidden" }}>
+        <iframe
+          ref={iframeRef}
+          src="https://hauntedwallpapers.com/blog"
+          style={{ width: "100%", height: "720px", border: "none", display: "block" }}
+          title="Live site preview"
+        />
+      </div>
+      <p style={{ color: "#6b6480", fontSize: "0.65rem", marginTop: "8px", fontFamily: "monospace" }}>
+        ⚠ Some pages may block iframe embedding. If blank, use ↗ Open to view in a new tab.
+      </p>
+    </div>
+  );
+}
+
 // ─── Main Admin Client ────────────────────────────────────────────────────────
-type Tab = "analytics" | "upload" | "published" | "blog" | "ideas" | "manage18" | "backdate";
+type Tab = "analytics" | "upload" | "published" | "blog" | "ideas" | "manage18" | "backdate" | "liveblog";
 
 export default function AdminClient() {
   const [authed, setAuthed]             = useState(false);
@@ -2096,6 +2392,7 @@ export default function AdminClient() {
     { key: "ideas",      label: "💡 Blog Ideas"   },
     { key: "manage18",   label: "⚠ 16+ Manage"   },
     { key: "backdate",   label: "📅 Backdate"     },
+    { key: "liveblog",   label: "🌐 Live Preview" },
   ];
 
   return (
@@ -2143,7 +2440,8 @@ export default function AdminClient() {
         )}
         {tab === "ideas" && <BlogIdeasTab onUseIdea={handleUseIdea} />}
         {tab === "manage18" && <Manage18Tab password={password} />}
-        {tab === "backdate" && <BackdateTab password={password} />}
+        {tab === "backdate"  && <BackdateTab password={password} />}
+        {tab === "liveblog"  && <LiveBlogPreview />}
       </div>
     </div>
   );

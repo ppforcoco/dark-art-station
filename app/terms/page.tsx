@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   robots: { index: true, follow: true },
 };
 
-const LAST_UPDATED  = "21 March 2026";
+const LAST_UPDATED  = "28 March 2026";
 const SITE_NAME     = "HauntedWallpapers";
 const SITE_URL      = "https://hauntedwallpapers.com";
 const CONTACT_EMAIL = "hello@hauntedwallpapers.com";
@@ -116,11 +116,10 @@ export default function TermsPage() {
           <section className="static-section">
             <h2>7. User-Submitted Content</h2>
             <p>
-              If you submit content to the Site — including through contact forms or
-              newsletter sign-ups — you grant us a non-exclusive, royalty-free
-              licence to use that content for the purposes of operating and improving
-              the Site. You represent that you have the right to submit such content
-              and that it does not violate any third-party rights.
+              HauntedWallpapers does not currently accept user-submitted artwork or
+              images. If you contact us through the contact form, any message content
+              you provide is used solely to respond to your enquiry and is not shared
+              with third parties or used for marketing purposes.
             </p>
           </section>
 
