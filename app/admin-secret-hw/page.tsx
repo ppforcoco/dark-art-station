@@ -385,6 +385,8 @@ function ImageUploaderTab({ password }: { password: string }) {
   const [description, setDescription]     = useState("");
   const [deviceType, setDeviceType]       = useState<"IPHONE" | "ANDROID" | "PC" | "">("");
   const [selectedTags, setSelectedTags]   = useState<string[]>([]);
+  const [customTags, setCustomTags]         = useState<string[]>([]);
+  const [newTagInput, setNewTagInput]       = useState("");
   const [collectionId, setCollectionId]   = useState("");
   const [isAdult, setIsAdult]             = useState(false);
   const [descMode, setDescMode]           = useState<"html"|"preview">("html");
@@ -953,8 +955,7 @@ function BlogTab({ password, prefillTitle, prefillLabel, onPrefillUsed }:
   const [label, setLabel]           = useState("Wallpaper Guides");
   const [customLabels, setCustomLabels] = useState<string[]>([]);
   const [newLabelInput, setNewLabelInput] = useState("");
-  const [newTagInput, setNewTagInput] = useState("");
-  const [customTags, setCustomTags] = useState<string[]>([]);
+
   const [saving, setSaving]         = useState(false);
   const [message, setMessage]       = useState("");
   const [editorMode, setEditorMode] = useState<"html" | "preview">("html");
