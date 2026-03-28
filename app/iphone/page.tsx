@@ -26,18 +26,18 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
 
   const title = tag
     ? `Trending Dark #${tag} Wallpapers for iPhone${pageLabel} | HAUNTED WALLPAPERS`
-    : `Free Dark iPhone Wallpapers 4K${pageLabel} | HAUNTED WALLPAPERS`;
+    : `Free Dark iPhone Wallpapers HD${pageLabel} | HAUNTED WALLPAPERS`;
 
   const description = tag
-    ? `Browse free 4K dark fantasy iPhone wallpapers tagged #${tag}. Download instantly, no account required.`
-    : "Free 4K dark fantasy wallpapers for iPhone. Portrait 9:16 optimised. New drops daily. No account required.";
+    ? `Browse free HD dark fantasy iPhone wallpapers tagged #${tag}. Download instantly, no account required.`
+    : "Free HD dark fantasy wallpapers for iPhone. Portrait 9:16 optimised. New drops daily. No account required.";
 
   const canonical = tag ? `${siteUrl}/iphone?tag=${tag}` : `${siteUrl}/iphone`;
 
   return {
     title,
     description,
-    keywords: ["iphone wallpaper", "dark wallpaper iphone", "4k iphone wallpaper", "free iphone wallpaper", tag ?? "dark", "dark fantasy"].filter(Boolean),
+    keywords: ["iphone wallpaper", "dark wallpaper iphone", "HD iphone wallpaper", "free iphone wallpaper", tag ?? "dark", "dark fantasy"].filter(Boolean),
     openGraph: { title, description, url: canonical, siteName: "HAUNTED WALLPAPERS", type: "website" },
     twitter: { card: "summary_large_image", title, description },
     alternates: { canonical },
@@ -92,7 +92,7 @@ export default async function IphonePage({ searchParams }: PageProps) {
           {page > 1 && <span className="text-[#4a445a] text-2xl"> — Page {page}</span>}
         </h1>
         <p className="font-body text-[1rem] text-[#8a8099] italic mb-8 max-w-xl">
-          Portrait 9:16 · 4K resolution · Instant download · No account required
+          Portrait 9:16 · HD resolution · Instant download · No account required
         </p>
 
         {!tag && (
@@ -100,7 +100,7 @@ export default async function IphonePage({ searchParams }: PageProps) {
             <p>
               Every wallpaper in this collection is designed specifically for iPhone screens —
               portrait 9:16 format, optimised for the Super Retina XDR display found on iPhone 12
-              through iPhone 16. Images are generated at 4K resolution and downsampled cleanly,
+              through iPhone 16. Images are generated at HD resolution and downsampled cleanly,
               so you get maximum sharpness without jagged edges or compression artefacts.
             </p>
             <p>
@@ -139,7 +139,7 @@ export default async function IphonePage({ searchParams }: PageProps) {
                     key={img.id}
                     href={`/iphone/${img.slug}`}
                     src={getPublicUrl(img.r2Key)}
-                    alt={`${img.title} — free dark iPhone wallpaper 4K`}
+                    alt={`${img.title} — free dark iPhone wallpaper HD`}
                     title={img.title}
                     tags={img.tags}
                     isAdult={img.isAdult}
@@ -168,7 +168,7 @@ export default async function IphonePage({ searchParams }: PageProps) {
           __html: JSON.stringify({
             "@context": "https://schema.org",
             "@type": "ItemList",
-            name: tag ? `Dark #${tag} iPhone Wallpapers | Haunted Wallpapers` : "Free Dark iPhone Wallpapers 4K | Haunted Wallpapers",
+            name: tag ? `Dark #${tag} iPhone Wallpapers | Haunted Wallpapers` : "Free Dark iPhone Wallpapers HD | Haunted Wallpapers",
             url: tag ? `${process.env.NEXT_PUBLIC_SITE_URL}/iphone?tag=${tag}` : `${process.env.NEXT_PUBLIC_SITE_URL}/iphone`,
             numberOfItems: total,
             itemListElement: images.map((img, i) => ({
