@@ -1086,6 +1086,13 @@ function BlogTab({ password, prefillTitle, prefillLabel, onPrefillUsed }:
   const [wordCount, setWordCount]   = useState(0);
   const [lastSavedSlug, setLastSavedSlug] = useState("");
 
+  const [editingPost, setEditingPost]   = useState<Post | null>(null);
+  const [editTitle, setEditTitle]       = useState("");
+  const [editContent, setEditContent]   = useState("");
+  const [editLabel, setEditLabel]       = useState("");
+  const [editMessage, setEditMessage]   = useState("");
+  const [editSaving, setEditSaving]     = useState(false);
+
   const [altImageUrl, setAltImageUrl]     = useState("");
   const [altImageFile, setAltImageFile]   = useState<File | null>(null);
   const [generatedAlt, setGeneratedAlt]   = useState("");
