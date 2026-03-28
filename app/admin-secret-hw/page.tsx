@@ -12,10 +12,11 @@ interface Analytics {
 }
 
 interface Post {
-  slug:      string;
-  title:     string;
-  label:     string;
-  createdAt: string;
+  slug:          string;
+  title:         string;
+  label:         string;
+  featuredImage?: string | null;
+  createdAt:     string;
 }
 
 // ─── All labels ───────────────────────────────────────────────────────────────
@@ -1448,6 +1449,34 @@ function BackdateTab({ password }: { password: string }) {
   // date assignments — slug → ISO date string
   const [dates, setDates] = useState<Record<string, string>>({});
 
+  // featured image editing — slug → url string
+  const [thumbEditing, setThumbEditing] = useState<string | null>(null); // which slug is open
+  const [thumbUrl, setThumbUrl]         = useState<string>("");
+  const [thumbSaving, setThumbSaving]   = useState(false);
+
+  async function handleSaveThumb(slug: string) {
+    setThumbSaving(true);
+    try {
+      const res = await fetch("/api/hw-admin/blogs", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json", "x-admin-password": password },
+        body: JSON.stringify({ slug, featuredImage: thumbUrl.trim() || null }),
+      });
+      if (res.ok) {
+        setPosts(prev => prev.map(p => p.slug === slug ? { ...p, featuredImage: thumbUrl.trim() || null } : p));
+        setMessage({ type: "ok", text: `✓ Thumbnail saved for "${slug}"` });
+        setThumbEditing(null);
+        setThumbUrl("");
+      } else {
+        const j = await res.json();
+        setMessage({ type: "err", text: j.error ?? "Failed to save thumbnail." });
+      }
+    } catch {
+      setMessage({ type: "err", text: "Network error." });
+    }
+    setThumbSaving(false);
+  }
+
   // Suggested spread: March 10 → March 26, evenly spaced
   function suggestDates(slugList: string[]) {
     const start = new Date("2026-03-10T10:00:00Z");
@@ -1565,28 +1594,80 @@ function BackdateTab({ password }: { password: string }) {
           <p style={eyebrowStyle}>Posts ({posts.length}) — drag to adjust dates</p>
 
           {posts.map((p, i) => (
-            <div key={p.slug} style={{ border: "1px solid #d0cce0", padding: "14px 16px", marginBottom: "8px", display: "flex", alignItems: "center", gap: "16px", flexWrap: "wrap" }}>
-              <span style={{ color: "#6b6480", fontSize: "0.65rem", fontFamily: "monospace", minWidth: "20px", flexShrink: 0 }}>
-                {String(i + 1).padStart(2, "0")}
-              </span>
-              <div style={{ flex: 1, minWidth: "200px" }}>
-                <p style={{ color: "#1a1625", fontSize: "0.85rem", marginBottom: "4px" }}>{p.title}</p>
-                <p style={{ color: "#6b6480", fontSize: "0.65rem", fontFamily: "monospace" }}>
-                  Current: {new Date(p.createdAt).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })}
-                </p>
+            <div key={p.slug} style={{ border: "1px solid #d0cce0", marginBottom: "8px", overflow: "hidden" }}>
+              {/* ── Main row ── */}
+              <div style={{ padding: "14px 16px", display: "flex", alignItems: "center", gap: "16px", flexWrap: "wrap" }}>
+                <span style={{ color: "#6b6480", fontSize: "0.65rem", fontFamily: "monospace", minWidth: "20px", flexShrink: 0 }}>
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+
+                {/* Thumbnail preview */}
+                <div style={{ width: "48px", height: "32px", flexShrink: 0, background: "#0f0c1a", border: "1px solid #d0cce0", overflow: "hidden", borderRadius: "2px" }}>
+                  {p.featuredImage && (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={p.featuredImage} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+                  )}
+                </div>
+
+                <div style={{ flex: 1, minWidth: "160px" }}>
+                  <p style={{ color: "#1a1625", fontSize: "0.85rem", marginBottom: "4px" }}>{p.title}</p>
+                  <p style={{ color: "#6b6480", fontSize: "0.65rem", fontFamily: "monospace" }}>
+                    Current: {new Date(p.createdAt).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })}
+                  </p>
+                </div>
+
+                <div style={{ display: "flex", gap: "8px", alignItems: "center", flexShrink: 0, flexWrap: "wrap" }}>
+                  {/* Date picker */}
+                  <input
+                    type="datetime-local"
+                    value={dates[p.slug] ?? ""}
+                    onChange={e => setDates(prev => ({ ...prev, [p.slug]: e.target.value }))}
+                    style={{ background: "#f8f8f8", border: "1px solid #d0cce0", color: "#1a1625", padding: "6px 10px", fontSize: "0.75rem", fontFamily: "monospace" }}
+                  />
+                  <button onClick={() => handleSingleDate(p.slug)} disabled={saving}
+                    style={{ background: "transparent", border: "1px solid #c0001a", color: "#c0001a", padding: "6px 12px", cursor: saving ? "not-allowed" : "pointer", fontSize: "0.65rem", letterSpacing: "0.08em", textTransform: "uppercase", fontFamily: "monospace", flexShrink: 0 }}>
+                    Save Date
+                  </button>
+                  {/* Thumbnail toggle */}
+                  <button
+                    onClick={() => {
+                      if (thumbEditing === p.slug) { setThumbEditing(null); setThumbUrl(""); }
+                      else { setThumbEditing(p.slug); setThumbUrl(p.featuredImage ?? ""); }
+                    }}
+                    style={{ background: thumbEditing === p.slug ? "#1a1625" : "transparent", border: "1px solid #6b6480", color: thumbEditing === p.slug ? "#f0ecff" : "#6b6480", padding: "6px 12px", cursor: "pointer", fontSize: "0.65rem", letterSpacing: "0.08em", textTransform: "uppercase", fontFamily: "monospace", flexShrink: 0 }}>
+                    {p.featuredImage ? "✎ Thumb" : "+ Thumb"}
+                  </button>
+                </div>
               </div>
-              <div style={{ display: "flex", gap: "8px", alignItems: "center", flexShrink: 0 }}>
-                <input
-                  type="datetime-local"
-                  value={dates[p.slug] ?? ""}
-                  onChange={e => setDates(prev => ({ ...prev, [p.slug]: e.target.value }))}
-                  style={{ background: "#f8f8f8", border: "1px solid #d0cce0", color: "#1a1625", padding: "6px 10px", fontSize: "0.75rem", fontFamily: "monospace" }}
-                />
-                <button onClick={() => handleSingleDate(p.slug)} disabled={saving}
-                  style={{ background: "transparent", border: "1px solid #c0001a", color: "#c0001a", padding: "6px 12px", cursor: saving ? "not-allowed" : "pointer", fontSize: "0.65rem", letterSpacing: "0.08em", textTransform: "uppercase", fontFamily: "monospace", flexShrink: 0 }}>
-                  Save
-                </button>
-              </div>
+
+              {/* ── Thumbnail edit row — shown when expanded ── */}
+              {thumbEditing === p.slug && (
+                <div style={{ borderTop: "1px solid #d0cce0", padding: "12px 16px", background: "#faf9fc", display: "flex", gap: "10px", alignItems: "center", flexWrap: "wrap" }}>
+                  <span style={{ color: "#6b6480", fontSize: "0.65rem", fontFamily: "monospace", flexShrink: 0 }}>THUMBNAIL URL</span>
+                  <input
+                    type="text"
+                    value={thumbUrl}
+                    onChange={e => setThumbUrl(e.target.value)}
+                    placeholder="https://assets.hauntedwallpapers.com/thumbnails/your-image.jpeg"
+                    style={{ flex: 1, minWidth: "260px", background: "#fff", border: "1px solid #d0cce0", color: "#1a1625", padding: "8px 12px", fontSize: "0.8rem", fontFamily: "monospace" }}
+                  />
+                  {/* Live preview */}
+                  {thumbUrl && (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={thumbUrl} alt="preview" style={{ height: "40px", width: "64px", objectFit: "cover", border: "1px solid #d0cce0", flexShrink: 0 }} />
+                  )}
+                  <button onClick={() => handleSaveThumb(p.slug)} disabled={thumbSaving}
+                    style={{ background: "#c0001a", border: "none", color: "#fff", padding: "8px 16px", cursor: thumbSaving ? "not-allowed" : "pointer", fontSize: "0.7rem", letterSpacing: "0.1em", textTransform: "uppercase", fontFamily: "monospace", flexShrink: 0, opacity: thumbSaving ? 0.6 : 1 }}>
+                    {thumbSaving ? "Saving…" : "Save Thumbnail"}
+                  </button>
+                  {p.featuredImage && (
+                    <button onClick={() => { setThumbUrl(""); handleSaveThumb(p.slug); }}
+                      style={{ background: "transparent", border: "1px solid #c0001a", color: "#c0001a", padding: "8px 12px", cursor: "pointer", fontSize: "0.65rem", letterSpacing: "0.08em", textTransform: "uppercase", fontFamily: "monospace", flexShrink: 0 }}>
+                      ✕ Remove
+                    </button>
+                  )}
+                </div>
+              )}
             </div>
           ))}
         </>
