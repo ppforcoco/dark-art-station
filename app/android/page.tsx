@@ -37,7 +37,8 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
   return {
     title,
     description,
-    keywords: ["android wallpaper", "dark wallpaper android", "4k android wallpaper", "free android wallpaper", tag ?? "dark", "dark fantasy"].filter(Boolean),
+    // ✅ FIX: removed "HD android wallpaper" — replaced with "hd android wallpaper" (accurate)
+    keywords: ["android wallpaper", "dark wallpaper android", "hd android wallpaper", "free android wallpaper", tag ?? "dark", "dark fantasy"].filter(Boolean),
     openGraph: { title, description, url: canonical, siteName: "HAUNTED WALLPAPERS", type: "website" },
     twitter: { card: "summary_large_image", title, description },
     alternates: { canonical },
@@ -51,6 +52,7 @@ export default async function AndroidPage({ searchParams }: PageProps) {
 
   const where = {
     collectionId: null,
+    isAdult: false, // ✅ FIX: hide adult/mature images from public listing
     deviceType: "ANDROID" as const,
     ...(tag ? { tags: { has: tag } } : {}),
   };
@@ -100,7 +102,7 @@ export default async function AndroidPage({ searchParams }: PageProps) {
             <p>
               All Android wallpapers here are portrait 9:16 format, sized for modern flagship
               screens including Samsung Galaxy, Google Pixel, OnePlus, and Xiaomi devices.
-              Images are generated at HD resolution — no upscaling, no visible compression.
+              Images are generated at HD resolution — no visible compression.
               AMOLED-optimised: near-black backgrounds let your OLED screen turn pixels completely
               off, extending battery life while looking dramatically better than LCD-era wallpapers.
             </p>
@@ -169,7 +171,8 @@ export default async function AndroidPage({ searchParams }: PageProps) {
           __html: JSON.stringify({
             "@context": "https://schema.org",
             "@type": "ItemList",
-            name: tag ? `Dark #${tag} Android Wallpapers | Haunted Wallpapers` : "Free Dark Android Wallpapers 4K | Haunted Wallpapers",
+            // ✅ FIX: removed "4K" from schema name — replaced with "HD"
+            name: tag ? `Dark #${tag} Android Wallpapers | Haunted Wallpapers` : "Free Dark Android Wallpapers HD | Haunted Wallpapers",
             url: tag ? `${process.env.NEXT_PUBLIC_SITE_URL}/android?tag=${tag}` : `${process.env.NEXT_PUBLIC_SITE_URL}/android`,
             numberOfItems: total,
             itemListElement: images.map((img, i) => ({

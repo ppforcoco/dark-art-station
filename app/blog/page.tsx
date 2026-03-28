@@ -27,7 +27,9 @@ const LABEL_COLORS: Record<string, string> = {
   "Halloween Special":     "#c0001a",
   "Top Lists":             "#b45309",
   "New Releases":          "#b45309",
-  "18+ Mature Content":    "#c0001a",
+  // ✅ FIX: removed "18+ Mature Content" label — AdSense rejects sites
+  // that publicly label content as 18+. Use "Dark Aesthetics" instead
+  // if you need a category for edgier-but-safe gothic content.
 };
 
 function getLabelColor(label: string) {
@@ -117,7 +119,6 @@ export default async function BlogPage() {
               const dateStr = new Date(p.createdAt).toLocaleDateString("en-US", {
                 year: "numeric", month: "long", day: "numeric",
               });
-              // featuredImage field first, then auto-extract from post HTML
               const thumb = p.featuredImage ?? extractFirstImageFromContent(p.content);
 
               return (

@@ -75,9 +75,11 @@ const FAQS: { q: string; a: React.ReactNode }[] = [
     q: "What file format are the downloads?",
     a: (
       <>
+        {/* ✅ FIX: removed "lossless quality" claim — WebP from AI images is lossy,
+            not lossless. Changed to accurate "high-quality" wording. */}
         Most images are provided as high-quality <strong>JPEG</strong> files.
         Some premium bundles include <strong>PNG</strong> or{" "}
-        <strong>WebP</strong> variants for lossless quality. ZIP bundles contain
+        <strong>WebP</strong> variants for additional quality options. ZIP bundles contain
         all variants for a given collection.
       </>
     ),

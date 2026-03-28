@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   // robots: noindex intentionally removed — AdSense reviewers must crawl this page
 };
 
-const LAST_UPDATED = "21 March 2026";
+const LAST_UPDATED = "28 March 2026";
 const SITE_NAME    = "HauntedWallpapers";
 const SITE_URL     = "https://hauntedwallpapers.com";
 const CONTACT_EMAIL = "hello@hauntedwallpapers.com";
@@ -105,13 +105,28 @@ export default function PrivacyPage() {
               </li>
             </ul>
 
-            <h3>Consent for Advertising Cookies</h3>
+            {/* ✅ FIX: Updated consent wording to match our actual code behaviour.
+                Ads now load by default (required for AdSense approval). Users can
+                opt out via the cookie banner or Google's Ad Settings. */}
+            <h3>Advertising Cookies &amp; Your Choices</h3>
             <p>
-              When you first visit the Site, a cookie consent banner is displayed.
-              Advertising cookies and personalised ads are only activated after you
-              click &quot;Accept All.&quot; If you click &quot;Decline,&quot; no
-              advertising cookies will be set. You may change your preference at any
-              time by clearing your browser cookies and revisiting the Site.
+              Advertising cookies are enabled by default to allow us to serve ads
+              and keep the Site free. When you first visit the Site, a cookie
+              consent banner is displayed. If you click &quot;Decline,&quot; ad
+              personalisation will be disabled — you may still see ads, but they
+              will not be tailored to your interests. You may change your preference
+              at any time by clearing your browser cookies and revisiting the Site.
+            </p>
+            <p>
+              You can also opt out of personalised advertising at any time via{" "}
+              <a
+                href="https://www.google.com/settings/ads"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Google&apos;s Ads Settings
+              </a>
+              .
             </p>
 
             <h3>Managing Cookies</h3>
