@@ -62,7 +62,7 @@ export default async function BlogPage() {
   }, {});
 
   return (
-    <main className="blog-index-page" data-force-blog="true">
+    <main className="blog-index-page">
 
       <nav className="blog-topnav">
         <div className="blog-topnav-inner">
@@ -123,19 +123,22 @@ export default async function BlogPage() {
               return (
                 <div className="blog-index-featured">
                   <Link href={`/blog/${p.slug}`} className="blog-featured-card">
-                    {thumb && (
-                      <div className="blog-featured-thumb-wrap">
-                        {/* Plain <img> — works for any domain without next/image config */}
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
-                          src={thumb}
-                          alt={p.title}
-                          className="blog-featured-thumb-img"
-                          loading="eager"
-                        />
-                        <div className="blog-featured-thumb-overlay" />
-                      </div>
-                    )}
+                    <div className="blog-featured-thumb-wrap">
+                      {thumb ? (
+                        <>
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img
+                            src={thumb}
+                            alt={p.title}
+                            className="blog-featured-thumb-img"
+                            loading="eager"
+                          />
+                          <div className="blog-featured-thumb-overlay" />
+                        </>
+                      ) : (
+                        <div className="blog-featured-thumb-placeholder">✦</div>
+                      )}
+                    </div>
                     <div className="blog-featured-body">
                       <span className="blog-featured-eyebrow" style={{ color: getLabelColor(p.label) }}>
                         Latest · {p.label} · {dateStr}
@@ -243,7 +246,7 @@ export default async function BlogPage() {
         .blog-featured-thumb-wrap {
           position: relative;
           width: 100%;
-          aspect-ratio: 16 / 7;
+          aspect-ratio: 16 / 9;
           overflow: hidden;
           background: #0f0c1a;
         }
@@ -251,10 +254,22 @@ export default async function BlogPage() {
           width: 100%;
           height: 100%;
           object-fit: cover;
+          object-position: center center;
           display: block;
           transition: transform 0.4s ease;
         }
         .blog-featured-card:hover .blog-featured-thumb-img { transform: scale(1.04); }
+
+        .blog-featured-thumb-placeholder {
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(135deg, #0f0c1a 0%, #1a1228 100%);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: rgba(192,0,26,0.3);
+          font-size: 3rem;
+        }
         .blog-featured-thumb-overlay {
           position: absolute;
           inset: 0;
@@ -289,6 +304,7 @@ export default async function BlogPage() {
           width: 100%;
           height: 100%;
           object-fit: cover;
+          object-position: center center;
           display: block;
           transition: transform 0.35s ease;
         }
