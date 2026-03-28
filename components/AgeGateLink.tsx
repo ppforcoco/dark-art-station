@@ -49,7 +49,7 @@ export default function AgeGateLink({ slug, children, className, style }: Props)
                 fontFamily: "monospace",
                 fontWeight: 900, fontSize: "1.4rem",
                 color: "#c0001a",
-              }}>18+</span>
+              }}>16+</span>
             </div>
 
             <p style={{
@@ -67,7 +67,7 @@ export default function AgeGateLink({ slug, children, className, style }: Props)
               color: "#f0ecff", marginBottom: "14px",
               letterSpacing: "0.02em",
             }}>
-              This collection is for<br />18+ audiences only
+              This collection is for<br />16+ audiences only
             </h2>
 
             <p style={{
@@ -115,7 +115,7 @@ export default function AgeGateLink({ slug, children, className, style }: Props)
                 onMouseEnter={(e) => (e.currentTarget.style.background = "#a80000")}
                 onMouseLeave={(e) => (e.currentTarget.style.background = "#c0001a")}
               >
-                I am 18+ — Continue →
+                I am 16+ — Continue →
               </a>
             </div>
 

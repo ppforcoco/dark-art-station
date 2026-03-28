@@ -267,7 +267,7 @@ export default async function IphoneImagePage({ params }: PageProps) {
           category: "Digital Products > Wallpapers > iPhone",
           image: [{ "@type": "ImageObject", url: thumbUrl, contentUrl: thumbUrl, caption: image.title }],
           additionalProperty: [
-            { "@type": "PropertyValue", name: "Format", value: "JPEG (4K High Resolution)" },
+            { "@type": "PropertyValue", name: "Format", value: "JPEG (HD High Resolution)" },
             { "@type": "PropertyValue", name: "Device", value: "iPhone" },
             { "@type": "PropertyValue", name: "Aspect Ratio", value: "9:16 Portrait" },
             { "@type": "PropertyValue", name: "Instant Download", value: "Yes" },

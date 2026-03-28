@@ -58,7 +58,7 @@ export default function DownloadButton({ href, viewCount, label, children }: Pro
     ? (state === "loading" ? "Preparing…" : state === "done" ? "✓ Download Started" : children)
     : (state === "loading" ? "Preparing…"
       : state === "done"  ? "✓ Download Started"
-      : label             ?? "↓ Download 4K · Free");
+      : label             ?? "↓ Download HD · Free");
 
   const bgColor =
     state === "done"    ? "#1a5c35"
@@ -131,7 +131,7 @@ export default function DownloadButton({ href, viewCount, label, children }: Pro
       )}
 
       <p className="download-sublabel">
-        JPEG · 4K resolution · No account · No watermark
+        JPEG · HD resolution · No account · No watermark
       </p>
     </div>
   );

@@ -100,7 +100,7 @@ export default async function CollectionsPage() {
                           letterSpacing: "0.05em",
                           padding: "2px 8px",
                           flexShrink: 0,
-                        }}>18+</span>
+                        }}>16+</span>
                         <div style={{ display: "flex", flexDirection: "column", lineHeight: 1.2 }}>
                           <span style={{ fontFamily: "monospace", fontSize: "0.38rem", letterSpacing: "0.12em", textTransform: "uppercase", color: "#ccc", fontWeight: 700 }}>Parental Advisory</span>
                           <span style={{ fontFamily: "monospace", fontSize: "0.38rem", letterSpacing: "0.1em", textTransform: "uppercase", color: "#fff", fontWeight: 900 }}>Mature Content</span>

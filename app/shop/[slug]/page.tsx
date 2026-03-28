@@ -131,7 +131,7 @@ export default async function CollectionPage({ params }: PageProps) {
               {" · "}
               {collection._count.downloads} downloads
               {collection.isAdult && (
-                <span className="coll-adult-badge">· 18+</span>
+                <span className="coll-adult-badge">· 16+</span>
               )}
             </p>
           </div>
@@ -219,7 +219,7 @@ export default async function CollectionPage({ params }: PageProps) {
                 </div>
                 <div className="coll-sidebar-badge">
                   <span className="coll-sidebar-badge-icon">✦</span>
-                  <span className="coll-sidebar-badge-label">4K<br/>Resolution</span>
+                  <span className="coll-sidebar-badge-label">HD<br/>Resolution</span>
                 </div>
                 <div className="coll-sidebar-badge">
                   <span className="coll-sidebar-badge-icon">◈</span>
@@ -247,7 +247,7 @@ export default async function CollectionPage({ params }: PageProps) {
               {collection.isAdult && (
                 <div className="coll-sidebar-meta-row">
                   <span className="coll-sidebar-meta-key">Rating</span>
-                  <span className="coll-sidebar-meta-val coll-sidebar-adult">18+ Mature</span>
+                  <span className="coll-sidebar-meta-val coll-sidebar-adult">16+ Mature</span>
                 </div>
               )}
             </div>

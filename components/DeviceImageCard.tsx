@@ -91,7 +91,7 @@ export default function DeviceImageCard({
               fontFamily: "var(--font-space), monospace",
               fontWeight: 900, fontSize: "1rem",
               color: "#c0001a",
-            }}>18+</span>
+            }}>16+</span>
           </div>
           <span style={{
             fontFamily: "var(--font-space), monospace",

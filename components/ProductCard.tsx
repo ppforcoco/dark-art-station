@@ -97,7 +97,7 @@ export default function ProductCard({
                 fontFamily: "var(--font-space), monospace",
                 fontWeight: 900, fontSize: "1.3rem",
                 color: "#c0001a", letterSpacing: "-0.02em",
-              }}>18+</span>
+              }}>16+</span>
             </div>
 
             <h2 style={{
@@ -147,7 +147,7 @@ export default function ProductCard({
                   display: "flex", alignItems: "center", justifyContent: "center",
                 }}
               >
-                I am 18+ — Continue →
+                I am 16+ — Continue →
               </a>
             </div>
           </div>
@@ -209,7 +209,7 @@ export default function ProductCard({
                   fontFamily: "var(--font-space), monospace",
                   fontWeight: 900, fontSize: "1.1rem",
                   color: "#c0001a",
-                }}>18+</span>
+                }}>16+</span>
               </div>
               <span style={{
                 fontFamily: "var(--font-space), monospace",
@@ -244,7 +244,7 @@ export default function ProductCard({
             {thumbnail ? (
               <Image
                 src={thumbnail}
-                alt={`${name} — free dark wallpaper 4K`}
+                alt={`${name} — free dark wallpaper HD`}
                 fill
                 loading={priority ? "eager" : "lazy"}
                 priority={priority}
