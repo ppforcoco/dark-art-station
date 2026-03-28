@@ -37,7 +37,7 @@ export default function AgeGateLink({ slug, children, className, style }: Props)
             }}
             onClick={(e) => e.stopPropagation()}
           >
-            {/* 18+ circle */}
+            {/* 16+ circle */}
             <div style={{
               display: "inline-flex", alignItems: "center", justifyContent: "center",
               width: "72px", height: "72px",
@@ -77,7 +77,7 @@ export default function AgeGateLink({ slug, children, className, style }: Props)
               marginBottom: "30px",
             }}>
               This collection contains graphic skull, skeleton, and dark humour imagery.
-              By continuing you confirm you are 18 years of age or older.
+              By continuing you confirm you are 16 years of age or older.
             </p>
 
             <div style={{ display: "flex", gap: "12px" }}>
