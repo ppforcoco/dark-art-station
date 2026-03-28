@@ -26,7 +26,7 @@ const ALL_LABELS = [
   "Dark Aesthetics", "Gothic & Horror", "Dark Fantasy", "AMOLED Wallpapers",
   "Minimalist Dark", "Cyberpunk & Neon", "Halloween Special", "Seasonal Picks",
   "Top Lists", "New Releases", "Community Spotlights", "News & Updates",
-  "Free Wallpapers", "4K Wallpapers", "Lock Screen Ideas",
+  "Free Wallpapers", "HD Wallpapers", "Lock Screen Ideas",
   "18+ Mature Content",
 ];
 
@@ -39,20 +39,20 @@ const ALL_TAGS = [
   "skeleton", "smoke", "rose", "blood", "darkness", "void", "crimson",
   "black", "white", "aesthetic", "edgy", "rebel", "grunge", "punk", "metal",
   "vampire", "ghost", "reaper", "creepy", "mysterious", "shadow", "ethereal",
-  "art", "illustration", "wallpaper", "phone", "lockscreen", "4k", "hd",
+  "art", "illustration", "wallpaper", "phone", "lockscreen", "HD", "hd",
   "purple", "red", "green", "blue", "gold", "silver", "neon-green",
 ];
 
 // ─── Blog ideas ───────────────────────────────────────────────────────────────
 const BLOG_IDEAS = [
-  { title: "Best Dark Wallpapers for iPhone 16 Pro (4K Free Download)",      label: "iPhone Wallpapers",        reason: "💰 High CPC — matches product search" },
+  { title: "Best Dark Wallpapers for iPhone 16 Pro (HD Free Download)",      label: "iPhone Wallpapers",        reason: "💰 High CPC — matches product search" },
   { title: "How to Set a Wallpaper on iPhone 16 Step by Step",               label: "How-To & Tutorials",      reason: "💰 Tutorial = long session, more ad views" },
   { title: "How to Set a Wallpaper on Android (All Phones 2026)",            label: "How-To & Tutorials",      reason: "💰 Evergreen traffic, high volume" },
   { title: "Best AMOLED Wallpapers for Battery Saving in 2026",              label: "AMOLED Wallpapers",        reason: "💰 Tech audience = high CPC" },
   { title: "Top 20 Dark Aesthetic Wallpapers That Go Viral on Pinterest",    label: "Dark Aesthetics",          reason: "📌 Pinterest traffic = repeat visitors" },
-  { title: "Best 4K Wallpapers for PC Desktop (Dark Theme)",                 label: "PC & Desktop Wallpapers",  reason: "💰 Desktop ads = higher CPM" },
+  { title: "Best HD Wallpapers for PC Desktop (Dark Theme)",                 label: "PC & Desktop Wallpapers",  reason: "💰 Desktop ads = higher CPM" },
   { title: "Gothic Wallpapers: 15 Free Downloads for Halloween 2026",        label: "Halloween Special",        reason: "🎃 Seasonal spike in October" },
-  { title: "Dark Minimalist Wallpapers: Less Is More (Free 4K)",             label: "Minimalist Dark",          reason: "📈 Minimalist = growing trend" },
+  { title: "Dark Minimalist Wallpapers: Less Is More (Free HD)",             label: "Minimalist Dark",          reason: "📈 Minimalist = growing trend" },
   { title: "What is an AMOLED Display? Why Your Wallpaper Matters",          label: "AMOLED Wallpapers",        reason: "💰 Explainer = long time on page" },
   { title: "Cyberpunk Wallpapers 2026: Best Neon Dark Backgrounds",          label: "Cyberpunk & Neon",         reason: "🔥 Trend content = social shares" },
   { title: "Best Dark Wallpapers for Lock Screen (iPhone & Android)",        label: "Lock Screen Ideas",        reason: "💰 High intent, specific keyword" },
@@ -691,14 +691,14 @@ function ImageUploaderTab({ password }: { password: string }) {
               </button>
             </div>
             <input value={altText} onChange={e => setAltText(e.target.value)}
-              placeholder="Dark gothic forest wallpaper with moonlit trees and misty shadows — free 4K download"
+              placeholder="Dark gothic forest wallpaper with moonlit trees and misty shadows — free HD download"
               style={{ ...inputStyle, fontSize: "0.85rem" }} />
             <p style={{ color: "#6b6480", fontSize: "0.68rem", marginTop: "4px" }}>
               ℹ️ Powered by Claude AI (claude-sonnet). Alt text is optional — you can skip and upload without it.
             </p>
           </div>
 
-          {/* 18+ Adult Content toggle */}
+          {/* 18+ mature themes toggle */}
           <div style={{
             border: `1px solid ${isAdult ? "#c0001a" : "#d0cce0"}`,
             padding: "14px 18px",
@@ -712,7 +712,7 @@ function ImageUploaderTab({ password }: { password: string }) {
                   {" "}18+ Adult / Mature Content
                 </p>
                 <p style={{ color: "#6b6480", fontSize: "0.72rem" }}>
-                  Mark this image as adult content. It will show the 18+ warning badge and require age confirmation before viewing.
+                  Mark this image as mature themes. It will show the 18+ warning badge and require age confirmation before viewing.
                 </p>
               </div>
               <button
@@ -877,8 +877,8 @@ function HtmlToolbar({ onInsert }: { onInsert: (b: string, a: string) => void })
     { label: "HR",    title: "Divider",         before: '<hr style="border-color:#2a2535;margin:32px 0;" />', after: "" },
     { label: "QUOTE", title: "Blockquote",      before: '<blockquote style="border-left:3px solid #c0001a;margin:24px 0;padding:12px 20px;color:#c9c4dd;font-style:italic;">', after: "</blockquote>" },
     { label: "TABLE", title: "Table",           before: '<table style="width:100%;border-collapse:collapse;margin:24px 0;">\n<tr><th style="border:1px solid #2a2535;padding:10px;">Header 1</th><th style="border:1px solid #2a2535;padding:10px;">Header 2</th></tr>\n<tr><td style="border:1px solid #2a2535;padding:10px;">Cell 1</td><td style="border:1px solid #2a2535;padding:10px;">Cell 2</td></tr>', after: "\n</table>" },
-    { label: "CTA",   title: "Call to Action",  before: '<div style="background:#1a0a0a;border:1px solid #c0001a;padding:20px 24px;margin:32px 0;text-align:center;">\n<p style="color:#f0ecff;margin-bottom:12px;">Ready to download? Browse our free 4K dark wallpapers.</p>\n<a href="/iphone" style="display:inline-block;background:#c0001a;color:#fff;padding:10px 24px;text-decoration:none;font-size:0.8rem;letter-spacing:0.1em;">Browse Wallpapers →</a>\n</div>', after: "" },
-    { label: "18+",   title: "18+ Warning Banner", before: '<div style="display:flex;align-items:center;gap:12px;background:rgba(192,0,26,0.12);border:1px solid rgba(192,0,26,0.5);padding:14px 18px;margin:24px 0;">\n<span style="background:#c0001a;color:#fff;font-family:monospace;font-size:0.75rem;font-weight:900;padding:3px 10px;flex-shrink:0;">⚠ 18+</span>\n<p style="font-family:monospace;font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:#a89bc0;margin:0;">This content contains mature themes. Intended for adult audiences only.</p>\n</div>', after: "" },
+    { label: "CTA",   title: "Call to Action",  before: '<div style="background:#1a0a0a;border:1px solid #c0001a;padding:20px 24px;margin:32px 0;text-align:center;">\n<p style="color:#f0ecff;margin-bottom:12px;">Ready to download? Browse our free HD dark wallpapers.</p>\n<a href="/iphone" style="display:inline-block;background:#c0001a;color:#fff;padding:10px 24px;text-decoration:none;font-size:0.8rem;letter-spacing:0.1em;">Browse Wallpapers →</a>\n</div>', after: "" },
+    { label: "18+",   title: "18+ Warning Banner", before: '<div style="display:flex;align-items:center;gap:12px;background:rgba(192,0,26,0.12);border:1px solid rgba(192,0,26,0.5);padding:14px 18px;margin:24px 0;">\n<span style="background:#c0001a;color:#fff;font-family:monospace;font-size:0.75rem;font-weight:900;padding:3px 10px;flex-shrink:0;">⚠ 18+</span>\n<p style="font-family:monospace;font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:#a89bc0;margin:0;">This content contains mature themes. intended for audiences 16 and over only.</p>\n</div>', after: "" },
     { label: "FAQ",   title: "FAQ Section",     before: '<div style="margin:32px 0;">\n<h3>Frequently Asked Questions</h3>\n<details style="border:1px solid #2a2535;padding:12px 16px;margin-bottom:8px;">\n<summary style="cursor:pointer;color:#f0ecff;">Your question here?</summary>\n<p style="margin-top:10px;color:#c9c4dd;">Your answer here.</p>\n</details>', after: "\n</div>" },
     { label: "AD",    title: "Ad Slot",         before: '<div style="margin:32px 0;text-align:center;background:#1a1825;padding:20px;color:#6b6480;font-size:0.75rem;">[ Ad Slot — AdSense will render here ]</div>', after: "" },
   ];
@@ -1034,7 +1034,7 @@ function BlogTab({ password, prefillTitle, prefillLabel, onPrefillUsed }:
     setGeneratingAlt(false);
   }
 
-  const starterTemplate = `<p>Write your intro here — 2 to 3 sentences that hook the reader and include your main keyword naturally.</p>\n\n<h2>Why These Wallpapers Stand Out</h2>\n<p>Explain the topic in detail. What makes these wallpapers special? Who are they for?</p>\n\n<img src="https://assets.hauntedwallpapers.com/thumbnails/YOUR-IMAGE.jpeg" alt="Dark aesthetic wallpaper free download" style="width:100%;aspect-ratio:9/16;object-fit:cover;border-radius:4px;margin:16px 0;" />\n\n<h2>How to Download and Set Your Wallpaper</h2>\n<p>Step by step instructions here.</p>\n\n<ol>\n  <li>Browse our <a href="/iphone">iPhone wallpapers</a> or <a href="/android">Android wallpapers</a></li>\n  <li>Tap the image you love to open it</li>\n  <li>Hit the red Download Free button</li>\n  <li>Set it from your Photos app</li>\n</ol>\n\n<h2>Top Picks from Our Collection</h2>\n<p>Highlight 3–5 specific wallpapers from your site here.</p>\n\n<div style="background:#1a0a0a;border:1px solid #c0001a;padding:20px 24px;margin:32px 0;text-align:center;">\n<p style="color:#f0ecff;margin-bottom:12px;">Ready to download? Browse our full free 4K dark wallpaper collection.</p>\n<a href="/iphone" style="display:inline-block;background:#c0001a;color:#fff;padding:10px 24px;text-decoration:none;font-size:0.8rem;letter-spacing:0.1em;">Browse Wallpapers →</a>\n</div>\n\n<h2>Frequently Asked Questions</h2>\n<details style="border:1px solid #2a2535;padding:12px 16px;margin-bottom:8px;">\n<summary style="cursor:pointer;color:#f0ecff;">Are these wallpapers free?</summary>\n<p style="margin-top:10px;color:#c9c4dd;">Yes — every wallpaper on Haunted Wallpapers is completely free to download in 4K resolution. No account required.</p>\n</details>`;
+  const starterTemplate = `<p>Write your intro here — 2 to 3 sentences that hook the reader and include your main keyword naturally.</p>\n\n<h2>Why These Wallpapers Stand Out</h2>\n<p>Explain the topic in detail. What makes these wallpapers special? Who are they for?</p>\n\n<img src="https://assets.hauntedwallpapers.com/thumbnails/YOUR-IMAGE.jpeg" alt="Dark aesthetic wallpaper free download" style="width:100%;aspect-ratio:9/16;object-fit:cover;border-radius:4px;margin:16px 0;" />\n\n<h2>How to Download and Set Your Wallpaper</h2>\n<p>Step by step instructions here.</p>\n\n<ol>\n  <li>Browse our <a href="/iphone">iPhone wallpapers</a> or <a href="/android">Android wallpapers</a></li>\n  <li>Tap the image you love to open it</li>\n  <li>Hit the red Download Free button</li>\n  <li>Set it from your Photos app</li>\n</ol>\n\n<h2>Top Picks from Our Collection</h2>\n<p>Highlight 3–5 specific wallpapers from your site here.</p>\n\n<div style="background:#1a0a0a;border:1px solid #c0001a;padding:20px 24px;margin:32px 0;text-align:center;">\n<p style="color:#f0ecff;margin-bottom:12px;">Ready to download? Browse our full free HD dark wallpaper collection.</p>\n<a href="/iphone" style="display:inline-block;background:#c0001a;color:#fff;padding:10px 24px;text-decoration:none;font-size:0.8rem;letter-spacing:0.1em;">Browse Wallpapers →</a>\n</div>\n\n<h2>Frequently Asked Questions</h2>\n<details style="border:1px solid #2a2535;padding:12px 16px;margin-bottom:8px;">\n<summary style="cursor:pointer;color:#f0ecff;">Are these wallpapers free?</summary>\n<p style="margin-top:10px;color:#c9c4dd;">Yes — every wallpaper on Haunted Wallpapers is completely free to download in HD resolution. No account required.</p>\n</details>`;
 
   async function handlePublish() {
     if (!title || !slug || !content) { setMessage("Please fill in title, slug, and content."); return; }
@@ -1087,7 +1087,7 @@ function BlogTab({ password, prefillTitle, prefillLabel, onPrefillUsed }:
         <div>
           <label style={labelStyle}>Title <span style={{ color: titleOk ? "#4caf50" : titleLen > 0 ? "#ffd080" : "#6b6480" }}>({titleLen}/60 chars{titleOk ? " ✓" : ""})</span></label>
           <input value={title} onChange={(e) => handleTitleChange(e.target.value)}
-            placeholder="Best Dark Wallpapers for iPhone 16 (Free 4K Download)"
+            placeholder="Best Dark Wallpapers for iPhone 16 (Free HD Download)"
             style={inputStyle} />
         </div>
 
@@ -1164,7 +1164,7 @@ function BlogTab({ password, prefillTitle, prefillLabel, onPrefillUsed }:
             </span>
           </label>
           <input value={metaDesc} onChange={(e) => setMetaDesc(e.target.value)}
-            placeholder="Download free 4K dark wallpapers for iPhone. Gothic, horror, and dark fantasy art — no account needed."
+            placeholder="Download free HD dark wallpapers for iPhone. Gothic, horror, and dark fantasy art — no account needed."
             style={{ ...inputStyle, fontSize: "0.82rem" }} />
         </div>
 
@@ -1390,7 +1390,7 @@ function Manage18Tab({ password }: { password: string }) {
           ⚠ 18+ Content Manager
         </p>
         <p style={{ color: "#5a5070", fontSize: "0.72rem", fontFamily: "monospace" }}>
-          Mark images as 18+ Adult Content. This searches by title (partial match) and sets <code style={{ color: "#7c3aed" }}>isAdult: true</code> in the database.
+          Mark images as 18+ mature themes. This searches by title (partial match) and sets <code style={{ color: "#7c3aed" }}>isAdult: true</code> in the database.
         </p>
       </div>
 
@@ -1744,7 +1744,7 @@ const ALL_SEO_TAGS = [
   "skeleton","smoke","rose","blood","knife","darkness","void","crimson",
   "black","white","aesthetic","edgy","rebel","grunge","punk","metal",
   "vampire","ghost","reaper","creepy","mysterious","shadow","ethereal",
-  "art","illustration","wallpaper","phone","lockscreen","4k","hd",
+  "art","illustration","wallpaper","phone","lockscreen","HD","hd",
   "purple","red","green","blue","gold","silver","neon-green",
   "bones","claw","eye","bat","wolf","dragon","witch-hat","potion",
   "graveyard","cemetery","coffin","chains","thorns","runes","magic",

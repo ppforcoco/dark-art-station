@@ -19,7 +19,7 @@ const PRESETS = [
   { label: "Samsung S24",        w: 1080, h: 2340 },
   { label: "Google Pixel 9",     w: 1080, h: 2424 },
   { label: "Android Generic",    w: 1080, h: 1920 },
-  { label: "PC 4K",              w: 3840, h: 2160 },
+  { label: "PC UHD",              w: 3840, h: 2160 },
   { label: "PC 1440p",           w: 2560, h: 1440 },
   { label: "PC 1080p",           w: 1920, h: 1080 },
   { label: "iPad Pro 12.9\"",    w: 2048, h: 2732 },

@@ -106,7 +106,7 @@ export default function TermsPage() {
               endorse any advertiser or their products.
             </p>
             <p>
-              Advertising cookies are only placed after you provide explicit consent
+              Advertising cookies are only placed after you provide consent
               via our cookie banner. See our{" "}
               <a href="/privacy#adsense">Privacy Policy — Advertising section</a> for
               full details.

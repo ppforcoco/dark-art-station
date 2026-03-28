@@ -28,8 +28,21 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${siteUrl}/privacy`,       lastModified: new Date(), changeFrequency: "monthly" as const, priority: 0.3  },
     { url: `${siteUrl}/terms`,         lastModified: new Date(), changeFrequency: "monthly" as const, priority: 0.3  },
     { url: `${siteUrl}/dmca`,          lastModified: new Date(), changeFrequency: "yearly"  as const, priority: 0.3  },
-    { url: `${siteUrl}/favorites`,     lastModified: new Date(), changeFrequency: "monthly" as const, priority: 0.5  },
   ];
+
+  // ✅ Event / seasonal pages — these live at /[eventSlug] and were missing from sitemap
+  const EVENT_SLUGS = [
+    'halloween',
+    'dark-valentine',
+    'day-of-the-dead',
+    'crimson-moon',
+  ];
+  const eventRoutes: MetadataRoute.Sitemap = EVENT_SLUGS.map((slug) => ({
+    url: `${siteUrl}/${slug}`,
+    lastModified: new Date(),
+    changeFrequency: "monthly" as const,
+    priority: 0.75,
+  }));
 
   // ✅ FIX: Blog posts are now included in the sitemap.
   // Before this fix, Google could only find blog posts by clicking links.
@@ -101,5 +114,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     images: [r2Url(img.r2Key)],
   }));
 
-  return [...staticRoutes, ...blogRoutes, ...collectionRoutes, ...imageRoutes, ...standaloneRoutes];
+  return [...staticRoutes, ...eventRoutes, ...blogRoutes, ...collectionRoutes, ...imageRoutes, ...standaloneRoutes];
 }

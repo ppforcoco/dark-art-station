@@ -89,44 +89,6 @@ const SEASONS = [
       </svg>
     ),
   },
-  {
-    id:    "haunted-christmas",
-    href:  "/haunted-christmas",
-    label: "Haunted Christmas",
-    sub:   "Dark Yule",
-    bg:    "linear-gradient(135deg, #080e08 0%, #0a1e10 40%, #061206 100%)",
-    icon: (
-      <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" className="mosaic-svg-icon">
-        <polygon points="32,8 44,28 20,28" stroke="#c9a84c" strokeWidth="1.5" fill="rgba(201,168,76,0.06)" strokeLinejoin="round"/>
-        <polygon points="32,18 46,40 18,40" stroke="#c9a84c" strokeWidth="1.3" fill="rgba(201,168,76,0.06)" strokeLinejoin="round"/>
-        <rect x="27" y="40" width="10" height="8" rx="1" stroke="#c9a84c" strokeWidth="1.2" fill="none" opacity="0.5"/>
-        <circle cx="26" cy="32" r="2" fill="#c0001a" opacity="0.8"/>
-        <circle cx="38" cy="28" r="2" fill="#c0001a" opacity="0.8"/>
-        <circle cx="33" cy="36" r="2" fill="#c0001a" opacity="0.8"/>
-        <circle cx="32" cy="8" r="2.5" fill="#c9a84c" opacity="0.9"/>
-        <path d="M28 8 Q26 4 30 3 M36 8 Q38 4 34 3" stroke="#c9a84c" strokeWidth="0.8" strokeLinecap="round" opacity="0.5"/>
-      </svg>
-    ),
-  },
-  {
-    id:    "black-easter",
-    href:  "/black-easter",
-    label: "Black Easter",
-    sub:   "Dark Spring",
-    bg:    "linear-gradient(135deg, #0a0808 0%, #1a100a 40%, #0e0808 100%)",
-    icon: (
-      <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" className="mosaic-svg-icon">
-        <ellipse cx="32" cy="34" rx="14" ry="18" stroke="#c9a84c" strokeWidth="1.5" fill="none" opacity="0.6"/>
-        <ellipse cx="32" cy="34" rx="9" ry="13" stroke="#c0001a" strokeWidth="0.8" fill="none" opacity="0.3"/>
-        <path d="M24 26 Q32 22 40 26" stroke="#c9a84c" strokeWidth="1" fill="none" opacity="0.5" strokeLinecap="round"/>
-        <path d="M22 34 Q32 30 42 34" stroke="#c9a84c" strokeWidth="1" fill="none" opacity="0.5" strokeLinecap="round"/>
-        <path d="M24 42 Q32 38 40 42" stroke="#c9a84c" strokeWidth="1" fill="none" opacity="0.5" strokeLinecap="round"/>
-        <circle cx="32" cy="16" r="3" fill="#c9a84c" opacity="0.7"/>
-        <path d="M32 13 L32 8 M29 10 L35 10" stroke="#c9a84c" strokeWidth="1.2" strokeLinecap="round" opacity="0.6"/>
-        <circle cx="32" cy="34" r="3" fill="#c0001a" opacity="0.5"/>
-      </svg>
-    ),
-  },
 ];
 
 const SLOT_CLASSES = ["m1", "m2", "m3", "m4"] as const;

@@ -8,15 +8,15 @@ export const revalidate = 60;
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
 
-// Collections that show the 18+ badge on the grid
+// Collections that show the 16+ badge on the grid
 
 export const metadata: Metadata = {
   title: "All Collections | Free Dark Wallpapers | Haunted Wallpapers",
-  description: "Browse all dark fantasy wallpaper collections — horror, gothic, street style, dark humor and more. Free 4K downloads for iPhone, Android and PC.",
+  description: "Browse all dark fantasy wallpaper collections — horror, gothic, street style, dark humor and more. Free HD downloads for iPhone, Android and PC.",
   alternates: { canonical: `${SITE_URL}/collections` },
   openGraph: {
     title: "All Collections | Haunted Wallpapers",
-    description: "Browse all dark fantasy wallpaper collections. Free 4K downloads for iPhone, Android and PC.",
+    description: "Browse all dark fantasy wallpaper collections. Free HD downloads for iPhone, Android and PC.",
     url: `${SITE_URL}/collections`,
     siteName: "Haunted Wallpapers",
     type: "website",
@@ -25,7 +25,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "All Collections | Haunted Wallpapers",
-    description: "Browse all dark fantasy wallpaper collections. Free 4K downloads.",
+    description: "Browse all dark fantasy wallpaper collections. Free HD downloads.",
     images: [`${SITE_URL}/og-image.jpg`],
   },
 };
@@ -81,7 +81,7 @@ export default async function CollectionsPage() {
                       <div className="cat-name">{col.title}</div>
                       <div className="cat-count">{col._count.images} images</div>
                     </div>
-                    {/* 18+ badge — only on adult collections */}
+                    {/* 16+ badge — only on adult collections */}
                     {isAdult && (
                       <div style={{
                         position: "absolute", bottom: 0, left: 0, right: 0,

@@ -23,44 +23,30 @@ const KNOWN_EVENTS: Record<string, EventConfig> = {
   halloween: {
     tag:         "halloween",
     title:       "Halloween Wallpapers",
-    metaTitle:   "Best Free 4K Halloween Wallpapers 2026 | Haunted Wallpapers",
-    description: "Free dark Halloween wallpapers for iPhone, Android & PC. Dark, moody and atmospheric imagery — 4K resolution, instant download.",
+    metaTitle:   "Best Free  HD Halloween Wallpapers 2026 | Haunted Wallpapers",
+    description: "Free dark Halloween wallpapers for iPhone, Android & PC. Dark, moody and atmospheric imagery —  HD resolution, instant download.",
     eyebrow:     "Haunting Season",
   },
   "dark-valentine": {
     tag:         "valentine",
     title:       "Dark Valentine Wallpapers",
-    metaTitle:   "Dark Valentine Wallpapers 4K | Haunted Wallpapers",
+    metaTitle:   "Dark Valentine Wallpapers HD | Haunted Wallpapers",
     description: "Love soaked in shadows. Black roses, bleeding hearts, and gothic romance wallpapers for every screen.",
     eyebrow:     "Bleeding Hearts",
   },
   "day-of-the-dead": {
     tag:         "dayofthedead",
     title:       "Day of the Dead Wallpapers",
-    metaTitle:   "Day of the Dead Wallpapers 4K | Haunted Wallpapers",
-    description: "Dia de los Muertos — vibrant art, marigolds, and spirit celebrations in 4K dark fantasy wallpapers.",
+    metaTitle:   "Day of the Dead Wallpapers HD | Haunted Wallpapers",
+    description: "Dia de los Muertos — vibrant art, marigolds, and spirit celebrations in  HD dark fantasy wallpapers.",
     eyebrow:     "Día de Muertos",
   },
   "blood-moon": {
     tag:         "bloodmoon",
     title:       "Crimson Moon Wallpapers",
-    metaTitle:   "Crimson Moon Wallpapers 4K | Haunted Wallpapers",
+    metaTitle:   "Crimson Moon Wallpapers HD | Haunted Wallpapers",
     description: "Scarlet lunar art, werewolf lore, and celestial horror. The crimson moon rises on your screen.",
     eyebrow:     "Lunar Omen",
-  },
-  "haunted-christmas": {
-    tag:         "christmas",
-    title:       "Haunted Christmas Wallpapers",
-    metaTitle:   "Haunted Christmas Wallpapers 4K | Haunted Wallpapers",
-    description: "Krampus, dark Yule, black Christmas trees, and gothic winter wonderland wallpapers for the dark-hearted.",
-    eyebrow:     "Dark Yule",
-  },
-  "black-easter": {
-    tag:         "easter",
-    title:       "Black Easter Wallpapers",
-    metaTitle:   "Black Easter Wallpapers 4K | Haunted Wallpapers",
-    description: "The dark rebirth reimagined in shadow. Gothic Easter, gothic spring, and dark renewal wallpapers.",
-    eyebrow:     "Dark Spring",
   },
 };
 
@@ -78,7 +64,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   return {
     title:       event.metaTitle,
     description: event.description,
-    keywords:    [event.tag, "dark wallpaper", "4k wallpaper", "free wallpaper", "dark art", "haunted wallpapers"],
+    keywords:    [event.tag, "dark wallpaper", "hd wallpaper", "free wallpaper", "dark art", "haunted wallpapers"],
     openGraph: {
       title:       event.metaTitle,
       description: event.description,

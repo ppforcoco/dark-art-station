@@ -85,7 +85,7 @@ export default function ProductCard({
             }}
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Big 18+ icon */}
+            {/* Big 16+ icon */}
             <div style={{
               display: "inline-flex", alignItems: "center", justifyContent: "center",
               width: "64px", height: "64px",
@@ -187,7 +187,7 @@ export default function ProductCard({
               />
             )}
 
-            {/* 18+ overlay */}
+            {/* 16+ overlay */}
             <div style={{
               position: "absolute", inset: 0, zIndex: 5,
               display: "flex", flexDirection: "column",

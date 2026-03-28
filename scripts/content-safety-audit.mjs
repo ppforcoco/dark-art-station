@@ -55,39 +55,32 @@ const CAT_POLICY    = 'AdSense Policy Risk';
 // ============================================================
 
 const WHITELIST = new Set([
-  // Core brand words
+  // ── Core brand words ────────────────────────────────────────────────
   'haunted', 'hauntedwallpapers', 'wallpaper', 'wallpapers',
 
-  // Dark aesthetic vocabulary — safe for this brand
+  // ── Dark aesthetic vocabulary — safe for this brand ────────────────
   'dark', 'darkness', 'shadow', 'shadows', 'shadowy',
   'ghost', 'ghostly', 'ghosts',
   'skull', 'skulls',
-  'demon', 'demons',               // artistic dark fantasy (demonic removed — now flagged)
-  'witch', 'witches',              // artistic dark fantasy (witchcraft removed — now flagged)
-  'dead',                          // "Day of the Dead" is a collection name
-  'hell',                          // artistic / brand aesthetic
-  'hellish',
+  'witch', 'witches',
+  'dead',
+  'hell', 'hellish',
   'grim', 'grimoire',
-  'abyss', 'void',
-  'cursed', 'curse',
-  'ritual',                        // artistic context
+  'void',
   'sinister', 'ominous', 'eerie',
-  'macabre',                       // morbid removed — now flagged
+  'macabre',
   'skeleton', 'skeletal',
   'reaper',
   'raven',
   'crypt', 'cryptic',
-  'grave', 'graveyard', 'cemetery',
+  'grave', 'graveyard',
   'phantom', 'specter', 'wraith',
   'vampire', 'vampiric',
   'undead',
-  'pagan',
   'tarot',
   'sigil',
 
-  // Programming/technical terms — genuine false positives in code
-  'kill',         // e.g. kill() process, kill switch in code comments
-  'execute',      // code execution
+  // ── Programming/technical — genuine false positives in code ────────
   'script',
   'abort',
   'fatal',
@@ -95,8 +88,14 @@ const WHITELIST = new Set([
   'terminate',
   'host',
   'master',
-  'hack',         // "life hack", dev context
-  // 'slave' and 'sin' are not whitelisted — they are actively flagged by the dictionary
+  'hack',
+
+  // ── Seasonal event names (active events only) ───────────────────
+  // christmas and easter removed — no longer used on this site.
+  // abyss, cemetery, creed, curse, cursed, demon, demons, execute, kill,
+  // lore, oracle, pagan, ritual removed from whitelist — now scanned by DICTIONARY.
+  'valentine',
+  'halloween',
 ]);
 
 // ============================================================
@@ -109,27 +108,18 @@ const WHITELIST = new Set([
 
 const RELIGIOUS_WHITELIST = new Set([
   // Dark aesthetic / brand words that touch religion but are safe for this brand
-  'hell', 'hellish',          // artistic aesthetic
-  'demon', 'demons',          // dark fantasy art (demonic now flagged)
-  'witch', 'witches',         // dark fantasy art (witchcraft now flagged)
-  'ghost', 'ghostly',         // brand name adjacent
-  'haunted',                  // literal brand name
-  'shadow', 'shadows',        // aesthetic
-  'dark', 'darkness',         // aesthetic
-  'pagan',                    // thematic
-  'ritual',                   // artistic context
-  'abyss', 'void',
+  'hell', 'hellish',
+  'witch', 'witches',
+  'ghost', 'ghostly',
+  'haunted',
+  'shadow', 'shadows',
+  'dark', 'darkness',
 
   // Programming / technical false positives only
-  'host',                     // server host
-  'oracle',                   // Oracle DB, "The Oracle's Eye" brand copy
-  'creed',                    // "Our Creed" — brand copy section
-  'lore',                     // "/lore" page route
+  'host',
 
-  // NOTE: The following are now REMOVED from whitelist and will be FLAGGED:
-  // devil, demonic, occult, spirit, spirits, soul, souls, witchcraft,
-  // bless, blessed, blessing, grace, faith, divine, holy, sacred,
-  // heaven, gospel, saint, angel, angels, paradise, sermon, morbid, slave, sin
+  // REMOVED from religious whitelist — now flagged by DICTIONARY:
+  // pagan, ritual, abyss, oracle, creed, lore, demon, demons
 ]);
 
 // ============================================================
@@ -475,6 +465,36 @@ const DICTIONARY = [
   { term: 'sanctuary',     exactMatch: false, category: REL_PLACES, severity: LOW,   suggestion: 'Fine — common English word, often used in your brand copy', notes: '"Dark Sanctum" — very low risk' },
   { term: 'vatican',       exactMatch: false, category: REL_PLACES, severity: LOW,   suggestion: 'Fine in historical/artistic context', notes: 'Catholicism — review if attacking' },
 
+  // ── NEWLY SCANNED TERMS — removed from WHITELIST ─────────────────────────────
+  // These words were previously whitelisted (never flagged).
+  // They are now scanned so any new use in blog posts, meta, or ad copy is caught.
+
+  // Religious / occult
+  { term: 'ritual',    exactMatch: true,  category: CAT_RELIGIOUS, severity: LOW,  suggestion: 'Fine in dark artistic context — review in blog titles or ad copy', notes: 'Removed from whitelist' },
+  { term: 'pagan',     exactMatch: true,  category: CAT_RELIGIOUS, severity: LOW,  suggestion: 'Fine in artistic context — review if used in ad-adjacent copy', notes: 'Removed from whitelist' },
+  { term: 'oracle',    exactMatch: true,  category: CAT_RELIGIOUS, severity: LOW,  suggestion: 'Fine in artistic/tech context (Oracle DB, The Oracle\'s Eye)', notes: 'Removed from whitelist' },
+  { term: 'creed',     exactMatch: true,  category: CAT_RELIGIOUS, severity: LOW,  suggestion: 'Fine — common English word. Review if used as religious doctrine reference', notes: 'Removed from whitelist' },
+  { term: 'lore',      exactMatch: true,  category: CAT_RELIGIOUS, severity: INFO, suggestion: 'Fine — very common in gaming/dark fantasy. Very low AdSense risk', notes: 'Removed from whitelist' },
+
+  // Dark / occult vocabulary
+  { term: 'abyss',    exactMatch: true, category: CAT_OCCULT, severity: LOW,  suggestion: 'Fine in dark art context — review in any new ad or meta copy', notes: 'Removed from whitelist' },
+  { term: 'demon',    exactMatch: true, category: CAT_OCCULT, severity: LOW,  suggestion: 'Fine in dark fantasy art — review if prominently featured in blog/meta titles', notes: 'Removed from whitelist' },
+  { term: 'demons',   exactMatch: true, category: CAT_OCCULT, severity: LOW,  suggestion: 'Fine in dark fantasy art', notes: 'Removed from whitelist' },
+  { term: 'curse',    exactMatch: true, category: CAT_OCCULT, severity: LOW,  suggestion: 'Fine in dark art context', notes: 'Removed from whitelist' },
+  { term: 'cursed',   exactMatch: true, category: CAT_OCCULT, severity: LOW,  suggestion: 'Fine in dark art context', notes: 'Removed from whitelist' },
+  { term: 'cemetery', exactMatch: true, category: CAT_OCCULT, severity: INFO, suggestion: 'Fine — classic gothic imagery. Very low AdSense risk', notes: 'Removed from whitelist' },
+
+  // Code terms — almost always false positives but now visible in report
+  { term: 'execute', exactMatch: true, category: CAT_VIOLENCE, severity: INFO, suggestion: 'Almost certainly a code term — skip if in a .ts/.tsx/.js file', notes: 'Removed from whitelist' },
+  { term: 'kill',    exactMatch: true, category: CAT_VIOLENCE, severity: INFO, suggestion: 'Almost certainly a code term (process.kill, kill switch) — skip if in code files', notes: 'Removed from whitelist' },
+
+  // Religious holidays — BANNED from this site entirely
+  { term: 'christmas',        exactMatch: true,  category: CAT_RELIGIOUS, severity: HIGH, suggestion: 'BANNED from this site — delete any remaining occurrence', notes: 'Owner decision: no christmas content on HauntedWallpapers' },
+  { term: 'easter',           exactMatch: true,  category: CAT_RELIGIOUS, severity: HIGH, suggestion: 'BANNED from this site — delete any remaining occurrence', notes: 'Owner decision: no easter content on HauntedWallpapers' },
+  { term: 'black easter',     exactMatch: false, category: CAT_RELIGIOUS, severity: HIGH, suggestion: 'BANNED — delete any remaining occurrence immediately', notes: 'Former event — fully removed' },
+  { term: 'haunted christmas', exactMatch: false, category: CAT_RELIGIOUS, severity: HIGH, suggestion: 'BANNED — delete any remaining occurrence immediately', notes: 'Former event — fully removed' },
+  { term: 'dark christmas',   exactMatch: false, category: CAT_RELIGIOUS, severity: HIGH, suggestion: 'BANNED — delete any remaining occurrence immediately', notes: 'Former event tag — fully removed' },
+
   // ── ADSENSE POLICY RISK (MISC) ────────────────────────────
 
   { term: 'click here',   exactMatch: false, category: CAT_POLICY, severity: MEDIUM, suggestion: 'Replace with descriptive link text — also better for SEO' },
@@ -489,6 +509,42 @@ const DICTIONARY = [
   { term: 'malware',      exactMatch: false, category: CAT_POLICY, severity: CRITICAL, suggestion: 'Remove entirely unless in a clearly educational/security context' },
   { term: 'virus',        exactMatch: true,  category: CAT_POLICY, severity: LOW,      suggestion: 'Fine in metaphorical/artistic context', notes: 'Common false positive in tech/code files' },
   { term: 'phishing',     exactMatch: false, category: CAT_POLICY, severity: HIGH,     suggestion: 'Remove unless educational/security context' },
+
+  // ── SEASONAL / DARK COLLECTION COMBOS ────────────────────────────────
+  // These are your established collection names — flagged so you can
+  // catch any NEW uses in blog posts, ad copy, or meta descriptions.
+
+  { term: 'haunted christmas', exactMatch: false, category: CAT_RELIGIOUS, severity: MEDIUM, suggestion: 'Fine as your collection name — avoid in new blog titles or ad copy targeting AdSense', notes: 'Christmas + haunted combo — AdSense may scrutinise new uses' },
+  { term: 'black easter',      exactMatch: false, category: CAT_RELIGIOUS, severity: MEDIUM, suggestion: 'Fine as your collection name — avoid in new blog post titles or paid copy', notes: 'Darkening a religious holiday — AdSense risk in new content' },
+  { term: 'dark christmas',    exactMatch: false, category: CAT_RELIGIOUS, severity: LOW,    suggestion: 'Fine in artistic context — keep aesthetic, not mocking', notes: 'Low AdSense risk' },
+  { term: 'dark easter',       exactMatch: false, category: CAT_RELIGIOUS, severity: LOW,    suggestion: 'Fine in artistic context', notes: 'Review if mocking tone' },
+  { term: 'gothic christmas',  exactMatch: false, category: CAT_RELIGIOUS, severity: LOW,    suggestion: 'Fine — gothic is a recognised aesthetic', notes: 'Very low AdSense risk' },
+  { term: 'dark valentine',    exactMatch: false, category: CAT_RELIGIOUS, severity: INFO,   suggestion: 'Fine — Valentine is not a religious holiday in AdSense terms', notes: 'Your established collection name' },
+  { term: 'christmas',         exactMatch: true,  category: CAT_RELIGIOUS, severity: INFO,   suggestion: 'Fine on its own — only risky when combined with dark/haunted/black', notes: 'Christianity — review in combination' },
+  { term: 'easter',            exactMatch: true,  category: CAT_RELIGIOUS, severity: INFO,   suggestion: 'Fine on its own — review if combined with dark/black/haunted', notes: 'Christianity — review in combination' },
+
+  // ── RESOLUTION LABELS (4K) ────────────────────────────────────────────
+  // 4K is not an AdSense policy issue, but you have decided to replace
+  // it with "HD" sitewide. These entries let the scanner find any
+  // remaining occurrences so you can make those replacements.
+
+  { term: '4k wallpaper',  exactMatch: false, category: CAT_POLICY, severity: INFO, suggestion: 'Replace with "HD wallpaper" — matches your updated brand language' },
+  { term: '4k download',   exactMatch: false, category: CAT_POLICY, severity: INFO, suggestion: 'Replace with "HD download"' },
+  { term: 'free 4k',       exactMatch: false, category: CAT_POLICY, severity: INFO, suggestion: 'Replace with "free HD"' },
+  { term: 'download 4k',   exactMatch: false, category: CAT_POLICY, severity: INFO, suggestion: 'Replace with "download HD"' },
+  { term: '"4k"',          exactMatch: false, category: CAT_POLICY, severity: INFO, suggestion: 'Replace with "HD" — check context' },
+  { term: '4K Wallpapers', exactMatch: false, category: CAT_POLICY, severity: INFO, suggestion: 'Replace with "HD Wallpapers" in keywords and metadata' },
+
+  // ── AGE LABELS (18+) ─────────────────────────────────────────────────
+  // AdSense policy is sensitive to explicit 18+ labelling on non-adult
+  // sites. Your UI already shows 16+ — these entries catch any remaining
+  // 18+ strings in user-facing copy (not admin or comments).
+
+  { term: '18+ mature',    exactMatch: false, category: CAT_POLICY, severity: HIGH,   suggestion: 'Replace with "16+" or "mature themes" — AdSense rejects explicit 18+ labelling on general sites' },
+  { term: '18+ adult',     exactMatch: false, category: CAT_POLICY, severity: HIGH,   suggestion: 'Replace with "16+" or "mature dark art"' },
+  { term: '18+ content',   exactMatch: false, category: CAT_POLICY, severity: HIGH,   suggestion: 'Replace with "mature themes"' },
+  { term: 'adult content', exactMatch: false, category: CAT_SEXUAL, severity: HIGH,   suggestion: 'Replace with "mature themes" or "dark art for older audiences"' },
+  { term: 'intended for adult audiences', exactMatch: false, category: CAT_POLICY, severity: HIGH, suggestion: 'Replace with "intended for audiences 16 and over"' },
 ];
 
 // ============================================================

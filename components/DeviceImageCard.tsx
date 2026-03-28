@@ -40,7 +40,7 @@ export default function DeviceImageCard({
     }, 320);
   }
 
-  // Adult unrevealed state — blur + 18+ overlay
+  // Adult unrevealed state — blur + 16+ overlay
   if (isAdult && !revealed) {
     return (
       <div
@@ -69,7 +69,7 @@ export default function DeviceImageCard({
           aria-hidden="true"
         />
 
-        {/* 18+ overlay */}
+        {/* 16+ overlay */}
         <div
           style={{
             position: "absolute", inset: 0, zIndex: 5,

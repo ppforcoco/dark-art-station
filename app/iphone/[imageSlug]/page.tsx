@@ -32,11 +32,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const tagLine = image.tags.slice(0, 3).map((t) => `#${t}`).join(" ");
   return {
     title: `${image.title} — Free iPhone Wallpaper | HAUNTED WALLPAPERS`,
-    description: image.description ?? `${image.title} — free 4K dark fantasy iPhone wallpaper. ${tagLine}. Download instantly, no account required.`,
-    keywords: ["iphone wallpaper", "dark wallpaper iphone", "4k iphone wallpaper", image.title, ...image.tags],
+    description: image.description ?? `${image.title} — free high-res dark fantasy iPhone wallpaper. ${tagLine}. Download instantly, no account required.`,
+    keywords: ["iphone wallpaper", "dark wallpaper iphone", "hd iphone wallpaper", image.title, ...image.tags],
     openGraph: {
       title: `${image.title} | HAUNTED WALLPAPERS`,
-      description: image.description ?? `Free 4K iPhone wallpaper: ${image.title}`,
+      description: image.description ?? `Free HD iPhone wallpaper: ${image.title}`,
       url: `${siteUrl}/iphone/${imageSlug}`,
       siteName: "HAUNTED WALLPAPERS",
       images: [{ url: ogImage, width: 1080, height: 1920, alt: image.title }],
@@ -45,7 +45,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     twitter: {
       card: "summary_large_image",
       title: `${image.title} | HAUNTED WALLPAPERS`,
-      description: image.description ?? `Free 4K iPhone wallpaper: ${image.title}`,
+      description: image.description ?? `Free HD iPhone wallpaper: ${image.title}`,
       images: [ogImage],
     },
     alternates: { canonical: `${siteUrl}/iphone/${imageSlug}` },
@@ -261,7 +261,7 @@ export default async function IphoneImagePage({ params }: PageProps) {
           "@type": "Product",
           "@id": `${siteUrl}/iphone/${imageSlug}#product`,
           name: image.title,
-          description: image.description ?? `${image.title} — free 4K dark fantasy iPhone wallpaper.`,
+          description: image.description ?? `${image.title} — free high-res dark fantasy iPhone wallpaper.`,
           url: `${siteUrl}/iphone/${imageSlug}`,
           brand: { "@type": "Brand", name: "HAUNTED WALLPAPERS", url: siteUrl },
           category: "Digital Products > Wallpapers > iPhone",

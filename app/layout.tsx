@@ -56,7 +56,7 @@ export const metadata: Metadata = {
     "gothic wallpapers",
     "iPhone wallpapers",
     "Android wallpapers",
-    "4K wallpapers",
+    "HD wallpapers",
     "AI art",
     "dark fantasy",
     "free wallpapers",
@@ -244,7 +244,7 @@ gtag('set','url_passthrough',true);
                 "@id": `${SITE_URL}/#website`,
                 url: SITE_URL,
                 name: SITE_NAME,
-                description: "Free dark fantasy wallpapers. Download 4K wallpapers for iPhone, Android and PC.",
+                description: "Free dark fantasy wallpapers. Download HD wallpapers for iPhone, Android and PC.",
                 publisher: { "@id": `${SITE_URL}/#organization` },
                 potentialAction: {
                   "@type": "SearchAction",
