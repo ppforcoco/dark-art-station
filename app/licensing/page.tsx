@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   robots: { index: true, follow: true },
 };
 
-const LAST_UPDATED   = "1 July 2025";
+const LAST_UPDATED   = "20 March 2026";
 const CONTACT_EMAIL  = "hello@hauntedwallpapers.com";
 
 export default function LicensingPage() {

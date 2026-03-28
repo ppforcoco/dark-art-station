@@ -106,7 +106,7 @@ export default async function IphonePage({ searchParams }: PageProps) {
             <p>
               All wallpapers are free to download. No account required, no watermarks, no paywalls.
               Tap any image to view it full-size and download directly to your Photos library.
-              New collections drop regularly — check back often or subscribe to get notified.
+              New collections drop regularly.
             </p>
             <div className="device-page-guide-link">
               <span>New to setting wallpapers?</span>
