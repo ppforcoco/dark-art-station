@@ -1,14 +1,20 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import AdSlot from "@/components/AdSlot";
 import { PrismaClient } from "@prisma/client";
 
-// This ensures the page is generated on-demand, not at build time
 export const dynamic = "force-dynamic";
 
 const prisma = new PrismaClient();
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
+
+// ── Fallback: extract first <img src="..."> from HTML content ─────────────────
+function extractFirstImageFromContent(html: string): string | null {
+  const match = html.match(/<img[^>]+src=["']([^"']+)["']/i);
+  return match?.[1] ?? null;
+}
 
 export async function generateMetadata(
   { params }: { params: Promise<{ slug: string }> }
@@ -23,6 +29,12 @@ export async function generateMetadata(
     .trim()
     .slice(0, 160);
 
+  // ✅ Use featuredImage for OG image, fall back to first content image, then site OG image
+  const ogImage =
+    post.featuredImage ??
+    extractFirstImageFromContent(post.content) ??
+    `${SITE_URL}/og-image.jpg`;
+
   return {
     title: `${post.title} | Haunted Wallpapers`,
     description: excerpt,
@@ -33,6 +45,21 @@ export async function generateMetadata(
       url: `${SITE_URL}/blog/${post.slug}`,
       siteName: "Haunted Wallpapers",
       type: "article",
+      // ✅ Rich OG image for social sharing
+      images: [
+        {
+          url: ogImage,
+          width: 1200,
+          height: 630,
+          alt: post.title,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: post.title,
+      description: excerpt,
+      images: [ogImage],
     },
   };
 }
@@ -48,12 +75,23 @@ export default async function BlogPostPage(
     year: "numeric", month: "long", day: "numeric",
   });
 
+  // ✅ Resolve hero image for the post header
+  const heroImage =
+    post.featuredImage ?? extractFirstImageFromContent(post.content);
+
+  const ogImage =
+    post.featuredImage ??
+    extractFirstImageFromContent(post.content) ??
+    `${SITE_URL}/og-image.jpg`;
+
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Article",
     headline: post.title,
     datePublished: post.createdAt.toISOString(),
     dateModified: post.updatedAt.toISOString(),
+    // ✅ Article image for Google Rich Results
+    image: ogImage,
     author: { "@type": "Organization", name: "Haunted Wallpapers" },
     publisher: {
       "@type": "Organization",
@@ -67,40 +105,38 @@ export default async function BlogPostPage(
     <main className="static-page blog-post-page" data-force-blog="true">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
-      {/*
-        ── Blog-page navigation bar (replaces the site Header on blog pages)
-        ── This gives users a way to get back without needing the main header.
-      */}
       <nav className="blog-topnav">
         <div className="blog-topnav-inner">
-          {/* Logo / home link */}
           <Link href="/" className="blog-topnav-logo">
             <span className="blog-topnav-logo-text">HAUNTED<span>WALLPAPERS</span></span>
           </Link>
-
-          {/* Quick nav links */}
           <div className="blog-topnav-links">
-            <Link href="/blog" className="blog-topnav-link">
-              ← Blog
-            </Link>
-            <Link href="/shop" className="blog-topnav-link">
-              Collections
-            </Link>
-            <Link href="/iphone" className="blog-topnav-link">
-              iPhone
-            </Link>
-            <Link href="/android" className="blog-topnav-link">
-              Android
-            </Link>
-            <Link href="/pc" className="blog-topnav-link">
-              PC
-            </Link>
+            <Link href="/blog" className="blog-topnav-link">← Blog</Link>
+            <Link href="/shop" className="blog-topnav-link">Collections</Link>
+            <Link href="/iphone" className="blog-topnav-link">iPhone</Link>
+            <Link href="/android" className="blog-topnav-link">Android</Link>
+            <Link href="/pc" className="blog-topnav-link">PC</Link>
           </div>
         </div>
       </nav>
 
       <div className="static-page-inner">
         <header className="static-page-header">
+          {/* ✅ Hero image rendered above the title when a featuredImage is set */}
+          {heroImage && (
+            <div className="blog-post-hero-image">
+              <Image
+                src={heroImage}
+                alt={post.title}
+                fill
+                priority
+                sizes="(max-width: 768px) 100vw, 900px"
+                style={{ objectFit: "cover" }}
+                className="blog-post-hero-img"
+              />
+              <div className="blog-post-hero-overlay" />
+            </div>
+          )}
           <p className="static-page-label">{post.label} · {dateStr}</p>
           <h1 className="static-page-title">{post.title}</h1>
         </header>
@@ -109,13 +145,11 @@ export default async function BlogPostPage(
           <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_MAIN} width={728} height={90} />
         </div>
 
-        {/* Renders the HTML content from admin directly */}
         <div
           className="static-page-body blog-html-content"
           dangerouslySetInnerHTML={{ __html: post.content }}
         />
 
-        {/* Bottom navigation */}
         <div className="blog-post-footer-nav">
           <Link href="/blog" className="blog-post-footer-back">
             ← Blog &amp; Guides
@@ -132,18 +166,31 @@ export default async function BlogPostPage(
         <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_FOOTER} width={728} height={90} />
       </div>
 
-      {/* ── Scoped styles for the blog post page ── */}
       <style>{`
-        /*
-          Hide the global site Header and HalloweenCountdown on blog post pages.
-          We replace them with our own lightweight blog-topnav above.
-          This targets the elements injected by layout.tsx.
-        */
         body:has(.blog-post-page) .site-header,
         body:has(.blog-post-page) [class*="Header"],
         body:has(.blog-post-page) header.site-header,
         body:has(.blog-post-page) .halloween-countdown {
           display: none !important;
+        }
+
+        /* ── Hero image ── */
+        .blog-post-hero-image {
+          position: relative;
+          width: 100%;
+          aspect-ratio: 16/6;
+          overflow: hidden;
+          margin-bottom: 28px;
+          border-radius: 2px;
+        }
+        .blog-post-hero-img { transition: transform 0.6s ease; }
+        .blog-post-hero-overlay {
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(to bottom, transparent 40%, rgba(7,5,14,0.6) 100%);
+        }
+        [data-theme="light"] .blog-post-hero-overlay {
+          background: linear-gradient(to bottom, transparent 40%, rgba(242,237,225,0.5) 100%);
         }
 
         /* ── Blog top nav ── */
@@ -178,10 +225,7 @@ export default async function BlogPostPage(
           height: 52px;
           gap: 20px;
         }
-        .blog-topnav-logo {
-          text-decoration: none;
-          flex-shrink: 0;
-        }
+        .blog-topnav-logo { text-decoration: none; flex-shrink: 0; }
         .blog-topnav-logo-text {
           font-family: var(--font-cinzel), cursive;
           font-size: 0.75rem;
@@ -250,11 +294,7 @@ export default async function BlogPostPage(
           transition: color 0.2s;
         }
         .blog-post-footer-back:hover { color: #e00020; }
-        .blog-post-footer-links {
-          display: flex;
-          gap: 16px;
-          flex-wrap: wrap;
-        }
+        .blog-post-footer-links { display: flex; gap: 16px; flex-wrap: wrap; }
         .blog-post-footer-link {
           color: #6b6480;
           text-decoration: none;
@@ -267,44 +307,20 @@ export default async function BlogPostPage(
         [data-theme="light"] .blog-post-footer-link { color: #8a8468; }
         [data-theme="light"] .blog-post-footer-link:hover { color: #3a3450; }
 
-        /* ── Light theme blog content readability fixes ── */
-        [data-theme="light"] .blog-html-content {
-          color: #2a2420;
-        }
+        /* ── Light theme content ── */
+        [data-theme="light"] .blog-html-content { color: #2a2420; }
         [data-theme="light"] .blog-html-content h1,
         [data-theme="light"] .blog-html-content h2,
         [data-theme="light"] .blog-html-content h3,
-        [data-theme="light"] .blog-html-content h4 {
-          color: #1a1814;
-        }
-        [data-theme="light"] .blog-html-content h3 {
-          color: #8b4200;
-        }
-        [data-theme="light"] .blog-html-content h4 {
-          color: #5a3a70;
-        }
-        [data-theme="light"] .blog-html-content p {
-          color: #3a3028;
-          font-size: 1.05rem;
-          line-height: 1.8;
-        }
-        [data-theme="light"] .blog-html-content li {
-          color: #3a3028;
-        }
-        [data-theme="light"] .blog-html-content strong {
-          color: #1a1814;
-        }
-        [data-theme="light"] .blog-html-content em {
-          color: #8b4200;
-        }
-        [data-theme="light"] .blog-html-content a {
-          color: #c0001a;
-          border-color: rgba(192,0,26,0.3);
-        }
-        [data-theme="light"] .blog-html-content a:hover {
-          color: #900015;
-          border-color: rgba(192,0,26,0.6);
-        }
+        [data-theme="light"] .blog-html-content h4 { color: #1a1814; }
+        [data-theme="light"] .blog-html-content h3 { color: #8b4200; }
+        [data-theme="light"] .blog-html-content h4 { color: #5a3a70; }
+        [data-theme="light"] .blog-html-content p { color: #3a3028; font-size: 1.05rem; line-height: 1.8; }
+        [data-theme="light"] .blog-html-content li { color: #3a3028; }
+        [data-theme="light"] .blog-html-content strong { color: #1a1814; }
+        [data-theme="light"] .blog-html-content em { color: #8b4200; }
+        [data-theme="light"] .blog-html-content a { color: #c0001a; border-color: rgba(192,0,26,0.3); }
+        [data-theme="light"] .blog-html-content a:hover { color: #900015; border-color: rgba(192,0,26,0.6); }
         [data-theme="light"] .static-page-title { color: #1a1814; }
         [data-theme="light"] .static-page-label { color: #8a8468; }
       `}</style>

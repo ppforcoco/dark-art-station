@@ -31,7 +31,6 @@ model Collection {
   featured    Boolean  @default(false)
 
   /// Set to true for collections with mature/18+ content.
-  /// All false by default — update manually in Prisma Studio or via admin panel.
   isAdult     Boolean  @default(false)
 
   images      Image[]
@@ -57,8 +56,7 @@ model Image {
   deviceType    DeviceType?
   tags          String[]            @default([])
 
-  /// Set to true for individual images with mature/18+ content (iPhone, Android, PC pages).
-  /// All false by default — update manually in Prisma Studio or via admin panel.
+  /// Set to true for individual images with mature/18+ content.
   isAdult       Boolean    @default(false)
 
   downloads     Download[]
@@ -83,12 +81,15 @@ model Download {
 
 // ── Blog Posts ────────────────────────────────────────────────────────────────
 model BlogPost {
-  id        String   @id @default(uuid())
-  slug      String   @unique
-  title     String
-  label     String   @default("Guide")
-  content   String   // HTML content
-  published Boolean  @default(true)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id             String   @id @default(uuid())
+  slug           String   @unique
+  title          String
+  label          String   @default("Guide")
+  content        String   // HTML content
+  // ✅ NEW: Featured image — full URL (e.g. https://assets.hauntedwallpapers.com/thumbnails/...)
+  // Used as the blog card thumbnail and OG image fallback.
+  featuredImage  String?
+  published      Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 }
