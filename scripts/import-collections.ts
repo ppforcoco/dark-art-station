@@ -66,20 +66,24 @@ async function main() {
 
     // ── Upsert Collection ──────────────────────────────────────────────────
     const collectionPayload = {
-      slug:        data.slug,
-      title:       data.title,
-      description: data.description,
-      category:    data.category,
-      thumbnail:   data.thumbnailR2Key,
-      downloadUrl: data.fullResR2Key ?? null,
-      price:       data.price,
-      isFree:      data.isFree,
-      badge:       data.badge ?? null,
-      icon:        data.icon,
-      bgClass:     data.bgClass,
-      tag:         data.tag,
-      featured:    data.featured,
-      isAdult:     data.isAdult ?? false,
+      slug:            data.slug,
+      title:           data.title,
+      description:     data.description,
+      // metaDescription: stored separately — used by generateMetadata() instead of description
+      metaDescription: (data as Record<string, unknown>).metaDescription as string | undefined ?? null,
+      // thumbnailAlt: SEO alt text for the collection cover image
+      thumbnailAlt:    (data as Record<string, unknown>).altText as string | undefined ?? null,
+      category:        data.category,
+      thumbnail:       data.thumbnailR2Key,
+      downloadUrl:     data.fullResR2Key ?? null,
+      price:           data.price,
+      isFree:          data.isFree,
+      badge:           data.badge ?? null,
+      icon:            data.icon,
+      bgClass:         data.bgClass,
+      tag:             data.tag,
+      featured:        data.featured,
+      isAdult:         data.isAdult ?? false,
     };
 
     let collectionId: string;
@@ -114,6 +118,8 @@ async function main() {
         slug:         img.slug,
         title:        img.title,
         description:  img.description ?? null,
+        // altText: SEO-optimised alt text for <Image> tags, stored in DB
+        altText:      (img as Record<string, unknown>).altText as string | undefined ?? null,
         r2Key:        imageHighResKey(data.slug, img.slug, img.highResExt ?? "jpeg"),
         highResKey:   imageHighResKey(data.slug, img.slug, img.highResExt ?? "jpeg"),
         sortOrder:    img.sortOrder,
@@ -166,6 +172,8 @@ async function main() {
       slug:        data.slug,
       title:       data.title,
       description: data.description ?? null,
+      // altText: SEO-optimised alt text stored per image
+      altText:     (data as Record<string, unknown>).altText as string | undefined ?? null,
       r2Key:       standaloneThumbnailKey(data.deviceType, data.slug, ext),
       highResKey:  standaloneHighResKey(data.deviceType, data.slug, ext),
       deviceType:  data.deviceType,

@@ -14,13 +14,15 @@ enum DeviceType {
 }
 
 model Collection {
-  id          String   @id @default(uuid())
-  slug        String   @unique
-  title       String
-  description String
-  category    String
-  thumbnail   String
-  downloadUrl String?
+  id              String   @id @default(uuid())
+  slug            String   @unique
+  title           String
+  description     String
+  metaDescription String?
+  category        String
+  thumbnail       String
+  thumbnailAlt    String?
+  downloadUrl     String?
 
   price       Float    @default(0)
   isFree      Boolean  @default(false)
@@ -45,6 +47,7 @@ model Image {
   slug          String     @unique
   title         String
   description   String?
+  altText       String?
   r2Key         String
   highResKey    String
   viewCount     Int        @default(0)
@@ -86,8 +89,6 @@ model BlogPost {
   title          String
   label          String   @default("Guide")
   content        String   // HTML content
-  // ✅ NEW: Featured image — full URL (e.g. https://assets.hauntedwallpapers.com/thumbnails/...)
-  // Used as the blog card thumbnail and OG image fallback.
   featuredImage  String?
   published      Boolean  @default(true)
   createdAt      DateTime @default(now())

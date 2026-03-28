@@ -20,7 +20,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   const collection = await db.collection.findUnique({
     where: { slug },
-    select: { title: true, description: true, thumbnail: true },
+    select: { title: true, description: true, metaDescription: true, thumbnail: true, thumbnailAlt: true },
   });
 
   if (!collection) return { title: "Not Found | Haunted Wallpapers" };
@@ -29,23 +29,31 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     ? `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/${collection.thumbnail}`
     : `${siteUrl}/og-image.jpg`;
 
+  // Prefer the shorter, keyword-rich metaDescription for the <meta name="description"> tag.
+  // Fall back to the long description, then a generic fallback.
+  const metaDesc =
+    collection.metaDescription ??
+    collection.description ??
+    `Download ${collection.title} wallpapers free for iPhone, Android and PC. High-quality dark art wallpapers, instant download.`;
+
+  // Use the SEO-optimised thumbnailAlt for OG image alt, fall back to title
+  const ogAlt = collection.thumbnailAlt ?? collection.title;
+
   return {
-    title: `${collection.title} Wallpapers for iPhone & Android | Haunted Wallpapers`,
-    description:
-      collection.description ??
-      `Download ${collection.title} wallpapers free for iPhone, Android and PC. High-quality dark art wallpapers, instant download.`,
+    title: `${collection.title} | Haunted Wallpapers`,
+    description: metaDesc,
     openGraph: {
-      title: `${collection.title} Wallpapers for iPhone & Android | Haunted Wallpapers`,
-      description: collection.description ?? `Free dark wallpapers — ${collection.title} collection for iPhone, Android and PC`,
+      title: `${collection.title} | Haunted Wallpapers`,
+      description: metaDesc,
       url: `${siteUrl}/shop/${slug}`,
       siteName: "Haunted Wallpapers",
-      images: [{ url: ogImage, width: 1200, height: 630, alt: collection.title }],
+      images: [{ url: ogImage, width: 1200, height: 630, alt: ogAlt }],
       type: "website",
     },
     twitter: {
       card: "summary_large_image",
-      title: `${collection.title} Wallpapers for iPhone & Android | Haunted Wallpapers`,
-      description: collection.description ?? `Free dark wallpapers — ${collection.title} collection for iPhone, Android and PC`,
+      title: `${collection.title} | Haunted Wallpapers`,
+      description: metaDesc,
       images: [ogImage],
     },
     alternates: { canonical: `${siteUrl}/shop/${slug}` },
@@ -68,6 +76,7 @@ export default async function CollectionPage({ params }: PageProps) {
       title: true,
       description: true,
       thumbnail: true,
+      thumbnailAlt: true,
       icon: true,
       category: true,
       isAdult: true,
@@ -77,6 +86,7 @@ export default async function CollectionPage({ params }: PageProps) {
           id: true,
           slug: true,
           title: true,
+          altText: true,
           r2Key: true,
           tags: true,
           sortOrder: true,
@@ -114,7 +124,8 @@ export default async function CollectionPage({ params }: PageProps) {
             <div className="coll-cover-wrap">
               <Image
                 src={coverUrl}
-                alt={collection.title}
+                // Use SEO-optimised alt text from DB if available, fall back to title
+                alt={collection.thumbnailAlt ?? collection.title}
                 fill
                 unoptimized
                 className="object-cover"
@@ -146,6 +157,10 @@ export default async function CollectionPage({ params }: PageProps) {
           <div className="coll-grid">
             {collection.images.map((img, idx) => {
               const thumbUrl = getPublicUrl(img.r2Key);
+              // Build a rich, descriptive alt: prefer the stored altText, fall back to title + collection context
+              const imgAlt =
+                img.altText ??
+                `${img.title} — free dark wallpaper from ${collection.title}`;
               return (
                 <Link
                   key={img.id}
@@ -156,7 +171,7 @@ export default async function CollectionPage({ params }: PageProps) {
                   <div className="coll-card-img-wrap">
                     <Image
                       src={thumbUrl}
-                      alt={img.title}
+                      alt={imgAlt}
                       fill
                       unoptimized
                       className="object-cover coll-card-img"
@@ -286,7 +301,6 @@ export default async function CollectionPage({ params }: PageProps) {
           position: relative;
           flex-shrink: 0;
           width: 72px;
-          /* 9:16 aspect ratio */
           aspect-ratio: 9 / 16;
           overflow: hidden;
           border: 1px solid var(--border-dim, #2a2535);
@@ -401,8 +415,6 @@ export default async function CollectionPage({ params }: PageProps) {
           background: rgba(15,8,0,0.85);
           border-color: rgba(255,102,0,0.12);
         }
-
-        
 
         /* Sidebar details */
         .coll-sidebar-details {
@@ -575,7 +587,6 @@ export default async function CollectionPage({ params }: PageProps) {
         }
         .coll-card-img-wrap {
           position: relative;
-          /* Correct 9:16 aspect ratio as requested */
           aspect-ratio: 9 / 16;
           overflow: hidden;
         }

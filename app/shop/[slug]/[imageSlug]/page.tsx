@@ -26,7 +26,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   const image = await db.image.findFirst({
     where: { slug: imageSlug, collection: { slug } },
-    select: { title: true, description: true, r2Key: true, tags: true },
+    select: { title: true, description: true, altText: true, r2Key: true, tags: true },
   });
   const collection = await db.collection.findUnique({
     where: { slug },
@@ -36,36 +36,39 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   if (!image) return { title: "Not Found | Haunted Wallpapers" };
 
   const ogImage = getPublicUrl(image.r2Key);
-  const tagLine = image.tags.slice(0, 3).map((t) => `#${t}`).join(" ");
+
+  // Use altText as the OG image alt (it's richer than just the title)
+  const ogAlt = image.altText ?? image.title;
+
+  // Use description as meta description — it already has the SEO tail appended
+  const metaDesc =
+    image.description ??
+    `${image.title} — free dark wallpaper for iPhone, Android and PC. Download instantly, no account required.`;
 
   return {
-    title: `${image.title} Wallpaper for iPhone & Android | Haunted Wallpapers`,
-    description:
-      image.description ??
-      `${image.title} — free dark wallpaper for iPhone, Android and PC. Download instantly, no account required.`,
+    title: `${image.title} — Free Dark Wallpaper | Haunted Wallpapers`,
+    description: metaDesc,
     keywords: [
       "dark wallpaper",
-      "iphone wallpaper",
-      "android wallpaper",
       "free wallpaper download",
+      "gothic wallpaper",
+      "horror wallpaper",
       image.title,
       collection?.title ?? "",
       ...image.tags,
     ],
     openGraph: {
-      title: `${image.title} Wallpaper for iPhone & Android | Haunted Wallpapers`,
-      description:
-        image.description ?? `Free dark wallpaper for iPhone & Android: ${image.title}`,
+      title: `${image.title} | Haunted Wallpapers`,
+      description: metaDesc,
       url: `${siteUrl}/shop/${slug}/${imageSlug}`,
       siteName: "Haunted Wallpapers",
-      images: [{ url: ogImage, width: 1080, height: 1920, alt: image.title }],
+      images: [{ url: ogImage, width: 1080, height: 1920, alt: ogAlt }],
       type: "website",
     },
     twitter: {
       card: "summary_large_image",
-      title: `${image.title} Wallpaper for iPhone & Android | Haunted Wallpapers`,
-      description:
-        image.description ?? `Free dark wallpaper for iPhone & Android: ${image.title}`,
+      title: `${image.title} | Haunted Wallpapers`,
+      description: metaDesc,
       images: [ogImage],
     },
     alternates: { canonical: `${siteUrl}/shop/${slug}/${imageSlug}` },
@@ -85,7 +88,6 @@ export default async function CollectionImagePage({ params }: PageProps) {
   const { slug, imageSlug } = await params;
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
 
-  // Find image that belongs to this collection
   const image = await db.image.findFirst({
     where: { slug: imageSlug, collection: { slug } },
     select: {
@@ -93,6 +95,7 @@ export default async function CollectionImagePage({ params }: PageProps) {
       slug: true,
       title: true,
       description: true,
+      altText: true,
       r2Key: true,
       highResKey: true,
       tags: true,
@@ -112,7 +115,7 @@ export default async function CollectionImagePage({ params }: PageProps) {
       title: true,
       images: {
         orderBy: { sortOrder: "asc" },
-        select: { slug: true, title: true, r2Key: true, sortOrder: true },
+        select: { slug: true, title: true, altText: true, r2Key: true, sortOrder: true },
       },
     },
   });
@@ -134,6 +137,9 @@ export default async function CollectionImagePage({ params }: PageProps) {
     currentIdx < siblings.length - 1 ? siblings[currentIdx + 1] : null;
 
   const related = await getRelatedImages(image.id, image.tags, 6);
+
+  // Rich alt text for the main hero image
+  const heroAlt = image.altText ?? `${image.title} — free dark wallpaper download`;
 
   return (
     <main
@@ -169,7 +175,7 @@ export default async function CollectionImagePage({ params }: PageProps) {
             >
               <Image
                 src={thumbUrl}
-                alt={image.title}
+                alt={heroAlt}
                 fill
                 priority
                 quality={90}
@@ -230,14 +236,10 @@ export default async function CollectionImagePage({ params }: PageProps) {
 
             {/* ── DOWNLOAD SECTION ── */}
             <div className="download-section">
-              {/* Single Download Button */}
-              <DownloadButton
-                href={`/api/download/image/${image.id}`}
-              >
+              <DownloadButton href={`/api/download/image/${image.id}`}>
                 ↓ Download Free
               </DownloadButton>
 
-              {/* Setup Guide Link */}
               <Link
                 href="/blog/the-dark-aesthetic-a-complete-guide-to-customizing-your-devices"
                 className="setup-guide-link"
@@ -327,7 +329,6 @@ export default async function CollectionImagePage({ params }: PageProps) {
           border-color: rgba(255,102,0,0.25);
         }
 
-        /* Setup Guide Link */
         .setup-guide-link {
           font-family: var(--font-space), monospace;
           font-size: 0.65rem;
@@ -339,9 +340,7 @@ export default async function CollectionImagePage({ params }: PageProps) {
           text-align: center;
           display: inline-block;
         }
-        .setup-guide-link:hover {
-          color: #f0ecff;
-        }
+        .setup-guide-link:hover { color: #f0ecff; }
 
         .download-note {
           font-family: var(--font-space), monospace;
@@ -354,7 +353,6 @@ export default async function CollectionImagePage({ params }: PageProps) {
         }
         [data-theme="light"] .download-note { color: #7a7468; }
 
-        /* Fav row */
         .detail-fav-row {
           display: flex;
           align-items: center;
@@ -369,7 +367,7 @@ export default async function CollectionImagePage({ params }: PageProps) {
         }
         [data-theme="light"] .detail-fav-label { color: #7a7468; }
 
-        /* ── Prev / Next navigation — fully redesigned, no overlap ── */
+        /* ── Prev / Next navigation ── */
         .prev-next-nav {
           max-width: 1280px;
           margin: 0 auto;
@@ -421,7 +419,6 @@ export default async function CollectionImagePage({ params }: PageProps) {
           border-color: rgba(255,102,0,0.15);
         }
 
-        /* Thumbnail inside prev/next — contained, no overlap */
         .prev-next-thumb-wrap {
           position: relative;
           flex-shrink: 0;
@@ -477,7 +474,7 @@ export default async function CollectionImagePage({ params }: PageProps) {
               <div className="prev-next-thumb-wrap">
                 <Image
                   src={getPublicUrl(prevImage.r2Key)}
-                  alt={prevImage.title}
+                  alt={prevImage.altText ?? `${prevImage.title} — dark wallpaper`}
                   fill
                   className="object-cover"
                   unoptimized
@@ -501,7 +498,7 @@ export default async function CollectionImagePage({ params }: PageProps) {
               <div className="prev-next-thumb-wrap">
                 <Image
                   src={getPublicUrl(nextImage.r2Key)}
-                  alt={nextImage.title}
+                  alt={nextImage.altText ?? `${nextImage.title} — dark wallpaper`}
                   fill
                   className="object-cover"
                   unoptimized
@@ -540,7 +537,6 @@ export default async function CollectionImagePage({ params }: PageProps) {
         imageUrl={thumbUrl}
         pageUrl={`${siteUrl}/shop/${slug}/${imageSlug}`}
       />
-      {/* Pass currentSlug so the current page is not shown in recently viewed */}
       <RecentlyViewed currentSlug={image.slug} />
 
       <script
@@ -557,7 +553,7 @@ export default async function CollectionImagePage({ params }: PageProps) {
             url: `${siteUrl}/shop/${slug}/${imageSlug}`,
             brand: {
               "@type": "Brand",
-              name: "HAUNTED WALLPAPERS",
+              name: "Haunted Wallpapers",
               url: siteUrl,
             },
             category: "Digital Products > Wallpapers",
@@ -566,25 +562,13 @@ export default async function CollectionImagePage({ params }: PageProps) {
                 "@type": "ImageObject",
                 url: thumbUrl,
                 contentUrl: thumbUrl,
-                caption: image.title,
+                caption: image.altText ?? image.title,
               },
             ],
             additionalProperty: [
-              {
-                "@type": "PropertyValue",
-                name: "Format",
-                value: "JPEG (High Resolution)",
-              },
-              {
-                "@type": "PropertyValue",
-                name: "Aspect Ratio",
-                value: "9:16 Portrait",
-              },
-              {
-                "@type": "PropertyValue",
-                name: "Instant Download",
-                value: "Yes",
-              },
+              { "@type": "PropertyValue", name: "Format", value: "JPEG (High Resolution)" },
+              { "@type": "PropertyValue", name: "Aspect Ratio", value: "9:16 Portrait" },
+              { "@type": "PropertyValue", name: "Instant Download", value: "Yes" },
             ],
             offers: {
               "@type": "Offer",
@@ -594,7 +578,7 @@ export default async function CollectionImagePage({ params }: PageProps) {
               availability: "https://schema.org/InStock",
               seller: {
                 "@type": "Organization",
-                name: "HAUNTED WALLPAPERS",
+                name: "Haunted Wallpapers",
                 url: siteUrl,
               },
             },
