@@ -759,7 +759,7 @@ function ImageUploaderTab({ password }: { password: string }) {
           <div>
             <label style={labelStyle}>Tags ({selectedTags.length} selected)</label>
             <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
-              {ALL_TAGS.map(tag => (
+              {[...ALL_TAGS, ...customTags].map(tag => (
                 <button key={tag} type="button" onClick={() => toggleTag(tag)}
                   style={{
                     background: selectedTags.includes(tag) ? "rgba(192,0,26,0.2)" : "transparent",
@@ -772,6 +772,31 @@ function ImageUploaderTab({ password }: { password: string }) {
                   {selectedTags.includes(tag) ? "✓ " : ""}{tag}
                 </button>
               ))}
+            </div>
+            <div style={{ display: "flex", gap: "8px", marginTop: "10px" }}>
+              <input
+                placeholder="Add custom tag…"
+                value={newTagInput}
+                onChange={(e) => setNewTagInput(e.target.value.toLowerCase().replace(/\s+/g, "-"))}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && newTagInput.trim()) {
+                    const v = newTagInput.trim();
+                    setCustomTags(prev => prev.includes(v) ? prev : [...prev, v]);
+                    setSelectedTags(prev => prev.includes(v) ? prev : [...prev, v]);
+                    setNewTagInput("");
+                  }
+                }}
+                style={{ ...inputStyle, flex: 1, marginBottom: 0, fontSize: "0.75rem" }}
+              />
+              <button type="button" onClick={() => {
+                if (!newTagInput.trim()) return;
+                const v = newTagInput.trim();
+                setCustomTags(prev => prev.includes(v) ? prev : [...prev, v]);
+                setSelectedTags(prev => prev.includes(v) ? prev : [...prev, v]);
+                setNewTagInput("");
+              }} style={{ padding: "0 16px", background: "#c0001a", color: "#fff", border: "none", cursor: "pointer", fontSize: "0.75rem", letterSpacing: "0.05em" }}>
+                ADD TAG
+              </button>
             </div>
           </div>
 
@@ -926,6 +951,10 @@ function BlogTab({ password, prefillTitle, prefillLabel, onPrefillUsed }:
   const [content, setContent]       = useState("");
   const [metaDesc, setMetaDesc]     = useState("");
   const [label, setLabel]           = useState("Wallpaper Guides");
+  const [customLabels, setCustomLabels] = useState<string[]>([]);
+  const [newLabelInput, setNewLabelInput] = useState("");
+  const [newTagInput, setNewTagInput] = useState("");
+  const [customTags, setCustomTags] = useState<string[]>([]);
   const [saving, setSaving]         = useState(false);
   const [message, setMessage]       = useState("");
   const [editorMode, setEditorMode] = useState<"html" | "preview">("html");
@@ -1073,8 +1102,37 @@ function BlogTab({ password, prefillTitle, prefillLabel, onPrefillUsed }:
                 ...inputStyle, cursor: "pointer",
                 ...(isAdultLabel ? { borderColor: "#c0001a", color: "#ff6b6b" } : {}),
               }}>
-              {ALL_LABELS.map((l) => <option key={l} value={l}>{l}</option>)}
+              {[...ALL_LABELS, ...customLabels].map((l) => <option key={l} value={l}>{l}</option>)}
+              <option value="__add_new__">+ Add new label…</option>
             </select>
+            {label === "__add_new__" && (
+              <div style={{ display: "flex", gap: "8px", marginTop: "8px" }}>
+                <input
+                  autoFocus
+                  placeholder="Type new label name…"
+                  value={newLabelInput}
+                  onChange={(e) => setNewLabelInput(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && newLabelInput.trim()) {
+                      const v = newLabelInput.trim();
+                      setCustomLabels(prev => [...prev, v]);
+                      setLabel(v);
+                      setNewLabelInput("");
+                    }
+                  }}
+                  style={{ ...inputStyle, flex: 1, marginBottom: 0 }}
+                />
+                <button type="button" onClick={() => {
+                  if (!newLabelInput.trim()) return;
+                  const v = newLabelInput.trim();
+                  setCustomLabels(prev => [...prev, v]);
+                  setLabel(v);
+                  setNewLabelInput("");
+                }} style={{ padding: "0 16px", background: "#c0001a", color: "#fff", border: "none", cursor: "pointer", fontSize: "0.75rem", letterSpacing: "0.05em" }}>
+                  ADD
+                </button>
+              </div>
+            )}
 
             {isAdultLabel && (
               <div style={{
