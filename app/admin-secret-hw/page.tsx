@@ -1092,6 +1092,7 @@ function BlogTab({ password, prefillTitle, prefillLabel, onPrefillUsed }:
   const [editLabel, setEditLabel]       = useState("");
   const [editMessage, setEditMessage]   = useState("");
   const [editSaving, setEditSaving]     = useState(false);
+  const [editMode, setEditMode]         = useState<"html" | "preview" | "livecheck" | "wordscan">("html");
 
   const [altImageUrl, setAltImageUrl]     = useState("");
   const [altImageFile, setAltImageFile]   = useState<File | null>(null);
