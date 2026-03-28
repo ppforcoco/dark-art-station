@@ -75,9 +75,9 @@ export async function POST(req: NextRequest) {
     // ── Parse tags ───────────────────────────────────────────────────────────
     let parsedTags: string[] = [];
     try { parsedTags = tags ? JSON.parse(tags) : []; } catch {}
-    // If marked as adult, add "18plus" marker tag
-    if (isAdult && !parsedTags.includes("18plus")) {
-      parsedTags.push("18plus");
+    // If marked as adult, add "16plus" marker tag
+    if (isAdult && !parsedTags.includes("16plus")) {
+      parsedTags.push("16plus");
     }
 
     // ── Save to DB ───────────────────────────────────────────────────────────

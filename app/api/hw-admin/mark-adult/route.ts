@@ -30,7 +30,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Update tags to include "adult" marker — we use a special tag since schema has no isAdult field
-    // We'll add "18plus" to the tags array as the marker
+    // We'll add "16plus" to the tags array as the marker
     let updated = 0;
     for (const img of images) {
       const current = await db.image.findUnique({
@@ -38,10 +38,10 @@ export async function POST(req: NextRequest) {
         select: { tags: true },
       });
       const tags = current?.tags ?? [];
-      if (!tags.includes("18plus")) {
+      if (!tags.includes("16plus")) {
         await db.image.update({
           where: { id: img.id },
-          data: { tags: [...tags, "18plus"] },
+          data: { tags: [...tags, "16plus"] },
         });
         updated++;
       }

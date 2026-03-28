@@ -27,7 +27,7 @@ const ALL_LABELS = [
   "Minimalist Dark", "Cyberpunk & Neon", "Halloween Special", "Seasonal Picks",
   "Top Lists", "New Releases", "Community Spotlights", "News & Updates",
   "Free Wallpapers", "HD Wallpapers", "Lock Screen Ideas",
-  "18+ Mature Content",
+  "16+ Mature Content",
 ];
 
 // ─── Tag bank ─────────────────────────────────────────────────────────────────
@@ -107,7 +107,7 @@ const modeBtn: React.CSSProperties = {
   cursor: "pointer", fontSize: "0.65rem", letterSpacing: "0.1em", fontFamily: "monospace",
 };
 
-// ─── 18+ Label Badge ──────────────────────────────────────────────────────────
+// ─── 16+ Label Badge ──────────────────────────────────────────────────────────
 function AdultBadge({ size = "sm" }: { size?: "sm" | "lg" }) {
   const isLg = size === "lg";
   return (
@@ -125,7 +125,7 @@ function AdultBadge({ size = "sm" }: { size?: "sm" | "lg" }) {
       border: "1px solid #ff2040",
       textTransform: "uppercase",
     }}>
-      ⚠ 18+
+      ⚠ 16+
     </span>
   );
 }
@@ -698,7 +698,7 @@ function ImageUploaderTab({ password }: { password: string }) {
             </p>
           </div>
 
-          {/* 18+ mature themes toggle */}
+          {/* 16+ mature themes toggle */}
           <div style={{
             border: `1px solid ${isAdult ? "#c0001a" : "#d0cce0"}`,
             padding: "14px 18px",
@@ -709,10 +709,10 @@ function ImageUploaderTab({ password }: { password: string }) {
               <div>
                 <p style={{ ...eyebrowStyle, marginBottom: "4px" }}>
                   {isAdult ? <AdultBadge size="sm" /> : null}
-                  {" "}18+ Adult / Mature Content
+                  {" "}16+ Adult / Mature Content
                 </p>
                 <p style={{ color: "#6b6480", fontSize: "0.72rem" }}>
-                  Mark this image as mature themes. It will show the 18+ warning badge and require age confirmation before viewing.
+                  Mark this image as mature themes. It will show the 16+ warning badge and require age confirmation before viewing.
                 </p>
               </div>
               <button
@@ -732,7 +732,7 @@ function ImageUploaderTab({ password }: { password: string }) {
                   transition: "all 0.2s",
                 }}
               >
-                {isAdult ? "✓ 18+ ON" : "Mark as 18+"}
+                {isAdult ? "✓ 16+ ON" : "Mark as 16+"}
               </button>
             </div>
           </div>
@@ -822,11 +822,11 @@ function ImageUploaderTab({ password }: { password: string }) {
                 { label: "R2 admin key",      value: `admin-wallpapers/${slug}/${slug}.${ext}` },
                 { label: "Device",           value: deviceType || "Any" },
                 { label: "Tags",             value: selectedTags.join(", ") || "none" },
-                { label: "18+ Adult",        value: isAdult ? "⚠ YES" : "No" },
+                { label: "16+ Adult",        value: isAdult ? "⚠ YES" : "No" },
               ].map(row => (
                 <div key={row.label} style={{ display: "flex", gap: "12px" }}>
                   <span style={{ color: "#6b6480", minWidth: "140px", flexShrink: 0 }}>{row.label}:</span>
-                  <span style={{ color: row.label === "18+ Adult" && isAdult ? "#ff6b6b" : "#c9c4dd", wordBreak: "break-all" }}>{row.value}</span>
+                  <span style={{ color: row.label === "16+ Adult" && isAdult ? "#ff6b6b" : "#c9c4dd", wordBreak: "break-all" }}>{row.value}</span>
                 </div>
               ))}
             </div>
@@ -878,7 +878,7 @@ function HtmlToolbar({ onInsert }: { onInsert: (b: string, a: string) => void })
     { label: "QUOTE", title: "Blockquote",      before: '<blockquote style="border-left:3px solid #c0001a;margin:24px 0;padding:12px 20px;color:#c9c4dd;font-style:italic;">', after: "</blockquote>" },
     { label: "TABLE", title: "Table",           before: '<table style="width:100%;border-collapse:collapse;margin:24px 0;">\n<tr><th style="border:1px solid #2a2535;padding:10px;">Header 1</th><th style="border:1px solid #2a2535;padding:10px;">Header 2</th></tr>\n<tr><td style="border:1px solid #2a2535;padding:10px;">Cell 1</td><td style="border:1px solid #2a2535;padding:10px;">Cell 2</td></tr>', after: "\n</table>" },
     { label: "CTA",   title: "Call to Action",  before: '<div style="background:#1a0a0a;border:1px solid #c0001a;padding:20px 24px;margin:32px 0;text-align:center;">\n<p style="color:#f0ecff;margin-bottom:12px;">Ready to download? Browse our free HD dark wallpapers.</p>\n<a href="/iphone" style="display:inline-block;background:#c0001a;color:#fff;padding:10px 24px;text-decoration:none;font-size:0.8rem;letter-spacing:0.1em;">Browse Wallpapers →</a>\n</div>', after: "" },
-    { label: "18+",   title: "18+ Warning Banner", before: '<div style="display:flex;align-items:center;gap:12px;background:rgba(192,0,26,0.12);border:1px solid rgba(192,0,26,0.5);padding:14px 18px;margin:24px 0;">\n<span style="background:#c0001a;color:#fff;font-family:monospace;font-size:0.75rem;font-weight:900;padding:3px 10px;flex-shrink:0;">⚠ 18+</span>\n<p style="font-family:monospace;font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:#a89bc0;margin:0;">This content contains mature themes. intended for audiences 16 and over only.</p>\n</div>', after: "" },
+    { label: "16+",   title: "16+ Warning Banner", before: '<div style="display:flex;align-items:center;gap:12px;background:rgba(192,0,26,0.12);border:1px solid rgba(192,0,26,0.5);padding:14px 18px;margin:24px 0;">\n<span style="background:#c0001a;color:#fff;font-family:monospace;font-size:0.75rem;font-weight:900;padding:3px 10px;flex-shrink:0;">⚠ 16+</span>\n<p style="font-family:monospace;font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:#a89bc0;margin:0;">This content contains mature themes. intended for audiences 16 and over only.</p>\n</div>', after: "" },
     { label: "FAQ",   title: "FAQ Section",     before: '<div style="margin:32px 0;">\n<h3>Frequently Asked Questions</h3>\n<details style="border:1px solid #2a2535;padding:12px 16px;margin-bottom:8px;">\n<summary style="cursor:pointer;color:#f0ecff;">Your question here?</summary>\n<p style="margin-top:10px;color:#c9c4dd;">Your answer here.</p>\n</details>', after: "\n</div>" },
     { label: "AD",    title: "Ad Slot",         before: '<div style="margin:32px 0;text-align:center;background:#1a1825;padding:20px;color:#6b6480;font-size:0.75rem;">[ Ad Slot — AdSense will render here ]</div>', after: "" },
   ];
@@ -887,9 +887,9 @@ function HtmlToolbar({ onInsert }: { onInsert: (b: string, a: string) => void })
       {tools.map((t) => (
         <button key={t.label} title={t.title} type="button" onClick={() => onInsert(t.before, t.after)}
           style={{
-            background: t.label === "18+" ? "rgba(192,0,26,0.15)" : "#f0f0f0",
-            border: t.label === "18+" ? "1px solid #c0001a" : "1px solid #d0cce0",
-            color: t.label === "18+" ? "#ff8080" : "#c0a0ff",
+            background: t.label === "16+" ? "rgba(192,0,26,0.15)" : "#f0f0f0",
+            border: t.label === "16+" ? "1px solid #c0001a" : "1px solid #d0cce0",
+            color: t.label === "16+" ? "#ff8080" : "#c0a0ff",
             padding: "4px 10px", cursor: "pointer",
             fontSize: "0.7rem", fontFamily: "monospace",
             letterSpacing: "0.04em", borderRadius: "2px",
@@ -926,7 +926,7 @@ function BlogIdeasTab({ onUseIdea }: { onUseIdea: (title: string, label: string)
           <div style={{ flex: 1 }}>
             <p style={{ color: "#1a1625", fontSize: "0.88rem", marginBottom: "4px" }}>{idea.title}</p>
             <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
-              {idea.label === "18+ Mature Content" ? (
+              {idea.label === "16+ Mature Content" ? (
                 <AdultBadge size="sm" />
               ) : (
                 <span style={{ background: "#e8e4f0", border: "1px solid #d0cce0", color: "#7c3aed", padding: "2px 8px", fontSize: "0.65rem" }}>{idea.label}</span>
@@ -971,7 +971,7 @@ function BlogTab({ password, prefillTitle, prefillLabel, onPrefillUsed }:
   const altFileRef                        = useRef<HTMLInputElement>(null);
   const textareaRef                       = useRef<HTMLTextAreaElement | null>(null);
 
-  const isAdultLabel = label === "18+ Mature Content";
+  const isAdultLabel = label === "16+ Mature Content";
 
   useEffect(() => {
     if (prefillTitle) {
@@ -1149,7 +1149,7 @@ function BlogTab({ password, prefillTitle, prefillLabel, onPrefillUsed }:
                   </span>
                 </div>
                 <p style={{ color: "#5a5070", fontSize: "0.65rem", fontFamily: "monospace", letterSpacing: "0.06em", margin: 0, lineHeight: 1.6 }}>
-                  This post will be labelled 18+ Mature Content across the site.
+                  This post will be labelled 16+ Mature Content across the site.
                 </p>
               </div>
             )}
@@ -1312,7 +1312,7 @@ function BlogTab({ password, prefillTitle, prefillLabel, onPrefillUsed }:
               <div style={{ flex: 1, minWidth: 0 }}>
                 <span style={{ color: "#1a1625", fontSize: "0.88rem" }}>{p.title}</span>
                 <div style={{ display: "flex", gap: "8px", marginTop: "4px", alignItems: "center", flexWrap: "wrap" }}>
-                  {p.label === "18+ Mature Content" ? (
+                  {p.label === "16+ Mature Content" ? (
                     <AdultBadge size="sm" />
                   ) : (
                     <span style={{ background: "#e8e4f0", border: "1px solid #d0cce0", color: "#7c3aed", padding: "1px 6px", fontSize: "0.6rem" }}>{p.label}</span>
@@ -1337,14 +1337,14 @@ function BlogTab({ password, prefillTitle, prefillLabel, onPrefillUsed }:
   );
 }
 
-// ─── Manage 18+ Tab ───────────────────────────────────────────────────────────
+// ─── Manage 16+ Tab ───────────────────────────────────────────────────────────
 const ADULT_IMAGES_TO_MARK = [
-  { title: "Sweet Screams Hoodie",     device: "ANDROID", note: "Mark as 18+ Adult" },
-  { title: "Skeletal King Defiance",   device: "ANDROID", note: "Mark as 18+ Adult" },
-  { title: "Gangster Skull",           device: "PC",      note: "Mark as 18+ Adult" },
-  { title: "Gangster Skeleton Smoking",device: "PC",      note: "Mark as 18+ Adult" },
-  { title: "Thug Skeleton Smoking",    device: "PC",      note: "Mark as 18+ Adult" },
-  { title: "Rebel Skeleton Smoking",   device: "PC",      note: "Mark as 18+ Adult" },
+  { title: "Sweet Screams Hoodie",     device: "ANDROID", note: "Mark as 16+ Adult" },
+  { title: "Skeletal King Defiance",   device: "ANDROID", note: "Mark as 16+ Adult" },
+  { title: "Gangster Skull",           device: "PC",      note: "Mark as 16+ Adult" },
+  { title: "Gangster Skeleton Smoking",device: "PC",      note: "Mark as 16+ Adult" },
+  { title: "Thug Skeleton Smoking",    device: "PC",      note: "Mark as 16+ Adult" },
+  { title: "Rebel Skeleton Smoking",   device: "PC",      note: "Mark as 16+ Adult" },
 ];
 
 function Manage18Tab({ password }: { password: string }) {
@@ -1362,7 +1362,7 @@ function Manage18Tab({ password }: { password: string }) {
       });
       const json = await res.json();
       if (res.ok) {
-        setResults(prev => ({ ...prev, [title]: { status: "ok", msg: `✓ Marked 18+ (${json.updated} image${json.updated !== 1 ? "s" : ""} updated)` } }));
+        setResults(prev => ({ ...prev, [title]: { status: "ok", msg: `✓ Marked 16+ (${json.updated} image${json.updated !== 1 ? "s" : ""} updated)` } }));
       } else {
         setResults(prev => ({ ...prev, [title]: { status: "err", msg: json.error ?? "Failed" } }));
       }
@@ -1387,17 +1387,17 @@ function Manage18Tab({ password }: { password: string }) {
     <div>
       <div style={{ background: "rgba(192,0,26,0.08)", border: "1px solid rgba(192,0,26,0.5)", padding: "14px 18px", marginBottom: "24px" }}>
         <p style={{ color: "#ffd080", fontSize: "0.78rem", fontFamily: "monospace", marginBottom: "6px" }}>
-          ⚠ 18+ Content Manager
+          ⚠ 16+ Content Manager
         </p>
         <p style={{ color: "#5a5070", fontSize: "0.72rem", fontFamily: "monospace" }}>
-          Mark images as 18+ mature themes. This searches by title (partial match) and sets <code style={{ color: "#7c3aed" }}>isAdult: true</code> in the database.
+          Mark images as 16+ mature themes. This searches by title (partial match) and sets <code style={{ color: "#7c3aed" }}>isAdult: true</code> in the database.
         </p>
       </div>
 
       <div style={{ marginBottom: "20px", display: "flex", alignItems: "center", gap: "16px", flexWrap: "wrap" }}>
         <button onClick={markAll}
           style={{ background: "#c0001a", border: "none", color: "#fff", padding: "10px 24px", cursor: "pointer", fontSize: "0.72rem", letterSpacing: "0.12em", textTransform: "uppercase", fontFamily: "monospace" }}>
-          ⚠ Mark All 6 as 18+
+          ⚠ Mark All 6 as 16+
         </button>
         {doneCount > 0 && (
           <span style={{ color: "#4caf50", fontSize: "0.75rem", fontFamily: "monospace" }}>
@@ -1441,7 +1441,7 @@ function Manage18Tab({ password }: { password: string }) {
                 fontSize: "0.7rem", letterSpacing: "0.1em", textTransform: "uppercase",
                 fontFamily: "monospace", flexShrink: 0,
               }}>
-              {res?.status === "ok" ? "✓ Done" : isLoading ? "Updating…" : "Mark 18+"}
+              {res?.status === "ok" ? "✓ Done" : isLoading ? "Updating…" : "Mark 16+"}
             </button>
           </div>
         );
@@ -1470,7 +1470,7 @@ function ManualMarkAdult({ password }: { password: string }) {
         body: JSON.stringify({ title: titleInput.trim() }),
       });
       const json = await res.json();
-      if (res.ok) setResult({ status: "ok", msg: `✓ Marked 18+ (${json.updated} image${json.updated !== 1 ? "s" : ""} updated)` });
+      if (res.ok) setResult({ status: "ok", msg: `✓ Marked 16+ (${json.updated} image${json.updated !== 1 ? "s" : ""} updated)` });
       else setResult({ status: "err", msg: json.error ?? "Failed" });
     } catch { setResult({ status: "err", msg: "Network error" }); }
     setLoading(false);
@@ -1487,7 +1487,7 @@ function ManualMarkAdult({ password }: { password: string }) {
       </div>
       <button onClick={handle} disabled={loading}
         style={{ background: "#c0001a", border: "none", color: "#fff", padding: "10px 18px", cursor: loading ? "not-allowed" : "pointer", fontSize: "0.7rem", letterSpacing: "0.1em", textTransform: "uppercase", fontFamily: "monospace", opacity: loading ? 0.7 : 1 }}>
-        {loading ? "Updating…" : "Mark 18+"}
+        {loading ? "Updating…" : "Mark 16+"}
       </button>
       {result && (
         <span style={{ color: result.status === "ok" ? "#4caf50" : "#ff8080", fontSize: "0.78rem", fontFamily: "monospace" }}>
@@ -1799,7 +1799,7 @@ function PublishedImagesTab({ password }: { password: string }) {
     setEditing(img);
     setETitle(img.title);
     setEDesc(img.description ?? "");
-    setETags(img.tags.filter(t => t !== "18plus"));
+    setETags(img.tags.filter(t => t !== "16plus"));
     setEAdult(img.isAdult);
     setEDevice(img.deviceType ?? "");
     setMsg(null);
@@ -1808,7 +1808,7 @@ function PublishedImagesTab({ password }: { password: string }) {
   async function handleSave() {
     if (!editing) return;
     setSaving(true);
-    const tags = eAdult ? [...eTags, "18plus"] : eTags;
+    const tags = eAdult ? [...eTags, "16plus"] : eTags;
     try {
       const res = await fetch(`/api/hw-admin/images/${editing.id}`, {
         method: "PATCH",
@@ -1945,11 +1945,11 @@ function PublishedImagesTab({ password }: { password: string }) {
               </div>
             </div>
 
-            {/* 18+ */}
+            {/* 16+ */}
             <div style={{ marginBottom: "20px", display: "flex", alignItems: "center", gap: "12px" }}>
               <button type="button" onClick={() => setEAdult(a => !a)}
                 style={{ background: eAdult ? "#c0001a" : "#f0f0f0", border: `1px solid ${eAdult ? "#c0001a" : "#d0cce0"}`, color: eAdult ? "#fff" : "#6b6480", padding: "6px 16px", cursor: "pointer", fontSize: "0.7rem", fontFamily: "monospace" }}>
-                {eAdult ? "⚠ 18+ ON" : "18+ OFF"}
+                {eAdult ? "⚠ 16+ ON" : "16+ OFF"}
               </button>
               <span style={{ color: "#6b6480", fontSize: "0.7rem" }}>Mark as adult/mature content</span>
             </div>
@@ -1996,7 +1996,7 @@ function PublishedImagesTab({ password }: { password: string }) {
                   }}
                 />
                 {img.isAdult && (
-                  <span style={{ position: "absolute", top: "6px", left: "6px", background: "#c0001a", color: "#fff", fontSize: "0.55rem", fontFamily: "monospace", fontWeight: 900, padding: "2px 6px" }}>18+</span>
+                  <span style={{ position: "absolute", top: "6px", left: "6px", background: "#c0001a", color: "#fff", fontSize: "0.55rem", fontFamily: "monospace", fontWeight: 900, padding: "2px 6px" }}>16+</span>
                 )}
                 {img.deviceType && (
                   <span style={{ position: "absolute", top: "6px", right: "6px", background: "rgba(0,0,0,0.7)", color: "#c9a84c", fontSize: "0.55rem", fontFamily: "monospace", padding: "2px 6px" }}>{img.deviceType}</span>
@@ -2009,13 +2009,13 @@ function PublishedImagesTab({ password }: { password: string }) {
                 <p style={{ color: "#6b6480", fontSize: "0.6rem", fontFamily: "monospace", marginBottom: "6px", wordBreak: "break-all" }}>{img.slug}</p>
 
                 {/* Tags */}
-                {img.tags.filter(t => t !== "18plus").length > 0 && (
+                {img.tags.filter(t => t !== "16plus").length > 0 && (
                   <div style={{ display: "flex", flexWrap: "wrap", gap: "3px", marginBottom: "8px" }}>
-                    {img.tags.filter(t => t !== "18plus").slice(0, 5).map(t => (
+                    {img.tags.filter(t => t !== "16plus").slice(0, 5).map(t => (
                       <span key={t} style={{ background: "#e8e4f0", color: "#7c3aed", fontSize: "0.55rem", padding: "1px 6px", fontFamily: "monospace" }}>#{t}</span>
                     ))}
-                    {img.tags.filter(t => t !== "18plus").length > 5 && (
-                      <span style={{ color: "#6b6480", fontSize: "0.55rem" }}>+{img.tags.filter(t => t !== "18plus").length - 5}</span>
+                    {img.tags.filter(t => t !== "16plus").length > 5 && (
+                      <span style={{ color: "#6b6480", fontSize: "0.55rem" }}>+{img.tags.filter(t => t !== "16plus").length - 5}</span>
                     )}
                   </div>
                 )}
@@ -2094,7 +2094,7 @@ export default function AdminClient() {
     { key: "published",  label: "📸 Published"    },
     { key: "blog",       label: "✍️ Blog Posts"   },
     { key: "ideas",      label: "💡 Blog Ideas"   },
-    { key: "manage18",   label: "⚠ 18+ Manage"   },
+    { key: "manage18",   label: "⚠ 16+ Manage"   },
     { key: "backdate",   label: "📅 Backdate"     },
   ];
 

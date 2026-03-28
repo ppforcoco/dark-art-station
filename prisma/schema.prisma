@@ -32,7 +32,7 @@ model Collection {
   tag         String   @default("Collection")
   featured    Boolean  @default(false)
 
-  /// Set to true for collections with mature/18+ content.
+  /// Set to true for collections with mature/16+ content.
   isAdult     Boolean  @default(false)
 
   images      Image[]
@@ -59,7 +59,7 @@ model Image {
   deviceType    DeviceType?
   tags          String[]            @default([])
 
-  /// Set to true for individual images with mature/18+ content.
+  /// Set to true for individual images with mature/16+ content.
   isAdult       Boolean    @default(false)
 
   downloads     Download[]

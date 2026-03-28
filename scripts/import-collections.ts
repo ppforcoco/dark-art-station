@@ -112,7 +112,7 @@ async function main() {
 
     for (const img of data.images) {
       const imgTags: string[] = [];
-      if (img.isAdult || data.isAdult) imgTags.push("18plus");
+      if (img.isAdult || data.isAdult) imgTags.push("16plus");
 
       const imagePayload = {
         slug:         img.slug,
@@ -166,7 +166,7 @@ async function main() {
     const ext = data.ext ?? "jpeg";
 
     const standaloneTags = [...(data.tags ?? [])];
-    if (data.isAdult && !standaloneTags.includes("18plus")) standaloneTags.push("18plus");
+    if (data.isAdult && !standaloneTags.includes("16plus")) standaloneTags.push("16plus");
 
     const imagePayload = {
       slug:        data.slug,

@@ -27,8 +27,8 @@ const LABEL_COLORS: Record<string, string> = {
   "Halloween Special":     "#c0001a",
   "Top Lists":             "#b45309",
   "New Releases":          "#b45309",
-  // ✅ FIX: removed "18+ Mature Content" label — AdSense rejects sites
-  // that publicly label content as 18+. Use "Dark Aesthetics" instead
+  // ✅ FIX: removed "16+ Mature Content" label — AdSense rejects sites
+  // that publicly label content as 16+. Use "Dark Aesthetics" instead
   // if you need a category for edgier-but-safe gothic content.
 };
 

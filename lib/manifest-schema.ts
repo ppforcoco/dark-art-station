@@ -59,7 +59,7 @@ const CollectionImageSchema = z.object({
   highResExt: z.enum(["webp", "jpg", "jpeg", "png"]).optional().default("jpeg"),
 
   /**
-   * Mark this individual image as adult/18+ content.
+   * Mark this individual image as adult/16+ content.
    * Default: false. Set to true manually in the manifest for images that are mature.
    * Used on iPhone, Android and PC pages to gate content behind an age check.
    */
@@ -110,7 +110,7 @@ const CollectionSchema = z.object({
   featured: z.boolean().optional().default(false),
 
   /**
-   * Mark this entire collection as adult/18+ content.
+   * Mark this entire collection as adult/16+ content.
    * Default: false. Set to true manually for collections that are mature.
    * Used on the Shop grid to gate content behind a flip-to-reveal age check.
    * Also gates entry to the collection page itself.
@@ -154,7 +154,7 @@ const StandaloneImageSchema = z.object({
   highResExt: z.enum(["webp", "jpg", "jpeg", "png"]).optional().default("jpeg"),
 
   /**
-   * Mark this standalone image as adult/18+ content.
+   * Mark this standalone image as adult/16+ content.
    * Default: false. Set to true manually.
    */
   isAdult: z.boolean().optional().default(false),
