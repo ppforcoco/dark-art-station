@@ -75,10 +75,6 @@ export default async function BlogPostPage(
     year: "numeric", month: "long", day: "numeric",
   });
 
-  // ✅ Resolve hero image for the post header
-  const heroImage =
-    post.featuredImage ?? extractFirstImageFromContent(post.content);
-
   const ogImage =
     post.featuredImage ??
     extractFirstImageFromContent(post.content) ??
@@ -122,21 +118,6 @@ export default async function BlogPostPage(
 
       <div className="static-page-inner">
         <header className="static-page-header">
-          {/* ✅ Hero image rendered above the title when a featuredImage is set */}
-          {heroImage && (
-            <div className="blog-post-hero-image">
-              <Image
-                src={heroImage}
-                alt={post.title}
-                fill
-                priority
-                sizes="(max-width: 768px) 100vw, 900px"
-                style={{ objectFit: "cover" }}
-                className="blog-post-hero-img"
-              />
-              <div className="blog-post-hero-overlay" />
-            </div>
-          )}
           <p className="static-page-label">{post.label} · {dateStr}</p>
           <h1 className="static-page-title">{post.title}</h1>
         </header>
@@ -172,25 +153,6 @@ export default async function BlogPostPage(
         body:has(.blog-post-page) header.site-header,
         body:has(.blog-post-page) .halloween-countdown {
           display: none !important;
-        }
-
-        /* ── Hero image ── */
-        .blog-post-hero-image {
-          position: relative;
-          width: 100%;
-          aspect-ratio: 16/6;
-          overflow: hidden;
-          margin-bottom: 28px;
-          border-radius: 2px;
-        }
-        .blog-post-hero-img { transition: transform 0.6s ease; }
-        .blog-post-hero-overlay {
-          position: absolute;
-          inset: 0;
-          background: linear-gradient(to bottom, transparent 40%, rgba(7,5,14,0.6) 100%);
-        }
-        [data-theme="light"] .blog-post-hero-overlay {
-          background: linear-gradient(to bottom, transparent 40%, rgba(242,237,225,0.5) 100%);
         }
 
         /* ── Blog top nav ── */
