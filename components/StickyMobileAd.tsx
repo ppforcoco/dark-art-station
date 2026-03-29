@@ -31,16 +31,21 @@ export default function StickyMobileAd() {
     return () => clearTimeout(timer);
   }, [isMobile, dismissed, pushed, pid, slot]);
 
-  // Tell scroll-to-top button to lift above the ad
+  // Keep scroll-to-top lifted above ad; mark dismissed when user closes
   useEffect(() => {
-    const adShowing = isMobile && !dismissed && !!pid && !!slot;
-    if (adShowing) {
-      document.body.classList.add("sticky-ad-visible");
-    } else {
+    if (!isMobile) return;
+    if (dismissed) {
+      document.body.classList.add("sticky-ad-dismissed");
       document.body.classList.remove("sticky-ad-visible");
+    } else {
+      document.body.classList.add("sticky-ad-visible");
+      document.body.classList.remove("sticky-ad-dismissed");
     }
-    return () => document.body.classList.remove("sticky-ad-visible");
-  }, [isMobile, dismissed, pid, slot]);
+    return () => {
+      document.body.classList.remove("sticky-ad-visible");
+      document.body.classList.remove("sticky-ad-dismissed");
+    };
+  }, [isMobile, dismissed]);
 
   // ✅ FIX: Removed the "return null" line that was hiding this ad on mobile.
   // Now it shows a small banner at the bottom of the screen on phones only.
