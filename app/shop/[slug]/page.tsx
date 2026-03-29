@@ -726,17 +726,18 @@ export default async function CollectionPage({ params }: PageProps) {
         }
         .coll-related-heading {
           font-family: var(--font-cinzel), cursive;
-          font-size: 0.8rem;
+          font-size: 1rem;
           font-weight: 700;
           letter-spacing: 0.22em;
           text-transform: uppercase;
-          color: #f0ecff;
+          color: #ffffff;
+          text-shadow: 0 0 18px rgba(192, 0, 26, 0.5);
           margin: 0 0 24px;
           display: flex;
           align-items: center;
           gap: 10px;
         }
-        [data-theme="light"] .coll-related-heading { color: #1a1814; }
+        [data-theme="light"] .coll-related-heading { color: #1a1814; text-shadow: none; }
         .coll-related-grid {
           display: grid;
           grid-template-columns: repeat(3, 1fr);
