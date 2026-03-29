@@ -94,3 +94,20 @@ model BlogPost {
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 }
+
+// ADD THIS TO THE BOTTOM OF prisma/schema.prisma
+// (after the BlogPost model)
+
+model FeedbackReport {
+  id        String   @id @default(uuid())
+  page      String
+  category  String
+  message   String
+  email     String?
+  ip        String?
+  status    String   @default("open")  // "open" | "resolved" | "wont-fix"
+  createdAt DateTime @default(now())
+
+  @@index([status])
+  @@index([createdAt])
+}

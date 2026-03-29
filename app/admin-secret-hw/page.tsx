@@ -1067,6 +1067,220 @@ function BlogIdeasTab({ onUseIdea }: { onUseIdea: (title: string, label: string)
   );
 }
 
+interface FeedbackReport {
+  id:        string;
+  page:      string;
+  category:  string;
+  message:   string;
+  email:     string | null;
+  status:    string;
+  createdAt: string;
+}
+ 
+const CATEGORY_LABELS: Record<string, string> = {
+  "broken-link":      "🔗 Broken Link",
+  "image-not-loading":"🖼 Image Not Loading",
+  "download-broken":  "⬇ Download Broken",
+  "layout-broken":    "📐 Layout Issue",
+  "slow-page":        "🐢 Slow Page",
+  "search-broken":    "🔍 Search Broken",
+  "error-message":    "❌ Error Shown",
+  "other":            "💬 Other",
+};
+ 
+const STATUS_COLORS: Record<string, string> = {
+  "open":       "#c0001a",
+  "resolved":   "#16a34a",
+  "wont-fix":   "#6b6480",
+};
+ 
+function FeedbackTab({ password }: { password: string }) {
+  const [reports, setReports]   = React.useState<FeedbackReport[]>([]);
+  const [loading, setLoading]   = React.useState(true);
+  const [filter, setFilter]     = React.useState<"all" | "open" | "resolved" | "wont-fix">("open");
+  const [updating, setUpdating] = React.useState<string | null>(null);
+ 
+  async function load() {
+    setLoading(true);
+    try {
+      const res = await fetch("/api/feedback", {
+        headers: { "x-admin-password": password },
+      });
+      const data = await res.json();
+      setReports(data.reports ?? []);
+    } catch {
+      setReports([]);
+    }
+    setLoading(false);
+  }
+ 
+  React.useEffect(() => { load(); }, []); // eslint-disable-line react-hooks/exhaustive-deps
+ 
+  async function updateStatus(id: string, status: string) {
+    setUpdating(id);
+    await fetch("/api/feedback", {
+      method: "PATCH",
+      headers: {
+        "Content-Type":    "application/json",
+        "x-admin-password": password,
+      },
+      body: JSON.stringify({ id, status }),
+    });
+    setReports(r => r.map(x => x.id === id ? { ...x, status } : x));
+    setUpdating(null);
+  }
+ 
+  const filtered = filter === "all" ? reports : reports.filter(r => r.status === filter);
+  const openCount = reports.filter(r => r.status === "open").length;
+ 
+  return (
+    <div>
+      {/* Header */}
+      <div style={{ marginBottom: "24px" }}>
+        <h2 style={{ margin: "0 0 6px", fontSize: "1rem", color: "#1a1625" }}>
+          ⚑ User Feedback Reports
+          {openCount > 0 && (
+            <span style={{ marginLeft: "10px", background: "#c0001a", color: "#fff", fontSize: "0.6rem", padding: "2px 8px", letterSpacing: "0.1em" }}>
+              {openCount} OPEN
+            </span>
+          )}
+        </h2>
+        <p style={{ margin: 0, color: "#6b6480", fontSize: "0.75rem" }}>
+          Problems reported by users via the feedback widget on the site.
+        </p>
+      </div>
+ 
+      {/* Filter tabs + refresh */}
+      <div style={{ display: "flex", gap: "8px", marginBottom: "20px", alignItems: "center", flexWrap: "wrap" }}>
+        {(["open", "all", "resolved", "wont-fix"] as const).map(f => (
+          <button
+            key={f}
+            onClick={() => setFilter(f)}
+            style={{
+              background:   filter === f ? "#1a1625" : "transparent",
+              border:       "1px solid #d0cce0",
+              color:        filter === f ? "#f0ecff" : "#6b6480",
+              padding:      "5px 14px",
+              fontSize:     "0.65rem",
+              letterSpacing:"0.1em",
+              textTransform:"uppercase",
+              cursor:       "pointer",
+              fontFamily:   "monospace",
+            }}
+          >
+            {f === "all" ? `All (${reports.length})` : f === "open" ? `Open (${openCount})` : f}
+          </button>
+        ))}
+        <button
+          onClick={load}
+          style={{ marginLeft: "auto", background: "transparent", border: "1px solid #d0cce0", color: "#6b6480", padding: "5px 12px", fontSize: "0.65rem", cursor: "pointer", fontFamily: "monospace" }}
+        >
+          ↻ Refresh
+        </button>
+      </div>
+ 
+      {/* Content */}
+      {loading ? (
+        <p style={{ color: "#6b6480", fontSize: "0.8rem" }}>Loading…</p>
+      ) : filtered.length === 0 ? (
+        <div style={{ textAlign: "center", padding: "48px 0", color: "#6b6480" }}>
+          <div style={{ fontSize: "2rem", marginBottom: "12px" }}>✓</div>
+          <p style={{ fontSize: "0.8rem", margin: 0 }}>
+            {filter === "open" ? "No open reports — all clear!" : "No reports in this category."}
+          </p>
+        </div>
+      ) : (
+        <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+          {filtered.map(r => (
+            <div
+              key={r.id}
+              style={{
+                border:       `1px solid ${r.status === "open" ? "rgba(192,0,26,0.3)" : "#e0dce8"}`,
+                borderLeft:   `3px solid ${STATUS_COLORS[r.status] ?? "#6b6480"}`,
+                padding:      "16px 18px",
+                background:   r.status === "open" ? "rgba(192,0,26,0.02)" : "#fafafa",
+              }}
+            >
+              {/* Top row */}
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "12px", flexWrap: "wrap", marginBottom: "8px" }}>
+                <div style={{ display: "flex", gap: "10px", alignItems: "center", flexWrap: "wrap" }}>
+                  <span style={{
+                    background: r.status === "open" ? "#c0001a" : r.status === "resolved" ? "#16a34a" : "#6b6480",
+                    color: "#fff", fontSize: "0.55rem", padding: "2px 7px", letterSpacing: "0.1em", textTransform: "uppercase",
+                  }}>
+                    {r.status}
+                  </span>
+                  <span style={{ color: "#7c3aed", fontSize: "0.65rem", fontWeight: 700 }}>
+                    {CATEGORY_LABELS[r.category] ?? r.category}
+                  </span>
+                </div>
+                <span style={{ color: "#9a9499", fontSize: "0.62rem", whiteSpace: "nowrap" }}>
+                  {new Date(r.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", hour: "2-digit", minute: "2-digit" })}
+                </span>
+              </div>
+ 
+              {/* Page */}
+              <div style={{ marginBottom: "8px" }}>
+                <span style={{ color: "#9a9499", fontSize: "0.6rem", letterSpacing: "0.08em", textTransform: "uppercase" }}>Page: </span>
+                <a
+                  href={`https://hauntedwallpapers.com${r.page}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ color: "#2563eb", fontSize: "0.72rem", fontFamily: "monospace", textDecoration: "none" }}
+                >
+                  {r.page} ↗
+                </a>
+              </div>
+ 
+              {/* Message */}
+              <p style={{ margin: "0 0 10px", fontSize: "0.82rem", color: "#1a1625", lineHeight: 1.55, background: "#f5f3fa", padding: "10px 12px", borderLeft: "2px solid #d0cce0" }}>
+                {r.message}
+              </p>
+ 
+              {/* Email */}
+              {r.email && (
+                <div style={{ marginBottom: "10px" }}>
+                  <span style={{ color: "#9a9499", fontSize: "0.6rem", textTransform: "uppercase", letterSpacing: "0.08em" }}>Reporter: </span>
+                  <a href={`mailto:${r.email}`} style={{ color: "#2563eb", fontSize: "0.72rem" }}>{r.email}</a>
+                </div>
+              )}
+ 
+              {/* Actions */}
+              {r.status === "open" && (
+                <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+                  <button
+                    onClick={() => updateStatus(r.id, "resolved")}
+                    disabled={updating === r.id}
+                    style={{ background: "#16a34a", border: "none", color: "#fff", padding: "5px 14px", fontSize: "0.6rem", letterSpacing: "0.1em", textTransform: "uppercase", cursor: "pointer", fontFamily: "monospace", opacity: updating === r.id ? 0.6 : 1 }}
+                  >
+                    ✓ Mark Resolved
+                  </button>
+                  <button
+                    onClick={() => updateStatus(r.id, "wont-fix")}
+                    disabled={updating === r.id}
+                    style={{ background: "transparent", border: "1px solid #d0cce0", color: "#6b6480", padding: "5px 14px", fontSize: "0.6rem", letterSpacing: "0.1em", textTransform: "uppercase", cursor: "pointer", fontFamily: "monospace", opacity: updating === r.id ? 0.6 : 1 }}
+                  >
+                    Won&apos;t Fix
+                  </button>
+                </div>
+              )}
+              {r.status !== "open" && (
+                <button
+                  onClick={() => updateStatus(r.id, "open")}
+                  disabled={updating === r.id}
+                  style={{ background: "transparent", border: "1px solid #d0cce0", color: "#6b6480", padding: "4px 12px", fontSize: "0.58rem", letterSpacing: "0.08em", textTransform: "uppercase", cursor: "pointer", fontFamily: "monospace" }}
+                >
+                  Reopen
+                </button>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ─── Blog Tab ─────────────────────────────────────────────────────────────────
 function BlogTab({ password, prefillTitle, prefillLabel, onPrefillUsed }:
   { password: string; prefillTitle: string; prefillLabel: string; onPrefillUsed: () => void }) {
@@ -2366,7 +2580,7 @@ function LiveBlogPreview() {
 }
 
 // ─── Main Admin Client ────────────────────────────────────────────────────────
-type Tab = "analytics" | "upload" | "published" | "blog" | "ideas" | "manage18" | "backdate" | "liveblog";
+type Tab = "analytics" | "upload" | "published" | "blog" | "ideas" | "manage18" | "backdate" | "liveblog" | "feedback";
 
 export default function AdminClient() {
   const [authed, setAuthed]             = useState(false);
@@ -2402,6 +2616,7 @@ export default function AdminClient() {
     { key: "manage18",   label: "⚠ 16+ Manage"   },
     { key: "backdate",   label: "📅 Backdate"     },
     { key: "liveblog",   label: "🌐 Live Preview" },
+    { key: "feedback", label: "⚑ Reports" },
   ];
 
   return (
@@ -2451,6 +2666,7 @@ export default function AdminClient() {
         {tab === "manage18" && <Manage18Tab password={password} />}
         {tab === "backdate"  && <BackdateTab password={password} />}
         {tab === "liveblog"  && <LiveBlogPreview />}
+        {tab === "feedback" && <FeedbackTab password={password} />}
       </div>
     </div>
   );
