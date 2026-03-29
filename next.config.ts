@@ -23,6 +23,29 @@ const nextConfig: NextConfig = {
     imageSizes:  [64, 128, 256, 384, 512],
   },
 
+  async redirects() {
+    return [
+      // www → non-www (handles both http and https)
+      {
+        source: "/:path*",
+        has: [{ type: "host", value: "www.hauntedwallpapers.com" }],
+        destination: "https://hauntedwallpapers.com/:path*",
+        permanent: true,
+      },
+      // Deleted pages → homepage (prevents 404s)
+      {
+        source: "/free",
+        destination: "/",
+        permanent: true,
+      },
+      {
+        source: "/ritual",
+        destination: "/",
+        permanent: true,
+      },
+    ];
+  },
+
   async headers() {
     return [
       {

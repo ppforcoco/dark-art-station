@@ -57,7 +57,7 @@ export default function FeedbackWidget() {
           aria-label="Report a problem"
           style={{
             position: "fixed",
-            bottom: "80px",
+            bottom: "130px",
             right: "20px",
             zIndex: 8888,
             background: "#1a1625",
