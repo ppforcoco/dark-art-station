@@ -201,10 +201,10 @@ export default function BlogPostClient({ post, allPosts }: { post: Post; allPost
             <span style={{ color: "#c0001a" }}>✦</span> Like what you read? Browse the collections.
           </p>
           <div className="blog-wallpaper-cta-links">
-            <Link href="/collections"               className="blog-wallpaper-cta-btn">All Collections</Link>
-            <Link href="/shop/dark-fantasy-art"     className="blog-wallpaper-cta-btn">Dark Fantasy</Link>
-            <Link href="/shop/horror-posters"       className="blog-wallpaper-cta-btn">Horror Posters</Link>
-            <Link href="/shop/dark-minimal"         className="blog-wallpaper-cta-btn">Dark Minimal</Link>
+            <Link href="/collections"                    className="blog-wallpaper-cta-btn">All Collections</Link>
+            <Link href="/shop/dark-fantasy-art"          className="blog-wallpaper-cta-btn">Dark Fantasy</Link>
+            <Link href="/shop/horror-movie-posters"      className="blog-wallpaper-cta-btn">Horror Posters</Link>
+            <Link href="/shop/dark-minimal-horror"       className="blog-wallpaper-cta-btn">Dark Minimal</Link>
           </div>
         </div>
 

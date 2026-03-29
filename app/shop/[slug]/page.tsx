@@ -750,8 +750,9 @@ export default async function CollectionPage({ params }: PageProps) {
           flex-direction: column;
           text-decoration: none;
           border: 1px solid rgba(255,255,255,0.06);
-          overflow: hidden;
+          overflow: visible;
           background: rgba(12,8,20,0.6);
+          border-radius: 4px;
           transition: border-color 0.2s, transform 0.2s;
         }
         .coll-related-card:hover {
@@ -768,11 +769,12 @@ export default async function CollectionPage({ params }: PageProps) {
         }
         .coll-related-thumb-wrap {
           width: 100%;
-          aspect-ratio: 3/4;
+          height: 220px;
           overflow: hidden;
           background: #0f0c1a;
           flex-shrink: 0;
           flex-grow: 0;
+          border-radius: 4px 4px 0 0;
         }
         [data-theme="light"] .coll-related-thumb-wrap { background: #e0dbd0; }
         .coll-related-thumb {
