@@ -5140,7 +5140,8 @@ p,
 }
 @media (pointer: coarse) { .scroll-top-btn { cursor: pointer; } }
 .scroll-top-btn:hover { background: #a30017; transform: translateY(-3px); }
-@media (max-width: 767px) { .scroll-top-btn { bottom: 80px; right: 16px; } }
+@media (max-width: 767px) { .scroll-top-btn { bottom: 72px; right: 16px; } }
+@media (max-width: 767px) { body.sticky-ad-visible .scroll-top-btn { bottom: 130px; } }
 
 /* ── Recently Viewed ───────────────────────────────────────── */
 .recently-viewed {
