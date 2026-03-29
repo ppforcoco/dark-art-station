@@ -88,6 +88,7 @@ function RelatedPosts({ posts, currentSlug }: { posts: Post[]; currentSlug: stri
           const excerpt = getExcerpt(p.content, 100);
           const dateStr = new Date(p.createdAt).toLocaleDateString("en-US", {
             month: "short", day: "numeric", year: "numeric",
+            timeZone: "UTC",
           });
           return (
             <Link key={p.slug} href={`/blog/${p.slug}`} className="related-post-card">
@@ -125,8 +126,11 @@ function readTime(html: string): string {
 
 // ── Main export ───────────────────────────────────────────────────────────────
 export default function BlogPostClient({ post, allPosts }: { post: Post; allPosts: Post[] }) {
-  const dateStr = new Date(post.createdAt).toLocaleDateString("en-US", {
+  // Use UTC methods to avoid server/client timezone mismatch (React hydration error #418)
+  const _d = new Date(post.createdAt);
+  const dateStr = _d.toLocaleDateString("en-US", {
     year: "numeric", month: "long", day: "numeric",
+    timeZone: "UTC",
   });
   const rt = readTime(post.content);
 
@@ -210,7 +214,7 @@ export default function BlogPostClient({ post, allPosts }: { post: Post; allPost
 
         {/* ── Mid ad ── */}
         <div style={{ margin: "48px 0 40px" }}>
-          <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_FOOTER} width={728} height={90} />
+          <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_SIDEBAR} width={728} height={90} />
         </div>
 
         {/* ── Related posts ── */}
