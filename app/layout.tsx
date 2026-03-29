@@ -11,6 +11,7 @@ import ScrollToTopButton from "@/components/ScrollToTopButton";
 import CookieBanner from "@/components/CookieBanner";
 import StickyMobileAd from "@/components/StickyMobileAd";
 import ScrollReset from "@/components/ScrollReset";
+import FeedbackWidget from "@/components/FeedbackWidget";
 
 const cinzel = Cinzel_Decorative({
   weight: ["400", "700", "900"],
@@ -295,6 +296,7 @@ gtag('set','url_passthrough',true);
         <ScrollToTopButton />
         <CookieBanner />
         <StickyMobileAd />
+        <FeedbackWidget />
       </body>
     </html>
   );
