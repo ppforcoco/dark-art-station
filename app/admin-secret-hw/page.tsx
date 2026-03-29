@@ -28,6 +28,7 @@ const ALL_LABELS = [
   "Minimalist Dark", "Cyberpunk & Neon", "Halloween Special", "Seasonal Picks",
   "Top Lists", "New Releases", "Community Spotlights", "News & Updates",
   "Free Wallpapers", "HD Wallpapers", "Lock Screen Ideas",
+  "Dark Psychology",
   "16+ Mature Content",
 ];
 

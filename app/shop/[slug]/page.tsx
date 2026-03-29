@@ -769,7 +769,6 @@ export default async function CollectionPage({ params }: PageProps) {
         .coll-related-thumb-wrap {
           width: 100%;
           aspect-ratio: 9/16;
-          max-height: 380px;
           overflow: hidden;
           background: #0f0c1a;
           flex-shrink: 0;
