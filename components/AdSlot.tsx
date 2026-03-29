@@ -42,57 +42,76 @@ export default function AdSlot({
     const adEl = adRef.current;
     if (!container || !adEl) return;
 
-    // Guard: if the container has zero width, AdSense will throw
-    // "No slot size for availableWidth=0". Skip push entirely in that case.
-    const containerWidth = container.getBoundingClientRect().width;
-    if (containerWidth < 1) {
-      setAdError("Container too small");
-      return;
-    }
+    let pushTimer: ReturnType<typeof setTimeout> | null = null;
+    let cleanupTimer: ReturnType<typeof setTimeout> | null = null;
+    let mutationObserver: MutationObserver | null = null;
 
-    initialized.current = true;
+    const tryPushAd = () => {
+      if (initialized.current) return;
 
-    // Monitor for successful ad load
-    const observer = new MutationObserver(() => {
-      if (adEl && adEl.innerHTML.trim() !== "") {
-        setAdLoaded(true);
-        setAdError(null);
-        observer.disconnect();
+      const containerWidth = container.getBoundingClientRect().width;
+
+      // AdSense needs at least 200px to serve any valid ad unit.
+      // Returning silently here prevents the "No slot size for availableWidth=N" console errors.
+      if (containerWidth < 200) {
+        setAdError("Container too small");
+        return;
+      }
+
+      initialized.current = true;
+
+      // Monitor for successful ad fill
+      mutationObserver = new MutationObserver(() => {
+        if (adEl && adEl.innerHTML.trim() !== "") {
+          setAdLoaded(true);
+          setAdError(null);
+          mutationObserver?.disconnect();
+        }
+      });
+      mutationObserver.observe(adEl, { childList: true, subtree: true });
+
+      // Small delay to let the AdSense script finish initialising
+      pushTimer = setTimeout(() => {
+        try {
+          if (!window.adsbygoogle) window.adsbygoogle = [];
+          (window.adsbygoogle as unknown[]).push({});
+        } catch {
+          // Suppress — AdSense errors are not actionable from our side
+          setAdError("AdSense initialization failed");
+        }
+      }, 300);
+
+      // Give AdSense 6 s to fill the slot before we give up
+      cleanupTimer = setTimeout(() => {
+        mutationObserver?.disconnect();
+        if (!adLoaded) setAdError("Ad load timeout");
+      }, 6000);
+    };
+
+    // Use ResizeObserver so we only push once the container has real layout width.
+    // This is the main fix for availableWidth=0 / availableWidth=101 errors —
+    // those happen when AdSense is pushed before the browser has painted the layout.
+    const ro = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        if (entry.contentRect.width >= 200) {
+          ro.disconnect();
+          tryPushAd();
+          break;
+        }
       }
     });
-    observer.observe(adEl, { childList: true, subtree: true });
+    ro.observe(container);
 
-    // Small delay to let the AdSense script initialize
-    const timer = setTimeout(() => {
-      try {
-        // Ensure adsbygoogle array exists
-        if (!window.adsbygoogle) {
-          window.adsbygoogle = [];
-        }
-        // Push empty config to trigger ad display
-        (window.adsbygoogle as unknown[]).push({});
-      } catch (e) {
-        console.warn("[AdSlot] AdSense push failed:", e);
-        setAdError("AdSense initialization failed");
-      }
-    }, 200);
+    // Also attempt immediately — covers cases where the container already has width
+    tryPushAd();
 
-    // Cleanup observer after timeout (ad should load within 5s)
-    const cleanupTimer = setTimeout(() => {
-      observer.disconnect();
-      // If ad still not loaded after 5 seconds, it might be blocked
-      if (!adLoaded) {
-        setAdError("Ad load timeout");
-      }
-    }, 5000);
-
-    // Cleanup on unmount
     return () => {
-      clearTimeout(timer);
-      clearTimeout(cleanupTimer);
-      observer.disconnect();
+      ro.disconnect();
+      mutationObserver?.disconnect();
+      if (pushTimer) clearTimeout(pushTimer);
+      if (cleanupTimer) clearTimeout(cleanupTimer);
     };
-  }, [isLive, adLoaded]);
+  }, [isLive]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Dev/fallback placeholder — no live PID set
   if (!isLive) {
@@ -110,11 +129,11 @@ export default function AdSlot({
     );
   }
 
-  // Show error state if ad failed to load
+  // Error state — render a minimal invisible placeholder so layout isn't broken
   if (adError) {
     return (
-      <div 
-        className={`ad-banner ad-banner--error ${className}`} 
+      <div
+        className={`ad-banner ad-banner--error ${className}`}
         data-section={section}
         title={`Ad loading failed: ${adError}`}
       >
@@ -124,33 +143,33 @@ export default function AdSlot({
   }
 
   // Calculate style based on format
-  const insStyle = format !== "auto" && format !== "responsive"
-    ? { 
-        display: "inline-block" as const, 
-        width: `${width}px`, 
-        height: `${height}px`,
-        textAlign: "center" as const,
-      }
-    : { 
-        display: "block" as const, 
-        width: "100%", 
-        height: "auto",
-        textAlign: "center" as const,
-      };
+  const insStyle =
+    format !== "auto" && format !== "responsive"
+      ? {
+          display: "inline-block" as const,
+          width: `${width}px`,
+          height: `${height}px`,
+          textAlign: "center" as const,
+        }
+      : {
+          display: "block" as const,
+          width: "100%",
+          height: "auto",
+          textAlign: "center" as const,
+        };
 
   return (
     <div
       ref={containerRef}
       className={`ad-banner ${adLoaded ? "ad-banner--loaded" : "ad-banner--loading"} ${className}`}
       data-section={section}
-      style={{ 
-        overflow: "hidden", 
-        width: "100%", 
+      style={{
+        overflow: "hidden",
+        width: "100%",
         maxWidth: "100%",
         minHeight: format === "auto" ? "auto" : `${height}px`,
       }}
     >
-      {/* Side labels — hidden on mobile */}
       <span className="ad-label ad-label--side">Sponsored</span>
       <div className="ad-content" style={{ overflow: "hidden", maxWidth: "100%" }}>
         <ins
@@ -164,9 +183,7 @@ export default function AdSlot({
           data-ad-layout={section === "sidebar" ? "in-article" : undefined}
         />
       </div>
-      {/* Side labels — hidden on mobile */}
       <span className="ad-label ad-label--side">Advertisement</span>
-      {/* Mobile only — single label below the ad */}
       <span className="ad-label ad-label--mobile">Advertisement</span>
     </div>
   );

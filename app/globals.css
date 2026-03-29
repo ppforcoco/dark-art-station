@@ -1979,7 +1979,7 @@ body::before {
 
 .footer-grid {
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr;
+  grid-template-columns: 2fr 1fr 1fr 1fr 1fr 1fr;
   gap: 60px; margin-bottom: 60px;
 }
 @media (max-width: 1023px) { .footer-grid { grid-template-columns: 1fr 1fr; gap: 40px; } }
@@ -4354,14 +4354,13 @@ body::before {
    Brand col is wider; the 4 nav cols are equal-width and
    top-aligned so their headings sit on the same baseline.       */
 .footer-grid {
-  grid-template-columns: 2fr 1fr 1fr 1fr 1fr !important;
-  align-items: start !important;    /* all columns top-align */
+  grid-template-columns: 2fr 1fr 1fr 1fr 1fr 1fr !important;
+  align-items: start !important;
 }
-@media (max-width: 1279px) {
+@media (max-width: 1439px) {
   .footer-grid {
     grid-template-columns: 1fr 1fr 1fr !important;
   }
-  /* Brand spans full width on tablet */
   .footer-col--brand {
     grid-column: 1 / -1;
   }
