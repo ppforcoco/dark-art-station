@@ -8,7 +8,6 @@ const SOCIAL_LINKS = [
   { label: "Pinterest", href: "https://www.pinterest.com/TheFreemiumWallpapers/" },
 ];
 
-
 export default function Footer(): JSX.Element {
   return (
     <footer className="site-footer">
@@ -90,16 +89,13 @@ export default function Footer(): JSX.Element {
           © {new Date().getFullYear()} HauntedWallpapers. All rights reserved.
           Visions collected daily.
         </span>
-
         <div className="footer-bottom-right">
-          {/* ── Social Links ── */}
           <div className="footer-socials">
-            <span className="footer-socials-label">Social</span>
             {SOCIAL_LINKS.map(({ label, href }) => (
               <a
                 key={label}
                 href={href}
-                className="social-link social-link--pinterest"
+                className="social-link"
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -107,8 +103,6 @@ export default function Footer(): JSX.Element {
               </a>
             ))}
           </div>
-
-          {/* ── Report Issue ── */}
           <button
             className="footer-report-btn"
             onClick={() => window.dispatchEvent(new CustomEvent("open-feedback"))}

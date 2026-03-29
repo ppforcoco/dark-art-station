@@ -2017,11 +2017,6 @@ body::before {
 }
 .footer-bottom-right { display: flex; align-items: center; gap: 24px; flex-wrap: wrap; }
 .footer-socials { display: flex; align-items: center; gap: 12px; }
-.footer-socials-label {
-  font-family: var(--font-space), monospace;
-  font-size: 0.55rem; letter-spacing: 0.15em; text-transform: uppercase;
-  color: #3a3545;
-}
 .social-link {
   font-family: var(--font-space), monospace;
   font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase;
@@ -2029,8 +2024,7 @@ body::before {
   transition: color 0.2s;
   display: flex; align-items: center; gap: 5px;
 }
-.social-link:hover { color: #c0001a; }
-.social-link--pinterest:hover { color: #e60023; }
+.social-link:hover { color: #e60023; }
 .footer-report-btn {
   background: transparent;
   border: 1px solid rgba(192,0,26,0.35);
@@ -5122,7 +5116,8 @@ p,
 .scroll-top-btn {
   position: fixed;
   bottom: 32px;
-  right: 32px;
+  left: 32px;
+  right: auto;
   z-index: 7999;
   width: 44px;
   height: 44px;
@@ -5140,8 +5135,8 @@ p,
 }
 @media (pointer: coarse) { .scroll-top-btn { cursor: pointer; } }
 .scroll-top-btn:hover { background: #a30017; transform: translateY(-3px); }
-@media (max-width: 767px) { .scroll-top-btn { bottom: 72px; right: 16px; } }
-@media (max-width: 767px) { body.sticky-ad-visible .scroll-top-btn { bottom: 130px; } }
+@media (max-width: 767px) { .scroll-top-btn { bottom: 16px; left: 16px; right: auto; } }
+@media (max-width: 767px) { body.sticky-ad-visible .scroll-top-btn { bottom: 70px; } }
 
 /* ── Recently Viewed ───────────────────────────────────────── */
 .recently-viewed {

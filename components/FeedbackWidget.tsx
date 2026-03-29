@@ -18,7 +18,7 @@ export default function FeedbackWidget() {
     }
   }, [step]);
 
-  // Listen for footer "Report Issue" button trigger
+  // Listen for footer "Report Issue" button
   useEffect(() => {
     const handler = () => setStep("open");
     window.addEventListener("open-feedback", handler);
@@ -57,7 +57,9 @@ export default function FeedbackWidget() {
 
   return (
     <>
-      {/* Modal overlay — only shown when open/sending/done/error */}
+      {/* Modal — triggered from footer Report Issue button */}
+
+      {/* Modal overlay */}
       {step !== "closed" && (
         <div
           style={{
