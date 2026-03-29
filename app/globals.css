@@ -1976,6 +1976,8 @@ body::before {
   padding: 80px 60px 40px;
 }
 @media (max-width: 767px) { .site-footer { padding: 60px 24px 32px; } }
+/* Always push footer above sticky ad on mobile; revert when ad dismissed */
+@media (max-width: 767px) { body:not(.sticky-ad-dismissed) .site-footer { padding-bottom: calc(58px + 24px + env(safe-area-inset-bottom)); } }
 
 .footer-grid {
   display: grid;
