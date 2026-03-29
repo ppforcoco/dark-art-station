@@ -120,7 +120,7 @@ async function main() {
         description:  img.description ?? null,
         // altText: SEO-optimised alt text for <Image> tags, stored in DB
         altText:      (img as Record<string, unknown>).altText as string | undefined ?? null,
-        r2Key:        imageHighResKey(data.slug, img.slug, img.highResExt ?? "jpeg"),
+        r2Key:        imageThumbKey(data.slug, img.slug, img.thumbExt ?? img.highResExt ?? "jpeg"),
         highResKey:   imageHighResKey(data.slug, img.slug, img.highResExt ?? "jpeg"),
         sortOrder:    img.sortOrder,
         collectionId,
