@@ -2015,14 +2015,35 @@ body::before {
   font-family: var(--font-space), monospace;
   font-size: 0.6rem; letter-spacing: 0.1em; color: #4a445a;
 }
-.footer-socials { display: flex; gap: 20px; }
+.footer-bottom-right { display: flex; align-items: center; gap: 24px; flex-wrap: wrap; }
+.footer-socials { display: flex; align-items: center; gap: 12px; }
+.footer-socials-label {
+  font-family: var(--font-space), monospace;
+  font-size: 0.55rem; letter-spacing: 0.15em; text-transform: uppercase;
+  color: #3a3545;
+}
 .social-link {
   font-family: var(--font-space), monospace;
   font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase;
   color: #4a445a; text-decoration: none;
   transition: color 0.2s;
+  display: flex; align-items: center; gap: 5px;
 }
 .social-link:hover { color: #c0001a; }
+.social-link--pinterest:hover { color: #e60023; }
+.footer-report-btn {
+  background: transparent;
+  border: 1px solid rgba(192,0,26,0.35);
+  color: #c0001a;
+  font-family: var(--font-space), monospace;
+  font-size: 0.58rem; letter-spacing: 0.14em; text-transform: uppercase;
+  padding: 7px 13px; cursor: pointer;
+  display: flex; align-items: center; gap: 6px;
+  transition: border-color 0.2s, color 0.2s, background 0.2s;
+  white-space: nowrap;
+}
+.footer-report-btn:hover { border-color: #c0001a; color: #ff2233; background: rgba(192,0,26,0.06); }
+@media (max-width: 639px) { .footer-bottom-right { flex-direction: column; align-items: flex-start; gap: 14px; } }
 /* ──────────────────────────────────────────────────────────── */
 /*  SEARCH PAGE — /search                                       */
 /* ──────────────────────────────────────────────────────────── */

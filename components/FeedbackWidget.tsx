@@ -18,6 +18,13 @@ export default function FeedbackWidget() {
     }
   }, [step]);
 
+  // Listen for footer "Report Issue" button trigger
+  useEffect(() => {
+    const handler = () => setStep("open");
+    window.addEventListener("open-feedback", handler);
+    return () => window.removeEventListener("open-feedback", handler);
+  }, []);
+
   async function handleSubmit() {
     if (!category || !message.trim()) return;
     setStep("sending");
@@ -50,47 +57,7 @@ export default function FeedbackWidget() {
 
   return (
     <>
-      {/* Floating trigger button */}
-      {step === "closed" && (
-        <button
-          onClick={() => setStep("open")}
-          aria-label="Report a problem"
-          style={{
-            position: "fixed",
-            bottom: "130px",
-            right: "20px",
-            zIndex: 8888,
-            background: "#1a1625",
-            border: "1px solid rgba(192,0,26,0.4)",
-            color: "#c0001a",
-            borderRadius: "0",
-            padding: "10px 14px",
-            cursor: "pointer",
-            fontFamily: "monospace",
-            fontSize: "0.6rem",
-            letterSpacing: "0.15em",
-            textTransform: "uppercase",
-            display: "flex",
-            alignItems: "center",
-            gap: "7px",
-            boxShadow: "0 4px 20px rgba(0,0,0,0.5)",
-            transition: "border-color 0.2s, color 0.2s",
-          }}
-          onMouseEnter={e => {
-            (e.currentTarget as HTMLButtonElement).style.borderColor = "rgba(192,0,26,0.8)";
-            (e.currentTarget as HTMLButtonElement).style.color = "#ff2233";
-          }}
-          onMouseLeave={e => {
-            (e.currentTarget as HTMLButtonElement).style.borderColor = "rgba(192,0,26,0.4)";
-            (e.currentTarget as HTMLButtonElement).style.color = "#c0001a";
-          }}
-        >
-          <span style={{ fontSize: "0.9rem" }}>⚑</span>
-          Report Issue
-        </button>
-      )}
-
-      {/* Modal overlay */}
+      {/* Modal overlay — only shown when open/sending/done/error */}
       {step !== "closed" && (
         <div
           style={{
