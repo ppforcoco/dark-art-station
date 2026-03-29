@@ -751,11 +751,16 @@ export default async function CollectionPage({ params }: PageProps) {
           text-decoration: none;
           border: 1px solid rgba(255,255,255,0.06);
           border-radius: 4px;
-          overflow: hidden;
+          overflow: visible;
           background: rgba(12,8,20,0.6);
           transition: border-color 0.2s, transform 0.2s;
-          height: auto;
-          min-height: 0;
+        }
+        .coll-related-thumb-wrap,
+        .coll-related-body {
+          border-radius: inherit;
+        }
+        .coll-related-thumb-wrap {
+          border-radius: 4px 4px 0 0 !important;
         }
         .coll-related-card:hover {
           border-color: rgba(192,0,26,0.5);
@@ -772,7 +777,6 @@ export default async function CollectionPage({ params }: PageProps) {
         .coll-related-thumb-wrap {
           width: 100%;
           aspect-ratio: 9 / 16;
-          max-height: 340px;
           overflow: hidden;
           background: #0f0c1a;
           flex-shrink: 0;
