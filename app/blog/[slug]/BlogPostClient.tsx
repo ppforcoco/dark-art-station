@@ -319,15 +319,15 @@ export default function BlogPostClient({ post, allPosts }: { post: Post; allPost
         [data-theme="light"] .static-page-label { color: #8a8468; }
 
         /* ── Related posts ── */
+        /* ── Related posts — always light (blog pages always use cream bg) ── */
         .related-posts-section {
           max-width: 720px; margin: 0 auto 60px; padding-top: 8px;
         }
         .related-posts-heading {
           font-family: var(--font-cinzel), cursive; font-size: 0.85rem;
           font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase;
-          color: #f0ecff; margin: 0 0 20px; display: flex; align-items: center; gap: 10px;
+          color: #1a1814; margin: 0 0 20px; display: flex; align-items: center; gap: 10px;
         }
-        [data-theme="light"] .related-posts-heading { color: #1a1814; }
         .related-posts-grid {
           display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px;
         }
@@ -335,28 +335,27 @@ export default function BlogPostClient({ post, allPosts }: { post: Post; allPost
         @media (min-width: 601px) and (max-width: 800px) { .related-posts-grid { grid-template-columns: repeat(2, 1fr); } }
         .related-post-card {
           display: flex; flex-direction: column; text-decoration: none;
-          border: 1px solid rgba(255,255,255,0.07); overflow: hidden;
-          transition: border-color 0.2s, transform 0.2s;
+          border: 1px solid rgba(0,0,0,0.1); overflow: hidden; background: #f0ebe0;
+          transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
         }
-        .related-post-card:hover { border-color: rgba(192,0,26,0.45); transform: translateY(-2px); }
-        [data-theme="light"] .related-post-card { border-color: rgba(0,0,0,0.08); }
-        [data-theme="light"] .related-post-card:hover { border-color: rgba(192,0,26,0.3); }
-        .related-post-thumb-wrap { width: 100%; aspect-ratio: 16/9; overflow: hidden; background: #0f0c1a; }
+        .related-post-card:hover {
+          border-color: rgba(192,0,26,0.35); transform: translateY(-2px);
+          box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+        }
+        .related-post-thumb-wrap { width: 100%; aspect-ratio: 16/9; overflow: hidden; background: #ddd8cc; }
         .related-post-thumb { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.35s ease; }
         .related-post-card:hover .related-post-thumb { transform: scale(1.05); }
         .related-post-no-thumb {
           width: 100%; aspect-ratio: 16/9;
-          background: linear-gradient(135deg, #0f0c1a 0%, #1a1228 100%);
+          background: linear-gradient(135deg, #e8e3d8 0%, #ddd8cc 100%);
           display: flex; align-items: center; justify-content: center;
-          color: rgba(192,0,26,0.3); font-size: 1.5rem;
+          color: rgba(192,0,26,0.25); font-size: 1.5rem;
         }
         .related-post-body { padding: 11px 12px; display: flex; flex-direction: column; gap: 5px; flex: 1; }
         .related-post-label { font-size: 0.58rem; font-family: monospace; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 700; }
-        .related-post-title { font-size: 0.8rem; font-weight: 700; color: #e8e4f8; line-height: 1.35; margin: 0; }
-        [data-theme="light"] .related-post-title { color: #1a1814; }
-        .related-post-excerpt { font-size: 0.7rem; color: #7a7490; line-height: 1.5; margin: 0; flex: 1; }
-        [data-theme="light"] .related-post-excerpt { color: #6a6458; }
-        .related-post-date { font-size: 0.6rem; color: #5a5470; font-family: monospace; letter-spacing: 0.06em; margin-top: 3px; }
+        .related-post-title { font-size: 0.8rem; font-weight: 700; color: #1a1814; line-height: 1.35; margin: 0; }
+        .related-post-excerpt { font-size: 0.7rem; color: #5a5450; line-height: 1.5; margin: 0; flex: 1; }
+        .related-post-date { font-size: 0.6rem; color: #8a8468; font-family: monospace; letter-spacing: 0.06em; margin-top: 3px; }
         .related-posts-cta-row { margin-top: 20px; text-align: center; }
         .related-posts-all-link {
           color: #c0001a; text-decoration: none; font-size: 0.75rem;
@@ -364,7 +363,7 @@ export default function BlogPostClient({ post, allPosts }: { post: Post; allPost
           border-bottom: 1px solid rgba(192,0,26,0.3); padding-bottom: 2px;
           transition: color 0.2s, border-color 0.2s;
         }
-        .related-posts-all-link:hover { color: #ff2233; border-color: rgba(255,34,51,0.5); }
+        .related-posts-all-link:hover { color: #900015; border-color: rgba(144,0,21,0.5); }
       `}</style>
     </main>
   );
