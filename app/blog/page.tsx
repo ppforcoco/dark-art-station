@@ -36,6 +36,12 @@ function extractFirstImageFromContent(html: string): string | null {
   return match?.[1] ?? null;
 }
 
+function readTime(html: string): string {
+  const words = html.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim().split(" ").length;
+  const mins = Math.max(1, Math.round(words / 200));
+  return `${mins} min read`;
+}
+
 export default async function BlogPage() {
   const posts = await prisma.blogPost.findMany({
     where: { published: true },
@@ -139,6 +145,7 @@ export default async function BlogPage() {
                 year: "numeric", month: "long", day: "numeric",
               });
               const thumb = p.featuredImage ?? extractFirstImageFromContent(p.content);
+              const rt = readTime(p.content);
               return (
                 <div className="blog-index-featured">
                   <Link href={`/blog/${p.slug}`} className="blog-featured-card">
@@ -155,7 +162,7 @@ export default async function BlogPage() {
                     </div>
                     <div className="blog-featured-body">
                       <span className="blog-featured-eyebrow" style={{ color: getLabelColor(p.label) }}>
-                        Latest · {p.label} · {dateStr}
+                        Latest · {p.label} · {dateStr} · {rt}
                       </span>
                       <h2 className="blog-featured-title">{p.title}</h2>
                       <p className="blog-featured-excerpt">{excerpt}…</p>
@@ -174,6 +181,7 @@ export default async function BlogPage() {
                   const dateStr = new Date(post.createdAt).toLocaleDateString("en-US", {
                     year: "numeric", month: "short", day: "numeric",
                   });
+                  const rt = readTime(post.content);
                   const thumb = post.featuredImage ?? extractFirstImageFromContent(post.content);
                   return (
                     <Link key={post.slug} href={`/blog/${post.slug}`} className="blog-post-card">
@@ -191,7 +199,7 @@ export default async function BlogPage() {
                         </span>
                         <h3 className="blog-post-card-title">{post.title}</h3>
                         <p className="blog-post-card-excerpt">{excerpt}…</p>
-                        <span className="blog-post-card-date">{dateStr}</span>
+                        <span className="blog-post-card-date">{dateStr} · {rt}</span>
                       </div>
                     </Link>
                   );

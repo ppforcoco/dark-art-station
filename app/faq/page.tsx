@@ -9,9 +9,10 @@ export const metadata: Metadata = {
   robots: { index: true, follow: true },
 };
 
-const FAQS: { q: string; a: React.ReactNode }[] = [
+const FAQS: { q: string; a: React.ReactNode; text: string }[] = [
   {
     q: "Are the wallpapers really free?",
+    text: "Yes. Every wallpaper on HauntedWallpapers is completely free to download with no account required. Simply browse, tap any image, and hit the Download button — no sign-up, no payment.",
     a: (
       <>
         Yes. Every wallpaper on HauntedWallpapers is completely free to download
@@ -22,6 +23,7 @@ const FAQS: { q: string; a: React.ReactNode }[] = [
   },
   {
     q: "How do I set a wallpaper on iPhone?",
+    text: "Download the image, open the Photos app and locate it, tap the Share icon, then tap Use as Wallpaper. Choose Home Screen, Lock Screen, or both, adjust positioning, and tap Set.",
     a: (
       <>
         <ol>
@@ -38,6 +40,7 @@ const FAQS: { q: string; a: React.ReactNode }[] = [
   },
   {
     q: "How do I set a wallpaper on Android?",
+    text: "Download the image — it saves to Downloads or Gallery. Long-press an empty area of your home screen, select Wallpapers, tap My Photos or Gallery, select the downloaded image, and choose Home screen, Lock screen, or both. On Samsung, open the image in Gallery and tap the three-dot menu then Set as wallpaper.",
     a: (
       <>
         <ol>
@@ -59,6 +62,7 @@ const FAQS: { q: string; a: React.ReactNode }[] = [
   },
   {
     q: "How do I set a wallpaper on PC or Mac?",
+    text: "Windows: right-click the desktop, select Personalise, then Background, then Browse, and select your downloaded image. Mac: go to System Settings, then Wallpaper, then Add Photo, and select your downloaded image.",
     a: (
       <>
         <p><strong>Windows:</strong> Right-click the desktop → Personalise →
@@ -71,6 +75,7 @@ const FAQS: { q: string; a: React.ReactNode }[] = [
   },
   {
     q: "What file format are the downloads?",
+    text: "All wallpapers are provided as high-quality JPEG files — compatible with every device including iPhone, Android, PC, Mac, and tablet. No special apps or converters are needed.",
     a: (
       <>
         All wallpapers are provided as high-quality <strong>JPEG</strong> files —
@@ -82,6 +87,7 @@ const FAQS: { q: string; a: React.ReactNode }[] = [
   },
   {
     q: "Can I use these wallpapers commercially?",
+    text: "No — downloads are licensed for personal use only. Commercial use requires a separate licence. See the Licensing and Terms page for full details or contact us to discuss a commercial licence.",
     a: (
       <>
         No — downloads from HauntedWallpapers are licensed for personal use only.
@@ -94,6 +100,7 @@ const FAQS: { q: string; a: React.ReactNode }[] = [
   },
   {
     q: "My download isn't working. What do I do?",
+    text: "Try disabling any ad-blocker temporarily, try a different browser like Chrome or Firefox, check your device's available storage, and if the issue persists use the contact form with the image name.",
     a: (
       <>
         Try the following steps:
@@ -113,6 +120,7 @@ const FAQS: { q: string; a: React.ReactNode }[] = [
   },
   {
     q: "Are these images AI-generated?",
+    text: "Yes. Every image is created using AI generation tools guided by our own prompts and creative direction. Each image is individually reviewed and curated — we discard the vast majority of outputs.",
     a: (
       <>
         Yes. Every image on HauntedWallpapers is created using AI generation
@@ -125,6 +133,7 @@ const FAQS: { q: string; a: React.ReactNode }[] = [
   },
   {
     q: "Why do I see advertisements on the Site?",
+    text: "Advertising is how we keep the site free. HauntedWallpapers uses Google AdSense to display relevant ads that fund server costs, storage, and content curation.",
     a: (
       <>
         Advertising is how we keep the site free. HauntedWallpapers uses Google
@@ -145,6 +154,7 @@ const FAQS: { q: string; a: React.ReactNode }[] = [
   },
   {
     q: "How often is new art added?",
+    text: "We aim to release new collections and standalone images on a regular basis. Check back often or follow us on Pinterest to stay up to date with new drops.",
     a: (
       <>
         We aim to release new collections and standalone images on a regular
@@ -167,12 +177,12 @@ export default function FaqPage() {
           __html: JSON.stringify({
             "@context": "https://schema.org",
             "@type": "FAQPage",
-            mainEntity: FAQS.map(({ q, a }) => ({
+            mainEntity: FAQS.map(({ q, a: _a, text }) => ({
               "@type": "Question",
               name: q,
               acceptedAnswer: {
                 "@type": "Answer",
-                text: typeof a === "string" ? a : q,
+                text,
               },
             })),
           }),

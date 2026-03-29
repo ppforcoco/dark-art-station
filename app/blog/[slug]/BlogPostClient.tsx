@@ -116,11 +116,19 @@ function RelatedPosts({ posts, currentSlug }: { posts: Post[]; currentSlug: stri
   );
 }
 
+// ── Read time ─────────────────────────────────────────────────────────────────
+function readTime(html: string): string {
+  const words = html.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim().split(" ").length;
+  const mins = Math.max(1, Math.round(words / 200));
+  return `${mins} min read`;
+}
+
 // ── Main export ───────────────────────────────────────────────────────────────
 export default function BlogPostClient({ post, allPosts }: { post: Post; allPosts: Post[] }) {
   const dateStr = new Date(post.createdAt).toLocaleDateString("en-US", {
     year: "numeric", month: "long", day: "numeric",
   });
+  const rt = readTime(post.content);
 
   const ogImage = post.featuredImage ?? extractFirstImage(post.content) ?? `${SITE_URL}/og-image.jpg`;
 
@@ -164,7 +172,7 @@ export default function BlogPostClient({ post, allPosts }: { post: Post; allPost
 
       <div className="static-page-inner">
         <header className="static-page-header">
-          <p className="static-page-label">{post.label} · {dateStr}</p>
+          <p className="static-page-label">{post.label} · {dateStr} · {rt}</p>
           <h1 className="static-page-title">{post.title}</h1>
         </header>
 
@@ -181,9 +189,22 @@ export default function BlogPostClient({ post, allPosts }: { post: Post; allPost
         <div className="blog-post-footer-nav">
           <Link href="/blog" className="blog-post-footer-back">← Blog &amp; Guides</Link>
           <div className="blog-post-footer-links">
-            <Link href="/iphone"  className="blog-post-footer-link">iPhone Wallpapers →</Link>
-            <Link href="/android" className="blog-post-footer-link">Android →</Link>
-            <Link href="/pc"      className="blog-post-footer-link">PC →</Link>
+            <Link href="/iphone"      className="blog-post-footer-link">iPhone Wallpapers →</Link>
+            <Link href="/android"     className="blog-post-footer-link">Android →</Link>
+            <Link href="/pc"          className="blog-post-footer-link">PC →</Link>
+          </div>
+        </div>
+
+        {/* ── Browse wallpapers CTA ── */}
+        <div className="blog-wallpaper-cta">
+          <p className="blog-wallpaper-cta-text">
+            <span style={{ color: "#c0001a" }}>✦</span> Like what you read? Browse the collections.
+          </p>
+          <div className="blog-wallpaper-cta-links">
+            <Link href="/collections"               className="blog-wallpaper-cta-btn">All Collections</Link>
+            <Link href="/shop/dark-fantasy-art"     className="blog-wallpaper-cta-btn">Dark Fantasy</Link>
+            <Link href="/shop/horror-posters"       className="blog-wallpaper-cta-btn">Horror Posters</Link>
+            <Link href="/shop/dark-minimal"         className="blog-wallpaper-cta-btn">Dark Minimal</Link>
           </div>
         </div>
 
@@ -255,7 +276,28 @@ export default function BlogPostClient({ post, allPosts }: { post: Post; allPost
         [data-theme="light"] .blog-post-footer-link { color: #8a8468; }
         [data-theme="light"] .blog-post-footer-link:hover { color: #3a3450; }
 
-        [data-theme="light"] .blog-html-content { color: #2a2420; }
+        .blog-wallpaper-cta {
+          max-width: 720px; margin: 32px auto 0; padding: 20px 24px;
+          border: 1px solid rgba(192,0,26,0.2); background: rgba(192,0,26,0.04);
+        }
+        [data-theme="light"] .blog-wallpaper-cta { border-color: rgba(192,0,26,0.18); background: rgba(192,0,26,0.03); }
+        .blog-wallpaper-cta-text {
+          font-family: var(--font-space), monospace; font-size: 0.65rem;
+          letter-spacing: 0.12em; text-transform: uppercase;
+          color: #8a8099; margin: 0 0 12px; display: flex; align-items: center; gap: 8px;
+        }
+        [data-theme="light"] .blog-wallpaper-cta-text { color: #5a5468; }
+        .blog-wallpaper-cta-links { display: flex; flex-wrap: wrap; gap: 8px; }
+        .blog-wallpaper-cta-btn {
+          font-family: var(--font-space), monospace; font-size: 0.58rem;
+          letter-spacing: 0.12em; text-transform: uppercase;
+          color: #c0001a; text-decoration: none;
+          padding: 6px 12px; border: 1px solid rgba(192,0,26,0.35);
+          transition: background 0.2s, border-color 0.2s, color 0.2s;
+        }
+        .blog-wallpaper-cta-btn:hover { background: rgba(192,0,26,0.1); border-color: rgba(192,0,26,0.6); color: #ff2233; }
+        [data-theme="light"] .blog-wallpaper-cta-btn { color: #c0001a; border-color: rgba(192,0,26,0.3); }
+        [data-theme="light"] .blog-wallpaper-cta-btn:hover { background: rgba(192,0,26,0.07); }
         [data-theme="light"] .blog-html-content h1,
         [data-theme="light"] .blog-html-content h2,
         [data-theme="light"] .blog-html-content h3,
@@ -268,6 +310,11 @@ export default function BlogPostClient({ post, allPosts }: { post: Post; allPost
         [data-theme="light"] .blog-html-content em { color: #8b4200; }
         [data-theme="light"] .blog-html-content a { color: #c0001a; border-color: rgba(192,0,26,0.3); }
         [data-theme="light"] .blog-html-content a:hover { color: #900015; border-color: rgba(192,0,26,0.6); }
+        /* Force readable colors on blog post page regardless of stored theme */
+        .blog-post-page .static-page-title { color: #1a1814 !important; }
+        .blog-post-page .static-page-title em { color: #8b4000 !important; }
+        .blog-post-page .static-page-label { color: #8a8468 !important; }
+        .blog-post-page .static-page-header { border-bottom-color: #cdc8bc !important; }
         [data-theme="light"] .static-page-title { color: #1a1814; }
         [data-theme="light"] .static-page-label { color: #8a8468; }
 

@@ -6727,7 +6727,31 @@ body:has([data-force-blog="true"]) .blog-category-item-date {
   color: #a09888 !important;
 }
 
-/* 9. Blog post article page */
+/* 9. Static-page elements on blog pages (title, label, header) */
+body:has([data-force-blog="true"]) .static-page-title {
+  color: #1a1814 !important;
+}
+body:has([data-force-blog="true"]) .static-page-title em {
+  color: #8b4000 !important;
+}
+body:has([data-force-blog="true"]) .static-page-label {
+  color: #8a8468 !important;
+}
+body:has([data-force-blog="true"]) .static-page-header {
+  border-bottom-color: #cdc8bc !important;
+}
+body:has([data-force-blog="true"]) .static-page-inner {
+  background-color: #f4f1ea !important;
+}
+body:has([data-force-blog="true"]) .static-section h2 {
+  color: #1a1814 !important;
+  border-bottom-color: rgba(139,0,0,0.15) !important;
+}
+body:has([data-force-blog="true"]) .static-section h3 { color: #5a5450 !important; }
+body:has([data-force-blog="true"]) .static-section p,
+body:has([data-force-blog="true"]) .static-section li { color: #3a3430 !important; }
+
+/* 9b. Blog post article page */
 body:has([data-force-blog="true"]) .blog-post-page {
   background-color: #f4f1ea !important;
 }

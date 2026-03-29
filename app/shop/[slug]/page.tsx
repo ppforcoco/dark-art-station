@@ -99,9 +99,28 @@ export default async function CollectionPage({ params }: PageProps) {
 
   if (!collection) notFound();
 
+  // Fetch related collections: same category first, then others — exclude current
+  const relatedRaw = await db.collection.findMany({
+    where: { slug: { not: slug } },
+    select: {
+      slug: true,
+      title: true,
+      category: true,
+      thumbnail: true,
+      thumbnailAlt: true,
+      _count: { select: { images: true } },
+    },
+    orderBy: { createdAt: "desc" },
+    take: 30,
+  });
+  const sameCategory = relatedRaw.filter((c) => c.category === collection.category);
+  const others = relatedRaw.filter((c) => c.category !== collection.category);
+  const relatedCollections = [...sameCategory, ...others].slice(0, 3);
+
   const coverUrl = collection.thumbnail
     ? `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/${collection.thumbnail}`
     : null;
+  const r2Base = process.env.NEXT_PUBLIC_R2_PUBLIC_URL ?? "";
 
   return (
     <main
@@ -283,6 +302,39 @@ export default async function CollectionPage({ params }: PageProps) {
       </div>
 
       <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_FOOTER} width={728} height={90} />
+
+      {/* ── You May Also Like ── */}
+      {relatedCollections.length > 0 && (
+        <section className="coll-related-section">
+          <div className="coll-related-inner">
+            <h2 className="coll-related-heading">
+              <span style={{ color: "#c0001a" }}>✦</span> You May Also Like
+            </h2>
+            <div className="coll-related-grid">
+              {relatedCollections.map((rc) => {
+                const thumb = rc.thumbnail ? `${r2Base}/${rc.thumbnail}` : null;
+                return (
+                  <Link key={rc.slug} href={`/shop/${rc.slug}`} className="coll-related-card">
+                    <div className="coll-related-thumb-wrap">
+                      {thumb ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img src={thumb} alt={rc.thumbnailAlt ?? rc.title} className="coll-related-thumb" loading="lazy" />
+                      ) : (
+                        <div className="coll-related-no-thumb">✦</div>
+                      )}
+                    </div>
+                    <div className="coll-related-body">
+                      <span className="coll-related-category">{rc.category}</span>
+                      <h3 className="coll-related-title">{rc.title}</h3>
+                      <span className="coll-related-count">{rc._count.images} wallpapers</span>
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+      )}
 
       <style>{`
         /* ── Collection Header ── */
@@ -657,6 +709,118 @@ export default async function CollectionPage({ params }: PageProps) {
           line-height: 1.65;
           margin: 0;
         }
+
+        /* ── You May Also Like ── */
+        .coll-related-section {
+          border-top: 1px solid rgba(255,255,255,0.06);
+          padding: 48px 24px 64px;
+          background: rgba(12,8,20,0.4);
+        }
+        [data-theme="light"] .coll-related-section {
+          border-top-color: #cdc8bc;
+          background: rgba(244,241,234,0.6);
+        }
+        .coll-related-inner {
+          max-width: 1200px;
+          margin: 0 auto;
+        }
+        .coll-related-heading {
+          font-family: var(--font-cinzel), cursive;
+          font-size: 0.8rem;
+          font-weight: 700;
+          letter-spacing: 0.22em;
+          text-transform: uppercase;
+          color: #f0ecff;
+          margin: 0 0 24px;
+          display: flex;
+          align-items: center;
+          gap: 10px;
+        }
+        [data-theme="light"] .coll-related-heading { color: #1a1814; }
+        .coll-related-grid {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 16px;
+        }
+        @media (max-width: 640px) { .coll-related-grid { grid-template-columns: 1fr; } }
+        @media (min-width: 641px) and (max-width: 900px) { .coll-related-grid { grid-template-columns: repeat(2, 1fr); } }
+        .coll-related-card {
+          display: flex;
+          flex-direction: column;
+          text-decoration: none;
+          border: 1px solid rgba(255,255,255,0.06);
+          overflow: hidden;
+          background: rgba(12,8,20,0.6);
+          transition: border-color 0.2s, transform 0.2s;
+        }
+        .coll-related-card:hover {
+          border-color: rgba(192,0,26,0.5);
+          transform: translateY(-3px);
+        }
+        [data-theme="light"] .coll-related-card {
+          background: #f0ebe0;
+          border-color: #cdc8bc;
+        }
+        [data-theme="light"] .coll-related-card:hover {
+          border-color: rgba(192,0,26,0.4);
+          background: #e8e3d8;
+        }
+        .coll-related-thumb-wrap {
+          width: 100%;
+          aspect-ratio: 3/2;
+          overflow: hidden;
+          background: #0f0c1a;
+          flex-shrink: 0;
+        }
+        [data-theme="light"] .coll-related-thumb-wrap { background: #e0dbd0; }
+        .coll-related-thumb {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          display: block;
+          transition: transform 0.35s ease;
+        }
+        .coll-related-card:hover .coll-related-thumb { transform: scale(1.05); }
+        .coll-related-no-thumb {
+          width: 100%;
+          height: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: rgba(192,0,26,0.25);
+          font-size: 2rem;
+        }
+        .coll-related-body {
+          padding: 14px 16px;
+          display: flex;
+          flex-direction: column;
+          gap: 5px;
+        }
+        .coll-related-category {
+          font-family: var(--font-space), monospace;
+          font-size: 0.48rem;
+          letter-spacing: 0.18em;
+          text-transform: uppercase;
+          color: #c0001a;
+        }
+        .coll-related-title {
+          font-family: var(--font-cinzel), cursive;
+          font-size: 0.9rem;
+          font-weight: 700;
+          color: #e8e4f8;
+          line-height: 1.3;
+          margin: 0;
+        }
+        [data-theme="light"] .coll-related-title { color: #1a1814; }
+        .coll-related-count {
+          font-family: var(--font-space), monospace;
+          font-size: 0.5rem;
+          letter-spacing: 0.1em;
+          text-transform: uppercase;
+          color: #4a445a;
+          margin-top: 2px;
+        }
+        [data-theme="light"] .coll-related-count { color: #8a8468; }
       `}</style>
     </main>
   );
