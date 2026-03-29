@@ -1,4 +1,3 @@
-"use client";
 // components/Footer.tsx
 import Link from "next/link";
 import type { JSX } from "react";
@@ -6,40 +5,6 @@ import type { JSX } from "react";
 const SOCIAL_LINKS = [
   { label: "Pinterest", href: "https://www.pinterest.com/TheFreemiumWallpapers/" },
 ];
-
-const THEMES = [
-  { key: "dark",   label: "Dark",    icon: "☽" },
-  { key: "blood",  label: "Crimson", icon: "🌑" },
-  { key: "ghost",  label: "Ghost",   icon: "👻" },
-  { key: "ember",  label: "Ember",   icon: "🔥" },
-  { key: "light",  label: "Light",   icon: "☀" },
-] as const;
-
-function FooterThemeSwitcher() {
-  function setTheme(t: string) {
-    document.documentElement.setAttribute("data-theme", t);
-    try { localStorage.setItem("hw-theme", t); } catch {}
-  }
-  return (
-    <div className="footer-theme-row">
-      <span className="footer-theme-label">Theme</span>
-      <div className="footer-theme-btns">
-        {THEMES.map(({ key, label, icon }) => (
-          <button
-            key={key}
-            className="footer-theme-btn"
-            onClick={() => setTheme(key)}
-            aria-label={`Switch to ${label} theme`}
-            title={label}
-          >
-            <span className="footer-theme-icon">{icon}</span>
-            <span className="footer-theme-name">{label}</span>
-          </button>
-        ))}
-      </div>
-    </div>
-  );
-}
 
 export default function Footer(): JSX.Element {
   return (
@@ -116,9 +81,6 @@ export default function Footer(): JSX.Element {
         </div>
 
       </div>
-
-      {/* ── Theme Switcher Row ── */}
-      <FooterThemeSwitcher />
 
       <div className="footer-bottom">
         <span className="footer-copy">
