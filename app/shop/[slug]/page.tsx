@@ -741,7 +741,6 @@ export default async function CollectionPage({ params }: PageProps) {
           display: grid;
           grid-template-columns: repeat(3, 1fr);
           gap: 16px;
-          align-items: start;
         }
         @media (max-width: 640px) { .coll-related-grid { grid-template-columns: 1fr; } }
         @media (min-width: 641px) and (max-width: 900px) { .coll-related-grid { grid-template-columns: repeat(2, 1fr); } }
@@ -811,6 +810,11 @@ export default async function CollectionPage({ params }: PageProps) {
           color: #e8e4f8;
           line-height: 1.3;
           margin: 0;
+          display: -webkit-box;
+          -webkit-line-clamp: 3;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+          word-break: break-word;
         }
         [data-theme="light"] .coll-related-title { color: #1a1814; }
         .coll-related-count {
