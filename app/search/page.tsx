@@ -193,7 +193,7 @@ export default async function SearchPage({
 
       {/* Results header + X clear button */}
       <header className="search-header">
-        <p className="search-header-label">THE ORACLE&apos;S EYE</p>
+        <p className="search-header-label">THE Watch&apos;S Tower</p>
         {query ? (
           <div className="search-header-row">
             <h1 className="search-header-title">

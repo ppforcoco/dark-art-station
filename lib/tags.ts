@@ -1,6 +1,6 @@
 /**
  * lib/tags.ts
- * Oracle Tag Engine — aggregates and ranks tags by engagement for a given deviceType.
+ * GUIDE Tag Engine — aggregates and ranks tags by engagement for a given deviceType.
  * Engagement score = sum of (viewCount + downloadCount) across all images carrying the tag.
  */
 

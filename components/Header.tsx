@@ -465,7 +465,7 @@ export default function Header() {
         <div className="hw-search-overlay" role="dialog" aria-label="Search">
           <div className="hw-search-backdrop" onClick={closeSearch} />
           <div className="hw-search-panel">
-            <p className="hw-search-eyebrow">The Oracle&apos;s Eye</p>
+            <p className="hw-search-eyebrow">The Watch&apos;s Tower</p>
             <form onSubmit={handleSearch}>
               <div className="hw-search-form-box">
                 <span className="hw-search-icon-wrap"><Search size={20} strokeWidth={1.2} /></span>
