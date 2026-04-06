@@ -48,6 +48,14 @@ const nextConfig: NextConfig = {
 
   async headers() {
     return [
+      // ✅ ads.txt — explicit content-type + cache so Google always finds it
+      {
+        source: "/ads.txt",
+        headers: [
+          { key: "Content-Type", value: "text/plain; charset=utf-8" },
+          { key: "Cache-Control", value: "public, max-age=86400" },
+        ],
+      },
       {
         // Long cache for static assets
         source: "/:path*\\.(jpg|jpeg|png|webp|avif|gif|ico|svg|woff|woff2|ttf|otf|js|css)",
