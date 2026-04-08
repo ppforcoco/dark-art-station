@@ -16,10 +16,32 @@ import PageTracker from "@/components/PageTracker";
 import FavoriteButton from "@/components/FavoriteButton";
 
 export const dynamicParams = true;
-export const revalidate = 0;
+export const revalidate = 3600; // cache for 1 hour instead of never
 
 interface PageProps {
   params: Promise<{ imageSlug: string }>;
+}
+
+// ── Fallback description generator ──────────────────────────────────────────
+// Called when image.description is null. Builds ~150 words of real content
+// from the title and tags so Google never sees a near-empty page.
+function buildFallbackDescription(title: string, tags: string[]): string {
+  const tagList = tags.length > 0
+    ? tags.slice(0, 5).join(", ")
+    : "dark fantasy, atmospheric, gothic";
+
+  const firstTag = tags[0] ?? "dark fantasy";
+  const secondTag = tags[1] ?? "atmospheric";
+
+  return `${title} is a free high-resolution PC wallpaper from the Haunted Wallpapers dark art collection. ` +
+    `Crafted for desktop and widescreen monitors, this piece immerses your screen in themes of ${tagList}. ` +
+    `Formatted at a native 16:9 aspect ratio, it fits seamlessly across 1080p, 1440p, and 4K displays without cropping or distortion. ` +
+    `Whether you gravitate toward ${firstTag} aesthetics or simply want a ${secondTag} backdrop that stands out, ` +
+    `this wallpaper delivers moody, original artwork at no cost. ` +
+    `No account or sign-up is required — click download and the full-resolution file is yours instantly. ` +
+    `Every image in our PC collection is produced exclusively for Haunted Wallpapers, ` +
+    `so you won't find this artwork duplicated across generic wallpaper repositories. ` +
+    `Browse the related wallpapers below to discover more pieces that share a similar dark atmosphere and artistic style.`;
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
@@ -62,7 +84,7 @@ export async function generateStaticParams() {
   return images.map((img) => ({ imageSlug: img.slug }));
 }
 
-export default async function IphoneImagePage({ params }: PageProps) {
+export default async function PcImagePage({ params }: PageProps) {
   const { imageSlug } = await params;
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
 
@@ -84,6 +106,9 @@ export default async function IphoneImagePage({ params }: PageProps) {
 
   const thumbUrl = getPublicUrl(image.r2Key);
 
+  // Use real description or auto-generate one — never show a blank page
+  const displayDescription = image.description ?? buildFallbackDescription(image.title, image.tags);
+
   const [siblings, related] = await Promise.all([
     db.image.findMany({
       where: { collectionId: null, deviceType: "PC" },
@@ -100,8 +125,8 @@ export default async function IphoneImagePage({ params }: PageProps) {
     <main className="min-h-screen" style={{ backgroundColor: "var(--bg-primary)", color: "var(--text-primary)" }}>
 
       <Breadcrumbs items={[
-        { label: "Home",   href: "/"       },
-        { label: "PC", href: "/pc" },
+        { label: "Home",   href: "/"    },
+        { label: "PC",     href: "/pc"  },
         { label: image.title },
       ]} />
 
@@ -127,9 +152,10 @@ export default async function IphoneImagePage({ params }: PageProps) {
               </h1>
             </div>
 
-            {image.description && (
-              <p className="font-body text-[1rem] text-[#a89bc0] leading-relaxed">{image.description}</p>
-            )}
+            {/* Always rendered — real description or auto-generated fallback */}
+            <p className="font-body text-[1rem] text-[#a89bc0] leading-relaxed">
+              {displayDescription}
+            </p>
 
             {image.tags.length > 0 && (
               <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
@@ -252,7 +278,7 @@ export default async function IphoneImagePage({ params }: PageProps) {
           "@type": "Product",
           "@id": `${siteUrl}/pc/${imageSlug}#product`,
           name: image.title,
-          description: image.description ?? `${image.title} — free dark fantasy PC wallpaper.`,
+          description: displayDescription,
           url: `${siteUrl}/pc/${imageSlug}`,
           brand: { "@type": "Brand", name: "HAUNTED WALLPAPERS", url: siteUrl },
           category: "Digital Products > Wallpapers > PC",

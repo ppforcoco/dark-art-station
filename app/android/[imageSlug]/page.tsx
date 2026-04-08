@@ -15,10 +15,30 @@ import PageTracker from "@/components/PageTracker";
 import FavoriteButton from "@/components/FavoriteButton";
 
 export const dynamicParams = true;
-export const revalidate = 0;
+export const revalidate = 3600;
 
 interface PageProps {
   params: Promise<{ imageSlug: string }>;
+}
+
+
+// ── Fallback description generator ──────────────────────────────────────────
+function buildFallbackDescription(title: string, tags: string[]): string {
+  const tagList = tags.length > 0 ? tags.slice(0, 5).join(", ") : "dark fantasy, atmospheric, gothic";
+  const firstTag = tags[0] ?? "dark fantasy";
+  const secondTag = tags[1] ?? "atmospheric";
+  return (
+    title + " is a free high-resolution Android wallpaper from the Haunted Wallpapers dark art collection. " +
+    "Formatted in a native 9:16 portrait aspect ratio, this piece is optimised for Android phones and fills your " +
+    "lock screen and home screen with immersive dark art built around themes of " + tagList + ". " +
+    "The image looks stunning on AMOLED and OLED Android displays, where true blacks create exceptional contrast. " +
+    "Whether you are drawn to " + firstTag + " aesthetics or simply want a " + secondTag + " backdrop, " +
+    "this wallpaper delivers bold, original artwork at no cost. " +
+    "No account or sign-up is required — tap download and the full-resolution file is yours instantly. " +
+    "Every image in our Android collection is produced exclusively for Haunted Wallpapers, " +
+    "so you will not find this artwork duplicated across generic wallpaper repositories. " +
+    "Scroll down to explore related wallpapers with a similar dark atmosphere and artistic style."
+  );
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
@@ -83,6 +103,9 @@ export default async function IphoneImagePage({ params }: PageProps) {
 
   const thumbUrl = getPublicUrl(image.r2Key);
 
+  // Always show description — real or auto-generated
+  const displayDescription = image.description ?? buildFallbackDescription(image.title, image.tags);
+
   const [siblings, related] = await Promise.all([
     db.image.findMany({
       where: { collectionId: null, deviceType: "ANDROID" },
@@ -126,9 +149,8 @@ export default async function IphoneImagePage({ params }: PageProps) {
               </h1>
             </div>
 
-            {image.description && (
-              <p className="font-body text-[1rem] text-[#a89bc0] leading-relaxed">{image.description}</p>
-            )}
+            {/* Always rendered — real description or auto-generated fallback */}
+            <p className="font-body text-[1rem] text-[#a89bc0] leading-relaxed">{displayDescription}</p>
 
             {image.tags.length > 0 && (
               <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
@@ -252,7 +274,7 @@ export default async function IphoneImagePage({ params }: PageProps) {
           "@type": "Product",
           "@id": `${siteUrl}/android/${imageSlug}#product`,
           name: image.title,
-          description: image.description ?? `${image.title} — free high-res dark fantasy Android wallpaper.`,
+          description: displayDescription,
           url: `${siteUrl}/android/${imageSlug}`,
           brand: { "@type": "Brand", name: "HAUNTED WALLPAPERS", url: siteUrl },
           category: "Digital Products > Wallpapers > Android",

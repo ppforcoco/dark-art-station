@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import ContactForm from "@/components/ContactForm";
 
 export const metadata: Metadata = {
   title: "Contact — HauntedWallpapers",
@@ -42,12 +43,13 @@ export default function ContactPage() {
           </section>
 
           <section className="static-section">
-            <h2>Get in Touch</h2>
-            <p>
-              Email us directly at{" "}
+            <h2>Send Us a Message</h2>
+            <p style={{ marginBottom: "24px" }}>
+              Fill in the form below or email us directly at{" "}
               <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>.
               We respond within 1–3 business days.
             </p>
+            <ContactForm />
           </section>
 
         </div>
