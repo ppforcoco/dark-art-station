@@ -36,6 +36,7 @@ export async function generateMetadata(
   return {
     title: `${post.title} | Haunted Wallpapers`,
     description: excerpt,
+    authors: [{ name: "Haunted Wallpapers", url: SITE_URL }],
     alternates: { canonical: `${SITE_URL}/blog/${post.slug}` },
     openGraph: {
       title: post.title,

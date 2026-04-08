@@ -178,6 +178,19 @@ export default function BlogPostClient({ post, allPosts }: { post: Post; allPost
         <header className="static-page-header">
           <p className="static-page-label">{post.label} · {dateStr} · {rt}</p>
           <h1 className="static-page-title">{post.title}</h1>
+          {/* Author byline — E-E-A-T signal Google quality raters check for */}
+          <div className="blog-author-byline">
+            <span className="blog-author-avatar" aria-hidden="true">✦</span>
+            <div className="blog-author-info">
+              <span className="blog-author-name">Haunted Wallpapers</span>
+              <span className="blog-author-meta">
+                Published <time dateTime={post.createdAt}>{dateStr}</time>
+                {post.createdAt !== post.updatedAt && (
+                  <> · Updated <time dateTime={post.updatedAt}>{new Date(post.updatedAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" })}</time></>
+                )}
+              </span>
+            </div>
+          </div>
         </header>
 
         <div style={{ marginBottom: "32px" }}>
@@ -368,6 +381,47 @@ export default function BlogPostClient({ post, allPosts }: { post: Post; allPost
           transition: color 0.2s, border-color 0.2s;
         }
         .related-posts-all-link:hover { color: #900015; border-color: rgba(144,0,21,0.5); }
+
+        /* ── Author byline ── */
+        .blog-author-byline {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          margin-top: 20px;
+          padding-top: 16px;
+          border-top: 1px solid #cdc8bc;
+        }
+        .blog-author-avatar {
+          width: 36px;
+          height: 36px;
+          border-radius: 50%;
+          background: rgba(192,0,26,0.12);
+          border: 1px solid rgba(192,0,26,0.3);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: #c0001a;
+          font-size: 0.9rem;
+          flex-shrink: 0;
+        }
+        .blog-author-info {
+          display: flex;
+          flex-direction: column;
+          gap: 2px;
+        }
+        .blog-author-name {
+          font-family: var(--font-cinzel), cursive;
+          font-size: 0.72rem;
+          font-weight: 700;
+          letter-spacing: 0.08em;
+          color: #1a1814;
+        }
+        .blog-author-meta {
+          font-family: var(--font-space), monospace;
+          font-size: 0.55rem;
+          letter-spacing: 0.08em;
+          color: #8a8468;
+        }
       `}</style>
     </main>
   );

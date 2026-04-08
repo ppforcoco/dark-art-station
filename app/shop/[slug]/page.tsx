@@ -174,6 +174,22 @@ export default async function CollectionPage({ params }: PageProps) {
 
         {/* ── Image Grid ── */}
         <section className="coll-grid-section">
+
+          {/* Editorial intro — gives Google text to evaluate alongside the images.
+              Uses the collection description if available, otherwise auto-generates
+              from the title and category. Always renders so no page is text-empty. */}
+          {(() => {
+            const intro = collection.description ??
+              `${collection.title} is a curated collection of free dark art wallpapers from Haunted Wallpapers. ` +
+              `Each piece in this ${collection.category ?? "dark"} collection is available as an instant free download ` +
+              `— no account required, no watermarks. Images are formatted for mobile portrait screens (9:16) ` +
+              `and look exceptional on AMOLED displays where true blacks create maximum contrast. ` +
+              `Browse the full collection below and tap any wallpaper to download the full-resolution file.`;
+            return (
+              <p className="coll-editorial-intro">{intro}</p>
+            );
+          })()}
+
           <div className="coll-grid">
             {collection.images.map((img, idx) => {
               const thumbUrl = getPublicUrl(img.r2Key);
@@ -836,6 +852,22 @@ export default async function CollectionPage({ params }: PageProps) {
           margin-top: 2px;
         }
         [data-theme="light"] .coll-related-count { color: #8a8468; }
+
+        /* ── Editorial intro ── */
+        .coll-editorial-intro {
+          font-family: var(--font-cormorant), serif;
+          font-size: 1rem;
+          color: #8a8099;
+          line-height: 1.75;
+          max-width: 820px;
+          margin: 0 0 28px;
+          padding-bottom: 20px;
+          border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        [data-theme="light"] .coll-editorial-intro {
+          color: #5a5450;
+          border-color: rgba(0,0,0,0.06);
+        }
       `}</style>
     </main>
   );

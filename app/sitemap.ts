@@ -35,7 +35,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     'halloween',
     'dark-valentine',
     'day-of-the-dead',
-    'crimson-moon',
+    'blood-moon',
   ];
   const eventRoutes: MetadataRoute.Sitemap = EVENT_SLUGS.map((slug) => ({
     url: `${siteUrl}/${slug}`,

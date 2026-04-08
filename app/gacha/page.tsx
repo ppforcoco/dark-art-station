@@ -329,6 +329,31 @@ export default function GachaPage() {
         </div>
       </section>
 
+      {/* ── SEO content block ── Google needs readable text on this page ── */}
+      <section className="gacha-seo-section">
+        <div className="gacha-seo-inner">
+          <h2 className="gacha-seo-heading">Free Random Dark Wallpaper Generator</h2>
+          <p className="gacha-seo-text">
+            Destiny Draw pulls a random wallpaper from the entire Haunted Wallpapers collection —
+            gothic art, dark fantasy, horror, atmospheric landscapes, skull artwork, and more.
+            Every pull is completely free with no account required and no watermarks.
+            Images are available in high resolution for iPhone, Android, and PC desktop screens.
+          </p>
+          <p className="gacha-seo-text">
+            Our collection spans hundreds of unique dark art wallpapers across categories including
+            dark fantasy, gothic horror, AMOLED-optimised black backgrounds, cyberpunk neon,
+            dark minimalism, Halloween seasonal art, and more. The rarity system is purely cosmetic —
+            every wallpaper is equally free to download regardless of its tier.
+          </p>
+          <div className="gacha-seo-links">
+            <a href="/iphone" className="gacha-seo-link">Browse iPhone Wallpapers →</a>
+            <a href="/android" className="gacha-seo-link">Browse Android Wallpapers →</a>
+            <a href="/pc" className="gacha-seo-link">Browse PC Wallpapers →</a>
+            <a href="/collections" className="gacha-seo-link">All Collections →</a>
+          </div>
+        </div>
+      </section>
+
       {/* ── Styles ── */}
       <style>{`
 
@@ -902,6 +927,55 @@ export default function GachaPage() {
         [data-theme="light"] .gacha-idle .gacha-hint {
           color: #9a9288;
         }
+
+        /* ── SEO section ── */
+        .gacha-seo-section {
+          width: 100%;
+          max-width: 640px;
+          padding: 48px 24px 0;
+          margin-top: 16px;
+          border-top: 1px solid rgba(255,255,255,0.06);
+        }
+        [data-theme="light"] .gacha-seo-section { border-color: #cdc8bc; }
+        .gacha-seo-inner {
+          display: flex;
+          flex-direction: column;
+          gap: 16px;
+        }
+        .gacha-seo-heading {
+          font-family: var(--font-space), monospace;
+          font-size: 0.65rem;
+          letter-spacing: 0.2em;
+          text-transform: uppercase;
+          color: #4a445a;
+          margin: 0;
+        }
+        [data-theme="light"] .gacha-seo-heading { color: #8a8468; }
+        .gacha-seo-text {
+          font-family: var(--font-cormorant), serif;
+          font-size: 0.95rem;
+          color: #6b6480;
+          line-height: 1.75;
+          margin: 0;
+        }
+        [data-theme="light"] .gacha-seo-text { color: #5a5450; }
+        .gacha-seo-links {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 12px;
+        }
+        .gacha-seo-link {
+          font-family: var(--font-space), monospace;
+          font-size: 0.55rem;
+          letter-spacing: 0.12em;
+          text-transform: uppercase;
+          color: #c0001a;
+          text-decoration: none;
+          border-bottom: 1px solid rgba(192,0,26,0.3);
+          padding-bottom: 2px;
+          transition: border-color 0.2s;
+        }
+        .gacha-seo-link:hover { border-color: #c0001a; }
       `}</style>
     </main>
   );
