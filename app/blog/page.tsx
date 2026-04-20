@@ -43,6 +43,17 @@ function readTime(html: string): string {
   return `${mins} min read`;
 }
 
+/** Strip <style>, <script>, and all tags, then collapse whitespace */
+function cleanExcerpt(html: string, len = 220): string {
+  return html
+    .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, "")
+    .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, "")
+    .replace(/<[^>]*>/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, len);
+}
+
 export default async function BlogPage() {
   const [posts, pageContent] = await Promise.all([
     prisma.blogPost.findMany({
@@ -148,7 +159,7 @@ export default async function BlogPage() {
             {/* ── Featured / latest post ─────────────────────────────────── */}
             {posts[0] && (() => {
               const p = posts[0];
-              const excerpt = p.content.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim().slice(0, 220);
+              const excerpt = cleanExcerpt(p.content, 220);
               const dateStr = new Date(p.createdAt).toLocaleDateString("en-US", {
                 year: "numeric", month: "long", day: "numeric",
               });
@@ -185,7 +196,7 @@ export default async function BlogPage() {
             {posts.length > 1 && (
               <div className="blog-index-grid">
                 {posts.slice(1).map((post) => {
-                  const excerpt = post.content.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim().slice(0, 130);
+                  const excerpt = cleanExcerpt(post.content, 130);
                   const dateStr = new Date(post.createdAt).toLocaleDateString("en-US", {
                     year: "numeric", month: "short", day: "numeric",
                   });

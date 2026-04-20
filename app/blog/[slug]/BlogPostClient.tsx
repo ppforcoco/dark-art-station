@@ -352,7 +352,7 @@ export default function BlogPostClient({ post, allPosts }: { post: Post; allPost
         @media (min-width: 601px) and (max-width: 800px) { .related-posts-grid { grid-template-columns: repeat(2, 1fr); } }
         .related-post-card {
           display: flex; flex-direction: column; text-decoration: none;
-          border: 1px solid rgba(0,0,0,0.1); overflow: hidden; background: #f0ebe0;
+          border: 1px solid rgba(0,0,0,0.08); overflow: hidden; background: #ffffff;
           transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
         }
         .related-post-card:hover {
