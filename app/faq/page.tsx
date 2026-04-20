@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import AdSlot from "@/components/AdSlot";
+import { getPageContent } from "@/lib/db";
 
 export const metadata: Metadata = {
   title: "FAQ — HauntedWallpapers",
@@ -168,7 +169,8 @@ const FAQS: { q: string; a: React.ReactNode; text: string }[] = [
   },
 ];
 
-export default function FaqPage() {
+export default async function FaqPage() {
+  const pageContent = await getPageContent("faq");
   return (
     <main className="static-page">
       <script
@@ -207,6 +209,11 @@ export default function FaqPage() {
               </details>
             ))}
           </section>
+          {pageContent?.body && (
+            <section className="static-section" style={{ marginTop: "40px" }}>
+              <div dangerouslySetInnerHTML={{ __html: pageContent.body }} />
+            </section>
+          )}
           <section className="static-section" style={{ marginTop: "60px" }}>
             <h2>Still need help?</h2>
             <p>

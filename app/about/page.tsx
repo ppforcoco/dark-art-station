@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import AdSlot from "@/components/AdSlot";
+import { getPageContent } from "@/lib/db";
 
 export const metadata: Metadata = {
   title: "About — HauntedWallpapers",
@@ -8,7 +9,8 @@ export const metadata: Metadata = {
     "HauntedWallpapers is not a studio — it's an obsession. The story behind the dark art.",
 };
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const pageContent = await getPageContent("about");
   return (
     <main className="static-page">
       <div className="static-page-inner">
@@ -104,6 +106,12 @@ export default function AboutPage() {
               <a href="/licensing">Licensing &amp; Terms</a>.
             </p>
           </section>
+
+          {pageContent?.body && (
+            <section className="static-section">
+              <div dangerouslySetInnerHTML={{ __html: pageContent.body }} />
+            </section>
+          )}
 
         </div>
       </div>

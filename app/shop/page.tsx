@@ -1,6 +1,6 @@
 // app/shop/page.tsx
 import type { Metadata } from "next";
-import { db } from "@/lib/db";
+import { db, getPageContent } from "@/lib/db";
 import Link from "next/link";
 import ProductCard from "@/components/ProductCard";
 import Pagination from "@/components/Pagination";
@@ -52,7 +52,7 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
     ...(filter === "free" ? { isFree: true } : {}),
   };
 
-  const [collections, total, allCategories] = await Promise.all([
+  const [collections, total, allCategories, pageContent] = await Promise.all([
     db.collection.findMany({
       where,
       orderBy: { createdAt: "desc" },
@@ -73,6 +73,7 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
       distinct: ["category"],
       orderBy: { category: "asc" },
     }),
+    getPageContent("shop"),
   ]);
 
   const totalPages  = Math.ceil(total / PAGE_SIZE);
@@ -102,6 +103,9 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
         <p className="shop-page-count">
           {total} {total === 1 ? "work" : "works"} found
         </p>
+        {pageContent?.body && !category && !filter && page === 1 && (
+          <div className="shop-editorial-intro" dangerouslySetInnerHTML={{ __html: pageContent.body }} />
+        )}
       </div>
 
       <div className="shop-filter-bar">

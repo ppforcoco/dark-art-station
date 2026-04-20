@@ -1,7 +1,7 @@
 // app/pc/page.tsx
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { db } from "@/lib/db";
+import { db, getPageContent } from "@/lib/db";
 import { getPublicUrl } from "@/lib/r2";
 import { getRankedTags } from "@/lib/tags";
 import TagCloud from "@/components/TagCloud";
@@ -55,7 +55,7 @@ export default async function PcPage({ searchParams }: PageProps) {
     ...(tag ? { tags: { has: tag } } : {}),
   };
 
-  const [images, total, rankedTags] = await Promise.all([
+  const [images, total, rankedTags, pageContent] = await Promise.all([
     db.image.findMany({
       where,
       orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
@@ -65,6 +65,7 @@ export default async function PcPage({ searchParams }: PageProps) {
     }),
     db.image.count({ where }),
     getRankedTags("PC").then(t => t.slice(0, 10)),
+    getPageContent("pc"),
   ]);
 
   const totalPages = Math.ceil(total / PAGE_SIZE);
@@ -97,22 +98,26 @@ export default async function PcPage({ searchParams }: PageProps) {
 
         {!tag && (
           <div className="device-page-intro">
-            <p>
-              PC and desktop wallpapers here are landscape 16:9 format, high-resolution
-              masters. They are designed for modern monitors including 1080p and 1440p displays.
-              displays, as well as ultrawide setups. The dark backgrounds work particularly well
-              on IPS and OLED monitors where deep blacks add to the atmosphere.
-            </p>
-            <p>
-              On Windows, right-click your desktop → Personalise → Background to apply any image.
-              On Mac, go to System Settings → Wallpaper and drag your downloaded file in.
-              Multi-monitor setups are supported — you can set a different wallpaper on each display.
-              Everything is free, instant, and requires no account.
-            </p>
-            <div className="device-page-guide-link">
-              <span>Want a step-by-step walkthrough?</span>
-              <a href="/blog/the-dark-aesthetic-a-complete-guide-to-customizing-your-devices">Read our wallpaper guide →</a>
-            </div>
+            {pageContent?.body
+              ? <div dangerouslySetInnerHTML={{ __html: pageContent.body }} />
+              : <>
+                  <p>
+                    PC and desktop wallpapers here are landscape 16:9 format, high-resolution
+                    masters. They are designed for modern monitors including 1080p and 1440p displays.
+                    displays, as well as ultrawide setups. The dark backgrounds work particularly well
+                    on IPS and OLED monitors where deep blacks add to the atmosphere.
+                  </p>
+                  <p>
+                    On Windows, right-click your desktop → Personalise → Background to apply any image.
+                    On Mac, go to System Settings → Wallpaper and drag your downloaded file in.
+                    Multi-monitor setups are supported — you can set a different wallpaper on each display.
+                    Everything is free, instant, and requires no account.
+                  </p>
+                  <div className="device-page-guide-link">
+                    <span>Want a step-by-step walkthrough?</span>
+                    <a href="/blog/the-dark-aesthetic-a-complete-guide-to-customizing-your-devices">Read our wallpaper guide →</a>
+                  </div>
+                </>}
           </div>
         )}
 

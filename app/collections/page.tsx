@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { db } from "@/lib/db";
+import { db, getPageContent } from "@/lib/db";
 import AdSlot from "@/components/AdSlot";
 import AgeGateLink from "@/components/AgeGateLink";
 
@@ -40,11 +40,14 @@ export default async function CollectionsPage() {
     },
   });
 
-  const grouped = collections.reduce<Record<string, typeof collections>>((acc, col) => {
-    if (!acc[col.category]) acc[col.category] = [];
-    acc[col.category].push(col);
-    return acc;
-  }, {});
+  const [grouped, pageContent] = await Promise.all([
+    Promise.resolve(collections.reduce<Record<string, typeof collections>>((acc, col) => {
+      if (!acc[col.category]) acc[col.category] = [];
+      acc[col.category].push(col);
+      return acc;
+    }, {})),
+    getPageContent("collections"),
+  ]);
 
   return (
     <main style={{ backgroundColor: "#070710", minHeight: "100vh", paddingTop: "100px" }}>
@@ -56,6 +59,10 @@ export default async function CollectionsPage() {
         <p style={{ fontFamily: "var(--font-cormorant)", fontStyle: "italic", fontSize: "1.05rem", color: "#8a8099", marginTop: "12px" }}>
           {collections.length} {collections.length === 1 ? "collection" : "collections"} available
         </p>
+        {pageContent?.body && (
+          <div style={{ marginTop: "20px", color: "#8a8099", lineHeight: 1.8, maxWidth: "760px", fontSize: "0.95rem" }}
+            dangerouslySetInnerHTML={{ __html: pageContent.body }} />
+        )}
       </div>
 
       <div style={{ padding: "0 clamp(20px, 5vw, 60px) 60px" }}>

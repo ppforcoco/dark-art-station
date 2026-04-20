@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import AdSlot from "@/components/AdSlot";
 import { PrismaClient } from "@prisma/client";
+import { getPageContent } from "@/lib/db";
 
 export const dynamic = "force-dynamic";
 
@@ -43,14 +44,17 @@ function readTime(html: string): string {
 }
 
 export default async function BlogPage() {
-  const posts = await prisma.blogPost.findMany({
-    where: { published: true },
-    orderBy: { createdAt: "desc" },
-    select: {
-      slug: true, title: true, label: true,
-      content: true, featuredImage: true, createdAt: true,
-    },
-  });
+  const [posts, pageContent] = await Promise.all([
+    prisma.blogPost.findMany({
+      where: { published: true },
+      orderBy: { createdAt: "desc" },
+      select: {
+        slug: true, title: true, label: true,
+        content: true, featuredImage: true, createdAt: true,
+      },
+    }),
+    getPageContent("blog"),
+  ]);
 
   const grouped = posts.reduce<Record<string, typeof posts>>((acc, p) => {
     const key = p.label ?? "Guides";
@@ -118,6 +122,10 @@ export default async function BlogPage() {
           <p className="blog-index-subtitle">
             Wallpaper guides, dark art explainers, device tutorials and gothic deep-dives.
           </p>
+          {pageContent?.body && (
+            <div className="blog-index-subtitle" style={{ marginTop: "12px", opacity: 0.85 }}
+              dangerouslySetInnerHTML={{ __html: pageContent.body }} />
+          )}
           {posts.length > 0 && (
             <p className="blog-index-count">{posts.length} post{posts.length !== 1 ? "s" : ""}</p>
           )}

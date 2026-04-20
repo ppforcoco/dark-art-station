@@ -363,3 +363,18 @@ export async function getSeasonalImages(
     collectionSlug: img.collection?.slug ?? null,
   }));
 }
+// ─── Page Content helper ───────────────────────────────────────────────────────
+// Fetch editable page content by slug. Returns null if not set (pages should
+// fall back to their hardcoded default text).
+export async function getPageContent(slug: string): Promise<{
+  title:    string | null;
+  body:     string;
+  metaDesc: string | null;
+} | null> {
+  try {
+    const record = await db.pageContent.findUnique({ where: { slug } });
+    return record ?? null;
+  } catch {
+    return null;
+  }
+}

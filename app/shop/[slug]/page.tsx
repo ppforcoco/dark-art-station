@@ -179,14 +179,27 @@ export default async function CollectionPage({ params }: PageProps) {
               Uses the collection description if available, otherwise auto-generates
               from the title and category. Always renders so no page is text-empty. */}
           {(() => {
-            const intro = collection.description ??
+            const fallback =
               `${collection.title} is a curated collection of free dark art wallpapers from Haunted Wallpapers. ` +
               `Each piece in this ${collection.category ?? "dark"} collection is available as an instant free download ` +
               `— no account required, no watermarks. Images are formatted for mobile portrait screens (9:16) ` +
               `and look exceptional on AMOLED displays where true blacks create maximum contrast. ` +
               `Browse the full collection below and tap any wallpaper to download the full-resolution file.`;
+
+            // If description contains HTML tags, render as HTML; otherwise render as plain text
+            const isHtml = collection.description && /<[a-z][\s\S]*>/i.test(collection.description);
+
+            if (isHtml) {
+              return (
+                <div
+                  className="coll-editorial-intro"
+                  dangerouslySetInnerHTML={{ __html: collection.description! }}
+                />
+              );
+            }
+
             return (
-              <p className="coll-editorial-intro">{intro}</p>
+              <p className="coll-editorial-intro">{collection.description ?? fallback}</p>
             );
           })()}
 
@@ -247,7 +260,9 @@ export default async function CollectionPage({ params }: PageProps) {
               <h2 className="coll-sidebar-title">{collection.title}</h2>
 
               {collection.description && (
-                <p className="coll-sidebar-desc">{collection.description}</p>
+                /<[a-z][\s\S]*>/i.test(collection.description)
+                  ? <div className="coll-sidebar-desc" dangerouslySetInnerHTML={{ __html: collection.description }} />
+                  : <p className="coll-sidebar-desc">{collection.description}</p>
               )}
 
               {/* Stats row */}

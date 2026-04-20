@@ -1,7 +1,7 @@
 // app/android/page.tsx
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { db } from "@/lib/db";
+import { db, getPageContent } from "@/lib/db";
 import { getPublicUrl } from "@/lib/r2";
 import { getRankedTags } from "@/lib/tags";
 import TagCloud from "@/components/TagCloud";
@@ -57,7 +57,7 @@ export default async function AndroidPage({ searchParams }: PageProps) {
     ...(tag ? { tags: { has: tag } } : {}),
   };
 
-  const [images, total, rankedTags] = await Promise.all([
+  const [images, total, rankedTags, pageContent] = await Promise.all([
     db.image.findMany({
       where,
       orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
@@ -67,6 +67,7 @@ export default async function AndroidPage({ searchParams }: PageProps) {
     }),
     db.image.count({ where }),
     getRankedTags("ANDROID").then(t => t.slice(0, 10)),
+    getPageContent("android"),
   ]);
 
   const totalPages = Math.ceil(total / PAGE_SIZE);
@@ -99,22 +100,26 @@ export default async function AndroidPage({ searchParams }: PageProps) {
 
         {!tag && (
           <div className="device-page-intro">
-            <p>
-              All Android wallpapers here are portrait 9:16 format, sized for modern flagship
-              screens including Samsung Galaxy, Google Pixel, OnePlus, and Xiaomi devices.
-              Images are generated at HD resolution — no visible compression.
-              AMOLED-optimised: near-black backgrounds let your OLED screen turn pixels completely
-              off, extending battery life while looking dramatically better than LCD-era wallpapers.
-            </p>
-            <p>
-              Download is instant — tap any image, tap download, and it saves directly to your
-              gallery. Set it from your gallery app or from Settings → Wallpaper. No account,
-              no watermarks, no limits.
-            </p>
-            <div className="device-page-guide-link">
-              <span>Need help setting it up?</span>
-              <a href="/blog/the-dark-aesthetic-a-complete-guide-to-customizing-your-devices">Read our wallpaper guide →</a>
-            </div>
+            {pageContent?.body
+              ? <div dangerouslySetInnerHTML={{ __html: pageContent.body }} />
+              : <>
+                  <p>
+                    All Android wallpapers here are portrait 9:16 format, sized for modern flagship
+                    screens including Samsung Galaxy, Google Pixel, OnePlus, and Xiaomi devices.
+                    Images are generated at HD resolution — no visible compression.
+                    AMOLED-optimised: near-black backgrounds let your OLED screen turn pixels completely
+                    off, extending battery life while looking dramatically better than LCD-era wallpapers.
+                  </p>
+                  <p>
+                    Download is instant — tap any image, tap download, and it saves directly to your
+                    gallery. Set it from your gallery app or from Settings → Wallpaper. No account,
+                    no watermarks, no limits.
+                  </p>
+                  <div className="device-page-guide-link">
+                    <span>Need help setting it up?</span>
+                    <a href="/blog/the-dark-aesthetic-a-complete-guide-to-customizing-your-devices">Read our wallpaper guide →</a>
+                  </div>
+                </>}
           </div>
         )}
 

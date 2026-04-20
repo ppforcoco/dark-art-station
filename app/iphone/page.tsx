@@ -1,7 +1,7 @@
 // app/iphone/page.tsx
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { db } from "@/lib/db";
+import { db, getPageContent } from "@/lib/db";
 import { getPublicUrl } from "@/lib/r2";
 import { getRankedTags } from "@/lib/tags";
 import TagCloud from "@/components/TagCloud";
@@ -55,7 +55,7 @@ export default async function IphonePage({ searchParams }: PageProps) {
     ...(tag ? { tags: { has: tag } } : {}),
   };
 
-  const [images, total, rankedTags] = await Promise.all([
+  const [images, total, rankedTags, pageContent] = await Promise.all([
     db.image.findMany({
       where,
       orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
@@ -65,6 +65,7 @@ export default async function IphonePage({ searchParams }: PageProps) {
     }),
     db.image.count({ where }),
     getRankedTags("IPHONE").then(t => t.slice(0, 10)),
+    getPageContent("iphone"),
   ]);
 
   const totalPages = Math.ceil(total / PAGE_SIZE);
@@ -97,21 +98,25 @@ export default async function IphonePage({ searchParams }: PageProps) {
 
         {!tag && (
           <div className="device-page-intro">
-            <p>
-              Every wallpaper in this collection is designed specifically for iPhone screens —
-              portrait 9:16 format, optimised for the Super Retina XDR display found on iPhone 12
-              through iPhone 16. Images are generated at HD resolution and downsampled cleanly,
-              so you get maximum sharpness without jagged edges or compression artefacts.
-            </p>
-            <p>
-              All wallpapers are free to download. No account required, no watermarks, no paywalls.
-              Tap any image to view it full-size and download directly to your Photos library.
-              New collections drop regularly.
-            </p>
-            <div className="device-page-guide-link">
-              <span>New to setting wallpapers?</span>
-              <a href="/blog/the-dark-aesthetic-a-complete-guide-to-customizing-your-devices">Read our wallpaper guide →</a>
-            </div>
+            {pageContent?.body
+              ? <div dangerouslySetInnerHTML={{ __html: pageContent.body }} />
+              : <>
+                  <p>
+                    Every wallpaper in this collection is designed specifically for iPhone screens —
+                    portrait 9:16 format, optimised for the Super Retina XDR display found on iPhone 12
+                    through iPhone 16. Images are generated at HD resolution and downsampled cleanly,
+                    so you get maximum sharpness without jagged edges or compression artefacts.
+                  </p>
+                  <p>
+                    All wallpapers are free to download. No account required, no watermarks, no paywalls.
+                    Tap any image to view it full-size and download directly to your Photos library.
+                    New collections drop regularly.
+                  </p>
+                  <div className="device-page-guide-link">
+                    <span>New to setting wallpapers?</span>
+                    <a href="/blog/the-dark-aesthetic-a-complete-guide-to-customizing-your-devices">Read our wallpaper guide →</a>
+                  </div>
+                </>}
           </div>
         )}
 

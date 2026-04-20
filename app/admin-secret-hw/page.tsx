@@ -1,2673 +1,530 @@
 "use client";
 import React, { useState, useEffect, useCallback, useRef } from "react";
 
-// ─── Types ────────────────────────────────────────────────────────────────────
-interface Analytics {
-  totalDownloads: number;
-  todayDownloads: number;
-  weekDownloads:  number;
-  topWallpapers:   { title: string; downloads: number }[];
-  topCollections:  { title: string; downloads: number }[];
-  recentActivity:  { time: string; title: string }[];
+interface Analytics { totalDownloads:number;todayDownloads:number;weekDownloads:number;topWallpapers:{title:string;downloads:number}[];topCollections:{title:string;downloads:number}[];recentActivity:{time:string;title:string}[]; }
+interface Post { slug:string;title:string;label:string;content?:string;featuredImage?:string|null;createdAt:string; }
+interface ImageRecord { id:string;slug:string;title:string;r2Key:string;description:string|null;altText:string|null;tags:string[];isAdult:boolean;deviceType:string|null;viewCount:number;collection?:{title:string}|null; }
+interface PageContentRecord { id:string;slug:string;title:string|null;body:string;metaDesc:string|null;updatedAt:string; }
+
+const ALL_LABELS=["Wallpaper Guides","How-To & Tutorials","Device Setup","iPhone Wallpapers","Android Wallpapers","PC & Desktop Wallpapers","Dark Aesthetics","Gothic & Horror","Dark Fantasy","AMOLED Wallpapers","Minimalist Dark","Cyberpunk & Neon","Halloween Special","Seasonal Picks","Top Lists","New Releases","Community Spotlights","News & Updates","Free Wallpapers","HD Wallpapers","Lock Screen Ideas","Dark Psychology","16+ Mature Content"];
+const ALL_TAGS=["dark","gothic","horror","fantasy","minimal","amoled","neon","cyberpunk","nature","abstract","skull","moon","forest","city","demon","angel","witch","fire","ice","space","ocean","halloween","anime","street","pattern","texture","portrait","landscape","skeleton","smoke","rose","blood","darkness","void","crimson","black","white","aesthetic","edgy","rebel","grunge","punk","metal","vampire","ghost","reaper","creepy","mysterious","shadow","ethereal","art","illustration","wallpaper","phone","lockscreen","HD","hd","purple","red","green","blue","gold","silver","neon-green"];
+const ADSENSE_CHECKLIST=[{done:true,item:"Original content — no copy-paste or AI spam"},{done:true,item:"Privacy Policy page live"},{done:true,item:"About page live"},{done:true,item:"Contact page live"},{done:false,item:"At least 15–20 blog posts published (800+ words each)"},{done:false,item:"Consistent posting — 2–3 posts per week minimum"},{done:false,item:"Site is at least 3–6 months old with traffic history"},{done:false,item:"No broken links, 404s, or console errors"},{done:false,item:"Mobile responsive on all pages"},{done:false,item:"Google Search Console verified + sitemap submitted"},{done:false,item:"No misleading navigation or hidden text"},{done:false,item:"Clear site purpose — wallpaper downloads, clearly stated"}];
+const ADULT_IMAGES_TO_MARK=[{title:"Seductive Reaper",device:"IPHONE"},{title:"Gothic Temptress",device:"ANDROID"},{title:"Dark Sensuality",device:"PC"},{title:"Occult Ritual",device:"IPHONE"},{title:"Blood Moon Ritual",device:"ANDROID"},{title:"Forbidden Darkness",device:"PC"}];
+const PAGE_SLUGS=[{slug:"home",label:"Home",url:"/"},{slug:"shop",label:"Shop / Collections",url:"/shop"},{slug:"iphone",label:"iPhone Wallpapers",url:"/iphone"},{slug:"android",label:"Android Wallpapers",url:"/android"},{slug:"pc",label:"PC Wallpapers",url:"/pc"},{slug:"collections",label:"Collections",url:"/collections"},{slug:"blog",label:"Blog Index",url:"/blog"},{slug:"faq",label:"FAQ",url:"/faq"},{slug:"about",label:"About",url:"/about"},{slug:"contact",label:"Contact",url:"/contact"},{slug:"privacy",label:"Privacy Policy",url:"/privacy"},{slug:"terms",label:"Terms of Service",url:"/terms"},{slug:"licensing",label:"Licensing",url:"/licensing"},{slug:"dmca",label:"DMCA",url:"/dmca"},{slug:"tools",label:"Tools",url:"/tools"},{slug:"gacha",label:"Gacha",url:"/gacha"},{slug:"search",label:"Search",url:"/search"}];
+
+const CLAUDE_API_URL="https://api.anthropic.com/v1/messages";
+const CLAUDE_MODEL="claude-sonnet-4-6";
+const ALL_TAG_LIST=["dark","gothic","horror","fantasy","minimal","amoled","neon","cyberpunk","nature","abstract","skull","moon","forest","city","demon","angel","witch","fire","ice","space","ocean","halloween","anime","street","pattern","texture","portrait","landscape"];
+
+async function fileToBase64(file:File):Promise<string>{const reader=new FileReader();return new Promise((resolve,reject)=>{reader.onload=()=>resolve((reader.result as string).split(",")[1]);reader.onerror=reject;reader.readAsDataURL(file);});}
+async function urlToBase64(url:string):Promise<{data:string;mediaType:string}>{const res=await fetch(url);if(!res.ok)throw new Error("Could not fetch");const blob=await res.blob();const file=new File([blob],"image.jpg",{type:blob.type||"image/jpeg"});const data=await fileToBase64(file);return{data,mediaType:file.type};}
+interface ClaudeImageAnalysis{title:string;description:string;altText:string;tags:string[];}
+async function analyzeImageWithClaude(base64:string,mediaType:string):Promise<ClaudeImageAnalysis>{
+  const prompt=`You are an SEO expert for "Haunted Wallpapers". Analyze this wallpaper image and return ONLY valid JSON:\n{"title":"Compelling wallpaper title (4-8 words)","description":"SEO description ~200 words, flowing prose","altText":"130-150 characters alt text, no period at end","tags":["3-6 tags from: ${ALL_TAG_LIST.join(", ")}"]}\nReturn ONLY valid JSON, no markdown.`;
+  const res=await fetch(CLAUDE_API_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:CLAUDE_MODEL,max_tokens:1000,messages:[{role:"user",content:[{type:"image",source:{type:"base64",media_type:mediaType,data:base64}},{type:"text",text:prompt}]}]})});
+  if(!res.ok){const e=await res.text().catch(()=>"");throw new Error(`Claude API error ${res.status}: ${e.slice(0,200)}`);}
+  const data=await res.json();const raw=data?.content?.[0]?.text?.trim()??"";
+  if(!raw)throw new Error("Claude returned empty response.");
+  try{const clean=raw.replace(/^```json\n?|```$/g,"").trim();return JSON.parse(clean) as ClaudeImageAnalysis;}
+  catch{throw new Error("Claude response could not be parsed.");}
 }
 
-interface Post {
-  slug:          string;
-  title:         string;
-  label:         string;
-  content?:      string;
-  featuredImage?: string | null;
-  createdAt:     string;
+const C={bg:"#0d0b14",surface:"#13111e",border:"#2a2535",red:"#c0001a",gold:"#c9a84c",purple:"#7c3aed",textPri:"#e8e4f8",textSec:"#8a809a",textMut:"#4a445a",green:"#4caf50",white:"#ffffff"};
+const inp:React.CSSProperties={width:"100%",background:"#0a0812",border:`1px solid ${C.border}`,color:C.textPri,padding:"10px 12px",fontSize:"0.875rem",fontFamily:"monospace",boxSizing:"border-box",outline:"none"};
+const lbl:React.CSSProperties={display:"block",color:C.textMut,fontSize:"0.6rem",letterSpacing:"0.15em",textTransform:"uppercase",marginBottom:"6px"};
+const eyebrow:React.CSSProperties={color:C.textMut,fontSize:"0.6rem",letterSpacing:"0.2em",textTransform:"uppercase",marginBottom:"12px"};
+
+function Btn({children,onClick,disabled,variant="primary",style}:{children:React.ReactNode;onClick?:()=>void;disabled?:boolean;variant?:"primary"|"ghost"|"danger"|"success";style?:React.CSSProperties;}){
+  const base:React.CSSProperties={border:"none",cursor:disabled?"not-allowed":"pointer",fontSize:"0.72rem",letterSpacing:"0.1em",textTransform:"uppercase",fontFamily:"monospace",padding:"10px 20px",transition:"opacity 0.15s",opacity:disabled?0.5:1,whiteSpace:"nowrap"};
+  const variants:Record<string,React.CSSProperties>={primary:{background:C.red,color:C.white},ghost:{background:"transparent",color:C.textSec,border:`1px solid ${C.border}`},danger:{background:"rgba(192,0,26,0.15)",color:C.red,border:`1px solid ${C.red}`},success:{background:"rgba(76,175,80,0.15)",color:C.green,border:`1px solid ${C.green}`}};
+  return<button onClick={onClick} disabled={disabled} style={{...base,...variants[variant],...style}}>{children}</button>;
+}
+function Card({children,style}:{children:React.ReactNode;style?:React.CSSProperties;}){return<div style={{background:C.surface,border:`1px solid ${C.border}`,padding:"24px",...style}}>{children}</div>;}
+function Msg({msg}:{msg:{type:"ok"|"err";text:string}|null}){if(!msg)return null;return<div style={{padding:"10px 14px",marginBottom:"16px",border:`1px solid ${msg.type==="ok"?C.green:C.red}`,color:msg.type==="ok"?C.green:"#ffd080",fontSize:"0.82rem",background:msg.type==="ok"?"rgba(76,175,80,0.08)":"rgba(192,0,26,0.08)"}}>{msg.text}</div>;}
+function AdultBadge(){return<span style={{display:"inline-flex",alignItems:"center",background:C.red,color:"#fff",fontFamily:"monospace",fontWeight:900,fontSize:"0.6rem",padding:"2px 7px",border:"1px solid #ff2040",textTransform:"uppercase"}}>⚠ 16+</span>;}
+
+function HtmlToolbar({textareaId,value,onChange}:{textareaId:string;value:string;onChange:(v:string)=>void;}){
+  const tags=[{label:"B",wrap:["<strong>","</strong>"]},{label:"I",wrap:["<em>","</em>"]},{label:"H2",wrap:["<h2>","</h2>"]},{label:"H3",wrap:["<h3>","</h3>"]},{label:"P",wrap:["<p>","</p>"]},{label:"UL",wrap:["<ul>\n  <li>","</li>\n</ul>"]},{label:"LI",wrap:["<li>","</li>"]},{label:"A",wrap:['<a href="">','</a>']},{label:"Red",wrap:['<span style="color:#c0001a">','</span>']},{label:"Gold",wrap:['<span style="color:#c9a84c">','</span>']},{label:"BQ",wrap:['<blockquote style="border-left:3px solid #c0001a;padding:8px 16px;margin:12px 0;font-style:italic;">','</blockquote>']}];
+  return<div style={{display:"flex",flexWrap:"wrap",gap:"4px",marginBottom:"6px"}}>{tags.map(({label,wrap})=><button key={label} type="button" onClick={()=>{const el=document.getElementById(textareaId) as HTMLTextAreaElement|null;if(!el){onChange(value+wrap[0]+wrap[1]);return;}const start=el.selectionStart,end=el.selectionEnd;const selected=value.slice(start,end);const next=value.slice(0,start)+wrap[0]+selected+wrap[1]+value.slice(end);onChange(next);setTimeout(()=>{el.focus();const pos=start+wrap[0].length+selected.length+wrap[1].length;el.setSelectionRange(pos,pos);},10);}} style={{background:"rgba(124,58,237,0.15)",border:`1px solid ${C.border}`,color:C.purple,padding:"3px 9px",cursor:"pointer",fontSize:"0.62rem",fontFamily:"monospace"}}>{label}</button>)}</div>;
 }
 
-// ─── All labels ───────────────────────────────────────────────────────────────
-const ALL_LABELS = [
-  "Wallpaper Guides", "How-To & Tutorials", "Device Setup",
-  "iPhone Wallpapers", "Android Wallpapers", "PC & Desktop Wallpapers",
-  "Dark Aesthetics", "Gothic & Horror", "Dark Fantasy", "AMOLED Wallpapers",
-  "Minimalist Dark", "Cyberpunk & Neon", "Halloween Special", "Seasonal Picks",
-  "Top Lists", "New Releases", "Community Spotlights", "News & Updates",
-  "Free Wallpapers", "HD Wallpapers", "Lock Screen Ideas",
-  "Dark Psychology",
-  "16+ Mature Content",
-];
-
-// ─── Tag bank ─────────────────────────────────────────────────────────────────
-const ALL_TAGS = [
-  "dark", "gothic", "horror", "fantasy", "minimal", "amoled", "neon",
-  "cyberpunk", "nature", "abstract", "skull", "moon", "forest", "city",
-  "demon", "angel", "witch", "fire", "ice", "space", "ocean", "halloween",
-  "anime", "street", "pattern", "texture", "portrait", "landscape",
-  "skeleton", "smoke", "rose", "blood", "darkness", "void", "crimson",
-  "black", "white", "aesthetic", "edgy", "rebel", "grunge", "punk", "metal",
-  "vampire", "ghost", "reaper", "creepy", "mysterious", "shadow", "ethereal",
-  "art", "illustration", "wallpaper", "phone", "lockscreen", "HD", "hd",
-  "purple", "red", "green", "blue", "gold", "silver", "neon-green",
-];
-
-// ─── Blog ideas ───────────────────────────────────────────────────────────────
-const BLOG_IDEAS = [
-  { title: "Best Dark Wallpapers for iPhone 16 Pro (HD Free Download)",      label: "iPhone Wallpapers",        reason: "💰 High CPC — matches product search" },
-  { title: "How to Set a Wallpaper on iPhone 16 Step by Step",               label: "How-To & Tutorials",      reason: "💰 Tutorial = long session, more ad views" },
-  { title: "How to Set a Wallpaper on Android (All Phones 2026)",            label: "How-To & Tutorials",      reason: "💰 Evergreen traffic, high volume" },
-  { title: "Best AMOLED Wallpapers for Battery Saving in 2026",              label: "AMOLED Wallpapers",        reason: "💰 Tech audience = high CPC" },
-  { title: "Top 20 Dark Aesthetic Wallpapers That Go Viral on Pinterest",    label: "Dark Aesthetics",          reason: "📌 Pinterest traffic = repeat visitors" },
-  { title: "Best HD Wallpapers for PC Desktop (Dark Theme)",                 label: "PC & Desktop Wallpapers",  reason: "💰 Desktop ads = higher CPM" },
-  { title: "Gothic Wallpapers: 15 Free Downloads for Halloween 2026",        label: "Halloween Special",        reason: "🎃 Seasonal spike in October" },
-  { title: "Dark Minimalist Wallpapers: Less Is More (Free HD)",             label: "Minimalist Dark",          reason: "📈 Minimalist = growing trend" },
-  { title: "What is an AMOLED Display? Why Your Wallpaper Matters",          label: "AMOLED Wallpapers",        reason: "💰 Explainer = long time on page" },
-  { title: "Cyberpunk Wallpapers 2026: Best Neon Dark Backgrounds",          label: "Cyberpunk & Neon",         reason: "🔥 Trend content = social shares" },
-  { title: "Best Dark Wallpapers for Lock Screen (iPhone & Android)",        label: "Lock Screen Ideas",        reason: "💰 High intent, specific keyword" },
-  { title: "How to Make Your Own AI Wallpaper (Free Tools 2026)",            label: "How-To & Tutorials",      reason: "💡 AI content = very shareable" },
-  { title: "Dark Fantasy Art Wallpapers: Free Collections Ranked",           label: "Dark Fantasy",             reason: "📈 Collection pages = lower bounce" },
-  { title: "Best Horror Wallpapers for Halloween Season",                    label: "Gothic & Horror",          reason: "🎃 Seasonal + evergreen" },
-  { title: "How to Use Dark Wallpapers to Boost Focus & Productivity",       label: "Dark Aesthetics",          reason: "💼 Unusual angle = low competition" },
-];
-
-const SEO_TIPS = [
-  "✅ Title should be 50–60 chars with main keyword first",
-  "✅ Meta description: 140–155 chars, include a call to action",
-  "✅ Add at least 1 H2 for every 200 words of content",
-  "✅ Target 800–1200 words per post for AdSense approval",
-  "✅ Include the keyword in the URL slug (auto-filled from title)",
-  "✅ Link to 2–3 of your other wallpaper pages in each post",
-  "✅ Add alt text to every image with descriptive keywords",
-  "✅ End every post with a CTA: 'Browse our free dark wallpapers'",
-];
-
-const ADSENSE_CHECKLIST = [
-  { done: true,  item: "Original content — no copy-paste or AI spam" },
-  { done: true,  item: "Privacy Policy page live" },
-  { done: true,  item: "About page live" },
-  { done: true,  item: "Contact page live" },
-  { done: false, item: "At least 15–20 blog posts published (800+ words each)" },
-  { done: false, item: "Consistent posting — 2–3 posts per week minimum" },
-  { done: false, item: "Site is at least 3–6 months old with traffic history" },
-  { done: false, item: "No broken links, 404s, or console errors" },
-  { done: false, item: "Mobile responsive on all pages" },
-  { done: false, item: "Google Search Console verified + sitemap submitted" },
-  { done: false, item: "No misleading navigation or hidden text" },
-  { done: false, item: "Clear site purpose — wallpaper downloads, clearly stated" },
-];
-
-// ─── Shared styles ────────────────────────────────────────────────────────────
-const inputStyle: React.CSSProperties = {
-  width: "100%", background: "transparent", border: "1px solid #d0cce0",
-  color: "#1a1625", padding: "10px 12px", fontSize: "0.9rem",
-  fontFamily: "monospace", boxSizing: "border-box",
-};
-const labelStyle: React.CSSProperties = {
-  display: "block", color: "#6b6480", fontSize: "0.6rem",
-  letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: "6px",
-};
-const eyebrowStyle: React.CSSProperties = {
-  color: "#6b6480", fontSize: "0.6rem", letterSpacing: "0.2em",
-  textTransform: "uppercase", marginBottom: "12px",
-};
-const modeBtn: React.CSSProperties = {
-  background: "#ffffff", border: "1px solid", padding: "3px 10px",
-  cursor: "pointer", fontSize: "0.65rem", letterSpacing: "0.1em", fontFamily: "monospace",
-};
-
-// ─── 16+ Label Badge ──────────────────────────────────────────────────────────
-function AdultBadge({ size = "sm" }: { size?: "sm" | "lg" }) {
-  const isLg = size === "lg";
-  return (
-    <span style={{
-      display: "inline-flex",
-      alignItems: "center",
-      gap: isLg ? "6px" : "4px",
-      background: "#c0001a",
-      color: "#fff",
-      fontFamily: "monospace",
-      fontWeight: 900,
-      fontSize: isLg ? "0.75rem" : "0.6rem",
-      letterSpacing: isLg ? "0.08em" : "0.05em",
-      padding: isLg ? "4px 12px" : "2px 7px",
-      border: "1px solid #ff2040",
-      textTransform: "uppercase",
-    }}>
-      ⚠ 16+
-    </span>
-  );
+function PasswordGate({onAuth}:{onAuth:()=>void}){
+  const[pw,setPw]=useState("");const[error,setError]=useState("");const[loading,setLoading]=useState(false);
+  async function handleLogin(){setLoading(true);setError("");try{const res=await fetch("/api/hw-admin/auth",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({password:pw})});if(res.ok){sessionStorage.setItem("hw-admin-auth",pw);onAuth();}else setError("Wrong password.");}catch{setError("Network error.");}setLoading(false);}
+  return<div style={{minHeight:"100vh",display:"flex",alignItems:"center",justifyContent:"center",background:C.bg,fontFamily:"monospace"}}><div style={{border:`1px solid ${C.border}`,padding:"48px",width:"360px",textAlign:"center",background:C.surface}}><p style={{color:C.red,fontSize:"0.65rem",letterSpacing:"0.25em",marginBottom:"8px"}}>HAUNTED WALLPAPERS</p><h1 style={{color:C.textPri,fontSize:"1.4rem",marginBottom:"32px",fontWeight:300}}>Admin Access</h1><input type="password" placeholder="Enter password" value={pw} onChange={e=>setPw(e.target.value)} onKeyDown={e=>e.key==="Enter"&&handleLogin()} style={{...inp,marginBottom:"16px",fontSize:"1rem",padding:"12px"}} />{error&&<p style={{color:C.red,marginBottom:"12px",fontSize:"0.85rem"}}>{error}</p>}<Btn onClick={handleLogin} disabled={loading} style={{width:"100%",padding:"12px"}}>{loading?"Checking…":"Enter"}</Btn></div></div>;
 }
 
-// ─── Claude Vision AI helper ─────────────────────────────────────────────────
-async function fileToBase64(file: File): Promise<string> {
-  const reader = new FileReader();
-  return new Promise<string>((resolve, reject) => {
-    reader.onload  = () => resolve((reader.result as string).split(",")[1]);
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
-  });
-}
-
-async function urlToBase64(url: string): Promise<{ data: string; mediaType: string }> {
-  const res = await fetch(url);
-  if (!res.ok) throw new Error("Could not fetch image from URL");
-  const blob = await res.blob();
-  const file = new File([blob], "image.jpg", { type: blob.type || "image/jpeg" });
-  const data = await fileToBase64(file);
-  return { data, mediaType: file.type };
-}
-
-interface ClaudeImageAnalysis {
-  title: string;
-  description: string;
-  altText: string;
-  tags: string[];
-}
-
-const CLAUDE_API_URL = "https://api.anthropic.com/v1/messages";
-const CLAUDE_MODEL   = "claude-sonnet-4-6";
-
-const ALL_TAG_LIST = [
-  "dark","gothic","horror","fantasy","minimal","amoled","neon",
-  "cyberpunk","nature","abstract","skull","moon","forest","city",
-  "demon","angel","witch","fire","ice","space","ocean","halloween",
-  "anime","street","pattern","texture","portrait","landscape",
-];
-
-async function analyzeImageWithClaude(
-  base64: string,
-  mediaType: string
-): Promise<ClaudeImageAnalysis> {
-  const prompt = `You are an SEO expert for "Haunted Wallpapers" — a dark gothic wallpaper website.
-
-Analyze this wallpaper image and return a JSON object with exactly these fields:
-{
-  "title": "Compelling wallpaper title (4-8 words, descriptive, capitalize each word)",
-  "description": "Detailed SEO description of this wallpaper (~200 words). Describe art style, mood, colors, atmosphere, what makes it unique. Write as flowing prose, not bullet points.",
-  "altText": "Single alt text exactly 130-150 characters. Descriptive for SEO with dark/gothic keywords. NO period at end.",
-  "tags": ["array", "of", "3-6", "relevant", "tags", "from", "the", "allowed", "list"]
-}
-
-Allowed tags (ONLY use from this list): ${ALL_TAG_LIST.join(", ")}
-
-Rules:
-- Title: no generic words like "wallpaper" or "background" — focus on the actual content
-- Description: exactly ~200 words, flowing prose, SEO-rich
-- AltText: MUST be 130-150 chars, check length carefully
-- Tags: 3-6 tags only from the allowed list above
-
-Return ONLY valid JSON, no markdown, no explanation.`;
-
-  const res = await fetch(CLAUDE_API_URL, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      model: CLAUDE_MODEL,
-      max_tokens: 1000,
-      messages: [{
-        role: "user",
-        content: [
-          {
-            type: "image",
-            source: { type: "base64", media_type: mediaType, data: base64 },
-          },
-          { type: "text", text: prompt },
-        ],
-      }],
-    }),
-  });
-
-  if (!res.ok) {
-    const errText = await res.text().catch(() => "");
-    throw new Error(`Claude API error ${res.status}: ${errText.slice(0, 200)}`);
-  }
-
-  const data = await res.json();
-  const raw  = data?.content?.[0]?.text?.trim() ?? "";
-  if (!raw) throw new Error("Claude returned empty response. Try again.");
-
-  try {
-    const clean = raw.replace(/^```json\n?|```$/g, "").trim();
-    return JSON.parse(clean) as ClaudeImageAnalysis;
-  } catch {
-    throw new Error("Claude response could not be parsed. Try again.");
-  }
-}
-
-async function generateAltTextWithClaude(file: File): Promise<string> {
-  const base64 = await fileToBase64(file);
-  const result = await analyzeImageWithClaude(base64, file.type);
-  return result.altText;
-}
-
-async function generateAltTextFromUrl(url: string): Promise<string> {
-  const { data, mediaType } = await urlToBase64(url);
-  const result = await analyzeImageWithClaude(data, mediaType);
-  return result.altText;
-}
-
-// ─── Password Gate ────────────────────────────────────────────────────────────
-function PasswordGate({ onAuth }: { onAuth: () => void }) {
-  const [pw, setPw]           = useState("");
-  const [error, setError]     = useState("");
-  const [loading, setLoading] = useState(false);
-
-  async function handleLogin() {
-    setLoading(true); setError("");
-    try {
-      const res = await fetch("/api/hw-admin/auth", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ password: pw }),
-      });
-      if (res.ok) { sessionStorage.setItem("hw-admin-auth", pw); onAuth(); }
-      else setError("Wrong password.");
-    } catch { setError("Network error. Try again."); }
-    setLoading(false);
-  }
-
-  return (
-    <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#f5f4fa", fontFamily: "monospace" }}>
-      <div style={{ border: "1px solid #d0cce0", padding: "40px", width: "360px", textAlign: "center" }}>
-        <p style={{ color: "#c0001a", fontSize: "0.7rem", letterSpacing: "0.2em", marginBottom: "8px" }}>HAUNTED WALLPAPERS</p>
-        <h1 style={{ color: "#1a1625", fontSize: "1.4rem", marginBottom: "32px", fontWeight: 400 }}>Admin Access</h1>
-        <input type="password" placeholder="Enter password" value={pw}
-          onChange={(e) => setPw(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && handleLogin()}
-          style={{ width: "100%", background: "#ffffff", border: "1px solid #d0cce0", color: "#1a1625", padding: "12px", fontSize: "1rem", marginBottom: "16px", fontFamily: "monospace", boxSizing: "border-box" }}
-        />
-        {error && <p style={{ color: "#c0001a", marginBottom: "12px", fontSize: "0.85rem" }}>{error}</p>}
-        <button onClick={handleLogin} disabled={loading}
-          style={{ width: "100%", background: "#c0001a", color: "#fff", border: "none", padding: "12px", fontSize: "0.8rem", letterSpacing: "0.15em", textTransform: "uppercase", cursor: loading ? "not-allowed" : "pointer", opacity: loading ? 0.7 : 1 }}>
-          {loading ? "Checking…" : "Enter"}
-        </button>
-      </div>
+function AnalyticsTab({password}:{password:string}){
+  const[data,setData]=useState<Analytics|null>(null);const[loading,setLoading]=useState(true);const[error,setError]=useState("");
+  const load=useCallback(async()=>{setLoading(true);try{const res=await fetch("/api/hw-admin/analytics",{headers:{"x-admin-password":password}});if(!res.ok)throw new Error("Failed");setData(await res.json());}catch{setError("Could not load analytics.");}setLoading(false);},[password]);
+  useEffect(()=>{load();},[load]);
+  if(loading)return<p style={{color:C.textSec}}>Loading analytics…</p>;
+  if(error)return<p style={{color:C.red}}>{error}</p>;
+  if(!data)return null;
+  return<div>
+    <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:"16px",marginBottom:"32px"}}>
+      {[{label:"Total Downloads",value:data.totalDownloads.toLocaleString()},{label:"This Week",value:data.weekDownloads.toLocaleString()},{label:"Today",value:data.todayDownloads.toLocaleString()}].map(s=><Card key={s.label} style={{textAlign:"center",padding:"28px 20px"}}><p style={eyebrow}>{s.label}</p><p style={{color:C.red,fontSize:"2.2rem",fontWeight:700}}>{s.value}</p></Card>)}
     </div>
-  );
-}
-
-// ─── Analytics Tab ────────────────────────────────────────────────────────────
-function AnalyticsTab({ password }: { password: string }) {
-  const [data, setData]       = useState<Analytics | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError]     = useState("");
-
-  const load = useCallback(async () => {
-    setLoading(true);
-    try {
-      const res = await fetch("/api/hw-admin/analytics", { headers: { "x-admin-password": password } });
-      if (!res.ok) throw new Error("Failed");
-      setData(await res.json());
-    } catch { setError("Could not load analytics."); }
-    setLoading(false);
-  }, [password]);
-
-  useEffect(() => { load(); }, [load]);
-
-  if (loading) return <p style={{ color: "#6b6480" }}>Loading analytics…</p>;
-  if (error)   return <p style={{ color: "#c0001a" }}>{error}</p>;
-  if (!data)   return null;
-
-  return (
-    <div>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "16px", marginBottom: "32px" }}>
-        {[
-          { label: "Total Downloads", value: data.totalDownloads.toLocaleString() },
-          { label: "This Week",       value: data.weekDownloads.toLocaleString() },
-          { label: "Today",           value: data.todayDownloads.toLocaleString() },
-        ].map((s) => (
-          <div key={s.label} style={{ border: "1px solid #d0cce0", padding: "20px", textAlign: "center" }}>
-            <p style={eyebrowStyle}>{s.label}</p>
-            <p style={{ color: "#c0001a", fontSize: "2rem", fontWeight: 700 }}>{s.value}</p>
-          </div>
-        ))}
-      </div>
-
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "24px", marginBottom: "32px" }}>
-        <div>
-          <p style={eyebrowStyle}>Top Wallpapers</p>
-          {data.topWallpapers.map((w, i) => (
-            <div key={i} style={{ display: "flex", justifyContent: "space-between", padding: "8px 0", borderBottom: "1px solid #e8e4f0", fontSize: "0.85rem" }}>
-              <span style={{ color: "#1a1625" }}>{w.title}</span>
-              <span style={{ color: "#c0001a", fontWeight: 700 }}>{w.downloads}</span>
-            </div>
-          ))}
-        </div>
-        <div>
-          <p style={eyebrowStyle}>Top Collections</p>
-          {data.topCollections.map((c, i) => (
-            <div key={i} style={{ display: "flex", justifyContent: "space-between", padding: "8px 0", borderBottom: "1px solid #e8e4f0", fontSize: "0.85rem" }}>
-              <span style={{ color: "#1a1625" }}>{c.title}</span>
-              <span style={{ color: "#c0001a", fontWeight: 700 }}>{c.downloads}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <div style={{ marginBottom: "32px" }}>
-        <p style={eyebrowStyle}>Recent Downloads</p>
-        {data.recentActivity.map((a, i) => (
-          <div key={i} style={{ display: "flex", gap: "16px", padding: "8px 0", borderBottom: "1px solid #e8e4f0", fontSize: "0.8rem" }}>
-            <span style={{ color: "#6b6480", flexShrink: 0 }}>{a.time}</span>
-            <span style={{ color: "#1a1625" }}>{a.title}</span>
-          </div>
-        ))}
-      </div>
-
-      <button onClick={load} style={{ background: "transparent", border: "1px solid #d0cce0", color: "#5a5070", padding: "8px 20px", cursor: "pointer", fontSize: "0.75rem", letterSpacing: "0.1em", marginBottom: "32px" }}>
-        ↻ Refresh
-      </button>
-
-      <div style={{ border: "1px solid #d0cce0", padding: "24px", marginBottom: "24px" }}>
-        <p style={eyebrowStyle}>AdSense Approval Checklist</p>
-        {ADSENSE_CHECKLIST.map((item, i) => (
-          <div key={i} style={{ display: "flex", gap: "10px", padding: "7px 0", borderBottom: "1px solid #e8e4f0", fontSize: "0.82rem" }}>
-            <span style={{ color: item.done ? "#4caf50" : "#c0001a", flexShrink: 0 }}>{item.done ? "✅" : "☐"}</span>
-            <span style={{ color: item.done ? "#a0e0a0" : "#c9c4dd" }}>{item.item}</span>
-          </div>
-        ))}
-        <div style={{ marginTop: "16px", background: "#f8f8f8", padding: "12px 16px", borderLeft: "3px solid #c0001a", fontSize: "0.8rem", color: "#5a5070" }}>
-          💡 <strong style={{ color: "#ffd080" }}>Pro tip:</strong> Publish 20 high-quality blog posts (800+ words) over 6–8 weeks before applying.
-        </div>
-      </div>
-
-      <div style={{ border: "1px solid #d0cce0", padding: "20px" }}>
-        <p style={eyebrowStyle}>Google Analytics 4</p>
-        <a href="https://analytics.google.com" target="_blank" rel="noopener noreferrer"
-          style={{ display: "inline-block", background: "#c0001a", color: "#fff", padding: "10px 20px", textDecoration: "none", fontSize: "0.75rem", letterSpacing: "0.1em", textTransform: "uppercase" }}>
-          Open GA4 Dashboard →
-        </a>
-      </div>
+    <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"24px",marginBottom:"32px"}}>
+      {[{title:"Top Wallpapers",data:data.topWallpapers},{title:"Top Collections",data:data.topCollections}].map(({title,data:rows})=><Card key={title}><p style={eyebrow}>{title}</p>{rows.map((w,i)=><div key={i} style={{display:"flex",justifyContent:"space-between",padding:"8px 0",borderBottom:`1px solid ${C.border}`,fontSize:"0.85rem"}}><span style={{color:C.textPri}}>{w.title}</span><span style={{color:C.red,fontWeight:700}}>{w.downloads}</span></div>)}</Card>)}
     </div>
-  );
-}
-
-// ─── Image Uploader Tab ───────────────────────────────────────────────────────
-function ImageUploaderTab({ password }: { password: string }) {
-  const [file, setFile]                   = useState<File | null>(null);
-  const [preview, setPreview]             = useState<string>("");
-  const [dragging, setDragging]           = useState(false);
-  const [slug, setSlug]                   = useState("");
-  const [title, setTitle]                 = useState("");
-  const [altText, setAltText]             = useState("");
-  const [description, setDescription]     = useState("");
-  const [deviceType, setDeviceType]       = useState<"IPHONE" | "ANDROID" | "PC" | "">("");
-  const [selectedTags, setSelectedTags]   = useState<string[]>([]);
-  const [customTags, setCustomTags]         = useState<string[]>([]);
-  const [newTagInput, setNewTagInput]       = useState("");
-  const [collectionId, setCollectionId]   = useState("");
-  const [isAdult, setIsAdult]             = useState(false);
-  const [descMode, setDescMode]           = useState<"html"|"preview">("html");
-  const [uploading, setUploading]         = useState(false);
-  const [generatingAlt, setGeneratingAlt] = useState(false);
-  const [message, setMessage]             = useState<{ type: "ok" | "err"; text: string } | null>(null);
-  const [uploadedUrl, setUploadedUrl]     = useState("");
-  const dropRef                           = useRef<HTMLDivElement>(null);
-  const fileInputRef                      = useRef<HTMLInputElement>(null);
-
-  function slugify(name: string) {
-    return name
-      .toLowerCase()
-      .replace(/\.[^.]+$/, "")
-      .replace(/[^a-z0-9]+/g, "-")
-      .replace(/^-|-$/g, "");
-  }
-
-  function handleFileSelect(f: File) {
-    setFile(f);
-    const autoSlug = slugify(f.name);
-    setSlug(autoSlug);
-    if (!title) setTitle(f.name.replace(/\.[^.]+$/, "").replace(/[-_]/g, " ").replace(/\b\w/g, c => c.toUpperCase()));
-    const url = URL.createObjectURL(f);
-    setPreview(url);
-    setMessage(null);
-    setUploadedUrl("");
-  }
-
-  function onDrop(e: React.DragEvent) {
-    e.preventDefault(); setDragging(false);
-    const f = e.dataTransfer.files[0];
-    if (f && f.type.startsWith("image/")) handleFileSelect(f);
-  }
-
-  function toggleTag(tag: string) {
-    setSelectedTags(prev => prev.includes(tag) ? prev.filter(t => t !== tag) : [...prev, tag]);
-  }
-
-  async function handleGenerateAll() {
-    if (!file) return;
-    setGeneratingAlt(true);
-    setMessage(null);
-    try {
-      const base64 = await fileToBase64(file);
-      const result = await analyzeImageWithClaude(base64, file.type);
-      if (result.title) { setTitle(result.title); setSlug(result.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")); }
-      if (result.description) setDescription(result.description);
-      if (result.altText) setAltText(result.altText);
-      if (result.tags && result.tags.length) setSelectedTags(result.tags.filter(t => ALL_TAGS.includes(t)));
-      setMessage({ type: "ok", text: "✓ Claude AI generated title, description, alt text & tags! Review and edit if needed." });
-    } catch (err) {
-      const msg = (err as Error).message;
-      setMessage({ type: "err", text: `⚠ AI generation failed: ${msg} You can still fill in manually and upload.` });
-    }
-    setGeneratingAlt(false);
-  }
-
-  async function handleGenerateAlt() {
-    if (!file) return;
-    setGeneratingAlt(true);
-    setMessage(null);
-    try {
-      const text = await generateAltTextWithClaude(file);
-      setAltText(text);
-      setMessage({ type: "ok", text: "✓ Alt text generated! Edit if needed, then upload." });
-    } catch (err) {
-      const msg = (err as Error).message;
-      setMessage({ type: "err", text: `⚠ Alt text skipped: ${msg} You can still upload without it.` });
-    }
-    setGeneratingAlt(false);
-  }
-
-  async function handleUpload() {
-    if (!file || !slug || !title) {
-      setMessage({ type: "err", text: "File, slug, and title are required." });
-      return;
-    }
-    setUploading(true); setMessage(null);
-    try {
-      const form = new FormData();
-      form.append("file", file);
-      form.append("slug", slug);
-      form.append("title", title);
-      form.append("altText", altText);
-      form.append("description", description);
-      form.append("tags", JSON.stringify(selectedTags));
-      form.append("isAdult", String(isAdult));
-      if (deviceType) form.append("deviceType", deviceType);
-      if (collectionId.trim()) form.append("collectionId", collectionId.trim());
-
-      const res = await fetch("/api/hw-admin/upload-image", {
-        method: "POST",
-        headers: { "x-admin-password": password },
-        body: form,
-      });
-
-      const json = await res.json();
-      if (res.ok) {
-        setUploadedUrl(json.url);
-        setMessage({ type: "ok", text: `✓ Uploaded! Slug: ${json.slug}` });
-        setFile(null); setPreview(""); setSlug(""); setTitle(""); setDescription("");
-        setAltText(""); setDeviceType(""); setSelectedTags([]); setCollectionId(""); setIsAdult(false);
-        if (fileInputRef.current) fileInputRef.current.value = "";
-      } else {
-        setMessage({ type: "err", text: json.error ?? "Upload failed." });
-      }
-    } catch {
-      setMessage({ type: "err", text: "Network error during upload." });
-    }
-    setUploading(false);
-  }
-
-  const altLen = altText.length;
-  const altOk  = altLen >= 130 && altLen <= 150;
-  const descWords = description.split(/\s+/).filter(Boolean).length;
-  const descOk    = descWords >= 180 && descWords <= 220;
-  const ext    = file?.name.split(".").pop() ?? "jpg";
-
-  return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
-
-      <div style={{ background: "#f8f8f8", border: "1px solid #c0001a", padding: "14px 18px", fontSize: "0.82rem" }}>
-        <strong style={{ color: "#ffd080" }}>📤 Image Uploader</strong>
-        <span style={{ color: "#5a5070", marginLeft: "8px" }}>
-          Drop an image → fill in details → upload to R2 + save to DB in one click.
-        </span>
-      </div>
-
-      {/* Drop Zone */}
-      <div
-        ref={dropRef}
-        onDragOver={e => { e.preventDefault(); setDragging(true); }}
-        onDragLeave={() => setDragging(false)}
-        onDrop={onDrop}
-        onClick={() => fileInputRef.current?.click()}
-        style={{
-          border: `2px dashed ${dragging ? "#c0001a" : file ? "#4caf50" : "#d0cce0"}`,
-          background: dragging ? "rgba(192,0,26,0.06)" : "#f8f8f8",
-          padding: "40px 24px", textAlign: "center",
-          cursor: "pointer", transition: "all 0.2s",
-        }}
-      >
-        <input ref={fileInputRef} type="file" accept="image/*" style={{ display: "none" }}
-          onChange={e => { const f = e.target.files?.[0]; if (f) handleFileSelect(f); }} />
-
-        {preview ? (
-          <div style={{ display: "flex", gap: "24px", alignItems: "flex-start", justifyContent: "center", flexWrap: "wrap" }}>
-            <img src={preview} alt="Preview" style={{ maxHeight: "200px", maxWidth: "180px", objectFit: "contain", border: "1px solid #d0cce0" }} />
-            <div style={{ textAlign: "left" }}>
-              <p style={{ color: "#4caf50", fontSize: "0.75rem", marginBottom: "6px" }}>✓ File ready</p>
-              <p style={{ color: "#1a1625", fontSize: "0.85rem", marginBottom: "4px" }}>{file?.name}</p>
-              <p style={{ color: "#6b6480", fontSize: "0.75rem" }}>{file ? (file.size / 1024 / 1024).toFixed(2) + " MB" : ""}</p>
-              <p style={{ color: "#6b6480", fontSize: "0.72rem", marginTop: "8px" }}>Click to replace</p>
-            </div>
-          </div>
-        ) : (
-          <>
-            <p style={{ fontSize: "2.5rem", marginBottom: "12px" }}>🖼️</p>
-            <p style={{ color: "#1a1625", fontSize: "0.95rem", marginBottom: "6px" }}>
-              {dragging ? "Drop it!" : "Drag & drop your image here"}
-            </p>
-            <p style={{ color: "#6b6480", fontSize: "0.75rem" }}>or click to browse · JPG, PNG, WEBP · max 20 MB</p>
-          </>
-        )}
-      </div>
-
-      {file && (
-        <>
-          {/* AI Auto-Fill button */}
-          <div style={{ background: "rgba(192,0,26,0.08)", border: "1px solid rgba(192,0,26,0.4)", padding: "14px 18px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: "16px", flexWrap: "wrap" }}>
-            <div>
-              <p style={{ color: "#ffd080", fontSize: "0.75rem", fontFamily: "monospace", marginBottom: "4px" }}>
-                ✨ AI Auto-Fill (Claude Vision)
-              </p>
-              <p style={{ color: "#6b6480", fontSize: "0.68rem", fontFamily: "monospace" }}>
-                Looks at your image and generates title, 200-word description, SEO alt text & tags automatically.
-              </p>
-            </div>
-            <button type="button" onClick={handleGenerateAll} disabled={generatingAlt}
-              style={{
-                background: generatingAlt ? "#e8e4f0" : "#c0001a",
-                border: "none", color: "#fff",
-                padding: "10px 20px", cursor: generatingAlt ? "not-allowed" : "pointer",
-                fontSize: "0.72rem", letterSpacing: "0.1em", textTransform: "uppercase",
-                fontFamily: "monospace", whiteSpace: "nowrap", flexShrink: 0,
-                opacity: generatingAlt ? 0.7 : 1, transition: "all 0.2s",
-              }}>
-              {generatingAlt ? "✨ Analysing with Claude…" : "✨ Generate All Fields"}
-            </button>
-          </div>
-
-          {/* Title + Slug */}
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
-            <div>
-              <label style={labelStyle}>Image Title</label>
-              <input value={title} onChange={e => setTitle(e.target.value)}
-                placeholder="Dark Gothic Forest Wallpaper" style={inputStyle} />
-            </div>
-            <div>
-              <label style={labelStyle}>URL Slug (auto-generated)</label>
-              <input value={slug} onChange={e => setSlug(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ""))}
-                placeholder="dark-gothic-forest" style={inputStyle} />
-            </div>
-          </div>
-
-          {/* Description — HTML Editor with Preview */}
-          <div>
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "6px" }}>
-              <label style={{ ...labelStyle, marginBottom: 0 }}>
-                Description (SEO) — HTML{" "}
-                <span style={{ color: descOk ? "#4caf50" : descWords > 0 ? "#ffd080" : "#6b6480" }}>
-                  ({descWords} / 200 words{descOk ? " ✓" : " — aim for ~200 words"})
-                </span>
-              </label>
-              <div style={{ display: "flex", gap: "4px" }}>
-                <button type="button" onClick={() => setDescMode("html")}
-                  style={{ background: descMode === "html" ? "#1a1625" : "transparent", border: "1px solid #d0cce0", color: descMode === "html" ? "#fff" : "#6b6480", padding: "3px 10px", cursor: "pointer", fontSize: "0.65rem", fontFamily: "monospace" }}>
-                  HTML
-                </button>
-                <button type="button" onClick={() => setDescMode("preview")}
-                  style={{ background: descMode === "preview" ? "#c0001a" : "transparent", border: "1px solid #d0cce0", color: descMode === "preview" ? "#fff" : "#6b6480", padding: "3px 10px", cursor: "pointer", fontSize: "0.65rem", fontFamily: "monospace" }}>
-                  👁 Preview
-                </button>
-              </div>
-            </div>
-
-            {/* Quick format buttons */}
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "4px", marginBottom: "4px" }}>
-              {[
-                { label: "<B>", wrap: ["<strong>", "</strong>"] },
-                { label: "<I>", wrap: ["<em>", "</em>"] },
-                { label: "<H2>", wrap: ["<h2>", "</h2>"] },
-                { label: "<H3>", wrap: ["<h3 style='color:#c0001a'>", "</h3>"] },
-                { label: "<P>", wrap: ["<p>", "</p>"] },
-                { label: "<UL>", wrap: ["<ul>\n  <li>", "</li>\n</ul>"] },
-                { label: "<SPAN red>", wrap: ["<span style='color:#c0001a'>", "</span>"] },
-                { label: "<SPAN gold>", wrap: ["<span style='color:#c9a84c'>", "</span>"] },
-                { label: "<BLOCKQUOTE>", wrap: ["<blockquote style='border-left:3px solid #c0001a;padding:8px 16px;margin:12px 0;font-style:italic;'>", "</blockquote>"] },
-              ].map(({ label, wrap }) => {
-                const descRef2 = document.getElementById("desc-textarea") as HTMLTextAreaElement | null;
-                return (
-                  <button key={label} type="button"
-                    onClick={() => {
-                      const el = document.getElementById("desc-textarea") as HTMLTextAreaElement | null;
-                      if (!el) { setDescription(d => d + wrap[0] + wrap[1]); return; }
-                      const start = el.selectionStart, end = el.selectionEnd;
-                      const selected = description.slice(start, end);
-                      const next = description.slice(0, start) + wrap[0] + selected + wrap[1] + description.slice(end);
-                      setDescription(next);
-                      setTimeout(() => { el.focus(); const pos = start + wrap[0].length + selected.length + wrap[1].length; el.setSelectionRange(pos, pos); }, 10);
-                    }}
-                    style={{ background: "#f0f0f0", border: "1px solid #d0cce0", color: "#7c3aed", padding: "3px 8px", cursor: "pointer", fontSize: "0.62rem", fontFamily: "monospace" }}>
-                    {label}
-                  </button>
-                );
-              })}
-            </div>
-
-            {descMode === "html" ? (
-              <textarea
-                id="desc-textarea"
-                value={description}
-                onChange={e => setDescription(e.target.value)}
-                placeholder={"<h2>About This Wallpaper</h2>\n<p>Your description here...</p>"}
-                rows={8}
-                spellCheck={false}
-                style={{ ...inputStyle, resize: "vertical", lineHeight: "1.6", fontFamily: "monospace", fontSize: "0.8rem" }}
-              />
-            ) : (
-              <div style={{
-                minHeight: "200px", border: "1px solid #d0cce0", padding: "20px",
-                background: "#08060f", lineHeight: "1.9", fontSize: "0.95rem", color: "#e8e4f8",
-              }}
-                dangerouslySetInnerHTML={{ __html: description || "<p style='color:#6b6480'>Nothing to preview yet…</p>" }}
-              />
-            )}
-            <p style={{ color: "#6b6480", fontSize: "0.62rem", marginTop: "4px", fontFamily: "monospace" }}>
-              ℹ HTML is saved and rendered on site. Use &lt;h2&gt;, &lt;strong&gt;, &lt;span style=&quot;color:#c0001a&quot;&gt; for bold headings and colors.
-            </p>
-          </div>
-
-          {/* Alt Text */}
-          <div>
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "6px" }}>
-              <label style={{ ...labelStyle, marginBottom: 0 }}>
-                Alt Text (SEO){" "}
-                <span style={{ color: altOk ? "#4caf50" : altLen > 0 ? "#ffd080" : "#6b6480" }}>
-                  ({altLen}/150 chars{altOk ? " ✓" : " — aim for 130–150"})
-                </span>
-              </label>
-              <button type="button" onClick={handleGenerateAlt} disabled={generatingAlt}
-                style={{
-                  background: generatingAlt ? "#e8e4f0" : "rgba(192,0,26,0.10)",
-                  border: "1px solid rgba(192,0,26,0.5)",
-                  color: generatingAlt ? "#6b6480" : "#1a1625",
-                  padding: "5px 14px", cursor: generatingAlt ? "not-allowed" : "pointer",
-                  fontSize: "0.65rem", letterSpacing: "0.1em", textTransform: "uppercase",
-                  fontFamily: "monospace", transition: "all 0.2s", whiteSpace: "nowrap",
-                }}>
-                {generatingAlt ? "✨ Analysing with Claude…" : "✨ AI Generate Alt Text (Claude)"}
-              </button>
-            </div>
-            <input value={altText} onChange={e => setAltText(e.target.value)}
-              placeholder="Dark gothic forest wallpaper with moonlit trees and misty shadows — free HD download"
-              style={{ ...inputStyle, fontSize: "0.85rem" }} />
-            <p style={{ color: "#6b6480", fontSize: "0.68rem", marginTop: "4px" }}>
-              ℹ️ Powered by Claude AI (claude-sonnet). Alt text is optional — you can skip and upload without it.
-            </p>
-          </div>
-
-          {/* 16+ mature themes toggle */}
-          <div style={{
-            border: `1px solid ${isAdult ? "#c0001a" : "#d0cce0"}`,
-            padding: "14px 18px",
-            background: isAdult ? "rgba(192,0,26,0.08)" : "transparent",
-            transition: "all 0.2s",
-          }}>
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "16px" }}>
-              <div>
-                <p style={{ ...eyebrowStyle, marginBottom: "4px" }}>
-                  {isAdult ? <AdultBadge size="sm" /> : null}
-                  {" "}16+ Adult / Mature Content
-                </p>
-                <p style={{ color: "#6b6480", fontSize: "0.72rem" }}>
-                  Mark this image as mature themes. It will show the 16+ warning badge and require age confirmation before viewing.
-                </p>
-              </div>
-              <button
-                type="button"
-                onClick={() => setIsAdult(!isAdult)}
-                style={{
-                  background: isAdult ? "#c0001a" : "transparent",
-                  border: `1px solid ${isAdult ? "#c0001a" : "#d0cce0"}`,
-                  color: isAdult ? "#fff" : "#6b6480",
-                  padding: "8px 18px",
-                  cursor: "pointer",
-                  fontSize: "0.7rem",
-                  letterSpacing: "0.1em",
-                  textTransform: "uppercase",
-                  fontFamily: "monospace",
-                  flexShrink: 0,
-                  transition: "all 0.2s",
-                }}
-              >
-                {isAdult ? "✓ 16+ ON" : "Mark as 16+"}
-              </button>
-            </div>
-          </div>
-
-          {/* Device Type */}
-          <div>
-            <label style={labelStyle}>Device Type</label>
-            <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
-              {(["", "IPHONE", "ANDROID", "PC"] as const).map(d => (
-                <button key={d} type="button" onClick={() => setDeviceType(d)}
-                  style={{
-                    background: "transparent",
-                    border: `1px solid ${deviceType === d ? "#c0001a" : "#d0cce0"}`,
-                    color: deviceType === d ? "#1a1625" : "#6b6480",
-                    padding: "8px 20px", cursor: "pointer",
-                    fontSize: "0.7rem", letterSpacing: "0.1em",
-                    textTransform: "uppercase", fontFamily: "monospace", transition: "all 0.15s",
-                  }}>
-                  {d === "" ? "Any" : d === "IPHONE" ? "📱 iPhone" : d === "ANDROID" ? "🤖 Android" : "🖥️ PC"}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Tags */}
-          <div>
-            <label style={labelStyle}>Tags ({selectedTags.length} selected)</label>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
-              {[...ALL_TAGS, ...customTags].map(tag => (
-                <button key={tag} type="button" onClick={() => toggleTag(tag)}
-                  style={{
-                    background: selectedTags.includes(tag) ? "rgba(192,0,26,0.2)" : "transparent",
-                    border: `1px solid ${selectedTags.includes(tag) ? "#c0001a" : "#d0cce0"}`,
-                    color: selectedTags.includes(tag) ? "#1a1625" : "#6b6480",
-                    padding: "5px 12px", cursor: "pointer",
-                    fontSize: "0.65rem", letterSpacing: "0.08em",
-                    fontFamily: "monospace", transition: "all 0.15s",
-                  }}>
-                  {selectedTags.includes(tag) ? "✓ " : ""}{tag}
-                </button>
-              ))}
-            </div>
-            <div style={{ display: "flex", gap: "8px", marginTop: "10px" }}>
-              <input
-                placeholder="Add custom tag…"
-                value={newTagInput}
-                onChange={(e) => setNewTagInput(e.target.value.toLowerCase().replace(/\s+/g, "-"))}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" && newTagInput.trim()) {
-                    const v = newTagInput.trim();
-                    setCustomTags(prev => prev.includes(v) ? prev : [...prev, v]);
-                    setSelectedTags(prev => prev.includes(v) ? prev : [...prev, v]);
-                    setNewTagInput("");
-                  }
-                }}
-                style={{ ...inputStyle, flex: 1, marginBottom: 0, fontSize: "0.75rem" }}
-              />
-              <button type="button" onClick={() => {
-                if (!newTagInput.trim()) return;
-                const v = newTagInput.trim();
-                setCustomTags(prev => prev.includes(v) ? prev : [...prev, v]);
-                setSelectedTags(prev => prev.includes(v) ? prev : [...prev, v]);
-                setNewTagInput("");
-              }} style={{ padding: "0 16px", background: "#c0001a", color: "#fff", border: "none", cursor: "pointer", fontSize: "0.75rem", letterSpacing: "0.05em" }}>
-                ADD TAG
-              </button>
-            </div>
-          </div>
-
-          {/* Collection ID */}
-          <div>
-            <label style={labelStyle}>Collection ID (optional)</label>
-            <input value={collectionId} onChange={e => setCollectionId(e.target.value)}
-              placeholder="Paste a Collection UUID to attach this image to a collection"
-              style={{ ...inputStyle, fontSize: "0.82rem" }} />
-            <p style={{ color: "#6b6480", fontSize: "0.65rem", marginTop: "4px" }}>
-              Find it via: <code style={{ color: "#7c3aed" }}>npx prisma studio</code> → Collection table → copy the <code style={{ color: "#7c3aed" }}>id</code> field.
-            </p>
-          </div>
-
-          {/* Upload Summary */}
-          <div style={{ background: "#f0f0f0", border: "1px solid #d0cce0", padding: "14px 16px", fontSize: "0.8rem" }}>
-            <p style={eyebrowStyle}>Upload Summary</p>
-            <div style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
-              {[
-                { label: "R2 thumbnail key", value: `thumbnails/${slug}/${slug}.${ext}` },
-                { label: "R2 admin key",      value: `admin-wallpapers/${slug}/${slug}.${ext}` },
-                { label: "Device",           value: deviceType || "Any" },
-                { label: "Tags",             value: selectedTags.join(", ") || "none" },
-                { label: "16+ Adult",        value: isAdult ? "⚠ YES" : "No" },
-              ].map(row => (
-                <div key={row.label} style={{ display: "flex", gap: "12px" }}>
-                  <span style={{ color: "#6b6480", minWidth: "140px", flexShrink: 0 }}>{row.label}:</span>
-                  <span style={{ color: row.label === "16+ Adult" && isAdult ? "#ff6b6b" : "#c9c4dd", wordBreak: "break-all" }}>{row.value}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Message */}
-          {message && (
-            <div style={{ padding: "12px 16px", border: `1px solid ${message.type === "ok" ? "#4caf50" : "#c0001a"}`, color: message.type === "ok" ? "#4caf50" : "#ffd080", fontSize: "0.85rem" }}>
-              {message.text}
-              {message.type === "ok" && uploadedUrl && (
-                <a href={uploadedUrl} target="_blank" rel="noopener noreferrer" style={{ color: "#4caf50", marginLeft: "12px" }}>
-                  View on CDN →
-                </a>
-              )}
-            </div>
-          )}
-
-          {/* Upload Button */}
-          <button type="button" onClick={handleUpload} disabled={uploading}
-            style={{
-              background: uploading ? "#e8e4f0" : "#c0001a",
-              color: "#fff", border: "none",
-              padding: "14px 32px", cursor: uploading ? "not-allowed" : "pointer",
-              fontSize: "0.8rem", letterSpacing: "0.15em", textTransform: "uppercase",
-              opacity: uploading ? 0.7 : 1, alignSelf: "flex-start",
-              fontFamily: "monospace", transition: "background 0.2s",
-            }}>
-            {uploading ? "Uploading to R2…" : "↑ Upload to R2 & Save to DB"}
-          </button>
-        </>
-      )}
+    <Card style={{marginBottom:"24px"}}><p style={eyebrow}>Recent Downloads</p>{data.recentActivity.map((a,i)=><div key={i} style={{display:"flex",gap:"16px",padding:"8px 0",borderBottom:`1px solid ${C.border}`,fontSize:"0.8rem"}}><span style={{color:C.textMut,flexShrink:0}}>{a.time}</span><span style={{color:C.textPri}}>{a.title}</span></div>)}</Card>
+    <div style={{display:"flex",gap:"12px",marginBottom:"32px"}}>
+      <Btn onClick={load} variant="ghost">↻ Refresh</Btn>
+      <a href="https://analytics.google.com" target="_blank" rel="noopener noreferrer" style={{display:"inline-flex",alignItems:"center",background:C.red,color:"#fff",padding:"10px 20px",textDecoration:"none",fontSize:"0.72rem",letterSpacing:"0.1em",textTransform:"uppercase",fontFamily:"monospace"}}>Open GA4 →</a>
     </div>
-  );
+    <Card><p style={eyebrow}>AdSense Approval Checklist</p>{ADSENSE_CHECKLIST.map((item,i)=><div key={i} style={{display:"flex",gap:"10px",padding:"8px 0",borderBottom:`1px solid ${C.border}`,fontSize:"0.82rem"}}><span style={{color:item.done?C.green:C.red,flexShrink:0}}>{item.done?"✅":"☐"}</span><span style={{color:item.done?"rgba(76,175,80,0.8)":C.textSec}}>{item.item}</span></div>)}<div style={{marginTop:"16px",background:"rgba(192,0,26,0.08)",padding:"12px 16px",borderLeft:`3px solid ${C.red}`,fontSize:"0.8rem",color:C.textSec}}>💡 <strong style={{color:C.gold}}>Pro tip:</strong> Publish 20 high-quality blog posts (800+ words) over 6–8 weeks before applying.</div></Card>
+  </div>;
 }
 
-// ─── HTML Toolbar ─────────────────────────────────────────────────────────────
-function HtmlToolbar({ onInsert }: { onInsert: (b: string, a: string) => void }) {
-  const tools = [
-    { label: "B",     title: "Bold",           before: "<strong>",  after: "</strong>" },
-    { label: "I",     title: "Italic",          before: "<em>",      after: "</em>" },
-    { label: "H2",    title: "Section Heading", before: "<h2>",      after: "</h2>" },
-    { label: "H3",    title: "Sub-heading",     before: "<h3>",      after: "</h3>" },
-    { label: "P",     title: "Paragraph",       before: "<p>",       after: "</p>" },
-    { label: "🔗",    title: "Link",            before: '<a href="URL">', after: "</a>" },
-    { label: "IMG",   title: "Image",           before: '<img src="YOUR-R2-URL.webp" alt="Describe image for SEO" style="width:100%;aspect-ratio:9/16;object-fit:cover;border-radius:4px;margin:16px 0;" />', after: "" },
-    { label: "UL",    title: "Bullet List",     before: "<ul>\n  <li>", after: "</li>\n</ul>" },
-    { label: "OL",    title: "Numbered List",   before: "<ol>\n  <li>", after: "</li>\n</ol>" },
-    { label: "HR",    title: "Divider",         before: '<hr style="border-color:#2a2535;margin:32px 0;" />', after: "" },
-    { label: "QUOTE", title: "Blockquote",      before: '<blockquote style="border-left:3px solid #c0001a;margin:24px 0;padding:12px 20px;color:#c9c4dd;font-style:italic;">', after: "</blockquote>" },
-    { label: "TABLE", title: "Table",           before: '<table style="width:100%;border-collapse:collapse;margin:24px 0;">\n<tr><th style="border:1px solid #2a2535;padding:10px;">Header 1</th><th style="border:1px solid #2a2535;padding:10px;">Header 2</th></tr>\n<tr><td style="border:1px solid #2a2535;padding:10px;">Cell 1</td><td style="border:1px solid #2a2535;padding:10px;">Cell 2</td></tr>', after: "\n</table>" },
-    { label: "CTA",   title: "Call to Action",  before: '<div style="background:#1a0a0a;border:1px solid #c0001a;padding:20px 24px;margin:32px 0;text-align:center;">\n<p style="color:#f0ecff;margin-bottom:12px;">Ready to download? Browse our free HD dark wallpapers.</p>\n<a href="/iphone" style="display:inline-block;background:#c0001a;color:#fff;padding:10px 24px;text-decoration:none;font-size:0.8rem;letter-spacing:0.1em;">Browse Wallpapers →</a>\n</div>', after: "" },
-    { label: "16+",   title: "16+ Warning Banner", before: '<div style="display:flex;align-items:center;gap:12px;background:rgba(192,0,26,0.12);border:1px solid rgba(192,0,26,0.5);padding:14px 18px;margin:24px 0;">\n<span style="background:#c0001a;color:#fff;font-family:monospace;font-size:0.75rem;font-weight:900;padding:3px 10px;flex-shrink:0;">⚠ 16+</span>\n<p style="font-family:monospace;font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:#a89bc0;margin:0;">This content contains mature themes. intended for audiences 16 and over only.</p>\n</div>', after: "" },
-    { label: "FAQ",   title: "FAQ Section",     before: '<div style="margin:32px 0;">\n<h3>Frequently Asked Questions</h3>\n<details style="border:1px solid #2a2535;padding:12px 16px;margin-bottom:8px;">\n<summary style="cursor:pointer;color:#f0ecff;">Your question here?</summary>\n<p style="margin-top:10px;color:#c9c4dd;">Your answer here.</p>\n</details>', after: "\n</div>" },
-    { label: "AD",    title: "Ad Slot",         before: '<div style="margin:32px 0;text-align:center;background:#1a1825;padding:20px;color:#6b6480;font-size:0.75rem;">[ Ad Slot — AdSense will render here ]</div>', after: "" },
-  ];
-  return (
-    <div style={{ display: "flex", flexWrap: "wrap", gap: "5px", marginBottom: "8px" }}>
-      {tools.map((t) => (
-        <button key={t.label} title={t.title} type="button" onClick={() => onInsert(t.before, t.after)}
-          style={{
-            background: t.label === "16+" ? "rgba(192,0,26,0.15)" : "#f0f0f0",
-            border: t.label === "16+" ? "1px solid #c0001a" : "1px solid #d0cce0",
-            color: t.label === "16+" ? "#ff8080" : "#c0a0ff",
-            padding: "4px 10px", cursor: "pointer",
-            fontSize: "0.7rem", fontFamily: "monospace",
-            letterSpacing: "0.04em", borderRadius: "2px",
-          }}>
-          {t.label}
-        </button>
-      ))}
-    </div>
-  );
-}
+function PageContentTab({password}:{password:string}){
+  const[selectedSlug,setSelectedSlug]=useState("home");
+  const[customSlug,setCustomSlug]=useState("");
+  const[useCustom,setUseCustom]=useState(false);
+  const[title,setTitle]=useState("");
+  const[body,setBody]=useState("");
+  const[metaDesc,setMetaDesc]=useState("");
+  const[viewMode,setViewMode]=useState<"html"|"preview">("html");
+  const[loading,setLoading]=useState(false);
+  const[saving,setSaving]=useState(false);
+  const[deleting,setDeleting]=useState(false);
+  const[msg,setMsg]=useState<{type:"ok"|"err";text:string}|null>(null);
+  const[allRecords,setAllRecords]=useState<PageContentRecord[]>([]);
+  const[recordsLoaded,setRecordsLoaded]=useState(false);
+  const activeSlug=useCustom?customSlug.trim():selectedSlug;
 
-// ─── Link Checker ────────────────────────────────────────────────────────────
-function LinkChecker({ html }: { html: string }) {
-  const [results, setResults] = useState<{ url: string; status: string; ok: boolean }[]>([]);
-  const [checking, setChecking] = useState(false);
+  useEffect(()=>{
+    async function loadAll(){try{const res=await fetch("/api/hw-admin/page-content",{headers:{"x-admin-password":password}});if(res.ok){const j=await res.json();setAllRecords(j.records??[]);setRecordsLoaded(true);}}catch{}}
+    loadAll();
+  },[password]);
 
-  async function checkLinks() {
-    setChecking(true);
-    // Extract all hrefs and srcs from HTML
-    const hrefMatches = [...html.matchAll(/href=["']([^"']+)["']/g)].map(m => m[1]);
-    const srcMatches  = [...html.matchAll(/src=["']([^"']+)["']/g)].map(m => m[1]);
-    const allUrls = [...new Set([...hrefMatches, ...srcMatches])].filter(u => u.startsWith("http") || u.startsWith("/"));
+  useEffect(()=>{
+    if(!activeSlug)return;
+    setLoading(true);setMsg(null);
+    fetch(`/api/hw-admin/page-content?slug=${encodeURIComponent(activeSlug)}`,{headers:{"x-admin-password":password}})
+      .then(r=>r.json()).then(j=>{const rec:PageContentRecord|null=j.record;setTitle(rec?.title??"");setBody(rec?.body??"");setMetaDesc(rec?.metaDesc??"");})
+      .catch(()=>setMsg({type:"err",text:"Failed to load."})).finally(()=>setLoading(false));
+  },[activeSlug,password]);
 
-    if (allUrls.length === 0) { setResults([{ url: "No links found in content", status: "—", ok: true }]); setChecking(false); return; }
-
-    const checked: { url: string; status: string; ok: boolean }[] = [];
-    for (const url of allUrls) {
-      const fullUrl = url.startsWith("/") ? `https://hauntedwallpapers.com${url}` : url;
-      try {
-        const res = await fetch(`/api/hw-admin/check-link?url=${encodeURIComponent(fullUrl)}`);
-        const j = await res.json();
-        checked.push({ url, status: j.status ?? "?", ok: j.ok ?? false });
-      } catch {
-        checked.push({ url, status: "Error", ok: false });
-      }
-    }
-    setResults(checked);
-    setChecking(false);
-  }
-
-  return (
-    <div style={{ border: "1px solid #d0cce0", padding: "16px", background: "#f8f8f8" }}>
-      <p style={eyebrowStyle}>🔗 Link Checker</p>
-      <button type="button" onClick={checkLinks} disabled={checking}
-        style={{ background: checking ? "#e8e4f0" : "#0891b2", color: "#fff", border: "none", padding: "8px 20px", cursor: checking ? "not-allowed" : "pointer", fontSize: "0.72rem", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: "14px", fontFamily: "monospace" }}>
-        {checking ? "Checking…" : "▶ Check All Links & Images"}
-      </button>
-      {results.length > 0 && (
-        <div>
-          {results.map((r, i) => (
-            <div key={i} style={{ display: "flex", gap: "12px", padding: "7px 0", borderBottom: "1px solid #e8e4f0", fontSize: "0.78rem", alignItems: "center" }}>
-              <span style={{ color: r.ok ? "#4caf50" : "#c0001a", flexShrink: 0, fontSize: "0.9rem" }}>{r.ok ? "✓" : "✕"}</span>
-              <span style={{ color: r.ok ? "#4caf50" : "#ffd080", flexShrink: 0, minWidth: "50px", fontFamily: "monospace" }}>{r.status}</span>
-              <span style={{ color: "#1a1625", wordBreak: "break-all" }}>{r.url}</span>
-            </div>
-          ))}
-          <p style={{ marginTop: "10px", color: "#6b6480", fontSize: "0.7rem" }}>
-            ✓ {results.filter(r => r.ok).length} ok — ✕ {results.filter(r => !r.ok).length} broken
-          </p>
-        </div>
-      )}
-    </div>
-  );
-}
-
-// ─── Word Scanner ─────────────────────────────────────────────────────────────
-const FLAGGED_WORDS = [
-  // Religious / holy
-  "god","gods","jesus","christ","allah","buddha","vishnu","shiva","brahma","krishna",
-  "holy","sacred","divine","blessed","prayer","worship","heaven","hell","satan","devil",
-  "demon","angel","spirit","soul","sin","salvation","gospel","bible","quran","torah",
-  "mosque","church","temple","shrine","altar","ritual","prophet","messiah","miracle",
-  "baptism","sermon","clergy","monk","nun","priest","imam","rabbi","sheikh",
-  // Violent
-  "kill","murder","suicide","rape","torture","massacre","genocide","slaughter",
-  "assault","abuse","violence","attack","stab","shoot","gun","bomb","weapon","blood",
-  "gore","dead","death","corpse","execute","lynching","terrorist","extremist",
-  // Hateful / slurs — listed as patterns only, not reproducing full words
-  "hate","racist","slur","ethnic","supremacist",
-];
-
-function WordScanner({ html }: { html: string }) {
-  const [results, setResults] = useState<{ word: string; count: number; flagged: boolean }[]>([]);
-  const [scanned, setScanned] = useState(false);
-
-  function scan() {
-    const text = html.replace(/<[^>]+>/g, " ").toLowerCase();
-    const words = text.split(/\W+/).filter(Boolean);
-    const freq: Record<string, number> = {};
-    for (const w of words) { freq[w] = (freq[w] || 0) + 1; }
-
-    const found: { word: string; count: number; flagged: boolean }[] = [];
-    for (const [word, count] of Object.entries(freq)) {
-      const isFlagged = FLAGGED_WORDS.some(f => word === f || word.includes(f));
-      if (isFlagged) found.push({ word, count, flagged: true });
-    }
-    found.sort((a, b) => b.count - a.count);
-    setResults(found);
-    setScanned(true);
-  }
-
-  return (
-    <div style={{ border: "1px solid #d0cce0", padding: "16px", background: "#f8f8f8" }}>
-      <p style={eyebrowStyle}>⚠ Religious / Violent Word Scanner</p>
-      <p style={{ color: "#6b6480", fontSize: "0.72rem", marginBottom: "12px" }}>
-        Scans for religious, sacred, violent, or sensitive words that might affect AdSense approval.
-      </p>
-      <button type="button" onClick={scan}
-        style={{ background: "#b45309", color: "#fff", border: "none", padding: "8px 20px", cursor: "pointer", fontSize: "0.72rem", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: "14px", fontFamily: "monospace" }}>
-        ▶ Scan Content
-      </button>
-      {scanned && (
-        results.length === 0 ? (
-          <p style={{ color: "#4caf50", fontSize: "0.82rem" }}>✓ No flagged words detected. Content looks clean.</p>
-        ) : (
-          <div>
-            <p style={{ color: "#ffd080", fontSize: "0.78rem", marginBottom: "10px" }}>
-              ⚠ {results.length} flagged word{results.length !== 1 ? "s" : ""} found — review before publishing:
-            </p>
-            {results.map((r, i) => (
-              <div key={i} style={{ display: "flex", gap: "16px", padding: "6px 0", borderBottom: "1px solid #e8e4f0", fontSize: "0.78rem", alignItems: "center" }}>
-                <span style={{ background: "rgba(192,0,26,0.1)", border: "1px solid rgba(192,0,26,0.4)", color: "#c0001a", padding: "2px 8px", fontFamily: "monospace", fontWeight: 700 }}>{r.word}</span>
-                <span style={{ color: "#6b6480" }}>×{r.count}</span>
-              </div>
-            ))}
-          </div>
-        )
-      )}
-    </div>
-  );
-}
-
-// ─── Blog Ideas Tab ───────────────────────────────────────────────────────────
-function BlogIdeasTab({ onUseIdea }: { onUseIdea: (title: string, label: string) => void }) {
-  return (
-    <div>
-      <div style={{ background: "#f8f8f8", border: "1px solid #c0001a", padding: "16px 20px", marginBottom: "24px", fontSize: "0.82rem" }}>
-        <strong style={{ color: "#ffd080" }}>💡 AdSense Strategy:</strong>
-        <span style={{ color: "#5a5070", marginLeft: "8px" }}>
-          Write 2–3 posts per week. Focus on 💰 posts first — they drive the highest CPC.
-        </span>
-      </div>
-
-      <div style={{ border: "1px solid #d0cce0", padding: "20px", marginBottom: "28px" }}>
-        <p style={eyebrowStyle}>SEO Checklist for Every Post</p>
-        {SEO_TIPS.map((tip, i) => (
-          <div key={i} style={{ padding: "6px 0", borderBottom: "1px solid #e8e4f0", fontSize: "0.82rem", color: "#5a5070" }}>{tip}</div>
-        ))}
-      </div>
-
-      <p style={eyebrowStyle}>Ready-to-Write Blog Ideas ({BLOG_IDEAS.length})</p>
-
-      {BLOG_IDEAS.map((idea, i) => (
-        <div key={i} style={{ border: "1px solid #d0cce0", padding: "14px 16px", marginBottom: "8px", display: "flex", justifyContent: "space-between", alignItems: "center", gap: "16px" }}>
-          <div style={{ flex: 1 }}>
-            <p style={{ color: "#1a1625", fontSize: "0.88rem", marginBottom: "4px" }}>{idea.title}</p>
-            <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
-              {idea.label === "16+ Mature Content" ? (
-                <AdultBadge size="sm" />
-              ) : (
-                <span style={{ background: "#e8e4f0", border: "1px solid #d0cce0", color: "#7c3aed", padding: "2px 8px", fontSize: "0.65rem" }}>{idea.label}</span>
-              )}
-              <span style={{ color: "#6b6480", fontSize: "0.72rem" }}>{idea.reason}</span>
-            </div>
-          </div>
-          <button onClick={() => onUseIdea(idea.title, idea.label)}
-            style={{ background: "#c0001a", border: "none", color: "#fff", padding: "7px 16px", cursor: "pointer", fontSize: "0.7rem", letterSpacing: "0.1em", textTransform: "uppercase", whiteSpace: "nowrap", flexShrink: 0 }}>
-            Use This →
-          </button>
-        </div>
-      ))}
-    </div>
-  );
-}
-
-interface FeedbackReport {
-  id:        string;
-  page:      string;
-  category:  string;
-  message:   string;
-  email:     string | null;
-  status:    string;
-  createdAt: string;
-}
- 
-const CATEGORY_LABELS: Record<string, string> = {
-  "broken-link":      "🔗 Broken Link",
-  "image-not-loading":"🖼 Image Not Loading",
-  "download-broken":  "⬇ Download Broken",
-  "layout-broken":    "📐 Layout Issue",
-  "slow-page":        "🐢 Slow Page",
-  "search-broken":    "🔍 Search Broken",
-  "error-message":    "❌ Error Shown",
-  "other":            "💬 Other",
-};
- 
-const STATUS_COLORS: Record<string, string> = {
-  "open":       "#c0001a",
-  "resolved":   "#16a34a",
-  "wont-fix":   "#6b6480",
-};
- 
-function FeedbackTab({ password }: { password: string }) {
-  const [reports, setReports]   = React.useState<FeedbackReport[]>([]);
-  const [loading, setLoading]   = React.useState(true);
-  const [filter, setFilter]     = React.useState<"all" | "open" | "resolved" | "wont-fix">("open");
-  const [updating, setUpdating] = React.useState<string | null>(null);
- 
-  async function load() {
-    setLoading(true);
-    try {
-      const res = await fetch("/api/feedback", {
-        headers: { "x-admin-password": password },
-      });
-      const data = await res.json();
-      setReports(data.reports ?? []);
-    } catch {
-      setReports([]);
-    }
-    setLoading(false);
-  }
- 
-  React.useEffect(() => { load(); }, []); // eslint-disable-line react-hooks/exhaustive-deps
- 
-  async function updateStatus(id: string, status: string) {
-    setUpdating(id);
-    await fetch("/api/feedback", {
-      method: "PATCH",
-      headers: {
-        "Content-Type":    "application/json",
-        "x-admin-password": password,
-      },
-      body: JSON.stringify({ id, status }),
-    });
-    setReports(r => r.map(x => x.id === id ? { ...x, status } : x));
-    setUpdating(null);
-  }
- 
-  const filtered = filter === "all" ? reports : reports.filter(r => r.status === filter);
-  const openCount = reports.filter(r => r.status === "open").length;
- 
-  return (
-    <div>
-      {/* Header */}
-      <div style={{ marginBottom: "24px" }}>
-        <h2 style={{ margin: "0 0 6px", fontSize: "1rem", color: "#1a1625" }}>
-          ⚑ User Feedback Reports
-          {openCount > 0 && (
-            <span style={{ marginLeft: "10px", background: "#c0001a", color: "#fff", fontSize: "0.6rem", padding: "2px 8px", letterSpacing: "0.1em" }}>
-              {openCount} OPEN
-            </span>
-          )}
-        </h2>
-        <p style={{ margin: 0, color: "#6b6480", fontSize: "0.75rem" }}>
-          Problems reported by users via the feedback widget on the site.
-        </p>
-      </div>
- 
-      {/* Filter tabs + refresh */}
-      <div style={{ display: "flex", gap: "8px", marginBottom: "20px", alignItems: "center", flexWrap: "wrap" }}>
-        {(["open", "all", "resolved", "wont-fix"] as const).map(f => (
-          <button
-            key={f}
-            onClick={() => setFilter(f)}
-            style={{
-              background:   filter === f ? "#1a1625" : "transparent",
-              border:       "1px solid #d0cce0",
-              color:        filter === f ? "#f0ecff" : "#6b6480",
-              padding:      "5px 14px",
-              fontSize:     "0.65rem",
-              letterSpacing:"0.1em",
-              textTransform:"uppercase",
-              cursor:       "pointer",
-              fontFamily:   "monospace",
-            }}
-          >
-            {f === "all" ? `All (${reports.length})` : f === "open" ? `Open (${openCount})` : f}
-          </button>
-        ))}
-        <button
-          onClick={load}
-          style={{ marginLeft: "auto", background: "transparent", border: "1px solid #d0cce0", color: "#6b6480", padding: "5px 12px", fontSize: "0.65rem", cursor: "pointer", fontFamily: "monospace" }}
-        >
-          ↻ Refresh
-        </button>
-      </div>
- 
-      {/* Content */}
-      {loading ? (
-        <p style={{ color: "#6b6480", fontSize: "0.8rem" }}>Loading…</p>
-      ) : filtered.length === 0 ? (
-        <div style={{ textAlign: "center", padding: "48px 0", color: "#6b6480" }}>
-          <div style={{ fontSize: "2rem", marginBottom: "12px" }}>✓</div>
-          <p style={{ fontSize: "0.8rem", margin: 0 }}>
-            {filter === "open" ? "No open reports — all clear!" : "No reports in this category."}
-          </p>
-        </div>
-      ) : (
-        <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-          {filtered.map(r => (
-            <div
-              key={r.id}
-              style={{
-                border:       `1px solid ${r.status === "open" ? "rgba(192,0,26,0.3)" : "#e0dce8"}`,
-                borderLeft:   `3px solid ${STATUS_COLORS[r.status] ?? "#6b6480"}`,
-                padding:      "16px 18px",
-                background:   r.status === "open" ? "rgba(192,0,26,0.02)" : "#fafafa",
-              }}
-            >
-              {/* Top row */}
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "12px", flexWrap: "wrap", marginBottom: "8px" }}>
-                <div style={{ display: "flex", gap: "10px", alignItems: "center", flexWrap: "wrap" }}>
-                  <span style={{
-                    background: r.status === "open" ? "#c0001a" : r.status === "resolved" ? "#16a34a" : "#6b6480",
-                    color: "#fff", fontSize: "0.55rem", padding: "2px 7px", letterSpacing: "0.1em", textTransform: "uppercase",
-                  }}>
-                    {r.status}
-                  </span>
-                  <span style={{ color: "#7c3aed", fontSize: "0.65rem", fontWeight: 700 }}>
-                    {CATEGORY_LABELS[r.category] ?? r.category}
-                  </span>
-                </div>
-                <span style={{ color: "#9a9499", fontSize: "0.62rem", whiteSpace: "nowrap" }}>
-                  {new Date(r.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", hour: "2-digit", minute: "2-digit" })}
-                </span>
-              </div>
- 
-              {/* Page */}
-              <div style={{ marginBottom: "8px" }}>
-                <span style={{ color: "#9a9499", fontSize: "0.6rem", letterSpacing: "0.08em", textTransform: "uppercase" }}>Page: </span>
-                <a
-                  href={`https://hauntedwallpapers.com${r.page}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{ color: "#2563eb", fontSize: "0.72rem", fontFamily: "monospace", textDecoration: "none" }}
-                >
-                  {r.page} ↗
-                </a>
-              </div>
- 
-              {/* Message */}
-              <p style={{ margin: "0 0 10px", fontSize: "0.82rem", color: "#1a1625", lineHeight: 1.55, background: "#f5f3fa", padding: "10px 12px", borderLeft: "2px solid #d0cce0" }}>
-                {r.message}
-              </p>
- 
-              {/* Email */}
-              {r.email && (
-                <div style={{ marginBottom: "10px" }}>
-                  <span style={{ color: "#9a9499", fontSize: "0.6rem", textTransform: "uppercase", letterSpacing: "0.08em" }}>Reporter: </span>
-                  <a href={`mailto:${r.email}`} style={{ color: "#2563eb", fontSize: "0.72rem" }}>{r.email}</a>
-                </div>
-              )}
- 
-              {/* Actions */}
-              {r.status === "open" && (
-                <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
-                  <button
-                    onClick={() => updateStatus(r.id, "resolved")}
-                    disabled={updating === r.id}
-                    style={{ background: "#16a34a", border: "none", color: "#fff", padding: "5px 14px", fontSize: "0.6rem", letterSpacing: "0.1em", textTransform: "uppercase", cursor: "pointer", fontFamily: "monospace", opacity: updating === r.id ? 0.6 : 1 }}
-                  >
-                    ✓ Mark Resolved
-                  </button>
-                  <button
-                    onClick={() => updateStatus(r.id, "wont-fix")}
-                    disabled={updating === r.id}
-                    style={{ background: "transparent", border: "1px solid #d0cce0", color: "#6b6480", padding: "5px 14px", fontSize: "0.6rem", letterSpacing: "0.1em", textTransform: "uppercase", cursor: "pointer", fontFamily: "monospace", opacity: updating === r.id ? 0.6 : 1 }}
-                  >
-                    Won&apos;t Fix
-                  </button>
-                </div>
-              )}
-              {r.status !== "open" && (
-                <button
-                  onClick={() => updateStatus(r.id, "open")}
-                  disabled={updating === r.id}
-                  style={{ background: "transparent", border: "1px solid #d0cce0", color: "#6b6480", padding: "4px 12px", fontSize: "0.58rem", letterSpacing: "0.08em", textTransform: "uppercase", cursor: "pointer", fontFamily: "monospace" }}
-                >
-                  Reopen
-                </button>
-              )}
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-}
-
-// ─── Blog Tab ─────────────────────────────────────────────────────────────────
-function BlogTab({ password, prefillTitle, prefillLabel, onPrefillUsed }:
-  { password: string; prefillTitle: string; prefillLabel: string; onPrefillUsed: () => void }) {
-
-  const [title, setTitle]           = useState("");
-  const [slug, setSlug]             = useState("");
-  const [content, setContent]       = useState("");
-  const [metaDesc, setMetaDesc]     = useState("");
-  const [label, setLabel]           = useState("Wallpaper Guides");
-  const [customLabels, setCustomLabels] = useState<string[]>([]);
-  const [newLabelInput, setNewLabelInput] = useState("");
-
-  const [saving, setSaving]         = useState(false);
-  const [message, setMessage]       = useState("");
-  const [editorMode, setEditorMode] = useState<"html" | "preview" | "livecheck" | "wordscan">("html");
-  const [posts, setPosts]           = useState<Post[]>([]);
-  const [charCount, setCharCount]   = useState(0);
-  const [wordCount, setWordCount]   = useState(0);
-  const [lastSavedSlug, setLastSavedSlug] = useState("");
-
-  const [editingPost, setEditingPost]   = useState<Post | null>(null);
-  const [editTitle, setEditTitle]       = useState("");
-  const [editContent, setEditContent]   = useState("");
-  const [editLabel, setEditLabel]       = useState("");
-  const [editMessage, setEditMessage]   = useState("");
-  const [editSaving, setEditSaving]     = useState(false);
-  const [editMode, setEditMode]         = useState<"html" | "preview" | "livecheck" | "wordscan">("html");
-
-  const [altImageUrl, setAltImageUrl]     = useState("");
-  const [altImageFile, setAltImageFile]   = useState<File | null>(null);
-  const [generatedAlt, setGeneratedAlt]   = useState("");
-  const [generatingAlt, setGeneratingAlt] = useState(false);
-  const altFileRef                        = useRef<HTMLInputElement>(null);
-  const textareaRef                       = useRef<HTMLTextAreaElement | null>(null);
-
-  const isAdultLabel = label === "16+ Mature Content";
-
-  useEffect(() => {
-    if (prefillTitle) {
-      setTitle(prefillTitle);
-      setSlug(prefillTitle.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""));
-      setLabel(prefillLabel);
-      onPrefillUsed();
-    }
-  }, [prefillTitle, prefillLabel, onPrefillUsed]);
-
-  const loadPosts = useCallback(async () => {
-    try {
-      const res = await fetch("/api/hw-admin/blogs", { headers: { "x-admin-password": password } });
-      if (res.ok) { const j = await res.json(); setPosts(j.posts ?? []); }
-    } catch {}
-  }, [password]);
-
-  useEffect(() => { loadPosts(); }, [loadPosts]);
-
-  function handleTitleChange(val: string) {
-    setTitle(val);
-    setSlug(val.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""));
-  }
-
-  function handleContentChange(val: string) {
-    setContent(val);
-    const stripped = val.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
-    setCharCount(stripped.length);
-    setWordCount(stripped ? stripped.split(" ").filter(Boolean).length : 0);
-  }
-
-  function handleInsert(before: string, after: string) {
-    const el = textareaRef.current;
-    if (!el) { setContent((c) => c + before + after); return; }
-    const start = el.selectionStart, end = el.selectionEnd;
-    const selected = content.slice(start, end);
-    const next = content.slice(0, start) + before + selected + after + content.slice(end);
-    handleContentChange(next);
-    setTimeout(() => {
-      el.focus();
-      const pos = start + before.length + selected.length + after.length;
-      el.setSelectionRange(pos, pos);
-    }, 10);
-  }
-
-  async function handleGenerateBlogAlt() {
-    if (!altImageFile && !altImageUrl) return;
-    setGeneratingAlt(true); setGeneratedAlt("");
-    try {
-      let text: string;
-      if (altImageFile) {
-        text = await generateAltTextWithClaude(altImageFile);
-      } else {
-        text = await generateAltTextFromUrl(altImageUrl);
-      }
-      setGeneratedAlt(text);
-    } catch (err) {
-      setGeneratedAlt(`Error: ${(err as Error).message}`);
-    }
-    setGeneratingAlt(false);
-  }
-
-  const starterTemplate = `<p>Write your intro here — 2 to 3 sentences that hook the reader and include your main keyword naturally.</p>\n\n<h2>Why These Wallpapers Stand Out</h2>\n<p>Explain the topic in detail. What makes these wallpapers special? Who are they for?</p>\n\n<img src="https://assets.hauntedwallpapers.com/thumbnails/YOUR-IMAGE.jpeg" alt="Dark aesthetic wallpaper free download" style="width:100%;aspect-ratio:9/16;object-fit:cover;border-radius:4px;margin:16px 0;" />\n\n<h2>How to Download and Set Your Wallpaper</h2>\n<p>Step by step instructions here.</p>\n\n<ol>\n  <li>Browse our <a href="/iphone">iPhone wallpapers</a> or <a href="/android">Android wallpapers</a></li>\n  <li>Tap the image you love to open it</li>\n  <li>Hit the red Download Free button</li>\n  <li>Set it from your Photos app</li>\n</ol>\n\n<h2>Top Picks from Our Collection</h2>\n<p>Highlight 3–5 specific wallpapers from your site here.</p>\n\n<div style="background:#1a0a0a;border:1px solid #c0001a;padding:20px 24px;margin:32px 0;text-align:center;">\n<p style="color:#f0ecff;margin-bottom:12px;">Ready to download? Browse our full free HD dark wallpaper collection.</p>\n<a href="/iphone" style="display:inline-block;background:#c0001a;color:#fff;padding:10px 24px;text-decoration:none;font-size:0.8rem;letter-spacing:0.1em;">Browse Wallpapers →</a>\n</div>\n\n<h2>Frequently Asked Questions</h2>\n<details style="border:1px solid #2a2535;padding:12px 16px;margin-bottom:8px;">\n<summary style="cursor:pointer;color:#f0ecff;">Are these wallpapers free?</summary>\n<p style="margin-top:10px;color:#c9c4dd;">Yes — every wallpaper on Haunted Wallpapers is completely free to download in HD resolution. No account required.</p>\n</details>`;
-
-  async function handlePublish() {
-    if (!title || !slug || !content) { setMessage("Please fill in title, slug, and content."); return; }
-    if (wordCount < 200) { setMessage("⚠️ Post is too short (" + wordCount + " words). Aim for 800+ words for AdSense."); return; }
-    setSaving(true); setMessage("");
-    try {
-      const res = await fetch("/api/hw-admin/blogs", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "x-admin-password": password },
-        body: JSON.stringify({ title, slug, content, label }),
-      });
-      if (res.ok) {
-        setLastSavedSlug(slug);
-        setMessage(`✓ Published! Live at /blog/${slug}`);
-        setTitle(""); setSlug(""); setContent(""); setMetaDesc(""); setLabel("Wallpaper Guides");
-        setCharCount(0); setWordCount(0);
-        loadPosts();
-      } else {
-        const err = await res.json();
-        setMessage(err.error ?? "Failed to publish.");
-      }
-    } catch { setMessage("Network error."); }
+  async function handleSave(){
+    if(!activeSlug||!body.trim()){setMsg({type:"err",text:"Slug and body are required."});return;}
+    setSaving(true);setMsg(null);
+    try{const res=await fetch("/api/hw-admin/page-content",{method:"POST",headers:{"Content-Type":"application/json","x-admin-password":password},body:JSON.stringify({slug:activeSlug,title:title||null,body,metaDesc:metaDesc||null})});
+      const j=await res.json();
+      if(res.ok){setMsg({type:"ok",text:`✓ Saved content for "${activeSlug}"`});setAllRecords(prev=>{const exists=prev.find(r=>r.slug===activeSlug);const updated={id:j.record?.id??activeSlug,slug:activeSlug,title:title||null,body,metaDesc:metaDesc||null,updatedAt:new Date().toISOString()};return exists?prev.map(r=>r.slug===activeSlug?updated:r):[...prev,updated];});}
+      else setMsg({type:"err",text:j.error??"Save failed."});}
+    catch{setMsg({type:"err",text:"Network error."});}
     setSaving(false);
   }
 
-  async function handleDelete(s: string) {
-    if (!confirm(`Delete "${s}"?`)) return;
-    await fetch("/api/hw-admin/blogs", {
-      method: "DELETE",
-      headers: { "Content-Type": "application/json", "x-admin-password": password },
-      body: JSON.stringify({ slug: s }),
-    });
-    loadPosts();
+  async function handleDelete(){
+    if(!activeSlug||!confirm(`Delete content for "${activeSlug}"?`))return;
+    setDeleting(true);
+    try{const res=await fetch("/api/hw-admin/page-content",{method:"DELETE",headers:{"Content-Type":"application/json","x-admin-password":password},body:JSON.stringify({slug:activeSlug})});
+      if(res.ok){setMsg({type:"ok",text:`✓ Deleted content for "${activeSlug}"`});setBody("");setTitle("");setMetaDesc("");setAllRecords(prev=>prev.filter(r=>r.slug!==activeSlug));}}
+    catch{setMsg({type:"err",text:"Delete failed."});}
+    setDeleting(false);
   }
 
-  async function handleEditSave(slug: string) {
-    if (!editTitle || !editContent) { setEditMessage("Title and content are required."); return; }
-    setEditSaving(true); setEditMessage("");
-    try {
-      const res = await fetch("/api/hw-admin/blogs", {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json", "x-admin-password": password },
-        body: JSON.stringify({ slug, title: editTitle, content: editContent, label: editLabel }),
-      });
-      if (res.ok) {
-        setEditMessage("✓ Post updated successfully!");
-        loadPosts();
-        setTimeout(() => setEditingPost(null), 1200);
-      } else {
-        const j = await res.json();
-        setEditMessage(j.error ?? "Failed to save.");
-      }
-    } catch { setEditMessage("Network error."); }
-    setEditSaving(false);
-  }
+  const hasContent=(slug:string)=>allRecords.some(r=>r.slug===slug);
+  const wordCount=body.replace(/<[^>]*>/g," ").replace(/\s+/g," ").trim().split(" ").filter(Boolean).length;
+  const pageInfo=PAGE_SLUGS.find(p=>p.slug===activeSlug);
+  const liveUrl=pageInfo?.url?`https://hauntedwallpapers.com${pageInfo.url}`:null;
 
-  const metaDescLen = metaDesc.length;
-  const metaDescOk  = metaDescLen >= 140 && metaDescLen <= 155;
-  const titleLen    = title.length;
-  const titleOk     = titleLen >= 50 && titleLen <= 60;
-  const wordCountOk = wordCount >= 800;
-
-  return (
-    <div>
-      <p style={{ color: "#5a5070", fontSize: "0.82rem", marginBottom: "16px" }}>
-        Posts go live at <strong style={{ color: "#1a1625" }}>/blog/[slug]</strong> immediately. Aim for <strong style={{ color: "#7c3aed" }}>800+ words</strong> per post.
-      </p>
-
-      <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-
-        <div>
-          <label style={labelStyle}>Title <span style={{ color: titleOk ? "#4caf50" : titleLen > 0 ? "#ffd080" : "#6b6480" }}>({titleLen}/60 chars{titleOk ? " ✓" : ""})</span></label>
-          <input value={title} onChange={(e) => handleTitleChange(e.target.value)}
-            placeholder="Best Dark Wallpapers for iPhone 16 (Free HD Download)"
-            style={inputStyle} />
-        </div>
-
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
-          <div>
-            <label style={labelStyle}>URL Slug (auto-filled)</label>
-            <input value={slug} onChange={(e) => setSlug(e.target.value)} style={inputStyle} />
-          </div>
-          <div>
-            <label style={labelStyle}>Label / Category</label>
-            <select value={label} onChange={(e) => setLabel(e.target.value)}
-              style={{
-                ...inputStyle, cursor: "pointer",
-                ...(isAdultLabel ? { borderColor: "#c0001a", color: "#ff6b6b" } : {}),
-              }}>
-              {[...ALL_LABELS, ...customLabels].map((l) => <option key={l} value={l}>{l}</option>)}
-              <option value="__add_new__">+ Add new label…</option>
-            </select>
-            {label === "__add_new__" && (
-              <div style={{ display: "flex", gap: "8px", marginTop: "8px" }}>
-                <input
-                  autoFocus
-                  placeholder="Type new label name…"
-                  value={newLabelInput}
-                  onChange={(e) => setNewLabelInput(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" && newLabelInput.trim()) {
-                      const v = newLabelInput.trim();
-                      setCustomLabels(prev => [...prev, v]);
-                      setLabel(v);
-                      setNewLabelInput("");
-                    }
-                  }}
-                  style={{ ...inputStyle, flex: 1, marginBottom: 0 }}
-                />
-                <button type="button" onClick={() => {
-                  if (!newLabelInput.trim()) return;
-                  const v = newLabelInput.trim();
-                  setCustomLabels(prev => [...prev, v]);
-                  setLabel(v);
-                  setNewLabelInput("");
-                }} style={{ padding: "0 16px", background: "#c0001a", color: "#fff", border: "none", cursor: "pointer", fontSize: "0.75rem", letterSpacing: "0.05em" }}>
-                  ADD
-                </button>
-              </div>
-            )}
-
-            {isAdultLabel && (
-              <div style={{
-                marginTop: "8px",
-                background: "rgba(192,0,26,0.1)",
-                border: "1px solid rgba(192,0,26,0.5)",
-                padding: "10px 14px",
-              }}>
-                <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "8px" }}>
-                  <AdultBadge size="lg" />
-                  <span style={{ color: "#ff8080", fontSize: "0.7rem", fontFamily: "monospace", letterSpacing: "0.1em" }}>
-                    Mature Content — Blog Post
-                  </span>
-                </div>
-                <p style={{ color: "#5a5070", fontSize: "0.65rem", fontFamily: "monospace", letterSpacing: "0.06em", margin: 0, lineHeight: 1.6 }}>
-                  This post will be labelled 16+ Mature Content across the site.
-                </p>
-              </div>
-            )}
-          </div>
-        </div>
-
-        <div>
-          <label style={labelStyle}>
-            Meta Description (SEO){" "}
-            <span style={{ color: metaDescOk ? "#4caf50" : metaDescLen > 0 ? "#ffd080" : "#6b6480" }}>
-              ({metaDescLen}/155 chars{metaDescOk ? " ✓" : " — aim for 140–155"})
-            </span>
-          </label>
-          <input value={metaDesc} onChange={(e) => setMetaDesc(e.target.value)}
-            placeholder="Download free HD dark wallpapers for iPhone. Gothic, horror, and dark fantasy art — no account needed."
-            style={{ ...inputStyle, fontSize: "0.82rem" }} />
-        </div>
-
-        {/* AI Alt-Text Generator for Blog Images */}
-        <div style={{ border: "1px solid #d0cce0", padding: "16px 18px", background: "#f0f0f0" }}>
-          <p style={eyebrowStyle}>✨ AI Alt-Text Generator for Blog Images (Claude)</p>
-          <p style={{ color: "#6b6480", fontSize: "0.75rem", marginBottom: "14px" }}>
-            Upload or paste a URL for any image in your blog post. Claude Vision AI will write a perfect 130–150 char SEO alt tag.
-          </p>
-
-          <div style={{ display: "flex", gap: "12px", alignItems: "flex-end", flexWrap: "wrap", marginBottom: "12px" }}>
-            <div style={{ flex: 1, minWidth: "200px" }}>
-              <label style={labelStyle}>Image URL (from R2 CDN or any public URL)</label>
-              <input
-                value={altImageUrl}
-                onChange={e => { setAltImageUrl(e.target.value); setAltImageFile(null); }}
-                placeholder="https://assets.hauntedwallpapers.com/thumbnails/..."
-                style={{ ...inputStyle, fontSize: "0.8rem" }}
-              />
-            </div>
-            <div style={{ color: "#6b6480", fontSize: "0.72rem", paddingBottom: "12px" }}>or</div>
-            <div>
-              <input ref={altFileRef} type="file" accept="image/*" style={{ display: "none" }}
-                onChange={e => { const f = e.target.files?.[0]; if (f) { setAltImageFile(f); setAltImageUrl(""); } }} />
-              <button type="button" onClick={() => altFileRef.current?.click()}
-                style={{ background: "transparent", border: "1px solid #d0cce0", color: altImageFile ? "#4caf50" : "#8a8099", padding: "10px 16px", cursor: "pointer", fontSize: "0.7rem", fontFamily: "monospace" }}>
-                {altImageFile ? `✓ ${altImageFile.name.slice(0, 22)}` : "Upload image file"}
-              </button>
-            </div>
-          </div>
-
-          <button type="button" onClick={handleGenerateBlogAlt}
-            disabled={generatingAlt || (!altImageFile && !altImageUrl)}
-            style={{
-              background: generatingAlt ? "#e8e4f0" : "rgba(192,0,26,0.10)",
-              border: "1px solid rgba(192,0,26,0.5)",
-              color: generatingAlt ? "#6b6480" : "#1a1625",
-              padding: "8px 20px",
-              cursor: (generatingAlt || (!altImageFile && !altImageUrl)) ? "not-allowed" : "pointer",
-              fontSize: "0.7rem", letterSpacing: "0.1em", textTransform: "uppercase",
-              fontFamily: "monospace", marginBottom: "12px",
-            }}>
-            {generatingAlt ? "✨ Analysing image with Claude…" : "✨ Generate Alt Text with Claude"}
-          </button>
-
-          {generatedAlt && (
-            <div style={{ background: "#f8f8f8", border: "1px solid #4caf50", padding: "12px 14px" }}>
-              <p style={{ color: "#4caf50", fontSize: "0.6rem", letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: "6px" }}>
-                Generated ({generatedAlt.length} chars)
-              </p>
-              <p style={{ color: "#1a1625", fontSize: "0.85rem", marginBottom: "10px" }}>{generatedAlt}</p>
-              <button type="button" onClick={() => navigator.clipboard.writeText(generatedAlt)}
-                style={{ background: "transparent", border: "1px solid #d0cce0", color: "#5a5070", padding: "4px 12px", cursor: "pointer", fontSize: "0.65rem", fontFamily: "monospace" }}>
-                Copy to clipboard
-              </button>
-            </div>
-          )}
-        </div>
-
-        {/* Content editor */}
-        <div>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "8px" }}>
-            <label style={labelStyle}>
-              Content (HTML){" "}
-              <span style={{ color: wordCountOk ? "#4caf50" : wordCount > 0 ? "#ffd080" : "#6b6480" }}>
-                — {wordCount} words{wordCountOk ? " ✓ Good for AdSense" : wordCount > 0 ? " (aim for 800+)" : ""}
-              </span>
-            </label>
-            <div style={{ display: "flex", gap: "4px" }}>
-              <button type="button" onClick={() => setEditorMode("html")} style={{ ...modeBtn, borderColor: editorMode === "html" ? "#c0001a" : "#d0cce0", color: editorMode === "html" ? "#1a1625" : "#6b6480" }}>HTML</button>
-              <button type="button" onClick={() => setEditorMode("preview")} style={{ ...modeBtn, borderColor: editorMode === "preview" ? "#c0001a" : "#d0cce0", color: editorMode === "preview" ? "#1a1625" : "#6b6480" }}>Preview</button>
-              {!content && (
-                <button type="button" onClick={() => handleContentChange(starterTemplate)} style={{ ...modeBtn, borderColor: "#c0a0ff", color: "#7c3aed" }}>
-                  Insert Template
-                </button>
-              )}
-              <button type="button" onClick={() => setEditorMode(editorMode === "livecheck" ? "html" : "livecheck")} style={{ ...modeBtn, borderColor: editorMode === "livecheck" ? "#0891b2" : "#d0cce0", color: editorMode === "livecheck" ? "#0891b2" : "#6b6480" }}>🔗 Links</button>
-              <button type="button" onClick={() => setEditorMode(editorMode === "wordscan" ? "html" : "wordscan")} style={{ ...modeBtn, borderColor: editorMode === "wordscan" ? "#b45309" : "#d0cce0", color: editorMode === "wordscan" ? "#b45309" : "#6b6480" }}>⚠ Words</button>
-            </div>
-          </div>
-
-          {editorMode === "html" && (
-            <>
-              <HtmlToolbar onInsert={handleInsert} />
-              <textarea
-                ref={textareaRef}
-                value={content}
-                onChange={(e) => handleContentChange(e.target.value)}
-                placeholder={`<p>Your intro paragraph here.</p>\n\n<h2>Section Heading</h2>\n<p>Your content here.</p>`}
-                rows={24}
-                style={{ ...inputStyle, resize: "vertical", lineHeight: "1.6", fontFamily: "monospace", fontSize: "0.8rem" }}
-              />
-            </>
-          )}
-          {editorMode === "preview" && (
-            <div
-              style={{ minHeight: "400px", border: "1px solid #d0cce0", padding: "20px", background: "#08060f", color: "#f0ecff", lineHeight: "1.9", fontSize: "0.95rem" }}
-              dangerouslySetInnerHTML={{ __html: content || "<p style='color:#6b6480'>Nothing to preview yet…</p>" }}
-            />
-          )}
-          {editorMode === "livecheck" && <LinkChecker html={content} />}
-          {editorMode === "wordscan" && <WordScanner html={content} />}
-        </div>
-
-        {/* SEO quick-check */}
-        {(title || content) && (
-          <div style={{ border: "1px solid #d0cce0", padding: "14px 16px", background: "#f0f0f0" }}>
-            <p style={eyebrowStyle}>SEO Quick Check</p>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "8px", marginTop: "4px" }}>
-              {[
-                { ok: titleOk,                    label: `Title length (${titleLen} chars)` },
-                { ok: metaDescOk,                 label: `Meta desc (${metaDescLen} chars)` },
-                { ok: wordCountOk,                label: `Word count (${wordCount})` },
-                { ok: content.includes("<h2>"),   label: "Has H2 heading" },
-                { ok: content.includes("<img"),   label: "Has image" },
-                { ok: content.includes('href="/'), label: "Internal links" },
-                { ok: content.includes("alt="),   label: "Image alt text" },
-              ].map((check, i) => (
-                <span key={i} style={{ fontSize: "0.72rem", padding: "3px 8px", border: `1px solid ${check.ok ? "#4caf50" : "#3a2535"}`, color: check.ok ? "#4caf50" : "#6b6480", borderRadius: "2px" }}>
-                  {check.ok ? "✓" : "○"} {check.label}
-                </span>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {message && (
-          <p style={{ color: message.startsWith("✓") ? "#4caf50" : "#ffd080", fontSize: "0.85rem", padding: "10px", border: `1px solid ${message.startsWith("✓") ? "#4caf50" : "#c0001a"}` }}>
-            {message}
-            {message.startsWith("✓") && (
-              <a href={`/blog/${lastSavedSlug}`} target="_blank" rel="noopener noreferrer" style={{ color: "#4caf50", marginLeft: "12px" }}>
-                View post →
-              </a>
-            )}
-          </p>
-        )}
-
-        <button onClick={handlePublish} disabled={saving}
-          style={{ background: "#c0001a", color: "#fff", border: "none", padding: "14px 28px", cursor: saving ? "not-allowed" : "pointer", fontSize: "0.8rem", letterSpacing: "0.15em", textTransform: "uppercase", opacity: saving ? 0.7 : 1, alignSelf: "flex-start" }}>
-          {saving ? "Publishing…" : "Publish Blog Post"}
-        </button>
-      </div>
-
-      {/* Published posts list */}
-      {posts.length > 0 && (
-        <div style={{ marginTop: "40px" }}>
-          <p style={eyebrowStyle}>Published Posts ({posts.length})</p>
-          {posts.map((p) => (
-            <div key={p.slug} style={{ border: "1px solid #d0cce0", marginBottom: "6px", overflow: "hidden" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 14px", gap: "12px" }}>
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <span style={{ color: "#1a1625", fontSize: "0.88rem" }}>{p.title}</span>
-                  <div style={{ display: "flex", gap: "8px", marginTop: "4px", alignItems: "center", flexWrap: "wrap" }}>
-                    {p.label === "16+ Mature Content" ? (
-                      <AdultBadge size="sm" />
-                    ) : (
-                      <span style={{ background: "#e8e4f0", border: "1px solid #d0cce0", color: "#7c3aed", padding: "1px 6px", fontSize: "0.6rem" }}>{p.label}</span>
-                    )}
-                    <span style={{ color: "#6b6480", fontSize: "0.72rem" }}>
-                      {new Date(p.createdAt).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })}
-                    </span>
-                    <span style={{ color: "#6b6480", fontSize: "0.65rem", fontFamily: "monospace" }}>/blog/{p.slug}</span>
-                  </div>
-                </div>
-                <div style={{ display: "flex", gap: "8px", alignItems: "center", flexShrink: 0 }}>
-                  <a href={`/blog/${p.slug}`} target="_blank" rel="noopener noreferrer"
-                    style={{ color: "#4caf50", fontSize: "0.7rem", textDecoration: "none", border: "1px solid #4caf50", padding: "3px 10px" }}>
-                    👁 View
-                  </a>
-                  <button onClick={() => { setEditingPost(editingPost?.slug === p.slug ? null : p); setEditContent(p.content || ""); setEditTitle(p.title); setEditLabel(p.label); setEditMessage(""); }}
-                    style={{ background: editingPost?.slug === p.slug ? "#1a1625" : "transparent", border: "1px solid #6b6480", color: editingPost?.slug === p.slug ? "#f0ecff" : "#6b6480", cursor: "pointer", fontSize: "0.7rem", padding: "3px 10px" }}>
-                    ✏️ Edit
-                  </button>
-                  <button onClick={() => handleDelete(p.slug)}
-                    style={{ background: "transparent", border: "1px solid #c0001a", color: "#c0001a", cursor: "pointer", fontSize: "0.7rem", padding: "3px 8px" }}>
-                    🗑
-                  </button>
-                </div>
-              </div>
-              {/* Inline editor */}
-              {editingPost?.slug === p.slug && (
-                <div style={{ borderTop: "1px solid #d0cce0", padding: "16px", background: "#fafaf8" }}>
-                  <div style={{ marginBottom: "12px" }}>
-                    <label style={labelStyle}>Title</label>
-                    <input value={editTitle} onChange={e => setEditTitle(e.target.value)} style={inputStyle} />
-                  </div>
-                  <div style={{ marginBottom: "12px" }}>
-                    <label style={labelStyle}>Label</label>
-                    <select value={editLabel} onChange={e => setEditLabel(e.target.value)} style={{ ...inputStyle, cursor: "pointer" }}>
-                      {ALL_LABELS.map(l => <option key={l} value={l}>{l}</option>)}
-                    </select>
-                  </div>
-                  <div style={{ marginBottom: "8px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                    <label style={{ ...labelStyle, marginBottom: 0 }}>
-                      Content (HTML) — {editContent.replace(/<[^>]+>/g," ").trim().split(" ").filter(Boolean).length} words
-                    </label>
-                    <div style={{ display: "flex", gap: "4px" }}>
-                      <button type="button" onClick={() => setEditMode("html")} style={{ ...modeBtn, borderColor: editMode === "html" ? "#c0001a" : "#d0cce0", color: editMode === "html" ? "#1a1625" : "#6b6480" }}>HTML</button>
-                      <button type="button" onClick={() => setEditMode("preview")} style={{ ...modeBtn, borderColor: editMode === "preview" ? "#c0001a" : "#d0cce0", color: editMode === "preview" ? "#1a1625" : "#6b6480" }}>Preview</button>
-                      <button type="button" onClick={() => setEditMode("livecheck")} style={{ ...modeBtn, borderColor: editMode === "livecheck" ? "#0891b2" : "#d0cce0", color: editMode === "livecheck" ? "#0891b2" : "#6b6480" }}>🔗 Links</button>
-                      <button type="button" onClick={() => setEditMode("wordscan")} style={{ ...modeBtn, borderColor: editMode === "wordscan" ? "#b45309" : "#d0cce0", color: editMode === "wordscan" ? "#b45309" : "#6b6480" }}>⚠ Words</button>
-                    </div>
-                  </div>
-                  {editMode === "html" && (
-                    <>
-                      <HtmlToolbar onInsert={(b, a) => {
-                        setEditContent(prev => prev + b + a);
-                      }} />
-                      <textarea value={editContent} onChange={e => setEditContent(e.target.value)}
-                        rows={18} style={{ ...inputStyle, resize: "vertical", lineHeight: "1.6", fontFamily: "monospace", fontSize: "0.8rem" }} />
-                    </>
-                  )}
-                  {editMode === "preview" && (
-                    <div style={{ minHeight: "300px", border: "1px solid #d0cce0", padding: "20px", background: "#08060f", color: "#f0ecff", lineHeight: "1.9", fontSize: "0.95rem" }}
-                      dangerouslySetInnerHTML={{ __html: editContent || "<p style='color:#6b6480'>Empty content.</p>" }} />
-                  )}
-                  {editMode === "livecheck" && (
-                    <LinkChecker html={editContent} />
-                  )}
-                  {editMode === "wordscan" && (
-                    <WordScanner html={editContent} />
-                  )}
-                  {editMessage && (
-                    <p style={{ color: editMessage.startsWith("✓") ? "#4caf50" : "#ffd080", fontSize: "0.82rem", padding: "8px 12px", border: `1px solid ${editMessage.startsWith("✓") ? "#4caf50" : "#c0001a"}`, marginTop: "10px" }}>
-                      {editMessage}
-                    </p>
-                  )}
-                  <div style={{ display: "flex", gap: "10px", marginTop: "12px" }}>
-                    <button onClick={() => handleEditSave(p.slug)} disabled={editSaving}
-                      style={{ background: editSaving ? "#e8e4f0" : "#c0001a", color: "#fff", border: "none", padding: "10px 24px", cursor: editSaving ? "not-allowed" : "pointer", fontSize: "0.75rem", letterSpacing: "0.12em", textTransform: "uppercase", opacity: editSaving ? 0.7 : 1 }}>
-                      {editSaving ? "Saving…" : "💾 Save Changes"}
-                    </button>
-                    <button onClick={() => setEditingPost(null)}
-                      style={{ background: "transparent", border: "1px solid #d0cce0", color: "#6b6480", padding: "10px 18px", cursor: "pointer", fontSize: "0.75rem" }}>
-                      Cancel
-                    </button>
-                  </div>
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-}
-
-// ─── Manage 16+ Tab ───────────────────────────────────────────────────────────
-const ADULT_IMAGES_TO_MARK = [
-  { title: "Sweet Screams Hoodie",     device: "ANDROID", note: "Mark as 16+ Adult" },
-  { title: "Skeletal King Defiance",   device: "ANDROID", note: "Mark as 16+ Adult" },
-  { title: "Gangster Skull",           device: "PC",      note: "Mark as 16+ Adult" },
-  { title: "Gangster Skeleton Smoking",device: "PC",      note: "Mark as 16+ Adult" },
-  { title: "Thug Skeleton Smoking",    device: "PC",      note: "Mark as 16+ Adult" },
-  { title: "Rebel Skeleton Smoking",   device: "PC",      note: "Mark as 16+ Adult" },
-];
-
-function Manage18Tab({ password }: { password: string }) {
-  const [results, setResults]   = useState<Record<string, { status: string; msg: string }>>({});
-  const [loading, setLoading]   = useState<Record<string, boolean>>({});
-  const [allDone, setAllDone]   = useState(false);
-
-  async function markAdult(title: string) {
-    setLoading(prev => ({ ...prev, [title]: true }));
-    try {
-      const res = await fetch("/api/hw-admin/mark-adult", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "x-admin-password": password },
-        body: JSON.stringify({ title }),
-      });
-      const json = await res.json();
-      if (res.ok) {
-        setResults(prev => ({ ...prev, [title]: { status: "ok", msg: `✓ Marked 16+ (${json.updated} image${json.updated !== 1 ? "s" : ""} updated)` } }));
-      } else {
-        setResults(prev => ({ ...prev, [title]: { status: "err", msg: json.error ?? "Failed" } }));
-      }
-    } catch {
-      setResults(prev => ({ ...prev, [title]: { status: "err", msg: "Network error" } }));
-    }
-    setLoading(prev => ({ ...prev, [title]: false }));
-  }
-
-  async function markAll() {
-    setAllDone(false);
-    for (const item of ADULT_IMAGES_TO_MARK) {
-      await markAdult(item.title);
-      await new Promise(r => setTimeout(r, 300));
-    }
-    setAllDone(true);
-  }
-
-  const doneCount = Object.values(results).filter(r => r.status === "ok").length;
-
-  return (
-    <div>
-      <div style={{ background: "rgba(192,0,26,0.08)", border: "1px solid rgba(192,0,26,0.5)", padding: "14px 18px", marginBottom: "24px" }}>
-        <p style={{ color: "#ffd080", fontSize: "0.78rem", fontFamily: "monospace", marginBottom: "6px" }}>
-          ⚠ 16+ Content Manager
-        </p>
-        <p style={{ color: "#5a5070", fontSize: "0.72rem", fontFamily: "monospace" }}>
-          Mark images as 16+ mature themes. This searches by title (partial match) and sets <code style={{ color: "#7c3aed" }}>isAdult: true</code> in the database.
-        </p>
-      </div>
-
-      <div style={{ marginBottom: "20px", display: "flex", alignItems: "center", gap: "16px", flexWrap: "wrap" }}>
-        <button onClick={markAll}
-          style={{ background: "#c0001a", border: "none", color: "#fff", padding: "10px 24px", cursor: "pointer", fontSize: "0.72rem", letterSpacing: "0.12em", textTransform: "uppercase", fontFamily: "monospace" }}>
-          ⚠ Mark All 6 as 16+
-        </button>
-        {doneCount > 0 && (
-          <span style={{ color: "#4caf50", fontSize: "0.75rem", fontFamily: "monospace" }}>
-            ✓ {doneCount} / {ADULT_IMAGES_TO_MARK.length} done
-          </span>
-        )}
-        {allDone && (
-          <span style={{ color: "#4caf50", fontSize: "0.75rem", fontFamily: "monospace" }}>
-            ✓ All marked!
-          </span>
-        )}
-      </div>
-
-      <p style={eyebrowStyle}>Images to Mark ({ADULT_IMAGES_TO_MARK.length})</p>
-
-      {ADULT_IMAGES_TO_MARK.map((item) => {
-        const res = results[item.title];
-        const isLoading = loading[item.title];
-        return (
-          <div key={item.title} style={{ border: `1px solid ${res?.status === "ok" ? "#4caf50" : res?.status === "err" ? "#c0001a" : "#d0cce0"}`, padding: "14px 16px", marginBottom: "8px", display: "flex", justifyContent: "space-between", alignItems: "center", gap: "16px", flexWrap: "wrap" }}>
-            <div>
-              <p style={{ color: "#1a1625", fontSize: "0.9rem", marginBottom: "4px" }}>{item.title}</p>
-              <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
-                <span style={{ background: "#e8e4f0", border: "1px solid #d0cce0", color: "#7c3aed", padding: "2px 8px", fontSize: "0.62rem", fontFamily: "monospace" }}>
-                  {item.device}
-                </span>
-                <AdultBadge size="sm" />
-                {res && (
-                  <span style={{ color: res.status === "ok" ? "#4caf50" : "#ff8080", fontSize: "0.72rem", fontFamily: "monospace" }}>
-                    {res.msg}
-                  </span>
-                )}
-              </div>
-            </div>
-            <button onClick={() => markAdult(item.title)} disabled={isLoading || res?.status === "ok"}
-              style={{
-                background: res?.status === "ok" ? "transparent" : isLoading ? "#e8e4f0" : "rgba(192,0,26,0.15)",
-                border: `1px solid ${res?.status === "ok" ? "#4caf50" : "#c0001a"}`,
-                color: res?.status === "ok" ? "#4caf50" : isLoading ? "#6b6480" : "#1a1625",
-                padding: "7px 16px", cursor: (isLoading || res?.status === "ok") ? "not-allowed" : "pointer",
-                fontSize: "0.7rem", letterSpacing: "0.1em", textTransform: "uppercase",
-                fontFamily: "monospace", flexShrink: 0,
-              }}>
-              {res?.status === "ok" ? "✓ Done" : isLoading ? "Updating…" : "Mark 16+"}
-            </button>
-          </div>
-        );
+  return<div style={{display:"grid",gridTemplateColumns:"240px 1fr",gap:"24px",alignItems:"start"}}>
+    {/* Sidebar */}
+    <div><Card style={{padding:"0",overflow:"hidden"}}>
+      <div style={{padding:"14px 16px",borderBottom:`1px solid ${C.border}`}}><p style={eyebrow}>Static Pages</p></div>
+      {PAGE_SLUGS.map(({slug,label})=>{
+        const active=!useCustom&&selectedSlug===slug;const saved=recordsLoaded&&hasContent(slug);
+        return<button key={slug} onClick={()=>{setUseCustom(false);setSelectedSlug(slug);setMsg(null);}} style={{display:"flex",alignItems:"center",justifyContent:"space-between",width:"100%",padding:"10px 16px",background:active?"rgba(192,0,26,0.15)":"transparent",border:"none",borderBottom:`1px solid ${C.border}`,borderLeft:`3px solid ${active?C.red:"transparent"}`,color:active?C.textPri:C.textSec,cursor:"pointer",fontSize:"0.78rem",textAlign:"left"}}>
+          <span>{label}</span>
+          {saved&&<span style={{width:"6px",height:"6px",borderRadius:"50%",background:C.green,flexShrink:0}}/>}
+        </button>;
       })}
-
-      <div style={{ marginTop: "32px", border: "1px solid #d0cce0", padding: "16px 18px", background: "#f0f0f0" }}>
-        <p style={eyebrowStyle}>Mark Any Image by Title</p>
-        <ManualMarkAdult password={password} />
+      <div style={{padding:"14px 16px",borderTop:`1px solid ${C.border}`}}>
+        <p style={{...eyebrow,marginBottom:"8px"}}>Custom Slug</p>
+        <p style={{color:C.textMut,fontSize:"0.65rem",marginBottom:"8px",lineHeight:1.6}}>For collections:<br/><code style={{color:C.purple}}>shop/your-slug</code><br/>For events:<br/><code style={{color:C.purple}}>halloween</code></p>
+        <input value={customSlug} onChange={e=>setCustomSlug(e.target.value.toLowerCase().replace(/[^a-z0-9/-]/g,""))} onFocus={()=>setUseCustom(true)} placeholder="shop/skeleton-card" style={{...inp,fontSize:"0.75rem",marginBottom:"6px"}}/>
+        <Btn onClick={()=>{setUseCustom(true);setMsg(null);}} variant="ghost" style={{width:"100%",padding:"7px"}}>Load Custom</Btn>
       </div>
-    </div>
-  );
-}
+    </Card></div>
 
-function ManualMarkAdult({ password }: { password: string }) {
-  const [titleInput, setTitleInput] = useState("");
-  const [result, setResult]         = useState<{ status: string; msg: string } | null>(null);
-  const [loading, setLoading]       = useState(false);
-
-  async function handle() {
-    if (!titleInput.trim()) return;
-    setLoading(true); setResult(null);
-    try {
-      const res = await fetch("/api/hw-admin/mark-adult", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "x-admin-password": password },
-        body: JSON.stringify({ title: titleInput.trim() }),
-      });
-      const json = await res.json();
-      if (res.ok) setResult({ status: "ok", msg: `✓ Marked 16+ (${json.updated} image${json.updated !== 1 ? "s" : ""} updated)` });
-      else setResult({ status: "err", msg: json.error ?? "Failed" });
-    } catch { setResult({ status: "err", msg: "Network error" }); }
-    setLoading(false);
-  }
-
-  return (
-    <div style={{ display: "flex", gap: "10px", alignItems: "flex-end", flexWrap: "wrap" }}>
-      <div style={{ flex: 1, minWidth: "200px" }}>
-        <label style={labelStyle}>Search by title (partial match)</label>
-        <input value={titleInput} onChange={e => setTitleInput(e.target.value)}
-          onKeyDown={e => e.key === "Enter" && handle()}
-          placeholder="e.g. Skull King"
-          style={inputStyle} />
-      </div>
-      <button onClick={handle} disabled={loading}
-        style={{ background: "#c0001a", border: "none", color: "#fff", padding: "10px 18px", cursor: loading ? "not-allowed" : "pointer", fontSize: "0.7rem", letterSpacing: "0.1em", textTransform: "uppercase", fontFamily: "monospace", opacity: loading ? 0.7 : 1 }}>
-        {loading ? "Updating…" : "Mark 16+"}
-      </button>
-      {result && (
-        <span style={{ color: result.status === "ok" ? "#4caf50" : "#ff8080", fontSize: "0.78rem", fontFamily: "monospace" }}>
-          {result.msg}
-        </span>
-      )}
-    </div>
-  );
-}
-
-// ─── Backdate Tab ─────────────────────────────────────────────────────────────
-function BackdateTab({ password }: { password: string }) {
-  const [posts, setPosts]     = useState<Post[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [saving, setSaving]   = useState(false);
-  const [message, setMessage] = useState<{ type: "ok" | "err"; text: string } | null>(null);
-
-  // date assignments — slug → ISO date string
-  const [dates, setDates] = useState<Record<string, string>>({});
-
-  // featured image editing — slug → url string
-  const [thumbEditing, setThumbEditing] = useState<string | null>(null); // which slug is open
-  const [thumbUrl, setThumbUrl]         = useState<string>("");
-  const [thumbSaving, setThumbSaving]   = useState(false);
-
-  async function handleSaveThumb(slug: string) {
-    setThumbSaving(true);
-    try {
-      const res = await fetch("/api/hw-admin/blogs", {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json", "x-admin-password": password },
-        body: JSON.stringify({ slug, featuredImage: thumbUrl.trim() || null }),
-      });
-      if (res.ok) {
-        setPosts(prev => prev.map(p => p.slug === slug ? { ...p, featuredImage: thumbUrl.trim() || null } : p));
-        setMessage({ type: "ok", text: `✓ Thumbnail saved for "${slug}"` });
-        setThumbEditing(null);
-        setThumbUrl("");
-      } else {
-        const j = await res.json();
-        setMessage({ type: "err", text: j.error ?? "Failed to save thumbnail." });
-      }
-    } catch {
-      setMessage({ type: "err", text: "Network error." });
-    }
-    setThumbSaving(false);
-  }
-
-  // Suggested spread: March 10 → March 26, evenly spaced
-  function suggestDates(slugList: string[]) {
-    const start = new Date("2026-03-10T10:00:00Z");
-    const end   = new Date("2026-03-26T18:00:00Z");
-    const range = end.getTime() - start.getTime();
-    const step  = slugList.length > 1 ? range / (slugList.length - 1) : 0;
-    const map: Record<string, string> = {};
-    slugList.forEach((slug, i) => {
-      const d = new Date(start.getTime() + step * i);
-      map[slug] = d.toISOString().slice(0, 16); // "YYYY-MM-DDTHH:mm"
-    });
-    return map;
-  }
-
-  useEffect(() => {
-    async function load() {
-      setLoading(true);
-      try {
-        const res = await fetch("/api/hw-admin/blogs", { headers: { "x-admin-password": password } });
-        if (res.ok) {
-          const j = await res.json();
-          const postList: Post[] = j.posts ?? [];
-          setPosts(postList);
-          // Pre-fill dates with suggested spread
-          setDates(suggestDates(postList.map((p) => p.slug)));
-        }
-      } catch {}
-      setLoading(false);
-    }
-    load();
-  }, [password]);
-
-  async function handleApplyAll() {
-    setSaving(true); setMessage(null);
-    const updates = posts.map((p) => ({
-      slug: p.slug,
-      createdAt: new Date(dates[p.slug] ?? p.createdAt).toISOString(),
-    }));
-    try {
-      const res = await fetch("/api/hw-admin/blogs", {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json", "x-admin-password": password },
-        body: JSON.stringify({ updates }),
-      });
-      const json = await res.json();
-      if (res.ok || res.status === 207) {
-        const failed = (json.results ?? []).filter((r: { ok: boolean }) => !r.ok);
-        if (failed.length === 0) {
-          setMessage({ type: "ok", text: `✓ All ${updates.length} posts backdated successfully!` });
-        } else {
-          setMessage({ type: "err", text: `⚠ ${failed.length} post(s) failed. Others updated.` });
-        }
-      } else {
-        setMessage({ type: "err", text: json.error ?? "Failed to backdate." });
-      }
-    } catch {
-      setMessage({ type: "err", text: "Network error." });
-    }
-    setSaving(false);
-  }
-
-  async function handleSingleDate(slug: string) {
-    setSaving(true); setMessage(null);
-    try {
-      const res = await fetch("/api/hw-admin/blogs", {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json", "x-admin-password": password },
-        body: JSON.stringify({ slug, createdAt: new Date(dates[slug]).toISOString() }),
-      });
-      const json = await res.json();
-      if (res.ok) setMessage({ type: "ok", text: `✓ "${slug}" backdated.` });
-      else setMessage({ type: "err", text: json.error ?? "Failed." });
-    } catch {
-      setMessage({ type: "err", text: "Network error." });
-    }
-    setSaving(false);
-  }
-
-  if (loading) return <p style={{ color: "#6b6480" }}>Loading posts…</p>;
-
-  return (
+    {/* Editor */}
     <div>
-      <div style={{ background: "rgba(192,0,26,0.06)", border: "1px solid rgba(192,0,26,0.4)", padding: "14px 18px", marginBottom: "24px" }}>
-        <p style={{ color: "#ffd080", fontSize: "0.78rem", fontFamily: "monospace", marginBottom: "6px" }}>
-          📅 Backdate Blog Posts
-        </p>
-        <p style={{ color: "#5a5070", fontSize: "0.72rem", fontFamily: "monospace", lineHeight: 1.6 }}>
-          Spread your posts over the last few weeks so they look like a natural publishing history.
-          Dates are pre-filled with an even spread from <strong style={{ color: "#c9c4dd" }}>March 10</strong> to <strong style={{ color: "#c9c4dd" }}>March 26</strong>.
-          Edit any date, then click <strong style={{ color: "#c9c4dd" }}>Apply All</strong> or update individually.
-        </p>
-      </div>
-
-      {posts.length === 0 ? (
-        <p style={{ color: "#6b6480", fontSize: "0.85rem" }}>No blog posts found. Publish some posts first.</p>
-      ) : (
-        <>
-          <div style={{ marginBottom: "20px", display: "flex", gap: "12px", alignItems: "center", flexWrap: "wrap" }}>
-            <button onClick={handleApplyAll} disabled={saving}
-              style={{ background: saving ? "#e8e4f0" : "#c0001a", border: "none", color: "#fff", padding: "10px 24px", cursor: saving ? "not-allowed" : "pointer", fontSize: "0.72rem", letterSpacing: "0.12em", textTransform: "uppercase", fontFamily: "monospace", opacity: saving ? 0.7 : 1 }}>
-              {saving ? "Saving…" : `📅 Apply All ${posts.length} Dates`}
-            </button>
-            <button onClick={() => setDates(suggestDates(posts.map(p => p.slug)))} disabled={saving}
-              style={{ background: "transparent", border: "1px solid #d0cce0", color: "#6b6480", padding: "10px 18px", cursor: "pointer", fontSize: "0.7rem", letterSpacing: "0.1em", textTransform: "uppercase", fontFamily: "monospace" }}>
-              ↺ Reset to Suggested
-            </button>
-          </div>
-
-          {message && (
-            <div style={{ padding: "10px 14px", border: `1px solid ${message.type === "ok" ? "#4caf50" : "#c0001a"}`, color: message.type === "ok" ? "#4caf50" : "#ffd080", fontSize: "0.82rem", marginBottom: "20px" }}>
-              {message.text}
-            </div>
-          )}
-
-          <p style={eyebrowStyle}>Posts ({posts.length}) — drag to adjust dates</p>
-
-          {posts.map((p, i) => (
-            <div key={p.slug} style={{ border: "1px solid #d0cce0", marginBottom: "8px", overflow: "hidden" }}>
-              {/* ── Main row ── */}
-              <div style={{ padding: "14px 16px", display: "flex", alignItems: "center", gap: "16px", flexWrap: "wrap" }}>
-                <span style={{ color: "#6b6480", fontSize: "0.65rem", fontFamily: "monospace", minWidth: "20px", flexShrink: 0 }}>
-                  {String(i + 1).padStart(2, "0")}
-                </span>
-
-                {/* Thumbnail preview */}
-                <div style={{ width: "48px", height: "32px", flexShrink: 0, background: "#0f0c1a", border: "1px solid #d0cce0", overflow: "hidden", borderRadius: "2px" }}>
-                  {p.featuredImage && (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img src={p.featuredImage} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
-                  )}
-                </div>
-
-                <div style={{ flex: 1, minWidth: "160px" }}>
-                  <p style={{ color: "#1a1625", fontSize: "0.85rem", marginBottom: "4px" }}>{p.title}</p>
-                  <p style={{ color: "#6b6480", fontSize: "0.65rem", fontFamily: "monospace" }}>
-                    Current: {new Date(p.createdAt).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })}
-                  </p>
-                </div>
-
-                <div style={{ display: "flex", gap: "8px", alignItems: "center", flexShrink: 0, flexWrap: "wrap" }}>
-                  {/* Date picker */}
-                  <input
-                    type="datetime-local"
-                    value={dates[p.slug] ?? ""}
-                    onChange={e => setDates(prev => ({ ...prev, [p.slug]: e.target.value }))}
-                    style={{ background: "#f8f8f8", border: "1px solid #d0cce0", color: "#1a1625", padding: "6px 10px", fontSize: "0.75rem", fontFamily: "monospace" }}
-                  />
-                  <button onClick={() => handleSingleDate(p.slug)} disabled={saving}
-                    style={{ background: "transparent", border: "1px solid #c0001a", color: "#c0001a", padding: "6px 12px", cursor: saving ? "not-allowed" : "pointer", fontSize: "0.65rem", letterSpacing: "0.08em", textTransform: "uppercase", fontFamily: "monospace", flexShrink: 0 }}>
-                    Save Date
-                  </button>
-                  {/* Thumbnail toggle */}
-                  <button
-                    onClick={() => {
-                      if (thumbEditing === p.slug) { setThumbEditing(null); setThumbUrl(""); }
-                      else { setThumbEditing(p.slug); setThumbUrl(p.featuredImage ?? ""); }
-                    }}
-                    style={{ background: thumbEditing === p.slug ? "#1a1625" : "transparent", border: "1px solid #6b6480", color: thumbEditing === p.slug ? "#f0ecff" : "#6b6480", padding: "6px 12px", cursor: "pointer", fontSize: "0.65rem", letterSpacing: "0.08em", textTransform: "uppercase", fontFamily: "monospace", flexShrink: 0 }}>
-                    {p.featuredImage ? "✎ Thumb" : "+ Thumb"}
-                  </button>
-                </div>
-              </div>
-
-              {/* ── Thumbnail edit row — shown when expanded ── */}
-              {thumbEditing === p.slug && (
-                <div style={{ borderTop: "1px solid #d0cce0", padding: "12px 16px", background: "#faf9fc", display: "flex", gap: "10px", alignItems: "center", flexWrap: "wrap" }}>
-                  <span style={{ color: "#6b6480", fontSize: "0.65rem", fontFamily: "monospace", flexShrink: 0 }}>THUMBNAIL URL</span>
-                  <input
-                    type="text"
-                    value={thumbUrl}
-                    onChange={e => setThumbUrl(e.target.value)}
-                    placeholder="https://assets.hauntedwallpapers.com/thumbnails/your-image.jpeg"
-                    style={{ flex: 1, minWidth: "260px", background: "#fff", border: "1px solid #d0cce0", color: "#1a1625", padding: "8px 12px", fontSize: "0.8rem", fontFamily: "monospace" }}
-                  />
-                  {/* Live preview */}
-                  {thumbUrl && (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img src={thumbUrl} alt="preview" style={{ height: "40px", width: "64px", objectFit: "cover", border: "1px solid #d0cce0", flexShrink: 0 }} />
-                  )}
-                  <button onClick={() => handleSaveThumb(p.slug)} disabled={thumbSaving}
-                    style={{ background: "#c0001a", border: "none", color: "#fff", padding: "8px 16px", cursor: thumbSaving ? "not-allowed" : "pointer", fontSize: "0.7rem", letterSpacing: "0.1em", textTransform: "uppercase", fontFamily: "monospace", flexShrink: 0, opacity: thumbSaving ? 0.6 : 1 }}>
-                    {thumbSaving ? "Saving…" : "Save Thumbnail"}
-                  </button>
-                  {p.featuredImage && (
-                    <button onClick={() => { setThumbUrl(""); handleSaveThumb(p.slug); }}
-                      style={{ background: "transparent", border: "1px solid #c0001a", color: "#c0001a", padding: "8px 12px", cursor: "pointer", fontSize: "0.65rem", letterSpacing: "0.08em", textTransform: "uppercase", fontFamily: "monospace", flexShrink: 0 }}>
-                      ✕ Remove
-                    </button>
-                  )}
-                </div>
-              )}
-            </div>
-          ))}
-        </>
-      )}
-    </div>
-  );
-}
-
-// ─── Published Images Tab ─────────────────────────────────────────────────────
-const ALL_SEO_TAGS = [
-  "dark","gothic","horror","fantasy","minimal","amoled","neon",
-  "cyberpunk","nature","abstract","skull","moon","forest","city",
-  "demon","angel","witch","fire","ice","space","ocean","halloween",
-  "anime","street","pattern","texture","portrait","landscape",
-  "skeleton","smoke","rose","blood","knife","darkness","void","crimson",
-  "black","white","aesthetic","edgy","rebel","grunge","punk","metal",
-  "vampire","ghost","reaper","creepy","mysterious","shadow","ethereal",
-  "art","illustration","wallpaper","phone","lockscreen","HD","hd",
-  "purple","red","green","blue","gold","silver","neon-green",
-  "bones","claw","eye","bat","wolf","dragon","witch-hat","potion",
-  "graveyard","cemetery","coffin","chains","thorns","runes","magic",
-];
-
-interface ImageRecord {
-  id: string; slug: string; title: string; r2Key: string;
-  description: string | null; tags: string[]; deviceType: string | null;
-  isAdult: boolean; createdAt: string; viewCount: number;
-  collection: { title: string } | null;
-}
-
-function PublishedImagesTab({ password }: { password: string }) {
-  const [images,   setImages]   = useState<ImageRecord[]>([]);
-  const [total,    setTotal]    = useState(0);
-  const [pages,    setPages]    = useState(1);
-  const [page,     setPage]     = useState(1);
-  const [q,        setQ]        = useState("");
-  const [loading,  setLoading]  = useState(true);
-  const [editing,  setEditing]  = useState<ImageRecord | null>(null);
-  const [saving,   setSaving]   = useState(false);
-  const [deleting, setDeleting] = useState<string | null>(null);
-  const [msg,      setMsg]      = useState<{ type: "ok"|"err"; text: string } | null>(null);
-
-  // Edit form state
-  const [eTitle,  setETitle]  = useState("");
-  const [eDesc,   setEDesc]   = useState("");
-  const [eTags,   setETags]   = useState<string[]>([]);
-  const [eAdult,  setEAdult]  = useState(false);
-  const [eDevice, setEDevice] = useState("");
-
-  const r2Base = process.env.NEXT_PUBLIC_R2_PUBLIC_URL ?? "";
-
-  const load = useCallback(async (p = page, search = q) => {
-    setLoading(true);
-    try {
-      const res = await fetch(`/api/hw-admin/images?page=${p}&q=${encodeURIComponent(search)}`, {
-        headers: { "x-admin-password": password },
-      });
-      if (!res.ok) throw new Error("Failed");
-      const data = await res.json();
-      setImages(data.images ?? []);
-      setTotal(data.total ?? 0);
-      setPages(data.pages ?? 1);
-    } catch { setMsg({ type: "err", text: "Could not load images." }); }
-    setLoading(false);
-  }, [password, page, q]);
-
-  useEffect(() => { load(); }, [load]);
-
-  function openEdit(img: ImageRecord) {
-    setEditing(img);
-    setETitle(img.title);
-    setEDesc(img.description ?? "");
-    setETags(img.tags.filter(t => t !== "16plus"));
-    setEAdult(img.isAdult);
-    setEDevice(img.deviceType ?? "");
-    setMsg(null);
-  }
-
-  async function handleSave() {
-    if (!editing) return;
-    setSaving(true);
-    const tags = eAdult ? [...eTags, "16plus"] : eTags;
-    try {
-      const res = await fetch(`/api/hw-admin/images/${editing.id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json", "x-admin-password": password },
-        body: JSON.stringify({ title: eTitle, description: eDesc, tags, isAdult: eAdult, deviceType: eDevice || null }),
-      });
-      if (!res.ok) throw new Error("Save failed");
-      setMsg({ type: "ok", text: `✓ Saved "${eTitle}"` });
-      setEditing(null);
-      load(page, q);
-    } catch { setMsg({ type: "err", text: "Save failed." }); }
-    setSaving(false);
-  }
-
-  async function handleDelete(img: ImageRecord) {
-    if (!confirm(`Delete "${img.title}"?\n\nThis removes from R2 and database permanently.`)) return;
-    setDeleting(img.id);
-    try {
-      const res = await fetch(`/api/hw-admin/images/${img.id}`, {
-        method: "DELETE",
-        headers: { "x-admin-password": password },
-      });
-      if (!res.ok) throw new Error("Delete failed");
-      setMsg({ type: "ok", text: `✓ Deleted "${img.title}" from R2 + database.` });
-      load(page, q);
-    } catch { setMsg({ type: "err", text: "Delete failed." }); }
-    setDeleting(null);
-  }
-
-  const thumbUrl = (r2Key: string) =>
-    r2Base ? `${r2Base}/${r2Key}` : `/api/r2-proxy/${r2Key}`;
-
-  return (
-    <div>
-      {/* Header */}
-      <div style={{ background: "#f8f8f8", border: "1px solid #c0001a", padding: "14px 18px", fontSize: "0.82rem", marginBottom: "20px" }}>
-        <strong style={{ color: "#ffd080" }}>📸 Published Images</strong>
-        <span style={{ color: "#5a5070", marginLeft: "8px" }}>
-          View, edit tags/description, or delete images. Delete removes from R2 CDN + database permanently.
-        </span>
-      </div>
-
-      {msg && (
-        <div style={{ padding: "10px 14px", border: `1px solid ${msg.type === "ok" ? "#4caf50" : "#c0001a"}`, color: msg.type === "ok" ? "#4caf50" : "#ffd080", fontSize: "0.82rem", marginBottom: "16px" }}>
-          {msg.text}
-          <button onClick={() => setMsg(null)} style={{ float: "right", background: "none", border: "none", cursor: "pointer", color: "#6b6480", fontSize: "1rem" }}>×</button>
-        </div>
-      )}
-
-      {/* Search + count */}
-      <div style={{ display: "flex", gap: "12px", alignItems: "center", marginBottom: "20px", flexWrap: "wrap" }}>
-        <input
-          value={q}
-          onChange={e => { setQ(e.target.value); setPage(1); }}
-          onKeyDown={e => e.key === "Enter" && load(1, q)}
-          placeholder="Search by title or slug…"
-          style={{ ...inputStyle, maxWidth: "320px", flex: 1 }}
-        />
-        <button onClick={() => load(1, q)}
-          style={{ background: "#c0001a", border: "none", color: "#fff", padding: "10px 20px", cursor: "pointer", fontSize: "0.72rem", letterSpacing: "0.1em", textTransform: "uppercase", fontFamily: "monospace" }}>
-          Search
-        </button>
-        <span style={{ color: "#6b6480", fontSize: "0.72rem", marginLeft: "auto" }}>
-          {total} image{total !== 1 ? "s" : ""} total
-        </span>
-      </div>
-
-      {/* Edit Modal */}
-      {editing && (
-        <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.6)", zIndex: 1000, display: "flex", alignItems: "flex-start", justifyContent: "center", padding: "40px 16px", overflowY: "auto" }}>
-          <div style={{ background: "#fff", border: "1px solid #d0cce0", width: "100%", maxWidth: "680px", padding: "28px", fontFamily: "monospace" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "20px" }}>
-              <p style={{ ...eyebrowStyle, marginBottom: 0 }}>✏️ Edit Image</p>
-              <button onClick={() => setEditing(null)} style={{ background: "none", border: "none", cursor: "pointer", color: "#6b6480", fontSize: "1.4rem", lineHeight: 1 }}>×</button>
-            </div>
-
-            {/* Thumbnail preview */}
-            <div style={{ marginBottom: "16px", display: "flex", gap: "16px", alignItems: "flex-start" }}>
-              <img src={thumbUrl(editing.r2Key)} alt={editing.title}
-                style={{ width: "80px", height: "120px", objectFit: "cover", border: "1px solid #d0cce0", flexShrink: 0 }}
-                onError={e => { (e.target as HTMLImageElement).style.display = "none"; }}
-              />
-              <div style={{ flex: 1 }}>
-                <p style={{ ...labelStyle }}>Slug (read-only)</p>
-                <p style={{ color: "#7c3aed", fontFamily: "monospace", fontSize: "0.8rem", marginBottom: "8px" }}>{editing.slug}</p>
-                <p style={{ ...labelStyle }}>R2 Key</p>
-                <p style={{ color: "#6b6480", fontSize: "0.7rem", wordBreak: "break-all" }}>{editing.r2Key}</p>
-              </div>
-            </div>
-
-            {/* Title */}
-            <div style={{ marginBottom: "14px" }}>
-              <label style={labelStyle}>Title</label>
-              <input value={eTitle} onChange={e => setETitle(e.target.value)} style={inputStyle} />
-            </div>
-
-            {/* Device Type */}
-            <div style={{ marginBottom: "14px" }}>
-              <label style={labelStyle}>Device Type</label>
-              <div style={{ display: "flex", gap: "8px" }}>
-                {["", "IPHONE", "ANDROID", "PC"].map(d => (
-                  <button key={d} type="button" onClick={() => setEDevice(d)}
-                    style={{ background: eDevice === d ? "#c0001a" : "#f0f0f0", border: `1px solid ${eDevice === d ? "#c0001a" : "#d0cce0"}`, color: eDevice === d ? "#fff" : "#5a5070", padding: "5px 14px", cursor: "pointer", fontSize: "0.7rem", fontFamily: "monospace", letterSpacing: "0.05em" }}>
-                    {d || "Any"}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Description */}
-            <div style={{ marginBottom: "14px" }}>
-              <label style={labelStyle}>Description (SEO — HTML supported)</label>
-              <textarea value={eDesc} onChange={e => setEDesc(e.target.value)} rows={6}
-                style={{ ...inputStyle, resize: "vertical", lineHeight: "1.6", fontSize: "0.82rem" }} />
-            </div>
-
-            {/* SEO Tags */}
-            <div style={{ marginBottom: "14px" }}>
-              <label style={labelStyle}>SEO Tags ({eTags.length} selected)</label>
-              <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
-                {ALL_SEO_TAGS.map(tag => (
-                  <button key={tag} type="button"
-                    onClick={() => setETags(prev => prev.includes(tag) ? prev.filter(t => t !== tag) : [...prev, tag])}
-                    style={{
-                      background: eTags.includes(tag) ? "#c0001a" : "#f0f0f0",
-                      border: `1px solid ${eTags.includes(tag) ? "#c0001a" : "#d0cce0"}`,
-                      color: eTags.includes(tag) ? "#fff" : "#6b6480",
-                      padding: "4px 12px", cursor: "pointer",
-                      fontSize: "0.65rem", fontFamily: "monospace", letterSpacing: "0.06em",
-                    }}>
-                    {eTags.includes(tag) ? "✓ " : ""}{tag}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* 16+ */}
-            <div style={{ marginBottom: "20px", display: "flex", alignItems: "center", gap: "12px" }}>
-              <button type="button" onClick={() => setEAdult(a => !a)}
-                style={{ background: eAdult ? "#c0001a" : "#f0f0f0", border: `1px solid ${eAdult ? "#c0001a" : "#d0cce0"}`, color: eAdult ? "#fff" : "#6b6480", padding: "6px 16px", cursor: "pointer", fontSize: "0.7rem", fontFamily: "monospace" }}>
-                {eAdult ? "⚠ 16+ ON" : "16+ OFF"}
-              </button>
-              <span style={{ color: "#6b6480", fontSize: "0.7rem" }}>Mark as adult/mature content</span>
-            </div>
-
-            {/* Actions */}
-            <div style={{ display: "flex", gap: "10px" }}>
-              <button onClick={handleSave} disabled={saving}
-                style={{ background: saving ? "#e8e4f0" : "#c0001a", border: "none", color: "#fff", padding: "10px 28px", cursor: saving ? "not-allowed" : "pointer", fontSize: "0.75rem", letterSpacing: "0.12em", textTransform: "uppercase", fontFamily: "monospace", opacity: saving ? 0.7 : 1 }}>
-                {saving ? "Saving…" : "💾 Save Changes"}
-              </button>
-              <button onClick={() => setEditing(null)}
-                style={{ background: "transparent", border: "1px solid #d0cce0", color: "#6b6480", padding: "10px 20px", cursor: "pointer", fontSize: "0.75rem", letterSpacing: "0.1em", fontFamily: "monospace" }}>
-                Cancel
-              </button>
-              <a href={`/shop/${editing.collection?.title ? `${editing.slug}` : `..`}/${editing.slug}`}
-                target="_blank" rel="noopener noreferrer"
-                style={{ marginLeft: "auto", background: "transparent", border: "1px solid #4caf50", color: "#4caf50", padding: "10px 16px", textDecoration: "none", fontSize: "0.7rem", letterSpacing: "0.08em", fontFamily: "monospace" }}>
-                👁 View Live →
-              </a>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Grid */}
-      {loading ? (
-        <p style={{ color: "#6b6480", textAlign: "center", padding: "40px" }}>Loading images…</p>
-      ) : images.length === 0 ? (
-        <p style={{ color: "#6b6480" }}>No images found.</p>
-      ) : (
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))", gap: "16px", marginBottom: "32px" }}>
-          {images.map(img => (
-            <div key={img.id} style={{ border: "1px solid #d0cce0", background: "#fafaf8", position: "relative" }}>
-              {/* Thumbnail */}
-              <div style={{ position: "relative", aspectRatio: "9/16", background: "#1a1625", overflow: "hidden" }}>
-                <img
-                  src={thumbUrl(img.r2Key)}
-                  alt={img.title}
-                  style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
-                  onError={e => {
-                    (e.target as HTMLImageElement).style.display = "none";
-                    const parent = (e.target as HTMLImageElement).parentElement;
-                    if (parent) parent.innerHTML = `<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#4a445a;font-size:0.7rem;font-family:monospace;padding:8px;text-align:center;">${img.slug}</div>`;
-                  }}
-                />
-                {img.isAdult && (
-                  <span style={{ position: "absolute", top: "6px", left: "6px", background: "#c0001a", color: "#fff", fontSize: "0.55rem", fontFamily: "monospace", fontWeight: 900, padding: "2px 6px" }}>16+</span>
-                )}
-                {img.deviceType && (
-                  <span style={{ position: "absolute", top: "6px", right: "6px", background: "rgba(0,0,0,0.7)", color: "#c9a84c", fontSize: "0.55rem", fontFamily: "monospace", padding: "2px 6px" }}>{img.deviceType}</span>
-                )}
-              </div>
-
-              {/* Info */}
-              <div style={{ padding: "10px" }}>
-                <p style={{ color: "#1a1625", fontSize: "0.75rem", fontWeight: 600, marginBottom: "4px", lineHeight: 1.3, wordBreak: "break-word" }}>{img.title}</p>
-                <p style={{ color: "#6b6480", fontSize: "0.6rem", fontFamily: "monospace", marginBottom: "6px", wordBreak: "break-all" }}>{img.slug}</p>
-
-                {/* Tags */}
-                {img.tags.filter(t => t !== "16plus").length > 0 && (
-                  <div style={{ display: "flex", flexWrap: "wrap", gap: "3px", marginBottom: "8px" }}>
-                    {img.tags.filter(t => t !== "16plus").slice(0, 5).map(t => (
-                      <span key={t} style={{ background: "#e8e4f0", color: "#7c3aed", fontSize: "0.55rem", padding: "1px 6px", fontFamily: "monospace" }}>#{t}</span>
-                    ))}
-                    {img.tags.filter(t => t !== "16plus").length > 5 && (
-                      <span style={{ color: "#6b6480", fontSize: "0.55rem" }}>+{img.tags.filter(t => t !== "16plus").length - 5}</span>
-                    )}
-                  </div>
-                )}
-
-                {/* Views */}
-                <p style={{ color: "#6b6480", fontSize: "0.6rem", marginBottom: "8px" }}>👁 {img.viewCount} views</p>
-
-                {/* Actions */}
-                <div style={{ display: "flex", gap: "6px" }}>
-                  <button onClick={() => openEdit(img)}
-                    style={{ flex: 1, background: "#f0f0f0", border: "1px solid #d0cce0", color: "#1a1625", padding: "6px", cursor: "pointer", fontSize: "0.65rem", fontFamily: "monospace" }}>
-                    ✏️ Edit
-                  </button>
-                  <button onClick={() => handleDelete(img)} disabled={deleting === img.id}
-                    style={{ flex: 1, background: deleting === img.id ? "#e8e4f0" : "rgba(192,0,26,0.08)", border: "1px solid rgba(192,0,26,0.4)", color: "#c0001a", padding: "6px", cursor: deleting === img.id ? "not-allowed" : "pointer", fontSize: "0.65rem", fontFamily: "monospace" }}>
-                    {deleting === img.id ? "…" : "🗑 Delete"}
-                  </button>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {/* Pagination */}
-      {pages > 1 && (
-        <div style={{ display: "flex", gap: "8px", alignItems: "center", justifyContent: "center" }}>
-          <button onClick={() => { const p = Math.max(1, page - 1); setPage(p); load(p, q); }} disabled={page <= 1}
-            style={{ background: "transparent", border: "1px solid #d0cce0", color: "#6b6480", padding: "8px 16px", cursor: page <= 1 ? "not-allowed" : "pointer", opacity: page <= 1 ? 0.4 : 1, fontSize: "0.75rem", fontFamily: "monospace" }}>
-            ← Prev
-          </button>
-          <span style={{ color: "#6b6480", fontSize: "0.75rem", fontFamily: "monospace" }}>
-            Page {page} / {pages}
-          </span>
-          <button onClick={() => { const p = Math.min(pages, page + 1); setPage(p); load(p, q); }} disabled={page >= pages}
-            style={{ background: "transparent", border: "1px solid #d0cce0", color: "#6b6480", padding: "8px 16px", cursor: page >= pages ? "not-allowed" : "pointer", opacity: page >= pages ? 0.4 : 1, fontSize: "0.75rem", fontFamily: "monospace" }}>
-            Next →
-          </button>
-        </div>
-      )}
-    </div>
-  );
-}
-
-// ─── Live Blog Preview ───────────────────────────────────────────────────────
-function LiveBlogPreview() {
-  const [activeUrl, setActiveUrl] = useState("/blog");
-  const [customUrl, setCustomUrl] = useState("");
-  const iframeRef = useRef<HTMLIFrameElement>(null);
-
-  const QUICK_LINKS = [
-    { label: "Blog Index", url: "/blog" },
-    { label: "Home", url: "/" },
-    { label: "iPhone", url: "/iphone" },
-    { label: "Android", url: "/android" },
-    { label: "PC", url: "/pc" },
-    { label: "About", url: "/about" },
-    { label: "FAQ", url: "/faq" },
-    { label: "Privacy", url: "/privacy" },
-    { label: "Terms", url: "/terms" },
-    { label: "Contact", url: "/contact" },
-    { label: "Collections", url: "/collections" },
-  ];
-
-  function navigate(url: string) {
-    const full = url.startsWith("http") ? url : `https://hauntedwallpapers.com${url}`;
-    setActiveUrl(url);
-    if (iframeRef.current) iframeRef.current.src = full;
-  }
-
-  return (
-    <div>
-      <div style={{ background: "#f8f8f8", border: "1px solid #c0001a", padding: "14px 18px", marginBottom: "16px", fontSize: "0.82rem" }}>
-        <strong style={{ color: "#ffd080" }}>🌐 Live Site Preview</strong>
-        <span style={{ color: "#5a5070", marginLeft: "8px" }}>
-          Browse your live site in-panel. Check links, layout, and published blog posts.
-        </span>
-      </div>
-
-      {/* Quick nav */}
-      <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", marginBottom: "12px" }}>
-        {QUICK_LINKS.map(({ label, url }) => (
-          <button key={url} onClick={() => navigate(url)}
-            style={{ background: activeUrl === url ? "#c0001a" : "#f0f0f0", border: `1px solid ${activeUrl === url ? "#c0001a" : "#d0cce0"}`, color: activeUrl === url ? "#fff" : "#5a5070", padding: "4px 12px", cursor: "pointer", fontSize: "0.68rem", fontFamily: "monospace", letterSpacing: "0.05em" }}>
-            {label}
-          </button>
-        ))}
-      </div>
-
-      {/* Custom URL bar */}
-      <div style={{ display: "flex", gap: "8px", marginBottom: "14px" }}>
-        <input value={customUrl} onChange={e => setCustomUrl(e.target.value)}
-          onKeyDown={e => e.key === "Enter" && navigate(customUrl)}
-          placeholder="/blog/your-post-slug or https://hauntedwallpapers.com/..."
-          style={{ flex: 1, background: "#fff", border: "1px solid #d0cce0", color: "#1a1625", padding: "8px 12px", fontSize: "0.8rem", fontFamily: "monospace" }} />
-        <button onClick={() => navigate(customUrl || "/blog")}
-          style={{ background: "#c0001a", color: "#fff", border: "none", padding: "8px 18px", cursor: "pointer", fontSize: "0.72rem", letterSpacing: "0.1em", textTransform: "uppercase", fontFamily: "monospace" }}>
-          Go →
-        </button>
-        <a href={`https://hauntedwallpapers.com${activeUrl.startsWith("/") ? activeUrl : "/" + activeUrl}`}
-          target="_blank" rel="noopener noreferrer"
-          style={{ display: "flex", alignItems: "center", background: "transparent", border: "1px solid #6b6480", color: "#6b6480", padding: "8px 14px", textDecoration: "none", fontSize: "0.7rem", fontFamily: "monospace" }}>
-          ↗ Open
-        </a>
-      </div>
-
-      {/* iframe */}
-      <div style={{ border: "1px solid #d0cce0", overflow: "hidden" }}>
-        <iframe
-          ref={iframeRef}
-          src="https://hauntedwallpapers.com/blog"
-          style={{ width: "100%", height: "720px", border: "none", display: "block" }}
-          title="Live site preview"
-        />
-      </div>
-      <p style={{ color: "#6b6480", fontSize: "0.65rem", marginTop: "8px", fontFamily: "monospace" }}>
-        ⚠ Some pages may block iframe embedding. If blank, use ↗ Open to view in a new tab.
-      </p>
-    </div>
-  );
-}
-
-// ─── Main Admin Client ────────────────────────────────────────────────────────
-type Tab = "analytics" | "upload" | "published" | "blog" | "ideas" | "manage18" | "backdate" | "liveblog" | "feedback";
-
-export default function AdminClient() {
-  const [authed, setAuthed]             = useState(false);
-  const [password, setPw]               = useState("");
-  const [tab, setTab]                   = useState<Tab>("analytics");
-  const [prefillTitle, setPrefillTitle] = useState("");
-  const [prefillLabel, setPrefillLabel] = useState("");
-
-  useEffect(() => {
-    const saved = sessionStorage.getItem("hw-admin-auth");
-    if (saved) { setPw(saved); setAuthed(true); }
-  }, []);
-
-  function handleAuth() {
-    const saved = sessionStorage.getItem("hw-admin-auth") ?? "";
-    setPw(saved); setAuthed(true);
-  }
-
-  function handleUseIdea(title: string, label: string) {
-    setPrefillTitle(title);
-    setPrefillLabel(label);
-    setTab("blog");
-  }
-
-  if (!authed) return <PasswordGate onAuth={handleAuth} />;
-
-  const TABS: { key: Tab; label: string }[] = [
-    { key: "analytics",  label: "📊 Analytics"   },
-    { key: "upload",     label: "📤 Upload Image" },
-    { key: "published",  label: "📸 Published"    },
-    { key: "blog",       label: "✍️ Blog Posts"   },
-    { key: "ideas",      label: "💡 Blog Ideas"   },
-    { key: "manage18",   label: "⚠ 16+ Manage"   },
-    { key: "backdate",   label: "📅 Backdate"     },
-    { key: "liveblog",   label: "🌐 Live Preview" },
-    { key: "feedback", label: "⚑ Reports" },
-  ];
-
-  return (
-    <div style={{ minHeight: "100vh", background: "#ffffff", fontFamily: "monospace", color: "#1a1625" }}>
-      <div style={{ borderBottom: "1px solid #d0cce0", padding: "16px 32px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+      <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:"20px",flexWrap:"wrap",gap:"12px"}}>
         <div>
-          <span style={{ color: "#c0001a", fontSize: "0.6rem", letterSpacing: "0.2em", textTransform: "uppercase" }}>Haunted Wallpapers</span>
-          <span style={{ color: "#6b6480", marginLeft: "12px", fontSize: "0.9rem" }}>Admin</span>
+          <p style={{color:C.red,fontSize:"0.65rem",letterSpacing:"0.2em",textTransform:"uppercase",marginBottom:"4px"}}>Editing</p>
+          <code style={{color:C.gold,fontSize:"1rem"}}>{activeSlug||"—"}</code>
+          {liveUrl&&<a href={liveUrl} target="_blank" rel="noopener noreferrer" style={{marginLeft:"12px",color:C.textMut,fontSize:"0.65rem",textDecoration:"none"}}>↗ View Live</a>}
         </div>
-        <div style={{ display: "flex", gap: "16px", alignItems: "center" }}>
-          <a href="/blog" target="_blank" rel="noopener noreferrer" style={{ color: "#6b6480", fontSize: "0.72rem", textDecoration: "none" }}>View Blog →</a>
-          <button onClick={() => { sessionStorage.removeItem("hw-admin-auth"); setAuthed(false); }}
-            style={{ background: "transparent", border: "none", color: "#6b6480", cursor: "pointer", fontSize: "0.75rem" }}>
-            Sign out
-          </button>
+        <div style={{display:"flex",gap:"8px"}}>
+          <Btn onClick={handleSave} disabled={saving||!activeSlug}>{saving?"Saving…":"💾 Save"}</Btn>
+          {hasContent(activeSlug)&&<Btn onClick={handleDelete} disabled={deleting} variant="ghost" style={{color:C.red,borderColor:"rgba(192,0,26,0.4)"}}>{deleting?"…":"Delete"}</Btn>}
         </div>
       </div>
+      <Msg msg={msg}/>
+      {loading?<p style={{color:C.textSec}}>Loading…</p>:<div style={{display:"flex",flexDirection:"column",gap:"16px"}}>
+        <Card style={{padding:"16px"}}>
+          <label style={lbl}>Page Title Override (optional)</label>
+          <input value={title} onChange={e=>setTitle(e.target.value)} placeholder="Leave blank to use default title" style={inp}/>
+        </Card>
+        <Card style={{padding:"16px"}}>
+          <label style={lbl}>Meta Description Override (optional) <span style={{color:metaDesc.length>155?C.red:C.textMut}}>({metaDesc.length}/155)</span></label>
+          <input value={metaDesc} onChange={e=>setMetaDesc(e.target.value)} placeholder="Leave blank to use default meta description" style={inp}/>
+        </Card>
+        <Card style={{padding:"16px"}}>
+          <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:"10px",flexWrap:"wrap",gap:"8px"}}>
+            <label style={{...lbl,marginBottom:0}}>Page Body (HTML) <span style={{color:wordCount>=100?C.green:C.textMut}}>({wordCount} words{wordCount>=100?" ✓":" — aim for 100+"})</span></label>
+            <div style={{display:"flex",gap:"4px"}}>
+              {(["html","preview"] as const).map(m=><button key={m} type="button" onClick={()=>setViewMode(m)} style={{background:viewMode===m?(m==="preview"?C.red:"#2a2535"):"transparent",border:`1px solid ${C.border}`,color:viewMode===m?C.white:C.textSec,padding:"4px 12px",cursor:"pointer",fontSize:"0.65rem",fontFamily:"monospace"}}>{m==="preview"?"👁 Preview":"HTML"}</button>)}
+            </div>
+          </div>
+          <HtmlToolbar textareaId="page-body-ta" value={body} onChange={setBody}/>
+          {viewMode==="html"?<textarea id="page-body-ta" value={body} onChange={e=>setBody(e.target.value)} rows={16} placeholder={"<h2>About This Section</h2>\n<p>Write your content here…</p>"} spellCheck={false} style={{...inp,resize:"vertical",lineHeight:"1.6",fontFamily:"monospace",fontSize:"0.8rem"}}/>:<div style={{minHeight:"300px",border:`1px solid ${C.border}`,padding:"24px",background:"#08060f",lineHeight:"1.9",fontSize:"0.95rem",color:C.textPri}} dangerouslySetInnerHTML={{__html:body||`<p style='color:${C.textMut}'>Nothing to preview yet…</p>`}}/>}
+          <p style={{color:C.textMut,fontSize:"0.62rem",marginTop:"6px"}}>ℹ HTML is saved and rendered on your website. Use &lt;h2&gt;, &lt;p&gt;, &lt;ul&gt;, &lt;strong&gt;, etc.</p>
+        </Card>
+        <Card style={{padding:"14px 16px",background:"rgba(124,58,237,0.08)",borderColor:"rgba(124,58,237,0.3)"}}>
+          <p style={{color:C.purple,fontSize:"0.75rem",marginBottom:"4px"}}>✦ How this works</p>
+          <p style={{color:C.textSec,fontSize:"0.72rem",lineHeight:1.7}}>After saving, your page at <code style={{color:C.gold}}>/{activeSlug}</code> will automatically render this content. If no content is saved, the hardcoded default text shows instead.</p>
+        </Card>
+      </div>}
+    </div>
+  </div>;
+}
 
-      <div style={{ borderBottom: "1px solid #d0cce0", padding: "0 32px", display: "flex", overflowX: "auto" }}>
-        {TABS.map(({ key, label }) => (
-          <button key={key} onClick={() => setTab(key)} style={{
-            background: "transparent", border: "none",
-            borderBottom: tab === key ? "2px solid #c0001a" : "2px solid transparent",
-            color: tab === key ? "#1a1625" : "#6b6480",
-            padding: "14px 24px", cursor: "pointer",
-            fontSize: "0.75rem", letterSpacing: "0.1em", textTransform: "uppercase",
-            whiteSpace: "nowrap",
-          }}>
-            {label}
-          </button>
-        ))}
+function ImageUploaderTab({password}:{password:string}){
+  const[file,setFile]=useState<File|null>(null);const[preview,setPreview]=useState("");const[dragging,setDragging]=useState(false);const[slug,setSlug]=useState("");const[title,setTitle]=useState("");const[altText,setAltText]=useState("");const[description,setDescription]=useState("");const[deviceType,setDeviceType]=useState<"IPHONE"|"ANDROID"|"PC"|">("");const[selectedTags,setSelectedTags]=useState<string[]>([]);const[customTags,setCustomTags]=useState<string[]>([]);const[newTagInput,setNewTagInput]=useState("");const[collectionId,setCollectionId]=useState("");const[isAdult,setIsAdult]=useState(false);const[descMode,setDescMode]=useState<"html"|"preview">("html");const[uploading,setUploading]=useState(false);const[generating,setGenerating]=useState(false);const[message,setMessage]=useState<{type:"ok"|"err";text:string}|null>(null);const[uploadedUrl,setUploadedUrl]=useState("");const dropRef=useRef<HTMLDivElement>(null);const fileInputRef=useRef<HTMLInputElement>(null);
+  function slugify(name:string){return name.toLowerCase().replace(/\.[^.]+$/,"").replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");}
+  function handleFileSelect(f:File){setFile(f);setSlug(slugify(f.name));if(!title)setTitle(f.name.replace(/\.[^.]+$/,"").replace(/[-_]/g," ").replace(/\b\w/g,c=>c.toUpperCase()));setPreview(URL.createObjectURL(f));setMessage(null);setUploadedUrl("");}
+  function onDrop(e:React.DragEvent){e.preventDefault();setDragging(false);const f=e.dataTransfer.files[0];if(f?.type.startsWith("image/"))handleFileSelect(f);}
+  function toggleTag(tag:string){setSelectedTags(prev=>prev.includes(tag)?prev.filter(t=>t!==tag):[...prev,tag]);}
+  async function handleGenerateAll(){if(!file)return;setGenerating(true);setMessage(null);try{const base64=await fileToBase64(file);const result=await analyzeImageWithClaude(base64,file.type);if(result.title){setTitle(result.title);setSlug(result.title.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,""));}if(result.description)setDescription(result.description);if(result.altText)setAltText(result.altText);if(result.tags?.length)setSelectedTags(result.tags.filter(t=>ALL_TAGS.includes(t)));setMessage({type:"ok",text:"✓ Claude AI generated title, description, alt text & tags!"});}catch(err){setMessage({type:"err",text:`⚠ AI generation failed: ${(err as Error).message}`});}setGenerating(false);}
+  async function handleUpload(){if(!file||!slug||!title){setMessage({type:"err",text:"File, slug, and title are required."});return;}setUploading(true);setMessage(null);try{const form=new FormData();form.append("file",file);form.append("slug",slug);form.append("title",title);form.append("altText",altText);form.append("description",description);form.append("tags",JSON.stringify(selectedTags));form.append("isAdult",String(isAdult));if(deviceType)form.append("deviceType",deviceType);if(collectionId.trim())form.append("collectionId",collectionId.trim());const res=await fetch("/api/hw-admin/upload-image",{method:"POST",headers:{"x-admin-password":password},body:form});const json=await res.json();if(res.ok){setUploadedUrl(json.url);setMessage({type:"ok",text:`✓ Uploaded! Slug: ${json.slug}`});setFile(null);setPreview("");setSlug("");setTitle("");setDescription("");setAltText("");setDeviceType("");setSelectedTags([]);setCollectionId("");setIsAdult(false);if(fileInputRef.current)fileInputRef.current.value="";}else setMessage({type:"err",text:json.error??"Upload failed."});}catch{setMessage({type:"err",text:"Network error."});}setUploading(false);}
+  const altOk=altText.length>=130&&altText.length<=150;const descWords=description.replace(/<[^>]*>/g," ").split(/\s+/).filter(Boolean).length;const descOk=descWords>=180&&descWords<=220;
+  return<div style={{display:"flex",flexDirection:"column",gap:"20px"}}>
+    <Card style={{padding:"14px 18px",borderColor:C.red}}><strong style={{color:C.gold}}>📤 Image Uploader</strong><span style={{color:C.textSec,marginLeft:"8px",fontSize:"0.82rem"}}>Drop an image → fill in details → upload to R2 + save to DB.</span></Card>
+    <Msg msg={message}/>
+    <div ref={dropRef} onDragOver={e=>{e.preventDefault();setDragging(true);}} onDragLeave={()=>setDragging(false)} onDrop={onDrop} onClick={()=>fileInputRef.current?.click()} style={{border:`2px dashed ${dragging?C.red:file?C.green:C.border}`,background:dragging?"rgba(192,0,26,0.06)":C.surface,padding:"40px 24px",textAlign:"center",cursor:"pointer",transition:"all 0.2s"}}>
+      <input ref={fileInputRef} type="file" accept="image/*" style={{display:"none"}} onChange={e=>{const f=e.target.files?.[0];if(f)handleFileSelect(f);}}/>
+      {preview?<div style={{display:"flex",gap:"24px",alignItems:"flex-start",justifyContent:"center",flexWrap:"wrap"}}><img src={preview} alt="Preview" style={{maxHeight:"200px",maxWidth:"180px",objectFit:"contain",border:`1px solid ${C.border}`}}/><div style={{textAlign:"left"}}><p style={{color:C.green,fontSize:"0.75rem",marginBottom:"6px"}}>✓ File ready</p><p style={{color:C.textPri,fontSize:"0.85rem",marginBottom:"4px"}}>{file?.name}</p><p style={{color:C.textSec,fontSize:"0.75rem"}}>{file?(file.size/1024/1024).toFixed(2)+" MB":""}</p><p style={{color:C.textMut,fontSize:"0.72rem",marginTop:"8px"}}>Click to replace</p></div></div>:<><p style={{fontSize:"2.5rem",marginBottom:"12px"}}>🖼️</p><p style={{color:C.textPri,fontSize:"0.95rem",marginBottom:"6px"}}>{dragging?"Drop it!":"Drag & drop your image here"}</p><p style={{color:C.textSec,fontSize:"0.75rem"}}>or click to browse · JPG, PNG, WEBP · max 20 MB</p></>}
+    </div>
+    {file&&<>
+      <Card style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:"16px",flexWrap:"wrap",padding:"16px 18px",borderColor:"rgba(192,0,26,0.4)",background:"rgba(192,0,26,0.06)"}}>
+        <div><p style={{color:C.gold,fontSize:"0.75rem",marginBottom:"4px"}}>✨ AI Auto-Fill (Claude Vision)</p><p style={{color:C.textSec,fontSize:"0.68rem"}}>Generates title, 200-word description, SEO alt text & tags.</p></div>
+        <Btn onClick={handleGenerateAll} disabled={generating}>{generating?"✨ Analysing…":"✨ Generate All Fields"}</Btn>
+      </Card>
+      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"16px"}}>
+        <Card style={{padding:"16px"}}><label style={lbl}>Image Title</label><input value={title} onChange={e=>setTitle(e.target.value)} placeholder="Dark Gothic Forest" style={inp}/></Card>
+        <Card style={{padding:"16px"}}><label style={lbl}>URL Slug</label><input value={slug} onChange={e=>setSlug(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g,""))} placeholder="dark-gothic-forest" style={inp}/></Card>
       </div>
+      <Card style={{padding:"16px"}}>
+        <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:"8px",flexWrap:"wrap",gap:"8px"}}>
+          <label style={{...lbl,marginBottom:0}}>Description (HTML) <span style={{color:descOk?C.green:descWords>0?C.gold:C.textMut}}>({descWords} words{descOk?" ✓":" — aim for ~200"})</span></label>
+          <div style={{display:"flex",gap:"4px"}}>{(["html","preview"] as const).map(m=><button key={m} type="button" onClick={()=>setDescMode(m)} style={{background:descMode===m?(m==="preview"?C.red:"#2a2535"):"transparent",border:`1px solid ${C.border}`,color:descMode===m?C.white:C.textSec,padding:"3px 10px",cursor:"pointer",fontSize:"0.65rem",fontFamily:"monospace"}}>{m==="preview"?"👁 Preview":"HTML"}</button>)}</div>
+        </div>
+        <HtmlToolbar textareaId="img-desc-ta" value={description} onChange={setDescription}/>
+        {descMode==="html"?<textarea id="img-desc-ta" value={description} onChange={e=>setDescription(e.target.value)} placeholder={"<h2>About This Wallpaper</h2>\n<p>Your description here...</p>"} rows={8} spellCheck={false} style={{...inp,resize:"vertical",lineHeight:"1.6",fontFamily:"monospace",fontSize:"0.8rem"}}/>:<div style={{minHeight:"200px",border:`1px solid ${C.border}`,padding:"20px",background:"#08060f",lineHeight:"1.9",color:C.textPri}} dangerouslySetInnerHTML={{__html:description||`<p style='color:${C.textMut}'>Nothing to preview yet…</p>`}}/>}
+      </Card>
+      <Card style={{padding:"16px"}}>
+        <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:"8px",flexWrap:"wrap",gap:"8px"}}>
+          <label style={{...lbl,marginBottom:0}}>Alt Text (SEO) <span style={{color:altOk?C.green:altText.length>0?C.gold:C.textMut}}>({altText.length}/150{altOk?" ✓":" — aim for 130–150"})</span></label>
+          <Btn onClick={async()=>{if(!file)return;setGenerating(true);try{const{altText:at}=await analyzeImageWithClaude(await fileToBase64(file),file.type);setAltText(at);}catch(err){setMessage({type:"err",text:(err as Error).message});}setGenerating(false);}} disabled={generating} variant="ghost" style={{fontSize:"0.65rem",padding:"5px 14px"}}>{generating?"✨ Analysing…":"✨ AI Generate"}</Btn>
+        </div>
+        <input value={altText} onChange={e=>setAltText(e.target.value)} placeholder="Dark gothic forest wallpaper with moonlit trees — free HD download" style={inp}/>
+      </Card>
+      <Card style={{padding:"14px 18px",borderColor:isAdult?C.red:C.border,background:isAdult?"rgba(192,0,26,0.08)":C.surface}}>
+        <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:"16px"}}>
+          <div><p style={{color:C.textSec,fontSize:"0.72rem",marginBottom:"4px"}}>{isAdult&&<><AdultBadge/>{" "}</>}16+ Adult / Mature Content</p><p style={{color:C.textMut,fontSize:"0.68rem"}}>Shows 16+ badge and requires age confirmation.</p></div>
+          <Btn onClick={()=>setIsAdult(!isAdult)} variant={isAdult?"danger":"ghost"} style={{flexShrink:0}}>{isAdult?"✓ 16+ ON":"Mark as 16+"}</Btn>
+        </div>
+      </Card>
+      <Card style={{padding:"16px"}}>
+        <label style={lbl}>Device Type</label>
+        <div style={{display:"flex",gap:"8px",flexWrap:"wrap"}}>
+          {(["","IPHONE","ANDROID","PC"] as const).map(d=><button key={d} type="button" onClick={()=>setDeviceType(d)} style={{background:deviceType===d?C.red:"transparent",border:`1px solid ${deviceType===d?C.red:C.border}`,color:deviceType===d?C.white:C.textSec,padding:"8px 20px",cursor:"pointer",fontSize:"0.7rem",letterSpacing:"0.1em",textTransform:"uppercase",fontFamily:"monospace"}}>{d===""?"Any":d==="IPHONE"?"📱 iPhone":d==="ANDROID"?"🤖 Android":"🖥️ PC"}</button>)}
+        </div>
+      </Card>
+      <Card style={{padding:"16px"}}>
+        <label style={lbl}>Tags ({selectedTags.length} selected)</label>
+        <div style={{display:"flex",flexWrap:"wrap",gap:"6px",marginBottom:"10px"}}>
+          {[...ALL_TAGS,...customTags].map(tag=><button key={tag} type="button" onClick={()=>toggleTag(tag)} style={{background:selectedTags.includes(tag)?"rgba(192,0,26,0.2)":"transparent",border:`1px solid ${selectedTags.includes(tag)?C.red:C.border}`,color:selectedTags.includes(tag)?C.textPri:C.textSec,padding:"5px 12px",cursor:"pointer",fontSize:"0.65rem",letterSpacing:"0.08em",fontFamily:"monospace"}}>{selectedTags.includes(tag)?"✓ ":""}{tag}</button>)}
+        </div>
+        <div style={{display:"flex",gap:"8px"}}>
+          <input placeholder="Add custom tag…" value={newTagInput} onChange={e=>setNewTagInput(e.target.value.toLowerCase().replace(/\s+/g,"-"))} onKeyDown={e=>{if(e.key==="Enter"&&newTagInput.trim()){const v=newTagInput.trim();setCustomTags(prev=>prev.includes(v)?prev:[...prev,v]);setSelectedTags(prev=>prev.includes(v)?prev:[...prev,v]);setNewTagInput("");}}} style={{...inp,flex:1,fontSize:"0.75rem"}}/>
+          <Btn onClick={()=>{if(!newTagInput.trim())return;const v=newTagInput.trim();setCustomTags(prev=>prev.includes(v)?prev:[...prev,v]);setSelectedTags(prev=>prev.includes(v)?prev:[...prev,v]);setNewTagInput("");}} variant="ghost">Add</Btn>
+        </div>
+      </Card>
+      <Card style={{padding:"16px"}}><label style={lbl}>Collection ID (optional — leave blank for standalone)</label><input value={collectionId} onChange={e=>setCollectionId(e.target.value)} placeholder="UUID of the collection" style={inp}/></Card>
+      <Btn onClick={handleUpload} disabled={uploading} style={{padding:"14px 32px",fontSize:"0.82rem"}}>{uploading?"⏳ Uploading…":"📤 Upload Image"}</Btn>
+      {uploadedUrl&&<Card style={{padding:"14px 16px",borderColor:C.green,background:"rgba(76,175,80,0.08)"}}><p style={{color:C.green,fontSize:"0.8rem",marginBottom:"6px"}}>✓ Uploaded successfully</p><a href={uploadedUrl} target="_blank" rel="noopener noreferrer" style={{color:C.gold,fontSize:"0.75rem",wordBreak:"break-all"}}>{uploadedUrl}</a></Card>}
+    </>}
+  </div>;
+}
 
-      <div style={{ padding: "32px", maxWidth: "1100px" }}>
-        {tab === "analytics" && <AnalyticsTab password={password} />}
-        {tab === "upload"    && <ImageUploaderTab password={password} />}
-        {tab === "published" && <PublishedImagesTab password={password} />}
-        {tab === "blog"      && (
-          <BlogTab
-            password={password}
-            prefillTitle={prefillTitle}
-            prefillLabel={prefillLabel}
-            onPrefillUsed={() => { setPrefillTitle(""); setPrefillLabel(""); }}
-          />
-        )}
-        {tab === "ideas" && <BlogIdeasTab onUseIdea={handleUseIdea} />}
-        {tab === "manage18" && <Manage18Tab password={password} />}
-        {tab === "backdate"  && <BackdateTab password={password} />}
-        {tab === "liveblog"  && <LiveBlogPreview />}
-        {tab === "feedback" && <FeedbackTab password={password} />}
+function BlogTab({password,prefillTitle,prefillLabel,onPrefillUsed}:{password:string;prefillTitle:string;prefillLabel:string;onPrefillUsed:()=>void}){
+  const[mode,setMode]=useState<"list"|"new"|"edit">("list");const[posts,setPosts]=useState<Post[]>([]);const[loading,setLoading]=useState(true);const[editPost,setEditPost]=useState<Post|null>(null);const[title,setTitle]=useState("");const[slug,setSlug]=useState("");const[label,setLabel]=useState("Wallpaper Guides");const[content,setContent]=useState("");const[featImg,setFeatImg]=useState("");const[saving,setSaving]=useState(false);const[deleting,setDeleting]=useState<string|null>(null);const[msg,setMsg]=useState<{type:"ok"|"err";text:string}|null>(null);const[contentMode,setContentMode]=useState<"html"|"preview">("html");
+  const load=useCallback(async()=>{setLoading(true);try{const res=await fetch("/api/hw-admin/blogs",{headers:{"x-admin-password":password}});if(res.ok){const j=await res.json();setPosts(j.posts??[]);}}catch{}setLoading(false);},[password]);
+  useEffect(()=>{load();},[load]);
+  useEffect(()=>{if(prefillTitle){setTitle(prefillTitle);setSlug(prefillTitle.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,""));setLabel(prefillLabel||"Wallpaper Guides");setMode("new");onPrefillUsed();}},[prefillTitle,prefillLabel,onPrefillUsed]);
+  function openNew(){setTitle("");setSlug("");setLabel("Wallpaper Guides");setContent("");setFeatImg("");setEditPost(null);setMsg(null);setMode("new");}
+  function openEdit(p:Post){setEditPost(p);setTitle(p.title);setSlug(p.slug);setLabel(p.label);setContent(p.content??"");setFeatImg(p.featuredImage??"");setMsg(null);setMode("edit");}
+  async function handleSave(){if(!title||!slug||!content){setMsg({type:"err",text:"Title, slug, and content are required."});return;}setSaving(true);setMsg(null);const isEdit=mode==="edit"&&editPost;try{const res=await fetch("/api/hw-admin/blogs",{method:isEdit?"PATCH":"POST",headers:{"Content-Type":"application/json","x-admin-password":password},body:JSON.stringify({slug,title,content,label,featuredImage:featImg||null})});const j=await res.json();if(res.ok){setMsg({type:"ok",text:`✓ ${isEdit?"Updated":"Published"}: "${title}"`});load();setMode("list");}else setMsg({type:"err",text:j.error??"Save failed."});}catch{setMsg({type:"err",text:"Network error."});}setSaving(false);}
+  async function handleDelete(p:Post){if(!confirm(`Delete "${p.title}"?`))return;setDeleting(p.slug);try{await fetch("/api/hw-admin/blogs",{method:"DELETE",headers:{"Content-Type":"application/json","x-admin-password":password},body:JSON.stringify({slug:p.slug})});load();}catch{}setDeleting(null);}
+  const wordCount=content.replace(/<[^>]*>/g," ").split(/\s+/).filter(Boolean).length;
+  if(mode==="new"||mode==="edit")return<div style={{display:"flex",flexDirection:"column",gap:"16px"}}>
+    <div style={{display:"flex",alignItems:"center",gap:"16px",marginBottom:"4px"}}><Btn onClick={()=>{setMode("list");setMsg(null);}} variant="ghost">← Back</Btn><h2 style={{color:C.textPri,fontSize:"1rem",fontWeight:400,margin:0}}>{mode==="edit"?`Editing: ${editPost?.title}`:"New Blog Post"}</h2></div>
+    <Msg msg={msg}/>
+    <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"16px"}}>
+      <Card style={{padding:"16px"}}><label style={lbl}>Title</label><input value={title} onChange={e=>{setTitle(e.target.value);if(mode==="new")setSlug(e.target.value.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,""));}} placeholder="Best Dark Wallpapers for iPhone 2026" style={inp}/></Card>
+      <Card style={{padding:"16px"}}><label style={lbl}>URL Slug</label><input value={slug} onChange={e=>setSlug(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g,""))} disabled={mode==="edit"} placeholder="best-dark-wallpapers-iphone-2026" style={{...inp,opacity:mode==="edit"?0.5:1}}/></Card>
+    </div>
+    <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"16px"}}>
+      <Card style={{padding:"16px"}}><label style={lbl}>Category Label</label><select value={label} onChange={e=>setLabel(e.target.value)} style={{...inp,appearance:"none"}}>{ALL_LABELS.map(l=><option key={l} value={l}>{l}</option>)}</select></Card>
+      <Card style={{padding:"16px"}}><label style={lbl}>Featured Image URL (optional)</label><input value={featImg} onChange={e=>setFeatImg(e.target.value)} placeholder="https://assets.hauntedwallpapers.com/..." style={inp}/></Card>
+    </div>
+    <Card style={{padding:"16px"}}>
+      <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:"8px",flexWrap:"wrap",gap:"8px"}}>
+        <label style={{...lbl,marginBottom:0}}>Content (HTML) <span style={{color:wordCount>=800?C.green:wordCount>0?C.gold:C.textMut}}>({wordCount} words{wordCount>=800?" ✓":" — aim for 800+"})</span></label>
+        <div style={{display:"flex",gap:"4px"}}>{(["html","preview"] as const).map(m=><button key={m} onClick={()=>setContentMode(m)} style={{background:contentMode===m?(m==="preview"?C.red:"#2a2535"):"transparent",border:`1px solid ${C.border}`,color:contentMode===m?C.white:C.textSec,padding:"3px 10px",cursor:"pointer",fontSize:"0.65rem",fontFamily:"monospace"}}>{m==="preview"?"👁 Preview":"HTML"}</button>)}</div>
+      </div>
+      <HtmlToolbar textareaId="blog-content-ta" value={content} onChange={setContent}/>
+      {contentMode==="html"?<textarea id="blog-content-ta" value={content} onChange={e=>setContent(e.target.value)} placeholder={"<h2>Introduction</h2>\n<p>Your article content here…</p>"} rows={20} spellCheck={false} style={{...inp,resize:"vertical",lineHeight:"1.6",fontFamily:"monospace",fontSize:"0.8rem"}}/>:<div style={{minHeight:"400px",border:`1px solid ${C.border}`,padding:"24px",background:"#08060f",lineHeight:"1.9",color:C.textPri}} dangerouslySetInnerHTML={{__html:content||`<p style='color:${C.textMut}'>Nothing to preview yet…</p>`}}/>}
+    </Card>
+    <div style={{display:"flex",gap:"10px"}}>
+      <Btn onClick={handleSave} disabled={saving}>{saving?"Saving…":"💾 Publish Post"}</Btn>
+      <Btn onClick={()=>{setMode("list");setMsg(null);}} variant="ghost">Cancel</Btn>
+      {mode==="edit"&&editPost&&<a href={`https://hauntedwallpapers.com/blog/${editPost.slug}`} target="_blank" rel="noopener noreferrer" style={{display:"inline-flex",alignItems:"center",padding:"10px 16px",border:`1px solid ${C.green}`,color:C.green,textDecoration:"none",fontSize:"0.7rem",fontFamily:"monospace"}}>👁 View Live →</a>}
+    </div>
+  </div>;
+  return<div>
+    <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:"24px"}}><div><p style={eyebrow}>Blog Posts</p><p style={{color:C.textSec,fontSize:"0.82rem"}}>{posts.length} posts published</p></div><Btn onClick={openNew}>+ New Post</Btn></div>
+    <Msg msg={msg}/>
+    {loading?<p style={{color:C.textSec}}>Loading posts…</p>:posts.length===0?<Card style={{textAlign:"center",padding:"48px"}}><p style={{color:C.textMut,marginBottom:"16px"}}>No posts yet.</p><Btn onClick={openNew}>Write Your First Post</Btn></Card>:<div style={{display:"flex",flexDirection:"column",gap:"8px"}}>{posts.map(p=><Card key={p.slug} style={{padding:"16px 18px",display:"flex",alignItems:"center",justifyContent:"space-between",gap:"16px",flexWrap:"wrap"}}><div style={{flex:1,minWidth:0}}><p style={{color:C.textPri,fontWeight:500,marginBottom:"4px",whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{p.title}</p><div style={{display:"flex",gap:"12px",fontSize:"0.7rem",color:C.textMut}}><span style={{background:"rgba(124,58,237,0.2)",color:C.purple,padding:"1px 8px"}}>{p.label}</span><span>{new Date(p.createdAt).toLocaleDateString()}</span><span>/blog/{p.slug}</span></div></div><div style={{display:"flex",gap:"8px",flexShrink:0}}><Btn onClick={()=>openEdit(p)} variant="ghost" style={{padding:"7px 14px",fontSize:"0.68rem"}}>✏️ Edit</Btn><Btn onClick={()=>handleDelete(p)} disabled={deleting===p.slug} variant="danger" style={{padding:"7px 14px",fontSize:"0.68rem"}}>{deleting===p.slug?"…":"Delete"}</Btn></div></Card>)}</div>}
+  </div>;
+}
+
+function PublishedImagesTab({password}:{password:string}){
+  const[images,setImages]=useState<ImageRecord[]>([]);const[total,setTotal]=useState(0);const[pages,setPages]=useState(1);const[page,setPage]=useState(1);const[q,setQ]=useState("");const[loading,setLoading]=useState(true);const[editing,setEditing]=useState<ImageRecord|null>(null);const[saving,setSaving]=useState(false);const[deleting,setDeleting]=useState<string|null>(null);const[msg,setMsg]=useState<{type:"ok"|"err";text:string}|null>(null);const[eTitle,setETitle]=useState("");const[eDesc,setEDesc]=useState("");const[eTags,setETags]=useState<string[]>([]);const[eAdult,setEAdult]=useState(false);const[eDevice,setEDevice]=useState("");const r2Base=process.env.NEXT_PUBLIC_R2_PUBLIC_URL??"";
+  const load=useCallback(async(p=page,search=q)=>{setLoading(true);try{const res=await fetch(`/api/hw-admin/images?page=${p}&q=${encodeURIComponent(search)}`,{headers:{"x-admin-password":password}});if(!res.ok)throw new Error("Failed");const data=await res.json();setImages(data.images??[]);setTotal(data.total??0);setPages(data.pages??1);}catch{setMsg({type:"err",text:"Could not load images."});}setLoading(false);},[password,page,q]);
+  useEffect(()=>{load();},[load]);
+  function openEdit(img:ImageRecord){setEditing(img);setETitle(img.title);setEDesc(img.description??"");setETags(img.tags.filter(t=>t!=="16plus"));setEAdult(img.isAdult);setEDevice(img.deviceType??"");setMsg(null);}
+  async function handleSave(){if(!editing)return;setSaving(true);const tags=eAdult?[...eTags,"16plus"]:eTags;try{const res=await fetch(`/api/hw-admin/images/${editing.id}`,{method:"PATCH",headers:{"Content-Type":"application/json","x-admin-password":password},body:JSON.stringify({title:eTitle,description:eDesc,tags,isAdult:eAdult,deviceType:eDevice||null})});if(!res.ok)throw new Error("Save failed");setMsg({type:"ok",text:`✓ Saved "${eTitle}"`});setEditing(null);load(page,q);}catch{setMsg({type:"err",text:"Save failed."});}setSaving(false);}
+  async function handleDelete(img:ImageRecord){if(!confirm(`Delete "${img.title}"?\n\nThis removes from R2 and database permanently.`))return;setDeleting(img.id);try{const res=await fetch(`/api/hw-admin/images/${img.id}`,{method:"DELETE",headers:{"x-admin-password":password}});if(!res.ok)throw new Error("Delete failed");setMsg({type:"ok",text:`✓ Deleted "${img.title}"`});load(page,q);}catch{setMsg({type:"err",text:"Delete failed."});}setDeleting(null);}
+  const thumbUrl=(key:string)=>r2Base?`${r2Base}/${key}`:`/api/r2-proxy/${key}`;
+  return<div>
+    <Card style={{padding:"14px 18px",marginBottom:"20px",borderColor:C.red}}><strong style={{color:C.gold}}>📸 Published Images</strong><span style={{color:C.textSec,marginLeft:"8px",fontSize:"0.82rem"}}>View, edit, or delete. Delete removes from R2 CDN + database permanently.</span></Card>
+    <Msg msg={msg}/>
+    <div style={{display:"flex",gap:"12px",marginBottom:"20px",flexWrap:"wrap"}}><input value={q} onChange={e=>{setQ(e.target.value);setPage(1);}} onKeyDown={e=>e.key==="Enter"&&load(1,q)} placeholder="Search by title or slug…" style={{...inp,maxWidth:"320px",flex:1}}/><Btn onClick={()=>load(1,q)}>Search</Btn><span style={{color:C.textMut,fontSize:"0.72rem",marginLeft:"auto",alignSelf:"center"}}>{total} images total</span></div>
+    {editing&&<div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.8)",zIndex:1000,display:"flex",alignItems:"flex-start",justifyContent:"center",padding:"40px 16px",overflowY:"auto"}}><div style={{background:C.surface,border:`1px solid ${C.border}`,width:"100%",maxWidth:"680px",padding:"28px",fontFamily:"monospace"}}>
+      <div style={{display:"flex",justifyContent:"space-between",marginBottom:"20px"}}><p style={{...eyebrow,marginBottom:0}}>✏️ Edit Image</p><button onClick={()=>setEditing(null)} style={{background:"none",border:"none",cursor:"pointer",color:C.textSec,fontSize:"1.4rem"}}>×</button></div>
+      <div style={{display:"flex",gap:"16px",marginBottom:"16px",alignItems:"flex-start"}}><img src={thumbUrl(editing.r2Key)} alt={editing.title} style={{width:"80px",height:"120px",objectFit:"cover",border:`1px solid ${C.border}`,flexShrink:0}} onError={e=>{(e.target as HTMLImageElement).style.display="none";}}/><div style={{flex:1}}><p style={lbl}>Slug (read-only)</p><p style={{color:C.purple,fontSize:"0.8rem",marginBottom:"8px"}}>{editing.slug}</p></div></div>
+      <div style={{marginBottom:"14px"}}><label style={lbl}>Title</label><input value={eTitle} onChange={e=>setETitle(e.target.value)} style={inp}/></div>
+      <div style={{marginBottom:"14px"}}><label style={lbl}>Device Type</label><div style={{display:"flex",gap:"8px"}}>{["","IPHONE","ANDROID","PC"].map(d=><button key={d} onClick={()=>setEDevice(d)} style={{background:eDevice===d?C.red:"transparent",border:`1px solid ${eDevice===d?C.red:C.border}`,color:eDevice===d?C.white:C.textSec,padding:"5px 14px",cursor:"pointer",fontSize:"0.7rem",fontFamily:"monospace"}}>{d||"Any"}</button>)}</div></div>
+      <div style={{marginBottom:"14px"}}><label style={lbl}>Description (HTML)</label><textarea value={eDesc} onChange={e=>setEDesc(e.target.value)} rows={6} style={{...inp,resize:"vertical",lineHeight:"1.6",fontSize:"0.82rem"}}/></div>
+      <div style={{marginBottom:"14px"}}><label style={lbl}>SEO Tags ({eTags.length})</label><div style={{display:"flex",flexWrap:"wrap",gap:"6px"}}>{ALL_TAGS.map(tag=><button key={tag} onClick={()=>setETags(prev=>prev.includes(tag)?prev.filter(t=>t!==tag):[...prev,tag])} style={{background:eTags.includes(tag)?C.red:"transparent",border:`1px solid ${eTags.includes(tag)?C.red:C.border}`,color:eTags.includes(tag)?C.white:C.textSec,padding:"4px 12px",cursor:"pointer",fontSize:"0.65rem",fontFamily:"monospace"}}>{eTags.includes(tag)?"✓ ":""}{tag}</button>)}</div></div>
+      <div style={{marginBottom:"20px",display:"flex",alignItems:"center",gap:"12px"}}><Btn onClick={()=>setEAdult(a=>!a)} variant={eAdult?"danger":"ghost"} style={{padding:"6px 16px"}}>{eAdult?"⚠ 16+ ON":"16+ OFF"}</Btn><span style={{color:C.textSec,fontSize:"0.7rem"}}>Mark as adult/mature</span></div>
+      <div style={{display:"flex",gap:"10px"}}><Btn onClick={handleSave} disabled={saving}>{saving?"Saving…":"💾 Save"}</Btn><Btn onClick={()=>setEditing(null)} variant="ghost">Cancel</Btn></div>
+    </div></div>}
+    {loading?<p style={{color:C.textSec,textAlign:"center",padding:"40px"}}>Loading images…</p>:images.length===0?<p style={{color:C.textSec}}>No images found.</p>:<div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(160px,1fr))",gap:"14px",marginBottom:"32px"}}>{images.map(img=><div key={img.id} style={{border:`1px solid ${C.border}`,background:C.surface}}><div style={{position:"relative",aspectRatio:"9/16",background:"#0d0b14",overflow:"hidden"}}><img src={thumbUrl(img.r2Key)} alt={img.title} style={{width:"100%",height:"100%",objectFit:"cover",display:"block"}} onError={e=>{(e.target as HTMLImageElement).style.display="none";}}/>{img.isAdult&&<span style={{position:"absolute",top:"6px",left:"6px",background:C.red,color:"#fff",fontSize:"0.55rem",fontFamily:"monospace",fontWeight:900,padding:"2px 6px"}}>16+</span>}{img.deviceType&&<span style={{position:"absolute",top:"6px",right:"6px",background:"rgba(0,0,0,0.7)",color:C.gold,fontSize:"0.55rem",fontFamily:"monospace",padding:"2px 6px"}}>{img.deviceType}</span>}</div><div style={{padding:"10px"}}><p style={{color:C.textPri,fontSize:"0.72rem",fontWeight:600,marginBottom:"4px",lineHeight:1.3,wordBreak:"break-word"}}>{img.title}</p><p style={{color:C.textMut,fontSize:"0.58rem",marginBottom:"6px"}}>👁 {img.viewCount}</p><div style={{display:"flex",gap:"6px"}}><button onClick={()=>openEdit(img)} style={{flex:1,background:"rgba(124,58,237,0.1)",border:`1px solid ${C.border}`,color:C.textSec,padding:"6px",cursor:"pointer",fontSize:"0.62rem",fontFamily:"monospace"}}>✏️ Edit</button><button onClick={()=>handleDelete(img)} disabled={deleting===img.id} style={{flex:1,background:"rgba(192,0,26,0.08)",border:"1px solid rgba(192,0,26,0.4)",color:C.red,padding:"6px",cursor:deleting===img.id?"not-allowed":"pointer",fontSize:"0.62rem",fontFamily:"monospace"}}>{deleting===img.id?"…":"🗑 Del"}</button></div></div></div>)}</div>}
+    {pages>1&&<div style={{display:"flex",gap:"8px",alignItems:"center",justifyContent:"center"}}><Btn onClick={()=>{const p=Math.max(1,page-1);setPage(p);load(p,q);}} disabled={page<=1} variant="ghost">← Prev</Btn><span style={{color:C.textSec,fontSize:"0.75rem"}}>Page {page} / {pages}</span><Btn onClick={()=>{const p=Math.min(pages,page+1);setPage(p);load(p,q);}} disabled={page>=pages} variant="ghost">Next →</Btn></div>}
+  </div>;
+}
+
+function Manage18Tab({password}:{password:string}){
+  const[results,setResults]=useState<Record<string,{status:string;msg:string}>>({});const[loadingMap,setLoadingMap]=useState<Record<string,boolean>>({});const[allDone,setAllDone]=useState(false);const[titleInput,setTitleInput]=useState("");const[manualResult,setManualResult]=useState<{status:string;msg:string}|null>(null);const[manualLoading,setManualLoading]=useState(false);
+  async function markAdult(title:string){setLoadingMap(prev=>({...prev,[title]:true}));try{const res=await fetch("/api/hw-admin/mark-adult",{method:"POST",headers:{"Content-Type":"application/json","x-admin-password":password},body:JSON.stringify({title})});const json=await res.json();setResults(prev=>({...prev,[title]:res.ok?{status:"ok",msg:`✓ Marked 16+ (${json.updated} updated)`}:{status:"err",msg:json.error??"Failed"}}));}catch{setResults(prev=>({...prev,[title]:{status:"err",msg:"Network error"}}));}setLoadingMap(prev=>({...prev,[title]:false}));}
+  async function markAll(){setAllDone(false);for(const item of ADULT_IMAGES_TO_MARK){await markAdult(item.title);await new Promise(r=>setTimeout(r,300));}setAllDone(true);}
+  async function handleManual(){if(!titleInput.trim())return;setManualLoading(true);setManualResult(null);try{const res=await fetch("/api/hw-admin/mark-adult",{method:"POST",headers:{"Content-Type":"application/json","x-admin-password":password},body:JSON.stringify({title:titleInput.trim()})});const json=await res.json();setManualResult(res.ok?{status:"ok",msg:`✓ Marked 16+ (${json.updated} updated)`}:{status:"err",msg:json.error??"Failed"});}catch{setManualResult({status:"err",msg:"Network error"});}setManualLoading(false);}
+  const doneCount=Object.values(results).filter(r=>r.status==="ok").length;
+  return<div>
+    <Card style={{padding:"14px 18px",marginBottom:"24px",borderColor:"rgba(192,0,26,0.5)",background:"rgba(192,0,26,0.06)"}}><p style={{color:C.gold,fontSize:"0.78rem",marginBottom:"4px"}}>⚠ 16+ Content Manager</p><p style={{color:C.textSec,fontSize:"0.72rem"}}>Mark images as 16+ mature themes. Searches by title (partial match).</p></Card>
+    <div style={{display:"flex",gap:"12px",marginBottom:"20px",flexWrap:"wrap",alignItems:"center"}}><Btn onClick={markAll} variant="danger">⚠ Mark All as 16+</Btn>{doneCount>0&&<span style={{color:C.green,fontSize:"0.75rem"}}>✓ {doneCount} / {ADULT_IMAGES_TO_MARK.length} done{allDone?" — All done!":""}</span>}</div>
+    <div style={{display:"flex",flexDirection:"column",gap:"8px",marginBottom:"32px"}}>{ADULT_IMAGES_TO_MARK.map(item=>{const res=results[item.title];const isLoading=loadingMap[item.title];return<Card key={item.title} style={{padding:"14px 16px",display:"flex",justifyContent:"space-between",alignItems:"center",gap:"16px",flexWrap:"wrap",borderColor:res?.status==="ok"?C.green:res?.status==="err"?C.red:C.border}}><div><p style={{color:C.textPri,marginBottom:"4px"}}>{item.title}</p><div style={{display:"flex",gap:"8px",alignItems:"center"}}><span style={{background:"rgba(124,58,237,0.2)",color:C.purple,padding:"2px 8px",fontSize:"0.62rem",fontFamily:"monospace"}}>{item.device}</span><AdultBadge/>{res&&<span style={{color:res.status==="ok"?C.green:"#ff8080",fontSize:"0.72rem"}}>{res.msg}</span>}</div></div><Btn onClick={()=>markAdult(item.title)} disabled={isLoading||res?.status==="ok"} variant={res?.status==="ok"?"success":"ghost"} style={{fontSize:"0.68rem"}}>{res?.status==="ok"?"✓ Done":isLoading?"Updating…":"Mark 16+"}</Btn></Card>;})}</div>
+    <Card style={{padding:"20px"}}><p style={eyebrow}>Mark Any Image by Title</p><div style={{display:"flex",gap:"8px",flexWrap:"wrap",alignItems:"flex-end"}}><div style={{flex:1,minWidth:"200px"}}><label style={lbl}>Search by title (partial match)</label><input value={titleInput} onChange={e=>setTitleInput(e.target.value)} onKeyDown={e=>e.key==="Enter"&&handleManual()} placeholder="e.g. Skull King" style={inp}/></div><Btn onClick={handleManual} disabled={manualLoading}>{manualLoading?"Updating…":"Mark 16+"}</Btn>{manualResult&&<span style={{color:manualResult.status==="ok"?C.green:"#ff8080",fontSize:"0.78rem"}}>{manualResult.msg}</span>}</div></Card>
+  </div>;
+}
+
+function BackdateTab({password}:{password:string}){
+  const[posts,setPosts]=useState<Post[]>([]);const[loading,setLoading]=useState(true);const[saving,setSaving]=useState(false);const[message,setMessage]=useState<{type:"ok"|"err";text:string}|null>(null);const[dates,setDates]=useState<Record<string,string>>({});const[thumbEditing,setThumbEditing]=useState<string|null>(null);const[thumbUrl,setThumbUrl]=useState("");const[thumbSaving,setThumbSaving]=useState(false);
+  function suggestDates(slugList:string[]){const start=new Date("2026-03-10T10:00:00Z"),end=new Date("2026-03-26T18:00:00Z");const range=end.getTime()-start.getTime();const step=slugList.length>1?range/(slugList.length-1):0;const map:Record<string,string>={};slugList.forEach((slug,i)=>{const d=new Date(start.getTime()+step*i);map[slug]=d.toISOString().slice(0,16);});return map;}
+  useEffect(()=>{async function load(){setLoading(true);try{const res=await fetch("/api/hw-admin/blogs",{headers:{"x-admin-password":password}});if(res.ok){const j=await res.json();const postList:Post[]=j.posts??[];setPosts(postList);setDates(suggestDates(postList.map(p=>p.slug)));}}catch{}setLoading(false);}load();},[password]);
+  async function handleSaveThumb(slug:string){setThumbSaving(true);try{const res=await fetch("/api/hw-admin/blogs",{method:"PATCH",headers:{"Content-Type":"application/json","x-admin-password":password},body:JSON.stringify({slug,featuredImage:thumbUrl.trim()||null})});if(res.ok){setPosts(prev=>prev.map(p=>p.slug===slug?{...p,featuredImage:thumbUrl.trim()||null}:p));setMessage({type:"ok",text:`✓ Thumbnail saved for "${slug}"`});setThumbEditing(null);setThumbUrl("");}else{const j=await res.json();setMessage({type:"err",text:j.error??"Failed."});}}catch{setMessage({type:"err",text:"Network error."});}setThumbSaving(false);}
+  async function handleApplyAll(){setSaving(true);setMessage(null);const updates=posts.map(p=>({slug:p.slug,createdAt:new Date(dates[p.slug]??p.createdAt).toISOString()}));try{const res=await fetch("/api/hw-admin/blogs",{method:"PATCH",headers:{"Content-Type":"application/json","x-admin-password":password},body:JSON.stringify({updates})});const json=await res.json();if(res.ok||res.status===207){const failed=(json.results??[]).filter((r:{ok:boolean})=>!r.ok);setMessage(failed.length===0?{type:"ok",text:`✓ All ${updates.length} posts backdated!`}:{type:"err",text:`⚠ ${failed.length} failed.`});}else setMessage({type:"err",text:json.error??"Failed."});}catch{setMessage({type:"err",text:"Network error."});}setSaving(false);}
+  if(loading)return<p style={{color:C.textSec}}>Loading posts…</p>;
+  return<div>
+    <Card style={{padding:"14px 18px",marginBottom:"24px",borderColor:"rgba(192,0,26,0.4)",background:"rgba(192,0,26,0.06)"}}><p style={{color:C.gold,fontSize:"0.78rem",marginBottom:"4px"}}>📅 Backdate Blog Posts</p><p style={{color:C.textSec,fontSize:"0.72rem",lineHeight:1.6}}>Spread posts over the last few weeks. Pre-filled: <strong style={{color:C.textPri}}>March 10 → March 26</strong>.</p></Card>
+    {posts.length===0?<p style={{color:C.textSec}}>No blog posts found.</p>:<><div style={{display:"flex",gap:"12px",marginBottom:"20px",flexWrap:"wrap"}}><Btn onClick={handleApplyAll} disabled={saving}>{saving?"Saving…":`📅 Apply All ${posts.length} Dates`}</Btn><Btn onClick={()=>setDates(suggestDates(posts.map(p=>p.slug)))} variant="ghost">↺ Reset</Btn></div><Msg msg={message}/><div style={{display:"flex",flexDirection:"column",gap:"8px"}}>{posts.map((p,i)=><Card key={p.slug} style={{padding:"14px 16px"}}><div style={{display:"flex",alignItems:"center",gap:"16px",flexWrap:"wrap"}}><span style={{color:C.textMut,fontSize:"0.65rem",minWidth:"20px"}}>#{i+1}</span><div style={{flex:1,minWidth:0}}><p style={{color:C.textPri,fontSize:"0.85rem",marginBottom:"2px",whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{p.title}</p><code style={{color:C.textMut,fontSize:"0.65rem"}}>/blog/{p.slug}</code></div><input type="datetime-local" value={dates[p.slug]??""} onChange={e=>setDates(prev=>({...prev,[p.slug]:e.target.value}))} style={{...inp,maxWidth:"200px",fontSize:"0.75rem",color:C.gold}}/><button onClick={()=>{setThumbEditing(thumbEditing===p.slug?null:p.slug);setThumbUrl(p.featuredImage??"");}} style={{background:"transparent",border:`1px solid ${C.border}`,color:C.textMut,padding:"6px 12px",cursor:"pointer",fontSize:"0.65rem",fontFamily:"monospace"}}>🖼️ Thumb</button></div>{thumbEditing===p.slug&&<div style={{marginTop:"12px",display:"flex",gap:"8px",alignItems:"center",flexWrap:"wrap"}}><input value={thumbUrl} onChange={e=>setThumbUrl(e.target.value)} placeholder="https://..." style={{...inp,flex:1,fontSize:"0.75rem"}}/><Btn onClick={()=>handleSaveThumb(p.slug)} disabled={thumbSaving} style={{fontSize:"0.68rem",padding:"8px 14px"}}>{thumbSaving?"…":"Save"}</Btn></div>}</Card>)}</div></>}
+  </div>;
+}
+
+function LivePreviewTab(){
+  const[activeUrl,setActiveUrl]=useState("/blog");const[customUrl,setCustomUrl]=useState("");const iframeRef=useRef<HTMLIFrameElement>(null);
+  const QUICK_LINKS=[{label:"Home",url:"/"},{label:"Blog",url:"/blog"},{label:"iPhone",url:"/iphone"},{label:"Android",url:"/android"},{label:"PC",url:"/pc"},{label:"Shop",url:"/shop"},{label:"Collections",url:"/collections"},{label:"About",url:"/about"},{label:"FAQ",url:"/faq"},{label:"Contact",url:"/contact"},{label:"Tools",url:"/tools"}];
+  function navigate(url:string){const full=url.startsWith("http")?url:`https://hauntedwallpapers.com${url}`;setActiveUrl(url);if(iframeRef.current)iframeRef.current.src=full;}
+  return<div>
+    <Card style={{padding:"14px 18px",marginBottom:"16px",borderColor:C.red}}><strong style={{color:C.gold}}>🌐 Live Site Preview</strong><span style={{color:C.textSec,marginLeft:"8px",fontSize:"0.82rem"}}>Browse your live site in-panel.</span></Card>
+    <div style={{display:"flex",flexWrap:"wrap",gap:"6px",marginBottom:"12px"}}>{QUICK_LINKS.map(({label,url})=><button key={url} onClick={()=>navigate(url)} style={{background:activeUrl===url?C.red:"transparent",border:`1px solid ${activeUrl===url?C.red:C.border}`,color:activeUrl===url?C.white:C.textSec,padding:"5px 12px",cursor:"pointer",fontSize:"0.68rem",fontFamily:"monospace"}}>{label}</button>)}</div>
+    <div style={{display:"flex",gap:"8px",marginBottom:"14px"}}><input value={customUrl} onChange={e=>setCustomUrl(e.target.value)} onKeyDown={e=>e.key==="Enter"&&navigate(customUrl)} placeholder="/blog/your-slug or full URL" style={{...inp,flex:1}}/><Btn onClick={()=>navigate(customUrl||"/blog")}>Go →</Btn><a href={`https://hauntedwallpapers.com${activeUrl.startsWith("/")?activeUrl:"/"+activeUrl}`} target="_blank" rel="noopener noreferrer" style={{display:"flex",alignItems:"center",background:"transparent",border:`1px solid ${C.border}`,color:C.textSec,padding:"10px 14px",textDecoration:"none",fontSize:"0.7rem",fontFamily:"monospace"}}>↗</a></div>
+    <div style={{border:`1px solid ${C.border}`,overflow:"hidden"}}><iframe ref={iframeRef} src="https://hauntedwallpapers.com/blog" style={{width:"100%",height:"720px",border:"none",display:"block"}} title="Live site preview"/></div>
+    <p style={{color:C.textMut,fontSize:"0.65rem",marginTop:"8px"}}>⚠ Some pages may block iframe embedding. Use ↗ to open in a new tab.</p>
+  </div>;
+}
+
+interface CollectionRecord{id:string;slug:string;title:string;category:string;description:string;metaDescription:string|null;thumbnail:string|null;_count:{images:number};}
+
+function CollectionsTab({password}:{password:string}){
+  const[collections,setCollections]=useState<CollectionRecord[]>([]);
+  const[loading,setLoading]=useState(true);
+  const[selected,setSelected]=useState<CollectionRecord|null>(null);
+  const[desc,setDesc]=useState("");
+  const[metaDesc,setMetaDesc]=useState("");
+  const[descMode,setDescMode]=useState<"html"|"preview">("html");
+  const[saving,setSaving]=useState(false);
+  const[msg,setMsg]=useState<{type:"ok"|"err";text:string}|null>(null);
+  const[search,setSearch]=useState("");
+  const r2Base=typeof process!=="undefined"?(process.env.NEXT_PUBLIC_R2_PUBLIC_URL??""):"";
+
+  const load=useCallback(async()=>{
+    setLoading(true);
+    try{const res=await fetch("/api/hw-admin/collections",{headers:{"x-admin-password":password}});
+      if(res.ok){const j=await res.json();setCollections(j.collections??[]);}}
+    catch{}setLoading(false);
+  },[password]);
+
+  useEffect(()=>{load();},[load]);
+
+  function openCollection(c:CollectionRecord){setSelected(c);setDesc(c.description??"");setMetaDesc(c.metaDescription??"");setMsg(null);setDescMode("html");}
+
+  async function handleSave(){
+    if(!selected)return;setSaving(true);setMsg(null);
+    try{const res=await fetch("/api/hw-admin/collections",{method:"PATCH",headers:{"Content-Type":"application/json","x-admin-password":password},body:JSON.stringify({slug:selected.slug,description:desc,metaDescription:metaDesc||null})});
+      const j=await res.json();
+      if(res.ok){setMsg({type:"ok",text:`✓ Saved "${selected.title}"`});setCollections(prev=>prev.map(c=>c.slug===selected.slug?{...c,description:desc,metaDescription:metaDesc||null}:c));setSelected(s=>s?{...s,description:desc,metaDescription:metaDesc||null}:null);}
+      else setMsg({type:"err",text:j.error??"Save failed."});}
+    catch{setMsg({type:"err",text:"Network error."});}setSaving(false);
+  }
+
+  const filtered=collections.filter(c=>!search||c.title.toLowerCase().includes(search.toLowerCase())||c.slug.includes(search.toLowerCase()));
+  const wordCount=desc.replace(/<[^>]*>/g," ").replace(/\s+/g," ").trim().split(" ").filter(Boolean).length;
+  const isHtml=/<[a-z][\s\S]*>/i.test(desc);
+  const thumbUrl=(key:string|null)=>key&&r2Base?`${r2Base}/${key}`:"";
+
+  return<div style={{display:"grid",gridTemplateColumns:"280px 1fr",gap:"24px",alignItems:"start"}}>
+    <div><Card style={{padding:"0",overflow:"hidden"}}>
+      <div style={{padding:"12px 14px",borderBottom:`1px solid ${C.border}`}}>
+        <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search collections…" style={{...inp,fontSize:"0.78rem"}}/>
+      </div>
+      {loading?<p style={{color:C.textSec,padding:"16px",fontSize:"0.8rem"}}>Loading…</p>:
+        <div style={{maxHeight:"70vh",overflowY:"auto"}}>
+          {filtered.length===0&&<p style={{color:C.textMut,padding:"16px",fontSize:"0.75rem"}}>No collections found.</p>}
+          {filtered.map(c=>{
+            const active=selected?.slug===c.slug;
+            const hasContent=c.description&&c.description.length>20;
+            const hasHtml=/<[a-z][\s\S]*>/i.test(c.description??"");
+            return<button key={c.slug} onClick={()=>openCollection(c)} style={{display:"flex",alignItems:"center",gap:"10px",width:"100%",padding:"10px 14px",background:active?"rgba(192,0,26,0.15)":"transparent",border:"none",borderBottom:`1px solid ${C.border}`,borderLeft:`3px solid ${active?C.red:"transparent"}`,cursor:"pointer",textAlign:"left"}}>
+              {thumbUrl(c.thumbnail)?<img src={thumbUrl(c.thumbnail)} alt="" style={{width:"32px",height:"48px",objectFit:"cover",flexShrink:0,border:`1px solid ${C.border}`}} onError={e=>{(e.target as HTMLImageElement).style.display="none";}}/>:<div style={{width:"32px",height:"48px",background:"#1a1625",flexShrink:0,display:"flex",alignItems:"center",justifyContent:"center",fontSize:"0.9rem"}}>🖤</div>}
+              <div style={{flex:1,minWidth:0}}>
+                <p style={{color:active?C.textPri:C.textSec,fontSize:"0.78rem",fontWeight:active?600:400,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{c.title}</p>
+                <p style={{color:C.textMut,fontSize:"0.6rem",marginTop:"2px"}}>{c._count.images} images · {c.category}</p>
+                {hasContent&&<p style={{color:hasHtml?C.purple:C.green,fontSize:"0.55rem",marginTop:"2px"}}>{hasHtml?"● HTML desc":"● Text desc"}</p>}
+              </div>
+            </button>;})}
+        </div>}
+      <div style={{padding:"10px 14px",borderTop:`1px solid ${C.border}`}}>
+        <p style={{color:C.textMut,fontSize:"0.6rem"}}>{filtered.length} / {collections.length} collections</p>
+      </div>
+    </Card></div>
+
+    {!selected
+      ?<Card style={{padding:"48px",textAlign:"center"}}><p style={{color:C.textMut,fontSize:"0.85rem"}}>← Select a collection to edit its description</p></Card>
+      :<div style={{display:"flex",flexDirection:"column",gap:"16px"}}>
+        <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",flexWrap:"wrap",gap:"12px"}}>
+          <div>
+            <p style={{color:C.red,fontSize:"0.6rem",letterSpacing:"0.2em",textTransform:"uppercase",marginBottom:"4px"}}>Editing Collection</p>
+            <p style={{color:C.gold,fontSize:"1rem",fontWeight:500}}>{selected.title}</p>
+            <div style={{display:"flex",gap:"12px",marginTop:"4px"}}>
+              <code style={{color:C.textMut,fontSize:"0.65rem"}}>/shop/{selected.slug}</code>
+              <a href={`https://hauntedwallpapers.com/shop/${selected.slug}`} target="_blank" rel="noopener noreferrer" style={{color:C.textMut,fontSize:"0.65rem",textDecoration:"none"}}>↗ View Live</a>
+            </div>
+          </div>
+          <Btn onClick={handleSave} disabled={saving}>{saving?"Saving…":"💾 Save Description"}</Btn>
+        </div>
+        <Msg msg={msg}/>
+        <Card style={{padding:"16px"}}>
+          <label style={lbl}>Meta Description (Google search snippet) <span style={{color:metaDesc.length>155?C.red:C.textMut}}>({metaDesc.length}/155)</span></label>
+          <input value={metaDesc} onChange={e=>setMetaDesc(e.target.value)} placeholder="130–155 char keyword-rich description for Google" style={inp}/>
+          <p style={{color:C.textMut,fontSize:"0.62rem",marginTop:"6px"}}>Leave blank to auto-use the main description.</p>
+        </Card>
+        <Card style={{padding:"16px"}}>
+          <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:"10px",flexWrap:"wrap",gap:"8px"}}>
+            <label style={{...lbl,marginBottom:0}}>
+              Description (HTML) <span style={{color:wordCount>=100?C.green:wordCount>0?C.gold:C.textMut}}>({wordCount} words{wordCount>=100?" ✓":" — aim for 100–200"})</span>
+              {isHtml&&<span style={{color:C.purple,fontSize:"0.58rem",marginLeft:"8px"}}>● HTML active</span>}
+            </label>
+            <div style={{display:"flex",gap:"4px"}}>
+              {(["html","preview"] as const).map(m=><button key={m} type="button" onClick={()=>setDescMode(m)} style={{background:descMode===m?(m==="preview"?C.red:"#2a2535"):"transparent",border:`1px solid ${C.border}`,color:descMode===m?C.white:C.textSec,padding:"4px 12px",cursor:"pointer",fontSize:"0.65rem",fontFamily:"monospace"}}>{m==="preview"?"👁 Preview":"HTML"}</button>)}
+            </div>
+          </div>
+          <HtmlToolbar textareaId="coll-desc-ta" value={desc} onChange={setDesc}/>
+          {descMode==="html"
+            ?<textarea id="coll-desc-ta" value={desc} onChange={e=>setDesc(e.target.value)} rows={14} placeholder={"<h2>About This Collection</h2>\n<p>Describe what makes this collection unique…</p>\n<p>Include keywords: dark wallpapers, free download, gothic art, etc.</p>"} spellCheck={false} style={{...inp,resize:"vertical",lineHeight:"1.6",fontFamily:"monospace",fontSize:"0.8rem"}}/>
+            :<div style={{minHeight:"280px",border:`1px solid ${C.border}`,padding:"24px",background:"#08060f",lineHeight:"1.9",fontSize:"0.95rem",color:C.textPri}} dangerouslySetInnerHTML={{__html:desc||`<p style='color:${C.textMut}'>Nothing to preview yet…</p>`}}/>}
+          <p style={{color:C.textMut,fontSize:"0.62rem",marginTop:"6px"}}>ℹ HTML renders directly on the collection page. Plain text also works. 100–200 words ideal for SEO.</p>
+        </Card>
+        <Card style={{padding:"14px 16px",background:"rgba(124,58,237,0.08)",borderColor:"rgba(124,58,237,0.3)"}}>
+          <p style={{color:C.purple,fontSize:"0.75rem",marginBottom:"4px"}}>✦ How this works</p>
+          <p style={{color:C.textSec,fontSize:"0.72rem",lineHeight:1.7}}>Saved description renders at <code style={{color:C.gold}}>/shop/{selected.slug}</code> as the editorial intro — visible to Google and visitors. The meta description goes in &lt;head&gt; for search results only.</p>
+        </Card>
+      </div>}
+  </div>;
+}
+
+type Tab="analytics"|"pages"|"collections"|"upload"|"published"|"blog"|"manage18"|"backdate"|"preview"|"feedback";
+const NAV_ITEMS:[Tab,string,string][]=[["analytics","📊","Analytics"],["pages","📝","Page Content"],["collections","🗂","Collections"],["upload","📤","Upload Image"],["published","📸","Published"],["blog","✍️","Blog Posts"],["manage18","⚠","16+ Manage"],["backdate","📅","Backdate"],["preview","🌐","Live Preview"],["feedback","⚑","Reports"]];
+
+export default function AdminClient(){
+  const[authed,setAuthed]=useState(false);const[password,setPw]=useState("");const[tab,setTab]=useState<Tab>("analytics");const[sidebarOpen,setSidebarOpen]=useState(true);const[prefillTitle,setPrefillTitle]=useState("");const[prefillLabel,setPrefillLabel]=useState("");
+  useEffect(()=>{const saved=sessionStorage.getItem("hw-admin-auth");if(saved){setPw(saved);setAuthed(true);}},[]);
+  function handleAuth(){const saved=sessionStorage.getItem("hw-admin-auth")??"";setPw(saved);setAuthed(true);}
+  if(!authed)return<PasswordGate onAuth={handleAuth}/>;
+  return<div style={{minHeight:"100vh",background:C.bg,fontFamily:"monospace",color:C.textPri,display:"flex",flexDirection:"column"}}>
+    {/* Top bar */}
+    <div style={{borderBottom:`1px solid ${C.border}`,padding:"0 24px",height:"52px",display:"flex",alignItems:"center",justifyContent:"space-between",background:C.surface,flexShrink:0,position:"sticky",top:0,zIndex:100}}>
+      <div style={{display:"flex",alignItems:"center",gap:"12px"}}>
+        <button onClick={()=>setSidebarOpen(o=>!o)} style={{background:"transparent",border:"none",cursor:"pointer",color:C.textSec,fontSize:"1.1rem",padding:"4px"}}>☰</button>
+        <span style={{color:C.red,fontSize:"0.6rem",letterSpacing:"0.25em",textTransform:"uppercase"}}>Haunted Wallpapers</span>
+        <span style={{color:C.textMut,fontSize:"0.75rem"}}>/ Admin</span>
+      </div>
+      <div style={{display:"flex",gap:"16px",alignItems:"center"}}>
+        <a href="/" target="_blank" rel="noopener noreferrer" style={{color:C.textMut,fontSize:"0.7rem",textDecoration:"none"}}>View Site →</a>
+        <button onClick={()=>{sessionStorage.removeItem("hw-admin-auth");setAuthed(false);}} style={{background:"transparent",border:"none",color:C.textMut,cursor:"pointer",fontSize:"0.72rem"}}>Sign out</button>
       </div>
     </div>
-  );
+    <div style={{display:"flex",flex:1,overflow:"hidden"}}>
+      {/* Sidebar */}
+      <div style={{width:sidebarOpen?"220px":"56px",flexShrink:0,background:C.surface,borderRight:`1px solid ${C.border}`,transition:"width 0.2s",overflow:"hidden",display:"flex",flexDirection:"column",position:"sticky",top:"52px",alignSelf:"flex-start",height:"calc(100vh - 52px)"}}>
+        <nav style={{flex:1,overflowY:"auto",padding:"12px 0"}}>
+          {NAV_ITEMS.map(([key,icon,label])=>{const active=tab===key;return<button key={key} onClick={()=>setTab(key)} style={{display:"flex",alignItems:"center",gap:"12px",width:"100%",padding:"11px 18px",background:active?"rgba(192,0,26,0.15)":"transparent",border:"none",borderLeft:`3px solid ${active?C.red:"transparent"}`,color:active?C.textPri:C.textSec,cursor:"pointer",fontSize:"0.78rem",textAlign:"left",transition:"all 0.15s",whiteSpace:"nowrap"}}><span style={{fontSize:"1rem",flexShrink:0}}>{icon}</span>{sidebarOpen&&<span>{label}</span>}</button>;})}
+        </nav>
+        {sidebarOpen&&<div style={{padding:"16px",borderTop:`1px solid ${C.border}`,fontSize:"0.6rem",color:C.textMut,lineHeight:1.7}}><p style={{color:C.red,marginBottom:"4px"}}>HAUNTED WALLPAPERS</p><p>Admin Panel v2</p></div>}
+      </div>
+      {/* Main content */}
+      <div style={{flex:1,overflowY:"auto",padding:"32px",minWidth:0}}>
+        <div style={{marginBottom:"28px",paddingBottom:"16px",borderBottom:`1px solid ${C.border}`}}>
+          <h1 style={{fontSize:"1.1rem",fontWeight:400,color:C.textPri,margin:0}}>{NAV_ITEMS.find(n=>n[0]===tab)?.[1]} {NAV_ITEMS.find(n=>n[0]===tab)?.[2]}</h1>
+        </div>
+        {tab==="analytics"&&<AnalyticsTab password={password}/>}
+        {tab==="pages"&&<PageContentTab password={password}/>}
+        {tab==="collections"&&<CollectionsTab password={password}/>}
+        {tab==="upload"&&<ImageUploaderTab password={password}/>}
+        {tab==="published"&&<PublishedImagesTab password={password}/>}
+        {tab==="blog"&&<BlogTab password={password} prefillTitle={prefillTitle} prefillLabel={prefillLabel} onPrefillUsed={()=>{setPrefillTitle("");setPrefillLabel("");}}/>}
+        {tab==="manage18"&&<Manage18Tab password={password}/>}
+        {tab==="backdate"&&<BackdateTab password={password}/>}
+        {tab==="preview"&&<LivePreviewTab/>}
+        {tab==="feedback"&&<Card style={{padding:"48px",textAlign:"center"}}><p style={{color:C.textMut}}>Feedback reports will appear here when the feedback API route is connected.</p></Card>}
+      </div>
+    </div>
+  </div>;
 }

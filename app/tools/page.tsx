@@ -972,6 +972,38 @@ function SplitTool() {
 }
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
+
+// ─── SEO intro block (server-renderable text for Google) ─────────────────────
+// This renders above the interactive tools. It gives Google real text content
+// to evaluate so the page is not treated as thin/empty.
+const TOOL_DESCRIPTIONS = [
+  {
+    id: "resizer",
+    name: "Wallpaper Resizer",
+    desc: "Upload any image and export it at the exact pixel dimensions of your phone or monitor. Supports iPhone 16 Pro, iPhone 14/15, Samsung Galaxy S24, Google Pixel 9, Android generic, PC 4K UHD, 1440p, and 1080p. Choose between fill (crop to fit), contain (letterbox), or stretch modes. Output as JPG, PNG, or WebP. Everything runs in your browser — nothing is uploaded to any server.",
+  },
+  {
+    id: "darkener",
+    name: "Dark Overlay Tool",
+    desc: "Add a colour-tinted dark overlay to any wallpaper. Choose from Crimson, Void, Midnight, Gold, Purple, Emerald, Slate, or Ember presets — or set a custom opacity. Ideal for creating AMOLED-optimised wallpapers with deeper blacks, or tinting a bright image into a dark aesthetic.",
+  },
+  {
+    id: "blur",
+    name: "Background Blur",
+    desc: "Apply a Gaussian blur effect to any wallpaper. Useful for creating soft, out-of-focus backgrounds for lock screens where you want a clean look without hard edges. Adjust blur intensity from subtle to heavy.",
+  },
+  {
+    id: "text",
+    name: "Text Overlay",
+    desc: "Add custom text on top of any wallpaper. Set the font size, colour, and position. Perfect for adding a quote, name, or phrase to your wallpaper before downloading.",
+  },
+  {
+    id: "split",
+    name: "Dual-Screen Splitter",
+    desc: "Split a wide image into two equal halves for dual-monitor setups. Upload a panoramic or ultrawide image and download both halves separately, perfectly aligned so they display as one continuous image across two screens.",
+  },
+];
+
 export default function ToolsPage() {
   const [active, setActive] = useState<ActiveTool>("resizer");
 
@@ -986,6 +1018,26 @@ export default function ToolsPage() {
 
   return (
     <main className="tools-page">
+
+      {/* ── SEO content block — gives Google readable text about these tools ── */}
+      <section className="tools-seo-section">
+        <div className="tools-seo-inner">
+          <h1 className="tools-seo-title">Free Wallpaper Tools</h1>
+          <p className="tools-seo-intro">
+            Browser-based tools for resizing, darkening, and customising wallpapers.
+            Everything runs locally in your browser — no files are uploaded to any server,
+            no account is required, and all processing is instant.
+          </p>
+          <div className="tools-seo-grid">
+            {TOOL_DESCRIPTIONS.map(tool => (
+              <div key={tool.id} className="tools-seo-card">
+                <h2 className="tools-seo-card-title">{tool.name}</h2>
+                <p className="tools-seo-card-desc">{tool.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
 
       <div className="tools-hero">
         <span className="tools-eyebrow">Free Utilities</span>
@@ -1127,6 +1179,59 @@ export default function ToolsPage() {
         /* ── Action button ── */
         .tool-action { padding: 0 24px; min-height: 50px; background: #c0001a; border: 1px solid #c0001a; color: #fff; font-family: var(--font-space), monospace; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; cursor: pointer; transition: background .2s; align-self: flex-start; }
         .tool-action:hover { background: #a00014; }
+      
+        /* ── SEO section ── */
+        .tools-seo-section {
+          padding: 48px 24px 0;
+          max-width: 1100px;
+          margin: 0 auto 40px;
+        }
+        .tools-seo-inner { display: flex; flex-direction: column; gap: 20px; }
+        .tools-seo-title {
+          font-family: var(--font-cinzel), cursive;
+          font-size: clamp(1.6rem, 4vw, 2.4rem);
+          font-weight: 900;
+          color: var(--text-primary);
+          margin: 0 0 4px;
+        }
+        .tools-seo-intro {
+          font-family: var(--font-cormorant), serif;
+          font-size: 1rem;
+          color: var(--text-muted);
+          line-height: 1.75;
+          max-width: 700px;
+          margin: 0;
+        }
+        .tools-seo-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+          gap: 16px;
+        }
+        .tools-seo-card {
+          border: 1px solid rgba(255,255,255,0.06);
+          padding: 16px 18px;
+          border-radius: 4px;
+          background: rgba(255,255,255,0.02);
+        }
+        [data-theme="light"] .tools-seo-card {
+          border-color: rgba(0,0,0,0.07);
+          background: rgba(0,0,0,0.02);
+        }
+        .tools-seo-card-title {
+          font-family: var(--font-space), monospace;
+          font-size: 0.65rem;
+          letter-spacing: 0.15em;
+          text-transform: uppercase;
+          color: #c0001a;
+          margin: 0 0 8px;
+        }
+        .tools-seo-card-desc {
+          font-family: var(--font-cormorant), serif;
+          font-size: 0.9rem;
+          color: var(--text-muted);
+          line-height: 1.7;
+          margin: 0;
+        }
       `}</style>
     </main>
   );
