@@ -675,8 +675,123 @@ function BulkAiTab({password}:{password:string}){
   </div>;
 }
 
-type Tab="analytics"|"pages"|"collections"|"upload"|"published"|"bulkai"|"blog"|"manage18"|"backdate"|"preview"|"feedback";
-const NAV_ITEMS:[Tab,string,string][]=[["analytics","📊","Analytics"],["pages","📝","Page Content"],["collections","🗂","Collections"],["upload","📤","Upload Image"],["published","📸","Published"],["bulkai","🤖","Bulk AI Update"],["blog","✍️","Blog Posts"],["manage18","⚠","16+ Manage"],["backdate","📅","Backdate"],["preview","🌐","Live Preview"],["feedback","⚑","Reports"]];
+function HighResUploadTab({password}:{password:string}){
+  const[collections,setCollections]=useState<CollectionRecord[]>([]);const[loadingColls,setLoadingColls]=useState(true);const[selectedColl,setSelectedColl]=useState<CollectionRecord|null>(null);const[images,setImages]=useState<ImageRecord[]>([]);const[loadingImgs,setLoadingImgs]=useState(false);const[search,setSearch]=useState("");const[uploadStates,setUploadStates]=useState<Record<string,{state:"idle"|"uploading"|"done"|"err";msg?:string}>>({});const[overallMsg,setOverallMsg]=useState<{type:"ok"|"err";text:string}|null>(null);const r2Base=process.env.NEXT_PUBLIC_R2_PUBLIC_URL??"";
+
+  useEffect(()=>{async function load(){setLoadingColls(true);try{const res=await fetch("/api/hw-admin/collections",{headers:{"x-admin-password":password}});if(res.ok){const j=await res.json();// only show iPhone + Android collections
+    const filtered=(j.collections??[]).filter((c:CollectionRecord)=>{const cat=c.category?.toLowerCase()??"";return cat.includes("iphone")||cat.includes("android")||cat.includes("mobile")||cat.includes("phone");});setCollections(filtered.length>0?filtered:j.collections??[]);}}catch{}setLoadingColls(false);}load();},[password]);
+
+  async function loadCollectionImages(coll:CollectionRecord){setSelectedColl(coll);setImages([]);setLoadingImgs(true);setUploadStates({});setOverallMsg(null);try{const res=await fetch(`/api/hw-admin/images?collectionId=${coll.id}&limit=500`,{headers:{"x-admin-password":password}});if(res.ok){const j=await res.json();const imgs:ImageRecord[]=j.images??[];setImages(imgs);const init:Record<string,{state:"idle"}>={}; imgs.forEach(i=>{init[i.id]={state:"idle"};});setUploadStates(init);}}catch{}setLoadingImgs(false);}
+
+  async function handleFileUpload(img:ImageRecord,file:File){
+    setUploadStates(prev=>({...prev,[img.id]:{state:"uploading"}}));
+    try{
+      const form=new FormData();
+      form.append("imageId",img.id);
+      form.append("slug",img.slug);
+      form.append("file",file);
+      const res=await fetch("/api/hw-admin/upload-highres",{method:"POST",headers:{"x-admin-password":password},body:form});
+      const j=await res.json();
+      if(res.ok){setUploadStates(prev=>({...prev,[img.id]:{state:"done",msg:j.highResKey}}));setImages(prev=>prev.map(i=>i.id===img.id?{...i,highResKey:j.highResKey}:i));}
+      else{setUploadStates(prev=>({...prev,[img.id]:{state:"err",msg:j.error??"Upload failed"}}));}
+    }catch(err){setUploadStates(prev=>({...prev,[img.id]:{state:"err",msg:(err as Error).message}}));}
+  }
+
+  const filtered=collections.filter(c=>!search||c.title.toLowerCase().includes(search.toLowerCase())||c.slug.includes(search.toLowerCase()));
+  const doneCount=Object.values(uploadStates).filter(s=>s.state==="done").length;
+  const errCount=Object.values(uploadStates).filter(s=>s.state==="err").length;
+  const thumbUrl=(key:string)=>r2Base?`${r2Base}/${key}`:`/api/r2-proxy/${key}`;
+  const has4k=(img:ImageRecord)=>img.highResKey?.includes("-4k");
+
+  return<div style={{display:"grid",gridTemplateColumns:"280px 1fr",gap:"24px",alignItems:"start"}}>
+    {/* Collection picker */}
+    <div><Card style={{padding:"0",overflow:"hidden"}}>
+      <div style={{padding:"12px 14px",borderBottom:`1px solid ${C.border}`}}>
+        <p style={{...eyebrow,marginBottom:"8px"}}>Collections</p>
+        <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search…" style={{...inp,fontSize:"0.78rem"}}/>
+      </div>
+      {loadingColls?<p style={{color:C.textSec,padding:"16px",fontSize:"0.8rem"}}>Loading…</p>:
+        <div style={{maxHeight:"70vh",overflowY:"auto"}}>
+          {filtered.length===0&&<p style={{color:C.textMut,padding:"16px",fontSize:"0.75rem"}}>No collections found.</p>}
+          {filtered.map(c=>{const active=selectedColl?.slug===c.slug;return<button key={c.slug} onClick={()=>loadCollectionImages(c)} style={{display:"flex",alignItems:"center",gap:"10px",width:"100%",padding:"10px 14px",background:active?"rgba(192,0,26,0.15)":"transparent",border:"none",borderBottom:`1px solid ${C.border}`,borderLeft:`3px solid ${active?C.red:"transparent"}`,cursor:"pointer",textAlign:"left"}}>
+            <div style={{flex:1,minWidth:0}}>
+              <p style={{color:active?C.textPri:C.textSec,fontSize:"0.78rem",fontWeight:active?600:400,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{c.title}</p>
+              <p style={{color:C.textMut,fontSize:"0.6rem",marginTop:"2px"}}>{c._count.images} images · {c.category}</p>
+            </div>
+          </button>;})}
+        </div>}
+    </Card></div>
+
+    {/* Right panel */}
+    {!selectedColl
+      ?<Card style={{padding:"48px",textAlign:"center"}}>
+        <p style={{fontSize:"2rem",marginBottom:"12px"}}>🖼️</p>
+        <p style={{color:C.textPri,fontSize:"0.9rem",marginBottom:"8px"}}>Upload 4K versions for existing images</p>
+        <p style={{color:C.textMut,fontSize:"0.72rem",lineHeight:1.7}}>← Pick a collection, then drop a 4K file onto each image card.<br/>The upscaled version gets stored in R2 and users will download it instead of the thumbnail.</p>
+      </Card>
+      :<div style={{display:"flex",flexDirection:"column",gap:"16px"}}>
+        <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",flexWrap:"wrap",gap:"12px"}}>
+          <div>
+            <p style={{color:C.red,fontSize:"0.6rem",letterSpacing:"0.2em",textTransform:"uppercase",marginBottom:"4px"}}>4K Upload</p>
+            <p style={{color:C.gold,fontSize:"1rem",fontWeight:500}}>{selectedColl.title}</p>
+            <p style={{color:C.textMut,fontSize:"0.65rem",marginTop:"4px"}}>{images.length} images · <span style={{color:C.green}}>{doneCount} uploaded this session</span>{errCount>0&&<span style={{color:C.red}}> · {errCount} errors</span>}</p>
+          </div>
+        </div>
+
+        <Card style={{padding:"14px 16px",borderColor:"rgba(201,168,76,0.3)",background:"rgba(201,168,76,0.04)"}}>
+          <p style={{color:C.gold,fontSize:"0.72rem",marginBottom:"4px"}}>ℹ How it works</p>
+          <p style={{color:C.textSec,fontSize:"0.68rem",lineHeight:1.7}}>Drop or click a 4K file on any image card below. It uploads to <code style={{color:C.purple}}>high-res/{"{slug}"}/{"{slug}"}-4k.ext</code> on R2 and updates the database. Users downloading that wallpaper will now receive the 4K version via signed URL. Images already with a 4K file are marked <span style={{color:C.green}}>✓ 4K</span>.</p>
+        </Card>
+
+        <Msg msg={overallMsg}/>
+
+        {loadingImgs
+          ?<p style={{color:C.textSec,textAlign:"center",padding:"40px"}}>Loading images…</p>
+          :images.length===0
+            ?<Card style={{padding:"32px",textAlign:"center"}}><p style={{color:C.textMut}}>No images found in this collection.</p></Card>
+            :<div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(180px,1fr))",gap:"14px"}}>
+              {images.map(img=>{
+                const st=uploadStates[img.id]??{state:"idle"};
+                const already4k=has4k(img);
+                const borderColor=st.state==="done"?C.green:st.state==="err"?C.red:already4k?"rgba(76,175,80,0.4)":C.border;
+                return<div key={img.id} style={{border:`1px solid ${borderColor}`,background:C.surface,transition:"border-color 0.3s"}}>
+                  {/* Thumbnail */}
+                  <div style={{position:"relative",aspectRatio:"9/16",background:"#0d0b14",overflow:"hidden"}}>
+                    <img src={thumbUrl(img.r2Key)} alt={img.title} style={{width:"100%",height:"100%",objectFit:"cover",display:"block",opacity:st.state==="uploading"?0.4:1,transition:"opacity 0.3s"}} onError={e=>{(e.target as HTMLImageElement).style.display="none";}}/>
+                    {/* Status overlays */}
+                    {st.state==="uploading"&&<div style={{position:"absolute",inset:0,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",background:"rgba(0,0,0,0.6)",gap:"8px"}}><div style={{fontSize:"1.6rem"}}>⏳</div><p style={{color:C.gold,fontSize:"0.6rem",fontFamily:"monospace"}}>Uploading…</p></div>}
+                    {st.state==="done"&&<div style={{position:"absolute",inset:0,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",background:"rgba(76,175,80,0.25)",gap:"4px"}}><div style={{fontSize:"1.6rem"}}>✓</div><p style={{color:C.green,fontSize:"0.6rem",fontFamily:"monospace"}}>Uploaded!</p></div>}
+                    {st.state==="err"&&<div style={{position:"absolute",inset:0,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",background:"rgba(192,0,26,0.35)",gap:"4px",padding:"8px"}}><div style={{fontSize:"1.4rem"}}>✗</div><p style={{color:"#ff8080",fontSize:"0.58rem",fontFamily:"monospace",textAlign:"center",wordBreak:"break-word"}}>{st.msg}</p></div>}
+                    {/* 4K badge */}
+                    {(already4k||st.state==="done")&&<span style={{position:"absolute",top:"6px",right:"6px",background:"rgba(76,175,80,0.9)",color:"#fff",fontSize:"0.5rem",fontFamily:"monospace",fontWeight:900,padding:"2px 6px",letterSpacing:"0.05em"}}>✓ 4K</span>}
+                    {img.deviceType&&<span style={{position:"absolute",top:"6px",left:"6px",background:"rgba(0,0,0,0.7)",color:C.gold,fontSize:"0.5rem",fontFamily:"monospace",padding:"2px 6px"}}>{img.deviceType}</span>}
+                  </div>
+
+                  {/* Info + drop zone */}
+                  <div style={{padding:"10px"}}>
+                    <p style={{color:C.textPri,fontSize:"0.7rem",fontWeight:600,lineHeight:1.3,marginBottom:"6px",wordBreak:"break-word"}}>{img.title}</p>
+                    <p style={{color:C.textMut,fontSize:"0.58rem",marginBottom:"8px",fontFamily:"monospace"}}>{img.slug}</p>
+
+                    {/* File input styled as drop zone */}
+                    <label style={{display:"block",border:`2px dashed ${st.state==="done"||already4k?C.green:C.border}`,padding:"10px 8px",textAlign:"center",cursor:st.state==="uploading"?"not-allowed":"pointer",background:st.state==="uploading"?"rgba(255,255,255,0.02)":"transparent",transition:"all 0.2s"}}>
+                      <input type="file" accept="image/*" style={{display:"none"}} disabled={st.state==="uploading"} onChange={e=>{const f=e.target.files?.[0];if(f)handleFileUpload(img,f);e.target.value="";}}/>
+                      <p style={{color:st.state==="done"||already4k?C.green:C.textSec,fontSize:"0.62rem",fontFamily:"monospace",lineHeight:1.5}}>
+                        {st.state==="uploading"?"Uploading…":st.state==="done"?"✓ Replace 4K":already4k?"✓ Has 4K — click to replace":"📁 Drop 4K file here"}
+                      </p>
+                      {!already4k&&st.state==="idle"&&<p style={{color:C.textMut,fontSize:"0.55rem",marginTop:"3px"}}>JPG · PNG · WEBP</p>}
+                    </label>
+                  </div>
+                </div>;
+              })}
+            </div>
+        }
+      </div>
+    }
+  </div>;
+}
+
+type Tab="analytics"|"pages"|"collections"|"upload"|"published"|"bulkai"|"highres"|"blog"|"manage18"|"backdate"|"preview"|"feedback";
+const NAV_ITEMS:[Tab,string,string][]=[["analytics","📊","Analytics"],["pages","📝","Page Content"],["collections","🗂","Collections"],["upload","📤","Upload Image"],["published","📸","Published"],["bulkai","🤖","Bulk AI Update"],["highres","⬆️","Upload 4K"],["blog","✍️","Blog Posts"],["manage18","⚠","16+ Manage"],["backdate","📅","Backdate"],["preview","🌐","Live Preview"],["feedback","⚑","Reports"]];
 
 export default function AdminClient(){
   const[authed,setAuthed]=useState(false);const[password,setPw]=useState("");const[tab,setTab]=useState<Tab>("analytics");const[sidebarOpen,setSidebarOpen]=useState(true);const[prefillTitle,setPrefillTitle]=useState("");const[prefillLabel,setPrefillLabel]=useState("");
@@ -715,6 +830,7 @@ export default function AdminClient(){
         {tab==="upload"&&<ImageUploaderTab password={password}/>}
         {tab==="published"&&<PublishedImagesTab password={password}/>}
         {tab==="bulkai"&&<BulkAiTab password={password}/>}
+        {tab==="highres"&&<HighResUploadTab password={password}/>}
         {tab==="blog"&&<BlogTab password={password} prefillTitle={prefillTitle} prefillLabel={prefillLabel} onPrefillUsed={()=>{setPrefillTitle("");setPrefillLabel("");}}/>}
         {tab==="manage18"&&<Manage18Tab password={password}/>}
         {tab==="backdate"&&<BackdateTab password={password}/>}

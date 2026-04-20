@@ -12,14 +12,22 @@ export async function GET(req: NextRequest) {
   if (!checkAuth(req)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const { searchParams } = new URL(req.url);
-  const page  = Math.max(1, parseInt(searchParams.get("page") ?? "1", 10));
-  const limit = 24;
-  const skip  = (page - 1) * limit;
-  const q     = searchParams.get("q") ?? "";
+  const page         = Math.max(1, parseInt(searchParams.get("page") ?? "1", 10));
+  const limitParam   = parseInt(searchParams.get("limit") ?? "24", 10);
+  const limit        = Math.min(limitParam, 500); // cap at 500
+  const skip         = (page - 1) * limit;
+  const q            = searchParams.get("q") ?? "";
+  const collectionId = searchParams.get("collectionId") ?? "";
 
-  const where = q
-    ? { OR: [{ title: { contains: q, mode: "insensitive" as const } }, { slug: { contains: q } }] }
-    : {};
+  const where: Record<string, unknown> = {};
+  if (collectionId) {
+    where.collectionId = collectionId;
+  } else if (q) {
+    where.OR = [
+      { title: { contains: q, mode: "insensitive" as const } },
+      { slug:  { contains: q } },
+    ];
+  }
 
   const [images, total] = await Promise.all([
     db.image.findMany({
@@ -29,7 +37,7 @@ export async function GET(req: NextRequest) {
       take: limit,
       select: {
         id: true, slug: true, title: true, r2Key: true,
-        description: true, tags: true,
+        description: true, altText: true, tags: true,
         deviceType: true, isAdult: true, createdAt: true,
         collectionId: true, viewCount: true, sortOrder: true, highResKey: true,
         collection: { select: { title: true, slug: true } },
