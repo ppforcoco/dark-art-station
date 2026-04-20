@@ -377,28 +377,48 @@ function BlogTab({password,prefillTitle,prefillLabel,onPrefillUsed}:{password:st
 }
 
 function PublishedImagesTab({password}:{password:string}){
-  const[images,setImages]=useState<ImageRecord[]>([]);const[total,setTotal]=useState(0);const[pages,setPages]=useState(1);const[page,setPage]=useState(1);const[q,setQ]=useState("");const[loading,setLoading]=useState(true);const[editing,setEditing]=useState<ImageRecord|null>(null);const[saving,setSaving]=useState(false);const[deleting,setDeleting]=useState<string|null>(null);const[msg,setMsg]=useState<{type:"ok"|"err";text:string}|null>(null);const[eTitle,setETitle]=useState("");const[eDesc,setEDesc]=useState("");const[eTags,setETags]=useState<string[]>([]);const[eAdult,setEAdult]=useState(false);const[eDevice,setEDevice]=useState("");const r2Base=process.env.NEXT_PUBLIC_R2_PUBLIC_URL??"";
+  const[images,setImages]=useState<ImageRecord[]>([]);const[total,setTotal]=useState(0);const[pages,setPages]=useState(1);const[page,setPage]=useState(1);const[q,setQ]=useState("");const[loading,setLoading]=useState(true);const[editing,setEditing]=useState<ImageRecord|null>(null);const[saving,setSaving]=useState(false);const[deleting,setDeleting]=useState<string|null>(null);const[msg,setMsg]=useState<{type:"ok"|"err";text:string}|null>(null);const[eTitle,setETitle]=useState("");const[eDesc,setEDesc]=useState("");const[eAlt,setEAlt]=useState("");const[eTags,setETags]=useState<string[]>([]);const[eAdult,setEAdult]=useState(false);const[eDevice,setEDevice]=useState("");const[aiLoading,setAiLoading]=useState(false);const r2Base=process.env.NEXT_PUBLIC_R2_PUBLIC_URL??"";
   const load=useCallback(async(p=page,search=q)=>{setLoading(true);try{const res=await fetch(`/api/hw-admin/images?page=${p}&q=${encodeURIComponent(search)}`,{headers:{"x-admin-password":password}});if(!res.ok)throw new Error("Failed");const data=await res.json();setImages(data.images??[]);setTotal(data.total??0);setPages(data.pages??1);}catch{setMsg({type:"err",text:"Could not load images."});}setLoading(false);},[password,page,q]);
   useEffect(()=>{load();},[load]);
-  function openEdit(img:ImageRecord){setEditing(img);setETitle(img.title);setEDesc(img.description??"");setETags(img.tags.filter(t=>t!=="16plus"));setEAdult(img.isAdult);setEDevice(img.deviceType??"");setMsg(null);}
-  async function handleSave(){if(!editing)return;setSaving(true);const tags=eAdult?[...eTags,"16plus"]:eTags;try{const res=await fetch(`/api/hw-admin/images/${editing.id}`,{method:"PATCH",headers:{"Content-Type":"application/json","x-admin-password":password},body:JSON.stringify({title:eTitle,description:eDesc,tags,isAdult:eAdult,deviceType:eDevice||null})});if(!res.ok)throw new Error("Save failed");setMsg({type:"ok",text:`✓ Saved "${eTitle}"`});setEditing(null);load(page,q);}catch{setMsg({type:"err",text:"Save failed."});}setSaving(false);}
+  function openEdit(img:ImageRecord){setEditing(img);setETitle(img.title);setEDesc(img.description??"");setEAlt(img.altText??"");setETags(img.tags.filter(t=>t!=="16plus"));setEAdult(img.isAdult);setEDevice(img.deviceType??"");setMsg(null);}
+  async function handleAiRegenerate(){if(!editing)return;setAiLoading(true);try{const imgUrl=thumbUrl(editing.r2Key);const{data,mediaType}=await urlToBase64(imgUrl);const result=await analyzeImageWithClaude(data,mediaType);if(result.title)setETitle(result.title);if(result.description)setEDesc(result.description);if(result.altText)setEAlt(result.altText);if(result.tags?.length)setETags(result.tags.filter(t=>ALL_TAGS.includes(t)));setMsg({type:"ok",text:"✓ AI regenerated title, description, alt text & tags!"});}catch(err){setMsg({type:"err",text:`⚠ AI failed: ${(err as Error).message}`});}setAiLoading(false);}
+  async function handleSave(){if(!editing)return;setSaving(true);const tags=eAdult?[...eTags,"16plus"]:eTags;try{const res=await fetch(`/api/hw-admin/images/${editing.id}`,{method:"PATCH",headers:{"Content-Type":"application/json","x-admin-password":password},body:JSON.stringify({title:eTitle,description:eDesc,altText:eAlt,tags,isAdult:eAdult,deviceType:eDevice||null})});if(!res.ok)throw new Error("Save failed");setMsg({type:"ok",text:`✓ Saved "${eTitle}"`});setEditing(null);load(page,q);}catch{setMsg({type:"err",text:"Save failed."});}setSaving(false);}
   async function handleDelete(img:ImageRecord){if(!confirm(`Delete "${img.title}"?\n\nThis removes from R2 and database permanently.`))return;setDeleting(img.id);try{const res=await fetch(`/api/hw-admin/images/${img.id}`,{method:"DELETE",headers:{"x-admin-password":password}});if(!res.ok)throw new Error("Delete failed");setMsg({type:"ok",text:`✓ Deleted "${img.title}"`});load(page,q);}catch{setMsg({type:"err",text:"Delete failed."});}setDeleting(null);}
   const thumbUrl=(key:string)=>r2Base?`${r2Base}/${key}`:`/api/r2-proxy/${key}`;
+  const altOk=eAlt.length>=130&&eAlt.length<=150;
   return<div>
     <Card style={{padding:"14px 18px",marginBottom:"20px",borderColor:C.red}}><strong style={{color:C.gold}}>📸 Published Images</strong><span style={{color:C.textSec,marginLeft:"8px",fontSize:"0.82rem"}}>View, edit, or delete. Delete removes from R2 CDN + database permanently.</span></Card>
     <Msg msg={msg}/>
     <div style={{display:"flex",gap:"12px",marginBottom:"20px",flexWrap:"wrap"}}><input value={q} onChange={e=>{setQ(e.target.value);setPage(1);}} onKeyDown={e=>e.key==="Enter"&&load(1,q)} placeholder="Search by title or slug…" style={{...inp,maxWidth:"320px",flex:1}}/><Btn onClick={()=>load(1,q)}>Search</Btn><span style={{color:C.textMut,fontSize:"0.72rem",marginLeft:"auto",alignSelf:"center"}}>{total} images total</span></div>
-    {editing&&<div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.8)",zIndex:1000,display:"flex",alignItems:"flex-start",justifyContent:"center",padding:"40px 16px",overflowY:"auto"}}><div style={{background:C.surface,border:`1px solid ${C.border}`,width:"100%",maxWidth:"680px",padding:"28px",fontFamily:"monospace"}}>
+    {editing&&<div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.85)",zIndex:1000,display:"flex",alignItems:"flex-start",justifyContent:"center",padding:"40px 16px",overflowY:"auto"}}><div style={{background:C.surface,border:`1px solid ${C.border}`,width:"100%",maxWidth:"720px",padding:"28px",fontFamily:"monospace"}}>
       <div style={{display:"flex",justifyContent:"space-between",marginBottom:"20px"}}><p style={{...eyebrow,marginBottom:0}}>✏️ Edit Image</p><button onClick={()=>setEditing(null)} style={{background:"none",border:"none",cursor:"pointer",color:C.textSec,fontSize:"1.4rem"}}>×</button></div>
-      <div style={{display:"flex",gap:"16px",marginBottom:"16px",alignItems:"flex-start"}}><img src={thumbUrl(editing.r2Key)} alt={editing.title} style={{width:"80px",height:"120px",objectFit:"cover",border:`1px solid ${C.border}`,flexShrink:0}} onError={e=>{(e.target as HTMLImageElement).style.display="none";}}/><div style={{flex:1}}><p style={lbl}>Slug (read-only)</p><p style={{color:C.purple,fontSize:"0.8rem",marginBottom:"8px"}}>{editing.slug}</p></div></div>
+
+      {/* Image preview + AI button */}
+      <div style={{display:"flex",gap:"16px",marginBottom:"20px",alignItems:"flex-start"}}>
+        <img src={thumbUrl(editing.r2Key)} alt={editing.title} style={{width:"80px",height:"120px",objectFit:"cover",border:`1px solid ${C.border}`,flexShrink:0}} onError={e=>{(e.target as HTMLImageElement).style.display="none";}}/>
+        <div style={{flex:1}}>
+          <p style={lbl}>Slug (read-only)</p>
+          <p style={{color:C.purple,fontSize:"0.8rem",marginBottom:"12px"}}>{editing.slug}</p>
+          <div style={{background:"rgba(192,0,26,0.06)",border:`1px solid rgba(192,0,26,0.25)`,padding:"12px 16px"}}>
+            <p style={{color:C.gold,fontSize:"0.72rem",marginBottom:"4px"}}>✨ AI Auto-Fill (Claude Vision)</p>
+            <p style={{color:C.textSec,fontSize:"0.65rem",marginBottom:"10px"}}>Regenerates title, 200-word description, SEO alt text & tags from the image.</p>
+            <Btn onClick={handleAiRegenerate} disabled={aiLoading} style={{fontSize:"0.68rem",padding:"8px 16px"}}>{aiLoading?"✨ Analysing…":"✨ Regenerate All with AI"}</Btn>
+          </div>
+        </div>
+      </div>
+
       <div style={{marginBottom:"14px"}}><label style={lbl}>Title</label><input value={eTitle} onChange={e=>setETitle(e.target.value)} style={inp}/></div>
       <div style={{marginBottom:"14px"}}><label style={lbl}>Device Type</label><div style={{display:"flex",gap:"8px"}}>{["","IPHONE","ANDROID","PC"].map(d=><button key={d} onClick={()=>setEDevice(d)} style={{background:eDevice===d?C.red:"transparent",border:`1px solid ${eDevice===d?C.red:C.border}`,color:eDevice===d?C.white:C.textSec,padding:"5px 14px",cursor:"pointer",fontSize:"0.7rem",fontFamily:"monospace"}}>{d||"Any"}</button>)}</div></div>
+      <div style={{marginBottom:"14px"}}>
+        <label style={lbl}>Alt Text (SEO) <span style={{color:altOk?C.green:eAlt.length>0?C.gold:C.textMut}}>({eAlt.length}/150{altOk?" ✓":" — aim for 130–150"})</span></label>
+        <input value={eAlt} onChange={e=>setEAlt(e.target.value)} placeholder="Dark gothic forest wallpaper with moonlit trees — free HD download" style={inp}/>
+      </div>
       <div style={{marginBottom:"14px"}}><label style={lbl}>Description (HTML)</label><textarea value={eDesc} onChange={e=>setEDesc(e.target.value)} rows={6} style={{...inp,resize:"vertical",lineHeight:"1.6",fontSize:"0.82rem"}}/></div>
       <div style={{marginBottom:"14px"}}><label style={lbl}>SEO Tags ({eTags.length})</label><div style={{display:"flex",flexWrap:"wrap",gap:"6px"}}>{ALL_TAGS.map(tag=><button key={tag} onClick={()=>setETags(prev=>prev.includes(tag)?prev.filter(t=>t!==tag):[...prev,tag])} style={{background:eTags.includes(tag)?C.red:"transparent",border:`1px solid ${eTags.includes(tag)?C.red:C.border}`,color:eTags.includes(tag)?C.white:C.textSec,padding:"4px 12px",cursor:"pointer",fontSize:"0.65rem",fontFamily:"monospace"}}>{eTags.includes(tag)?"✓ ":""}{tag}</button>)}</div></div>
       <div style={{marginBottom:"20px",display:"flex",alignItems:"center",gap:"12px"}}><Btn onClick={()=>setEAdult(a=>!a)} variant={eAdult?"danger":"ghost"} style={{padding:"6px 16px"}}>{eAdult?"⚠ 16+ ON":"16+ OFF"}</Btn><span style={{color:C.textSec,fontSize:"0.7rem"}}>Mark as adult/mature</span></div>
       <div style={{display:"flex",gap:"10px"}}><Btn onClick={handleSave} disabled={saving}>{saving?"Saving…":"💾 Save"}</Btn><Btn onClick={()=>setEditing(null)} variant="ghost">Cancel</Btn></div>
     </div></div>}
-    {loading?<p style={{color:C.textSec,textAlign:"center",padding:"40px"}}>Loading images…</p>:images.length===0?<p style={{color:C.textSec}}>No images found.</p>:<div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(160px,1fr))",gap:"14px",marginBottom:"32px"}}>{images.map(img=><div key={img.id} style={{border:`1px solid ${C.border}`,background:C.surface}}><div style={{position:"relative",aspectRatio:"9/16",background:"#0d0b14",overflow:"hidden"}}><img src={thumbUrl(img.r2Key)} alt={img.title} style={{width:"100%",height:"100%",objectFit:"cover",display:"block"}} onError={e=>{(e.target as HTMLImageElement).style.display="none";}}/>{img.isAdult&&<span style={{position:"absolute",top:"6px",left:"6px",background:C.red,color:"#fff",fontSize:"0.55rem",fontFamily:"monospace",fontWeight:900,padding:"2px 6px"}}>16+</span>}{img.deviceType&&<span style={{position:"absolute",top:"6px",right:"6px",background:"rgba(0,0,0,0.7)",color:C.gold,fontSize:"0.55rem",fontFamily:"monospace",padding:"2px 6px"}}>{img.deviceType}</span>}</div><div style={{padding:"10px"}}><p style={{color:C.textPri,fontSize:"0.72rem",fontWeight:600,marginBottom:"4px",lineHeight:1.3,wordBreak:"break-word"}}>{img.title}</p><p style={{color:C.textMut,fontSize:"0.58rem",marginBottom:"6px"}}>👁 {img.viewCount}</p><div style={{display:"flex",gap:"6px"}}><button onClick={()=>openEdit(img)} style={{flex:1,background:"rgba(124,58,237,0.1)",border:`1px solid ${C.border}`,color:C.textSec,padding:"6px",cursor:"pointer",fontSize:"0.62rem",fontFamily:"monospace"}}>✏️ Edit</button><button onClick={()=>handleDelete(img)} disabled={deleting===img.id} style={{flex:1,background:"rgba(192,0,26,0.08)",border:"1px solid rgba(192,0,26,0.4)",color:C.red,padding:"6px",cursor:deleting===img.id?"not-allowed":"pointer",fontSize:"0.62rem",fontFamily:"monospace"}}>{deleting===img.id?"…":"🗑 Del"}</button></div></div></div>)}</div>}
+    {loading?<p style={{color:C.textSec,textAlign:"center",padding:"40px"}}>Loading images…</p>:images.length===0?<p style={{color:C.textSec}}>No images found.</p>:<div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(160px,1fr))",gap:"14px",marginBottom:"32px"}}>{images.map(img=><div key={img.id} style={{border:`1px solid ${C.border}`,background:C.surface}}><div style={{position:"relative",aspectRatio:"9/16",background:"#0d0b14",overflow:"hidden"}}><img src={thumbUrl(img.r2Key)} alt={img.title} style={{width:"100%",height:"100%",objectFit:"cover",display:"block"}} onError={e=>{(e.target as HTMLImageElement).style.display="none";}}/>{img.isAdult&&<span style={{position:"absolute",top:"6px",left:"6px",background:C.red,color:"#fff",fontSize:"0.55rem",fontFamily:"monospace",fontWeight:900,padding:"2px 6px"}}>16+</span>}{img.deviceType&&<span style={{position:"absolute",top:"6px",right:"6px",background:"rgba(0,0,0,0.7)",color:C.gold,fontSize:"0.55rem",fontFamily:"monospace",padding:"2px 6px"}}>{img.deviceType}</span>}{!img.altText&&<span style={{position:"absolute",bottom:"6px",left:"6px",background:"rgba(192,0,26,0.85)",color:"#fff",fontSize:"0.5rem",fontFamily:"monospace",padding:"2px 5px"}}>no alt</span>}</div><div style={{padding:"10px"}}><p style={{color:C.textPri,fontSize:"0.72rem",fontWeight:600,marginBottom:"4px",lineHeight:1.3,wordBreak:"break-word"}}>{img.title}</p><p style={{color:C.textMut,fontSize:"0.58rem",marginBottom:"6px"}}>👁 {img.viewCount}</p><div style={{display:"flex",gap:"6px"}}><button onClick={()=>openEdit(img)} style={{flex:1,background:"rgba(124,58,237,0.1)",border:`1px solid ${C.border}`,color:C.textSec,padding:"6px",cursor:"pointer",fontSize:"0.62rem",fontFamily:"monospace"}}>✏️ Edit</button><button onClick={()=>handleDelete(img)} disabled={deleting===img.id} style={{flex:1,background:"rgba(192,0,26,0.08)",border:"1px solid rgba(192,0,26,0.4)",color:C.red,padding:"6px",cursor:deleting===img.id?"not-allowed":"pointer",fontSize:"0.62rem",fontFamily:"monospace"}}>{deleting===img.id?"…":"🗑 Del"}</button></div></div></div>)}</div>}
     {pages>1&&<div style={{display:"flex",gap:"8px",alignItems:"center",justifyContent:"center"}}><Btn onClick={()=>{const p=Math.max(1,page-1);setPage(p);load(p,q);}} disabled={page<=1} variant="ghost">← Prev</Btn><span style={{color:C.textSec,fontSize:"0.75rem"}}>Page {page} / {pages}</span><Btn onClick={()=>{const p=Math.min(pages,page+1);setPage(p);load(p,q);}} disabled={page>=pages} variant="ghost">Next →</Btn></div>}
   </div>;
 }
@@ -552,8 +572,111 @@ function CollectionsTab({password}:{password:string}){
   </div>;
 }
 
-type Tab="analytics"|"pages"|"collections"|"upload"|"published"|"blog"|"manage18"|"backdate"|"preview"|"feedback";
-const NAV_ITEMS:[Tab,string,string][]=[["analytics","📊","Analytics"],["pages","📝","Page Content"],["collections","🗂","Collections"],["upload","📤","Upload Image"],["published","📸","Published"],["blog","✍️","Blog Posts"],["manage18","⚠","16+ Manage"],["backdate","📅","Backdate"],["preview","🌐","Live Preview"],["feedback","⚑","Reports"]];
+function BulkAiTab({password}:{password:string}){
+  const[collections,setCollections]=useState<CollectionRecord[]>([]);const[loadingColls,setLoadingColls]=useState(true);const[selectedColl,setSelectedColl]=useState<CollectionRecord|null>(null);const[images,setImages]=useState<ImageRecord[]>([]);const[loadingImgs,setLoadingImgs]=useState(false);const[statuses,setStatuses]=useState<Record<string,{state:"idle"|"running"|"done"|"err";msg?:string}>>({});const[running,setRunning]=useState(false);const[overallMsg,setOverallMsg]=useState<{type:"ok"|"err";text:string}|null>(null);const[search,setSearch]=useState("");const r2Base=process.env.NEXT_PUBLIC_R2_PUBLIC_URL??"";
+
+  useEffect(()=>{async function load(){setLoadingColls(true);try{const res=await fetch("/api/hw-admin/collections",{headers:{"x-admin-password":password}});if(res.ok){const j=await res.json();setCollections(j.collections??[]);}}catch{}setLoadingColls(false);}load();},[password]);
+
+  async function loadCollectionImages(coll:CollectionRecord){setSelectedColl(coll);setLoadingImgs(true);setStatuses({});setOverallMsg(null);try{const res=await fetch(`/api/hw-admin/images?page=1&q=&collectionId=${coll.id}&limit=200`,{headers:{"x-admin-password":password}});if(res.ok){const j=await res.json();const imgs:ImageRecord[]=j.images??[];setImages(imgs);const init:Record<string,{state:"idle"}>={}; imgs.forEach(i=>{init[i.id]={state:"idle"};});setStatuses(init);}else{setImages([]);}}catch{setImages([]);}setLoadingImgs(false);}
+
+  async function runOnImage(img:ImageRecord):Promise<void>{
+    setStatuses(prev=>({...prev,[img.id]:{state:"running"}}));
+    try{
+      const imgUrl=r2Base?`${r2Base}/${img.r2Key}`:`/api/r2-proxy/${img.r2Key}`;
+      const{data,mediaType}=await urlToBase64(imgUrl);
+      const result=await analyzeImageWithClaude(data,mediaType);
+      const tags=img.isAdult?[...result.tags.filter((t:string)=>ALL_TAGS.includes(t)),"16plus"]:result.tags.filter((t:string)=>ALL_TAGS.includes(t));
+      const res=await fetch(`/api/hw-admin/images/${img.id}`,{method:"PATCH",headers:{"Content-Type":"application/json","x-admin-password":password},body:JSON.stringify({title:result.title,description:result.description,altText:result.altText,tags})});
+      if(!res.ok)throw new Error("Save failed");
+      setStatuses(prev=>({...prev,[img.id]:{state:"done",msg:result.title}}));
+    }catch(err){setStatuses(prev=>({...prev,[img.id]:{state:"err",msg:(err as Error).message}]));}
+  }
+
+  async function handleRunAll(){
+    if(!images.length||running)return;
+    if(!confirm(`AI-regenerate title, description, alt text & tags for all ${images.length} images in "${selectedColl?.title}"?\n\nThis will overwrite existing data.`))return;
+    setRunning(true);setOverallMsg(null);
+    let done=0,failed=0;
+    for(const img of images){
+      await runOnImage(img);
+      await new Promise(r=>setTimeout(r,600)); // rate limit buffer
+      const st=statuses[img.id]?.state;
+      if(st==="done")done++;else if(st==="err")failed++;
+    }
+    setRunning(false);
+    setOverallMsg({type:failed===0?"ok":"err",text:failed===0?`✓ All ${images.length} images updated!`:`⚠ ${images.length-failed} updated, ${failed} failed.`});
+  }
+
+  async function handleRunOne(img:ImageRecord){await runOnImage(img);}
+
+  const filtered=collections.filter(c=>!search||c.title.toLowerCase().includes(search.toLowerCase())||c.slug.includes(search.toLowerCase()));
+  const doneCount=Object.values(statuses).filter(s=>s.state==="done").length;
+  const errCount=Object.values(statuses).filter(s=>s.state==="err").length;
+  const runningCount=Object.values(statuses).filter(s=>s.state==="running").length;
+  const thumbUrl=(key:string)=>r2Base?`${r2Base}/${key}`:`/api/r2-proxy/${key}`;
+
+  return<div style={{display:"grid",gridTemplateColumns:"280px 1fr",gap:"24px",alignItems:"start"}}>
+    {/* Collection picker */}
+    <div><Card style={{padding:"0",overflow:"hidden"}}>
+      <div style={{padding:"12px 14px",borderBottom:`1px solid ${C.border}`}}>
+        <p style={{...eyebrow,marginBottom:"8px"}}>Select Collection</p>
+        <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search…" style={{...inp,fontSize:"0.78rem"}}/>
+      </div>
+      {loadingColls?<p style={{color:C.textSec,padding:"16px",fontSize:"0.8rem"}}>Loading…</p>:
+        <div style={{maxHeight:"70vh",overflowY:"auto"}}>
+          {filtered.map(c=>{const active=selectedColl?.slug===c.slug;return<button key={c.slug} onClick={()=>loadCollectionImages(c)} style={{display:"flex",alignItems:"center",gap:"10px",width:"100%",padding:"10px 14px",background:active?"rgba(192,0,26,0.15)":"transparent",border:"none",borderBottom:`1px solid ${C.border}`,borderLeft:`3px solid ${active?C.red:"transparent"}`,cursor:"pointer",textAlign:"left"}}>
+            <div style={{flex:1,minWidth:0}}>
+              <p style={{color:active?C.textPri:C.textSec,fontSize:"0.78rem",fontWeight:active?600:400,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{c.title}</p>
+              <p style={{color:C.textMut,fontSize:"0.6rem",marginTop:"2px"}}>{c._count.images} images</p>
+            </div>
+          </button>;})}
+        </div>}
+    </Card></div>
+
+    {/* Right panel */}
+    {!selectedColl?<Card style={{padding:"48px",textAlign:"center"}}><p style={{color:C.textMut,fontSize:"0.85rem"}}>← Pick a collection to bulk-update its images with AI</p></Card>:
+    <div style={{display:"flex",flexDirection:"column",gap:"16px"}}>
+      <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",flexWrap:"wrap",gap:"12px"}}>
+        <div>
+          <p style={{color:C.red,fontSize:"0.6rem",letterSpacing:"0.2em",textTransform:"uppercase",marginBottom:"4px"}}>Bulk AI Update</p>
+          <p style={{color:C.gold,fontSize:"1rem",fontWeight:500}}>{selectedColl.title}</p>
+          <p style={{color:C.textMut,fontSize:"0.65rem",marginTop:"4px"}}>{images.length} images · {doneCount} done · {errCount} errors {runningCount>0?`· ${runningCount} running…`:""}</p>
+        </div>
+        <Btn onClick={handleRunAll} disabled={running||loadingImgs||images.length===0} style={{background:running?"rgba(192,0,26,0.4)":C.red}}>{running?`⏳ Running (${doneCount}/${images.length})…`:`✨ AI Update All ${images.length} Images`}</Btn>
+      </div>
+
+      <Card style={{padding:"14px 16px",borderColor:"rgba(201,168,76,0.3)",background:"rgba(201,168,76,0.05)"}}>
+        <p style={{color:C.gold,fontSize:"0.72rem",marginBottom:"4px"}}>⚠ What this does</p>
+        <p style={{color:C.textSec,fontSize:"0.68rem",lineHeight:1.7}}>Claude Vision analyses each image and <strong style={{color:C.textPri}}>overwrites</strong> the title, description (~200 words), alt text (130–150 chars), and tags. It processes them one by one with a short delay. This cannot be undone — use with care.</p>
+      </Card>
+
+      <Msg msg={overallMsg}/>
+
+      {loadingImgs?<p style={{color:C.textSec,textAlign:"center",padding:"40px"}}>Loading images…</p>:images.length===0?<Card style={{padding:"32px",textAlign:"center"}}><p style={{color:C.textMut}}>No images found in this collection.</p></Card>:
+      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(150px,1fr))",gap:"12px"}}>
+        {images.map(img=>{
+          const st=statuses[img.id]??{state:"idle"};
+          const borderColor=st.state==="done"?C.green:st.state==="err"?C.red:st.state==="running"?C.gold:C.border;
+          return<div key={img.id} style={{border:`1px solid ${borderColor}`,background:C.surface,transition:"border-color 0.3s"}}>
+            <div style={{position:"relative",aspectRatio:"9/16",background:"#0d0b14",overflow:"hidden"}}>
+              <img src={thumbUrl(img.r2Key)} alt={img.title} style={{width:"100%",height:"100%",objectFit:"cover",display:"block",opacity:st.state==="running"?0.5:1,transition:"opacity 0.3s"}} onError={e=>{(e.target as HTMLImageElement).style.display="none";}}/>
+              {st.state==="running"&&<div style={{position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center",background:"rgba(0,0,0,0.5)",fontSize:"1.4rem"}}>✨</div>}
+              {st.state==="done"&&<div style={{position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center",background:"rgba(76,175,80,0.25)",fontSize:"1.4rem"}}>✓</div>}
+              {st.state==="err"&&<div style={{position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center",background:"rgba(192,0,26,0.25)",fontSize:"1.4rem"}}>✗</div>}
+            </div>
+            <div style={{padding:"8px"}}>
+              <p style={{color:st.state==="done"?C.green:st.state==="err"?"#ff8080":C.textPri,fontSize:"0.65rem",fontWeight:600,lineHeight:1.3,wordBreak:"break-word",marginBottom:"6px"}}>{st.state==="done"?st.msg:st.state==="err"?`⚠ ${st.msg}`:img.title}</p>
+              {st.state==="idle"&&<button onClick={()=>handleRunOne(img)} style={{width:"100%",background:"rgba(124,58,237,0.1)",border:`1px solid ${C.border}`,color:C.textSec,padding:"5px",cursor:"pointer",fontSize:"0.58rem",fontFamily:"monospace"}}>✨ AI Update</button>}
+            </div>
+          </div>;
+        })}
+      </div>}
+    </div>}
+  </div>;
+}
+
+type Tab="analytics"|"pages"|"collections"|"upload"|"published"|"bulkai"|"blog"|"manage18"|"backdate"|"preview"|"feedback";
+const NAV_ITEMS:[Tab,string,string][]=[["analytics","📊","Analytics"],["pages","📝","Page Content"],["collections","🗂","Collections"],["upload","📤","Upload Image"],["published","📸","Published"],["bulkai","🤖","Bulk AI Update"],["blog","✍️","Blog Posts"],["manage18","⚠","16+ Manage"],["backdate","📅","Backdate"],["preview","🌐","Live Preview"],["feedback","⚑","Reports"]];
 
 export default function AdminClient(){
   const[authed,setAuthed]=useState(false);const[password,setPw]=useState("");const[tab,setTab]=useState<Tab>("analytics");const[sidebarOpen,setSidebarOpen]=useState(true);const[prefillTitle,setPrefillTitle]=useState("");const[prefillLabel,setPrefillLabel]=useState("");
@@ -591,6 +714,7 @@ export default function AdminClient(){
         {tab==="collections"&&<CollectionsTab password={password}/>}
         {tab==="upload"&&<ImageUploaderTab password={password}/>}
         {tab==="published"&&<PublishedImagesTab password={password}/>}
+        {tab==="bulkai"&&<BulkAiTab password={password}/>}
         {tab==="blog"&&<BlogTab password={password} prefillTitle={prefillTitle} prefillLabel={prefillLabel} onPrefillUsed={()=>{setPrefillTitle("");setPrefillLabel("");}}/>}
         {tab==="manage18"&&<Manage18Tab password={password}/>}
         {tab==="backdate"&&<BackdateTab password={password}/>}
