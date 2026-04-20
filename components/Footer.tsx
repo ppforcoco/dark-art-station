@@ -44,7 +44,8 @@ export default function Footer(): JSX.Element {
             <li><Link href="/shop/horror-movie-posters">Horror Posters</Link></li>
             <li><Link href="/shop/dark-minimal-horror">Dark Minimal</Link></li>
             <li><Link href="/shop/dark-humor-wallpaper-collection">Dark Humor</Link></li>
-            <li><Link href="/gacha">Destiny Draw 🔮</Link></li>
+            {/* Renamed from "Destiny Draw" — avoids gambling-adjacent language */}
+            <li><Link href="/gacha">Random Wallpaper 🎲</Link></li>
           </ul>
         </div>
 
@@ -85,10 +86,16 @@ export default function Footer(): JSX.Element {
       </div>
 
       <div className="footer-bottom">
-        <span className="footer-copy">
-          © {new Date().getFullYear()} HauntedWallpapers. All rights reserved.
-          Visions collected daily.
-        </span>
+        <div className="footer-bottom-left">
+          <span className="footer-copy">
+            © {new Date().getFullYear()} HauntedWallpapers. All rights reserved.
+            Visions collected daily.
+          </span>
+          {/* ── AI-generated content disclosure — required for AdSense transparency ── */}
+          <span className="footer-ai-disclosure">
+            All artwork on this site is AI-generated using diffusion model pipelines.
+          </span>
+        </div>
         <div className="footer-bottom-right">
           <div className="footer-socials">
             {SOCIAL_LINKS.map(({ label, href }) => (
@@ -112,6 +119,25 @@ export default function Footer(): JSX.Element {
           </button>
         </div>
       </div>
+
+      {/* ── AI disclosure style — add to globals.css if preferred ── */}
+      <style>{`
+        .footer-bottom-left {
+          display: flex;
+          flex-direction: column;
+          gap: 4px;
+        }
+        .footer-ai-disclosure {
+          font-family: var(--font-space), monospace;
+          font-size: 0.55rem;
+          letter-spacing: 0.08em;
+          color: #4a445a;
+          line-height: 1.5;
+        }
+        [data-theme="light"] .footer-ai-disclosure {
+          color: #9a9288;
+        }
+      `}</style>
     </footer>
   );
 }

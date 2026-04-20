@@ -9,9 +9,10 @@ import Cursor from "@/components/Cursor";
 import ScrollToTop from "@/components/ScrollToTop";
 import ScrollToTopButton from "@/components/ScrollToTopButton";
 import CookieBanner from "@/components/CookieBanner";
-import StickyMobileAd from "@/components/StickyMobileAd";
 import ScrollReset from "@/components/ScrollReset";
 import FeedbackWidget from "@/components/FeedbackWidget";
+// ⛔ StickyMobileAd removed — custom fixed-position ad wrapper violates AdSense placement
+// policies. Use a proper AdSense Anchor Ad unit from your AdSense dashboard instead.
 
 const cinzel = Cinzel_Decorative({
   weight: ["400", "700", "900"],
@@ -175,10 +176,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         
         {/* ── Google Consent Mode v2 ───────────────────────────────────────── */}
         {/*                                                                     */}
-        {/*  ✅ FIX: All consent set to GRANTED so ads show immediately.        */}
-        {/*  This is required for AdSense approval — reviewers load the page    */}
-        {/*  and check for ads. They won't click your cookie banner.            */}
-        {/*  Your CookieBanner still works for users who want to opt out.       */}
+        {/*  ✅ CORRECT: All ad/tracking consent defaults to DENIED.            */}
+        {/*  This is required by Google's EU User Consent Policy.               */}
+        {/*  The CookieBanner component calls gtag('consent','update',...)      */}
+        {/*  with 'granted' only after the user explicitly clicks Accept.       */}
+        {/*  functionality_storage and security_storage are granted by default  */}
+        {/*  as these cover essential site features (theme, scroll state).      */}
         {/*                                                                     */}
         <script
           dangerouslySetInnerHTML={{
@@ -186,14 +189,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 window.dataLayer=window.dataLayer||[];
 function gtag(){dataLayer.push(arguments);}
 gtag('consent','default',{
-  'ad_storage':'granted',
-  'ad_user_data':'granted',
-  'ad_personalization':'granted',
-  'analytics_storage':'granted',
+  'ad_storage':'denied',
+  'ad_user_data':'denied',
+  'ad_personalization':'denied',
+  'analytics_storage':'denied',
   'functionality_storage':'granted',
-  'personalization_storage':'granted',
+  'personalization_storage':'denied',
   'security_storage':'granted',
-  'wait_for_update':500
+  'wait_for_update':2000
 });
 gtag('set','url_passthrough',true);
 `.trim(),
@@ -295,7 +298,7 @@ gtag('set','url_passthrough',true);
         <Footer />
         <ScrollToTopButton />
         <CookieBanner />
-        <StickyMobileAd />
+        {/* StickyMobileAd removed — use AdSense Anchor Ad unit from dashboard instead */}
         <FeedbackWidget />
       </body>
     </html>

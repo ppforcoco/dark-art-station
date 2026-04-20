@@ -19,12 +19,12 @@ interface WallpaperResult {
 }
 
 type Phase =
-  | "idle"       // initial state, nothing pulled yet
-  | "pulling"    // animation playing
+  | "idle"       // initial state, nothing found yet
+  | "finding"    // animation playing
   | "revealing"  // card flip-in
   | "done";      // fully revealed
 
-/* ── Rarity tiers (cosmetic, based on pull count) ───────────────── */
+/* ── Rarity tiers (cosmetic, based on discover count) ───────────────── */
 const RARITY_TIERS = [
   { label: "Legendary",  color: "#c9a84c", glow: "rgba(201,168,76,0.5)",  min: 0,  max: 2  },
   { label: "Epic",       color: "#9b5de5", glow: "rgba(155,93,229,0.45)", min: 3,  max: 7  },
@@ -33,19 +33,19 @@ const RARITY_TIERS = [
   { label: "Common",     color: "#a89bc0", glow: "rgba(168,155,192,0.3)", min: 31, max: Infinity },
 ];
 
-function getRarity(pullCount: number) {
-  // Random roll with pull-count bias (pity system — more pulls = more chances for high rarity)
+function getRarity(discoverCount: number) {
+  // Random roll with discover-count bias (more discoveries = better chance of rare picks)
   const roll = Math.random() * 100;
-  const pity = Math.min(pullCount * 1.5, 20); // up to +20% luck bonus
+  const luckyBonus = Math.min(discoverCount * 1.5, 20); // up to +20% luck bonus
 
-  if (roll + pity > 97)  return RARITY_TIERS[0]; // Legendary
-  if (roll + pity > 88)  return RARITY_TIERS[1]; // Epic
-  if (roll + pity > 72)  return RARITY_TIERS[2]; // Rare
-  if (roll + pity > 50)  return RARITY_TIERS[3]; // Uncommon
+  if (roll + luckyBonus > 97)  return RARITY_TIERS[0]; // Legendary
+  if (roll + luckyBonus > 88)  return RARITY_TIERS[1]; // Epic
+  if (roll + luckyBonus > 72)  return RARITY_TIERS[2]; // Rare
+  if (roll + luckyBonus > 50)  return RARITY_TIERS[3]; // Uncommon
   return RARITY_TIERS[4];                         // Common
 }
 
-/* ── Shuffle card icons (cosmetic flair during pull animation) ───── */
+/* ── Shuffle card icons (cosmetic flair during discover animation) ───── */
 const SHUFFLE_ICONS = ["💀", "🕯️", "🦇", "🌑", "⚰️", "🔮", "🪦", "👁️", "🕸️", "🩸"];
 
 /* ══════════════════════════════════════════════════════════════════ */
@@ -53,25 +53,25 @@ export default function GachaPage() {
   const [phase,      setPhase]      = useState<Phase>("idle");
   const [result,     setResult]     = useState<WallpaperResult | null>(null);
   const [rarity,     setRarity]     = useState(RARITY_TIERS[4]);
-  const [pullCount,  setPullCount]  = useState(0);
+  const [discoverCount, setDiscoverCount]  = useState(0);
   const [shuffleIdx, setShuffleIdx] = useState(0);
   const [error,      setError]      = useState<string | null>(null);
   const [history,    setHistory]    = useState<WallpaperResult[]>([]);
 
-  /* Shuffle icon ticker during pull animation */
+  /* Shuffle icon ticker during discover animation */
   useEffect(() => {
-    if (phase !== "pulling") return;
+    if (phase !== "finding") return;
     const interval = setInterval(() => {
       setShuffleIdx(i => (i + 1) % SHUFFLE_ICONS.length);
     }, 90);
     return () => clearInterval(interval);
   }, [phase]);
 
-  /* ── Core pull logic ─────────────────────────────────────────── */
-  const pull = useCallback(async () => {
-    if (phase === "pulling" || phase === "revealing") return;
+  /* ── Core discover logic ─────────────────────────────────────────── */
+  const discover = useCallback(async () => {
+    if (phase === "finding" || phase === "revealing") return;
 
-    setPhase("pulling");
+    setPhase("finding");
     setResult(null);
     setError(null);
 
@@ -82,13 +82,13 @@ export default function GachaPage() {
     ]);
 
     if (!data || data.error || !data.r2Key) {
-      setError("The void returned nothing. Try again.");
+      setError("Nothing found right now. Try again.");
       setPhase("idle");
       return;
     }
 
-    const newPullCount = pullCount + 1;
-    setPullCount(newPullCount);
+    const newPullCount = discoverCount + 1;
+    setDiscoverCount(newPullCount);
     setRarity(getRarity(newPullCount));
     setResult(data);
     setPhase("revealing");
@@ -98,7 +98,7 @@ export default function GachaPage() {
 
     // Transition to "done" after reveal animation finishes
     setTimeout(() => setPhase("done"), 900);
-  }, [phase, pullCount]);
+  }, [phase, discoverCount]);
 
   /* ── Derived values ──────────────────────────────────────────── */
   const r2PublicBase = process.env.NEXT_PUBLIC_R2_PUBLIC_URL ?? "";
@@ -114,15 +114,15 @@ export default function GachaPage() {
 
       {/* ── Hero header ── */}
       <header className="gacha-hero">
-        <p className="gacha-eyebrow">🔮 Dark Art Station</p>
+        <p className="gacha-eyebrow">🎲 Random Wallpaper Generator</p>
         <h1 className="gacha-title">
-          Wallpaper<br /><em>Destiny Draw</em>
+          Wallpaper<br /><em>Random Wallpaper</em>
         </h1>
         <p className="gacha-subtitle">
-          One pull. One fate. The void chooses for you.
+          One discover. One fate. Explore the full collection randomly.
         </p>
-        {pullCount > 0 && (
-          <p className="gacha-pull-count">Draw #{pullCount}</p>
+        {discoverCount > 0 && (
+          <p className="gacha-discover-count">Discovery #{discoverCount}</p>
         )}
       </header>
 
@@ -139,14 +139,14 @@ export default function GachaPage() {
               <div className="gacha-orb-ring gacha-orb-ring--3" />
             </div>
             <p className="gacha-hint">
-              The darkness holds {"\u221e"} wallpapers.<br />What will it reveal for you?
+              The collection holds {"\u221e"} wallpapers.<br />What will you find?
             </p>
           </div>
         )}
 
         {/* ── PULLING ANIMATION ── */}
-        {phase === "pulling" && (
-          <div className="gacha-pulling" aria-live="polite" aria-label="Pulling wallpaper...">
+        {phase === "finding" && (
+          <div className="gacha-finding" aria-live="polite" aria-label="Finding wallpaper...">
             <div className="gacha-shuffle-grid">
               {Array.from({ length: 9 }).map((_, i) => (
                 <div
@@ -163,7 +163,7 @@ export default function GachaPage() {
                 </div>
               ))}
             </div>
-            <p className="gacha-pulling-text">The void is choosing…</p>
+            <p className="gacha-finding-text">Searching the collection…</p>
           </div>
         )}
 
@@ -254,39 +254,39 @@ export default function GachaPage() {
         )}
       </section>
 
-      {/* ── Pull Button ── */}
-      <div className="gacha-pull-wrap">
+      {/* ── Discover Button ── */}
+      <div className="gacha-discover-wrap">
         <button
-          className={`gacha-pull-btn ${phase === "pulling" || phase === "revealing" ? "gacha-pull-btn--disabled" : ""}`}
-          onClick={pull}
-          disabled={phase === "pulling" || phase === "revealing"}
-          aria-label={phase === "done" ? "Draw Again" : "Draw Wallpaper"}
+          className={`gacha-discover-btn ${phase === "finding" || phase === "revealing" ? "gacha-discover-btn--disabled" : ""}`}
+          onClick={discover}
+          disabled={phase === "finding" || phase === "revealing"}
+          aria-label={phase === "done" ? "Discover Another" : "Discover Wallpaper"}
         >
-          {phase === "pulling"
-            ? "Drawing…"
+          {phase === "finding"
+            ? "Searching…"
             : phase === "revealing"
-            ? "Revealing…"
+            ? "Loading…"
             : phase === "done"
-            ? "🔮 Draw Again"
-            : "🔮 Draw Wallpaper"}
+            ? "🎲 Discover Another"
+            : "🎲 Discover Wallpaper"}
         </button>
 
         {phase === "idle" && (
-          <p className="gacha-pull-note">
+          <p className="gacha-discover-note">
             Completely free · No account · Instant download
           </p>
         )}
         {phase === "done" && (
-          <p className="gacha-pull-note">
-            {pullCount} draw{pullCount !== 1 ? "s" : ""} so far · Keep going…
+          <p className="gacha-discover-note">
+            {discoverCount} discover{discoverCount !== 1 ? "ies" : "y"} so far · Keep going…
           </p>
         )}
       </div>
 
-      {/* ── Recent Pulls (Session History) ── */}
+      {/* ── Recent Discoveries ── */}
       {history.length > 1 && (
         <section className="gacha-history">
-          <h3 className="gacha-history-heading">Recent Draws</h3>
+          <h3 className="gacha-history-heading">Recent Discoveries</h3>
           <div className="gacha-history-grid">
             {history.slice(1).map((item, i) => {
               const url = `${r2PublicBase}/${item.r2Key}`;
@@ -322,8 +322,8 @@ export default function GachaPage() {
             </div>
             <div className="gacha-explainer-card gacha-explainer-card--highlight">
               <span className="gacha-explainer-icon">🎲</span>
-              <strong>Destiny Draw</strong>
-              <p>Reveals wallpapers here with animation, rarity system & pull history. A game.</p>
+              <strong>Random Wallpaper</strong>
+              <p>Reveals wallpapers here with animation, rarity system & discover history. A game.</p>
             </div>
           </div>
         </div>
@@ -334,9 +334,9 @@ export default function GachaPage() {
         <div className="gacha-seo-inner">
           <h2 className="gacha-seo-heading">Free Random Dark Wallpaper Generator</h2>
           <p className="gacha-seo-text">
-            Destiny Draw pulls a random wallpaper from the entire Haunted Wallpapers collection —
+            Random Wallpaper pulls a random wallpaper from the entire Haunted Wallpapers collection —
             gothic art, dark fantasy, horror, atmospheric landscapes, skull artwork, and more.
-            Every pull is completely free with no account required and no watermarks.
+            Every discover is completely free with no account required and no watermarks.
             Images are available in high resolution for iPhone, Android, and PC desktop screens.
           </p>
           <p className="gacha-seo-text">
@@ -401,7 +401,7 @@ export default function GachaPage() {
           color: #6b6480;
           margin-bottom: 8px;
         }
-        .gacha-pull-count {
+        .gacha-discover-count {
           font-family: var(--font-space), monospace;
           font-size: 0.6rem;
           letter-spacing: 0.2em;
@@ -471,8 +471,8 @@ export default function GachaPage() {
           line-height: 1.6;
         }
 
-        /* ── Pulling shuffle grid ── */
-        .gacha-pulling {
+        /* ── Finding shuffle grid ── */
+        .gacha-finding {
           display: flex;
           flex-direction: column;
           align-items: center;
@@ -506,7 +506,7 @@ export default function GachaPage() {
           from { transform: rotateY(0deg); }
           to   { transform: rotateY(360deg); }
         }
-        .gacha-pulling-text {
+        .gacha-finding-text {
           font-family: var(--font-space), monospace;
           font-size: 0.65rem;
           letter-spacing: 0.2em;
@@ -722,15 +722,15 @@ export default function GachaPage() {
           color: #f0ecff;
         }
 
-        /* ── Pull button ── */
-        .gacha-pull-wrap {
+        /* ── Discover button ── */
+        .gacha-discover-wrap {
           display: flex;
           flex-direction: column;
           align-items: center;
           gap: 12px;
           margin-bottom: 48px;
         }
-        .gacha-pull-btn {
+        .gacha-discover-btn {
           font-family: var(--font-space), monospace;
           font-size: 0.8rem;
           letter-spacing: 0.2em;
@@ -745,7 +745,7 @@ export default function GachaPage() {
           position: relative;
           overflow: hidden;
         }
-        .gacha-pull-btn::before {
+        .gacha-discover-btn::before {
           content: "";
           position: absolute;
           inset: 0;
@@ -754,15 +754,15 @@ export default function GachaPage() {
           background-position: -100%;
           transition: background-position 0.4s ease;
         }
-        .gacha-pull-btn:hover:not(.gacha-pull-btn--disabled)::before {
+        .gacha-discover-btn:hover:not(.gacha-discover-btn--disabled)::before {
           background-position: 200%;
         }
-        .gacha-pull-btn:hover:not(.gacha-pull-btn--disabled) {
+        .gacha-discover-btn:hover:not(.gacha-discover-btn--disabled) {
           background-position: right center;
           box-shadow: 0 0 30px rgba(139,0,0,0.5), 0 0 60px rgba(139,0,0,0.2);
           border-color: #c0001a;
         }
-        .gacha-pull-btn--disabled {
+        .gacha-discover-btn--disabled {
           opacity: 0.5;
           cursor: not-allowed;
           animation: gacha-btn-pulse 0.6s ease-in-out infinite;
@@ -771,7 +771,7 @@ export default function GachaPage() {
           0%, 100% { box-shadow: 0 0 10px rgba(139,0,0,0.3); }
           50%       { box-shadow: 0 0 25px rgba(139,0,0,0.6); }
         }
-        .gacha-pull-note {
+        .gacha-discover-note {
           font-family: var(--font-space), monospace;
           font-size: 0.55rem;
           letter-spacing: 0.15em;
@@ -907,7 +907,7 @@ export default function GachaPage() {
         }
 
         /* ── Light theme overrides ── */
-        [data-theme="light"] .gacha-pull-btn {
+        [data-theme="light"] .gacha-discover-btn {
           background: linear-gradient(135deg, #8b0000, #c0001a, #8b0000);
           border-color: #c0001a;
         }
