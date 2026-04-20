@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect, useCallback, useRef } from "react";
 
-interface Analytics { totalDownloads:number;todayDownloads:number;weekDownloads:number;topWallpapers:{title:string;downloads:number}[];topCollections:{title:string;downloads:number}[];recentActivity:{time:string;title:string}[]; }
+interface Analytics { totalDownloads:number;todayDownloads:number;weekDownloads:number;monthDownloads:number;imageDownloads:number;collectionDownloads:number;downloadsPerDay:{date:string;count:number}[];totalPageViews:number;topPageViews:{title:string;slug:string;device:string|null;views:number}[];topWallpapers:{title:string;slug:string;device:string|null;downloads:number}[];topCollections:{title:string;slug:string;downloads:number}[];totalBlogPosts:number;publishedBlogPosts:number;blogPosts:{title:string;slug:string;label:string;date:string;wordCount:number}[];deviceBreakdown:{IPHONE:number;ANDROID:number;PC:number;OTHER:number};recentActivity:{time:string;title:string;slug:string;device:string|null;type:string}[]; }
 interface Post { slug:string;title:string;label:string;content?:string;featuredImage?:string|null;createdAt:string; }
 interface ImageRecord { id:string;slug:string;title:string;r2Key:string;description:string|null;altText:string|null;tags:string[];isAdult:boolean;deviceType:string|null;viewCount:number;collection?:{title:string}|null; }
 interface PageContentRecord { id:string;slug:string;title:string|null;body:string;metaDesc:string|null;updatedAt:string; }
@@ -54,21 +54,55 @@ function PasswordGate({onAuth}:{onAuth:()=>void}){
   return<div style={{minHeight:"100vh",display:"flex",alignItems:"center",justifyContent:"center",background:C.bg,fontFamily:"monospace"}}><div style={{border:`1px solid ${C.border}`,padding:"48px",width:"360px",textAlign:"center",background:C.surface}}><p style={{color:C.red,fontSize:"0.65rem",letterSpacing:"0.25em",marginBottom:"8px"}}>HAUNTED WALLPAPERS</p><h1 style={{color:C.textPri,fontSize:"1.4rem",marginBottom:"32px",fontWeight:300}}>Admin Access</h1><input type="password" placeholder="Enter password" value={pw} onChange={e=>setPw(e.target.value)} onKeyDown={e=>e.key==="Enter"&&handleLogin()} style={{...inp,marginBottom:"16px",fontSize:"1rem",padding:"12px"}} />{error&&<p style={{color:C.red,marginBottom:"12px",fontSize:"0.85rem"}}>{error}</p>}<Btn onClick={handleLogin} disabled={loading} style={{width:"100%",padding:"12px"}}>{loading?"Checking…":"Enter"}</Btn></div></div>;
 }
 
+function Sparkline({data}:{data:{date:string;count:number}[]}){
+  const max=Math.max(...data.map(d=>d.count),1);const w=420;const h=60;const pts=data.map((d,i)=>{const x=i*(w/(data.length-1));const y=h-(d.count/max)*h;return`${x},${y}`;}).join(" ");
+  return<svg viewBox={`0 0 ${w} ${h}`} style={{width:"100%",height:"60px",overflow:"visible"}}><polyline points={pts} fill="none" stroke={C.red} strokeWidth="2"/>{data.map((d,i)=><circle key={i} cx={i*(w/(data.length-1))} cy={h-(d.count/max)*h} r="3" fill={C.red} opacity="0.6"><title>{d.date}: {d.count}</title></circle>)}</svg>;
+}
+
 function AnalyticsTab({password}:{password:string}){
-  const[data,setData]=useState<Analytics|null>(null);const[loading,setLoading]=useState(true);const[error,setError]=useState("");
-  const load=useCallback(async()=>{setLoading(true);try{const res=await fetch("/api/hw-admin/analytics",{headers:{"x-admin-password":password}});if(!res.ok)throw new Error("Failed");setData(await res.json());}catch{setError("Could not load analytics.");}setLoading(false);},[password]);
+  const[data,setData]=useState<Analytics|null>(null);const[loading,setLoading]=useState(true);const[error,setError]=useState("");const[section,setSection]=useState<"downloads"|"pages"|"blog"|"device">("downloads");
+  const load=useCallback(async()=>{setLoading(true);setError("");try{const res=await fetch("/api/hw-admin/analytics",{headers:{"x-admin-password":password}});if(!res.ok)throw new Error("Failed");setData(await res.json());}catch{setError("Could not load analytics.");}setLoading(false);},[password]);
   useEffect(()=>{load();},[load]);
-  if(loading)return<p style={{color:C.textSec}}>Loading analytics…</p>;
+  if(loading)return<p style={{color:C.textSec,padding:"40px 0",textAlign:"center"}}>Loading analytics…</p>;
   if(error)return<p style={{color:C.red}}>{error}</p>;
   if(!data)return null;
+  const devTotal=data.deviceBreakdown.IPHONE+data.deviceBreakdown.ANDROID+data.deviceBreakdown.PC+data.deviceBreakdown.OTHER||1;
   return<div>
-    <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:"16px",marginBottom:"32px"}}>
-      {[{label:"Total Downloads",value:data.totalDownloads.toLocaleString()},{label:"This Week",value:data.weekDownloads.toLocaleString()},{label:"Today",value:data.todayDownloads.toLocaleString()}].map(s=><Card key={s.label} style={{textAlign:"center",padding:"28px 20px"}}><p style={eyebrow}>{s.label}</p><p style={{color:C.red,fontSize:"2.2rem",fontWeight:700}}>{s.value}</p></Card>)}
+    {/* KPI row */}
+    <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:"12px",marginBottom:"24px"}}>
+      {[{label:"Total Downloads",value:data.totalDownloads.toLocaleString(),sub:"all time"},{label:"This Month",value:data.monthDownloads.toLocaleString(),sub:"last 30 days"},{label:"This Week",value:data.weekDownloads.toLocaleString(),sub:"last 7 days"},{label:"Today",value:data.todayDownloads.toLocaleString(),sub:"since midnight"}].map(s=><Card key={s.label} style={{textAlign:"center",padding:"20px 12px"}}><p style={{...eyebrow,marginBottom:"6px"}}>{s.label}</p><p style={{color:C.red,fontSize:"1.8rem",fontWeight:700,lineHeight:1}}>{s.value}</p><p style={{color:C.textMut,fontSize:"0.6rem",marginTop:"4px"}}>{s.sub}</p></Card>)}
     </div>
-    <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"24px",marginBottom:"32px"}}>
-      {[{title:"Top Wallpapers",data:data.topWallpapers},{title:"Top Collections",data:data.topCollections}].map(({title,data:rows})=><Card key={title}><p style={eyebrow}>{title}</p>{rows.map((w,i)=><div key={i} style={{display:"flex",justifyContent:"space-between",padding:"8px 0",borderBottom:`1px solid ${C.border}`,fontSize:"0.85rem"}}><span style={{color:C.textPri}}>{w.title}</span><span style={{color:C.red,fontWeight:700}}>{w.downloads}</span></div>)}</Card>)}
+    <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:"12px",marginBottom:"24px"}}>
+      {[{label:"Image Downloads",value:data.imageDownloads.toLocaleString(),sub:"individual wallpapers"},{label:"Collection Downloads",value:data.collectionDownloads.toLocaleString(),sub:"full packs"},{label:"Total Page Views",value:data.totalPageViews.toLocaleString(),sub:"cumulative views"}].map(s=><Card key={s.label} style={{textAlign:"center",padding:"16px 12px"}}><p style={{...eyebrow,marginBottom:"4px"}}>{s.label}</p><p style={{color:C.gold,fontSize:"1.4rem",fontWeight:700,lineHeight:1}}>{s.value}</p><p style={{color:C.textMut,fontSize:"0.6rem",marginTop:"3px"}}>{s.sub}</p></Card>)}
     </div>
-    <Card style={{marginBottom:"24px"}}><p style={eyebrow}>Recent Downloads</p>{data.recentActivity.map((a,i)=><div key={i} style={{display:"flex",gap:"16px",padding:"8px 0",borderBottom:`1px solid ${C.border}`,fontSize:"0.8rem"}}><span style={{color:C.textMut,flexShrink:0}}>{a.time}</span><span style={{color:C.textPri}}>{a.title}</span></div>)}</Card>
+
+    {/* Sparkline */}
+    <Card style={{marginBottom:"24px",padding:"20px"}}>
+      <p style={{...eyebrow,marginBottom:"12px"}}>Downloads — last 14 days</p>
+      <Sparkline data={data.downloadsPerDay}/>
+      <div style={{display:"flex",justifyContent:"space-between",marginTop:"4px"}}><span style={{color:C.textMut,fontSize:"0.58rem"}}>{data.downloadsPerDay[0]?.date}</span><span style={{color:C.textMut,fontSize:"0.58rem"}}>{data.downloadsPerDay[data.downloadsPerDay.length-1]?.date}</span></div>
+    </Card>
+
+    {/* Section tabs */}
+    <div style={{display:"flex",gap:"6px",marginBottom:"20px",flexWrap:"wrap"}}>
+      {(["downloads","pages","blog","device"] as const).map(s=><button key={s} onClick={()=>setSection(s)} style={{background:section===s?C.red:"transparent",border:`1px solid ${section===s?C.red:C.border}`,color:section===s?"#fff":C.textSec,padding:"7px 16px",cursor:"pointer",fontSize:"0.7rem",fontFamily:"monospace",letterSpacing:"0.08em",textTransform:"uppercase"}}>{s==="downloads"?"🔽 Top Downloads":s==="pages"?"👁 Most Viewed":s==="blog"?"📖 Blog Posts":"📱 By Device"}</button>)}
+    </div>
+
+    {section==="downloads"&&<div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"20px",marginBottom:"24px"}}>
+      <Card><p style={eyebrow}>Top Downloaded Wallpapers</p>{data.topWallpapers.map((w,i)=><div key={i} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"8px 0",borderBottom:`1px solid ${C.border}`,fontSize:"0.82rem"}}><div><span style={{color:C.textPri}}>{w.title}</span>{w.device&&<span style={{color:C.textMut,fontSize:"0.6rem",marginLeft:"8px"}}>{w.device}</span>}</div><span style={{color:C.red,fontWeight:700,flexShrink:0,marginLeft:"8px"}}>{w.downloads}</span></div>)}</Card>
+      <Card><p style={eyebrow}>Top Downloaded Collections</p>{data.topCollections.map((c,i)=><div key={i} style={{display:"flex",justifyContent:"space-between",padding:"8px 0",borderBottom:`1px solid ${C.border}`,fontSize:"0.82rem"}}><span style={{color:C.textPri,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap",flex:1}}>{c.title}</span><span style={{color:C.red,fontWeight:700,flexShrink:0,marginLeft:"8px"}}>{c.downloads}</span></div>)}</Card>
+    </div>}
+
+    {section==="pages"&&<Card style={{marginBottom:"24px"}}><p style={eyebrow}>Most Viewed Wallpaper Pages</p><p style={{color:C.textMut,fontSize:"0.65rem",marginBottom:"12px"}}>View counts are incremented each time a wallpaper detail page loads.</p>{data.topPageViews.map((p,i)=><div key={i} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"9px 0",borderBottom:`1px solid ${C.border}`,fontSize:"0.82rem"}}><div style={{flex:1,minWidth:0}}><span style={{color:C.textPri}}>{p.title}</span>{p.device&&<span style={{color:C.textMut,fontSize:"0.6rem",marginLeft:"8px"}}>{p.device}</span>}<br/><code style={{color:C.textMut,fontSize:"0.58rem"}}>/{p.device?.toLowerCase()??""}/{p.slug}</code></div><div style={{textAlign:"right",flexShrink:0,marginLeft:"12px"}}><span style={{color:C.gold,fontWeight:700}}>{p.views.toLocaleString()}</span><span style={{color:C.textMut,fontSize:"0.6rem",display:"block"}}>views</span></div></div>)}</Card>}
+
+    {section==="blog"&&<Card style={{marginBottom:"24px"}}><p style={eyebrow}>Blog Posts ({data.publishedBlogPosts} published)</p>{data.blogPosts.length===0?<p style={{color:C.textMut,padding:"20px 0",textAlign:"center"}}>No blog posts yet.</p>:data.blogPosts.map((p,i)=><div key={i} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"10px 0",borderBottom:`1px solid ${C.border}`,gap:"12px"}}><div style={{flex:1,minWidth:0}}><p style={{color:C.textPri,fontSize:"0.82rem",marginBottom:"3px",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{p.title}</p><div style={{display:"flex",gap:"8px",flexWrap:"wrap"}}><span style={{background:"rgba(124,58,237,0.2)",color:C.purple,padding:"1px 7px",fontSize:"0.58rem"}}>{p.label}</span><span style={{color:C.textMut,fontSize:"0.6rem"}}>{p.date}</span><span style={{color:p.wordCount>=800?C.green:C.gold,fontSize:"0.6rem"}}>{p.wordCount} words{p.wordCount>=800?" ✓":""}</span></div></div><a href={`https://hauntedwallpapers.com/blog/${p.slug}`} target="_blank" rel="noopener noreferrer" style={{color:C.textMut,fontSize:"0.65rem",textDecoration:"none",flexShrink:0}}>↗</a></div>)}</Card>}
+
+    {section==="device"&&<Card style={{marginBottom:"24px"}}><p style={eyebrow}>Downloads by Device (last 30 days)</p><div style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:"16px",marginTop:"12px"}}>{[["📱 iPhone","IPHONE",C.red],["🤖 Android","ANDROID",C.purple],["🖥 PC","PC",C.gold],["❓ Other","OTHER",C.textMut]].map(([label,key,color])=>{const count=data.deviceBreakdown[key as keyof typeof data.deviceBreakdown];const pct=Math.round(count/devTotal*100);return<div key={key} style={{padding:"16px",border:`1px solid ${C.border}`,background:"rgba(255,255,255,0.02)"}}><p style={{color:C.textSec,fontSize:"0.7rem",marginBottom:"6px"}}>{label as string}</p><p style={{color:color as string,fontSize:"1.6rem",fontWeight:700,lineHeight:1}}>{count.toLocaleString()}</p><p style={{color:C.textMut,fontSize:"0.6rem",marginTop:"4px"}}>{pct}% of total</p></div>;})}
+    </div></Card>}
+
+    {/* Recent downloads */}
+    <Card style={{marginBottom:"24px"}}><p style={eyebrow}>Recent Downloads</p>{data.recentActivity.map((a,i)=><div key={i} style={{display:"flex",gap:"12px",padding:"8px 0",borderBottom:`1px solid ${C.border}`,fontSize:"0.78rem",alignItems:"center"}}><span style={{color:C.textMut,flexShrink:0,fontSize:"0.65rem"}}>{a.time}</span><span style={{flex:1,color:C.textPri,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{a.title}</span>{a.device&&<span style={{color:C.textMut,fontSize:"0.6rem",flexShrink:0}}>{a.device}</span>}<span style={{color:a.type==="image"?C.gold:C.purple,fontSize:"0.58rem",flexShrink:0}}>{a.type}</span></div>)}</Card>
+
     <div style={{display:"flex",gap:"12px",marginBottom:"32px"}}>
       <Btn onClick={load} variant="ghost">↻ Refresh</Btn>
       <a href="https://analytics.google.com" target="_blank" rel="noopener noreferrer" style={{display:"inline-flex",alignItems:"center",background:C.red,color:"#fff",padding:"10px 20px",textDecoration:"none",fontSize:"0.72rem",letterSpacing:"0.1em",textTransform:"uppercase",fontFamily:"monospace"}}>Open GA4 →</a>
@@ -194,21 +228,48 @@ function PageContentTab({password}:{password:string}){
 }
 
 function ImageUploaderTab({password}:{password:string}){
-  const[file,setFile]=useState<File|null>(null);const[preview,setPreview]=useState("");const[dragging,setDragging]=useState(false);const[slug,setSlug]=useState("");const[title,setTitle]=useState("");const[altText,setAltText]=useState("");const[description,setDescription]=useState("");const[deviceType,setDeviceType]=useState<"IPHONE"|"ANDROID"|"PC"|"">("");const[selectedTags,setSelectedTags]=useState<string[]>([]);const[customTags,setCustomTags]=useState<string[]>([]);const[newTagInput,setNewTagInput]=useState("");const[collectionId,setCollectionId]=useState("");const[isAdult,setIsAdult]=useState(false);const[descMode,setDescMode]=useState<"html"|"preview">("html");const[uploading,setUploading]=useState(false);const[generating,setGenerating]=useState(false);const[message,setMessage]=useState<{type:"ok"|"err";text:string}|null>(null);const[uploadedUrl,setUploadedUrl]=useState("");const dropRef=useRef<HTMLDivElement>(null);const fileInputRef=useRef<HTMLInputElement>(null);
+  const[file,setFile]=useState<File|null>(null);const[highResFile,setHighResFile]=useState<File|null>(null);const[preview,setPreview]=useState("");const[dragging,setDragging]=useState(false);const[slug,setSlug]=useState("");const[title,setTitle]=useState("");const[altText,setAltText]=useState("");const[description,setDescription]=useState("");const[deviceType,setDeviceType]=useState<"IPHONE"|"ANDROID"|"PC"|"">("");const[selectedTags,setSelectedTags]=useState<string[]>([]);const[customTags,setCustomTags]=useState<string[]>([]);const[newTagInput,setNewTagInput]=useState("");const[collectionId,setCollectionId]=useState("");const[isAdult,setIsAdult]=useState(false);const[descMode,setDescMode]=useState<"html"|"preview">("html");const[uploading,setUploading]=useState(false);const[generating,setGenerating]=useState(false);const[message,setMessage]=useState<{type:"ok"|"err";text:string}|null>(null);const[uploadedUrl,setUploadedUrl]=useState("");const dropRef=useRef<HTMLDivElement>(null);const fileInputRef=useRef<HTMLInputElement>(null);const highResInputRef=useRef<HTMLInputElement>(null);
   function slugify(name:string){return name.toLowerCase().replace(/\.[^.]+$/,"").replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");}
   function handleFileSelect(f:File){setFile(f);setSlug(slugify(f.name));if(!title)setTitle(f.name.replace(/\.[^.]+$/,"").replace(/[-_]/g," ").replace(/\b\w/g,c=>c.toUpperCase()));setPreview(URL.createObjectURL(f));setMessage(null);setUploadedUrl("");}
   function onDrop(e:React.DragEvent){e.preventDefault();setDragging(false);const f=e.dataTransfer.files[0];if(f?.type.startsWith("image/"))handleFileSelect(f);}
   function toggleTag(tag:string){setSelectedTags(prev=>prev.includes(tag)?prev.filter(t=>t!==tag):[...prev,tag]);}
   async function handleGenerateAll(){if(!file)return;setGenerating(true);setMessage(null);try{const base64=await fileToBase64(file);const result=await analyzeImageWithClaude(base64,file.type);if(result.title){setTitle(result.title);setSlug(result.title.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,""));}if(result.description)setDescription(result.description);if(result.altText)setAltText(result.altText);if(result.tags?.length)setSelectedTags(result.tags.filter(t=>ALL_TAGS.includes(t)));setMessage({type:"ok",text:"✓ Claude AI generated title, description, alt text & tags!"});}catch(err){setMessage({type:"err",text:`⚠ AI generation failed: ${(err as Error).message}`});}setGenerating(false);}
-  async function handleUpload(){if(!file||!slug||!title){setMessage({type:"err",text:"File, slug, and title are required."});return;}setUploading(true);setMessage(null);try{const form=new FormData();form.append("file",file);form.append("slug",slug);form.append("title",title);form.append("altText",altText);form.append("description",description);form.append("tags",JSON.stringify(selectedTags));form.append("isAdult",String(isAdult));if(deviceType)form.append("deviceType",deviceType);if(collectionId.trim())form.append("collectionId",collectionId.trim());const res=await fetch("/api/hw-admin/upload-image",{method:"POST",headers:{"x-admin-password":password},body:form});const json=await res.json();if(res.ok){setUploadedUrl(json.url);setMessage({type:"ok",text:`✓ Uploaded! Slug: ${json.slug}`});setFile(null);setPreview("");setSlug("");setTitle("");setDescription("");setAltText("");setDeviceType("");setSelectedTags([]);setCollectionId("");setIsAdult(false);if(fileInputRef.current)fileInputRef.current.value="";}else setMessage({type:"err",text:json.error??"Upload failed."});}catch{setMessage({type:"err",text:"Network error."});}setUploading(false);}
+  async function handleUpload(){if(!file||!slug||!title){setMessage({type:"err",text:"File, slug, and title are required."});return;}setUploading(true);setMessage(null);try{const form=new FormData();form.append("file",file);if(highResFile)form.append("highResFile",highResFile);form.append("slug",slug);form.append("title",title);form.append("altText",altText);form.append("description",description);form.append("tags",JSON.stringify(selectedTags));form.append("isAdult",String(isAdult));if(deviceType)form.append("deviceType",deviceType);if(collectionId.trim())form.append("collectionId",collectionId.trim());const res=await fetch("/api/hw-admin/upload-image",{method:"POST",headers:{"x-admin-password":password},body:form});const json=await res.json();if(res.ok){setUploadedUrl(json.url);setMessage({type:"ok",text:`✓ Uploaded! Slug: ${json.slug}${json.hasHighRes?" | 4K upscaled stored":""}`});setFile(null);setHighResFile(null);setPreview("");setSlug("");setTitle("");setDescription("");setAltText("");setDeviceType("");setSelectedTags([]);setCollectionId("");setIsAdult(false);if(fileInputRef.current)fileInputRef.current.value="";if(highResInputRef.current)highResInputRef.current.value="";}else setMessage({type:"err",text:json.error??"Upload failed."});}catch{setMessage({type:"err",text:"Network error."});}setUploading(false);}
   const altOk=altText.length>=130&&altText.length<=150;const descWords=description.replace(/<[^>]*>/g," ").split(/\s+/).filter(Boolean).length;const descOk=descWords>=180&&descWords<=220;
   return<div style={{display:"flex",flexDirection:"column",gap:"20px"}}>
-    <Card style={{padding:"14px 18px",borderColor:C.red}}><strong style={{color:C.gold}}>📤 Image Uploader</strong><span style={{color:C.textSec,marginLeft:"8px",fontSize:"0.82rem"}}>Drop an image → fill in details → upload to R2 + save to DB.</span></Card>
+    <Card style={{padding:"14px 18px",borderColor:C.red}}><strong style={{color:C.gold}}>📤 Image Uploader</strong><span style={{color:C.textSec,marginLeft:"8px",fontSize:"0.82rem"}}>Drop thumbnail → optionally add 4K file → fill in details → upload.</span></Card>
     <Msg msg={message}/>
-    <div ref={dropRef} onDragOver={e=>{e.preventDefault();setDragging(true);}} onDragLeave={()=>setDragging(false)} onDrop={onDrop} onClick={()=>fileInputRef.current?.click()} style={{border:`2px dashed ${dragging?C.red:file?C.green:C.border}`,background:dragging?"rgba(192,0,26,0.06)":C.surface,padding:"40px 24px",textAlign:"center",cursor:"pointer",transition:"all 0.2s"}}>
-      <input ref={fileInputRef} type="file" accept="image/*" style={{display:"none"}} onChange={e=>{const f=e.target.files?.[0];if(f)handleFileSelect(f);}}/>
-      {preview?<div style={{display:"flex",gap:"24px",alignItems:"flex-start",justifyContent:"center",flexWrap:"wrap"}}><img src={preview} alt="Preview" style={{maxHeight:"200px",maxWidth:"180px",objectFit:"contain",border:`1px solid ${C.border}`}}/><div style={{textAlign:"left"}}><p style={{color:C.green,fontSize:"0.75rem",marginBottom:"6px"}}>✓ File ready</p><p style={{color:C.textPri,fontSize:"0.85rem",marginBottom:"4px"}}>{file?.name}</p><p style={{color:C.textSec,fontSize:"0.75rem"}}>{file?(file.size/1024/1024).toFixed(2)+" MB":""}</p><p style={{color:C.textMut,fontSize:"0.72rem",marginTop:"8px"}}>Click to replace</p></div></div>:<><p style={{fontSize:"2.5rem",marginBottom:"12px"}}>🖼️</p><p style={{color:C.textPri,fontSize:"0.95rem",marginBottom:"6px"}}>{dragging?"Drop it!":"Drag & drop your image here"}</p><p style={{color:C.textSec,fontSize:"0.75rem"}}>or click to browse · JPG, PNG, WEBP · max 20 MB</p></>}
+
+    {/* Thumbnail drop zone */}
+    <div>
+      <label style={{...lbl,marginBottom:"8px"}}>Thumbnail Image (required — shown in gallery &amp; cards)</label>
+      <div ref={dropRef} onDragOver={e=>{e.preventDefault();setDragging(true);}} onDragLeave={()=>setDragging(false)} onDrop={onDrop} onClick={()=>fileInputRef.current?.click()} style={{border:`2px dashed ${dragging?C.red:file?C.green:C.border}`,background:dragging?"rgba(192,0,26,0.06)":C.surface,padding:"32px 24px",textAlign:"center",cursor:"pointer",transition:"all 0.2s"}}>
+        <input ref={fileInputRef} type="file" accept="image/*" style={{display:"none"}} onChange={e=>{const f=e.target.files?.[0];if(f)handleFileSelect(f);}}/>
+        {preview?<div style={{display:"flex",gap:"24px",alignItems:"flex-start",justifyContent:"center",flexWrap:"wrap"}}><img src={preview} alt="Preview" style={{maxHeight:"180px",maxWidth:"160px",objectFit:"contain",border:`1px solid ${C.border}`}}/><div style={{textAlign:"left"}}><p style={{color:C.green,fontSize:"0.75rem",marginBottom:"6px"}}>✓ Thumbnail ready</p><p style={{color:C.textPri,fontSize:"0.85rem",marginBottom:"4px"}}>{file?.name}</p><p style={{color:C.textSec,fontSize:"0.75rem"}}>{file?(file.size/1024/1024).toFixed(2)+" MB":""}</p><p style={{color:C.textMut,fontSize:"0.68rem",marginTop:"6px"}}>Used in gallery cards and image pages.<br/>Recommended: 720–1080px wide.</p><p style={{color:C.textMut,fontSize:"0.68rem",marginTop:"4px"}}>Click to replace</p></div></div>:<><p style={{fontSize:"2rem",marginBottom:"10px"}}>🖼️</p><p style={{color:C.textPri,fontSize:"0.9rem",marginBottom:"6px"}}>{dragging?"Drop it!":"Drag & drop thumbnail here"}</p><p style={{color:C.textSec,fontSize:"0.75rem"}}>or click to browse · JPG, PNG, WEBP</p></>}
+      </div>
     </div>
+
+    {/* 4K / High-res upload */}
+    <Card style={{padding:"16px",borderColor:highResFile?C.gold:C.border,background:highResFile?"rgba(201,168,76,0.05)":C.surface}}>
+      <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",flexWrap:"wrap",gap:"12px"}}>
+        <div>
+          <label style={{...lbl,marginBottom:"4px"}}>4K / Upscaled Image (optional — what users actually download)</label>
+          <p style={{color:C.textSec,fontSize:"0.68rem",lineHeight:1.6}}>Upload the full-resolution version. Users download this via signed URL.<br/>If omitted, the thumbnail is used as the download file instead.</p>
+        </div>
+        <div style={{flexShrink:0}}>
+          <input ref={highResInputRef} type="file" accept="image/*" id="highres-input" style={{display:"none"}} onChange={e=>{const f=e.target.files?.[0];if(f)setHighResFile(f);}}/>
+          <label htmlFor="highres-input" style={{display:"inline-flex",alignItems:"center",gap:"8px",background:"transparent",border:`1px solid ${highResFile?C.gold:C.border}`,color:highResFile?C.gold:C.textSec,padding:"8px 16px",cursor:"pointer",fontSize:"0.7rem",fontFamily:"monospace",letterSpacing:"0.08em"}}>
+            {highResFile?"✓ 4K Ready":"📁 Browse 4K File"}
+          </label>
+        </div>
+      </div>
+      {highResFile&&<div style={{marginTop:"12px",display:"flex",alignItems:"center",gap:"12px",flexWrap:"wrap"}}>
+        <p style={{color:C.gold,fontSize:"0.78rem"}}>✓ {highResFile.name}</p>
+        <p style={{color:C.textSec,fontSize:"0.72rem"}}>{(highResFile.size/1024/1024).toFixed(1)} MB</p>
+        <button onClick={()=>{setHighResFile(null);if(highResInputRef.current)highResInputRef.current.value="";}} style={{background:"transparent",border:`1px solid ${C.border}`,color:C.red,padding:"4px 10px",cursor:"pointer",fontSize:"0.65rem",fontFamily:"monospace"}}>Remove</button>
+      </div>}
+    </Card>
+
     {file&&<>
       <Card style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:"16px",flexWrap:"wrap",padding:"16px 18px",borderColor:"rgba(192,0,26,0.4)",background:"rgba(192,0,26,0.06)"}}>
         <div><p style={{color:C.gold,fontSize:"0.75rem",marginBottom:"4px"}}>✨ AI Auto-Fill (Claude Vision)</p><p style={{color:C.textSec,fontSize:"0.68rem"}}>Generates title, 200-word description, SEO alt text & tags.</p></div>
@@ -256,6 +317,17 @@ function ImageUploaderTab({password}:{password:string}){
         </div>
       </Card>
       <Card style={{padding:"16px"}}><label style={lbl}>Collection ID (optional — leave blank for standalone)</label><input value={collectionId} onChange={e=>setCollectionId(e.target.value)} placeholder="UUID of the collection" style={inp}/></Card>
+
+      {/* Upload summary */}
+      <Card style={{padding:"14px 16px",background:"rgba(124,58,237,0.06)",borderColor:"rgba(124,58,237,0.3)"}}>
+        <p style={{color:C.purple,fontSize:"0.72rem",marginBottom:"8px"}}>✦ Upload summary</p>
+        <div style={{display:"flex",flexDirection:"column",gap:"4px",fontSize:"0.7rem",color:C.textSec}}>
+          <span>📷 Thumbnail: {file?`${file.name} (${(file.size/1024/1024).toFixed(1)} MB)`:"Not set"} → stored at <code style={{color:C.gold}}>thumbnails/{slug}/</code></span>
+          <span>{highResFile?`🖼 4K file: ${highResFile.name} (${(highResFile.size/1024/1024).toFixed(1)} MB)`:` 4K file: none — thumbnail will be used for downloads`} → stored at <code style={{color:C.gold}}>high-res/{slug}/</code></span>
+          <span style={{color:C.textMut,fontSize:"0.65rem",marginTop:"4px"}}>Users see the thumbnail everywhere. Clicking Download serves the 4K file via a secure signed URL.</span>
+        </div>
+      </Card>
+
       <Btn onClick={handleUpload} disabled={uploading} style={{padding:"14px 32px",fontSize:"0.82rem"}}>{uploading?"⏳ Uploading…":"📤 Upload Image"}</Btn>
       {uploadedUrl&&<Card style={{padding:"14px 16px",borderColor:C.green,background:"rgba(76,175,80,0.08)"}}><p style={{color:C.green,fontSize:"0.8rem",marginBottom:"6px"}}>✓ Uploaded successfully</p><a href={uploadedUrl} target="_blank" rel="noopener noreferrer" style={{color:C.gold,fontSize:"0.75rem",wordBreak:"break-all"}}>{uploadedUrl}</a></Card>}
     </>}

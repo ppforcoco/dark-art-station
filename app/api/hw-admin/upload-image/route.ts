@@ -18,13 +18,14 @@ export async function POST(req: NextRequest) {
   try {
     const formData = await req.formData();
 
-    const file         = formData.get("file") as File | null;
-    const slug         = formData.get("slug") as string;
-    const title        = formData.get("title") as string;
-    const deviceType   = formData.get("deviceType") as string | null;
-    const tags         = formData.get("tags") as string;       // JSON array string
+    const file         = formData.get("file")        as File | null;  // thumbnail
+    const highResFile  = formData.get("highResFile") as File | null;  // 4K/upscaled (optional)
+    const slug         = formData.get("slug")        as string;
+    const title        = formData.get("title")       as string;
+    const deviceType   = formData.get("deviceType")  as string | null;
+    const tags         = formData.get("tags")        as string;
     const collectionId = formData.get("collectionId") as string | null;
-    const altText      = formData.get("altText") as string | null;
+    const altText      = formData.get("altText")     as string | null;
     const description  = formData.get("description") as string | null;
     const isAdult      = formData.get("isAdult") === "true";
 
@@ -33,76 +34,95 @@ export async function POST(req: NextRequest) {
     }
 
     if (!/^[a-z0-9-]+$/.test(slug)) {
-      return NextResponse.json({ error: "Slug must be lowercase letters, numbers, and hyphens only" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Slug must be lowercase letters, numbers, and hyphens only" },
+        { status: 400 }
+      );
     }
 
-    // Check slug uniqueness
     const existing = await db.image.findUnique({ where: { slug } });
     if (existing) {
       return NextResponse.json({ error: `Image slug "${slug}" already exists` }, { status: 409 });
     }
 
-    // ── Upload to R2 ────────────────────────────────────────────────────────
-    const bytes      = await file.arrayBuffer();
-    const buffer     = Buffer.from(bytes);
-    const ext        = file.name.split(".").pop()?.toLowerCase() ?? "jpg";
-    const mimeType   = file.type || "image/jpeg";
+    // ── Thumbnail (always required) ──────────────────────────────────────────
+    const thumbBytes  = await file.arrayBuffer();
+    const thumbBuffer = Buffer.from(thumbBytes);
+    const thumbExt    = file.name.split(".").pop()?.toLowerCase() ?? "jpg";
+    const thumbMime   = file.type || "image/jpeg";
+    const r2Key       = `thumbnails/${slug}/${slug}.${thumbExt}`;
 
-    // Public thumbnail key  (served from CDN)
-    const r2Key      = `thumbnails/${slug}/${slug}.${ext}`;
-    // High-res key (same file for now — you can swap for a separate upload later)
-    const highResKey = `admin-wallpapers/${slug}/${slug}.${ext}`;
-
-    // Upload thumbnail
     await r2.send(new PutObjectCommand({
-      Bucket:      BUCKET,
-      Key:         r2Key,
-      Body:        buffer,
-      ContentType: mimeType,
-      // Make public — remove CacheControl if your bucket enforces private-by-default
+      Bucket:       BUCKET,
+      Key:          r2Key,
+      Body:         thumbBuffer,
+      ContentType:  thumbMime,
       CacheControl: "public, max-age=31536000, immutable",
     }));
 
-    // Upload high-res (same bytes — replace with a separate high-res file later)
-    await r2.send(new PutObjectCommand({
-      Bucket:      BUCKET,
-      Key:         highResKey,
-      Body:        buffer,
-      ContentType: mimeType,
-      CacheControl: "public, max-age=31536000, immutable",
-    }));
+    // ── High-res / 4K upscaled (optional separate file) ──────────────────────
+    let highResKey: string;
+
+    if (highResFile && highResFile.size > 0) {
+      // Separate 4K file was provided
+      const hrBytes  = await highResFile.arrayBuffer();
+      const hrBuffer = Buffer.from(hrBytes);
+      const hrExt    = highResFile.name.split(".").pop()?.toLowerCase() ?? "jpg";
+      const hrMime   = highResFile.type || "image/jpeg";
+      highResKey     = `high-res/${slug}/${slug}-4k.${hrExt}`;
+
+      await r2.send(new PutObjectCommand({
+        Bucket:       BUCKET,
+        Key:          highResKey,
+        Body:         hrBuffer,
+        ContentType:  hrMime,
+        // High-res files are served via signed URL — no public cache-control needed
+        CacheControl: "private, max-age=0",
+      }));
+    } else {
+      // No 4K file — fall back to using the thumbnail as the download target
+      highResKey = `high-res/${slug}/${slug}.${thumbExt}`;
+
+      await r2.send(new PutObjectCommand({
+        Bucket:       BUCKET,
+        Key:          highResKey,
+        Body:         thumbBuffer,
+        ContentType:  thumbMime,
+        CacheControl: "private, max-age=0",
+      }));
+    }
 
     // ── Parse tags ───────────────────────────────────────────────────────────
     let parsedTags: string[] = [];
     try { parsedTags = tags ? JSON.parse(tags) : []; } catch {}
-    // If marked as adult, add "16plus" marker tag
-    if (isAdult && !parsedTags.includes("16plus")) {
-      parsedTags.push("16plus");
-    }
+    if (isAdult && !parsedTags.includes("16plus")) parsedTags.push("16plus");
 
     // ── Save to DB ───────────────────────────────────────────────────────────
     const image = await db.image.create({
       data: {
         slug,
         title,
-        description: description || altText || undefined,
+        description:  description || altText || undefined,
+        altText:      altText || undefined,
         r2Key,
         highResKey,
+        isAdult,
         deviceType:   (deviceType as "IPHONE" | "ANDROID" | "PC" | null) ?? undefined,
         tags:          parsedTags,
         collectionId:  collectionId || undefined,
       },
     });
 
-    const publicUrl = getPublicUrl(r2Key);
+    const publicThumbUrl = getPublicUrl(r2Key);
 
     return NextResponse.json({
-      ok:       true,
-      imageId:  image.id,
-      slug:     image.slug,
-      url:      publicUrl,
+      ok:         true,
+      imageId:    image.id,
+      slug:       image.slug,
+      url:        publicThumbUrl,
       r2Key,
       highResKey,
+      hasHighRes: highResFile && highResFile.size > 0,
     });
 
   } catch (err) {
