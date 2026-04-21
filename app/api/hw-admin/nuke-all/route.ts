@@ -1,7 +1,6 @@
 // app/api/hw-admin/nuke-all/route.ts
 // ⚠️  IRREVERSIBLE — deletes every image, collection, and download from DB + R2.
-// Requires both the admin password AND a separate NUKE_CONFIRM_PHRASE env var
-// (or the default phrase) to prevent accidental triggers.
+// Requires both the admin password AND the confirmation phrase to prevent accidents.
 
 import { NextRequest, NextResponse } from "next/server";
 import {
@@ -11,14 +10,13 @@ import {
 import { r2, BUCKET } from "@/lib/r2";
 import { db } from "@/lib/db";
 
-const ADMIN_PW     = process.env.ADMIN_PASSWORD      ?? "haunted-admin-2025";
-const NUKE_PHRASE  = process.env.NUKE_CONFIRM_PHRASE ?? "DELETE EVERYTHING";
+const ADMIN_PW    = process.env.ADMIN_PASSWORD      ?? "haunted-admin-2025";
+const NUKE_PHRASE = process.env.NUKE_CONFIRM_PHRASE ?? "DELETE EVERYTHING";
 
 function checkAuth(req: NextRequest) {
   return req.headers.get("x-admin-password") === ADMIN_PW;
 }
 
-// Delete all objects in R2 bucket in batches of 1000 (S3 API limit)
 async function wipeR2(): Promise<{ deleted: number; errors: number }> {
   let deleted = 0;
   let errors  = 0;
@@ -59,7 +57,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   let body: { confirmPhrase?: string } = {};
-  try { body = await req.json(); } catch { /* empty body is fine */ }
+  try { body = await req.json(); } catch { /* empty body fine */ }
 
   if (body.confirmPhrase !== NUKE_PHRASE)
     return NextResponse.json(
@@ -68,14 +66,15 @@ export async function POST(req: NextRequest) {
     );
 
   try {
-    // 1 — Wipe DB (order matters due to foreign keys)
-    const [downloads, images, collections] = await Promise.all([
-      db.download.deleteMany({}),
-      db.image.deleteMany({}),
-      db.collection.deleteMany({}),
-    ]);
+    // Delete in strict FK order — children before parents, one at a time
+    const downloads   = await db.download.deleteMany({});
+    const images      = await db.image.deleteMany({});
+    const collections = await db.collection.deleteMany({});
 
-    // 2 — Wipe R2
+    // Standalone models — safe to delete in any order, ignore if missing
+    await db.blogPost.deleteMany({}).catch(() => {});
+    await db.pageContent.deleteMany({}).catch(() => {});
+
     const r2Result = await wipeR2();
 
     return NextResponse.json({
@@ -87,8 +86,12 @@ export async function POST(req: NextRequest) {
       },
       r2: r2Result,
     });
+
   } catch (err) {
     console.error("[NUKE_ALL]", err);
-    return NextResponse.json({ error: "Nuke failed", detail: String(err) }, { status: 500 });
+    return NextResponse.json(
+      { error: "Nuke failed", detail: String(err) },
+      { status: 500 }
+    );
   }
 }
