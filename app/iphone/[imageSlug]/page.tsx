@@ -13,6 +13,7 @@ import RecentlyViewed from "@/components/RecentlyViewed";
 import SocialShare from "@/components/SocialShare";
 import PageTracker from "@/components/PageTracker";
 import FavoriteButton from "@/components/FavoriteButton";
+import { shouldCountPageView } from "@/lib/analytics-filter";
 
 export const dynamicParams = true;
 export const revalidate = 3600;
@@ -97,10 +98,12 @@ export default async function IphoneImagePage({ params }: PageProps) {
 
   if (!image || image.deviceType !== "IPHONE") notFound();
 
-  db.image.update({
-    where: { id: image.id },
-    data: { viewCount: { increment: 1 } },
-  }).catch(() => {});
+  if (await shouldCountPageView()) {
+    db.image.update({
+      where: { id: image.id },
+      data: { viewCount: { increment: 1 } },
+    }).catch(() => {});
+  }
 
   const thumbUrl = getPublicUrl(image.r2Key);
 

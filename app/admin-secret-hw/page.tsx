@@ -589,7 +589,7 @@ function BulkAiTab({password}:{password:string}){
       const res=await fetch(`/api/hw-admin/images/${img.id}`,{method:"PATCH",headers:{"Content-Type":"application/json","x-admin-password":password},body:JSON.stringify({title:result.title,description:result.description,altText:result.altText,tags})});
       if(!res.ok)throw new Error("Save failed");
       setStatuses(prev=>({...prev,[img.id]:{state:"done",msg:result.title}}));
-    }catch(err){setStatuses(prev=>({...prev,[img.id]:{state:"err",msg:(err as Error).message}]));}
+    }catch(err){setStatuses(prev=>({...prev,[img.id]:{state:"err",msg:(err as Error).message}}));}
   }
 
   async function handleRunAll(){
