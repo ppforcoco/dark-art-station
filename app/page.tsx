@@ -1,4 +1,4 @@
-// app/page.tsx — Redesigned homepage: dark minimal, full-width mosaic hero
+// app/page.tsx
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
@@ -15,18 +15,18 @@ const OG_IMAGE = `${SITE_URL}/og-image.jpg`;
 
 export const metadata: Metadata = {
   title: "Haunted Wallpapers | Free Dark Fantasy Wallpapers for iPhone, Android & PC",
-  description: "Free dark fantasy wallpapers for iPhone, Android and PC. Download high-resolution AI art — horror, gothic, street style, dark humor and more. No account required.",
+  description: "Free dark wallpapers — gothic, horror, fantasy. HD downloads for iPhone, Android and PC. No account required.",
   metadataBase: new URL(SITE_URL),
   openGraph: {
     title: "Haunted Wallpapers | Free Dark Fantasy Wallpapers",
-    description: "Free dark fantasy wallpapers for iPhone, Android and PC. Download high-resolution AI art collections instantly.",
+    description: "Gothic, horror and fantasy wallpapers. HD downloads. No sign-up.",
     url: SITE_URL, siteName: "Haunted Wallpapers", type: "website",
     images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: "Haunted Wallpapers — Dark Fantasy Art" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "Haunted Wallpapers | Free Dark Fantasy Wallpapers",
-    description: "Free dark fantasy wallpapers for iPhone, Android and PC.",
+    description: "Gothic, horror and fantasy wallpapers. HD downloads. No sign-up.",
     images: [OG_IMAGE],
   },
   alternates: { canonical: SITE_URL },
@@ -80,26 +80,17 @@ export default async function Home() {
 
   return (
     <>
-      {/* HERO */}
+      {/* ── HERO ── */}
       <section className="hw-hero">
         <div className="hw-hero__text">
-          <p className="hw-hero__eyebrow">
-            <span className="hw-hero__eyebrow-line" />
-            Dark Art Collection
-          </p>
           <h1 className="hw-hero__title">
             <span className="hw-hero__title-top">Haunted</span>
             <span className="hw-hero__title-mid">Wall<span className="hw-hero__title-accent">papers</span></span>
           </h1>
+          <p className="hw-hero__tagline">Art that whispers long after you close the tab.</p>
           <p className="hw-hero__sub">
-            Bold dark art — gothic, horror, fantasy.<br />
-            Free HD downloads. No sign-up.
+            You like the shadows. We like giving you art that lives there. Gothic, horror, fantasy — updated regularly. Every download is HD and free. No sign-up form. No &ldquo;verify your email.&rdquo; Just art.
           </p>
-          <div className="hw-hero__ctas">
-            <Link href="/iphone" className="hw-hero__btn-primary"><span>iPhone</span></Link>
-            <Link href="/android" className="hw-hero__btn-primary"><span>Android</span></Link>
-            <Link href="/pc" className="hw-hero__btn-ghost"><span>PC</span></Link>
-          </div>
           <div className="hw-hero__stats">
             <div className="hw-hero__stat">
               <span className="hw-hero__stat-num">{formatStatCount(totalImages)}</span>
@@ -117,7 +108,13 @@ export default async function Home() {
             </div>
           </div>
         </div>
+
+        {/* Right: Mosaic — labelled so users know what they're clicking */}
         <div className="hw-hero__mosaic-wrap">
+          <div className="hw-hero__mosaic-label">
+            <span className="hw-hero__mosaic-label-text">Browse by theme</span>
+            <span className="hw-hero__mosaic-label-hint">Click any card →</span>
+          </div>
           <HeroMosaic />
         </div>
       </section>
@@ -128,7 +125,7 @@ export default async function Home() {
         <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_MAIN} width={728} height={90} />
       </div>
 
-      {/* DAILY PICK */}
+      {/* ── DAILY PICK ── */}
       {wotd && (() => {
         const devicePath = wotd.deviceType === "IPHONE" ? "iphone" : wotd.deviceType === "ANDROID" ? "android" : "pc";
         const wotdUrl = getPublicUrl(wotd.r2Key);
@@ -149,7 +146,7 @@ export default async function Home() {
                 <Link href={wotdHref} className="hw-daily__cta">View Wallpaper →</Link>
               </div>
               <Link href={wotdHref} className="hw-daily__image-wrap" aria-label={wotd.title}>
-                <Image src={wotdUrl} alt={wotd.title} fill priority unoptimized className="object-cover" sizes="(max-width: 900px) 100vw, 40vw" />
+                <Image src={wotdUrl} alt={wotd.title} fill priority unoptimized className="object-cover" sizes="380px" />
                 {wotd.deviceType && <span className="hw-daily__badge">{wotd.deviceType.charAt(0) + wotd.deviceType.slice(1).toLowerCase()}</span>}
               </Link>
             </div>
@@ -157,27 +154,7 @@ export default async function Home() {
         );
       })()}
 
-      {/* DEVICE CARDS */}
-      <section className="hw-devices">
-        <div className="hw-section-header">
-          <h2 className="hw-section-title">Browse by Device</h2>
-        </div>
-        <div className="hw-devices__grid">
-          {[
-            { href: "/iphone",  label: "iPhone",       sub: "Portrait · 9:19.5" },
-            { href: "/android", label: "Android",      sub: "Portrait · 9:19"   },
-            { href: "/pc",      label: "PC / Desktop", sub: "Landscape · 16:9"  },
-          ].map(d => (
-            <Link key={d.href} href={d.href} className="hw-device-card">
-              <span className="hw-device-card__label">{d.label}</span>
-              <span className="hw-device-card__sub">{d.sub}</span>
-              <span className="hw-device-card__arrow">→</span>
-            </Link>
-          ))}
-        </div>
-      </section>
-
-      {/* COLLECTIONS */}
+      {/* ── CHOOSE YOUR OBSESSION (collections) ── */}
       <section className="hw-collections">
         <div className="hw-section-header">
           <h2 className="hw-section-title">Choose Your Obsession</h2>
@@ -213,10 +190,10 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* LATEST DROPS */}
+      {/* ── LATEST DROPS ── */}
       <section className="hw-latest">
         <div className="hw-section-header">
-          <h2 className="hw-section-title">Latest Drops</h2>
+          <h2 className="hw-section-title">Choose Your Obsession</h2>
           <Link href="/shop" className="hw-section-link">Browse All →</Link>
         </div>
         <div className="product-grid">
@@ -232,16 +209,19 @@ export default async function Home() {
         <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_FOOTER} width={728} height={90} />
       </div>
 
-      {/* STATEMENT */}
+      {/* ── CLOSING STATEMENT ── */}
       <section className="hw-statement">
-        <p className="hw-statement__label">Our Philosophy</p>
         <blockquote className="hw-statement__quote">
-          Art that lives in the <em className="hw-statement__em">beautiful dark</em> — for those who see beauty where others see shadow.
+          Some people want bright and simple.<br />
+          <em className="hw-statement__em">You&rsquo;re not one of them.</em>
         </blockquote>
         <p className="hw-statement__body">
-          We create for the unconventional. The ones who go their own way, who find beauty in the bold and the dark. Art that makes your screen feel like it belongs to you — not to everyone else.
+          You like the strange, the shadowed, the kind of art that feels like a half-remembered dream. We collect that here. Bold illustrations, creepy atmospheres, fantasy worlds you wish you could walk into.
         </p>
-        <Link href="/shop" className="hw-statement__cta">Explore the Collection →</Link>
+        <p className="hw-statement__body">
+          Download everything in full HD. No account needed. No email required. Just art that gets you.
+        </p>
+        <Link href="/shop" className="hw-statement__cta">Browse the Collection →</Link>
       </section>
 
       <RecentlyViewed />
@@ -249,7 +229,7 @@ export default async function Home() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
         "@context": "https://schema.org", "@type": "ItemList",
         name: "Haunted Wallpapers — Featured Dark Art Collections",
-        description: "Free dark fantasy wallpaper collections for iPhone, Android and PC.",
+        description: "Free dark wallpaper collections — gothic, horror, fantasy for iPhone, Android and PC.",
         url: SITE_URL, numberOfItems: categories.length,
         itemListElement: categories.map((cat, i) => ({
           "@type": "ListItem", position: i + 1,

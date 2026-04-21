@@ -7102,7 +7102,7 @@ body:has([data-force-blog="true"]) ::-webkit-scrollbar-thumb {
   grid-template-columns: 1fr 380px;
   max-width: 1280px;
   margin: 0 auto;
-  min-height: 520px;
+  align-items: center;
 }
 @media (max-width: 900px) {
   .hw-daily__inner { grid-template-columns: 1fr; }
@@ -7190,9 +7190,12 @@ body:has([data-force-blog="true"]) ::-webkit-scrollbar-thumb {
   display: block;
   overflow: hidden;
   background: #0c0b14;
+  aspect-ratio: 9 / 16;
+  width: 380px;
+  flex-shrink: 0;
 }
 @media (max-width: 900px) {
-  .hw-daily__image-wrap { aspect-ratio: 9/12; }
+  .hw-daily__image-wrap { width: 100%; aspect-ratio: 9 / 16; }
 }
 .hw-daily__image-wrap img { transition: transform 0.6s ease; }
 .hw-daily__image-wrap:hover img { transform: scale(1.04); }
@@ -7432,7 +7435,46 @@ body:has([data-force-blog="true"]) ::-webkit-scrollbar-thumb {
 }
 .hw-statement__cta:hover { color: #ff2233; border-color: rgba(255,34,51,0.6); }
 
-/* ── Animations ─────────────────────────────────────────────── */
+/* Mosaic label overlay */
+.hw-hero__mosaic-label {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  background: rgba(12,11,20,0.75);
+  backdrop-filter: blur(8px);
+  padding: 10px 14px;
+  border: 1px solid rgba(201,168,76,0.3);
+  pointer-events: none;
+}
+.hw-hero__mosaic-label-text {
+  font-family: var(--font-cinzel), cursive;
+  font-size: 0.62rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #c9a84c;
+}
+.hw-hero__mosaic-label-hint {
+  font-family: var(--font-space), monospace;
+  font-size: 0.55rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #6a6080;
+}
+
+/* Hero tagline */
+.hw-hero__tagline {
+  font-family: var(--font-cormorant), serif;
+  font-size: clamp(1rem, 1.4vw, 1.2rem);
+  font-style: italic;
+  color: #c0001a;
+  margin-bottom: 20px;
+  letter-spacing: 0.02em;
+  animation: hwFadeUp 0.7s ease 0.25s both;
+}
 @keyframes hwFadeUp {
   from { opacity: 0; transform: translateY(16px); }
   to   { opacity: 1; transform: translateY(0); }
