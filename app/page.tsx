@@ -154,42 +154,6 @@ export default async function Home() {
         );
       })()}
 
-      {/* ── CHOOSE YOUR OBSESSION (collections) ── */}
-      <section className="hw-collections">
-        <div className="hw-section-header">
-          <h2 className="hw-section-title">Choose Your Obsession</h2>
-          <Link href="/collections" className="hw-section-link">All Collections →</Link>
-        </div>
-        <div className="hw-collections__grid">
-          {[
-            { slug: "skeleton-card-collection",        icon: "🃏", title: "Tarot Cards",         bgClass: "p-bg-2" },
-            { slug: "dark-humor-wallpaper-collection", icon: "💀", title: "Dark Humor",          bgClass: "p-bg-1" },
-            { slug: "dark-fantasy-art",                icon: "🐉", title: "Dark Fantasy",        bgClass: "p-bg-3" },
-            { slug: "dark-minimal-horror",             icon: "🌑", title: "Dark Aesthetics",     bgClass: "p-bg-4" },
-            { slug: "incognito-mode-collection",       icon: "🕵️", title: "Incognito Mode",     bgClass: "p-bg-5" },
-            { slug: "dark-pattern-wallpaper",          icon: "🕸", title: "Patterns & Textures", bgClass: "p-bg-1" },
-          ].map((cat) => {
-            const dbCat = categories.find(c => c.slug === cat.slug);
-            return (
-              <Link key={cat.slug} href={`/shop/${cat.slug}`} className="hw-coll-card">
-                <div className="hw-coll-card__img-wrap">
-                  {dbCat?.thumbnail ? (
-                    <Image src={`${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/${dbCat.thumbnail}`} alt={cat.title} fill unoptimized className="object-cover" sizes="(max-width: 479px) 100vw, (max-width: 767px) 50vw, 33vw" />
-                  ) : (
-                    <><div className={`cat-bg-layer ${cat.bgClass}`} /><div className="hw-coll-card__icon">{cat.icon}</div></>
-                  )}
-                  <div className="hw-coll-card__overlay" />
-                </div>
-                <div className="hw-coll-card__body">
-                  <span className="hw-coll-card__name">{cat.title}</span>
-                  {dbCat && <span className="hw-coll-card__count">{dbCat._count.downloads.toLocaleString()} downloads</span>}
-                </div>
-              </Link>
-            );
-          })}
-        </div>
-      </section>
-
       {/* ── LATEST DROPS ── */}
       <section className="hw-latest">
         <div className="hw-section-header">
