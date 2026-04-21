@@ -83,10 +83,6 @@ export default async function Home() {
       {/* ── HERO ── */}
       <section className="hw-hero">
         <div className="hw-hero__text">
-          <h1 className="hw-hero__title">
-            <span className="hw-hero__title-top">Haunted</span>
-            <span className="hw-hero__title-mid">Wall<span className="hw-hero__title-accent">papers</span></span>
-          </h1>
           <p className="hw-hero__tagline">Art that whispers long after you close the tab.</p>
           <p className="hw-hero__sub">
             You like the shadows. We like giving you art that lives there. Gothic, horror, fantasy — updated regularly. Every download is HD and free. No sign-up form. No &ldquo;verify your email.&rdquo; Just art.
