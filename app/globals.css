@@ -2357,9 +2357,9 @@ body::before {
   /* padding-top handled by .content-wrapper in layout.tsx */
 }
 .static-page-inner {
-  max-width: 860px;
+  max-width: 100%;
   margin: 0 auto;
-  padding: 80px 32px 120px;
+  padding: 80px clamp(24px, 6vw, 80px) 120px;
 }
 .static-page-inner--narrow {
   max-width: 680px;
@@ -2410,7 +2410,7 @@ body::before {
 
 /* ── Blog rendered HTML content ── */
 .blog-html-content {
-  max-width: 720px;
+  max-width: 100%;
   font-family: var(--font-cormorant), serif;
   font-size: 1.15rem;
   line-height: 1.9;
@@ -6939,13 +6939,13 @@ body:has([data-force-blog="true"]) ::-webkit-scrollbar-thumb {
 .hw-hero__text {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  padding: 140px 64px 100px;
+  justify-content: flex-start;
+  padding: 60px 64px 100px;
   position: relative;
   z-index: 1;
 }
-@media (max-width: 1279px) { .hw-hero__text { padding: 140px 48px 80px; } }
-@media (max-width: 767px)  { .hw-hero__text { padding: 110px 24px 60px; } }
+@media (max-width: 1279px) { .hw-hero__text { padding: 60px 48px 80px; } }
+@media (max-width: 767px)  { .hw-hero__text { padding: 48px 24px 60px; } }
 
 .hw-hero__eyebrow {
   display: flex;
