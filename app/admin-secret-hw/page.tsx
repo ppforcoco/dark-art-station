@@ -228,6 +228,7 @@ function PageContentTab({password}:{password:string}){
 }
 
 function ImageUploaderTab({password}:{password:string}){
+  const[collections,setCollections]=useState<{id:string;title:string;slug:string}[]>([]);useEffect(()=>{fetch("/api/hw-admin/collections",{headers:{"x-admin-password":password}}).then(r=>r.json()).then(j=>setCollections(j.collections??[])).catch(()=>{});},[password]);
   const[file,setFile]=useState<File|null>(null);const[highResFile,setHighResFile]=useState<File|null>(null);const[preview,setPreview]=useState("");const[dragging,setDragging]=useState(false);const[slug,setSlug]=useState("");const[title,setTitle]=useState("");const[altText,setAltText]=useState("");const[description,setDescription]=useState("");const[deviceType,setDeviceType]=useState<"IPHONE"|"ANDROID"|"PC"|"">("");const[selectedTags,setSelectedTags]=useState<string[]>([]);const[customTags,setCustomTags]=useState<string[]>([]);const[newTagInput,setNewTagInput]=useState("");const[collectionId,setCollectionId]=useState("");const[isAdult,setIsAdult]=useState(false);const[descMode,setDescMode]=useState<"html"|"preview">("html");const[uploading,setUploading]=useState(false);const[generating,setGenerating]=useState(false);const[message,setMessage]=useState<{type:"ok"|"err";text:string}|null>(null);const[uploadedUrl,setUploadedUrl]=useState("");const dropRef=useRef<HTMLDivElement>(null);const fileInputRef=useRef<HTMLInputElement>(null);const highResInputRef=useRef<HTMLInputElement>(null);
   function slugify(name:string){return name.toLowerCase().replace(/\.[^.]+$/,"").replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");}
   function handleFileSelect(f:File){setFile(f);setSlug(slugify(f.name));if(!title)setTitle(f.name.replace(/\.[^.]+$/,"").replace(/[-_]/g," ").replace(/\b\w/g,c=>c.toUpperCase()));setPreview(URL.createObjectURL(f));setMessage(null);setUploadedUrl("");}
@@ -276,7 +277,7 @@ function ImageUploaderTab({password}:{password:string}){
         <Btn onClick={handleGenerateAll} disabled={generating}>{generating?"✨ Analysing…":"✨ Generate All Fields"}</Btn>
       </Card>
       <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"16px"}}>
-        <Card style={{padding:"16px"}}><label style={lbl}>Image Title</label><input value={title} onChange={e=>setTitle(e.target.value)} placeholder="Dark Gothic Forest" style={inp}/></Card>
+        <Card style={{padding:"16px"}}><label style={lbl}>Image Title</label><input value={title} onChange={e=>{const v=e.target.value;setTitle(v);setSlug(v.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,""));}} placeholder="Dark Gothic Forest" style={inp}/></Card>
         <Card style={{padding:"16px"}}><label style={lbl}>URL Slug</label><input value={slug} onChange={e=>setSlug(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g,""))} placeholder="dark-gothic-forest" style={inp}/></Card>
       </div>
       <Card style={{padding:"16px"}}>
@@ -320,7 +321,7 @@ function ImageUploaderTab({password}:{password:string}){
           <Btn onClick={()=>{if(!newTagInput.trim())return;const v=newTagInput.trim();setCustomTags(prev=>prev.includes(v)?prev:[...prev,v]);setSelectedTags(prev=>prev.includes(v)?prev:[...prev,v]);setNewTagInput("");}} variant="ghost">Add</Btn>
         </div>
       </Card>
-      <Card style={{padding:"16px"}}><label style={lbl}>Collection ID (optional — leave blank for standalone)</label><input value={collectionId} onChange={e=>setCollectionId(e.target.value)} placeholder="UUID of the collection" style={inp}/></Card>
+      <Card style={{padding:"16px"}}><label style={lbl}>Collection (optional)</label><select value={collectionId} onChange={e=>setCollectionId(e.target.value)} style={{...inp,cursor:"pointer"}}><option value="">— Standalone (no collection) —</option>{collections.map(c=><option key={c.id} value={c.id}>{c.title} ({c.slug})</option>)}</select></Card>
 
       {/* Upload summary */}
       <Card style={{padding:"14px 16px",background:"rgba(124,58,237,0.06)",borderColor:"rgba(124,58,237,0.3)"}}>
@@ -796,8 +797,46 @@ function HighResUploadTab({password}:{password:string}){
   </div>;
 }
 
-type Tab="analytics"|"pages"|"collections"|"upload"|"published"|"bulkai"|"highres"|"blog"|"manage18"|"backdate"|"preview"|"feedback";
-const NAV_ITEMS:[Tab,string,string][]=[["analytics","📊","Analytics"],["pages","📝","Page Content"],["collections","🗂","Collections"],["upload","📤","Upload Image"],["published","📸","Published"],["bulkai","🤖","Bulk AI Update"],["highres","⬆️","Upload 4K"],["blog","✍️","Blog Posts"],["manage18","⚠","16+ Manage"],["backdate","📅","Backdate"],["preview","🌐","Live Preview"],["feedback","⚑","Reports"]];
+
+function NukeTab({password}:{password:string}){
+  const PHRASE="DELETE EVERYTHING";
+  const[input,setInput]=useState("");
+  const[nuking,setNuking]=useState(false);
+  const[result,setResult]=useState<{type:"ok"|"err";text:string}|null>(null);
+  const[armed,setArmed]=useState(false);
+
+  async function handleNuke(){
+    if(input!==PHRASE){setResult({type:"err",text:`Type exactly: ${PHRASE}`});return;}
+    if(!armed){setArmed(true);setResult({type:"err",text:"⚠ Click NUKE again to confirm. This is irreversible."});return;}
+    setNuking(true);setResult(null);
+    try{
+      const res=await fetch("/api/hw-admin/nuke-all",{method:"POST",headers:{"Content-Type":"application/json","x-admin-password":password},body:JSON.stringify({confirmPhrase:PHRASE})});
+      const j=await res.json();
+      if(res.ok){setResult({type:"ok",text:`✓ Done. Deleted ${j.db.imagesDeleted} images, ${j.db.collectionsDeleted} collections, ${j.db.downloadsDeleted} downloads from DB. R2: ${j.r2.deleted} files deleted, ${j.r2.errors} errors.`});setArmed(false);setInput("");}
+      else setResult({type:"err",text:j.error??"Nuke failed."});
+    }catch{setResult({type:"err",text:"Network error."});}
+    setNuking(false);
+  }
+
+  return<div style={{maxWidth:"560px",display:"flex",flexDirection:"column",gap:"20px"}}>
+    <Card style={{padding:"20px",borderColor:C.red,background:"rgba(192,0,26,0.08)"}}>
+      <p style={{color:C.red,fontSize:"0.85rem",fontWeight:600,marginBottom:"8px"}}>💣 Nuke Everything</p>
+      <p style={{color:C.textSec,fontSize:"0.78rem",lineHeight:1.7}}>This permanently deletes <strong style={{color:C.textPri}}>all images, all collections, and all download records</strong> from the database, and wipes every file from R2 storage.</p>
+      <p style={{color:C.red,fontSize:"0.72rem",marginTop:"8px",lineHeight:1.6}}>⚠ There is no undo. Back up your database before proceeding.</p>
+    </Card>
+    <Msg msg={result}/>
+    <Card style={{padding:"16px"}}>
+      <label style={lbl}>Type <code style={{color:C.red,background:"rgba(192,0,26,0.15)",padding:"2px 6px"}}>{PHRASE}</code> to unlock</label>
+      <input value={input} onChange={e=>{setInput(e.target.value);setArmed(false);}} placeholder={PHRASE} style={{...inp,borderColor:input===PHRASE?C.red:C.border,color:input===PHRASE?C.red:C.textPri}}/>
+    </Card>
+    <button onClick={handleNuke} disabled={nuking||input!==PHRASE} style={{padding:"14px 32px",background:input===PHRASE?"rgba(192,0,26,0.9)":"rgba(80,0,0,0.3)",border:`1px solid ${input===PHRASE?C.red:"rgba(80,0,0,0.5)"}`,color:input===PHRASE?C.white:"rgba(255,255,255,0.3)",cursor:input===PHRASE&&!nuking?"pointer":"not-allowed",fontSize:"0.85rem",fontFamily:"monospace",letterSpacing:"0.12em",fontWeight:700,transition:"all 0.2s"}}>
+      {nuking?"💣 NUKING…":armed?"💣 CONFIRM — NUKE EVERYTHING":"💣 NUKE EVERYTHING"}
+    </button>
+  </div>;
+}
+
+type Tab="analytics"|"pages"|"collections"|"upload"|"published"|"bulkai"|"highres"|"blog"|"manage18"|"backdate"|"preview"|"feedback"|"nuke";
+const NAV_ITEMS:[Tab,string,string][]=[["analytics","📊","Analytics"],["pages","📝","Page Content"],["collections","🗂","Collections"],["upload","📤","Upload Image"],["published","📸","Published"],["bulkai","🤖","Bulk AI Update"],["highres","⬆️","Upload 4K"],["blog","✍️","Blog Posts"],["manage18","⚠","16+ Manage"],["backdate","📅","Backdate"],["preview","🌐","Live Preview"],["feedback","⚑","Reports"],["nuke","💣","Nuke Everything"]];
 
 export default function AdminClient(){
   const[authed,setAuthed]=useState(false);const[password,setPw]=useState("");const[tab,setTab]=useState<Tab>("analytics");const[sidebarOpen,setSidebarOpen]=useState(true);const[prefillTitle,setPrefillTitle]=useState("");const[prefillLabel,setPrefillLabel]=useState("");
@@ -842,6 +881,7 @@ export default function AdminClient(){
         {tab==="backdate"&&<BackdateTab password={password}/>}
         {tab==="preview"&&<LivePreviewTab/>}
         {tab==="feedback"&&<Card style={{padding:"48px",textAlign:"center"}}><p style={{color:C.textMut}}>Feedback reports will appear here when the feedback API route is connected.</p></Card>}
+        {tab==="nuke"&&<NukeTab password={password}/>}
       </div>
     </div>
   </div>;
