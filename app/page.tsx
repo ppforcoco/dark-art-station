@@ -1,14 +1,11 @@
-// app/page.tsx
+// app/page.tsx — Haunted Wallpapers Redesign
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { db, getWallpaperOfTheDay } from "@/lib/db";
 import { getPublicUrl } from "@/lib/r2";
-import MarqueeTicker from "@/components/MarqueeTicker";
-import ProductCard from "@/components/ProductCard";
 import AdSlot from "@/components/AdSlot";
-import RecentlyViewed from "@/components/RecentlyViewed";
-import HeroMosaic from "@/components/HeroMosaic";
+import MarqueeTicker from "@/components/MarqueeTicker";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
 const OG_IMAGE = `${SITE_URL}/og-image.jpg`;
@@ -23,178 +20,185 @@ export const metadata: Metadata = {
     url: SITE_URL, siteName: "Haunted Wallpapers", type: "website",
     images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: "Haunted Wallpapers — Dark Fantasy Art" }],
   },
-  twitter: {
-    card: "summary_large_image",
-    title: "Haunted Wallpapers | Free Dark Fantasy Wallpapers",
-    description: "Gothic, horror and fantasy wallpapers. HD downloads. No sign-up.",
-    images: [OG_IMAGE],
-  },
+  twitter: { card: "summary_large_image", title: "Haunted Wallpapers | Free Dark Fantasy Wallpapers", description: "Gothic, horror and fantasy wallpapers. HD downloads. No sign-up.", images: [OG_IMAGE] },
   alternates: { canonical: SITE_URL },
 };
 
 export const revalidate = 60;
 
-const VALID_BADGES = ["New", "Hot", "Free"] as const;
-type Badge = (typeof VALID_BADGES)[number];
-function parseBadge(b: string | null | undefined): Badge | undefined {
-  return VALID_BADGES.includes(b as Badge) ? (b as Badge) : undefined;
-}
-
 export default async function Home() {
   const wotd = await getWallpaperOfTheDay();
   const totalImages = await db.image.count();
 
-  function formatStatCount(n: number): string {
+  function fmt(n: number) {
     if (n >= 1000) return `${Math.floor(n / 100) / 10}K+`;
     return `${Math.floor(n / 50) * 50}+`;
   }
 
-  const CATEGORY_SLUGS = [
-    "skeleton-card-collection",
-    "dark-humor-wallpaper-collection",
-    "dark-fantasy-art",
-    "dark-minimal-horror",
-    "incognito-mode-collection",
-    "dark-pattern-wallpaper",
-  ];
-  const categories = await db.collection.findMany({
-    where: { slug: { in: CATEGORY_SLUGS } },
+  // Fetch obsession collections — these are your tag-based grids
+  const obsessions = await db.collection.findMany({
+    orderBy: [{ featured: "desc" }, { createdAt: "asc" }],
+    where: { isAdult: false },
+    take: 10,
     select: {
-      id: true, slug: true, title: true, icon: true, bgClass: true,
-      tag: true, featured: true, thumbnail: true,
-      _count: { select: { downloads: true } },
+      id: true, slug: true, title: true, thumbnail: true,
+      tag: true, icon: true, bgClass: true,
+      _count: { select: { images: true } },
     },
   });
 
-  const products = await db.collection.findMany({
-    orderBy: { createdAt: "desc" },
-    take: 8,
-    where: { isAdult: false },
-    select: {
-      id: true, slug: true, title: true, category: true,
-      price: true, isFree: true, badge: true,
-      icon: true, bgClass: true, thumbnail: true,
-      _count: { select: { downloads: true } },
-    },
-  });
+  const r2Base = process.env.NEXT_PUBLIC_R2_PUBLIC_URL ?? "";
 
   return (
     <>
+      {/* ── PARTICLES CANVAS (CSS only, no JS) ── */}
+      <div className="hw2-particles" aria-hidden="true">
+        {Array.from({ length: 20 }).map((_, i) => (
+          <span key={i} className="hw2-particle" style={{ "--i": i } as React.CSSProperties} />
+        ))}
+      </div>
+
       {/* ── HERO ── */}
-      <section className="hw-hero">
-        <div className="hw-hero__text">
-          <p className="hw-hero__tagline">Art that whispers long after you close the tab.</p>
-          <p className="hw-hero__sub">
-            You like the shadows. We like giving you art that lives there. Gothic, horror, fantasy — updated regularly. Every download is HD and free. No sign-up form. No &ldquo;verify your email.&rdquo; Just art.
+      <section className="hw2-hero">
+        <div className="hw2-hero__fog" aria-hidden="true" />
+        <div className="hw2-hero__content">
+          <p className="hw2-hero__eyebrow">
+            <span className="hw2-hero__eyebrow-dot" />
+            Free · HD · No Sign-up
           </p>
-          <div className="hw-hero__stats">
-            <div className="hw-hero__stat">
-              <span className="hw-hero__stat-num">{formatStatCount(totalImages)}</span>
-              <span className="hw-hero__stat-label">Artworks</span>
+          <h1 className="hw2-hero__title">
+            Art that lives<br />
+            <em className="hw2-hero__title-em">in the dark.</em>
+          </h1>
+          <p className="hw2-hero__sub">
+            Gothic, horror, fantasy wallpapers for iPhone, Android &amp; PC.
+            Download in 4K. No account. No watermark. Just the art.
+          </p>
+          <div className="hw2-hero__actions">
+            <Link href="/iphone" className="hw2-btn hw2-btn--primary">Browse iPhone</Link>
+            <Link href="/android" className="hw2-btn hw2-btn--ghost">Android &amp; PC</Link>
+          </div>
+          <div className="hw2-hero__stats">
+            <div className="hw2-stat">
+              <span className="hw2-stat__num">{fmt(totalImages)}</span>
+              <span className="hw2-stat__label">Wallpapers</span>
             </div>
-            <div className="hw-hero__stat-divider" />
-            <div className="hw-hero__stat">
-              <span className="hw-hero__stat-num">Free</span>
-              <span className="hw-hero__stat-label">Always</span>
+            <div className="hw2-stat__div" />
+            <div className="hw2-stat">
+              <span className="hw2-stat__num">4K</span>
+              <span className="hw2-stat__label">Resolution</span>
             </div>
-            <div className="hw-hero__stat-divider" />
-            <div className="hw-hero__stat">
-              <span className="hw-hero__stat-num">4K</span>
-              <span className="hw-hero__stat-label">Resolution</span>
+            <div className="hw2-stat__div" />
+            <div className="hw2-stat">
+              <span className="hw2-stat__num">Free</span>
+              <span className="hw2-stat__label">Always</span>
             </div>
           </div>
         </div>
 
-        {/* Right: Mosaic — labelled so users know what they're clicking */}
-        <div className="hw-hero__mosaic-wrap">
-          <div className="hw-hero__mosaic-label">
-            <span className="hw-hero__mosaic-label-text">Browse by theme</span>
-            <span className="hw-hero__mosaic-label-hint">Click any card →</span>
-          </div>
-          <HeroMosaic />
-        </div>
+        {/* Daily pick floating card */}
+        {wotd && (() => {
+          const devicePath = wotd.deviceType === "IPHONE" ? "iphone" : wotd.deviceType === "ANDROID" ? "android" : "pc";
+          const wotdUrl = getPublicUrl(wotd.r2Key);
+          return (
+            <Link href={`/${devicePath}/${wotd.slug}`} className="hw2-hero__card" aria-label={wotd.title}>
+              <div className="hw2-hero__card-label">Today&rsquo;s Pick</div>
+              <Image src={wotdUrl} alt={wotd.title} fill unoptimized priority className="object-cover" sizes="320px" />
+              <div className="hw2-hero__card-overlay">
+                <span className="hw2-hero__card-title">{wotd.title}</span>
+                <span className="hw2-hero__card-cta">Download Free →</span>
+              </div>
+            </Link>
+          );
+        })()}
       </section>
 
       <MarqueeTicker />
 
-      <div className="hw-ad-row">
+      <div className="hw2-ad-row">
         <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_MAIN} width={728} height={90} />
       </div>
 
-      {/* ── DAILY PICK ── */}
-      {wotd && (() => {
-        const devicePath = wotd.deviceType === "IPHONE" ? "iphone" : wotd.deviceType === "ANDROID" ? "android" : "pc";
-        const wotdUrl = getPublicUrl(wotd.r2Key);
-        const wotdHref = `/${devicePath}/${wotd.slug}`;
-        const todayStr = new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" });
-        return (
-          <section className="hw-daily">
-            <div className="hw-daily__inner">
-              <div className="hw-daily__text">
-                <p className="hw-daily__eyebrow"><span className="hw-daily__dot" />Daily Pick · {todayStr}</p>
-                <h2 className="hw-daily__title">{wotd.title}</h2>
-                {wotd.description && <p className="hw-daily__desc">{wotd.description}</p>}
-                {wotd.tags.length > 0 && (
-                  <div className="hw-daily__tags">
-                    {wotd.tags.slice(0, 4).map(t => <span key={t} className="hw-daily__tag">#{t}</span>)}
-                  </div>
-                )}
-                <Link href={wotdHref} className="hw-daily__cta">View Wallpaper →</Link>
-              </div>
-              <Link href={wotdHref} className="hw-daily__image-wrap" aria-label={wotd.title}>
-                <Image src={wotdUrl} alt={wotd.title} fill priority unoptimized className="object-cover" sizes="380px" />
-                {wotd.deviceType && <span className="hw-daily__badge">{wotd.deviceType.charAt(0) + wotd.deviceType.slice(1).toLowerCase()}</span>}
-              </Link>
-            </div>
-          </section>
-        );
-      })()}
-
-      {/* ── LATEST DROPS ── */}
-      <section className="hw-latest">
-        <div className="hw-section-header">
-          <h2 className="hw-section-title">Choose Your Obsession</h2>
-          <Link href="/shop" className="hw-section-link">Browse All →</Link>
+      {/* ── OBSESSIONS GRID ── */}
+      <section className="hw2-obsessions">
+        <div className="hw2-section-head">
+          <div className="hw2-section-head__left">
+            <span className="hw2-eyebrow">Choose Your Obsession</span>
+            <h2 className="hw2-section-title">What haunts you?</h2>
+          </div>
+          <Link href="/collections" className="hw2-see-all">All Collections →</Link>
         </div>
-        <div className="product-grid">
-          {products.length > 0 ? products.map((p, idx) => (
-            <ProductCard key={p.id} slug={p.slug} name={p.title} category={p.category} price={p.price} isFree={p.isFree} badge={parseBadge(p.badge)} icon={p.icon} bgClass={p.bgClass} thumbnail={p.thumbnail ? `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/${p.thumbnail}` : null} priority={idx < 4} downloadCount={p._count.downloads} />
-          )) : (
-            <p style={{ color: "#4a445a", fontFamily: "var(--font-space)", fontSize: "0.75rem", gridColumn: "1/-1", padding: "60px 0", textAlign: "center" }}>Loading…</p>
-          )}
+
+        <div className="hw2-obsessions__grid">
+          {obsessions.map((obs, i) => {
+            const thumb = obs.thumbnail ? `${r2Base}/${obs.thumbnail}` : null;
+            return (
+              <Link
+                key={obs.id}
+                href={`/shop/${obs.slug}`}
+                className="hw2-obs-card"
+                style={{ "--delay": `${i * 0.07}s` } as React.CSSProperties}
+              >
+                {/* Background image or gradient */}
+                <div className="hw2-obs-card__bg">
+                  {thumb ? (
+                    <Image src={thumb} alt={obs.title} fill unoptimized className="object-cover" sizes="(max-width:600px) 100vw, (max-width:1024px) 50vw, 33vw" />
+                  ) : (
+                    <div className="hw2-obs-card__placeholder">
+                      <span className="hw2-obs-card__icon">{obs.icon ?? "🖤"}</span>
+                    </div>
+                  )}
+                  <div className="hw2-obs-card__veil" />
+                </div>
+                {/* Glitch flicker effect */}
+                <div className="hw2-obs-card__glitch" aria-hidden="true" />
+                {/* Content */}
+                <div className="hw2-obs-card__body">
+                  <span className="hw2-obs-card__tag">{obs.tag ?? "Collection"}</span>
+                  <h3 className="hw2-obs-card__title">{obs.title}</h3>
+                  <span className="hw2-obs-card__count">{obs._count.images} wallpapers</span>
+                </div>
+                {/* Hover border glow */}
+                <div className="hw2-obs-card__glow" aria-hidden="true" />
+              </Link>
+            );
+          })}
         </div>
       </section>
 
-      <div className="hw-ad-row">
+      <div className="hw2-ad-row">
         <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_FOOTER} width={728} height={90} />
       </div>
 
-      {/* ── CLOSING STATEMENT ── */}
-      <section className="hw-statement">
-        <blockquote className="hw-statement__quote">
-          Some people want bright and simple.<br />
-          <em className="hw-statement__em">You&rsquo;re not one of them.</em>
-        </blockquote>
-        <p className="hw-statement__body">
-          You like the strange, the shadowed, the kind of art that feels like a half-remembered dream. We collect that here. Bold illustrations, creepy atmospheres, fantasy worlds you wish you could walk into.
-        </p>
-        <p className="hw-statement__body">
-          Download everything in full HD. No account needed. No email required. Just art that gets you.
-        </p>
-        <Link href="/shop" className="hw-statement__cta">Browse the Collection →</Link>
+      {/* ── MANIFESTO ── */}
+      <section className="hw2-manifesto">
+        <div className="hw2-manifesto__inner">
+          <div className="hw2-manifesto__rune" aria-hidden="true">✦</div>
+          <blockquote className="hw2-manifesto__quote">
+            Some people want bright and cheerful.<br />
+            <em className="hw2-manifesto__em">You know better.</em>
+          </blockquote>
+          <p className="hw2-manifesto__body">
+            The dark isn&rsquo;t empty — it&rsquo;s full of things worth staring at.
+            We find them and put them on your screen. Gothic art, horror illustrations,
+            dark fantasy worlds. All free. All HD. All yours.
+          </p>
+          <div className="hw2-manifesto__links">
+            <Link href="/iphone" className="hw2-btn hw2-btn--primary">iPhone Wallpapers</Link>
+            <Link href="/android" className="hw2-btn hw2-btn--ghost">Android</Link>
+            <Link href="/pc" className="hw2-btn hw2-btn--ghost">PC &amp; Desktop</Link>
+          </div>
+        </div>
       </section>
 
-      <RecentlyViewed />
-
+      {/* JSON-LD */}
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
         "@context": "https://schema.org", "@type": "ItemList",
-        name: "Haunted Wallpapers — Featured Dark Art Collections",
-        description: "Free dark wallpaper collections — gothic, horror, fantasy for iPhone, Android and PC.",
-        url: SITE_URL, numberOfItems: categories.length,
-        itemListElement: categories.map((cat, i) => ({
+        name: "Haunted Wallpapers — Obsession Collections",
+        url: SITE_URL, numberOfItems: obsessions.length,
+        itemListElement: obsessions.map((o, i) => ({
           "@type": "ListItem", position: i + 1,
-          url: `${SITE_URL}/shop/${cat.slug}`, name: cat.title,
-          image: cat.thumbnail ? `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/${cat.thumbnail}` : undefined,
+          url: `${SITE_URL}/shop/${o.slug}`, name: o.title,
         })),
       }) }} />
     </>
