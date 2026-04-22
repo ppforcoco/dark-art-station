@@ -1,4 +1,4 @@
-// app/page.tsx — HAUNTED TOWN REDESIGN (AdSense-safe, split-hero edition)
+// app/page.tsx — HAUNTED TOWN REDESIGN (Mobile Hero Mockup Edition)
 
 import type { Metadata } from "next";
 import Link from "next/link";
@@ -33,6 +33,64 @@ export const metadata: Metadata = {
 };
 
 export const revalidate = 60;
+
+// ── The 6 fixed districts — each locked to its own tag ──────────────────────
+const DISTRICTS = [
+  {
+    id: "classic",
+    tag: "classic-district",
+    label: "The Classic District",
+    emoji: "🏚️",
+    desc: "Old houses, vintage portraits, Victorian furniture & traditional dark elegance.",
+    vibe: "High-quality · Timeless · Dark Photography",
+    accent: "#8B6914",
+  },
+  {
+    id: "city",
+    tag: "city-center",
+    label: "The City Center",
+    emoji: "🌆",
+    desc: "Rainy streets, dark skyscrapers, neon signs & back alleys.",
+    vibe: "Urban Darkness · Night Life · Modern",
+    accent: "#1a6ecf",
+  },
+  {
+    id: "bone",
+    tag: "bone-street",
+    label: "Bone Street",
+    emoji: "💀",
+    desc: "Skulls, skeletons & anatomical art. Edgy, high-contrast black and white.",
+    vibe: "Street Art · High Contrast · B&W",
+    accent: "#c0c0c0",
+  },
+  {
+    id: "nature",
+    tag: "nature-trail",
+    label: "The Nature Trail",
+    emoji: "🌲",
+    desc: "Dark forests, fog-covered mountains, dead trees & winter landscapes.",
+    vibe: "Atmospheric · Quiet · Natural",
+    accent: "#2d6a4f",
+  },
+  {
+    id: "minimal",
+    tag: "minimalist-row",
+    label: "Minimalist Row",
+    emoji: "◼",
+    desc: "Simple silhouettes, solid black (AMOLED) backgrounds & thin lines.",
+    vibe: "Clean · Modern · Home Screen Ready",
+    accent: "#555555",
+  },
+  {
+    id: "character",
+    tag: "character-ward",
+    label: "The Character Ward",
+    emoji: "🎭",
+    desc: "Hooded figures, masks, shadow people & dark armor illustrations.",
+    vibe: "Artistic · Human-like · Illustrated",
+    accent: "#7b2d8b",
+  },
+] as const;
 
 export default async function Home() {
   const wotd = await getWallpaperOfTheDay();
@@ -71,6 +129,25 @@ export default async function Home() {
     .slice(0, 12)
     .map(([tag]) => tag);
 
+  // ── Fetch preview images for each district (exactly 4 per district, strict tag match) ──
+  const districtPreviews = await Promise.all(
+    DISTRICTS.map(async (district) => {
+      const images = await db.image.findMany({
+        where: {
+          isAdult: false,
+          tags: { has: district.tag },
+        },
+        orderBy: { createdAt: "desc" },
+        take: 4,
+        select: { id: true, r2Key: true, title: true, slug: true },
+      });
+      const count = await db.image.count({
+        where: { isAdult: false, tags: { has: district.tag } },
+      });
+      return { district, images, count };
+    })
+  );
+
   const r2Base = process.env.NEXT_PUBLIC_R2_PUBLIC_URL ?? "";
 
   return (
@@ -90,23 +167,23 @@ export default async function Home() {
       </div>
 
       {/* ══════════════════════════════════════════════════════════
-          SECTION 1 — HERO: COLLAGE LAYOUT
+          SECTION 1 — HERO: HORIZONTAL MOBILE MOCKUP
       ══════════════════════════════════════════════════════════ */}
-      <section className="dt-gate dt-gate--collage">
+      <section className="dt-gate dt-gate--mobile-hero">
 
         <div className="dt-gate__crack" aria-hidden="true" />
 
-        {/* ── LEFT: Title block ── */}
+        {/* ── LEFT: Title block (Compact, No Big Text) ── */}
         <div className="dt-gate__left">
-          <span className="dt-gate__eyebrow">You have arrived in</span>
-          <h1 className="dt-gate__title">
-            <span className="dt-gate__title-dead">HAUNTED</span>
-            <span className="dt-gate__title-town">WALLPAPERS</span>
+          <span className="dt-gate__eyebrow">Welcome to</span>
+          <h1 className="dt-gate__title dt-gate__title--subtle">
+            <span className="dt-gate__title-town">Haunted Town</span>
           </h1>
           <p className="dt-gate__sub">
             Where atmosphere hangs like fog and every image
             is a window into something extraordinary.
           </p>
+          
           <div className="dt-gate__collection-badge">
             <span className="dt-gate__collection-num">{fmt(totalImages)}</span>
             <span className="dt-gate__collection-label">wallpapers &amp; growing</span>
@@ -133,73 +210,58 @@ export default async function Home() {
           </div>
         </div>
 
-        {/* ── RIGHT: Hero collage ── */}
+        {/* ── RIGHT: Mobile Mockup with Horizontal Images ── */}
         <div className="dt-gate__right">
-          <div className="dt-hero-collage">
+          <div className="dt-mobile-mockup">
+            
+            {/* Phone Bezel */}
+            <div className="dt-mobile-bezel">
+              {/* Notch / Camera */}
+              <div className="dt-mobile-notch" />
+              
+              {/* Screen */}
+              <div className="dt-mobile-screen">
+                {/* Horizontal Image Stack */}
+                <div className="dt-mobile-stack">
+                  <div className="dt-mobile-stack__layer dt-mobile-stack__layer--back">
+                     {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img 
+                      src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/wallpapers/haunted-house-moon.jpeg" 
+                      alt="Haunted House Moon Background"
+                      className="dt-mobile-stack__img"
+                    />
+                  </div>
+                  <div className="dt-mobile-stack__layer dt-mobile-stack__layer--mid">
+                     {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img 
+                      src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/wallpapers/houston-snapback-skeleton.jpeg" 
+                      alt="Snapback Skeleton Middle"
+                      className="dt-mobile-stack__img"
+                    />
+                  </div>
+                  <div className="dt-mobile-stack__layer dt-mobile-stack__layer--front">
+                     {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img 
+                      src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/wallpapers/shadows-have-eyes-android.webp" 
+                      alt="Shadows Have Eyes Foreground"
+                      className="dt-mobile-stack__img"
+                    />
+                  </div>
+                </div>
 
-            {/* Large featured image — top left */}
-            <div className="dt-collage__item dt-collage__item--main">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/wallpapers/houston-snapback-skeleton.jpeg"
-                alt="Houston Snapback Skeleton"
-                className="dt-collage__img"
-                loading="eager"
-              />
-              <div className="dt-collage__veil" aria-hidden="true" />
-              <p className="dt-collage__caption">Houston Snapback Skeleton</p>
+                {/* UI Overlays inside phone */}
+                <div className="dt-mobile-ui">
+                  <span className="dt-mobile-time">09:41</span>
+                  <div className="dt-mobile-battery" />
+                </div>
+              </div>
+              
+              {/* Home Bar */}
+              <div className="dt-mobile-home-bar" />
             </div>
 
-            {/* Tall image — top right */}
-            <div className="dt-collage__item dt-collage__item--tall">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/wallpapers/shadows-have-eyes-android.webp"
-                alt="Shadows Have Eyes"
-                className="dt-collage__img"
-                loading="eager"
-              />
-              <div className="dt-collage__veil" aria-hidden="true" />
-              <p className="dt-collage__caption">Shadows Have Eyes</p>
-            </div>
-
-            {/* Wide image — bottom left */}
-            <div className="dt-collage__item dt-collage__item--wide">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/wallpapers/haunted-house-moon.jpeg"
-                alt="Haunted House Moon"
-                className="dt-collage__img"
-                loading="eager"
-              />
-              <div className="dt-collage__veil" aria-hidden="true" />
-              <p className="dt-collage__caption">Haunted House Moon</p>
-            </div>
-
-            {/* Small square — bottom center */}
-            <div className="dt-collage__item dt-collage__item--sm">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/wallpapers/hero-1.jpeg"
-                alt="Haunted Hero 1"
-                className="dt-collage__img"
-                loading="eager"
-              />
-              <div className="dt-collage__veil" aria-hidden="true" />
-            </div>
-
-            {/* Small square — bottom right */}
-            <div className="dt-collage__item dt-collage__item--sm dt-collage__item--accent">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/wallpapers/hero-2.jpeg"
-                alt="Haunted Hero 2"
-                className="dt-collage__img"
-                loading="eager"
-              />
-              <div className="dt-collage__veil" aria-hidden="true" />
-            </div>
-
+            {/* Reflection/Glare */}
+            <div className="dt-mobile-glare" />
           </div>
         </div>
 
@@ -293,7 +355,7 @@ export default async function Home() {
       </section>
 
       {/* ══════════════════════════════════════════════════════════
-          SECTION 4 — COLLECTIONS
+          SECTION 4 — COLLECTIONS (existing)
       ══════════════════════════════════════════════════════════ */}
       <section className="dt-obsessions">
         <div className="dt-section-head">
@@ -372,7 +434,93 @@ export default async function Home() {
       </div>
 
       {/* ══════════════════════════════════════════════════════════
-          SECTION 5 — ABOUT / STORY
+          SECTION 5 — CHOOSE YOUR OBSESSION (6 FIXED DISTRICTS)
+      ══════════════════════════════════════════════════════════ */}
+      <section className="dt-districts">
+        <div className="dt-section-head dt-section-head--center">
+          <span className="dt-eyebrow">Six Worlds Await</span>
+          <h2 className="dt-section-title">Choose Your Obsession</h2>
+          <p className="dt-section-sub">
+            Every district is its own world. Step inside the one that calls to you.
+          </p>
+        </div>
+
+        <div className="dt-districts__grid">
+          {districtPreviews.map(({ district, images, count }, idx) => (
+            <Link
+              key={district.id}
+              href={`/search?tag=${encodeURIComponent(district.tag)}`}
+              className="dt-district-card"
+              style={{
+                "--district-accent": district.accent,
+                "--delay": `${idx * 0.08}s`,
+              } as React.CSSProperties}
+            >
+              {/* 4-image grid thumbnail mosaic */}
+              <div className="dt-district-card__mosaic">
+                {images.length > 0 ? (
+                  <>
+                    {images.slice(0, 4).map((img, imgIdx) => (
+                      <div key={img.id} className="dt-district-card__mosaic-cell">
+                        <Image
+                          src={`${r2Base}/${img.r2Key}`}
+                          alt={img.title ?? district.label}
+                          fill
+                          unoptimized
+                          className="object-cover"
+                          sizes="(max-width:600px) 25vw, 15vw"
+                        />
+                      </div>
+                    ))}
+                    {/* Fill blanks if fewer than 4 */}
+                    {Array.from({ length: Math.max(0, 4 - images.length) }).map((_, fi) => (
+                      <div key={`fill-${fi}`} className="dt-district-card__mosaic-cell dt-district-card__mosaic-cell--empty">
+                        <span className="dt-district-card__mosaic-empty-icon">{district.emoji}</span>
+                      </div>
+                    ))}
+                  </>
+                ) : (
+                  // Fully empty state — show placeholder
+                  <>
+                    {Array.from({ length: 4 }).map((_, fi) => (
+                      <div key={`empty-${fi}`} className="dt-district-card__mosaic-cell dt-district-card__mosaic-cell--empty">
+                        <span className="dt-district-card__mosaic-empty-icon">{district.emoji}</span>
+                      </div>
+                    ))}
+                  </>
+                )}
+                <div className="dt-district-card__mosaic-veil" />
+                <div className="dt-district-card__mosaic-accent" style={{ background: `${district.accent}22` }} />
+              </div>
+
+              {/* Card body */}
+              <div className="dt-district-card__body">
+                <div className="dt-district-card__top">
+                  <span className="dt-district-card__emoji">{district.emoji}</span>
+                  <span className="dt-district-card__tag">#{district.tag}</span>
+                </div>
+                <h3 className="dt-district-card__title">{district.label}</h3>
+                <p className="dt-district-card__desc">{district.desc}</p>
+                <p className="dt-district-card__vibe">{district.vibe}</p>
+                <div className="dt-district-card__footer">
+                  <span className="dt-district-card__count">
+                    {count > 0 ? `${count} wallpapers` : "Coming soon"}
+                  </span>
+                  <span className="dt-district-card__enter">Enter →</span>
+                </div>
+              </div>
+
+              {/* Decorative corners */}
+              <span className="dt-district-card__corner dt-district-card__corner--tl" />
+              <span className="dt-district-card__corner dt-district-card__corner--br" />
+              <div className="dt-district-card__glow" aria-hidden="true" />
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════════════════════════
+          SECTION 6 — ABOUT / STORY
       ══════════════════════════════════════════════════════════ */}
       <section className="dt-manifesto">
         <div className="dt-manifesto__gutter" aria-hidden="true">
