@@ -90,9 +90,9 @@ export default async function Home() {
       </div>
 
       {/* ══════════════════════════════════════════════════════════
-          SECTION 1 — HERO: 2-COLUMN SPLIT (compact)
+          SECTION 1 — HERO: COLLAGE LAYOUT
       ══════════════════════════════════════════════════════════ */}
-      <section className="dt-gate dt-gate--split dt-gate--compact">
+      <section className="dt-gate dt-gate--collage">
 
         <div className="dt-gate__crack" aria-hidden="true" />
 
@@ -112,7 +112,7 @@ export default async function Home() {
             <span className="dt-gate__collection-label">wallpapers &amp; growing</span>
           </div>
 
-          {/* Stat cards — no emojis */}
+          {/* Stat cards */}
           <div className="dt-coffin-row dt-coffin-row--compact">
             <div className="dt-coffin">
               <span className="dt-coffin__num">{fmt(totalImages)}</span>
@@ -131,245 +131,78 @@ export default async function Home() {
               <span className="dt-coffin__label">Sign-up</span>
             </div>
           </div>
-
-          {/* CTA buttons */}
-          <div className="dt-gate__ctas">
-            <Link href="/shop" className="dt-btn dt-btn--enter">
-              <span>Browse Collection</span>
-            </Link>
-          </div>
         </div>
 
-        {/* ── RIGHT: Hero image strip ── */}
+        {/* ── RIGHT: Hero collage ── */}
         <div className="dt-gate__right">
-          <div className="dt-hero-images">
+          <div className="dt-hero-collage">
 
-            <div className="dt-hero-img-wrap">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/wallpapers/hero-1.jpeg"
-                alt="Haunted Hero 1"
-                className="dt-hero-img"
-                loading="eager"
-              />
-            </div>
-
-            <div className="dt-hero-img-wrap">
+            {/* Large featured image — top left */}
+            <div className="dt-collage__item dt-collage__item--main">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/wallpapers/houston-snapback-skeleton.jpeg"
                 alt="Houston Snapback Skeleton"
-                className="dt-hero-img dt-hero-img--featured"
+                className="dt-collage__img"
                 loading="eager"
               />
+              <div className="dt-collage__veil" aria-hidden="true" />
+              <p className="dt-collage__caption">Houston Snapback Skeleton</p>
             </div>
 
-            <div className="dt-hero-img-wrap">
+            {/* Tall image — top right */}
+            <div className="dt-collage__item dt-collage__item--tall">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/wallpapers/shadows-have-eyes-android.webp"
                 alt="Shadows Have Eyes"
-                className="dt-hero-img"
+                className="dt-collage__img"
                 loading="eager"
               />
+              <div className="dt-collage__veil" aria-hidden="true" />
+              <p className="dt-collage__caption">Shadows Have Eyes</p>
             </div>
 
-            <div className="dt-hero-img-wrap">
+            {/* Wide image — bottom left */}
+            <div className="dt-collage__item dt-collage__item--wide">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/wallpapers/haunted-house-moon.jpeg"
                 alt="Haunted House Moon"
-                className="dt-hero-img"
+                className="dt-collage__img"
                 loading="eager"
               />
+              <div className="dt-collage__veil" aria-hidden="true" />
+              <p className="dt-collage__caption">Haunted House Moon</p>
             </div>
 
-            <div className="dt-hero-img-wrap">
+            {/* Small square — bottom center */}
+            <div className="dt-collage__item dt-collage__item--sm">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/wallpapers/hero-1.jpeg"
+                alt="Haunted Hero 1"
+                className="dt-collage__img"
+                loading="eager"
+              />
+              <div className="dt-collage__veil" aria-hidden="true" />
+            </div>
+
+            {/* Small square — bottom right */}
+            <div className="dt-collage__item dt-collage__item--sm dt-collage__item--accent">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/wallpapers/hero-2.jpeg"
                 alt="Haunted Hero 2"
-                className="dt-hero-img"
+                className="dt-collage__img"
                 loading="eager"
               />
+              <div className="dt-collage__veil" aria-hidden="true" />
             </div>
 
           </div>
         </div>
 
-      </section>
-
-      {/* ══════════════════════════════════════════════════════════
-          SECTION 2 — MOBILE WALLPAPERS (5 phones)
-      ══════════════════════════════════════════════════════════ */}
-      <section className="dt-phones">
-        <div className="dt-section-head">
-          <span className="dt-eyebrow">Your Screen, Transformed</span>
-          <h2 className="dt-section-title">Mobile Wallpapers</h2>
-          <p className="dt-section-sub">
-            Every lock screen is a portal. Choose yours wisely.
-          </p>
-        </div>
-
-        <div className="dt-phone-row">
-
-          <div className="dt-phone-wrap dt-phone-wrap--left">
-            <div className="dt-phone">
-              <div className="dt-phone__shell">
-                <div className="dt-phone__notch">
-                  <span className="dt-phone__speaker" />
-                  <span className="dt-phone__cam" />
-                </div>
-                <div className="dt-phone__screen">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/always-watching-wallpaper.webp"
-                    alt="Always Watching"
-                    className="dt-phone__img"
-                  />
-                  <div className="dt-phone__scan" aria-hidden="true" />
-                  <div className="dt-phone__overlay" aria-hidden="true" />
-                </div>
-                <span className="dt-phone__vol-up" />
-                <span className="dt-phone__vol-dn" />
-                <span className="dt-phone__power" />
-                <span className="dt-phone__home" />
-              </div>
-              <div className="dt-phone__glare" aria-hidden="true" />
-            </div>
-            <div className="dt-phone-label">
-              <span className="dt-phone-label__name">Always Watching</span>
-              <span className="dt-phone-label__tag">iPhone · 9:16</span>
-            </div>
-          </div>
-
-          <div className="dt-phone-wrap">
-            <div className="dt-phone">
-              <div className="dt-phone__shell">
-                <div className="dt-phone__notch">
-                  <span className="dt-phone__speaker" />
-                  <span className="dt-phone__cam" />
-                </div>
-                <div className="dt-phone__screen">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/paper-cut-witch-red-backdrop-staff.jpeg"
-                    alt="Paper Cut Witch"
-                    className="dt-phone__img"
-                  />
-                  <div className="dt-phone__scan" aria-hidden="true" />
-                  <div className="dt-phone__overlay" aria-hidden="true" />
-                </div>
-                <span className="dt-phone__vol-up" />
-                <span className="dt-phone__vol-dn" />
-                <span className="dt-phone__power" />
-                <span className="dt-phone__home" />
-              </div>
-              <div className="dt-phone__glare" aria-hidden="true" />
-            </div>
-            <div className="dt-phone-label">
-              <span className="dt-phone-label__name">Paper Cut Witch</span>
-              <span className="dt-phone-label__tag">Android · 9:16</span>
-            </div>
-          </div>
-
-          <div className="dt-phone-wrap dt-phone-wrap--center">
-            <div className="dt-phone dt-phone--featured">
-              <div className="dt-phone__shell">
-                <div className="dt-phone__notch">
-                  <span className="dt-phone__speaker" />
-                  <span className="dt-phone__cam" />
-                </div>
-                <div className="dt-phone__screen">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/funny-lockscreen-wallpaper.jpeg"
-                    alt="The Lookout"
-                    className="dt-phone__img"
-                  />
-                  <div className="dt-phone__scan" aria-hidden="true" />
-                  <div className="dt-phone__overlay" aria-hidden="true" />
-                </div>
-                <span className="dt-phone__vol-up" />
-                <span className="dt-phone__vol-dn" />
-                <span className="dt-phone__power" />
-                <span className="dt-phone__home" />
-              </div>
-              <div className="dt-phone__glare" aria-hidden="true" />
-              <div className="dt-phone__featured-glow" aria-hidden="true" />
-            </div>
-            <div className="dt-phone-label dt-phone-label--featured">
-              <span className="dt-phone-label__badge">Featured</span>
-              <span className="dt-phone-label__name">The Lookout</span>
-              <span className="dt-phone-label__tag">Universal · 9:16</span>
-            </div>
-          </div>
-
-          <div className="dt-phone-wrap">
-            <div className="dt-phone">
-              <div className="dt-phone__shell">
-                <div className="dt-phone__notch">
-                  <span className="dt-phone__speaker" />
-                  <span className="dt-phone__cam" />
-                </div>
-                <div className="dt-phone__screen">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/wallpapers/hero-3.jpeg"
-                    alt="Hero 3"
-                    className="dt-phone__img"
-                  />
-                  <div className="dt-phone__scan" aria-hidden="true" />
-                  <div className="dt-phone__overlay" aria-hidden="true" />
-                </div>
-                <span className="dt-phone__vol-up" />
-                <span className="dt-phone__vol-dn" />
-                <span className="dt-phone__power" />
-                <span className="dt-phone__home" />
-              </div>
-              <div className="dt-phone__glare" aria-hidden="true" />
-            </div>
-            <div className="dt-phone-label">
-              <span className="dt-phone-label__name">Haunted Vista</span>
-              <span className="dt-phone-label__tag">iPhone · 9:16</span>
-            </div>
-          </div>
-
-          <div className="dt-phone-wrap dt-phone-wrap--right">
-            <div className="dt-phone">
-              <div className="dt-phone__shell">
-                <div className="dt-phone__notch">
-                  <span className="dt-phone__speaker" />
-                  <span className="dt-phone__cam" />
-                </div>
-                <div className="dt-phone__screen">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/skeleton-brick-wall-green.jpeg"
-                    alt="Bone Wall"
-                    className="dt-phone__img"
-                  />
-                  <div className="dt-phone__scan" aria-hidden="true" />
-                  <div className="dt-phone__overlay" aria-hidden="true" />
-                </div>
-                <span className="dt-phone__vol-up" />
-                <span className="dt-phone__vol-dn" />
-                <span className="dt-phone__power" />
-                <span className="dt-phone__home" />
-              </div>
-              <div className="dt-phone__glare" aria-hidden="true" />
-            </div>
-            <div className="dt-phone-label">
-              <span className="dt-phone-label__name">Bone Wall</span>
-              <span className="dt-phone-label__tag">Android · 9:16</span>
-            </div>
-          </div>
-
-        </div>
-
-        <div className="dt-phones__footer">
-          <Link href="/iphone" className="dt-btn dt-btn--ghost dt-btn--sm">View All Mobile →</Link>
-        </div>
       </section>
 
       <div className="hw-ad-row">
@@ -377,7 +210,7 @@ export default async function Home() {
       </div>
 
       {/* ══════════════════════════════════════════════════════════
-          SECTION 3 — DAILY PICK
+          SECTION 2 — DAILY PICK
       ══════════════════════════════════════════════════════════ */}
       {wotd && (() => {
         const devicePath = wotd.deviceType === "IPHONE" ? "iphone" : wotd.deviceType === "ANDROID" ? "android" : "pc";
@@ -394,13 +227,6 @@ export default async function Home() {
                 </p>
                 <h2 className="dt-daily__title">{wotd.title}</h2>
                 {wotd.description && <p className="dt-daily__desc">{wotd.description}</p>}
-                {wotd.tags.length > 0 && (
-                  <div className="dt-daily__tags">
-                    {wotd.tags.slice(0, 4).map(t => (
-                      <span key={t} className="dt-daily__tag">#{t}</span>
-                    ))}
-                  </div>
-                )}
                 <Link href={wotdHref} className="dt-btn dt-btn--enter dt-btn--sm">
                   <span>Download This Wallpaper →</span>
                 </Link>
@@ -422,7 +248,7 @@ export default async function Home() {
       })()}
 
       {/* ══════════════════════════════════════════════════════════
-          SECTION 4 — PC / DESKTOP
+          SECTION 3 — PC / DESKTOP
       ══════════════════════════════════════════════════════════ */}
       <section className="dt-desktop">
         <div className="dt-section-head dt-section-head--center">
@@ -467,7 +293,7 @@ export default async function Home() {
       </section>
 
       {/* ══════════════════════════════════════════════════════════
-          SECTION 5 — COLLECTIONS
+          SECTION 4 — COLLECTIONS
       ══════════════════════════════════════════════════════════ */}
       <section className="dt-obsessions">
         <div className="dt-section-head">
@@ -515,7 +341,6 @@ export default async function Home() {
                   <div className="dt-obs-card__glitch" aria-hidden="true" />
                   <div className="dt-obs-card__drip" aria-hidden="true" />
                   <div className="dt-obs-card__body">
-                    <span className="dt-obs-card__tag">{obs.tag ?? "Collection"}</span>
                     <h3 className="dt-obs-card__title">{obs.title}</h3>
                     <span className="dt-obs-card__count">{obs._count.images} wallpapers</span>
                   </div>
@@ -547,7 +372,7 @@ export default async function Home() {
       </div>
 
       {/* ══════════════════════════════════════════════════════════
-          SECTION 6 — ABOUT / STORY
+          SECTION 5 — ABOUT / STORY
       ══════════════════════════════════════════════════════════ */}
       <section className="dt-manifesto">
         <div className="dt-manifesto__gutter" aria-hidden="true">
