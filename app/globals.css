@@ -11448,3 +11448,192 @@ button:active:not(:disabled) { transform: translateY(0px) scale(0.98) !important
 [data-theme="light"] .dt-phone-card__ls-date {
   color: rgba(20,16,10,0.55) !important;
 }
+/* ═══════════════════════════════════════════════════════════════════════
+   THEME OVERRIDES FOR DT- SECTIONS (hero, desktop, daily, phones, etc.)
+   Fixes: sections not responding to dark/blood/light/ghost/ember themes
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* ── BLOOD / CRIMSON THEME ─────────────────────────────────────────── */
+[data-theme="blood"] .dt-gate,
+[data-theme="blood"] .dt-desktop,
+[data-theme="blood"] .dt-daily,
+[data-theme="blood"] .dt-phones,
+[data-theme="blood"] .dt-manifesto,
+[data-theme="blood"] .dt-obsessions {
+  background-color: #080000 !important;
+}
+[data-theme="blood"] .dt-gate {
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 100%, rgba(192,0,0,0.25) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 50% 0%, rgba(40,0,0,0.6) 0%, transparent 70%),
+    #080000 !important;
+}
+[data-theme="blood"] .dt-desktop {
+  background:
+    radial-gradient(ellipse 100% 60% at 50% 50%, rgba(30,0,0,0.7) 0%, transparent 70%),
+    #080000 !important;
+  border-top-color: #2a0808 !important;
+}
+[data-theme="blood"] .dt-daily {
+  background:
+    linear-gradient(to right, #080000 0%, rgba(50,0,0,0.4) 50%, #080000 100%),
+    #100000 !important;
+  border-color: #2a0808 !important;
+}
+[data-theme="blood"] .dt-phones {
+  background:
+    radial-gradient(ellipse 70% 50% at 50% 50%, rgba(60,0,0,0.5) 0%, transparent 70%),
+    #0a0000 !important;
+  border-color: #2a0808 !important;
+}
+[data-theme="blood"] .dt-gate__eyebrow,
+[data-theme="blood"] .dt-gate__sub,
+[data-theme="blood"] .dt-section-head .dt-eyebrow,
+[data-theme="blood"] .dt-eyebrow { color: #ff5555 !important; }
+[data-theme="blood"] .dt-gate__collection-num,
+[data-theme="blood"] .dt-section-title { color: #fff0f0 !important; }
+[data-theme="blood"] .dt-monitor__bezel { background: #100000 !important; border-color: #2a0808 !important; }
+[data-theme="blood"] .dt-coffin { border-color: rgba(192,0,0,0.3) !important; background: rgba(20,0,0,0.6) !important; }
+[data-theme="blood"] .dt-coffin__num { color: #ff5555 !important; }
+[data-theme="blood"] .dt-coffin__label { color: rgba(255,200,200,0.5) !important; }
+
+/* ── LIGHT THEME ─────────────────────────────────────────────────────── */
+[data-theme="light"] .dt-gate {
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 100%, rgba(139,0,0,0.08) 0%, transparent 60%),
+    #f5f0e8 !important;
+}
+[data-theme="light"] .dt-desktop {
+  background: #ede8de !important;
+  border-top-color: rgba(0,0,0,0.1) !important;
+}
+[data-theme="light"] .dt-daily {
+  background: linear-gradient(to right, #f0ebe0 0%, #e8e2d6 50%, #f0ebe0 100%) !important;
+  border-color: rgba(0,0,0,0.1) !important;
+}
+[data-theme="light"] .dt-phones {
+  background:
+    radial-gradient(ellipse 70% 50% at 50% 50%, rgba(139,0,0,0.05) 0%, transparent 70%),
+    #ede8de !important;
+  border-color: rgba(0,0,0,0.1) !important;
+}
+[data-theme="light"] .dt-manifesto,
+[data-theme="light"] .dt-obsessions { background: #f0ebe0 !important; }
+[data-theme="light"] .dt-gate__eyebrow,
+[data-theme="light"] .dt-eyebrow,
+[data-theme="light"] .dt-section-head .dt-eyebrow { color: #8b0000 !important; }
+[data-theme="light"] .dt-gate__collection-num,
+[data-theme="light"] .dt-section-title { color: #1a1410 !important; }
+[data-theme="light"] .dt-gate__sub { color: #4a4038 !important; }
+[data-theme="light"] .dt-gate__crack { opacity: 0.03 !important; }
+[data-theme="light"] .dt-coffin {
+  border-color: rgba(139,0,0,0.2) !important;
+  background: rgba(255,255,255,0.7) !important;
+}
+[data-theme="light"] .dt-coffin__num { color: #8b0000 !important; }
+[data-theme="light"] .dt-coffin__label { color: rgba(60,40,30,0.6) !important; }
+[data-theme="light"] .dt-monitor__bezel {
+  background: #e0dbd0 !important;
+  border-color: rgba(0,0,0,0.12) !important;
+}
+[data-theme="light"] .dt-monitor__neck,
+[data-theme="light"] .dt-monitor__foot { background: #d0cbc0 !important; }
+[data-theme="light"] .dt-btn--ghost {
+  color: #4a3828 !important;
+  border-color: rgba(74,56,40,0.4) !important;
+}
+[data-theme="light"] .dt-btn--ghost:hover { color: #1a1410 !important; border-color: #1a1410 !important; }
+[data-theme="light"] .dt-section-sub,
+[data-theme="light"] .dt-gate__collection-label { color: rgba(60,40,30,0.65) !important; }
+[data-theme="light"] .dt-daily__eyebrow,
+[data-theme="light"] .dt-daily__title { color: #1a1410 !important; }
+[data-theme="light"] .dt-daily__desc { color: #5a4838 !important; }
+[data-theme="light"] .dt-manifesto__quote,
+[data-theme="light"] .dt-manifesto__body { color: #3a2a1a !important; }
+[data-theme="light"] .dt-fog { display: none !important; }
+
+/* ── GHOST THEME ─────────────────────────────────────────────────────── */
+[data-theme="ghost"] .dt-gate {
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 100%, rgba(139,0,0,0.12) 0%, transparent 60%),
+    #1a1a1e !important;
+}
+[data-theme="ghost"] .dt-desktop {
+  background:
+    radial-gradient(ellipse 100% 60% at 50% 50%, rgba(15,0,30,0.5) 0%, transparent 70%),
+    #1a1a1e !important;
+  border-top-color: rgba(248,248,255,0.08) !important;
+}
+[data-theme="ghost"] .dt-daily {
+  background:
+    linear-gradient(to right, #1a1a1e 0%, rgba(30,30,40,0.6) 50%, #1a1a1e 100%),
+    #222228 !important;
+  border-color: rgba(248,248,255,0.08) !important;
+}
+[data-theme="ghost"] .dt-phones {
+  background:
+    radial-gradient(ellipse 70% 50% at 50% 50%, rgba(20,0,40,0.3) 0%, transparent 70%),
+    #1e1e24 !important;
+  border-color: rgba(248,248,255,0.08) !important;
+}
+[data-theme="ghost"] .dt-manifesto,
+[data-theme="ghost"] .dt-obsessions { background: #1a1a1e !important; }
+[data-theme="ghost"] .dt-gate__eyebrow,
+[data-theme="ghost"] .dt-eyebrow,
+[data-theme="ghost"] .dt-section-head .dt-eyebrow { color: #c0001a !important; }
+[data-theme="ghost"] .dt-gate__collection-num,
+[data-theme="ghost"] .dt-section-title { color: #f8f8ff !important; }
+[data-theme="ghost"] .dt-coffin {
+  border-color: rgba(248,248,255,0.1) !important;
+  background: rgba(30,30,40,0.7) !important;
+}
+[data-theme="ghost"] .dt-monitor__bezel { background: #222228 !important; border-color: rgba(248,248,255,0.08) !important; }
+
+/* ── EMBER THEME ─────────────────────────────────────────────────────── */
+[data-theme="ember"] .dt-gate {
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 100%, rgba(255,68,0,0.18) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 50% 0%, rgba(20,8,0,0.6) 0%, transparent 70%),
+    #0a0600 !important;
+}
+[data-theme="ember"] .dt-desktop {
+  background:
+    radial-gradient(ellipse 100% 60% at 50% 50%, rgba(20,8,0,0.7) 0%, transparent 70%),
+    #0a0600 !important;
+  border-top-color: rgba(255,102,0,0.2) !important;
+}
+[data-theme="ember"] .dt-daily {
+  background:
+    linear-gradient(to right, #0a0600 0%, rgba(40,20,0,0.5) 50%, #0a0600 100%),
+    #120900 !important;
+  border-color: rgba(255,102,0,0.2) !important;
+}
+[data-theme="ember"] .dt-phones {
+  background:
+    radial-gradient(ellipse 70% 50% at 50% 50%, rgba(60,20,0,0.5) 0%, transparent 70%),
+    #0e0700 !important;
+  border-color: rgba(255,102,0,0.2) !important;
+}
+[data-theme="ember"] .dt-manifesto,
+[data-theme="ember"] .dt-obsessions { background: #0a0600 !important; }
+[data-theme="ember"] .dt-gate__eyebrow,
+[data-theme="ember"] .dt-eyebrow,
+[data-theme="ember"] .dt-section-head .dt-eyebrow { color: #ff6600 !important; }
+[data-theme="ember"] .dt-gate__collection-num,
+[data-theme="ember"] .dt-section-title { color: #ffe8d0 !important; }
+[data-theme="ember"] .dt-gate__sub,
+[data-theme="ember"] .dt-section-sub { color: #c07030 !important; }
+[data-theme="ember"] .dt-coffin {
+  border-color: rgba(255,102,0,0.25) !important;
+  background: rgba(20,10,0,0.7) !important;
+}
+[data-theme="ember"] .dt-coffin__num { color: #ff8800 !important; }
+[data-theme="ember"] .dt-coffin__label { color: rgba(255,200,100,0.5) !important; }
+[data-theme="ember"] .dt-monitor__bezel { background: #120900 !important; border-color: rgba(255,102,0,0.2) !important; }
+[data-theme="ember"] .dt-btn--enter { background: linear-gradient(135deg, #cc4400, #ff6600) !important; }
+[data-theme="ember"] .dt-btn--ghost {
+  color: #c07030 !important;
+  border-color: rgba(192,112,48,0.4) !important;
+}
+[data-theme="ember"] .dt-manifesto__quote,
+[data-theme="ember"] .dt-manifesto__body { color: #d88040 !important; }

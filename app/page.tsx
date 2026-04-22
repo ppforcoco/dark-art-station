@@ -3,7 +3,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
-import { db, getWallpaperOfTheDay } from "@/lib/db";
+import { db, getWallpaperOfTheDay, getPageContent } from "@/lib/db";
 import { getPublicUrl } from "@/lib/r2";
 import AdSlot from "@/components/AdSlot";
 import RecentlyViewed from "@/components/RecentlyViewed";
@@ -11,25 +11,31 @@ import RecentlyViewed from "@/components/RecentlyViewed";
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
 const OG_IMAGE = `${SITE_URL}/og-image.jpg`;
 
-export const metadata: Metadata = {
-  title: "Haunted Wallpapers | Welcome to Haunted Town — Free Gothic & Fantasy Wallpapers",
-  description:
-    "You've arrived in Haunted Town. Free gothic, fantasy & atmospheric wallpapers — HD downloads for iPhone, Android and PC. No sign-up. No email. Just great art.",
-  metadataBase: new URL(SITE_URL),
-  openGraph: {
-    title: "Haunted Town | Haunted Wallpapers",
-    description: "Gothic fantasy wallpapers. HD. Free. Always.",
-    url: SITE_URL, siteName: "Haunted Wallpapers", type: "website",
-    images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: "Haunted Town — Haunted Wallpapers" }],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Haunted Town | Haunted Wallpapers",
-    description: "Gothic fantasy wallpapers. HD. Free.",
-    images: [OG_IMAGE],
-  },
-  alternates: { canonical: SITE_URL },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const pageContent = await getPageContent("home");
+  const desc = pageContent?.metaDesc ??
+    "You've arrived in Haunted Town. Free gothic, fantasy & atmospheric wallpapers — HD downloads for iPhone, Android and PC. No sign-up. No email. Just great art.";
+  const title = pageContent?.title ??
+    "Haunted Wallpapers | Welcome to Haunted Town — Free Gothic & Fantasy Wallpapers";
+  return {
+    title,
+    description: desc,
+    metadataBase: new URL(SITE_URL),
+    openGraph: {
+      title: "Haunted Town | Haunted Wallpapers",
+      description: desc,
+      url: SITE_URL, siteName: "Haunted Wallpapers", type: "website",
+      images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: "Haunted Town — Haunted Wallpapers" }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: "Haunted Town | Haunted Wallpapers",
+      description: desc,
+      images: [OG_IMAGE],
+    },
+    alternates: { canonical: SITE_URL },
+  };
+}
 
 export const revalidate = 60;
 
@@ -68,7 +74,7 @@ export default async function Home() {
       {/* ══════════════════════════════════════════════════════════
           SECTION 1 — HERO: SPLIT LAYOUT (text left, phones right)
       ══════════════════════════════════════════════════════════ */}
-      <section className="dt-gate dt-gate--collage" style={{ minHeight: "100vh", padding: "4rem 2rem 3rem" }}>
+      <section className="dt-gate dt-gate--collage" style={{ padding: "4rem 2rem 3rem" }}>
 
         <div className="dt-gate__crack" aria-hidden="true" />
 
@@ -163,7 +169,7 @@ export default async function Home() {
                       : "scale(0.94) translateY(6px)",
                   } as React.CSSProperties}
                 >
-                  <div className="dt-hero-phone" style={{ width: "160px", height: "320px", borderRadius: "28px" }}>
+                  <div className="dt-hero-phone" style={{ width: "190px", height: "390px", borderRadius: "32px" }}>
                     <div className="dt-hero-phone__btn dt-hero-phone__btn--power" aria-hidden="true" />
                     <div className="dt-hero-phone__btn dt-hero-phone__btn--vol1" aria-hidden="true" />
                     <div className="dt-hero-phone__btn dt-hero-phone__btn--vol2" aria-hidden="true" />
@@ -436,7 +442,7 @@ export default async function Home() {
         </div>
 
         <div className="dt-obsessions__footer">
-          <Link href="/collections" className="dt-btn dt-btn--ghost">All Districts →</Link>
+          <Link href="/obsessions" className="dt-btn dt-btn--ghost">All Obsessions →</Link>
         </div>
       </section>
 

@@ -37,7 +37,7 @@ export async function GET(req: NextRequest) {
       take: limit,
       select: {
         id: true, slug: true, title: true, r2Key: true,
-        description: true, altText: true, tags: true,
+        description: true, altText: true, metaDescription: true, tags: true,
         deviceType: true, isAdult: true, createdAt: true,
         collectionId: true, viewCount: true, sortOrder: true, highResKey: true,
         collection: { select: { title: true, slug: true } },

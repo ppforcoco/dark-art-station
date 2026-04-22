@@ -1,10 +1,8 @@
 // app/iphone/page.tsx
-import React, { Suspense } from "react";
+import React from "react";
 import type { Metadata } from "next";
 import { db, getPageContent } from "@/lib/db";
 import { getPublicUrl } from "@/lib/r2";
-import { getRankedTags } from "@/lib/tags";
-import TagCloud from "@/components/TagCloud";
 import AdSlot from "@/components/AdSlot";
 import Pagination from "@/components/Pagination";
 import Breadcrumbs from "@/components/Breadcrumbs";
@@ -55,7 +53,7 @@ export default async function IphonePage({ searchParams }: PageProps) {
     ...(tag ? { tags: { has: tag } } : {}),
   };
 
-  const [images, total, rankedTags, pageContent] = await Promise.all([
+  const [images, total, pageContent] = await Promise.all([
     db.image.findMany({
       where,
       orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
@@ -64,7 +62,6 @@ export default async function IphonePage({ searchParams }: PageProps) {
       skip,
     }),
     db.image.count({ where }),
-    getRankedTags("IPHONE").then(t => t.slice(0, 10)),
     getPageContent("iphone"),
   ]);
 
@@ -81,10 +78,7 @@ export default async function IphonePage({ searchParams }: PageProps) {
       ]} />
 
       <section className="max-w-7xl mx-auto px-6 md:px-[60px] pt-10 pb-8">
-        <span className="font-mono text-[0.6rem] tracking-[0.25em] uppercase text-[#c0001a] block mb-3">
-          Free iPhone Wallpapers
-        </span>
-        <h1 className="font-display text-3xl md:text-4xl font-bold leading-tight mb-4">
+        <h1 className="font-display text-3xl md:text-4xl font-bold leading-tight mb-6">
           {tag ? (
             <>Dark <span className="text-[#c9a84c] italic">#{tag}</span> Wallpapers for iPhone</>
           ) : pageContent?.title ? (
@@ -94,9 +88,6 @@ export default async function IphonePage({ searchParams }: PageProps) {
           )}
           {page > 1 && <span className="text-[#4a445a] text-2xl"> — Page {page}</span>}
         </h1>
-        <p className="font-body text-[1rem] text-[#8a8099] italic mb-8 max-w-xl">
-          Portrait 9:16 · HD resolution · Instant download · No account required
-        </p>
 
         {!tag && (
           <div className="device-page-intro">
@@ -122,9 +113,6 @@ export default async function IphonePage({ searchParams }: PageProps) {
           </div>
         )}
 
-        <Suspense fallback={null}>
-          <TagCloud tags={rankedTags} />
-        </Suspense>
       </section>
 
       <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_MAIN} width={728} height={90} />

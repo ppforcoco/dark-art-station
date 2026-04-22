@@ -31,7 +31,7 @@ export default function Footer(): JSX.Element {
             <li><Link href="/iphone">iPhone Wallpapers</Link></li>
             <li><Link href="/android">Android Wallpapers</Link></li>
             <li><Link href="/pc">PC &amp; Desktop</Link></li>
-            <li><Link href="/collections">All Collections</Link></li>
+            <li><Link href="/obsessions">Obsessions</Link></li>
             <li><Link href="/favorites">My Favorites ♡</Link></li>
           </ul>
         </div>
