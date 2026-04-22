@@ -87,6 +87,8 @@ export default async function IphonePage({ searchParams }: PageProps) {
         <h1 className="font-display text-3xl md:text-4xl font-bold leading-tight mb-4">
           {tag ? (
             <>Dark <span className="text-[#c9a84c] italic">#{tag}</span> Wallpapers for iPhone</>
+          ) : pageContent?.title ? (
+            <span dangerouslySetInnerHTML={{ __html: pageContent.title }} />
           ) : (
             <>Free Dark iPhone <span className="text-[#c9a84c] italic">Wallpapers</span></>
           )}
