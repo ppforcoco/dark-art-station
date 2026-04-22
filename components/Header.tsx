@@ -1,537 +1,230 @@
-// app/page.tsx — DEAD TOWN REDESIGN (AdSense-safe, split-hero edition)
-
-import type { Metadata } from "next";
+"use client";
 import Link from "next/link";
-import Image from "next/image";
-import { db, getWallpaperOfTheDay } from "@/lib/db";
-import { getPublicUrl } from "@/lib/r2";
-import AdSlot from "@/components/AdSlot";
-import RecentlyViewed from "@/components/RecentlyViewed";
+import { useState, useEffect, useCallback, useRef } from "react";
+import { useRouter } from "next/navigation";
+import { Menu, X, Search, Shuffle } from "lucide-react";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
-const OG_IMAGE = `${SITE_URL}/og-image.jpg`;
+const NAV_LINKS = [
+  { label: "iPhone",      href: "/iphone"      },
+  { label: "Android",     href: "/android"     },
+  { label: "PC",          href: "/pc"          },
+  { label: "Obsessions",  href: "/collections" },
+  { label: "Blog & Guides", href: "/blog"      },
+];
 
-export const metadata: Metadata = {
-  title: "Haunted Wallpapers | Welcome to Dead Town — Free Gothic & Fantasy Wallpapers",
-  description:
-    "You've arrived in Dead Town. Free gothic, fantasy & atmospheric wallpapers — HD downloads for iPhone, Android and PC. No sign-up. No email. Just great art.",
-  metadataBase: new URL(SITE_URL),
-  openGraph: {
-    title: "Dead Town | Haunted Wallpapers",
-    description: "Gothic fantasy wallpapers. HD. Free. Always.",
-    url: SITE_URL, siteName: "Haunted Wallpapers", type: "website",
-    images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: "Dead Town — Haunted Wallpapers" }],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Dead Town | Haunted Wallpapers",
-    description: "Gothic fantasy wallpapers. HD. Free.",
-    images: [OG_IMAGE],
-  },
-  alternates: { canonical: SITE_URL },
-};
+type Theme = "dark" | "blood" | "light" | "ghost" | "ember";
 
-export const revalidate = 60;
+export default function Header() {
+  const router = useRouter();
+  const [menuOpen,      setMenuOpen]      = useState(false);
+  const [searchOpen,    setSearchOpen]    = useState(false);
+  const [query,         setQuery]         = useState("");
+  const [theme,         setTheme]         = useState<Theme>("dark");
+  const [themeMenuOpen, setThemeMenuOpen] = useState(false);
+  const [randomSpin,    setRandomSpin]    = useState(false);
+  const [scrolled,      setScrolled]      = useState(false);
+  const overlayInputRef = useRef<HTMLInputElement>(null);
 
-export default async function Home() {
-  const wotd = await getWallpaperOfTheDay();
-  const totalImages = await db.image.count();
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 40);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
-  function fmt(n: number) {
-    if (n >= 1000) return `${Math.floor(n / 100) / 10}K+`;
-    return `${Math.floor(n / 50) * 50}+`;
-  }
+  const applyTheme = useCallback((t: Theme) => {
+    document.documentElement.setAttribute("data-theme", t);
+    try { localStorage.setItem("hw-theme", t); } catch {}
+  }, []);
 
-  const obsessions = await db.collection.findMany({
-    orderBy: [{ featured: "desc" }, { createdAt: "asc" }],
-    where: { isAdult: false },
-    take: 10,
-    select: {
-      id: true, slug: true, title: true, thumbnail: true,
-      tag: true, icon: true, bgClass: true,
-      _count: { select: { images: true } },
-    },
-  });
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("hw-theme") as Theme | null;
+      const valid: Theme[] = ["dark", "blood", "light", "ghost", "ember"];
+      if (saved && valid.includes(saved)) {
+        setTheme(saved);
+        document.documentElement.setAttribute("data-theme", saved);
+      }
+    } catch {}
+  }, []);
 
-  const r2Base = process.env.NEXT_PUBLIC_R2_PUBLIC_URL ?? "";
+  const setThemeAndClose = useCallback((t: Theme) => {
+    setTheme(t); applyTheme(t); setThemeMenuOpen(false);
+  }, [applyTheme]);
+
+  const handleRandom = useCallback(async () => {
+    setRandomSpin(true);
+    try {
+      const res = await fetch("/api/random-wallpaper");
+      if (res.ok) { const d = await res.json(); if (d?.href) { router.push(d.href); } }
+      else { const cats = ["iphone","android","pc"]; router.push(`/${cats[Math.floor(Math.random()*cats.length)]}`); }
+    } catch { const cats = ["iphone","android","pc"]; router.push(`/${cats[Math.floor(Math.random()*cats.length)]}`); }
+    setTimeout(() => setRandomSpin(false), 700);
+    setMenuOpen(false);
+  }, [router]);
+
+  const closeMenu   = useCallback(() => setMenuOpen(false), []);
+  const toggleMenu  = useCallback(() => { setMenuOpen(p => !p); setThemeMenuOpen(false); }, []);
+  const openSearch  = useCallback(() => { setSearchOpen(true); setMenuOpen(false); setTimeout(() => overlayInputRef.current?.focus(), 80); }, []);
+  const closeSearch = useCallback(() => { setSearchOpen(false); setQuery(""); }, []);
+  const handleSearch = useCallback((e: React.FormEvent) => {
+    e.preventDefault();
+    const q = query.trim();
+    if (!q) return;
+    closeSearch(); closeMenu();
+    router.push(`/search?q=${encodeURIComponent(q)}`);
+  }, [query, router, closeSearch, closeMenu]);
+
+  useEffect(() => {
+    if (menuOpen) {
+      const y = window.scrollY;
+      document.body.style.overflow = "hidden";
+      document.body.style.position = "fixed";
+      document.body.style.top = `-${y}px`;
+      document.body.style.width = "100%";
+    } else {
+      const y = document.body.style.top;
+      document.body.style.overflow = "";
+      document.body.style.position = "";
+      document.body.style.top = "";
+      document.body.style.width = "";
+      if (y) window.scrollTo(0, parseInt(y || "0", 10) * -1);
+    }
+    return () => {
+      document.body.style.overflow = "";
+      document.body.style.position = "";
+      document.body.style.top = "";
+      document.body.style.width = "";
+    };
+  }, [menuOpen]);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") { closeMenu(); closeSearch(); setThemeMenuOpen(false); }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [closeMenu, closeSearch]);
+
+  const themeIcon  = theme === "dark" ? "☽" : theme === "blood" ? "🌑" : theme === "ghost" ? "👻" : theme === "ember" ? "🔥" : "☀";
+  const themeLabel = theme === "dark" ? "Dark" : theme === "blood" ? "Crimson" : theme === "ghost" ? "Ghost" : theme === "ember" ? "Ember" : "Light";
 
   return (
     <>
-      {/* ── ATMOSPHERIC FOG OVERLAY ── */}
-      <div className="dt-fog" aria-hidden="true">
-        <div className="dt-fog__layer dt-fog__layer--1" />
-        <div className="dt-fog__layer dt-fog__layer--2" />
-        <div className="dt-fog__layer dt-fog__layer--3" />
-      </div>
+      <style>{`
+        [data-theme="blood"] {
+          --bg-primary:#080000;--bg-secondary:#100000;--void:#080000;--black:#100000;--deep:#160000;--ash:#280808;--smoke:#622020;--ghost:#aa5858;--pale:#ffd0d0;--white:#fff0f0;--crimson:#7a0000;--blood:#cc0000;--ember:#ff2200;--gold:#ff6060;--text-primary:#ffe4e4;--text-muted:#b07878;--border-dim:#340808;--nav-bg:rgba(8,0,0,0.96);
+        }
+        [data-theme="blood"] body{background-color:#080000!important}
+        [data-theme="blood"] .site-nav{border-bottom-color:rgba(192,0,0,.35)!important}
+        [data-theme="blood"] .nav-logo{color:#ff5555!important}
+        [data-theme="blood"] .logo-red{color:#ff0000!important;text-shadow:0 0 18px rgba(255,0,0,.65)!important}
+        [data-theme="blood"] .nav-links a{color:#cc7070!important}
+        [data-theme="blood"] .nav-links a:hover{color:#fff0f0!important}
+        [data-theme="blood"] .hw-hero{background:radial-gradient(ellipse at 65% 0%,#380000 0%,#080000 65%)!important}
+        [data-theme="blood"] .section-title{color:#fff0f0!important}
+        [data-theme="blood"] .wotd-title{color:#fff0f0!important}
+        [data-theme="blood"] .manifesto-quote{color:#fff0f0!important}
+        [data-theme="blood"] .site-footer{background:#100000!important;border-color:#340808!important}
+        [data-theme="blood"] .mobile-menu-panel{background:rgba(8,0,0,.98)!important}
+        [data-theme="light"] .hw-hero{background:var(--bg-primary)}
+        [data-theme="light"] .hw-hero__title-top,[data-theme="light"] .hw-hero__title-mid{color:#1a1814}
+        [data-theme="light"] .hw-hero__sub{color:#7a7468}
+        [data-theme="light"] .hw-hero__stat-num{color:#8b0000}
+        [data-theme="light"] .hw-hero__mosaic-wrap{border-left-color:rgba(192,0,26,.1)}
+        [data-theme="ghost"] .hw-hero{background:radial-gradient(ellipse at 50% 0%,rgba(200,220,255,.06) 0%,transparent 70%),#070712}
+        [data-theme="ember"] .hw-hero{background:radial-gradient(ellipse at 70% 0%,rgba(255,100,0,.1) 0%,#07040a 65%)}
+        [data-theme="ember"] .logo-red{color:#ff6600!important;text-shadow:0 0 18px rgba(255,100,0,.6)!important}
+      `}</style>
 
-      {/* ── DECORATIVE TOP BORDER ── */}
-      <div className="dt-drip-bar" aria-hidden="true">
-        {Array.from({ length: 18 }).map((_, i) => (
-          <span key={i} className="dt-drip" style={{ "--di": i } as React.CSSProperties} />
-        ))}
-      </div>
-
-      {/* ══════════════════════════════════════════════════════════
-          SECTION 1 — HERO: 2-COLUMN SPLIT
-          LEFT: title + subtitle + eyebrow
-          RIGHT: stat cards + CTAs + preview images
-      ══════════════════════════════════════════════════════════ */}
-      <section className="dt-gate dt-gate--split">
-
-        <div className="dt-gate__crack" aria-hidden="true" />
-
-        {/* ── LEFT: Title block ── */}
-        <div className="dt-gate__left">
-          <span className="dt-gate__eyebrow">You have arrived in</span>
-          <h1 className="dt-gate__title">
-            <span className="dt-gate__title-dead">DEAD</span>
-            <span className="dt-gate__title-town">TOWN</span>
-          </h1>
-          <p className="dt-gate__sub">
-            Where atmosphere hangs like fog and every image
-            is a window into something extraordinary.
-          </p>
-          <div className="dt-gate__collection-badge">
-            <span className="dt-gate__collection-num">{fmt(totalImages)}</span>
-            <span className="dt-gate__collection-label">wallpapers &amp; growing</span>
-          </div>
+      {/* ── NAV ── */}
+      <nav className={`site-nav hw2-nav-enhanced${scrolled ? " hw2-nav-enhanced--scrolled" : ""}`}>
+        {/* Blood drip */}
+        <div className="hw2-nav__drip" aria-hidden="true">
+          {Array.from({length:8}).map((_,i) => (
+            <span key={i} className="hw2-nav__drip-drop" style={{"--di":i} as React.CSSProperties}/>
+          ))}
         </div>
 
-        {/* ── RIGHT: Stats + CTAs + images ── */}
-        <div className="dt-gate__right">
+        <Link href="/" className="nav-logo" onClick={closeMenu} style={{touchAction:"manipulation"}}>
+          <span className="logo-full">HAUNTED<span className="logo-red">WALLPAPERS</span></span>
+          <span className="logo-compact">H<span className="logo-red">W</span></span>
+        </Link>
 
-          {/* Stat cards */}
-          <div className="dt-coffin-row dt-coffin-row--compact">
-            <div className="dt-coffin">
-              <span className="dt-coffin__ico">🕯️</span>
-              <span className="dt-coffin__num">{fmt(totalImages)}</span>
-              <span className="dt-coffin__label">Wallpapers</span>
-            </div>
-            <div className="dt-coffin dt-coffin--accent">
-              <span className="dt-coffin__ico">🖼️</span>
-              <span className="dt-coffin__num">4K</span>
-              <span className="dt-coffin__label">HD Quality</span>
-            </div>
-            <div className="dt-coffin">
-              <span className="dt-coffin__ico">✨</span>
-              <span className="dt-coffin__num">Free</span>
-              <span className="dt-coffin__label">Always</span>
-            </div>
-            <div className="dt-coffin dt-coffin--gold">
-              <span className="dt-coffin__ico">👁️</span>
-              <span className="dt-coffin__num">No</span>
-              <span className="dt-coffin__label">Sign-up</span>
-            </div>
+        <div className="nav-links">
+          {NAV_LINKS.map(l => (
+            <Link key={l.href} href={l.href} className="hw2-nav__link">{l.label}</Link>
+          ))}
+        </div>
+
+        <div className="nav-actions">
+          {/* Search */}
+          <button type="button" className="hw-nav-icon" onClick={openSearch} aria-label="Search">
+            <Search size={18}/>
+          </button>
+          {/* Random */}
+          <button type="button" className={`hw-nav-icon${randomSpin?" spinning":""}`} onClick={handleRandom} title="Random Wallpaper" aria-label="Random wallpaper" style={{touchAction:"manipulation"}}>
+            <Shuffle size={18}/>
+          </button>
+          {/* Theme switcher */}
+          <div className="theme-switcher" style={{position:"relative"}}>
+            <button type="button" className="theme-btn" onClick={()=>setThemeMenuOpen(p=>!p)} aria-label="Change theme" aria-expanded={themeMenuOpen}>
+              <span style={{fontSize:"1rem"}}>{themeIcon}</span>
+              <span className="theme-label">{themeLabel}</span>
+            </button>
+            {themeMenuOpen && (
+              <div className="theme-menu">
+                {([
+                  ["dark","☽","Dark"],["blood","🌑","Crimson"],
+                  ["light","☀","Light"],["ghost","👻","Ghost"],["ember","🔥","Ember"],
+                ] as [Theme,string,string][]).map(([t,icon,label]) => (
+                  <button key={t} type="button" className={`theme-option${theme===t?" theme-option--active":""}`} onClick={()=>setThemeAndClose(t)}>
+                    <span>{icon}</span><span>{label}</span>
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
+          {/* Hamburger */}
+          <button type="button" className="mobile-menu-btn" onClick={toggleMenu} aria-label={menuOpen?"Close menu":"Open menu"} aria-expanded={menuOpen} style={{touchAction:"manipulation"}}>
+            {menuOpen ? <X size={20}/> : <Menu size={20}/>}
+          </button>
+        </div>
+      </nav>
 
-          {/* CTA buttons */}
-          <div className="dt-gate__ctas">
-            <Link href="/shop" className="dt-btn dt-btn--enter">
-              <span>Enter the Town</span>
+      {/* ── SEARCH OVERLAY ── */}
+      {searchOpen && (
+        <div className="hw2-search-overlay" onClick={closeSearch}>
+          <form className="hw2-search-form" onClick={e=>e.stopPropagation()} onSubmit={handleSearch}>
+            <input ref={overlayInputRef} className="hw2-search-input" value={query} onChange={e=>setQuery(e.target.value)} placeholder="Search wallpapers…" autoComplete="off"/>
+            <button type="submit" className="hw2-search-btn">Search</button>
+            <button type="button" className="hw2-search-close" onClick={closeSearch} aria-label="Close">✕</button>
+          </form>
+        </div>
+      )}
+
+      {/* ── MOBILE MENU ── */}
+      {menuOpen && <div className="mobile-menu-backdrop" onClick={closeMenu} aria-hidden="true"/>}
+      <div className={`mobile-menu-panel${menuOpen?" mobile-menu-panel--open":""}`} aria-hidden={!menuOpen}>
+        <div className="mobile-menu-topbar"/>
+        <nav className="mobile-menu-nav">
+          {NAV_LINKS.map((l,i) => (
+            <Link key={l.href} href={l.href} className="mobile-menu-link hw2-mobile-link" style={{"--mi":i} as React.CSSProperties} onClick={closeMenu}>
+              {l.label}
             </Link>
-            <Link href="/iphone" className="dt-btn dt-btn--ghost">
-              <span>Browse Wallpapers</span>
-            </Link>
-          </div>
-
-          {/* Preview image strip — 5 phones */}
-          <div className="dt-hero-images">
-
-            <div className="dt-hero-img-wrap">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/always-watching-wallpaper.webp"
-                alt="Always Watching"
-                className="dt-hero-img"
-                loading="eager"
-              />
-              <span className="dt-hero-img__name">Always Watching</span>
-            </div>
-
-            <div className="dt-hero-img-wrap">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/funny-lockscreen-wallpaper.jpeg"
-                alt="The Lookout"
-                className="dt-hero-img dt-hero-img--featured"
-                loading="eager"
-              />
-              <span className="dt-hero-img__name">The Lookout</span>
-            </div>
-
-            <div className="dt-hero-img-wrap">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/skeleton-brick-wall-green.jpeg"
-                alt="Bone Wall"
-                className="dt-hero-img"
-                loading="eager"
-              />
-              <span className="dt-hero-img__name">Bone Wall</span>
-            </div>
-
-            <div className="dt-hero-img-wrap">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/the-watching-estate-nocturnal-hill-wallpaper.webp"
-                alt="Nocturnal Hill"
-                className="dt-hero-img"
-                loading="eager"
-              />
-              <span className="dt-hero-img__name">Nocturnal Hill</span>
-            </div>
-
-            <div className="dt-hero-img-wrap">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/paper-cut-witch-red-backdrop-staff.jpeg"
-                alt="Paper Cut Witch"
-                className="dt-hero-img"
-                loading="eager"
-              />
-              <span className="dt-hero-img__name">Paper Cut Witch</span>
-            </div>
-
-          </div>
+          ))}
+          <button className="mobile-menu-link hw2-mobile-link" style={{"--mi":NAV_LINKS.length} as React.CSSProperties} onClick={handleRandom}>
+            ⚡ Random Wallpaper
+          </button>
+        </nav>
+        <div className="mobile-theme-row">
+          {([["dark","☽","Dark"],["blood","🌑","Crimson"],["light","☀","Light"],["ghost","👻","Ghost"],["ember","🔥","Ember"]] as [Theme,string,string][]).map(([t,icon,label])=>(
+            <button key={t} type="button" className={`mobile-theme-btn${theme===t?" mobile-theme-btn--active":""}`} onClick={()=>setThemeAndClose(t)}>
+              <span>{icon}</span><span>{label}</span>
+            </button>
+          ))}
         </div>
-
-      </section>
-
-      {/* ══════════════════════════════════════════════════════════
-          SECTION 2 — MOBILE WALLPAPERS (3 phones, no download btn)
-      ══════════════════════════════════════════════════════════ */}
-      <section className="dt-phones">
-        <div className="dt-section-head">
-          <span className="dt-eyebrow">Your Screen, Transformed</span>
-          <h2 className="dt-section-title">Mobile Wallpapers</h2>
-          <p className="dt-section-sub">
-            Every lock screen is a portal. Choose yours wisely.
-          </p>
-        </div>
-
-        <div className="dt-phone-row">
-
-          <div className="dt-phone-wrap dt-phone-wrap--left">
-            <div className="dt-phone">
-              <div className="dt-phone__shell">
-                <div className="dt-phone__notch">
-                  <span className="dt-phone__speaker" />
-                  <span className="dt-phone__cam" />
-                </div>
-                <div className="dt-phone__screen">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/always-watching-wallpaper.webp"
-                    alt="Always Watching — atmospheric wallpaper"
-                    className="dt-phone__img"
-                  />
-                  <div className="dt-phone__scan" aria-hidden="true" />
-                  <div className="dt-phone__overlay" aria-hidden="true" />
-                </div>
-                <span className="dt-phone__vol-up" />
-                <span className="dt-phone__vol-dn" />
-                <span className="dt-phone__power" />
-                <span className="dt-phone__home" />
-              </div>
-              <div className="dt-phone__glare" aria-hidden="true" />
-            </div>
-            <div className="dt-phone-label">
-              <span className="dt-phone-label__name">Always Watching</span>
-              <span className="dt-phone-label__tag">iPhone · 9:16</span>
-            </div>
-          </div>
-
-          <div className="dt-phone-wrap dt-phone-wrap--center">
-            <div className="dt-phone dt-phone--featured">
-              <div className="dt-phone__shell">
-                <div className="dt-phone__notch">
-                  <span className="dt-phone__speaker" />
-                  <span className="dt-phone__cam" />
-                </div>
-                <div className="dt-phone__screen">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/funny-lockscreen-wallpaper.jpeg"
-                    alt="The Lookout — creative wallpaper"
-                    className="dt-phone__img"
-                  />
-                  <div className="dt-phone__scan" aria-hidden="true" />
-                  <div className="dt-phone__overlay" aria-hidden="true" />
-                </div>
-                <span className="dt-phone__vol-up" />
-                <span className="dt-phone__vol-dn" />
-                <span className="dt-phone__power" />
-                <span className="dt-phone__home" />
-              </div>
-              <div className="dt-phone__glare" aria-hidden="true" />
-              <div className="dt-phone__featured-glow" aria-hidden="true" />
-            </div>
-            <div className="dt-phone-label dt-phone-label--featured">
-              <span className="dt-phone-label__badge">Featured</span>
-              <span className="dt-phone-label__name">The Lookout</span>
-              <span className="dt-phone-label__tag">Universal · 9:16</span>
-            </div>
-          </div>
-
-          <div className="dt-phone-wrap dt-phone-wrap--right">
-            <div className="dt-phone">
-              <div className="dt-phone__shell">
-                <div className="dt-phone__notch">
-                  <span className="dt-phone__speaker" />
-                  <span className="dt-phone__cam" />
-                </div>
-                <div className="dt-phone__screen">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/skeleton-brick-wall-green.jpeg"
-                    alt="Bone Wall — gothic wallpaper"
-                    className="dt-phone__img"
-                  />
-                  <div className="dt-phone__scan" aria-hidden="true" />
-                  <div className="dt-phone__overlay" aria-hidden="true" />
-                </div>
-                <span className="dt-phone__vol-up" />
-                <span className="dt-phone__vol-dn" />
-                <span className="dt-phone__power" />
-                <span className="dt-phone__home" />
-              </div>
-              <div className="dt-phone__glare" aria-hidden="true" />
-            </div>
-            <div className="dt-phone-label">
-              <span className="dt-phone-label__name">Bone Wall</span>
-              <span className="dt-phone-label__tag">Android · 9:16</span>
-            </div>
-          </div>
-
-        </div>
-
-        <div className="dt-phones__footer">
-          <Link href="/iphone" className="dt-btn dt-btn--ghost dt-btn--sm">View All Mobile →</Link>
-        </div>
-      </section>
-
-      <div className="hw-ad-row">
-        <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_MAIN} width={728} height={90} />
+        <p className="mobile-menu-watermark" style={{marginTop:"20px"}}>HAUNTED<span>WALLPAPERS</span></p>
       </div>
-
-      {/* ══════════════════════════════════════════════════════════
-          SECTION 3 — DAILY PICK
-      ══════════════════════════════════════════════════════════ */}
-      {wotd && (() => {
-        const devicePath = wotd.deviceType === "IPHONE" ? "iphone" : wotd.deviceType === "ANDROID" ? "android" : "pc";
-        const wotdUrl = getPublicUrl(wotd.r2Key);
-        const wotdHref = `/${devicePath}/${wotd.slug}`;
-        const todayStr = new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" });
-        return (
-          <section className="dt-daily">
-            <div className="dt-daily__inner">
-              <div className="dt-daily__text">
-                <p className="dt-daily__eyebrow">
-                  <span className="dt-daily__dot" />
-                  Tonight&rsquo;s Pick · {todayStr}
-                </p>
-                <h2 className="dt-daily__title">{wotd.title}</h2>
-                {wotd.description && <p className="dt-daily__desc">{wotd.description}</p>}
-                {wotd.tags.length > 0 && (
-                  <div className="dt-daily__tags">
-                    {wotd.tags.slice(0, 4).map(t => (
-                      <span key={t} className="dt-daily__tag">#{t}</span>
-                    ))}
-                  </div>
-                )}
-                <Link href={wotdHref} className="dt-btn dt-btn--enter dt-btn--sm">
-                  <span>Download This Wallpaper →</span>
-                </Link>
-              </div>
-              <Link href={wotdHref} className="dt-daily__img-frame" aria-label={wotd.title}>
-                <div className="dt-daily__img-wrap">
-                  <Image src={wotdUrl} alt={wotd.title} fill priority unoptimized className="object-cover" sizes="380px" />
-                </div>
-                <div className="dt-daily__img-corners" aria-hidden="true">
-                  <span /><span /><span /><span />
-                </div>
-                {wotd.deviceType && (
-                  <span className="dt-daily__badge">{wotd.deviceType.charAt(0) + wotd.deviceType.slice(1).toLowerCase()}</span>
-                )}
-              </Link>
-            </div>
-          </section>
-        );
-      })()}
-
-      {/* ══════════════════════════════════════════════════════════
-          SECTION 4 — PC / DESKTOP
-      ══════════════════════════════════════════════════════════ */}
-      <section className="dt-desktop">
-        <div className="dt-section-head dt-section-head--center">
-          <span className="dt-eyebrow">The Town Square</span>
-          <h2 className="dt-section-title">Desktop Wallpapers</h2>
-          <p className="dt-section-sub">
-            Your workspace, transformed with stunning atmospheric art.
-          </p>
-        </div>
-
-        <div className="dt-monitor-wrap">
-          <div className="dt-monitor">
-            <div className="dt-monitor__bezel">
-              <span className="dt-monitor__cam" />
-              <div className="dt-monitor__screen">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/monster-flower-offering-pc.webp"
-                  alt="Monster Flower Offering — PC wallpaper 16:9"
-                  className="dt-monitor__img"
-                />
-                <div className="dt-monitor__scanlines" aria-hidden="true" />
-                <div className="dt-monitor__glitch" aria-hidden="true" />
-              </div>
-            </div>
-            <div className="dt-monitor__neck" />
-            <div className="dt-monitor__foot" />
-          </div>
-          <div className="dt-monitor__tag dt-monitor__tag--tl">
-            <span>16 : 9</span>
-            <span>Full HD</span>
-          </div>
-          <div className="dt-monitor__tag dt-monitor__tag--tr">
-            <span>PC</span>
-            <span>Desktop</span>
-          </div>
-        </div>
-
-        <div className="dt-desktop__cta-row">
-          <Link href="/pc" className="dt-btn dt-btn--enter">Browse PC Wallpapers →</Link>
-        </div>
-      </section>
-
-      {/* ══════════════════════════════════════════════════════════
-          SECTION 5 — COLLECTIONS
-      ══════════════════════════════════════════════════════════ */}
-      <section className="dt-obsessions">
-        <div className="dt-section-head">
-          <span className="dt-eyebrow">Districts of Dead Town</span>
-          <h2 className="dt-section-title">What Calls to You?</h2>
-        </div>
-
-        {obsessions.length > 0 ? (
-          <div className="dt-obs-grid">
-            {obsessions.map((obs, i) => {
-              const thumb = obs.thumbnail ? `${r2Base}/${obs.thumbnail}` : null;
-              return (
-                <Link
-                  key={obs.id}
-                  href={`/shop/${obs.slug}`}
-                  className="dt-obs-card"
-                  style={{ "--delay": `${i * 0.07}s` } as React.CSSProperties}
-                >
-                  <div className="dt-obs-card__bg">
-                    {thumb ? (
-                      <Image
-                        src={thumb}
-                        alt={obs.title}
-                        fill
-                        unoptimized
-                        className="object-cover"
-                        sizes="(max-width:600px) 50vw, (max-width:1024px) 33vw, 25vw"
-                      />
-                    ) : (
-                      <div className="dt-obs-card__placeholder">
-                        <span className="dt-obs-card__icon">{obs.icon ?? "🖤"}</span>
-                      </div>
-                    )}
-                    <div className="dt-obs-card__veil" />
-                  </div>
-                  <div className="dt-obs-card__glitch" aria-hidden="true" />
-                  <div className="dt-obs-card__drip" aria-hidden="true" />
-                  <div className="dt-obs-card__body">
-                    <span className="dt-obs-card__tag">{obs.tag ?? "Collection"}</span>
-                    <h3 className="dt-obs-card__title">{obs.title}</h3>
-                    <span className="dt-obs-card__count">{obs._count.images} wallpapers</span>
-                  </div>
-                  <div className="dt-obs-card__glow" aria-hidden="true" />
-                  <span className="dt-obs-card__corner dt-obs-card__corner--tl">†</span>
-                  <span className="dt-obs-card__corner dt-obs-card__corner--br">†</span>
-                </Link>
-              );
-            })}
-          </div>
-        ) : (
-          <div className="dt-coming-soon">
-            <div className="dt-coming-soon__sigil">✦ ☽ ✦</div>
-            <div className="dt-coming-soon__bar" />
-            <h2 className="dt-coming-soon__title">The Districts Are Being Built</h2>
-            <p className="dt-coming-soon__sub">
-              Upload images from the admin panel to populate these atmospheric territories.
-            </p>
-          </div>
-        )}
-
-        <div className="dt-obsessions__footer">
-          <Link href="/collections" className="dt-btn dt-btn--ghost">All Districts →</Link>
-        </div>
-      </section>
-
-      <div className="hw-ad-row">
-        <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_FOOTER} width={728} height={90} />
-      </div>
-
-      {/* ══════════════════════════════════════════════════════════
-          SECTION 6 — ABOUT / STORY
-      ══════════════════════════════════════════════════════════ */}
-      <section className="dt-manifesto">
-        <div className="dt-manifesto__gutter" aria-hidden="true">
-          <span className="dt-manifesto__rune">☩</span>
-          <span className="dt-manifesto__line" />
-          <span className="dt-manifesto__rune">☩</span>
-        </div>
-
-        <div className="dt-manifesto__content">
-          <span className="dt-eyebrow">The Dead Town Story</span>
-
-          <blockquote className="dt-manifesto__quote">
-            Some people want bright &amp; simple.<br />
-            <em className="dt-manifesto__em">You&rsquo;re not one of them.</em>
-          </blockquote>
-
-          <p className="dt-manifesto__body">
-            You arrived here because something in you gravitates toward the extraordinary —
-            the atmospheric corners, the art that lingers long after you close the tab,
-            the wallpaper that makes your friends ask: <em>where did you get that?</em>
-          </p>
-          <p className="dt-manifesto__body">
-            Dead Town is built for you. Every image is full HD. Every download is free.
-            No account. No email. No gatekeeping. Just the aesthetic you love.
-          </p>
-
-          <div className="dt-manifesto__ctas">
-            <Link href="/shop" className="dt-btn dt-btn--enter">
-              <span>Enter the Collection →</span>
-            </Link>
-            <Link href="/about" className="dt-btn dt-btn--ghost dt-btn--sm">Our Story</Link>
-          </div>
-        </div>
-      </section>
-
-      <RecentlyViewed />
-
-      {/* Bottom decorative border */}
-      <div className="dt-drip-bar dt-drip-bar--bottom" aria-hidden="true">
-        {Array.from({ length: 18 }).map((_, i) => (
-          <span key={i} className="dt-drip dt-drip--up" style={{ "--di": i } as React.CSSProperties} />
-        ))}
-      </div>
-
-      <script type="application/ld+json" dangerouslySetInnerHTML={{
-        __html: JSON.stringify({
-          "@context": "https://schema.org", "@type": "ItemList",
-          name: "Dead Town — Haunted Wallpapers Collections",
-          url: SITE_URL, numberOfItems: obsessions.length,
-          itemListElement: obsessions.map((o, i) => ({
-            "@type": "ListItem", position: i + 1,
-            url: `${SITE_URL}/shop/${o.slug}`, name: o.title,
-          })),
-        })
-      }} />
     </>
   );
 }

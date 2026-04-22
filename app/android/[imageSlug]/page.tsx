@@ -76,7 +76,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export async function generateStaticParams() {
   const images = await db.image.findMany({
-    where: { deviceType: "ANDROID" },
+    where: { collectionId: null, deviceType: "ANDROID" },
     select: { slug: true },
   });
   return images.map((img) => ({ imageSlug: img.slug }));
@@ -95,7 +95,7 @@ export default async function IphoneImagePage({ params }: PageProps) {
     },
   });
 
-  if (!image) notFound();
+  if (!image || image.deviceType !== "ANDROID") notFound();
 
   if (await shouldCountPageView()) {
     db.image.update({
@@ -111,7 +111,7 @@ export default async function IphoneImagePage({ params }: PageProps) {
 
   const [siblings, related] = await Promise.all([
     db.image.findMany({
-      where: { deviceType: "ANDROID" },
+      where: { collectionId: null, deviceType: "ANDROID" },
       orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
       select: { slug: true, title: true, r2Key: true, sortOrder: true },
     }),
@@ -154,6 +154,17 @@ export default async function IphoneImagePage({ params }: PageProps) {
 
             {/* Always rendered — real description or auto-generated fallback */}
             <p className="font-body text-[1rem] text-[#a89bc0] leading-relaxed">{displayDescription}</p>
+
+            {image.tags.length > 0 && (
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+                {image.tags.map((tag) => (
+                  <Link key={tag} href={`/android?tag=${tag}`}
+                    className="font-mono text-[0.55rem] tracking-[0.15em] uppercase border border-[#2a2535] px-3 py-1 text-[#8a8099] hover:border-[#c0001a] hover:text-[#f0ecff] transition-colors">
+                    #{tag}
+                  </Link>
+                ))}
+              </div>
+            )}
 
             <div style={{ display: "flex", flexWrap: "wrap", gap: "12px", alignItems: "center" }}>
               <span className="font-mono text-[0.6rem] tracking-[0.2em] uppercase text-[#4a445a] border border-[#2a2535] px-3 py-1">

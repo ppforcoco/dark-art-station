@@ -72,11 +72,9 @@ export default async function Home() {
       </div>
 
       {/* ══════════════════════════════════════════════════════════
-          SECTION 1 — HERO: 2-COLUMN SPLIT
-          LEFT: title + subtitle + eyebrow
-          RIGHT: stat cards + CTAs + preview images
+          SECTION 1 — HERO: 2-COLUMN SPLIT (compact)
       ══════════════════════════════════════════════════════════ */}
-      <section className="dt-gate dt-gate--split">
+      <section className="dt-gate dt-gate--split dt-gate--compact">
 
         <div className="dt-gate__crack" aria-hidden="true" />
 
@@ -95,30 +93,22 @@ export default async function Home() {
             <span className="dt-gate__collection-num">{fmt(totalImages)}</span>
             <span className="dt-gate__collection-label">wallpapers &amp; growing</span>
           </div>
-        </div>
 
-        {/* ── RIGHT: Stats + CTAs + images ── */}
-        <div className="dt-gate__right">
-
-          {/* Stat cards */}
+          {/* Stat cards — no emojis */}
           <div className="dt-coffin-row dt-coffin-row--compact">
             <div className="dt-coffin">
-              <span className="dt-coffin__ico">🕯️</span>
               <span className="dt-coffin__num">{fmt(totalImages)}</span>
               <span className="dt-coffin__label">Wallpapers</span>
             </div>
             <div className="dt-coffin dt-coffin--accent">
-              <span className="dt-coffin__ico">🖼️</span>
               <span className="dt-coffin__num">4K</span>
               <span className="dt-coffin__label">HD Quality</span>
             </div>
             <div className="dt-coffin">
-              <span className="dt-coffin__ico">✨</span>
               <span className="dt-coffin__num">Free</span>
               <span className="dt-coffin__label">Always</span>
             </div>
             <div className="dt-coffin dt-coffin--gold">
-              <span className="dt-coffin__ico">👁️</span>
               <span className="dt-coffin__num">No</span>
               <span className="dt-coffin__label">Sign-up</span>
             </div>
@@ -127,69 +117,66 @@ export default async function Home() {
           {/* CTA buttons */}
           <div className="dt-gate__ctas">
             <Link href="/shop" className="dt-btn dt-btn--enter">
-              <span>Enter Haunted Town</span>
+              <span>Browse Collection</span>
             </Link>
             <Link href="/iphone" className="dt-btn dt-btn--ghost">
-              <span>Browse Wallpapers</span>
+              <span>Mobile Wallpapers</span>
             </Link>
           </div>
+        </div>
 
-          {/* Preview image strip — 5 phones */}
+        {/* ── RIGHT: Hero image strip ── */}
+        <div className="dt-gate__right">
           <div className="dt-hero-images">
 
             <div className="dt-hero-img-wrap">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/always-watching-wallpaper.webp"
-                alt="Always Watching"
+                src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/wallpapers/hero-1.jpeg"
+                alt="Haunted Hero 1"
                 className="dt-hero-img"
                 loading="eager"
               />
-              <span className="dt-hero-img__name">Always Watching</span>
             </div>
 
             <div className="dt-hero-img-wrap">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/funny-lockscreen-wallpaper.jpeg"
-                alt="The Lookout"
+                src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/wallpapers/houston-snapback-skeleton.jpeg"
+                alt="Houston Snapback Skeleton"
                 className="dt-hero-img dt-hero-img--featured"
                 loading="eager"
               />
-              <span className="dt-hero-img__name">The Lookout</span>
             </div>
 
             <div className="dt-hero-img-wrap">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/skeleton-brick-wall-green.jpeg"
-                alt="Bone Wall"
+                src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/wallpapers/shadows-have-eyes-android.webp"
+                alt="Shadows Have Eyes"
                 className="dt-hero-img"
                 loading="eager"
               />
-              <span className="dt-hero-img__name">Bone Wall</span>
             </div>
 
             <div className="dt-hero-img-wrap">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/the-watching-estate-nocturnal-hill-wallpaper.webp"
-                alt="Nocturnal Hill"
+                src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/wallpapers/haunted-house-moon.jpeg"
+                alt="Haunted House Moon"
                 className="dt-hero-img"
                 loading="eager"
               />
-              <span className="dt-hero-img__name">Nocturnal Hill</span>
             </div>
 
             <div className="dt-hero-img-wrap">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/paper-cut-witch-red-backdrop-staff.jpeg"
-                alt="Paper Cut Witch"
+                src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/wallpapers/hero-2.jpeg"
+                alt="Haunted Hero 2"
                 className="dt-hero-img"
                 loading="eager"
               />
-              <span className="dt-hero-img__name">Paper Cut Witch</span>
             </div>
 
           </div>
@@ -198,7 +185,7 @@ export default async function Home() {
       </section>
 
       {/* ══════════════════════════════════════════════════════════
-          SECTION 2 — MOBILE WALLPAPERS (3 phones, no download btn)
+          SECTION 2 — MOBILE WALLPAPERS (5 phones)
       ══════════════════════════════════════════════════════════ */}
       <section className="dt-phones">
         <div className="dt-section-head">
@@ -222,7 +209,7 @@ export default async function Home() {
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/always-watching-wallpaper.webp"
-                    alt="Always Watching — atmospheric wallpaper"
+                    alt="Always Watching"
                     className="dt-phone__img"
                   />
                   <div className="dt-phone__scan" aria-hidden="true" />
@@ -241,6 +228,36 @@ export default async function Home() {
             </div>
           </div>
 
+          <div className="dt-phone-wrap">
+            <div className="dt-phone">
+              <div className="dt-phone__shell">
+                <div className="dt-phone__notch">
+                  <span className="dt-phone__speaker" />
+                  <span className="dt-phone__cam" />
+                </div>
+                <div className="dt-phone__screen">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/paper-cut-witch-red-backdrop-staff.jpeg"
+                    alt="Paper Cut Witch"
+                    className="dt-phone__img"
+                  />
+                  <div className="dt-phone__scan" aria-hidden="true" />
+                  <div className="dt-phone__overlay" aria-hidden="true" />
+                </div>
+                <span className="dt-phone__vol-up" />
+                <span className="dt-phone__vol-dn" />
+                <span className="dt-phone__power" />
+                <span className="dt-phone__home" />
+              </div>
+              <div className="dt-phone__glare" aria-hidden="true" />
+            </div>
+            <div className="dt-phone-label">
+              <span className="dt-phone-label__name">Paper Cut Witch</span>
+              <span className="dt-phone-label__tag">Android · 9:16</span>
+            </div>
+          </div>
+
           <div className="dt-phone-wrap dt-phone-wrap--center">
             <div className="dt-phone dt-phone--featured">
               <div className="dt-phone__shell">
@@ -252,7 +269,7 @@ export default async function Home() {
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/funny-lockscreen-wallpaper.jpeg"
-                    alt="The Lookout — creative wallpaper"
+                    alt="The Lookout"
                     className="dt-phone__img"
                   />
                   <div className="dt-phone__scan" aria-hidden="true" />
@@ -273,6 +290,36 @@ export default async function Home() {
             </div>
           </div>
 
+          <div className="dt-phone-wrap">
+            <div className="dt-phone">
+              <div className="dt-phone__shell">
+                <div className="dt-phone__notch">
+                  <span className="dt-phone__speaker" />
+                  <span className="dt-phone__cam" />
+                </div>
+                <div className="dt-phone__screen">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/wallpapers/hero-3.jpeg"
+                    alt="Hero 3"
+                    className="dt-phone__img"
+                  />
+                  <div className="dt-phone__scan" aria-hidden="true" />
+                  <div className="dt-phone__overlay" aria-hidden="true" />
+                </div>
+                <span className="dt-phone__vol-up" />
+                <span className="dt-phone__vol-dn" />
+                <span className="dt-phone__power" />
+                <span className="dt-phone__home" />
+              </div>
+              <div className="dt-phone__glare" aria-hidden="true" />
+            </div>
+            <div className="dt-phone-label">
+              <span className="dt-phone-label__name">Haunted Vista</span>
+              <span className="dt-phone-label__tag">iPhone · 9:16</span>
+            </div>
+          </div>
+
           <div className="dt-phone-wrap dt-phone-wrap--right">
             <div className="dt-phone">
               <div className="dt-phone__shell">
@@ -284,7 +331,7 @@ export default async function Home() {
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/skeleton-brick-wall-green.jpeg"
-                    alt="Bone Wall — gothic wallpaper"
+                    alt="Bone Wall"
                     className="dt-phone__img"
                   />
                   <div className="dt-phone__scan" aria-hidden="true" />
