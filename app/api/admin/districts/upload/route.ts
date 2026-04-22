@@ -8,7 +8,16 @@ import { db } from "@/lib/db";
 import { getPublicUrl } from "@/lib/r2";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import { randomUUID } from "crypto";
-import slugify from "slugify";
+
+// Inline slugify — no external dependency needed
+const slugify = (str: string): string =>
+  str
+    .toLowerCase()
+    .trim()
+    .replace(/[\s_]+/g, "-")
+    .replace(/[^a-z0-9-]/g, "")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "");
 
 const s3 = new S3Client({
   region: "auto",
@@ -55,7 +64,7 @@ export async function POST(req: NextRequest) {
     // Build R2 key
     const ext = file.name.split(".").pop()?.toLowerCase() ?? "jpg";
     const baseName = file.name.replace(/\.[^/.]+$/, "");
-    const safeName = slugify(baseName, { lower: true, strict: true });
+    const safeName = slugify(baseName);
     const uuid = randomUUID().slice(0, 8);
     const r2Key = `wallpapers/${safeName}-${uuid}.${ext}`;
 

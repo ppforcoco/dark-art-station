@@ -1,4 +1,4 @@
-// app/page.tsx — HAUNTED TOWN REDESIGN (Mobile Hero Mockup Edition)
+// app/page.tsx — HAUNTED TOWN REDESIGN (AdSense-safe, split-hero edition)
 
 import type { Metadata } from "next";
 import Link from "next/link";
@@ -167,23 +167,23 @@ export default async function Home() {
       </div>
 
       {/* ══════════════════════════════════════════════════════════
-          SECTION 1 — HERO: HORIZONTAL MOBILE MOCKUP
+          SECTION 1 — HERO: COLLAGE LAYOUT
       ══════════════════════════════════════════════════════════ */}
-      <section className="dt-gate dt-gate--mobile-hero">
+      <section className="dt-gate dt-gate--collage">
 
         <div className="dt-gate__crack" aria-hidden="true" />
 
-        {/* ── LEFT: Title block (Compact, No Big Text) ── */}
+        {/* ── LEFT: Title block ── */}
         <div className="dt-gate__left">
-          <span className="dt-gate__eyebrow">Welcome to</span>
-          <h1 className="dt-gate__title dt-gate__title--subtle">
-            <span className="dt-gate__title-town">Haunted Town</span>
+          <span className="dt-gate__eyebrow">You have arrived in</span>
+          <h1 className="dt-gate__title">
+            <span className="dt-gate__title-dead">HAUNTED</span>
+            <span className="dt-gate__title-town">WALLPAPERS</span>
           </h1>
           <p className="dt-gate__sub">
             Where atmosphere hangs like fog and every image
             is a window into something extraordinary.
           </p>
-          
           <div className="dt-gate__collection-badge">
             <span className="dt-gate__collection-num">{fmt(totalImages)}</span>
             <span className="dt-gate__collection-label">wallpapers &amp; growing</span>
@@ -210,58 +210,73 @@ export default async function Home() {
           </div>
         </div>
 
-        {/* ── RIGHT: Mobile Mockup with Horizontal Images ── */}
+        {/* ── RIGHT: Hero collage ── */}
         <div className="dt-gate__right">
-          <div className="dt-mobile-mockup">
-            
-            {/* Phone Bezel */}
-            <div className="dt-mobile-bezel">
-              {/* Notch / Camera */}
-              <div className="dt-mobile-notch" />
-              
-              {/* Screen */}
-              <div className="dt-mobile-screen">
-                {/* Horizontal Image Stack */}
-                <div className="dt-mobile-stack">
-                  <div className="dt-mobile-stack__layer dt-mobile-stack__layer--back">
-                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img 
-                      src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/wallpapers/haunted-house-moon.jpeg" 
-                      alt="Haunted House Moon Background"
-                      className="dt-mobile-stack__img"
-                    />
-                  </div>
-                  <div className="dt-mobile-stack__layer dt-mobile-stack__layer--mid">
-                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img 
-                      src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/wallpapers/houston-snapback-skeleton.jpeg" 
-                      alt="Snapback Skeleton Middle"
-                      className="dt-mobile-stack__img"
-                    />
-                  </div>
-                  <div className="dt-mobile-stack__layer dt-mobile-stack__layer--front">
-                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img 
-                      src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/wallpapers/shadows-have-eyes-android.webp" 
-                      alt="Shadows Have Eyes Foreground"
-                      className="dt-mobile-stack__img"
-                    />
-                  </div>
-                </div>
+          <div className="dt-hero-collage">
 
-                {/* UI Overlays inside phone */}
-                <div className="dt-mobile-ui">
-                  <span className="dt-mobile-time">09:41</span>
-                  <div className="dt-mobile-battery" />
-                </div>
-              </div>
-              
-              {/* Home Bar */}
-              <div className="dt-mobile-home-bar" />
+            {/* Large featured image — top left */}
+            <div className="dt-collage__item dt-collage__item--main">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/wallpapers/houston-snapback-skeleton.jpeg"
+                alt="Houston Snapback Skeleton"
+                className="dt-collage__img"
+                loading="eager"
+              />
+              <div className="dt-collage__veil" aria-hidden="true" />
+              <p className="dt-collage__caption">Houston Snapback Skeleton</p>
             </div>
 
-            {/* Reflection/Glare */}
-            <div className="dt-mobile-glare" />
+            {/* Tall image — top right */}
+            <div className="dt-collage__item dt-collage__item--tall">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/wallpapers/shadows-have-eyes-android.webp"
+                alt="Shadows Have Eyes"
+                className="dt-collage__img"
+                loading="eager"
+              />
+              <div className="dt-collage__veil" aria-hidden="true" />
+              <p className="dt-collage__caption">Shadows Have Eyes</p>
+            </div>
+
+            {/* Wide image — bottom left */}
+            <div className="dt-collage__item dt-collage__item--wide">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/wallpapers/haunted-house-moon.jpeg"
+                alt="Haunted House Moon"
+                className="dt-collage__img"
+                loading="eager"
+              />
+              <div className="dt-collage__veil" aria-hidden="true" />
+              <p className="dt-collage__caption">Haunted House Moon</p>
+            </div>
+
+            {/* Small square — bottom center */}
+            <div className="dt-collage__item dt-collage__item--sm">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/wallpapers/hero-1.jpeg"
+                alt="Haunted Hero 1"
+                className="dt-collage__img"
+                loading="eager"
+              />
+              <div className="dt-collage__veil" aria-hidden="true" />
+            </div>
+
+            {/* Small square — bottom right */}
+            <div className="dt-collage__item dt-collage__item--sm dt-collage__item--accent">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/wallpapers/hero-2.jpeg"
+                alt="Haunted Hero 2"
+                className="dt-collage__img"
+                loading="eager"
+              />
+              <div className="dt-collage__veil" aria-hidden="true" />
+            </div>
+
           </div>
         </div>
 
