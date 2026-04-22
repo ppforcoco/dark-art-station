@@ -4,7 +4,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { db, getWallpaperOfTheDay } from "@/lib/db";
-import { getRankedTags } from "@/lib/tags";
 import { getPublicUrl } from "@/lib/r2";
 import AdSlot from "@/components/AdSlot";
 import RecentlyViewed from "@/components/RecentlyViewed";
@@ -54,17 +53,6 @@ export default async function Home() {
     },
   });
 
-  // Hardcoded top tags
-  const topTags = [
-    "shadow-art",
-    "crimson-eyes",
-    "dark-aesthetic",
-    "grinning-presence",
-    "amoled-background",
-    "high-contrast",
-    "nocturnal-theme",
-    "mystery-art",
-  ];
 
   const r2Base = process.env.NEXT_PUBLIC_R2_PUBLIC_URL ?? "";
 
@@ -77,33 +65,26 @@ export default async function Home() {
         <div className="dt-fog__layer dt-fog__layer--3" />
       </div>
 
-      {/* ── DECORATIVE TOP BORDER ── */}
-      <div className="dt-drip-bar" aria-hidden="true">
-        {Array.from({ length: 18 }).map((_, i) => (
-          <span key={i} className="dt-drip" style={{ "--di": i } as React.CSSProperties} />
-        ))}
-      </div>
-
       {/* ══════════════════════════════════════════════════════════
-          SECTION 1 — HERO: COLLAGE LAYOUT
+          SECTION 1 — HERO: FULL-WIDTH STACKED LAYOUT
       ══════════════════════════════════════════════════════════ */}
-      <section className="dt-gate dt-gate--collage" style={{ minHeight: "100vh", padding: "6rem 2rem 5rem", alignItems: "center" }}>
+      <section className="dt-gate dt-gate--collage" style={{ minHeight: "100vh", padding: "5rem 2rem 4rem", flexDirection: "column", alignItems: "center", gap: "3rem" }}>
 
         <div className="dt-gate__crack" aria-hidden="true" />
 
-        {/* ── LEFT: Title block ── */}
-        <div className="dt-gate__left" style={{ flex: "0 0 420px", maxWidth: "420px" }}>
-          <span className="dt-gate__eyebrow">You have arrived in</span>
-          <p className="dt-gate__sub" style={{ fontSize: "1.25rem", marginBottom: "2rem" }}>
+        {/* ── TOP: Title block full-width centered ── */}
+        <div style={{ width: "100%", textAlign: "center" }}>
+          <span className="dt-gate__eyebrow" style={{ fontSize: "1rem", letterSpacing: "0.2em" }}>You have arrived in</span>
+          <p className="dt-gate__sub" style={{ fontSize: "1.35rem", marginBottom: "1.5rem", marginTop: "0.5rem" }}>
             Where every wallpaper has a secret.
           </p>
-          <div className="dt-gate__collection-badge">
-            <span className="dt-gate__collection-num" style={{ fontSize: "4rem" }}>{fmt(totalImages)}</span>
+          <div className="dt-gate__collection-badge" style={{ justifyContent: "center", marginBottom: "1.5rem" }}>
+            <span className="dt-gate__collection-num" style={{ fontSize: "3.5rem" }}>{fmt(totalImages)}</span>
             <span className="dt-gate__collection-label">wallpapers &amp; growing</span>
           </div>
 
           {/* Stat cards */}
-          <div className="dt-coffin-row dt-coffin-row--compact" style={{ marginTop: "2.5rem" }}>
+          <div className="dt-coffin-row dt-coffin-row--compact" style={{ justifyContent: "center" }}>
             <div className="dt-coffin">
               <span className="dt-coffin__num">{fmt(totalImages)}</span>
               <span className="dt-coffin__label">Wallpapers</span>
@@ -123,8 +104,8 @@ export default async function Home() {
           </div>
         </div>
 
-        {/* ── RIGHT: Hero phone mockups strip — BIG ── */}
-        <div className="dt-gate__right" style={{ flex: 1, display: "flex", justifyContent: "center" }}>
+        {/* ── BOTTOM: Hero phone mockups strip — BIG ── */}
+        <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
           <div className="dt-hero-phones" style={{ gap: "1.25rem", alignItems: "center" }}>
             {[
               { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/wallpapers/houston-snapback-skeleton.jpeg", alt: "Skeleton", featured: false },
@@ -176,6 +157,7 @@ export default async function Home() {
         </div>
 
       </section>
+
 
       <div className="hw-ad-row">
         <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_MAIN} width={728} height={90} />
@@ -360,68 +342,55 @@ export default async function Home() {
       ══════════════════════════════════════════════════════════ */}
       <section className="dt-obsessions">
         <div className="dt-section-head">
-          <span className="dt-eyebrow">Neighbourhoods of Haunted Town</span>
+          <span className="dt-eyebrow">Choose Your Obsession</span>
           <h2 className="dt-section-title">What Haunts You?</h2>
-          <div className="dt-top-tags">
-            {topTags.map(tag => (
-              <Link key={tag} href={`/search?tag=${encodeURIComponent(tag)}`} className="dt-top-tag">
-                #{tag}
-              </Link>
-            ))}
-          </div>
         </div>
 
-        {obsessions.length > 0 ? (
-          <div className="dt-obs-grid">
-            {obsessions.map((obs, i) => {
-              const thumb = obs.thumbnail ? `${r2Base}/${obs.thumbnail}` : null;
-              return (
-                <Link
-                  key={obs.id}
-                  href={`/shop/${obs.slug}`}
-                  className="dt-obs-card"
-                  style={{ "--delay": `${i * 0.07}s` } as React.CSSProperties}
-                >
-                  <div className="dt-obs-card__bg">
-                    {thumb ? (
-                      <Image
-                        src={thumb}
-                        alt={obs.title}
-                        fill
-                        unoptimized
-                        className="object-cover"
-                        sizes="(max-width:600px) 50vw, (max-width:1024px) 33vw, 25vw"
-                      />
-                    ) : (
-                      <div className="dt-obs-card__placeholder">
-                        <span className="dt-obs-card__icon">{obs.icon ?? "🖤"}</span>
-                      </div>
-                    )}
-                    <div className="dt-obs-card__veil" />
-                  </div>
-                  <div className="dt-obs-card__glitch" aria-hidden="true" />
-                  <div className="dt-obs-card__drip" aria-hidden="true" />
-                  <div className="dt-obs-card__body">
-                    <h3 className="dt-obs-card__title">{obs.title}</h3>
-                    <span className="dt-obs-card__count">{obs._count.images} wallpapers</span>
-                  </div>
-                  <div className="dt-obs-card__glow" aria-hidden="true" />
-                  <span className="dt-obs-card__corner dt-obs-card__corner--tl">†</span>
-                  <span className="dt-obs-card__corner dt-obs-card__corner--br">†</span>
-                </Link>
-              );
-            })}
-          </div>
-        ) : (
-          <div className="dt-coming-soon">
-            <div className="dt-coming-soon__sigil">✦ ☽ ✦</div>
-            <div className="dt-coming-soon__bar" />
-            <h2 className="dt-coming-soon__title">The Districts Are Being Built</h2>
-            <p className="dt-coming-soon__sub">
-              Upload images from the admin panel to populate these atmospheric territories.
-            </p>
-          </div>
-        )}
+        {/* Always show the grid — use placeholders for empty collections */}
+        <div className="dt-obs-grid">
+          {obsessions.map((obs, i) => {
+            const thumb = obs.thumbnail ? `${r2Base}/${obs.thumbnail}` : null;
+            const hasImages = obs._count.images > 0;
+            return (
+              <Link
+                key={obs.id}
+                href={`/search?tag=${encodeURIComponent(obs.slug)}`}
+                className="dt-obs-card"
+                style={{ "--delay": `${i * 0.07}s` } as React.CSSProperties}
+              >
+                <div className="dt-obs-card__bg">
+                  {thumb && hasImages ? (
+                    <Image
+                      src={thumb}
+                      alt={obs.title}
+                      fill
+                      unoptimized
+                      className="object-cover"
+                      sizes="(max-width:600px) 50vw, (max-width:1024px) 33vw, 25vw"
+                    />
+                  ) : (
+                    <div className="dt-obs-card__placeholder" style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", height: "100%", gap: "0.5rem" }}>
+                      <span className="dt-obs-card__icon" style={{ fontSize: "2.5rem" }}>{obs.icon ?? "🖤"}</span>
+                      <span style={{ fontSize: "0.7rem", letterSpacing: "0.15em", color: "rgba(255,255,255,0.35)", textTransform: "uppercase" }}>Coming Soon</span>
+                    </div>
+                  )}
+                  <div className="dt-obs-card__veil" />
+                </div>
+                <div className="dt-obs-card__glitch" aria-hidden="true" />
+                <div className="dt-obs-card__drip" aria-hidden="true" />
+                <div className="dt-obs-card__body">
+                  <h3 className="dt-obs-card__title">{obs.title}</h3>
+                  <span className="dt-obs-card__count">
+                    {hasImages ? `${obs._count.images} wallpapers` : "Coming soon"}
+                  </span>
+                </div>
+                <div className="dt-obs-card__glow" aria-hidden="true" />
+                <span className="dt-obs-card__corner dt-obs-card__corner--tl">†</span>
+                <span className="dt-obs-card__corner dt-obs-card__corner--br">†</span>
+              </Link>
+            );
+          })}
+        </div>
 
         <div className="dt-obsessions__footer">
           <Link href="/collections" className="dt-btn dt-btn--ghost">All Districts →</Link>
@@ -472,12 +441,7 @@ export default async function Home() {
 
       <RecentlyViewed />
 
-      {/* Bottom decorative border */}
-      <div className="dt-drip-bar dt-drip-bar--bottom" aria-hidden="true">
-        {Array.from({ length: 18 }).map((_, i) => (
-          <span key={i} className="dt-drip dt-drip--up" style={{ "--di": i } as React.CSSProperties} />
-        ))}
-      </div>
+
 
       <script type="application/ld+json" dangerouslySetInnerHTML={{
         __html: JSON.stringify({
