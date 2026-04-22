@@ -2,6 +2,9 @@ import { withSentryConfig } from "@sentry/nextjs";
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // ✅ CRITICAL: Standalone output shrinks Docker image from ~2GB → ~200MB
+  output: "standalone",
+
   // Compress responses
   compress: true,
 
@@ -14,25 +17,20 @@ const nextConfig: NextConfig = {
         pathname: "/**",
       },
     ],
-    // WebP only — AVIF encoding is CPU-intensive and stalls the image optimizer
-    // under load (24 concurrent conversions on a grid page kills response times).
-    // WebP is ~30% smaller than JPEG with near-zero encoding overhead.
     formats: ["image/webp"],
-    minimumCacheTTL: 31536000, // 1 year
+    minimumCacheTTL: 31536000,
     deviceSizes: [390, 640, 768, 1024, 1280, 1920],
     imageSizes:  [64, 128, 256, 384, 512],
   },
 
   async redirects() {
     return [
-      // www → non-www (handles both http and https)
       {
         source: "/:path*",
         has: [{ type: "host", value: "www.hauntedwallpapers.com" }],
         destination: "https://hauntedwallpapers.com/:path*",
         permanent: true,
       },
-      // Deleted pages → homepage (prevents 404s)
       {
         source: "/free",
         destination: "/",
@@ -48,7 +46,6 @@ const nextConfig: NextConfig = {
 
   async headers() {
     return [
-      // ✅ ads.txt — explicit content-type + cache so Google always finds it
       {
         source: "/ads.txt",
         headers: [
@@ -57,7 +54,6 @@ const nextConfig: NextConfig = {
         ],
       },
       {
-        // Long cache for static assets
         source: "/:path*\\.(jpg|jpeg|png|webp|avif|gif|ico|svg|woff|woff2|ttf|otf|js|css)",
         headers: [
           {
@@ -67,7 +63,6 @@ const nextConfig: NextConfig = {
         ],
       },
       {
-        // Security headers on all pages
         source: "/(.*)",
         headers: [
           { key: "X-Content-Type-Options",    value: "nosniff" },
@@ -78,7 +73,6 @@ const nextConfig: NextConfig = {
         ],
       },
       {
-        // API routes — no caching
         source: "/api/(.*)",
         headers: [
           { key: "Cache-Control", value: "no-store, max-age=0" },
@@ -89,38 +83,20 @@ const nextConfig: NextConfig = {
 };
 
 export default withSentryConfig(nextConfig, {
-  // For all available options, see:
-  // https://www.npmjs.com/package/@sentry/webpack-plugin#options
-
   org: "haunted-wallpapers",
-
   project: "javascript-nextjs",
 
-  // Only print logs for uploading source maps in CI
+  // ✅ Only upload source maps in CI — saves 2-5 min on local/Coolify builds
   silent: !process.env.CI,
+  sourcemaps: {
+    disable: !process.env.CI,
+  },
 
-  // For all available options, see:
-  // https://docs.sentry.io/platforms/javascript/guides/nextjs/manual-setup/
-
-  // Upload a larger set of source maps for prettier stack traces (increases build time)
   widenClientFileUpload: true,
 
-  // Uncomment to route browser requests to Sentry through a Next.js rewrite to circumvent ad-blockers.
-  // This can increase your server load as well as your hosting bill.
-  // Note: Check that the configured route will not match with your Next.js middleware, otherwise reporting of client-
-  // side errors will fail.
-  // tunnelRoute: "/monitoring",
-
   webpack: {
-    // Enables automatic instrumentation of Vercel Cron Monitors. (Does not yet work with App Router route handlers.)
-    // See the following for more information:
-    // https://docs.sentry.io/product/crons/
-    // https://vercel.com/docs/cron-jobs
     automaticVercelMonitors: true,
-
-    // Tree-shaking options for reducing bundle size
     treeshake: {
-      // Automatically tree-shake Sentry logger statements to reduce bundle size
       removeDebugLogging: true,
     },
   },

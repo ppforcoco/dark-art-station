@@ -7,8 +7,9 @@
   },
   "scripts": {
     "dev": "next dev",
-    "build": "prisma generate && prisma db push && next build",
-    "start": "next start",
+    "build": "prisma generate && next build",
+    "postinstall": "prisma generate",
+    "start": "node .next/standalone/server.js",
     "lint": "eslint",
     "ingest": "ts-node -O '{\"module\":\"CommonJS\"}' scripts/import-collections.ts"
   },

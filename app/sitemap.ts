@@ -1,6 +1,11 @@
 import { MetadataRoute } from "next";
 import { db } from "@/lib/db";
 
+// ✅ CRITICAL: Prevents Next.js from calling the DB at build time.
+// Without this, `next build` tries to query Postgres — if DATABASE_URL
+// isn't available in the build environment, the entire build hangs/crashes.
+export const dynamic = "force-dynamic";
+
 const CDN = process.env.NEXT_PUBLIC_R2_PUBLIC_URL ?? "https://assets.hauntedwallpapers.com";
 
 function r2Url(key: string) {
@@ -30,13 +35,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${siteUrl}/dmca`,          lastModified: new Date(), changeFrequency: "yearly"  as const, priority: 0.3  },
   ];
 
-  // ✅ Event / seasonal pages — these live at /[eventSlug] and were missing from sitemap
-  const EVENT_SLUGS = [
-    'halloween',
-    'dark-valentine',
-    'day-of-the-dead',
-    'blood-moon',
-  ];
+  const EVENT_SLUGS = ['halloween', 'dark-valentine', 'day-of-the-dead', 'blood-moon'];
   const eventRoutes: MetadataRoute.Sitemap = EVENT_SLUGS.map((slug) => ({
     url: `${siteUrl}/${slug}`,
     lastModified: new Date(),
@@ -44,75 +43,73 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.75,
   }));
 
-  // ✅ FIX: Blog posts are now included in the sitemap.
-  // Before this fix, Google could only find blog posts by clicking links.
-  // Now Google gets a direct list of every blog post URL — much faster indexing.
-  const blogPosts = await db.blogPost.findMany({
-    where: { published: true },
-    select: { slug: true, createdAt: true, updatedAt: true },
-    orderBy: { createdAt: "desc" },
-  });
+  // ✅ Wrap all DB calls in try/catch so a DB blip never breaks the sitemap response
+  try {
+    const [blogPosts, collections, collectionImages, standalones] = await Promise.all([
+      db.blogPost.findMany({
+        where: { published: true },
+        select: { slug: true, createdAt: true, updatedAt: true },
+        orderBy: { createdAt: "desc" },
+      }),
+      db.collection.findMany({
+        select: { slug: true, title: true, thumbnail: true, updatedAt: true },
+        orderBy: { updatedAt: "desc" },
+      }),
+      db.image.findMany({
+        select: {
+          slug: true, title: true, r2Key: true, updatedAt: true,
+          collection: { select: { slug: true } },
+        },
+        where: { collectionId: { not: null } },
+        orderBy: { updatedAt: "desc" },
+      }),
+      db.image.findMany({
+        select: {
+          slug: true, title: true, r2Key: true, updatedAt: true,
+          deviceType: true,
+        },
+        where: { collectionId: null, deviceType: { not: null } },
+        orderBy: { updatedAt: "desc" },
+      }),
+    ]);
 
-  const blogRoutes: MetadataRoute.Sitemap = blogPosts.map((post) => ({
-    url: `${siteUrl}/blog/${post.slug}`,
-    lastModified: post.updatedAt ?? post.createdAt,
-    changeFrequency: "monthly" as const,
-    priority: 0.7,
-  }));
+    const blogRoutes: MetadataRoute.Sitemap = blogPosts.map((post) => ({
+      url: `${siteUrl}/blog/${post.slug}`,
+      lastModified: post.updatedAt ?? post.createdAt,
+      changeFrequency: "monthly" as const,
+      priority: 0.7,
+    }));
 
-  // Collection pages
-  const collections = await db.collection.findMany({
-    select: { slug: true, title: true, thumbnail: true, updatedAt: true },
-    orderBy: { updatedAt: "desc" },
-  });
+    const collectionRoutes: MetadataRoute.Sitemap = collections.map((c) => ({
+      url: `${siteUrl}/shop/${c.slug}`,
+      lastModified: c.updatedAt,
+      changeFrequency: "monthly" as const,
+      priority: 0.8,
+      ...(c.thumbnail ? { images: [r2Url(c.thumbnail)] } : {}),
+    }));
 
-  const collectionRoutes: MetadataRoute.Sitemap = collections.map((c) => ({
-    url: `${siteUrl}/shop/${c.slug}`,
-    lastModified: c.updatedAt,
-    changeFrequency: "monthly" as const,
-    priority: 0.8,
-    ...(c.thumbnail ? {
-      images: [r2Url(c.thumbnail)],
-    } : {}),
-  }));
+    const imageRoutes: MetadataRoute.Sitemap = collectionImages
+      .filter((img) => img.collection?.slug)
+      .map((img) => ({
+        url: `${siteUrl}/shop/${img.collection?.slug}/${img.slug}`,
+        lastModified: img.updatedAt,
+        changeFrequency: "monthly" as const,
+        priority: 0.6,
+        images: [r2Url(img.r2Key)],
+      }));
 
-  // Collection image pages
-  const collectionImages = await db.image.findMany({
-    select: {
-      slug: true, title: true, r2Key: true, updatedAt: true,
-      collection: { select: { slug: true } },
-    },
-    where: { collectionId: { not: null } },
-    orderBy: { updatedAt: "desc" },
-  });
-
-  const imageRoutes: MetadataRoute.Sitemap = collectionImages
-    .filter((img) => img.collection?.slug)
-    .map((img) => ({
-      url: `${siteUrl}/shop/${img.collection?.slug}/${img.slug}`,
+    const standaloneRoutes: MetadataRoute.Sitemap = standalones.map((img) => ({
+      url: `${siteUrl}/${img.deviceType!.toLowerCase()}/${img.slug}`,
       lastModified: img.updatedAt,
       changeFrequency: "monthly" as const,
-      priority: 0.6,
+      priority: 0.65,
       images: [r2Url(img.r2Key)],
     }));
 
-  // Standalone wallpaper pages
-  const standalones = await db.image.findMany({
-    select: {
-      slug: true, title: true, r2Key: true, updatedAt: true,
-      deviceType: true,
-    },
-    where: { collectionId: null, deviceType: { not: null } },
-    orderBy: { updatedAt: "desc" },
-  });
-
-  const standaloneRoutes: MetadataRoute.Sitemap = standalones.map((img) => ({
-    url: `${siteUrl}/${img.deviceType!.toLowerCase()}/${img.slug}`,
-    lastModified: img.updatedAt,
-    changeFrequency: "monthly" as const,
-    priority: 0.65,
-    images: [r2Url(img.r2Key)],
-  }));
-
-  return [...staticRoutes, ...eventRoutes, ...blogRoutes, ...collectionRoutes, ...imageRoutes, ...standaloneRoutes];
+    return [...staticRoutes, ...eventRoutes, ...blogRoutes, ...collectionRoutes, ...imageRoutes, ...standaloneRoutes];
+  } catch (err) {
+    // If DB is unreachable, still return static routes so sitemap never 500s
+    console.error("[sitemap] DB query failed, returning static routes only:", err);
+    return [...staticRoutes, ...eventRoutes];
+  }
 }
