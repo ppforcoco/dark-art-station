@@ -66,97 +66,140 @@ export default async function Home() {
       </div>
 
       {/* ══════════════════════════════════════════════════════════
-          SECTION 1 — HERO: FULL-WIDTH STACKED LAYOUT
+          SECTION 1 — HERO: SPLIT LAYOUT (text left, phones right)
       ══════════════════════════════════════════════════════════ */}
-      <section className="dt-gate dt-gate--collage" style={{ minHeight: "100vh", padding: "5rem 2rem 4rem", flexDirection: "column", alignItems: "center", gap: "3rem" }}>
+      <section className="dt-gate dt-gate--collage" style={{ minHeight: "100vh", padding: "4rem 2rem 3rem" }}>
 
         <div className="dt-gate__crack" aria-hidden="true" />
 
-        {/* ── TOP: Title block full-width centered ── */}
-        <div style={{ width: "100%", textAlign: "center" }}>
-          <span className="dt-gate__eyebrow" style={{ fontSize: "1rem", letterSpacing: "0.2em" }}>You have arrived in</span>
-          <p className="dt-gate__sub" style={{ fontSize: "1.35rem", marginBottom: "1.5rem", marginTop: "0.5rem" }}>
-            Where every wallpaper has a secret.
-          </p>
-          <div className="dt-gate__collection-badge" style={{ justifyContent: "center", marginBottom: "1.5rem" }}>
-            <span className="dt-gate__collection-num" style={{ fontSize: "3.5rem" }}>{fmt(totalImages)}</span>
-            <span className="dt-gate__collection-label">wallpapers &amp; growing</span>
-          </div>
+        {/* ── Split grid: text left / phones right on desktop ── */}
+        <div style={{
+          display: "grid",
+          gridTemplateColumns: "1fr",
+          gap: "3rem",
+          alignItems: "center",
+          maxWidth: "1280px",
+          margin: "0 auto",
+          width: "100%",
+        }} className="hw-hero-split">
 
-          {/* Stat cards */}
-          <div className="dt-coffin-row dt-coffin-row--compact" style={{ justifyContent: "center" }}>
-            <div className="dt-coffin">
-              <span className="dt-coffin__num">{fmt(totalImages)}</span>
-              <span className="dt-coffin__label">Wallpapers</span>
-            </div>
-            <div className="dt-coffin dt-coffin--accent">
-              <span className="dt-coffin__num">4K</span>
-              <span className="dt-coffin__label">HD Quality</span>
-            </div>
-            <div className="dt-coffin">
-              <span className="dt-coffin__num">Free</span>
-              <span className="dt-coffin__label">Always</span>
-            </div>
-            <div className="dt-coffin dt-coffin--gold">
-              <span className="dt-coffin__num">No</span>
-              <span className="dt-coffin__label">Sign-up</span>
-            </div>
-          </div>
-        </div>
+          {/* LEFT — Text block */}
+          <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
+            <span className="dt-gate__eyebrow" style={{ fontSize: "0.85rem", letterSpacing: "0.25em" }}>You have arrived in</span>
 
-        {/* ── BOTTOM: Hero phone mockups strip — BIG ── */}
-        <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
-          <div className="dt-hero-phones" style={{ gap: "1.25rem", alignItems: "center" }}>
-            {[
-              { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/wallpapers/houston-snapback-skeleton.jpeg", alt: "Skeleton", featured: false },
-              { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/wallpapers/shadows-have-eyes-android.webp", alt: "Shadow Eyes", featured: false },
-              { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/wallpapers/haunted-house-moon.jpeg", alt: "Haunted Moon", featured: true },
-              { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/wallpapers/hero-1.jpeg", alt: "Hero Art", featured: false },
-              { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/wallpapers/hero-2.jpeg", alt: "Dark Art", featured: false },
-            ].map((phone, i) => (
-              <div
-                key={i}
-                className={`dt-hero-phone-wrap${phone.featured ? " dt-hero-phone-wrap--featured" : ""}`}
-                style={{
-                  "--phone-i": i,
-                  transform: phone.featured
-                    ? "scale(1.22) translateY(-18px)"
-                    : i === 1 || i === 3
-                    ? "scale(1.08) translateY(-6px)"
-                    : "scale(0.94) translateY(6px)",
-                } as React.CSSProperties}
-              >
-                {/* Phone shell */}
-                <div className="dt-hero-phone" style={{ width: "160px", height: "320px", borderRadius: "28px" }}>
-                  {/* Side buttons */}
-                  <div className="dt-hero-phone__btn dt-hero-phone__btn--power" aria-hidden="true" />
-                  <div className="dt-hero-phone__btn dt-hero-phone__btn--vol1" aria-hidden="true" />
-                  <div className="dt-hero-phone__btn dt-hero-phone__btn--vol2" aria-hidden="true" />
-                  {/* Screen */}
-                  <div className="dt-hero-phone__screen">
-                    <div className="dt-hero-phone__notch" aria-hidden="true">
-                      <span className="dt-hero-phone__notch-cam" />
-                    </div>
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={phone.src}
-                      alt={phone.alt}
-                      className="dt-hero-phone__img"
-                      loading={i < 3 ? "eager" : "lazy"}
-                    />
-                    <div className="dt-hero-phone__gloss" aria-hidden="true" />
-                    {phone.featured && <div className="dt-hero-phone__glow-ring" aria-hidden="true" />}
-                  </div>
-                  {/* Home bar */}
-                  <div className="dt-hero-phone__bar" aria-hidden="true" />
-                </div>
-                <span className="dt-hero-phone__label">{phone.alt}</span>
+            <div className="dt-gate__collection-badge" style={{ marginBottom: "0" }}>
+              <span className="dt-gate__collection-num" style={{ fontSize: "3rem" }}>{fmt(totalImages)}</span>
+              <span className="dt-gate__collection-label">wallpapers &amp; growing</span>
+            </div>
+
+            <p className="dt-gate__sub" style={{ fontSize: "1.1rem", lineHeight: "1.7", maxWidth: "520px", margin: 0 }}>
+              Where every wallpaper has a secret.
+            </p>
+
+            {/* Daily vault copy */}
+            <p style={{
+              fontSize: "0.82rem",
+              lineHeight: "1.75",
+              color: "rgba(200,180,230,0.7)",
+              maxWidth: "500px",
+              fontStyle: "italic",
+              borderLeft: "2px solid #8b0000",
+              paddingLeft: "1rem",
+              margin: 0,
+            }}>
+              Every 24 hours, a single vision is pulled from the deepest level of the vault. A unique horror wallpaper surfaced just for tonight. Download this 4K pick before the clock resets and a new nightmare takes its place.
+            </p>
+
+            {/* Browse All CTA */}
+            <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap", marginTop: "0.5rem" }}>
+              <Link href="/iphone" className="dt-btn dt-btn--enter">
+                <span>Browse All Wallpapers →</span>
+              </Link>
+              <Link href="/pc" className="dt-btn dt-btn--ghost">
+                <span>PC Wallpapers</span>
+              </Link>
+            </div>
+
+            {/* Stat cards */}
+            <div className="dt-coffin-row dt-coffin-row--compact" style={{ marginTop: "0.5rem" }}>
+              <div className="dt-coffin">
+                <span className="dt-coffin__num">{fmt(totalImages)}</span>
+                <span className="dt-coffin__label">The Archive</span>
               </div>
-            ))}
+              <div className="dt-coffin dt-coffin--accent">
+                <span className="dt-coffin__num">4K</span>
+                <span className="dt-coffin__label">Retina Optimized</span>
+              </div>
+              <div className="dt-coffin">
+                <span className="dt-coffin__num">Free</span>
+                <span className="dt-coffin__label">Always</span>
+              </div>
+              <div className="dt-coffin dt-coffin--gold">
+                <span className="dt-coffin__num">No</span>
+                <span className="dt-coffin__label">Pure Privacy</span>
+              </div>
+            </div>
           </div>
+
+          {/* RIGHT — Phone mockups */}
+          <div style={{ display: "flex", justifyContent: "center" }}>
+            <div className="dt-hero-phones" style={{ gap: "1.25rem", alignItems: "center" }}>
+              {[
+                { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/wallpapers/houston-snapback-skeleton.jpeg", alt: "Skeleton", featured: false },
+                { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/wallpapers/shadows-have-eyes-android.webp", alt: "Shadow Eyes", featured: false },
+                { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/wallpapers/haunted-house-moon.jpeg", alt: "Haunted Moon", featured: true },
+                { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/wallpapers/hero-1.jpeg", alt: "Hero Art", featured: false },
+                { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/wallpapers/hero-2.jpeg", alt: "Dark Art", featured: false },
+              ].map((phone, i) => (
+                <div
+                  key={i}
+                  className={`dt-hero-phone-wrap${phone.featured ? " dt-hero-phone-wrap--featured" : ""}`}
+                  style={{
+                    "--phone-i": i,
+                    transform: phone.featured
+                      ? "scale(1.22) translateY(-18px)"
+                      : i === 1 || i === 3
+                      ? "scale(1.08) translateY(-6px)"
+                      : "scale(0.94) translateY(6px)",
+                  } as React.CSSProperties}
+                >
+                  <div className="dt-hero-phone" style={{ width: "160px", height: "320px", borderRadius: "28px" }}>
+                    <div className="dt-hero-phone__btn dt-hero-phone__btn--power" aria-hidden="true" />
+                    <div className="dt-hero-phone__btn dt-hero-phone__btn--vol1" aria-hidden="true" />
+                    <div className="dt-hero-phone__btn dt-hero-phone__btn--vol2" aria-hidden="true" />
+                    <div className="dt-hero-phone__screen">
+                      <div className="dt-hero-phone__notch" aria-hidden="true">
+                        <span className="dt-hero-phone__notch-cam" />
+                      </div>
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={phone.src}
+                        alt={phone.alt}
+                        className="dt-hero-phone__img"
+                        loading={i < 3 ? "eager" : "lazy"}
+                      />
+                      <div className="dt-hero-phone__gloss" aria-hidden="true" />
+                      {phone.featured && <div className="dt-hero-phone__glow-ring" aria-hidden="true" />}
+                    </div>
+                    <div className="dt-hero-phone__bar" aria-hidden="true" />
+                  </div>
+                  <span className="dt-hero-phone__label">{phone.alt}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
         </div>
 
       </section>
+
+      <style>{`
+        @media (min-width: 900px) {
+          .hw-hero-split {
+            grid-template-columns: 1fr 1fr !important;
+          }
+        }
+      `}</style>
 
 
       <div className="hw-ad-row">
