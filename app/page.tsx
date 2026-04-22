@@ -87,23 +87,23 @@ export default async function Home() {
       {/* ══════════════════════════════════════════════════════════
           SECTION 1 — HERO: COLLAGE LAYOUT
       ══════════════════════════════════════════════════════════ */}
-      <section className="dt-gate dt-gate--collage">
+      <section className="dt-gate dt-gate--collage" style={{ minHeight: "100vh", padding: "6rem 2rem 5rem", alignItems: "center" }}>
 
         <div className="dt-gate__crack" aria-hidden="true" />
 
         {/* ── LEFT: Title block ── */}
-        <div className="dt-gate__left">
+        <div className="dt-gate__left" style={{ flex: "0 0 420px", maxWidth: "420px" }}>
           <span className="dt-gate__eyebrow">You have arrived in</span>
-          <p className="dt-gate__sub">
+          <p className="dt-gate__sub" style={{ fontSize: "1.25rem", marginBottom: "2rem" }}>
             Where every wallpaper has a secret.
           </p>
           <div className="dt-gate__collection-badge">
-            <span className="dt-gate__collection-num">{fmt(totalImages)}</span>
+            <span className="dt-gate__collection-num" style={{ fontSize: "4rem" }}>{fmt(totalImages)}</span>
             <span className="dt-gate__collection-label">wallpapers &amp; growing</span>
           </div>
 
           {/* Stat cards */}
-          <div className="dt-coffin-row dt-coffin-row--compact">
+          <div className="dt-coffin-row dt-coffin-row--compact" style={{ marginTop: "2.5rem" }}>
             <div className="dt-coffin">
               <span className="dt-coffin__num">{fmt(totalImages)}</span>
               <span className="dt-coffin__label">Wallpapers</span>
@@ -123,9 +123,9 @@ export default async function Home() {
           </div>
         </div>
 
-        {/* ── RIGHT: Hero phone mockups strip ── */}
-        <div className="dt-gate__right">
-          <div className="dt-hero-phones">
+        {/* ── RIGHT: Hero phone mockups strip — BIG ── */}
+        <div className="dt-gate__right" style={{ flex: 1, display: "flex", justifyContent: "center" }}>
+          <div className="dt-hero-phones" style={{ gap: "1.25rem", alignItems: "center" }}>
             {[
               { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/wallpapers/houston-snapback-skeleton.jpeg", alt: "Skeleton", featured: false },
               { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/wallpapers/shadows-have-eyes-android.webp", alt: "Shadow Eyes", featured: false },
@@ -136,10 +136,17 @@ export default async function Home() {
               <div
                 key={i}
                 className={`dt-hero-phone-wrap${phone.featured ? " dt-hero-phone-wrap--featured" : ""}`}
-                style={{ "--phone-i": i } as React.CSSProperties}
+                style={{
+                  "--phone-i": i,
+                  transform: phone.featured
+                    ? "scale(1.22) translateY(-18px)"
+                    : i === 1 || i === 3
+                    ? "scale(1.08) translateY(-6px)"
+                    : "scale(0.94) translateY(6px)",
+                } as React.CSSProperties}
               >
                 {/* Phone shell */}
-                <div className="dt-hero-phone">
+                <div className="dt-hero-phone" style={{ width: "160px", height: "320px", borderRadius: "28px" }}>
                   {/* Side buttons */}
                   <div className="dt-hero-phone__btn dt-hero-phone__btn--power" aria-hidden="true" />
                   <div className="dt-hero-phone__btn dt-hero-phone__btn--vol1" aria-hidden="true" />
