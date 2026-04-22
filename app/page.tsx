@@ -246,7 +246,8 @@ export default async function Home() {
           </p>
         </div>
 
-        <div className="dt-phone-row">
+        {/* Phone row — phones are intentionally small: max 140px wide, 280px tall */}
+        <div className="dt-phone-row" style={{ display: "flex", gap: "1rem", justifyContent: "center", flexWrap: "wrap", alignItems: "flex-end" }}>
           {[
             { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/always-watching-wallpaper.webp", alt: "Always Watching" },
             { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/funny-lockscreen-wallpaper.jpeg", alt: "Funny Lockscreen" },
@@ -257,24 +258,31 @@ export default async function Home() {
             <div
               key={i}
               className="dt-phone-mockup"
-              style={{ "--phone-delay": `${i * 0.1}s` } as React.CSSProperties}
+              style={{
+                "--phone-delay": `${i * 0.1}s`,
+                // Middle phone is slightly taller for a staggered effect
+                transform: i === 2 ? "translateY(-12px) scale(1.05)" : "none",
+                width: "clamp(100px, 13vw, 140px)",
+                flexShrink: 0,
+              } as React.CSSProperties}
             >
-              <div className="dt-phone-mockup__shell">
-                <div className="dt-phone-mockup__notch" aria-hidden="true" />
-                <div className="dt-phone-mockup__screen">
+              <div className="dt-phone-mockup__shell" style={{ width: "100%", borderRadius: "2rem", overflow: "hidden", border: "2px solid rgba(255,255,255,0.12)", background: "#0d0d0d", boxShadow: "0 20px 60px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.05)", transition: "transform 0.35s ease, box-shadow 0.35s ease" }}>
+                <div className="dt-phone-mockup__notch" aria-hidden="true" style={{ width: "40%", height: "18px", background: "#0d0d0d", borderRadius: "0 0 12px 12px", margin: "0 auto" }} />
+                <div className="dt-phone-mockup__screen" style={{ aspectRatio: "9/19.5", overflow: "hidden", position: "relative" }}>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={phone.src}
                     alt={phone.alt}
                     className="dt-phone-mockup__img"
                     loading="lazy"
+                    style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
                   />
-                  <div className="dt-phone-mockup__gloss" aria-hidden="true" />
+                  <div className="dt-phone-mockup__gloss" aria-hidden="true" style={{ position: "absolute", inset: 0, background: "linear-gradient(135deg, rgba(255,255,255,0.08) 0%, transparent 50%)", pointerEvents: "none" }} />
                 </div>
                 <div className="dt-phone-mockup__button dt-phone-mockup__button--side" aria-hidden="true" />
                 <div className="dt-phone-mockup__button dt-phone-mockup__button--vol" aria-hidden="true" />
               </div>
-              <div className="dt-phone-mockup__reflection" aria-hidden="true" />
+              <div className="dt-phone-mockup__reflection" aria-hidden="true" style={{ height: "20px", background: "linear-gradient(to bottom, rgba(255,255,255,0.04), transparent)", borderRadius: "0 0 2rem 2rem" }} />
             </div>
           ))}
         </div>

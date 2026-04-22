@@ -482,7 +482,22 @@ function CollectionsTab({password}:{password:string}){
   const[saving,setSaving]=useState(false);
   const[msg,setMsg]=useState<{type:"ok"|"err";text:string}|null>(null);
   const[search,setSearch]=useState("");
+  const[showCreate,setShowCreate]=useState(false);
+  const[createTitle,setCreateTitle]=useState("");
+  const[createSlug,setCreateSlug]=useState("");
+  const[createMsg,setCreateMsg]=useState<{type:"ok"|"err";text:string}|null>(null);
+  const[creating,setCreating]=useState(false);
   const r2Base=typeof process!=="undefined"?(process.env.NEXT_PUBLIC_R2_PUBLIC_URL??""):"";
+
+  async function handleCreate(){
+    if(!createTitle.trim()||!createSlug.trim())return;
+    setCreating(true);setCreateMsg(null);
+    try{const res=await fetch("/api/hw-admin/collections",{method:"POST",headers:{"Content-Type":"application/json","x-admin-password":password},body:JSON.stringify({title:createTitle.trim(),slug:createSlug.trim()})});
+      const j=await res.json();
+      if(res.ok){setCreateMsg({type:"ok",text:`✓ Created "${createTitle}"`});setCreateTitle("");setCreateSlug("");setShowCreate(false);load();}
+      else setCreateMsg({type:"err",text:j.error??"Create failed."});}
+    catch{setCreateMsg({type:"err",text:"Network error."});}setCreating(false);
+  }
 
   const load=useCallback(async()=>{
     setLoading(true);
@@ -511,7 +526,18 @@ function CollectionsTab({password}:{password:string}){
 
   return<div style={{display:"grid",gridTemplateColumns:"280px 1fr",gap:"24px",alignItems:"start"}}>
     <div><Card style={{padding:"0",overflow:"hidden"}}>
-      <div style={{padding:"12px 14px",borderBottom:`1px solid ${C.border}`}}>
+      <div style={{padding:"10px 14px",borderBottom:`1px solid ${C.border}`,display:"flex",alignItems:"center",justifyContent:"space-between",gap:"8px"}}>
+        <p style={{color:C.gold,fontSize:"0.72rem",fontWeight:700,margin:0}}>Collections</p>
+        <button onClick={()=>setShowCreate(v=>!v)} style={{background:showCreate?"#1a1625":C.purple,color:"#fff",border:"none",borderRadius:"5px",padding:"4px 10px",fontSize:"0.7rem",cursor:"pointer",fontWeight:600}}>{showCreate?"✕ Cancel":"＋ New"}</button>
+      </div>
+      {showCreate&&<div style={{padding:"12px 14px",borderBottom:`1px solid ${C.border}`,background:"#0d0a1a"}}>
+        <p style={{color:C.purple,fontSize:"0.65rem",fontWeight:700,margin:"0 0 8px",letterSpacing:"0.1em",textTransform:"uppercase"}}>Create Collection</p>
+        <input value={createTitle} onChange={e=>{setCreateTitle(e.target.value);setCreateSlug(e.target.value.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,""));}} placeholder="Title" style={{...inp,fontSize:"0.78rem",marginBottom:"6px"}}/>
+        <input value={createSlug} onChange={e=>setCreateSlug(e.target.value)} placeholder="slug (auto-filled)" style={{...inp,fontSize:"0.78rem",fontFamily:"monospace",marginBottom:"8px"}}/>
+        {createMsg&&<p style={{fontSize:"0.72rem",color:createMsg.type==="ok"?C.green:C.red,margin:"0 0 6px"}}>{createMsg.text}</p>}
+        <Btn onClick={handleCreate} disabled={creating||!createTitle.trim()||!createSlug.trim()}>{creating?"Creating…":"Create Collection"}</Btn>
+      </div>}
+      <div style={{padding:"10px 14px",borderBottom:`1px solid ${C.border}`}}>
         <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search collections…" style={{...inp,fontSize:"0.78rem"}}/>
       </div>
       {loading?<p style={{color:C.textSec,padding:"16px",fontSize:"0.8rem"}}>Loading…</p>:
@@ -576,6 +602,117 @@ function CollectionsTab({password}:{password:string}){
           <p style={{color:C.textSec,fontSize:"0.72rem",lineHeight:1.7}}>Saved description renders at <code style={{color:C.gold}}>/shop/{selected.slug}</code> as the editorial intro — visible to Google and visitors. The meta description goes in &lt;head&gt; for search results only.</p>
         </Card>
       </div>}
+  </div>;
+}
+
+
+// ── Districts Tab ─────────────────────────────────────────────────────────────
+const DISTRICTS_LIST=[{id:"classic",tag:"classic-district",label:"The Classic District",emoji:"🏚️",desc:"Old houses, vintage portraits, Victorian furniture.",accent:"#8B6914"},{id:"city",tag:"city-center",label:"The City Center",emoji:"🌆",desc:"Rainy streets, dark skyscrapers, neon signs.",accent:"#1a6ecf"},{id:"bone",tag:"bone-street",label:"Bone Street",emoji:"💀",desc:"Skulls, skeletons & anatomical art.",accent:"#c0c0c0"},{id:"nature",tag:"nature-trail",label:"The Nature Trail",emoji:"🌲",desc:"Dark forests, fog, dead trees.",accent:"#2d6a4f"},{id:"minimal",tag:"minimalist-row",label:"Minimalist Row",emoji:"◼",desc:"AMOLED blacks & thin lines.",accent:"#555555"},{id:"character",tag:"character-ward",label:"The Character Ward",emoji:"🎭",desc:"Hooded figures, masks, shadow people.",accent:"#7b2d8b"}] as const;
+type DistrictId=typeof DISTRICTS_LIST[number]["id"];
+interface DistrictImg{id:string;title:string|null;slug:string;r2Key:string;tags:string[];}
+function DistrictsTab({password}:{password:string}){
+  const[activeId,setActiveId]=useState<DistrictId>("classic");
+  const[counts,setCounts]=useState<Record<string,number>>({});
+  const[images,setImages]=useState<DistrictImg[]>([]);
+  const[loading,setLoading]=useState(false);
+  const[selected,setSelected]=useState<Set<string>>(new Set());
+  const[uploadMsg,setUploadMsg]=useState<{type:"ok"|"err";text:string}|null>(null);
+  const[removing,setRemoving]=useState(false);
+  const fileRef=useRef<HTMLInputElement>(null);
+  const r2Base=process.env.NEXT_PUBLIC_R2_PUBLIC_URL??"";
+  const active=DISTRICTS_LIST.find(d=>d.id===activeId)!;
+
+  const load=useCallback(async(d:typeof DISTRICTS_LIST[number])=>{
+    setLoading(true);setImages([]);
+    try{const res=await fetch(`/api/admin/districts?tag=${encodeURIComponent(d.tag)}&limit=50`,{headers:{"x-admin-password":password}});
+      if(res.ok){const j=await res.json();setImages(j.images??[]);setCounts((prev:Record<string,number>)=>({...prev,[d.id]:j.total??0}));}}
+    catch{}setLoading(false);
+  },[password]);
+
+  useEffect(()=>{load(active);setSelected(new Set());},[active,load]);
+
+  async function handleUpload(e:React.ChangeEvent<HTMLInputElement>){
+    const files=e.target.files;if(!files||files.length===0)return;
+    setUploadMsg({type:"ok",text:"Uploading..."});
+    const form=new FormData();
+    Array.from(files).forEach(f=>form.append("files",f));
+    form.append("tags",active.tag);form.append("districtId",active.id);
+    try{const res=await fetch("/api/admin/districts/upload",{method:"POST",headers:{"x-admin-password":password},body:form});
+      if(!res.ok)throw new Error((await res.json()).message??"Upload failed");
+      const j=await res.json();setUploadMsg({type:"ok",text:`Uploaded ${j.count} image(s)`});await load(active);}
+    catch(err:unknown){setUploadMsg({type:"err",text:err instanceof Error?err.message:"Upload failed"});}
+    if(fileRef.current)fileRef.current.value="";
+    setTimeout(()=>setUploadMsg(null),4000);
+  }
+
+  async function handleRemove(){
+    if(selected.size===0||!confirm(`Remove ${selected.size} image(s) from ${active.label}?`))return;
+    setRemoving(true);
+    try{await fetch("/api/admin/districts/untag",{method:"POST",headers:{"Content-Type":"application/json","x-admin-password":password},body:JSON.stringify({imageIds:Array.from(selected),tag:active.tag})});
+      setSelected(new Set());await load(active);}
+    catch{}setRemoving(false);
+  }
+
+  const toggle=(id:string)=>setSelected(prev=>{const n=new Set(prev);n.has(id)?n.delete(id):n.add(id);return n;});
+
+  return <div style={{display:"grid",gridTemplateColumns:"220px 1fr",gap:"20px",alignItems:"start"}}>
+    <div style={{background:"#0d0d12",border:`1px solid ${C.border}`,borderRadius:"10px",overflow:"hidden",position:"sticky",top:"1rem"}}>
+      <p style={{color:C.textMut,fontSize:"0.65rem",fontWeight:700,textTransform:"uppercase",letterSpacing:"0.1em",padding:"10px 14px 6px",margin:0}}>The 6 Districts</p>
+      {DISTRICTS_LIST.map(d=>{
+        const isActive=d.id===activeId;
+        return <button key={d.id} onClick={()=>setActiveId(d.id)} style={{width:"100%",display:"flex",alignItems:"center",gap:"8px",padding:"9px 14px",background:isActive?"rgba(123,45,139,0.15)":"transparent",border:"none",borderLeft:`3px solid ${isActive?d.accent:"transparent"}`,cursor:"pointer",textAlign:"left",transition:"all 0.15s"}}>
+          <span style={{fontSize:"1.1rem",flexShrink:0}}>{d.emoji}</span>
+          <div style={{flex:1,minWidth:0}}>
+            <p style={{color:isActive?C.textPri:C.textSec,fontSize:"0.76rem",fontWeight:isActive?600:400,margin:0,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{d.label}</p>
+            <p style={{color:C.textMut,fontSize:"0.62rem",fontFamily:"monospace",margin:0}}>#{d.tag}</p>
+          </div>
+          <span style={{fontSize:"0.7rem",fontWeight:700,color:d.accent,background:`${d.accent}22`,padding:"1px 6px",borderRadius:"9px",flexShrink:0}}>{counts[d.id]??"–"}</span>
+        </button>;
+      })}
+    </div>
+    <div style={{display:"flex",flexDirection:"column",gap:"16px"}}>
+      <Card style={{padding:"16px 20px",borderTop:`3px solid ${active.accent}`}}>
+        <div style={{display:"flex",alignItems:"center",gap:"12px",marginBottom:"8px"}}>
+          <span style={{fontSize:"2rem"}}>{active.emoji}</span>
+          <div><p style={{color:C.textPri,fontWeight:700,fontSize:"1.1rem",margin:0}}>{active.label}</p><p style={{color:C.textSec,fontSize:"0.8rem",margin:0}}>{active.desc}</p></div>
+        </div>
+        <code style={{color:active.accent,fontSize:"0.72rem",background:"#0d0d12",padding:"2px 8px",borderRadius:"4px",border:`1px solid ${C.border}`}}>tag: {active.tag}</code>
+        <span style={{color:C.textMut,fontSize:"0.72rem",marginLeft:"12px"}}>{counts[active.id]??0} images</span>
+      </Card>
+      <Card style={{padding:"16px",border:`2px dashed ${C.border}`}}>
+        <div style={{display:"flex",alignItems:"center",gap:"12px",flexWrap:"wrap"}}>
+          <span style={{fontSize:"1.6rem"}}>📁</span>
+          <div style={{flex:1,color:C.textSec,fontSize:"0.82rem",lineHeight:1.6}}><strong style={{color:C.textPri}}>Drop images here</strong> or click Choose Files<br/><small>PNG · JPEG · WEBP · Max 20MB · Auto-tagged as <code style={{color:C.purple}}>{active.tag}</code></small></div>
+          <label style={{background:C.purple,color:"#fff",padding:"8px 16px",borderRadius:"6px",cursor:"pointer",fontSize:"0.78rem",fontWeight:600,display:"inline-block"}} htmlFor="district-upload-inline">Choose Files</label>
+          <input id="district-upload-inline" type="file" accept="image/*" multiple ref={fileRef} onChange={handleUpload} style={{display:"none"}}/>
+        </div>
+        {uploadMsg&&<p style={{marginTop:"10px",padding:"6px 12px",borderRadius:"6px",fontSize:"0.8rem",background:uploadMsg.type==="ok"?"#0f2a1a":"#2a0f0f",color:uploadMsg.type==="ok"?"#4ade80":"#f87171",border:`1px solid ${uploadMsg.type==="ok"?"#166534":"#991b1b"}`}}>{uploadMsg.text}</p>}
+      </Card>
+      {selected.size>0&&<div style={{display:"flex",alignItems:"center",gap:"10px",background:"#1a1205",border:`1px solid #4a3200`,borderRadius:"8px",padding:"8px 14px",fontSize:"0.8rem",color:"#c0a000",flexWrap:"wrap"}}>
+        <span>{selected.size} selected</span>
+        <Btn onClick={handleRemove} disabled={removing}>{removing?"Removing...":"Remove from district"}</Btn>
+        <Btn onClick={()=>setSelected(new Set())}>Deselect all</Btn>
+      </div>}
+      {loading
+        ?<p style={{color:C.textSec,padding:"2rem",textAlign:"center",fontSize:"0.85rem"}}>Loading district images…</p>
+        :images.length>0
+          ?<div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(160px,1fr))",gap:"12px"}}>
+            {images.map(img=>{
+              const isSel=selected.has(img.id);
+              return <div key={img.id} onClick={()=>toggle(img.id)} style={{background:"#111",border:`2px solid ${isSel?"#7b2d8b":"#1e1e1e"}`,borderRadius:"8px",overflow:"hidden",cursor:"pointer",position:"relative",boxShadow:isSel?"0 0 0 2px #7b2d8b55":"none",transition:"border-color 0.15s"}}>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={`${r2Base}/${img.r2Key}`} alt={img.title??img.slug} loading="lazy" style={{width:"100%",aspectRatio:"3/4",objectFit:"cover",display:"block"}}/>
+                <div style={{position:"absolute",top:"6px",right:"6px",width:"22px",height:"22px",borderRadius:"50%",border:"2px solid #fff",background:isSel?"#7b2d8b":"rgba(0,0,0,0.6)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:"0.7rem",color:"#fff",fontWeight:700}}>{isSel?"✓":""}</div>
+                <div style={{padding:"6px 8px"}}><p style={{color:C.textSec,fontSize:"0.7rem",margin:0,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{img.title??img.slug}</p></div>
+              </div>;
+            })}
+          </div>
+          :<div style={{textAlign:"center",padding:"3rem",background:"#0d0d12",border:`1px dashed ${C.border}`,borderRadius:"10px"}}>
+            <div style={{fontSize:"2.5rem",marginBottom:"12px"}}>{active.emoji}</div>
+            <p style={{color:C.textSec,fontSize:"0.9rem",fontWeight:600,margin:"0 0 6px"}}>This district is empty</p>
+            <p style={{color:C.textMut,fontSize:"0.8rem",margin:0}}>Upload images above — they will be auto-tagged <code style={{color:C.purple}}>{active.tag}</code></p>
+          </div>}
+    </div>
   </div>;
 }
 
@@ -835,8 +972,8 @@ function NukeTab({password}:{password:string}){
   </div>;
 }
 
-type Tab="analytics"|"pages"|"collections"|"upload"|"published"|"bulkai"|"highres"|"blog"|"manage18"|"backdate"|"preview"|"feedback"|"nuke";
-const NAV_ITEMS:[Tab,string,string][]=[["analytics","📊","Analytics"],["pages","📝","Page Content"],["collections","🗂","Collections"],["upload","📤","Upload Image"],["published","📸","Published"],["bulkai","🤖","Bulk AI Update"],["highres","⬆️","Upload 4K"],["blog","✍️","Blog Posts"],["manage18","⚠","16+ Manage"],["backdate","📅","Backdate"],["preview","🌐","Live Preview"],["feedback","⚑","Reports"],["nuke","💣","Nuke Everything"]];
+type Tab="analytics"|"pages"|"collections"|"districts"|"upload"|"published"|"bulkai"|"highres"|"blog"|"manage18"|"backdate"|"preview"|"feedback"|"nuke";
+const NAV_ITEMS:[Tab,string,string][]=[["analytics","📊","Analytics"],["pages","📝","Page Content"],["collections","🗂","Collections"],["districts","🏚️","Districts"],["upload","📤","Upload Image"],["published","📸","Published"],["bulkai","🤖","Bulk AI Update"],["highres","⬆️","Upload 4K"],["blog","✍️","Blog Posts"],["manage18","⚠","16+ Manage"],["backdate","📅","Backdate"],["preview","🌐","Live Preview"],["feedback","⚑","Reports"],["nuke","💣","Nuke Everything"]];
 
 export default function AdminClient(){
   const[authed,setAuthed]=useState(false);const[password,setPw]=useState("");const[tab,setTab]=useState<Tab>("analytics");const[sidebarOpen,setSidebarOpen]=useState(true);const[prefillTitle,setPrefillTitle]=useState("");const[prefillLabel,setPrefillLabel]=useState("");
@@ -872,6 +1009,7 @@ export default function AdminClient(){
         {tab==="analytics"&&<AnalyticsTab password={password}/>}
         {tab==="pages"&&<PageContentTab password={password}/>}
         {tab==="collections"&&<CollectionsTab password={password}/>}
+        {tab==="districts"&&<DistrictsTab password={password}/>}
         {tab==="upload"&&<ImageUploaderTab password={password}/>}
         {tab==="published"&&<PublishedImagesTab password={password}/>}
         {tab==="bulkai"&&<BulkAiTab password={password}/>}
