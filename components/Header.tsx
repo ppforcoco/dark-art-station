@@ -2,22 +2,28 @@
 import Link from "next/link";
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
+import { Menu, X, Search, Shuffle } from "lucide-react";
 
 const NAV_LINKS = [
   { label: "iPhone",      href: "/iphone"      },
   { label: "Android",     href: "/android"     },
   { label: "PC",          href: "/pc"          },
   { label: "Obsessions",  href: "/collections" },
-  { label: "Blog",        href: "/blog"        },
+  { label: "Blog & Guides", href: "/blog"      },
 ];
+
+type Theme = "dark" | "blood" | "light" | "ghost" | "ember";
 
 export default function Header() {
   const router = useRouter();
-  const [menuOpen,   setMenuOpen]   = useState(false);
-  const [searchOpen, setSearchOpen] = useState(false);
-  const [scrolled,   setScrolled]   = useState(false);
-  const [query,      setQuery]      = useState("");
-  const searchRef = useRef<HTMLInputElement>(null);
+  const [menuOpen,      setMenuOpen]      = useState(false);
+  const [searchOpen,    setSearchOpen]    = useState(false);
+  const [query,         setQuery]         = useState("");
+  const [theme,         setTheme]         = useState<Theme>("dark");
+  const [themeMenuOpen, setThemeMenuOpen] = useState(false);
+  const [randomSpin,    setRandomSpin]    = useState(false);
+  const [scrolled,      setScrolled]      = useState(false);
+  const overlayInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -25,7 +31,49 @@ export default function Header() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Lock body scroll when menu open
+  const applyTheme = useCallback((t: Theme) => {
+    document.documentElement.setAttribute("data-theme", t);
+    try { localStorage.setItem("hw-theme", t); } catch {}
+  }, []);
+
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("hw-theme") as Theme | null;
+      const valid: Theme[] = ["dark", "blood", "light", "ghost", "ember"];
+      if (saved && valid.includes(saved)) {
+        setTheme(saved);
+        document.documentElement.setAttribute("data-theme", saved);
+      }
+    } catch {}
+  }, []);
+
+  const setThemeAndClose = useCallback((t: Theme) => {
+    setTheme(t); applyTheme(t); setThemeMenuOpen(false);
+  }, [applyTheme]);
+
+  const handleRandom = useCallback(async () => {
+    setRandomSpin(true);
+    try {
+      const res = await fetch("/api/random-wallpaper");
+      if (res.ok) { const d = await res.json(); if (d?.href) { router.push(d.href); } }
+      else { const cats = ["iphone","android","pc"]; router.push(`/${cats[Math.floor(Math.random()*cats.length)]}`); }
+    } catch { const cats = ["iphone","android","pc"]; router.push(`/${cats[Math.floor(Math.random()*cats.length)]}`); }
+    setTimeout(() => setRandomSpin(false), 700);
+    setMenuOpen(false);
+  }, [router]);
+
+  const closeMenu   = useCallback(() => setMenuOpen(false), []);
+  const toggleMenu  = useCallback(() => { setMenuOpen(p => !p); setThemeMenuOpen(false); }, []);
+  const openSearch  = useCallback(() => { setSearchOpen(true); setMenuOpen(false); setTimeout(() => overlayInputRef.current?.focus(), 80); }, []);
+  const closeSearch = useCallback(() => { setSearchOpen(false); setQuery(""); }, []);
+  const handleSearch = useCallback((e: React.FormEvent) => {
+    e.preventDefault();
+    const q = query.trim();
+    if (!q) return;
+    closeSearch(); closeMenu();
+    router.push(`/search?q=${encodeURIComponent(q)}`);
+  }, [query, router, closeSearch, closeMenu]);
+
   useEffect(() => {
     if (menuOpen) {
       const y = window.scrollY;
@@ -51,126 +99,132 @@ export default function Header() {
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") { setMenuOpen(false); setSearchOpen(false); }
+      if (e.key === "Escape") { closeMenu(); closeSearch(); setThemeMenuOpen(false); }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, []);
+  }, [closeMenu, closeSearch]);
 
-  const openSearch = useCallback(() => {
-    setSearchOpen(true);
-    setMenuOpen(false);
-    setTimeout(() => searchRef.current?.focus(), 60);
-  }, []);
-
-  const handleSearch = useCallback((e: React.FormEvent) => {
-    e.preventDefault();
-    const q = query.trim();
-    if (!q) return;
-    setSearchOpen(false);
-    setQuery("");
-    router.push(`/search?q=${encodeURIComponent(q)}`);
-  }, [query, router]);
-
-  const handleRandom = useCallback(async () => {
-    try {
-      const res = await fetch("/api/random-wallpaper");
-      if (res.ok) { const d = await res.json(); if (d?.href) { router.push(d.href); return; } }
-    } catch {}
-    const cats = ["iphone", "android", "pc"];
-    router.push(`/${cats[Math.floor(Math.random() * cats.length)]}`);
-    setMenuOpen(false);
-  }, [router]);
+  const themeIcon  = theme === "dark" ? "☽" : theme === "blood" ? "🌑" : theme === "ghost" ? "👻" : theme === "ember" ? "🔥" : "☀";
+  const themeLabel = theme === "dark" ? "Dark" : theme === "blood" ? "Crimson" : theme === "ghost" ? "Ghost" : theme === "ember" ? "Ember" : "Light";
 
   return (
     <>
+      <style>{`
+        [data-theme="blood"] {
+          --bg-primary:#080000;--bg-secondary:#100000;--void:#080000;--black:#100000;--deep:#160000;--ash:#280808;--smoke:#622020;--ghost:#aa5858;--pale:#ffd0d0;--white:#fff0f0;--crimson:#7a0000;--blood:#cc0000;--ember:#ff2200;--gold:#ff6060;--text-primary:#ffe4e4;--text-muted:#b07878;--border-dim:#340808;--nav-bg:rgba(8,0,0,0.96);
+        }
+        [data-theme="blood"] body{background-color:#080000!important}
+        [data-theme="blood"] .site-nav{border-bottom-color:rgba(192,0,0,.35)!important}
+        [data-theme="blood"] .nav-logo{color:#ff5555!important}
+        [data-theme="blood"] .logo-red{color:#ff0000!important;text-shadow:0 0 18px rgba(255,0,0,.65)!important}
+        [data-theme="blood"] .nav-links a{color:#cc7070!important}
+        [data-theme="blood"] .nav-links a:hover{color:#fff0f0!important}
+        [data-theme="blood"] .hw-hero{background:radial-gradient(ellipse at 65% 0%,#380000 0%,#080000 65%)!important}
+        [data-theme="blood"] .section-title{color:#fff0f0!important}
+        [data-theme="blood"] .wotd-title{color:#fff0f0!important}
+        [data-theme="blood"] .manifesto-quote{color:#fff0f0!important}
+        [data-theme="blood"] .site-footer{background:#100000!important;border-color:#340808!important}
+        [data-theme="blood"] .mobile-menu-panel{background:rgba(8,0,0,.98)!important}
+        [data-theme="light"] .hw-hero{background:var(--bg-primary)}
+        [data-theme="light"] .hw-hero__title-top,[data-theme="light"] .hw-hero__title-mid{color:#1a1814}
+        [data-theme="light"] .hw-hero__sub{color:#7a7468}
+        [data-theme="light"] .hw-hero__stat-num{color:#8b0000}
+        [data-theme="light"] .hw-hero__mosaic-wrap{border-left-color:rgba(192,0,26,.1)}
+        [data-theme="ghost"] .hw-hero{background:radial-gradient(ellipse at 50% 0%,rgba(200,220,255,.06) 0%,transparent 70%),#070712}
+        [data-theme="ember"] .hw-hero{background:radial-gradient(ellipse at 70% 0%,rgba(255,100,0,.1) 0%,#07040a 65%)}
+        [data-theme="ember"] .logo-red{color:#ff6600!important;text-shadow:0 0 18px rgba(255,100,0,.6)!important}
+      `}</style>
+
       {/* ── NAV ── */}
-      <header className={`hw2-nav${scrolled ? " hw2-nav--scrolled" : ""}`}>
-        {/* Blood drip decoration */}
+      <nav className={`site-nav hw2-nav-enhanced${scrolled ? " hw2-nav-enhanced--scrolled" : ""}`}>
+        {/* Blood drip */}
         <div className="hw2-nav__drip" aria-hidden="true">
-          {Array.from({ length: 8 }).map((_, i) => (
-            <span key={i} className="hw2-nav__drip-drop" style={{ "--di": i } as React.CSSProperties} />
+          {Array.from({length:8}).map((_,i) => (
+            <span key={i} className="hw2-nav__drip-drop" style={{"--di":i} as React.CSSProperties}/>
           ))}
         </div>
 
-        <Link href="/" className="hw2-nav__logo" onClick={() => setMenuOpen(false)}>
-          <span className="hw2-nav__logo-haunted">HAUNTED</span>
-          <span className="hw2-nav__logo-wall">WALL</span><span className="hw2-nav__logo-papers">PAPERS</span>
+        <Link href="/" className="nav-logo" onClick={closeMenu} style={{touchAction:"manipulation"}}>
+          <span className="logo-full">HAUNTED<span className="logo-red">WALLPAPERS</span></span>
+          <span className="logo-compact">H<span className="logo-red">W</span></span>
         </Link>
 
-        {/* Desktop links */}
-        <nav className="hw2-nav__links" aria-label="Main navigation">
+        <div className="nav-links">
           {NAV_LINKS.map(l => (
-            <Link key={l.href} href={l.href} className="hw2-nav__link">
-              {l.label}
-            </Link>
+            <Link key={l.href} href={l.href} className="hw2-nav__link">{l.label}</Link>
           ))}
-        </nav>
+        </div>
 
-        {/* Actions */}
-        <div className="hw2-nav__actions">
-          <button className="hw2-nav__icon-btn" onClick={openSearch} aria-label="Search">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-            </svg>
+        <div className="nav-actions">
+          {/* Search */}
+          <button type="button" className="hw-nav-icon" onClick={openSearch} aria-label="Search">
+            <Search size={18}/>
           </button>
-          <button className="hw2-nav__icon-btn" onClick={handleRandom} aria-label="Random wallpaper" title="Random wallpaper">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/>
-              <polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/>
-            </svg>
+          {/* Random */}
+          <button type="button" className={`hw-nav-icon${randomSpin?" spinning":""}`} onClick={handleRandom} title="Random Wallpaper" aria-label="Random wallpaper" style={{touchAction:"manipulation"}}>
+            <Shuffle size={18}/>
           </button>
+          {/* Theme switcher */}
+          <div className="theme-switcher" style={{position:"relative"}}>
+            <button type="button" className="theme-btn" onClick={()=>setThemeMenuOpen(p=>!p)} aria-label="Change theme" aria-expanded={themeMenuOpen}>
+              <span style={{fontSize:"1rem"}}>{themeIcon}</span>
+              <span className="theme-label">{themeLabel}</span>
+            </button>
+            {themeMenuOpen && (
+              <div className="theme-menu">
+                {([
+                  ["dark","☽","Dark"],["blood","🌑","Crimson"],
+                  ["light","☀","Light"],["ghost","👻","Ghost"],["ember","🔥","Ember"],
+                ] as [Theme,string,string][]).map(([t,icon,label]) => (
+                  <button key={t} type="button" className={`theme-option${theme===t?" theme-option--active":""}`} onClick={()=>setThemeAndClose(t)}>
+                    <span>{icon}</span><span>{label}</span>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
           {/* Hamburger */}
-          <button
-            className={`hw2-nav__burger${menuOpen ? " hw2-nav__burger--open" : ""}`}
-            onClick={() => setMenuOpen(p => !p)}
-            aria-label="Menu"
-            aria-expanded={menuOpen}
-          >
-            <span /><span /><span />
+          <button type="button" className="mobile-menu-btn" onClick={toggleMenu} aria-label={menuOpen?"Close menu":"Open menu"} aria-expanded={menuOpen} style={{touchAction:"manipulation"}}>
+            {menuOpen ? <X size={20}/> : <Menu size={20}/>}
           </button>
         </div>
-      </header>
+      </nav>
 
       {/* ── SEARCH OVERLAY ── */}
       {searchOpen && (
-        <div className="hw2-search-overlay" onClick={() => setSearchOpen(false)}>
-          <form className="hw2-search-form" onClick={e => e.stopPropagation()} onSubmit={handleSearch}>
-            <input
-              ref={searchRef}
-              className="hw2-search-input"
-              value={query}
-              onChange={e => setQuery(e.target.value)}
-              placeholder="Search wallpapers…"
-              autoComplete="off"
-            />
+        <div className="hw2-search-overlay" onClick={closeSearch}>
+          <form className="hw2-search-form" onClick={e=>e.stopPropagation()} onSubmit={handleSearch}>
+            <input ref={overlayInputRef} className="hw2-search-input" value={query} onChange={e=>setQuery(e.target.value)} placeholder="Search wallpapers…" autoComplete="off"/>
             <button type="submit" className="hw2-search-btn">Search</button>
-            <button type="button" className="hw2-search-close" onClick={() => setSearchOpen(false)} aria-label="Close">✕</button>
+            <button type="button" className="hw2-search-close" onClick={closeSearch} aria-label="Close">✕</button>
           </form>
         </div>
       )}
 
       {/* ── MOBILE MENU ── */}
-      <div className={`hw2-mobile-menu${menuOpen ? " hw2-mobile-menu--open" : ""}`} aria-hidden={!menuOpen}>
-        <nav className="hw2-mobile-menu__nav">
-          {NAV_LINKS.map((l, i) => (
-            <Link
-              key={l.href}
-              href={l.href}
-              className="hw2-mobile-menu__link"
-              style={{ "--mi": i } as React.CSSProperties}
-              onClick={() => setMenuOpen(false)}
-            >
+      {menuOpen && <div className="mobile-menu-backdrop" onClick={closeMenu} aria-hidden="true"/>}
+      <div className={`mobile-menu-panel${menuOpen?" mobile-menu-panel--open":""}`} aria-hidden={!menuOpen}>
+        <div className="mobile-menu-topbar"/>
+        <nav className="mobile-menu-nav">
+          {NAV_LINKS.map((l,i) => (
+            <Link key={l.href} href={l.href} className="mobile-menu-link hw2-mobile-link" style={{"--mi":i} as React.CSSProperties} onClick={closeMenu}>
               {l.label}
             </Link>
           ))}
-          <button className="hw2-mobile-menu__link hw2-mobile-menu__link--shuffle" onClick={handleRandom}>
+          <button className="mobile-menu-link hw2-mobile-link" style={{"--mi":NAV_LINKS.length} as React.CSSProperties} onClick={handleRandom}>
             ⚡ Random Wallpaper
           </button>
         </nav>
-        <div className="hw2-mobile-menu__watermark" aria-hidden="true">HAUNTED</div>
+        <div className="mobile-theme-row">
+          {([["dark","☽","Dark"],["blood","🌑","Crimson"],["light","☀","Light"],["ghost","👻","Ghost"],["ember","🔥","Ember"]] as [Theme,string,string][]).map(([t,icon,label])=>(
+            <button key={t} type="button" className={`mobile-theme-btn${theme===t?" mobile-theme-btn--active":""}`} onClick={()=>setThemeAndClose(t)}>
+              <span>{icon}</span><span>{label}</span>
+            </button>
+          ))}
+        </div>
+        <p className="mobile-menu-watermark" style={{marginTop:"20px"}}>HAUNTED<span>WALLPAPERS</span></p>
       </div>
-      {menuOpen && <div className="hw2-mobile-menu__backdrop" onClick={() => setMenuOpen(false)} aria-hidden="true" />}
     </>
   );
 }
