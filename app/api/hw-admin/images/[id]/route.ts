@@ -56,7 +56,7 @@ export async function PATCH(
   const { id } = await params;
   try {
     const body = await req.json();
-    const { title, description, altText, tags, isAdult, deviceType, sortOrder, highResKey } = body;
+    const { title, description, metaDescription, altText, tags, isAdult, deviceType, sortOrder, highResKey } = body;
 
     const updated = await db.image.update({
       where: { id },
@@ -64,6 +64,7 @@ export async function PATCH(
         ...(title !== undefined && { title }),
         ...(description !== undefined && { description }),
         ...(altText !== undefined && { altText }),
+        ...(metaDescription !== undefined && { metaDescription }),
         ...(tags !== undefined && { tags }),
         ...(isAdult !== undefined && { isAdult }),
         ...(deviceType !== undefined && { deviceType }),

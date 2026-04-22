@@ -14,17 +14,16 @@ import RecentlyViewed from "@/components/RecentlyViewed";
 import SocialShare from "@/components/SocialShare";
 import PageTracker from "@/components/PageTracker";
 import FavoriteButton from "@/components/FavoriteButton";
+import { shouldCountPageView } from "@/lib/analytics-filter";
 
 export const dynamicParams = true;
-export const revalidate = 3600; // cache for 1 hour instead of never
+export const revalidate = 3600;
 
 interface PageProps {
   params: Promise<{ imageSlug: string }>;
 }
 
 // ── Fallback description generator ──────────────────────────────────────────
-// Called when image.description is null. Builds ~150 words of real content
-// from the title and tags so Google never sees a near-empty page.
 function buildFallbackDescription(title: string, tags: string[]): string {
   const tagList = tags.length > 0
     ? tags.slice(0, 5).join(", ")
@@ -49,18 +48,24 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
   const image = await db.image.findUnique({
     where: { slug: imageSlug },
-    select: { title: true, description: true, r2Key: true, tags: true, deviceType: true },
+    select: { title: true, description: true, metaDescription: true, r2Key: true, tags: true, deviceType: true },
   });
   if (!image || image.deviceType !== "PC") return { title: "Not Found | HAUNTED WALLPAPERS" };
   const ogImage = getPublicUrl(image.r2Key);
   const tagLine = image.tags.slice(0, 3).map((t) => `#${t}`).join(" ");
+
+  // Use dedicated metaDescription if set, otherwise fall back to description snippet
+  const metaDesc = image.metaDescription
+    ?? image.description
+    ?? `${image.title} — free dark fantasy PC wallpaper. ${tagLine}. Download instantly, no account required.`;
+
   return {
     title: `${image.title} — Free PC Wallpaper | HAUNTED WALLPAPERS`,
-    description: image.description ?? `${image.title} — free dark fantasy PC wallpaper. ${tagLine}. Download instantly, no account required.`,
+    description: metaDesc,
     keywords: ["pc wallpaper", "dark wallpaper pc", "hd pc wallpaper", image.title, ...image.tags],
     openGraph: {
       title: `${image.title} | HAUNTED WALLPAPERS`,
-      description: image.description ?? `Free HD PC wallpaper: ${image.title}`,
+      description: image.metaDescription ?? image.description ?? `Free HD PC wallpaper: ${image.title}`,
       url: `${siteUrl}/pc/${imageSlug}`,
       siteName: "HAUNTED WALLPAPERS",
       images: [{ url: ogImage, width: 1920, height: 1080, alt: image.title }],
@@ -69,7 +74,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     twitter: {
       card: "summary_large_image",
       title: `${image.title} | HAUNTED WALLPAPERS`,
-      description: image.description ?? `Free HD PC wallpaper: ${image.title}`,
+      description: image.metaDescription ?? image.description ?? `Free HD PC wallpaper: ${image.title}`,
       images: [ogImage],
     },
     alternates: { canonical: `${siteUrl}/pc/${imageSlug}` },
@@ -99,10 +104,12 @@ export default async function PcImagePage({ params }: PageProps) {
 
   if (!image || image.deviceType !== "PC") notFound();
 
-  db.image.update({
-    where: { id: image.id },
-    data: { viewCount: { increment: 1 } },
-  }).catch(() => {});
+  if (await shouldCountPageView()) {
+    db.image.update({
+      where: { id: image.id },
+      data: { viewCount: { increment: 1 } },
+    }).catch(() => {});
+  }
 
   const thumbUrl = getPublicUrl(image.r2Key);
 
@@ -126,22 +133,25 @@ export default async function PcImagePage({ params }: PageProps) {
     <main className="min-h-screen" style={{ backgroundColor: "var(--bg-primary)", color: "var(--text-primary)" }}>
 
       <Breadcrumbs items={[
-        { label: "Home",   href: "/"    },
-        { label: "PC",     href: "/pc"  },
+        { label: "Home", href: "/"   },
+        { label: "PC",   href: "/pc" },
         { label: image.title },
       ]} />
 
       <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_MAIN} width={728} height={90} />
 
-      {/* ── Main layout: stacks on mobile, side-by-side on md+ ── */}
-      <section style={{ maxWidth: "1280px", margin: "0 auto", padding: "16px 24px 40px" }}>
-        <div style={{ display: "flex", flexDirection: "column", gap: "32px" }}>
+      {/* ── Main layout: image centered on mobile, side-by-side on md+ ── */}
+      <section style={{ maxWidth: "1280px", margin: "0 auto", padding: "24px 24px 40px" }}>
+        <div className="pc-detail-grid" style={{ display: "flex", flexDirection: "column", gap: "40px" }}>
 
-          <DeviceMockup deviceType="PC">
-            <div className="relative w-full h-full">
-              <Image src={thumbUrl} alt={image.title} fill className="object-cover" priority quality={90} unoptimized sizes="(max-width: 768px) 100vw, 65vw" />
-            </div>
-          </DeviceMockup>
+          {/* Image — hero size */}
+          <div className="pc-detail-image-wrap">
+            <DeviceMockup deviceType="PC">
+              <div className="relative w-full h-full">
+                <Image src={thumbUrl} alt={image.title} fill className="object-cover" priority quality={90} unoptimized sizes="(max-width: 768px) 100vw, 65vw" />
+              </div>
+            </DeviceMockup>
+          </div>
 
           <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
             <div>
@@ -173,7 +183,7 @@ export default async function PcImagePage({ params }: PageProps) {
               </span>
             </div>
 
-            {/* Download button — primary CTA */}
+            {/* Download button — primary CTA, highest on the panel */}
             <DownloadButton
               href={`/api/download/image/${image.id}`}
               viewCount={image.viewCount}
@@ -195,7 +205,7 @@ export default async function PcImagePage({ params }: PageProps) {
               <span className="detail-fav-label">Save to Favorites</span>
             </div>
 
-            {/* Ad unit — below download button for higher viewability */}
+            {/* Ad unit — below download button for higher viewability score */}
             <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_SIDEBAR} width={300} height={250} className="mt-2" />
           </div>
         </div>
@@ -203,10 +213,17 @@ export default async function PcImagePage({ params }: PageProps) {
 
       {/* Desktop two-column layout via CSS */}
       <style>{`
+        .pc-detail-image-wrap {
+          display: flex;
+          justify-content: center;
+        }
         @media (min-width: 768px) {
-          .pc-detail-grid { flex-direction: row !important; align-items: flex-start; }
-          .pc-detail-grid > *:first-child { flex: 1; }
-          .pc-detail-grid > *:last-child { width: 360px; flex-shrink: 0; position: sticky; top: 100px; }
+          .pc-detail-grid { flex-direction: row !important; align-items: flex-start; gap: 56px !important; }
+          .pc-detail-image-wrap { flex: 0 0 560px; justify-content: flex-start; }
+          .pc-detail-grid > div:last-child { flex: 1; position: sticky; top: 100px; }
+        }
+        @media (min-width: 1024px) {
+          .pc-detail-image-wrap { flex: 0 0 640px; }
         }
       `}</style>
 
@@ -214,10 +231,11 @@ export default async function PcImagePage({ params }: PageProps) {
       {(prevImage || nextImage) && (
         <nav style={{
           maxWidth: "1280px", margin: "0 auto",
-          padding: "0 24px 40px",
+          padding: "48px 24px 40px",
           display: "grid",
           gridTemplateColumns: "1fr 1fr",
           gap: "12px",
+          borderTop: "1px solid #1e1b2e",
         }}>
           {prevImage ? (
             <Link href={`/pc/${prevImage.slug}`}

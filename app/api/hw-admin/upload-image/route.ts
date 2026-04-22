@@ -26,7 +26,8 @@ export async function POST(req: NextRequest) {
     const tags         = formData.get("tags")        as string;
     const collectionId = formData.get("collectionId") as string | null;
     const altText      = formData.get("altText")     as string | null;
-    const description  = formData.get("description") as string | null;
+    const description     = formData.get("description") as string | null;
+    const metaDescription = formData.get("metaDescription") as string | null;
     const isAdult      = formData.get("isAdult") === "true";
 
     if (!file || !slug || !title) {
@@ -102,7 +103,8 @@ export async function POST(req: NextRequest) {
       data: {
         slug,
         title,
-        description:  description || altText || null,
+        description:       description || altText || null,
+        metaDescription:   metaDescription || null,
         altText:      altText || null,
         r2Key,
         highResKey,

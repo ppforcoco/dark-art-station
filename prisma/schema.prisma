@@ -48,6 +48,7 @@ model Image {
   title         String
   description   String?
   altText       String?
+  metaDescription String?
   r2Key         String
   highResKey    String
   viewCount     Int        @default(0)

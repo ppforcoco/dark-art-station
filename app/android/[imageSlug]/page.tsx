@@ -47,27 +47,33 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
   const image = await db.image.findUnique({
     where: { slug: imageSlug },
-    select: { title: true, description: true, r2Key: true, tags: true, deviceType: true },
+    select: { title: true, description: true, metaDescription: true, r2Key: true, tags: true, deviceType: true },
   });
   if (!image || image.deviceType !== "ANDROID") return { title: "Not Found | HAUNTED WALLPAPERS" };
   const ogImage = getPublicUrl(image.r2Key);
   const tagLine = image.tags.slice(0, 3).map((t) => `#${t}`).join(" ");
+
+  // Use dedicated metaDescription if set, otherwise fall back to description snippet
+  const metaDesc = image.metaDescription
+    ?? image.description
+    ?? `${image.title} — free high-res dark fantasy Android wallpaper. ${tagLine}. Download instantly, no account required.`;
+
   return {
     title: `${image.title} — Free Android Wallpaper | HAUNTED WALLPAPERS`,
-    description: image.description ?? `${image.title} — free high-res dark fantasy Android wallpaper. ${tagLine}. Download instantly, no account required.`,
+    description: metaDesc,
     keywords: ["android wallpaper", "dark wallpaper android", "hd android wallpaper", image.title, ...image.tags],
     openGraph: {
       title: `${image.title} | HAUNTED WALLPAPERS`,
-      description: image.description ?? `Free HD Android wallpaper: ${image.title}`,
+      description: image.metaDescription ?? image.description ?? `Free HD Android wallpaper: ${image.title}`,
       url: `${siteUrl}/android/${imageSlug}`,
       siteName: "HAUNTED WALLPAPERS",
-      images: [{ url: ogImage, width: 1200, height: 630, alt: image.title }],
+      images: [{ url: ogImage, width: 1080, height: 1920, alt: image.title }],
       type: "website",
     },
     twitter: {
       card: "summary_large_image",
       title: `${image.title} | HAUNTED WALLPAPERS`,
-      description: image.description ?? `Free HD Android wallpaper: ${image.title}`,
+      description: image.metaDescription ?? image.description ?? `Free HD Android wallpaper: ${image.title}`,
       images: [ogImage],
     },
     alternates: { canonical: `${siteUrl}/android/${imageSlug}` },
@@ -82,7 +88,7 @@ export async function generateStaticParams() {
   return images.map((img) => ({ imageSlug: img.slug }));
 }
 
-export default async function IphoneImagePage({ params }: PageProps) {
+export default async function AndroidImagePage({ params }: PageProps) {
   const { imageSlug } = await params;
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
 
@@ -126,22 +132,25 @@ export default async function IphoneImagePage({ params }: PageProps) {
     <main className="min-h-screen" style={{ backgroundColor: "var(--bg-primary)", color: "var(--text-primary)" }}>
 
       <Breadcrumbs items={[
-        { label: "Home",   href: "/"       },
+        { label: "Home",    href: "/"        },
         { label: "Android", href: "/android" },
         { label: image.title },
       ]} />
 
       <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_MAIN} width={728} height={90} />
 
-      {/* ── Main layout: stacks on mobile, side-by-side on md+ ── */}
-      <section style={{ maxWidth: "1280px", margin: "0 auto", padding: "16px 24px 40px" }}>
-        <div style={{ display: "flex", flexDirection: "column", gap: "32px" }}>
+      {/* ── Main layout: image centered on mobile, side-by-side on md+ ── */}
+      <section style={{ maxWidth: "1280px", margin: "0 auto", padding: "24px 24px 40px" }}>
+        <div className="android-detail-grid" style={{ display: "flex", flexDirection: "column", gap: "40px" }}>
 
-          <DeviceMockup deviceType="ANDROID">
-            <div className="relative w-full h-full">
-              <Image src={thumbUrl} alt={image.title} fill className="object-cover" priority quality={90} unoptimized sizes="(max-width: 768px) 100vw, 65vw" />
-            </div>
-          </DeviceMockup>
+          {/* Image — hero size */}
+          <div className="android-detail-image-wrap">
+            <DeviceMockup deviceType="ANDROID">
+              <div className="relative w-full h-full">
+                <Image src={thumbUrl} alt={image.title} fill className="object-cover" priority quality={90} unoptimized sizes="(max-width: 768px) 100vw, 65vw" />
+              </div>
+            </DeviceMockup>
+          </div>
 
           <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
             <div>
@@ -173,7 +182,7 @@ export default async function IphoneImagePage({ params }: PageProps) {
               </span>
             </div>
 
-            {/* Download button — primary CTA */}
+            {/* Download button — primary CTA, highest on the panel */}
             <DownloadButton
               href={`/api/download/image/${image.id}`}
               viewCount={image.viewCount}
@@ -195,7 +204,7 @@ export default async function IphoneImagePage({ params }: PageProps) {
               <span className="detail-fav-label">Save to Favorites</span>
             </div>
 
-            {/* Ad unit — below download button for higher viewability */}
+            {/* Ad unit — below download button for higher viewability score */}
             <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_SIDEBAR} width={300} height={250} className="mt-2" />
           </div>
         </div>
@@ -203,10 +212,17 @@ export default async function IphoneImagePage({ params }: PageProps) {
 
       {/* Desktop two-column layout via CSS */}
       <style>{`
+        .android-detail-image-wrap {
+          display: flex;
+          justify-content: center;
+        }
         @media (min-width: 768px) {
-          .android-detail-grid { flex-direction: row !important; align-items: flex-start; }
-          .android-detail-grid > *:first-child { flex: 1; }
-          .android-detail-grid > *:last-child { width: 360px; flex-shrink: 0; position: sticky; top: 100px; }
+          .android-detail-grid { flex-direction: row !important; align-items: flex-start; gap: 56px !important; }
+          .android-detail-image-wrap { flex: 0 0 420px; justify-content: flex-start; }
+          .android-detail-grid > div:last-child { flex: 1; position: sticky; top: 100px; }
+        }
+        @media (min-width: 1024px) {
+          .android-detail-image-wrap { flex: 0 0 480px; }
         }
       `}</style>
 
