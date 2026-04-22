@@ -102,14 +102,14 @@ export async function POST(req: NextRequest) {
       data: {
         slug,
         title,
-        description:  description || altText || undefined,
-        altText:      altText || undefined,
+        description:  description || altText || null,
+        altText:      altText || null,
         r2Key,
         highResKey,
         isAdult,
-        deviceType:   (deviceType as "IPHONE" | "ANDROID" | "PC" | null) ?? undefined,
+        deviceType:   (deviceType as "IPHONE" | "ANDROID" | "PC" | null) || null,
         tags:          parsedTags,
-        collectionId:  collectionId || undefined,
+        collectionId:  collectionId || null,
       },
     });
 

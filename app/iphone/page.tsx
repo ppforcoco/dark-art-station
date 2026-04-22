@@ -1,6 +1,6 @@
 // app/iphone/page.tsx
+import React, { Suspense } from "react";
 import type { Metadata } from "next";
-import { Suspense } from "react";
 import { db, getPageContent } from "@/lib/db";
 import { getPublicUrl } from "@/lib/r2";
 import { getRankedTags } from "@/lib/tags";
@@ -146,9 +146,8 @@ export default async function IphonePage({ searchParams }: PageProps) {
             </p>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
               {images.map((img, idx) => (
-                <>
+                <React.Fragment key={img.id}>
                   <DeviceImageCard
-                    key={img.id}
                     href={`/iphone/${img.slug}`}
                     src={getPublicUrl(img.r2Key)}
                     alt={`${img.title} — free dark iPhone wallpaper HD`}
@@ -164,7 +163,7 @@ export default async function IphonePage({ searchParams }: PageProps) {
                       <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_MAIN} width={728} height={90} />
                     </div>
                   )}
-                </>
+                </React.Fragment>
               ))}
             </div>
             <Pagination currentPage={page} totalPages={totalPages} baseUrl={baseUrl} />
