@@ -79,14 +79,14 @@ export async function POST(req: NextRequest) {
       })
     );
 
-    // Create DB record — tag with ONLY the district tag (and any others you want as defaults)
+    // Create DB record — highResKey defaults to r2Key (no separate high-res for district uploads)
     const slug = `${safeName}-${uuid}`;
     const record = await db.image.create({
       data: {
         title: baseName,
         slug,
         r2Key,
-        // Auto-tag with the district tag only
+        highResKey: r2Key,
         tags: [districtTag],
         isAdult: false,
       },
