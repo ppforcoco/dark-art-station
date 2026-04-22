@@ -6939,13 +6939,13 @@ body:has([data-force-blog="true"]) ::-webkit-scrollbar-thumb {
 .hw-hero__text {
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
-  padding: 60px 64px 100px;
+  justify-content: center;
+  padding: 120px 64px 80px;
   position: relative;
   z-index: 1;
 }
-@media (max-width: 1279px) { .hw-hero__text { padding: 60px 48px 80px; } }
-@media (max-width: 767px)  { .hw-hero__text { padding: 48px 24px 60px; } }
+@media (max-width: 1279px) { .hw-hero__text { padding: 120px 48px 80px; } }
+@media (max-width: 767px)  { .hw-hero__text { padding: 100px 24px 60px; } }
 
 .hw-hero__eyebrow {
   display: flex;
