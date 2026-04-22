@@ -9178,12 +9178,16 @@ button:active:not(:disabled) { transform: translateY(0px) scale(0.98) !important
   pointer-events: none;
   z-index: 0;
   overflow: hidden;
+  /* Promote to own layer so it doesn't repaint main content */
+  will-change: transform;
+  contain: strict;
 }
 .dt-fog__layer {
   position: absolute;
   inset: -40%;
   border-radius: 50%;
   filter: blur(80px);
+  will-change: transform;
 }
 .dt-fog__layer--1 {
   background: radial-gradient(ellipse, rgba(139,0,0,0.08) 0%, transparent 70%);
@@ -9199,6 +9203,10 @@ button:active:not(:disabled) { transform: translateY(0px) scale(0.98) !important
   background: radial-gradient(ellipse, rgba(58,110,26,0.04) 0%, transparent 70%);
   animation: dtFogDrift 30s ease-in-out infinite;
   top: 50%; left: 60%;
+}
+/* On mobile — kill expensive blur filter entirely, it's the #1 lag source */
+@media (max-width: 767px) {
+  .dt-fog { display: none; }
 }
 
 /* ── BLOOD DRIP BAR ──────────────────────────────────────────────────── */
@@ -9227,6 +9235,11 @@ button:active:not(:disabled) { transform: translateY(0px) scale(0.98) !important
   height: calc(14px + (var(--di) % 5) * 8px);
   animation-delay: calc(var(--di) * 0.18s + 0.1s);
   animation-fill-mode: both;
+  will-change: transform, opacity;
+}
+/* Kill drip animation on mobile — 18 simultaneous animations = jank */
+@media (max-width: 767px) {
+  .dt-drip { animation: none; transform: scaleY(1); opacity: 0.85; }
 }
 
 /* ── EMBER PARTICLES ─────────────────────────────────────────────────── */
@@ -9249,10 +9262,15 @@ button:active:not(:disabled) { transform: translateY(0px) scale(0.98) !important
   animation: dtEmber calc(3s + (var(--ei) * 0.3s)) ease-out infinite;
   animation-delay: calc(var(--ei) * 0.2s);
   box-shadow: 0 0 4px var(--dt-crimson);
+  will-change: transform, opacity;
 }
 .dt-ember:nth-child(3n) { background: var(--dt-gold); box-shadow: 0 0 4px var(--dt-gold); }
 .dt-ember:nth-child(5n) { background: #ff6600; box-shadow: 0 0 4px #ff6600; }
 .dt-ember:nth-child(7n) { width: 2px; height: 2px; }
+/* Kill embers on mobile */
+@media (max-width: 767px) {
+  .dt-ember { display: none; }
+}
 
 /* ══════════════════════════════════════════════════════════════════════
    SECTION 1 — GATE HERO
@@ -9707,6 +9725,11 @@ button:active:not(:disabled) { transform: translateY(0px) scale(0.98) !important
   background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.04), transparent);
   top: -8px;
   animation: dtScanline 4s linear infinite;
+  will-change: top;
+}
+@media (max-width: 767px) {
+  /* Kill scanline animation on mobile — 5× running = jank */
+  .dt-phone__scan::after { animation: none; display: none; }
 }
 
 /* Screen vignette overlay */
@@ -9767,6 +9790,11 @@ button:active:not(:disabled) { transform: translateY(0px) scale(0.98) !important
   pointer-events: none;
   animation: dtPulse 3s ease-in-out infinite;
   z-index: -1;
+  will-change: opacity, transform;
+}
+@media (max-width: 767px) {
+  .dt-phone__featured-glow { animation: none; opacity: 0.6; }
+  .dt-obs-card__glitch { display: none; }
 }
 
 /* Phone labels */
@@ -9833,6 +9861,38 @@ button:active:not(:disabled) { transform: translateY(0px) scale(0.98) !important
   .dt-phone-wrap--left:hover,
   .dt-phone-wrap--right:hover {
     transform: none;
+  }
+  /* Bigger phones on mobile — show only 3 instead of 5, larger size */
+  .dt-phone-row {
+    gap: 12px;
+    flex-wrap: nowrap;
+    justify-content: center;
+    overflow-x: auto;
+    padding-bottom: 8px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .dt-phone-row::-webkit-scrollbar { display: none; }
+  .dt-phone-wrap {
+    flex: 0 0 auto;
+    width: 42vw;
+    max-width: 180px;
+  }
+  .dt-phone {
+    width: 100%;
+  }
+  .dt-phone--featured {
+    width: 100%;
+  }
+  /* Hide side phones on very small screens so center is prominent */
+  .dt-phone-wrap--left,
+  .dt-phone-wrap--right {
+    width: 36vw;
+    max-width: 150px;
+    opacity: 0.7;
+  }
+  .dt-phones {
+    padding: 60px 16px;
   }
 }
 
@@ -10283,6 +10343,35 @@ button:active:not(:disabled) { transform: translateY(0px) scale(0.98) !important
 .dt-obs-card:hover .dt-obs-card__corner { opacity: 0.7; }
 .dt-obs-card__corner--tl { top: 8px; left: 8px; }
 .dt-obs-card__corner--br { bottom: 8px; right: 8px; }
+
+/* ── Admin Tags displayed under "What Haunts You?" ───────────────────── */
+.dt-top-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 20px;
+  justify-content: flex-start;
+}
+.dt-top-tag {
+  font-family: var(--dt-font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #8a8099;
+  border: 1px solid #2a2535;
+  padding: 5px 14px;
+  text-decoration: none;
+  transition: color 0.2s, border-color 0.2s, background 0.2s;
+  border-radius: 2px;
+}
+.dt-top-tag:hover {
+  color: #f0ecff;
+  border-color: rgba(192,0,26,0.6);
+  background: rgba(192,0,26,0.07);
+}
+@media (max-width: 767px) {
+  .dt-top-tags { justify-content: center; }
+}
 
 .dt-obsessions__footer {
   display: flex;

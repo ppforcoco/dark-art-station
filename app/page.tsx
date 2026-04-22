@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { db, getWallpaperOfTheDay } from "@/lib/db";
+import { getRankedTags } from "@/lib/tags";
 import { getPublicUrl } from "@/lib/r2";
 import AdSlot from "@/components/AdSlot";
 import RecentlyViewed from "@/components/RecentlyViewed";
@@ -53,6 +54,23 @@ export default async function Home() {
     },
   });
 
+  // Fetch top tags from all images for the obsessions heading
+  const allImages = await db.image.findMany({
+    where: { isAdult: false },
+    select: { tags: true },
+    take: 500,
+  });
+  const tagCounts = new Map<string, number>();
+  for (const img of allImages) {
+    for (const t of img.tags) {
+      tagCounts.set(t, (tagCounts.get(t) ?? 0) + 1);
+    }
+  }
+  const topTags = Array.from(tagCounts.entries())
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 12)
+    .map(([tag]) => tag);
+
   const r2Base = process.env.NEXT_PUBLIC_R2_PUBLIC_URL ?? "";
 
   return (
@@ -83,7 +101,7 @@ export default async function Home() {
           <span className="dt-gate__eyebrow">You have arrived in</span>
           <h1 className="dt-gate__title">
             <span className="dt-gate__title-dead">HAUNTED</span>
-            <span className="dt-gate__title-town">TOWN</span>
+            <span className="dt-gate__title-town">WALLPAPERS</span>
           </h1>
           <p className="dt-gate__sub">
             Where atmosphere hangs like fog and every image
@@ -118,9 +136,6 @@ export default async function Home() {
           <div className="dt-gate__ctas">
             <Link href="/shop" className="dt-btn dt-btn--enter">
               <span>Browse Collection</span>
-            </Link>
-            <Link href="/iphone" className="dt-btn dt-btn--ghost">
-              <span>Mobile Wallpapers</span>
             </Link>
           </div>
         </div>
@@ -457,7 +472,16 @@ export default async function Home() {
       <section className="dt-obsessions">
         <div className="dt-section-head">
           <span className="dt-eyebrow">Neighbourhoods of Haunted Town</span>
-          <h2 className="dt-section-title">What Calls to You?</h2>
+          <h2 className="dt-section-title">What Haunts You?</h2>
+          {topTags.length > 0 && (
+            <div className="dt-top-tags">
+              {topTags.map(tag => (
+                <Link key={tag} href={`/search?tag=${encodeURIComponent(tag)}`} className="dt-top-tag">
+                  #{tag}
+                </Link>
+              ))}
+            </div>
+          )}
         </div>
 
         {obsessions.length > 0 ? (

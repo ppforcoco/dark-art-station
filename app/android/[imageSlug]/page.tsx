@@ -108,6 +108,7 @@ export default async function IphoneImagePage({ params }: PageProps) {
 
   // Always show description — real or auto-generated
   const displayDescription = image.description ?? buildFallbackDescription(image.title, image.tags);
+  const plainDescription = displayDescription.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
 
   const [siblings, related] = await Promise.all([
     db.image.findMany({
@@ -153,7 +154,7 @@ export default async function IphoneImagePage({ params }: PageProps) {
             </div>
 
             {/* Always rendered — real description or auto-generated fallback */}
-            <p className="font-body text-[1rem] text-[#a89bc0] leading-relaxed">{displayDescription}</p>
+            <div className="font-body text-[1rem] text-[#a89bc0] leading-relaxed description-html" dangerouslySetInnerHTML={{ __html: displayDescription }} />
 
             {image.tags.length > 0 && (
               <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
@@ -277,7 +278,7 @@ export default async function IphoneImagePage({ params }: PageProps) {
           "@type": "Product",
           "@id": `${siteUrl}/android/${imageSlug}#product`,
           name: image.title,
-          description: displayDescription,
+          description: plainDescription,
           url: `${siteUrl}/android/${imageSlug}`,
           brand: { "@type": "Brand", name: "HAUNTED WALLPAPERS", url: siteUrl },
           category: "Digital Products > Wallpapers > Android",
