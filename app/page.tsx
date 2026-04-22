@@ -1,35 +1,31 @@
-// app/page.tsx — DEAD TOWN REDESIGN
-// Replace the entire contents of your app/page.tsx with this file.
-// All CSS additions go into globals.css (see globals-additions.css companion file).
+// app/page.tsx — HAUNTED TOWN REDESIGN (AdSense-safe, split-hero edition)
 
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { db, getWallpaperOfTheDay } from "@/lib/db";
 import { getPublicUrl } from "@/lib/r2";
-import MarqueeTicker from "@/components/MarqueeTicker";
 import AdSlot from "@/components/AdSlot";
 import RecentlyViewed from "@/components/RecentlyViewed";
-import HeroMosaic from "@/components/HeroMosaic";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
 const OG_IMAGE = `${SITE_URL}/og-image.jpg`;
 
 export const metadata: Metadata = {
-  title: "Haunted Wallpapers | Welcome to Dead Town — Free Dark Horror Wallpapers",
+  title: "Haunted Wallpapers | Welcome to Haunted Town — Free Gothic & Fantasy Wallpapers",
   description:
-    "You've entered Dead Town. Free gothic, horror & fantasy wallpapers — HD downloads for iPhone, Android and PC. No sign-up. No email. Just darkness.",
+    "You've arrived in Haunted Town. Free gothic, fantasy & atmospheric wallpapers — HD downloads for iPhone, Android and PC. No sign-up. No email. Just great art.",
   metadataBase: new URL(SITE_URL),
   openGraph: {
-    title: "Dead Town | Haunted Wallpapers",
-    description: "Enter if you dare. Gothic horror wallpapers. HD. Free. Always.",
+    title: "Haunted Town | Haunted Wallpapers",
+    description: "Gothic fantasy wallpapers. HD. Free. Always.",
     url: SITE_URL, siteName: "Haunted Wallpapers", type: "website",
-    images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: "Dead Town — Haunted Wallpapers" }],
+    images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: "Haunted Town — Haunted Wallpapers" }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Dead Town | Haunted Wallpapers",
-    description: "Enter if you dare. Gothic horror wallpapers. HD. Free.",
+    title: "Haunted Town | Haunted Wallpapers",
+    description: "Gothic fantasy wallpapers. HD. Free.",
     images: [OG_IMAGE],
   },
   alternates: { canonical: SITE_URL },
@@ -61,14 +57,14 @@ export default async function Home() {
 
   return (
     <>
-      {/* ── HORROR FOG OVERLAY ── */}
+      {/* ── ATMOSPHERIC FOG OVERLAY ── */}
       <div className="dt-fog" aria-hidden="true">
         <div className="dt-fog__layer dt-fog__layer--1" />
         <div className="dt-fog__layer dt-fog__layer--2" />
         <div className="dt-fog__layer dt-fog__layer--3" />
       </div>
 
-      {/* ── BLOOD DRIP TOP BORDER ── */}
+      {/* ── DECORATIVE TOP BORDER ── */}
       <div className="dt-drip-bar" aria-hidden="true">
         {Array.from({ length: 18 }).map((_, i) => (
           <span key={i} className="dt-drip" style={{ "--di": i } as React.CSSProperties} />
@@ -76,58 +72,48 @@ export default async function Home() {
       </div>
 
       {/* ══════════════════════════════════════════════════════════
-          SECTION 1 — DEAD TOWN HERO GATE
-          Full-screen cinematic entrance with the town proclamation
+          SECTION 1 — HERO: 2-COLUMN SPLIT
+          LEFT: title + subtitle + eyebrow
+          RIGHT: stat cards + CTAs + preview images
       ══════════════════════════════════════════════════════════ */}
-      <section className="dt-gate">
-        {/* Particle embers */}
-        <div className="dt-embers" aria-hidden="true">
-          {Array.from({ length: 28 }).map((_, i) => (
-            <span key={i} className="dt-ember" style={{ "--ei": i } as React.CSSProperties} />
-          ))}
-        </div>
+      <section className="dt-gate dt-gate--split">
 
-        {/* Cracked texture overlay */}
         <div className="dt-gate__crack" aria-hidden="true" />
 
-        <div className="dt-gate__inner">
-          {/* Population sign */}
-          <div className="dt-pop-sign">
-            <span className="dt-pop-sign__top">POPULATION</span>
-            <span className="dt-pop-sign__num">
-              {fmt(totalImages)}
-              <span className="dt-pop-sign__cross">†</span>
-            </span>
-            <span className="dt-pop-sign__souls">LOST SOULS &amp; COUNTING</span>
+        {/* ── LEFT: Title block ── */}
+        <div className="dt-gate__left">
+          <span className="dt-gate__eyebrow">You have arrived in</span>
+          <h1 className="dt-gate__title">
+            <span className="dt-gate__title-dead">HAUNTED</span>
+            <span className="dt-gate__title-town">TOWN</span>
+          </h1>
+          <p className="dt-gate__sub">
+            Where atmosphere hangs like fog and every image
+            is a window into something extraordinary.
+          </p>
+          <div className="dt-gate__collection-badge">
+            <span className="dt-gate__collection-num">{fmt(totalImages)}</span>
+            <span className="dt-gate__collection-label">wallpapers &amp; growing</span>
           </div>
+        </div>
 
-          {/* Main gate title */}
-          <div className="dt-gate__title-wrap">
-            <span className="dt-gate__eyebrow">You have arrived in</span>
-            <h1 className="dt-gate__title">
-              <span className="dt-gate__title-dead">DEAD</span>
-              <span className="dt-gate__title-town">TOWN</span>
-            </h1>
-            <p className="dt-gate__sub">
-              Where darkness hangs like fog and every image<br />
-              is a window into something you shouldn&rsquo;t see.
-            </p>
-          </div>
+        {/* ── RIGHT: Stats + CTAs + images ── */}
+        <div className="dt-gate__right">
 
-          {/* Town stat coffins */}
-          <div className="dt-coffin-row">
+          {/* Stat cards */}
+          <div className="dt-coffin-row dt-coffin-row--compact">
             <div className="dt-coffin">
               <span className="dt-coffin__ico">🕯️</span>
               <span className="dt-coffin__num">{fmt(totalImages)}</span>
               <span className="dt-coffin__label">Wallpapers</span>
             </div>
-            <div className="dt-coffin dt-coffin--blood">
-              <span className="dt-coffin__ico">💀</span>
+            <div className="dt-coffin dt-coffin--accent">
+              <span className="dt-coffin__ico">🖼️</span>
               <span className="dt-coffin__num">4K</span>
               <span className="dt-coffin__label">HD Quality</span>
             </div>
             <div className="dt-coffin">
-              <span className="dt-coffin__ico">🩸</span>
+              <span className="dt-coffin__ico">✨</span>
               <span className="dt-coffin__num">Free</span>
               <span className="dt-coffin__label">Always</span>
             </div>
@@ -141,34 +127,83 @@ export default async function Home() {
           {/* CTA buttons */}
           <div className="dt-gate__ctas">
             <Link href="/shop" className="dt-btn dt-btn--enter">
-              <span className="dt-btn__flicker" aria-hidden="true" />
-              <span>Enter the Town</span>
+              <span>Enter Haunted Town</span>
             </Link>
             <Link href="/iphone" className="dt-btn dt-btn--ghost">
               <span>Browse Wallpapers</span>
             </Link>
           </div>
 
-          {/* Scroll cue */}
-          <div className="dt-scroll-cue" aria-hidden="true">
-            <span className="dt-scroll-cue__line" />
-            <span className="dt-scroll-cue__text">scroll deeper</span>
+          {/* Preview image strip — 5 phones */}
+          <div className="dt-hero-images">
+
+            <div className="dt-hero-img-wrap">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/always-watching-wallpaper.webp"
+                alt="Always Watching"
+                className="dt-hero-img"
+                loading="eager"
+              />
+              <span className="dt-hero-img__name">Always Watching</span>
+            </div>
+
+            <div className="dt-hero-img-wrap">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/funny-lockscreen-wallpaper.jpeg"
+                alt="The Lookout"
+                className="dt-hero-img dt-hero-img--featured"
+                loading="eager"
+              />
+              <span className="dt-hero-img__name">The Lookout</span>
+            </div>
+
+            <div className="dt-hero-img-wrap">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/skeleton-brick-wall-green.jpeg"
+                alt="Bone Wall"
+                className="dt-hero-img"
+                loading="eager"
+              />
+              <span className="dt-hero-img__name">Bone Wall</span>
+            </div>
+
+            <div className="dt-hero-img-wrap">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/the-watching-estate-nocturnal-hill-wallpaper.webp"
+                alt="Nocturnal Hill"
+                className="dt-hero-img"
+                loading="eager"
+              />
+              <span className="dt-hero-img__name">Nocturnal Hill</span>
+            </div>
+
+            <div className="dt-hero-img-wrap">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/paper-cut-witch-red-backdrop-staff.jpeg"
+                alt="Paper Cut Witch"
+                className="dt-hero-img"
+                loading="eager"
+              />
+              <span className="dt-hero-img__name">Paper Cut Witch</span>
+            </div>
+
           </div>
         </div>
+
       </section>
 
-      <MarqueeTicker />
-
       {/* ══════════════════════════════════════════════════════════
-          SECTION 2 — MOBILE HAUNTS
-          3 × 9:16 phone mockups showing horror wallpapers
+          SECTION 2 — MOBILE WALLPAPERS (3 phones, no download btn)
       ══════════════════════════════════════════════════════════ */}
       <section className="dt-phones">
-        <div className="dt-phones__bg-text" aria-hidden="true">HAUNTED</div>
-
         <div className="dt-section-head">
-          <span className="dt-eyebrow">Your Screen, Possessed</span>
-          <h2 className="dt-section-title">Mobile Haunts</h2>
+          <span className="dt-eyebrow">Your Screen, Transformed</span>
+          <h2 className="dt-section-title">Mobile Wallpapers</h2>
           <p className="dt-section-sub">
             Every lock screen is a portal. Choose yours wisely.
           </p>
@@ -176,27 +211,23 @@ export default async function Home() {
 
         <div className="dt-phone-row">
 
-          {/* Phone 1 — Always Watching */}
           <div className="dt-phone-wrap dt-phone-wrap--left">
             <div className="dt-phone">
               <div className="dt-phone__shell">
-                {/* Notch */}
                 <div className="dt-phone__notch">
                   <span className="dt-phone__speaker" />
                   <span className="dt-phone__cam" />
                 </div>
-                {/* Screen */}
                 <div className="dt-phone__screen">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/always-watching-wallpaper.webp"
-                    alt="Always Watching — horror wallpaper"
+                    alt="Always Watching — atmospheric wallpaper"
                     className="dt-phone__img"
                   />
                   <div className="dt-phone__scan" aria-hidden="true" />
                   <div className="dt-phone__overlay" aria-hidden="true" />
                 </div>
-                {/* Side buttons */}
                 <span className="dt-phone__vol-up" />
                 <span className="dt-phone__vol-dn" />
                 <span className="dt-phone__power" />
@@ -207,11 +238,9 @@ export default async function Home() {
             <div className="dt-phone-label">
               <span className="dt-phone-label__name">Always Watching</span>
               <span className="dt-phone-label__tag">iPhone · 9:16</span>
-              <Link href="/iphone" className="dt-phone-label__cta">Download →</Link>
             </div>
           </div>
 
-          {/* Phone 2 — Funny Lockscreen (center, elevated) */}
           <div className="dt-phone-wrap dt-phone-wrap--center">
             <div className="dt-phone dt-phone--featured">
               <div className="dt-phone__shell">
@@ -223,7 +252,7 @@ export default async function Home() {
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/funny-lockscreen-wallpaper.jpeg"
-                    alt="Funny Lockscreen — horror wallpaper"
+                    alt="The Lookout — creative wallpaper"
                     className="dt-phone__img"
                   />
                   <div className="dt-phone__scan" aria-hidden="true" />
@@ -241,11 +270,9 @@ export default async function Home() {
               <span className="dt-phone-label__badge">Featured</span>
               <span className="dt-phone-label__name">The Lookout</span>
               <span className="dt-phone-label__tag">Universal · 9:16</span>
-              <Link href="/iphone" className="dt-phone-label__cta">Download →</Link>
             </div>
           </div>
 
-          {/* Phone 3 — Skeleton Brick Wall */}
           <div className="dt-phone-wrap dt-phone-wrap--right">
             <div className="dt-phone">
               <div className="dt-phone__shell">
@@ -257,7 +284,7 @@ export default async function Home() {
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/skeleton-brick-wall-green.jpeg"
-                    alt="Skeleton Brick Wall — horror wallpaper"
+                    alt="Bone Wall — gothic wallpaper"
                     className="dt-phone__img"
                   />
                   <div className="dt-phone__scan" aria-hidden="true" />
@@ -273,7 +300,6 @@ export default async function Home() {
             <div className="dt-phone-label">
               <span className="dt-phone-label__name">Bone Wall</span>
               <span className="dt-phone-label__tag">Android · 9:16</span>
-              <Link href="/android" className="dt-phone-label__cta">Download →</Link>
             </div>
           </div>
 
@@ -289,7 +315,7 @@ export default async function Home() {
       </div>
 
       {/* ══════════════════════════════════════════════════════════
-          SECTION 3 — DAILY PICK (preserved, restyled)
+          SECTION 3 — DAILY PICK
       ══════════════════════════════════════════════════════════ */}
       {wotd && (() => {
         const devicePath = wotd.deviceType === "IPHONE" ? "iphone" : wotd.deviceType === "ANDROID" ? "android" : "pc";
@@ -302,7 +328,7 @@ export default async function Home() {
               <div className="dt-daily__text">
                 <p className="dt-daily__eyebrow">
                   <span className="dt-daily__dot" />
-                  Tonight&rsquo;s Offering · {todayStr}
+                  Tonight&rsquo;s Pick · {todayStr}
                 </p>
                 <h2 className="dt-daily__title">{wotd.title}</h2>
                 {wotd.description && <p className="dt-daily__desc">{wotd.description}</p>}
@@ -314,7 +340,7 @@ export default async function Home() {
                   </div>
                 )}
                 <Link href={wotdHref} className="dt-btn dt-btn--enter dt-btn--sm">
-                  <span>Claim This Wallpaper →</span>
+                  <span>Download This Wallpaper →</span>
                 </Link>
               </div>
               <Link href={wotdHref} className="dt-daily__img-frame" aria-label={wotd.title}>
@@ -334,25 +360,21 @@ export default async function Home() {
       })()}
 
       {/* ══════════════════════════════════════════════════════════
-          SECTION 4 — PC / DESKTOP LANDSCAPE
-          Full 16:9 desktop wallpaper in a monitor mockup
+          SECTION 4 — PC / DESKTOP
       ══════════════════════════════════════════════════════════ */}
       <section className="dt-desktop">
         <div className="dt-section-head dt-section-head--center">
-          <span className="dt-eyebrow">The Town Square</span>
-          <h2 className="dt-section-title">Desktop Nightmare</h2>
+          <span className="dt-eyebrow">The Haunted Square</span>
+          <h2 className="dt-section-title">Desktop Wallpapers</h2>
           <p className="dt-section-sub">
-            Your work environment deserves to be unsettling.
+            Your workspace, transformed with stunning atmospheric art.
           </p>
         </div>
 
         <div className="dt-monitor-wrap">
           <div className="dt-monitor">
-            {/* Monitor bezel */}
             <div className="dt-monitor__bezel">
-              {/* Camera dot */}
               <span className="dt-monitor__cam" />
-              {/* Screen with 16:9 image */}
               <div className="dt-monitor__screen">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
@@ -364,12 +386,9 @@ export default async function Home() {
                 <div className="dt-monitor__glitch" aria-hidden="true" />
               </div>
             </div>
-            {/* Stand */}
             <div className="dt-monitor__neck" />
             <div className="dt-monitor__foot" />
           </div>
-
-          {/* Floating label cards */}
           <div className="dt-monitor__tag dt-monitor__tag--tl">
             <span>16 : 9</span>
             <span>Full HD</span>
@@ -386,12 +405,12 @@ export default async function Home() {
       </section>
 
       {/* ══════════════════════════════════════════════════════════
-          SECTION 5 — CHOOSE YOUR OBSESSION (collections)
+          SECTION 5 — COLLECTIONS
       ══════════════════════════════════════════════════════════ */}
       <section className="dt-obsessions">
         <div className="dt-section-head">
-          <span className="dt-eyebrow">Districts of Dead Town</span>
-          <h2 className="dt-section-title">What Haunts You?</h2>
+          <span className="dt-eyebrow">Neighbourhoods of Haunted Town</span>
+          <h2 className="dt-section-title">What Calls to You?</h2>
         </div>
 
         {obsessions.length > 0 ? (
@@ -422,9 +441,7 @@ export default async function Home() {
                     )}
                     <div className="dt-obs-card__veil" />
                   </div>
-                  {/* Glitch stripe */}
                   <div className="dt-obs-card__glitch" aria-hidden="true" />
-                  {/* Blood drip on hover */}
                   <div className="dt-obs-card__drip" aria-hidden="true" />
                   <div className="dt-obs-card__body">
                     <span className="dt-obs-card__tag">{obs.tag ?? "Collection"}</span>
@@ -432,7 +449,6 @@ export default async function Home() {
                     <span className="dt-obs-card__count">{obs._count.images} wallpapers</span>
                   </div>
                   <div className="dt-obs-card__glow" aria-hidden="true" />
-                  {/* Corner bones */}
                   <span className="dt-obs-card__corner dt-obs-card__corner--tl">†</span>
                   <span className="dt-obs-card__corner dt-obs-card__corner--br">†</span>
                 </Link>
@@ -445,7 +461,7 @@ export default async function Home() {
             <div className="dt-coming-soon__bar" />
             <h2 className="dt-coming-soon__title">The Districts Are Being Built</h2>
             <p className="dt-coming-soon__sub">
-              Upload images from the admin panel to summon these dark territories.
+              Upload images from the admin panel to populate these atmospheric territories.
             </p>
           </div>
         )}
@@ -460,7 +476,7 @@ export default async function Home() {
       </div>
 
       {/* ══════════════════════════════════════════════════════════
-          SECTION 6 — MANIFESTO / DEAD TOWN LORE
+          SECTION 6 — ABOUT / STORY
       ══════════════════════════════════════════════════════════ */}
       <section className="dt-manifesto">
         <div className="dt-manifesto__gutter" aria-hidden="true">
@@ -470,7 +486,7 @@ export default async function Home() {
         </div>
 
         <div className="dt-manifesto__content">
-          <span className="dt-eyebrow">The Dead Town Creed</span>
+          <span className="dt-eyebrow">The Haunted Town Story</span>
 
           <blockquote className="dt-manifesto__quote">
             Some people want bright &amp; simple.<br />
@@ -478,13 +494,13 @@ export default async function Home() {
           </blockquote>
 
           <p className="dt-manifesto__body">
-            You arrived here because something in you gravitates toward the strange —
-            the shadowed corners, the art that lingers long after you close the tab,
-            the wallpaper that makes your friends ask: <em>why?</em>
+            You arrived here because something in you gravitates toward the extraordinary —
+            the atmospheric corners, the art that lingers long after you close the tab,
+            the wallpaper that makes your friends ask: <em>where did you get that?</em>
           </p>
           <p className="dt-manifesto__body">
-            Dead Town is built for you. Every image is full HD. Every download is free.
-            No account. No email. No gatekeeping. Just the darkness you crave.
+            Haunted Town is built for you. Every image is full HD. Every download is free.
+            No account. No email. No gatekeeping. Just the aesthetic you love.
           </p>
 
           <div className="dt-manifesto__ctas">
@@ -498,7 +514,7 @@ export default async function Home() {
 
       <RecentlyViewed />
 
-      {/* Bottom drip */}
+      {/* Bottom decorative border */}
       <div className="dt-drip-bar dt-drip-bar--bottom" aria-hidden="true">
         {Array.from({ length: 18 }).map((_, i) => (
           <span key={i} className="dt-drip dt-drip--up" style={{ "--di": i } as React.CSSProperties} />
@@ -508,7 +524,7 @@ export default async function Home() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{
         __html: JSON.stringify({
           "@context": "https://schema.org", "@type": "ItemList",
-          name: "Dead Town — Haunted Wallpapers Collections",
+          name: "Haunted Town — Haunted Wallpapers Collections",
           url: SITE_URL, numberOfItems: obsessions.length,
           itemListElement: obsessions.map((o, i) => ({
             "@type": "ListItem", position: i + 1,

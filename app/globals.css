@@ -10415,3 +10415,202 @@ button:active:not(:disabled) { transform: translateY(0px) scale(0.98) !important
 /* ── Ensure dt- sections sit above fog ──────────────────────────────── */
 .dt-gate, .dt-phones, .dt-daily, .dt-desktop,
 .dt-obsessions, .dt-manifesto { position: relative; z-index: 1; }
+/* ═══════════════════════════════════════════════════════
+   SPLIT HERO — 2-COLUMN LAYOUT
+   ═══════════════════════════════════════════════════════ */
+
+/* Override old single-column gate with split layout */
+.dt-gate--split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 0;
+  min-height: 100vh;
+  padding: 100px 6vw 60px;
+  position: relative;
+  overflow: hidden;
+  background: radial-gradient(ellipse at 30% 0%, rgba(120,0,0,0.18) 0%, transparent 60%),
+              var(--void, #07040a);
+}
+
+/* LEFT column: title */
+.dt-gate__left {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 20px;
+  padding-right: 40px;
+}
+
+.dt-gate__left .dt-gate__eyebrow {
+  font-size: 0.75rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--dt-crimson, #c0001a);
+  font-family: var(--font-mono, monospace);
+}
+
+.dt-gate__left .dt-gate__title {
+  font-size: clamp(5rem, 10vw, 10rem);
+  font-weight: 900;
+  line-height: 0.88;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+
+.dt-gate__left .dt-gate__title-dead {
+  display: block;
+  color: #f0e8e0;
+}
+
+.dt-gate__left .dt-gate__title-town {
+  display: block;
+  color: var(--dt-crimson, #c0001a);
+  text-shadow: 0 0 60px rgba(192,0,26,0.4);
+}
+
+.dt-gate__left .dt-gate__sub {
+  font-size: 1rem;
+  color: var(--dt-muted, #7a6e6e);
+  line-height: 1.65;
+  max-width: 400px;
+  font-style: italic;
+}
+
+.dt-gate__collection-badge {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.dt-gate__collection-num {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--dt-gold, #c9a84c);
+  font-family: var(--font-serif, serif);
+}
+
+.dt-gate__collection-label {
+  font-size: 0.78rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--dt-muted, #7a6e6e);
+}
+
+/* RIGHT column */
+.dt-gate__right {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Compact coffin row for right side */
+.dt-coffin-row--compact {
+  gap: 10px;
+}
+
+.dt-coffin-row--compact .dt-coffin {
+  padding: 14px 10px;
+  min-width: 0;
+  flex: 1;
+}
+
+.dt-coffin-row--compact .dt-coffin__num {
+  font-size: 1.3rem;
+}
+
+/* Hero image strip — 5 phone previews */
+.dt-hero-images {
+  display: flex;
+  gap: 10px;
+  align-items: flex-end;
+  overflow: hidden;
+}
+
+.dt-hero-img-wrap {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.dt-hero-img {
+  width: 100%;
+  aspect-ratio: 9/16;
+  object-fit: cover;
+  border-radius: 12px;
+  border: 1px solid rgba(192,0,26,0.2);
+  display: block;
+  transition: transform 0.3s ease, border-color 0.3s ease;
+}
+
+.dt-hero-img--featured {
+  /* center image slightly taller */
+  transform: scale(1.06);
+  border-color: rgba(192,0,26,0.5);
+  box-shadow: 0 0 24px rgba(192,0,26,0.25);
+  z-index: 2;
+  position: relative;
+}
+
+.dt-hero-img-wrap:hover .dt-hero-img {
+  transform: scale(1.04);
+  border-color: rgba(192,0,26,0.45);
+}
+
+.dt-hero-img-wrap:hover .dt-hero-img--featured {
+  transform: scale(1.09);
+}
+
+.dt-hero-img__name {
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--dt-muted, #7a6e6e);
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+/* ── Mobile: stack to single column ── */
+@media (max-width: 800px) {
+  .dt-gate--split {
+    grid-template-columns: 1fr;
+    padding: 90px 20px 40px;
+    gap: 32px;
+    min-height: auto;
+  }
+
+  .dt-gate__left {
+    padding-right: 0;
+    text-align: center;
+    align-items: center;
+  }
+
+  .dt-gate__left .dt-gate__sub {
+    max-width: 100%;
+  }
+
+  .dt-gate__right {
+    gap: 16px;
+  }
+
+  .dt-hero-images {
+    gap: 6px;
+  }
+
+  .dt-hero-img__name {
+    display: none;
+  }
+}
+
+/* Remove the heavy particle embers since we removed that div */
+/* Keep .dt-gate__crack for texture overlay — it's CSS-only, fine */
+
+/* ── Marquee hidden (removed from page but keep CSS harmless) ── */
+.marquee-section { display: none !important; }
