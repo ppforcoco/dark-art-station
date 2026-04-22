@@ -123,70 +123,48 @@ export default async function Home() {
           </div>
         </div>
 
-        {/* ── RIGHT: Hero collage ── */}
+        {/* ── RIGHT: Hero phone mockups strip ── */}
         <div className="dt-gate__right">
-          <div className="dt-hero-collage">
-
-            {/* Large featured image — top left */}
-            <div className="dt-collage__item dt-collage__item--main">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/wallpapers/houston-snapback-skeleton.jpeg"
-                alt="Houston Snapback Skeleton"
-                className="dt-collage__img"
-                loading="eager"
-              />
-              <div className="dt-collage__veil" aria-hidden="true" />
-            </div>
-
-            {/* Tall image — top right */}
-            <div className="dt-collage__item dt-collage__item--tall">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/wallpapers/shadows-have-eyes-android.webp"
-                alt="Shadows Have Eyes"
-                className="dt-collage__img"
-                loading="eager"
-              />
-              <div className="dt-collage__veil" aria-hidden="true" />
-            </div>
-
-            {/* Wide image — bottom left */}
-            <div className="dt-collage__item dt-collage__item--wide">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/wallpapers/haunted-house-moon.jpeg"
-                alt="Haunted House Moon"
-                className="dt-collage__img"
-                loading="eager"
-              />
-              <div className="dt-collage__veil" aria-hidden="true" />
-            </div>
-
-            {/* Small square — bottom center */}
-            <div className="dt-collage__item dt-collage__item--sm">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/wallpapers/hero-1.jpeg"
-                alt="Haunted Hero 1"
-                className="dt-collage__img"
-                loading="eager"
-              />
-              <div className="dt-collage__veil" aria-hidden="true" />
-            </div>
-
-            {/* Small square — bottom right */}
-            <div className="dt-collage__item dt-collage__item--sm dt-collage__item--accent">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/wallpapers/hero-2.jpeg"
-                alt="Haunted Hero 2"
-                className="dt-collage__img"
-                loading="eager"
-              />
-              <div className="dt-collage__veil" aria-hidden="true" />
-            </div>
-
+          <div className="dt-hero-phones">
+            {[
+              { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/wallpapers/houston-snapback-skeleton.jpeg", alt: "Skeleton", featured: false },
+              { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/wallpapers/shadows-have-eyes-android.webp", alt: "Shadow Eyes", featured: false },
+              { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/wallpapers/haunted-house-moon.jpeg", alt: "Haunted Moon", featured: true },
+              { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/wallpapers/hero-1.jpeg", alt: "Hero Art", featured: false },
+              { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/wallpapers/hero-2.jpeg", alt: "Dark Art", featured: false },
+            ].map((phone, i) => (
+              <div
+                key={i}
+                className={`dt-hero-phone-wrap${phone.featured ? " dt-hero-phone-wrap--featured" : ""}`}
+                style={{ "--phone-i": i } as React.CSSProperties}
+              >
+                {/* Phone shell */}
+                <div className="dt-hero-phone">
+                  {/* Side buttons */}
+                  <div className="dt-hero-phone__btn dt-hero-phone__btn--power" aria-hidden="true" />
+                  <div className="dt-hero-phone__btn dt-hero-phone__btn--vol1" aria-hidden="true" />
+                  <div className="dt-hero-phone__btn dt-hero-phone__btn--vol2" aria-hidden="true" />
+                  {/* Screen */}
+                  <div className="dt-hero-phone__screen">
+                    <div className="dt-hero-phone__notch" aria-hidden="true">
+                      <span className="dt-hero-phone__notch-cam" />
+                    </div>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={phone.src}
+                      alt={phone.alt}
+                      className="dt-hero-phone__img"
+                      loading={i < 3 ? "eager" : "lazy"}
+                    />
+                    <div className="dt-hero-phone__gloss" aria-hidden="true" />
+                    {phone.featured && <div className="dt-hero-phone__glow-ring" aria-hidden="true" />}
+                  </div>
+                  {/* Home bar */}
+                  <div className="dt-hero-phone__bar" aria-hidden="true" />
+                </div>
+                <span className="dt-hero-phone__label">{phone.alt}</span>
+              </div>
+            ))}
           </div>
         </div>
 
@@ -246,43 +224,75 @@ export default async function Home() {
           </p>
         </div>
 
-        {/* Phone row — phones are intentionally small: max 140px wide, 280px tall */}
-        <div className="dt-phone-row" style={{ display: "flex", gap: "1rem", justifyContent: "center", flexWrap: "wrap", alignItems: "flex-end" }}>
+        {/* Beautiful phone mockup row */}
+        <div className="dt-phone-showcase">
           {[
-            { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/always-watching-wallpaper.webp", alt: "Always Watching" },
-            { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/funny-lockscreen-wallpaper.jpeg", alt: "Funny Lockscreen" },
-            { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/the-watching-estate-nocturnal-hill-wallpaper.webp", alt: "The Watching Estate" },
-            { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/paper-cut-witch-red-backdrop-staff.jpeg", alt: "Paper Cut Witch" },
-            { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/skeleton-brick-wall-green.jpeg", alt: "Skeleton Brick Wall" },
+            { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/always-watching-wallpaper.webp", alt: "Always Watching", label: "Always Watching" },
+            { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/funny-lockscreen-wallpaper.jpeg", alt: "Funny Lockscreen", label: "Funny Lockscreen" },
+            { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/the-watching-estate-nocturnal-hill-wallpaper.webp", alt: "The Watching Estate", label: "The Watching Estate" },
+            { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/paper-cut-witch-red-backdrop-staff.jpeg", alt: "Paper Cut Witch", label: "Paper Cut Witch" },
+            { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/skeleton-brick-wall-green.jpeg", alt: "Skeleton Brick Wall", label: "Skeleton Brick" },
           ].map((phone, i) => (
             <div
               key={i}
-              className="dt-phone-mockup"
-              style={{
-                "--phone-delay": `${i * 0.1}s`,
-                // Middle phone is slightly taller for a staggered effect
-                transform: i === 2 ? "translateY(-12px) scale(1.05)" : "none",
-                width: "clamp(100px, 13vw, 140px)",
-                flexShrink: 0,
-              } as React.CSSProperties}
+              className={`dt-phone-card${i === 2 ? " dt-phone-card--hero" : ""}`}
+              style={{ "--card-i": i } as React.CSSProperties}
             >
-              <div className="dt-phone-mockup__shell" style={{ width: "100%", borderRadius: "2rem", overflow: "hidden", border: "2px solid rgba(255,255,255,0.12)", background: "#0d0d0d", boxShadow: "0 20px 60px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.05)", transition: "transform 0.35s ease, box-shadow 0.35s ease" }}>
-                <div className="dt-phone-mockup__notch" aria-hidden="true" style={{ width: "40%", height: "18px", background: "#0d0d0d", borderRadius: "0 0 12px 12px", margin: "0 auto" }} />
-                <div className="dt-phone-mockup__screen" style={{ aspectRatio: "9/19.5", overflow: "hidden", position: "relative" }}>
+              {/* Ambient glow behind phone */}
+              <div className="dt-phone-card__aura" aria-hidden="true" />
+
+              {/* Phone shell */}
+              <div className="dt-phone-card__shell">
+                {/* Left buttons */}
+                <div className="dt-phone-card__btn dt-phone-card__btn--vol1" aria-hidden="true" />
+                <div className="dt-phone-card__btn dt-phone-card__btn--vol2" aria-hidden="true" />
+                {/* Right button */}
+                <div className="dt-phone-card__btn dt-phone-card__btn--power" aria-hidden="true" />
+
+                {/* Screen area */}
+                <div className="dt-phone-card__screen">
+                  {/* Dynamic Island / notch */}
+                  <div className="dt-phone-card__island" aria-hidden="true">
+                    <span className="dt-phone-card__cam" />
+                  </div>
+
+                  {/* Wallpaper image */}
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={phone.src}
                     alt={phone.alt}
-                    className="dt-phone-mockup__img"
+                    className="dt-phone-card__img"
                     loading="lazy"
-                    style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
                   />
-                  <div className="dt-phone-mockup__gloss" aria-hidden="true" style={{ position: "absolute", inset: 0, background: "linear-gradient(135deg, rgba(255,255,255,0.08) 0%, transparent 50%)", pointerEvents: "none" }} />
+
+                  {/* Lock screen overlay UI (decorative) */}
+                  <div className="dt-phone-card__lockscreen" aria-hidden="true">
+                    <div className="dt-phone-card__ls-time">
+                      <span className="dt-phone-card__ls-hour">11:11</span>
+                      <span className="dt-phone-card__ls-date">Haunted Town</span>
+                    </div>
+                    <div className="dt-phone-card__ls-actions">
+                      <span className="dt-phone-card__ls-icon">🔦</span>
+                      <div className="dt-phone-card__ls-bar" />
+                      <span className="dt-phone-card__ls-icon">📷</span>
+                    </div>
+                  </div>
+
+                  {/* Glass gloss */}
+                  <div className="dt-phone-card__gloss" aria-hidden="true" />
+
+                  {/* Hover reveal: crimson overlay */}
+                  <div className="dt-phone-card__hover-veil" aria-hidden="true">
+                    <span className="dt-phone-card__hover-text">View →</span>
+                  </div>
                 </div>
-                <div className="dt-phone-mockup__button dt-phone-mockup__button--side" aria-hidden="true" />
-                <div className="dt-phone-mockup__button dt-phone-mockup__button--vol" aria-hidden="true" />
+
+                {/* Home indicator */}
+                <div className="dt-phone-card__indicator" aria-hidden="true" />
               </div>
-              <div className="dt-phone-mockup__reflection" aria-hidden="true" style={{ height: "20px", background: "linear-gradient(to bottom, rgba(255,255,255,0.04), transparent)", borderRadius: "0 0 2rem 2rem" }} />
+
+              {/* Label below phone */}
+              <span className="dt-phone-card__label">{phone.label}</span>
             </div>
           ))}
         </div>

@@ -10709,3 +10709,742 @@ button:active:not(:disabled) { transform: translateY(0px) scale(0.98) !important
 
 /* ── Marquee hidden (removed from page but keep CSS harmless) ── */
 .marquee-section { display: none !important; }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   HERO PHONE MOCKUPS — dt-hero-phone-*
+   Beautiful minimal phones in the hero right column
+═══════════════════════════════════════════════════════════════════════════ */
+
+/* Container — 5 phones side by side, aligned to bottom */
+.dt-hero-phones {
+  display: flex;
+  gap: 8px;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 20px 0 0;
+}
+
+/* Each phone wrapper */
+.dt-hero-phone-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+  min-width: 0;
+  /* Staggered float animation */
+  animation: heroPhoneFloat 4s ease-in-out infinite;
+  animation-delay: calc(var(--phone-i, 0) * 0.3s);
+  will-change: transform;
+}
+
+/* Featured (center) phone lifts higher */
+.dt-hero-phone-wrap--featured {
+  z-index: 2;
+  transform: translateY(-14px) scale(1.06);
+  animation: heroPhoneFloatFeatured 4s ease-in-out infinite;
+}
+
+@keyframes heroPhoneFloat {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-6px); }
+}
+@keyframes heroPhoneFloatFeatured {
+  0%, 100% { transform: translateY(-14px) scale(1.06); }
+  50%       { transform: translateY(-20px) scale(1.06); }
+}
+
+/* Hover: lift and glow */
+.dt-hero-phone-wrap:hover {
+  animation-play-state: paused;
+  transform: translateY(-10px) scale(1.04) !important;
+  z-index: 5;
+}
+.dt-hero-phone-wrap--featured:hover {
+  transform: translateY(-22px) scale(1.09) !important;
+}
+
+/* Phone shell */
+.dt-hero-phone {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 9 / 19.5;
+  background: linear-gradient(160deg, #1a1520 0%, #0a0810 60%, #12101e 100%);
+  border-radius: 22px;
+  border: 1.5px solid rgba(255,255,255,0.08);
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,0.03),
+    inset 0 1px 0 rgba(255,255,255,0.06),
+    0 20px 50px rgba(0,0,0,0.8),
+    0 6px 16px rgba(0,0,0,0.5);
+  transition:
+    border-color 0.35s ease,
+    box-shadow 0.35s ease;
+  overflow: visible;
+}
+
+/* Featured phone border */
+.dt-hero-phone-wrap--featured .dt-hero-phone {
+  border-color: rgba(192,0,26,0.45);
+  box-shadow:
+    0 0 0 1px rgba(192,0,26,0.12),
+    inset 0 1px 0 rgba(255,255,255,0.07),
+    0 28px 64px rgba(0,0,0,0.9),
+    0 0 36px rgba(192,0,26,0.18);
+}
+
+/* Hover glow on all phones */
+.dt-hero-phone-wrap:hover .dt-hero-phone {
+  border-color: rgba(192,0,26,0.5);
+  box-shadow:
+    0 0 0 1px rgba(192,0,26,0.18),
+    inset 0 1px 0 rgba(255,255,255,0.08),
+    0 30px 70px rgba(0,0,0,0.95),
+    0 0 44px rgba(192,0,26,0.22);
+}
+
+/* Side buttons - power (right) */
+.dt-hero-phone__btn {
+  position: absolute;
+  background: linear-gradient(to right, #1a1520, #221c2e);
+  border-radius: 2px;
+}
+.dt-hero-phone__btn--power {
+  right: -2px;
+  top: 22%;
+  width: 2.5px;
+  height: 20%;
+  border-radius: 0 2px 2px 0;
+}
+.dt-hero-phone__btn--vol1 {
+  left: -2px;
+  top: 18%;
+  width: 2.5px;
+  height: 12%;
+  border-radius: 2px 0 0 2px;
+}
+.dt-hero-phone__btn--vol2 {
+  left: -2px;
+  top: 33%;
+  width: 2.5px;
+  height: 12%;
+  border-radius: 2px 0 0 2px;
+}
+
+/* Screen area (fills entire shell) */
+.dt-hero-phone__screen {
+  position: absolute;
+  inset: 3px;
+  border-radius: 20px;
+  overflow: hidden;
+  background: #050407;
+}
+
+/* Dynamic island notch */
+.dt-hero-phone__notch {
+  position: absolute;
+  top: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  width: 38%;
+  height: 14px;
+  background: #0a0810;
+  border-radius: 0 0 8px 8px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 5px;
+  border: 1px solid rgba(255,255,255,0.04);
+  border-top: none;
+}
+.dt-hero-phone__notch-cam {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.04);
+}
+
+/* Wallpaper image */
+.dt-hero-phone__img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  display: block;
+  transition: transform 0.6s ease;
+}
+.dt-hero-phone-wrap:hover .dt-hero-phone__img {
+  transform: scale(1.06);
+}
+
+/* Glass gloss overlay */
+.dt-hero-phone__gloss {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(255,255,255,0.07) 0%,
+    rgba(255,255,255,0.02) 30%,
+    transparent 60%
+  );
+  pointer-events: none;
+  z-index: 4;
+  border-radius: 20px;
+}
+
+/* Crimson glow ring for featured */
+.dt-hero-phone__glow-ring {
+  position: absolute;
+  inset: -12px;
+  border-radius: 28px;
+  background: radial-gradient(ellipse, rgba(192,0,26,0.18) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: -1;
+  animation: heroGlowPulse 3s ease-in-out infinite;
+}
+@keyframes heroGlowPulse {
+  0%, 100% { opacity: 0.7; transform: scale(1); }
+  50%       { opacity: 1;   transform: scale(1.05); }
+}
+
+/* Home indicator bar */
+.dt-hero-phone__bar {
+  position: absolute;
+  bottom: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 30%;
+  height: 3px;
+  border-radius: 2px;
+  background: rgba(255,255,255,0.18);
+  z-index: 10;
+  transition: background 0.3s;
+}
+.dt-hero-phone-wrap:hover .dt-hero-phone__bar {
+  background: rgba(192,0,26,0.5);
+}
+
+/* Label */
+.dt-hero-phone__label {
+  font-family: var(--dt-font-mono, monospace);
+  font-size: 0.52rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #3a3450;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  transition: color 0.3s;
+}
+.dt-hero-phone-wrap:hover .dt-hero-phone__label {
+  color: rgba(192,0,26,0.7);
+}
+.dt-hero-phone-wrap--featured .dt-hero-phone__label {
+  color: rgba(192,0,26,0.5);
+}
+
+/* Entry animation — phones slide up on load */
+.dt-hero-phone-wrap {
+  animation: heroPhoneFloat 4s ease-in-out infinite,
+             heroPhoneEnter 0.6s ease backwards;
+  animation-delay: calc(var(--phone-i, 0) * 0.1s),
+                   calc(var(--phone-i, 0) * 0.08s);
+}
+.dt-hero-phone-wrap--featured {
+  animation: heroPhoneFloatFeatured 4s ease-in-out infinite,
+             heroPhoneEnter 0.6s ease backwards;
+  animation-delay: 0s, calc(2 * 0.08s);
+}
+@keyframes heroPhoneEnter {
+  from { opacity: 0; transform: translateY(30px); }
+  to   { opacity: 1; }
+}
+
+/* Mobile: smaller and scrollable */
+@media (max-width: 800px) {
+  .dt-hero-phones {
+    gap: 6px;
+    padding: 10px 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    justify-content: flex-start;
+  }
+  .dt-hero-phones::-webkit-scrollbar { display: none; }
+  .dt-hero-phone-wrap {
+    flex: 0 0 auto;
+    width: 80px;
+  }
+  .dt-hero-phone-wrap--featured {
+    width: 90px;
+  }
+  /* Reduce float animations on mobile */
+  .dt-hero-phone-wrap,
+  .dt-hero-phone-wrap--featured {
+    animation: heroPhoneEnter 0.6s ease backwards;
+    animation-delay: calc(var(--phone-i, 0) * 0.08s);
+  }
+  .dt-hero-phone__label { display: none; }
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   MOBILE SECTION PHONE CARDS — dt-phone-card-*
+   Large beautiful phone mockups in the "Mobile Wallpapers" section
+═══════════════════════════════════════════════════════════════════════════ */
+
+/* Showcase container */
+.dt-phone-showcase {
+  display: flex;
+  gap: 18px;
+  justify-content: center;
+  align-items: flex-end;
+  padding: 20px 24px 48px;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+.dt-phone-showcase::-webkit-scrollbar { display: none; }
+
+/* Single phone card */
+.dt-phone-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  flex: 0 0 auto;
+  width: clamp(108px, 14vw, 148px);
+  cursor: pointer;
+  /* Staggered entry */
+  animation:
+    phoneCardEnter 0.7s ease backwards,
+    phoneCardFloat 5s ease-in-out infinite;
+  animation-delay:
+    calc(var(--card-i, 0) * 0.1s),
+    calc(var(--card-i, 0) * 0.4s + 0.7s);
+  will-change: transform;
+  transition: z-index 0s;
+}
+.dt-phone-card:hover {
+  z-index: 10;
+  animation-play-state: paused;
+}
+
+/* Hero (center) card lifts */
+.dt-phone-card--hero {
+  width: clamp(120px, 16vw, 166px);
+  z-index: 2;
+  animation:
+    phoneCardEnter 0.7s ease backwards,
+    phoneCardFloatHero 5s ease-in-out infinite;
+  animation-delay: 0.2s, 1.5s;
+}
+
+@keyframes phoneCardEnter {
+  from { opacity: 0; transform: translateY(40px) scale(0.95); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes phoneCardFloat {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-8px); }
+}
+@keyframes phoneCardFloatHero {
+  0%, 100% { transform: translateY(-16px) scale(1.05); }
+  50%       { transform: translateY(-24px) scale(1.05); }
+}
+
+/* Ambient aura behind phone */
+.dt-phone-card__aura {
+  position: absolute;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+  height: 50%;
+  background: radial-gradient(ellipse, rgba(192,0,26,0.12) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+  transition: opacity 0.4s;
+  opacity: 0;
+}
+.dt-phone-card:hover .dt-phone-card__aura,
+.dt-phone-card--hero .dt-phone-card__aura {
+  opacity: 1;
+}
+.dt-phone-card--hero .dt-phone-card__aura {
+  background: radial-gradient(ellipse, rgba(192,0,26,0.2) 0%, transparent 70%);
+  animation: auraBreath 3s ease-in-out infinite;
+}
+@keyframes auraBreath {
+  0%, 100% { opacity: 0.8; transform: translateX(-50%) scale(1); }
+  50%       { opacity: 1;   transform: translateX(-50%) scale(1.15); }
+}
+
+/* Phone shell */
+.dt-phone-card__shell {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 9 / 19.5;
+  background: linear-gradient(160deg, #1e1828 0%, #0a0810 55%, #14111f 100%);
+  border-radius: clamp(22px, 3vw, 32px);
+  border: 2px solid rgba(255,255,255,0.09);
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,0.035),
+    inset 0 1px 0 rgba(255,255,255,0.07),
+    inset 0 -1px 0 rgba(0,0,0,0.3),
+    0 30px 70px rgba(0,0,0,0.85),
+    0 10px 24px rgba(0,0,0,0.55);
+  overflow: visible;
+  transition:
+    border-color 0.4s ease,
+    box-shadow 0.4s ease,
+    transform 0.4s ease;
+  z-index: 1;
+}
+
+/* Hover transforms */
+.dt-phone-card:hover .dt-phone-card__shell {
+  border-color: rgba(192,0,26,0.55);
+  box-shadow:
+    0 0 0 1px rgba(192,0,26,0.15),
+    inset 0 1px 0 rgba(255,255,255,0.09),
+    0 40px 90px rgba(0,0,0,0.95),
+    0 0 48px rgba(192,0,26,0.22);
+  transform: translateY(-6px);
+}
+.dt-phone-card--hero .dt-phone-card__shell {
+  border-color: rgba(192,0,26,0.42);
+  box-shadow:
+    0 0 0 1px rgba(192,0,26,0.14),
+    inset 0 1px 0 rgba(255,255,255,0.08),
+    0 38px 80px rgba(0,0,0,0.92),
+    0 0 40px rgba(192,0,26,0.18);
+}
+.dt-phone-card--hero:hover .dt-phone-card__shell {
+  transform: translateY(-10px);
+  box-shadow:
+    0 0 0 1px rgba(192,0,26,0.22),
+    inset 0 1px 0 rgba(255,255,255,0.1),
+    0 50px 100px rgba(0,0,0,0.98),
+    0 0 60px rgba(192,0,26,0.28);
+}
+
+/* Left side buttons */
+.dt-phone-card__btn {
+  position: absolute;
+  background: linear-gradient(to right, #0e0b16, #1a1526);
+  border-radius: 2px;
+  z-index: 5;
+}
+.dt-phone-card__btn--vol1 {
+  left: -2.5px;
+  top: 18%;
+  width: 3px;
+  height: 9%;
+  border-radius: 2px 0 0 2px;
+  border: 1px solid rgba(255,255,255,0.06);
+  border-right: none;
+}
+.dt-phone-card__btn--vol2 {
+  left: -2.5px;
+  top: 29%;
+  width: 3px;
+  height: 9%;
+  border-radius: 2px 0 0 2px;
+  border: 1px solid rgba(255,255,255,0.06);
+  border-right: none;
+}
+.dt-phone-card__btn--power {
+  right: -2.5px;
+  top: 24%;
+  width: 3px;
+  height: 13%;
+  border-radius: 0 2px 2px 0;
+  border: 1px solid rgba(255,255,255,0.06);
+  border-left: none;
+}
+
+/* Screen area */
+.dt-phone-card__screen {
+  position: absolute;
+  inset: 4px;
+  border-radius: calc(clamp(22px, 3vw, 32px) - 4px);
+  overflow: hidden;
+  background: #050407;
+}
+
+/* Dynamic Island */
+.dt-phone-card__island {
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 15;
+  width: 36%;
+  height: 16px;
+  background: #0a0810;
+  border-radius: 0 0 10px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  border: 1px solid rgba(255,255,255,0.04);
+  border-top: none;
+  transition: width 0.3s ease;
+}
+.dt-phone-card:hover .dt-phone-card__island {
+  width: 42%;
+}
+.dt-phone-card__cam {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.03);
+}
+
+/* Wallpaper image */
+.dt-phone-card__img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  display: block;
+  transition: transform 0.7s ease;
+  z-index: 1;
+}
+.dt-phone-card:hover .dt-phone-card__img {
+  transform: scale(1.08);
+}
+
+/* Lock screen decorative UI */
+.dt-phone-card__lockscreen {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 22px 8px 10px;
+  pointer-events: none;
+  opacity: 1;
+  transition: opacity 0.4s;
+}
+.dt-phone-card:hover .dt-phone-card__lockscreen {
+  opacity: 0;
+}
+.dt-phone-card__ls-time {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  text-shadow: 0 1px 6px rgba(0,0,0,0.9);
+}
+.dt-phone-card__ls-hour {
+  font-family: var(--dt-font-head, serif);
+  font-size: clamp(0.9rem, 2.5vw, 1.2rem);
+  font-weight: 700;
+  color: rgba(255,255,255,0.92);
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+.dt-phone-card__ls-date {
+  font-family: var(--dt-font-mono, monospace);
+  font-size: 0.35rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.55);
+}
+.dt-phone-card__ls-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 4px;
+}
+.dt-phone-card__ls-icon {
+  font-size: 0.6rem;
+  filter: drop-shadow(0 1px 3px rgba(0,0,0,0.8));
+}
+.dt-phone-card__ls-bar {
+  flex: 1;
+  height: 3px;
+  background: rgba(255,255,255,0.18);
+  border-radius: 2px;
+  margin: 0 6px;
+}
+
+/* Glass gloss */
+.dt-phone-card__gloss {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    145deg,
+    rgba(255,255,255,0.09) 0%,
+    rgba(255,255,255,0.03) 35%,
+    transparent 60%
+  );
+  pointer-events: none;
+  z-index: 7;
+  border-radius: inherit;
+}
+
+/* Hover veil with "View →" */
+.dt-phone-card__hover-veil {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(140,0,0,0.75) 0%,
+    rgba(80,0,0,0.3) 40%,
+    transparent 65%
+  );
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 20px;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  z-index: 8;
+  border-radius: inherit;
+}
+.dt-phone-card:hover .dt-phone-card__hover-veil {
+  opacity: 1;
+}
+.dt-phone-card__hover-text {
+  font-family: var(--dt-font-mono, monospace);
+  font-size: 0.52rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.95);
+  text-shadow: 0 1px 4px rgba(0,0,0,0.8);
+}
+
+/* Home indicator */
+.dt-phone-card__indicator {
+  position: absolute;
+  bottom: 7px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 28%;
+  height: 3px;
+  border-radius: 2px;
+  background: rgba(255,255,255,0.2);
+  z-index: 10;
+  transition: background 0.35s, width 0.35s;
+}
+.dt-phone-card:hover .dt-phone-card__indicator {
+  background: rgba(192,0,26,0.6);
+  width: 35%;
+}
+
+/* Label below phone */
+.dt-phone-card__label {
+  font-family: var(--dt-font-mono, monospace);
+  font-size: 0.55rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #3a3450;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  transition: color 0.35s;
+}
+.dt-phone-card:hover .dt-phone-card__label {
+  color: rgba(192,0,26,0.7);
+}
+.dt-phone-card--hero .dt-phone-card__label {
+  color: rgba(192,0,26,0.5);
+}
+
+/* Odd cards tilt slightly */
+.dt-phone-card:nth-child(1) .dt-phone-card__shell { transform: rotate(-1.5deg); }
+.dt-phone-card:nth-child(2) .dt-phone-card__shell { transform: rotate(-0.5deg); }
+.dt-phone-card:nth-child(4) .dt-phone-card__shell { transform: rotate(0.5deg); }
+.dt-phone-card:nth-child(5) .dt-phone-card__shell { transform: rotate(1.5deg); }
+
+.dt-phone-card:nth-child(1):hover .dt-phone-card__shell,
+.dt-phone-card:nth-child(2):hover .dt-phone-card__shell,
+.dt-phone-card:nth-child(4):hover .dt-phone-card__shell,
+.dt-phone-card:nth-child(5):hover .dt-phone-card__shell {
+  transform: rotate(0deg) translateY(-6px);
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .dt-phone-showcase {
+    gap: 12px;
+    padding: 10px 16px 40px;
+    justify-content: flex-start;
+  }
+  .dt-phone-card {
+    width: clamp(88px, 22vw, 120px);
+  }
+  .dt-phone-card--hero {
+    width: clamp(100px, 25vw, 136px);
+  }
+}
+
+@media (max-width: 600px) {
+  .dt-phone-showcase {
+    gap: 10px;
+    padding: 10px 12px 36px;
+  }
+  .dt-phone-card {
+    width: 82px;
+  }
+  .dt-phone-card--hero {
+    width: 96px;
+  }
+  /* Reduce animations on mobile */
+  .dt-phone-card {
+    animation: phoneCardEnter 0.6s ease backwards;
+    animation-delay: calc(var(--card-i, 0) * 0.08s);
+  }
+  .dt-phone-card--hero {
+    animation: phoneCardEnter 0.6s ease backwards;
+    animation-delay: 0.16s;
+  }
+  .dt-phone-card__lockscreen { display: none; }
+  .dt-phone-card__label { font-size: 0.45rem; }
+}
+
+/* Light theme adjustments for new phone mockups */
+[data-theme="light"] .dt-hero-phone,
+[data-theme="light"] .dt-phone-card__shell {
+  background: linear-gradient(160deg, #d0ccc0 0%, #c8c4b8 55%, #bfbbb0 100%) !important;
+  border-color: rgba(0,0,0,0.14) !important;
+}
+[data-theme="light"] .dt-hero-phone__notch,
+[data-theme="light"] .dt-phone-card__island {
+  background: #b0ac9f !important;
+}
+[data-theme="light"] .dt-hero-phone__screen,
+[data-theme="light"] .dt-phone-card__screen {
+  background: #e8e3da !important;
+}
+[data-theme="light"] .dt-hero-phone__btn,
+[data-theme="light"] .dt-phone-card__btn {
+  background: linear-gradient(to right, #b8b4a8, #c4c0b4) !important;
+}
+[data-theme="light"] .dt-hero-phone__bar,
+[data-theme="light"] .dt-phone-card__indicator {
+  background: rgba(0,0,0,0.2) !important;
+}
+[data-theme="light"] .dt-phone-card__ls-hour {
+  color: rgba(20,16,10,0.9) !important;
+}
+[data-theme="light"] .dt-phone-card__ls-date {
+  color: rgba(20,16,10,0.55) !important;
+}
