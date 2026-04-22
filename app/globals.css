@@ -8686,3 +8686,253 @@ button:active:not(:disabled) { transform: translateY(0px) scale(0.98) !important
   transform: scale(1.15) !important;
   color: #fff !important;
 }
+/* ═══════════════════════════════════════════════════════════════
+   NAV ACTIONS — search, shuffle, theme in one clean row
+   ═══════════════════════════════════════════════════════════════ */
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+/* Icon buttons (search, shuffle) */
+.hw-nav-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background: transparent;
+  border: 1px solid rgba(139,0,0,0.35);
+  color: #8a8099;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: border-color 0.2s, color 0.2s, transform 0.15s;
+  border-radius: 0;
+}
+.hw-nav-icon:hover {
+  border-color: #c0001a;
+  color: #f0ecff;
+  transform: scale(1.1);
+}
+.hw-nav-icon.spinning svg {
+  animation: hw-spin 0.7s linear;
+}
+@keyframes hw-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* ── Theme switcher wrapper ── */
+.theme-switcher {
+  position: relative;
+  flex-shrink: 0;
+}
+
+/* The visible button: icon + label side by side */
+.theme-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  height: 36px;
+  padding: 0 10px;
+  background: transparent;
+  border: 1px solid rgba(139,0,0,0.35);
+  color: #8a8099;
+  font-family: var(--font-space), monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: border-color 0.2s, color 0.2s;
+  border-radius: 0;
+}
+.theme-btn:hover {
+  border-color: #c9a84c;
+  color: #c9a84c;
+}
+.theme-label {
+  font-family: var(--font-space), monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* ── Dropdown panel ── */
+.theme-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  background: #0c0b18;
+  border: 1px solid rgba(139,0,0,0.4);
+  min-width: 130px;
+  z-index: 900;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+  animation: theme-menu-in 0.15s ease;
+}
+@keyframes theme-menu-in {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.theme-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 14px;
+  background: transparent;
+  border: none;
+  color: #8a8099;
+  font-family: var(--font-space), monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.15s, color 0.15s;
+  white-space: nowrap;
+}
+.theme-option:hover {
+  background: rgba(192,0,26,0.12);
+  color: #f0ecff;
+}
+.theme-option--active {
+  color: #c9a84c;
+  background: rgba(201,168,76,0.08);
+}
+.theme-option--active::after {
+  content: "✓";
+  margin-left: auto;
+  font-size: 0.6rem;
+  color: #c9a84c;
+}
+
+/* ── Hamburger (mobile only) ── */
+.mobile-menu-btn {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background: transparent;
+  border: 1px solid rgba(139,0,0,0.4);
+  color: #d4cde8;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: border-color 0.2s, color 0.2s;
+  border-radius: 0;
+}
+.mobile-menu-btn:hover {
+  border-color: #c0001a;
+  color: #f0ecff;
+}
+
+/* ── Mobile theme row inside slide-out menu ── */
+.mobile-theme-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 16px 24px 8px;
+  border-top: 1px solid rgba(139,0,0,0.2);
+  margin-top: 8px;
+}
+.mobile-theme-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 7px 12px;
+  background: transparent;
+  border: 1px solid rgba(139,0,0,0.3);
+  color: #8a8099;
+  font-family: var(--font-space), monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s, background 0.2s;
+  border-radius: 0;
+}
+.mobile-theme-btn:hover,
+.mobile-theme-btn--active {
+  border-color: #c9a84c;
+  color: #c9a84c;
+  background: rgba(201,168,76,0.08);
+}
+
+/* ── Responsive: show hamburger, hide desktop actions ── */
+@media (max-width: 1023px) {
+  .nav-actions .hw-nav-icon,
+  .nav-actions .theme-switcher {
+    display: none;
+  }
+  .mobile-menu-btn {
+    display: flex;
+  }
+}
+@media (max-width: 479px) {
+  .theme-label { display: none; }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   COMING SOON — empty state for device / collection pages
+   ═══════════════════════════════════════════════════════════════ */
+
+.hw-coming-soon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 24px;
+  text-align: center;
+  gap: 16px;
+}
+.hw-coming-soon__sigil {
+  font-size: 2.5rem;
+  opacity: 0.4;
+  letter-spacing: 0.3em;
+}
+.hw-coming-soon__title {
+  font-family: var(--font-cinzel), cursive;
+  font-size: 1.4rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-primary, #f0ecff);
+}
+.hw-coming-soon__sub {
+  font-family: var(--font-space), monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-muted, #8a8099);
+  max-width: 340px;
+  line-height: 1.7;
+}
+.hw-coming-soon__bar {
+  width: 40px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #c0001a, transparent);
+  margin: 8px 0;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   BLOCK Google Auto-Ads from injecting into collection grids
+   Auto-ads inject .adsbygoogle ins tags directly into grid children,
+   breaking the layout and showing unrelated ad text in card slots.
+   ═══════════════════════════════════════════════════════════════ */
+
+.hw2-obsessions__grid ins.adsbygoogle,
+.hw2-obsessions__grid > div:not([class]),
+.grid ins.adsbygoogle {
+  display: none !important;
+}
+
+/* Ensure obsession grid only shows hw2-obs-card children */
+.hw2-obsessions__grid > *:not(.hw2-obs-card):not(.hw-coming-soon) {
+  display: none !important;
+}

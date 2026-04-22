@@ -130,9 +130,14 @@ export default async function PcPage({ searchParams }: PageProps) {
 
       <section className="max-w-7xl mx-auto px-6 md:px-[60px] py-10">
         {images.length === 0 ? (
-          <p className="font-mono text-[0.65rem] tracking-[0.2em] uppercase text-[#4a445a] py-20 text-center">
-            No wallpapers found{tag ? ` for #${tag}` : ""}. More dropping soon.
-          </p>
+                    <div className="hw-coming-soon">
+            <div className="hw-coming-soon__sigil">✦ ☽ ✦</div>
+            <div className="hw-coming-soon__bar" />
+            <h2 className="hw-coming-soon__title">Coming Soon</h2>
+            <p className="hw-coming-soon__sub">
+              {tag ? `New wallpapers tagged #${tag} are on their way.` : "Dark art is brewing. Upload images from the admin panel to fill this page."}
+            </p>
+          </div>
         ) : (
           <>
             <p className="font-mono text-[0.6rem] tracking-[0.2em] uppercase text-[#4a445a] mb-6">

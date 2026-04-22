@@ -174,9 +174,13 @@ export default async function Home() {
             })}
           </div>
         ) : (
-          <div className="hw2-obsessions__empty">
-            <p>No collections yet. Add some from the admin panel.</p>
-            <Link href="/collections" className="hw2-see-all">Browse All →</Link>
+          <div className="hw-coming-soon" style={{gridColumn: "1 / -1"}}>
+            <div className="hw-coming-soon__sigil">✦ ☽ ✦</div>
+            <div className="hw-coming-soon__bar" />
+            <h2 className="hw-coming-soon__title">Coming Soon</h2>
+            <p className="hw-coming-soon__sub">
+              Dark collections are being summoned. Upload images from the admin panel to awaken this page.
+            </p>
           </div>
         )}
       </section>
