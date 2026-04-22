@@ -8936,3 +8936,144 @@ button:active:not(:disabled) { transform: translateY(0px) scale(0.98) !important
 .hw2-obsessions__grid > *:not(.hw2-obs-card):not(.hw-coming-soon) {
   display: none !important;
 }
+/* ═══════════════════════════════════════════════════════════════
+   HERO — remove excessive top whitespace, tighten spacing
+   ═══════════════════════════════════════════════════════════════ */
+
+.hw-hero {
+  min-height: unset !important;
+  padding-top: calc(var(--topbar-total, 72px) + 40px) !important;
+  padding-bottom: 60px !important;
+}
+@media (max-width: 1023px) {
+  .hw-hero {
+    padding-top: calc(var(--topbar-total, 72px) + 24px) !important;
+    padding-bottom: 40px !important;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   LIGHT THEME — full visibility fixes
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Stat boxes */
+[data-theme="light"] .hw2-stat-box {
+  background: rgba(240, 235, 225, 0.8) !important;
+  border-color: rgba(139, 0, 0, 0.2) !important;
+}
+[data-theme="light"] .hw2-stat-box--crimson {
+  background: rgba(192, 0, 26, 0.06) !important;
+  border-color: rgba(192, 0, 26, 0.3) !important;
+}
+[data-theme="light"] .hw2-stat-box__num {
+  color: #8b0000 !important;
+}
+[data-theme="light"] .hw2-stat-box__label {
+  color: #6b6055 !important;
+}
+
+/* Hero text */
+[data-theme="light"] .hw-hero__tagline {
+  color: #8b0000 !important;
+}
+[data-theme="light"] .hw-hero__sub {
+  color: #5a5448 !important;
+}
+
+/* Mosaic cards on light theme */
+[data-theme="light"] .mosaic-card {
+  border: 1px solid rgba(139, 0, 0, 0.15) !important;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08) !important;
+}
+[data-theme="light"] .mosaic-label {
+  color: #f0ecff !important;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.8) !important;
+}
+[data-theme="light"] .mosaic-sub {
+  color: rgba(240,236,255,0.8) !important;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.8) !important;
+}
+
+/* Nav on light theme */
+[data-theme="light"] .hw-nav-icon {
+  border-color: rgba(139,0,0,0.25) !important;
+  color: #5a5448 !important;
+}
+[data-theme="light"] .hw-nav-icon:hover {
+  border-color: #8b0000 !important;
+  color: #8b0000 !important;
+}
+[data-theme="light"] .theme-btn {
+  border-color: rgba(139,0,0,0.25) !important;
+  color: #5a5448 !important;
+}
+[data-theme="light"] .theme-btn:hover {
+  border-color: #8b0000 !important;
+  color: #8b0000 !important;
+}
+[data-theme="light"] .theme-menu {
+  background: #f5f0e8 !important;
+  border-color: rgba(139,0,0,0.2) !important;
+}
+[data-theme="light"] .theme-option {
+  color: #5a5448 !important;
+}
+[data-theme="light"] .theme-option:hover {
+  background: rgba(139,0,0,0.08) !important;
+  color: #1a1814 !important;
+}
+[data-theme="light"] .theme-option--active {
+  color: #8b0000 !important;
+}
+
+/* Marquee ticker */
+[data-theme="light"] .hw-marquee,
+[data-theme="light"] .marquee-ticker {
+  background: rgba(220,215,205,0.6) !important;
+  border-color: rgba(139,0,0,0.15) !important;
+}
+
+/* Section titles */
+[data-theme="light"] .hw2-section-title,
+[data-theme="light"] .hw2-eyebrow,
+[data-theme="light"] .hw2-see-all {
+  color: #1a1814 !important;
+}
+[data-theme="light"] .hw2-eyebrow {
+  color: #8b0000 !important;
+}
+
+/* Obsession cards */
+[data-theme="light"] .hw2-obs-card__tag {
+  color: rgba(240,236,255,0.9) !important;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.7) !important;
+}
+[data-theme="light"] .hw2-obs-card__title {
+  color: #f0ecff !important;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.8) !important;
+}
+[data-theme="light"] .hw2-obs-card__count {
+  color: rgba(240,236,255,0.7) !important;
+}
+
+/* Statement / manifesto */
+[data-theme="light"] .hw-statement__quote,
+[data-theme="light"] .hw-statement__body {
+  color: #1a1814 !important;
+}
+[data-theme="light"] .hw-statement__em {
+  color: #8b0000 !important;
+}
+[data-theme="light"] .hw-statement__cta {
+  color: #8b0000 !important;
+  border-color: rgba(139,0,0,0.3) !important;
+}
+
+/* Daily pick */
+[data-theme="light"] .hw-daily__title,
+[data-theme="light"] .hw-daily__desc {
+  color: #1a1814 !important;
+}
+[data-theme="light"] .hw-daily__eyebrow {
+  color: #8b0000 !important;
+}
