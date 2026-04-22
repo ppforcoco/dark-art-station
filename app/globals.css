@@ -6930,6 +6930,8 @@ body:has([data-force-blog="true"]) ::-webkit-scrollbar-thumb {
   grid-template-columns: 1fr 1fr;
   background: var(--bg-primary);
   position: relative;
+  padding-top: 72px; /* nav height */
+  box-sizing: border-box;
 }
 @media (max-width: 1023px) {
   .hw-hero { grid-template-columns: 1fr; min-height: auto; }
@@ -6940,12 +6942,12 @@ body:has([data-force-blog="true"]) ::-webkit-scrollbar-thumb {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 120px 64px 80px;
+  padding: 48px 64px 80px;
   position: relative;
   z-index: 1;
 }
-@media (max-width: 1279px) { .hw-hero__text { padding: 120px 48px 80px; } }
-@media (max-width: 767px)  { .hw-hero__text { padding: 100px 24px 60px; } }
+@media (max-width: 1279px) { .hw-hero__text { padding: 48px 48px 80px; } }
+@media (max-width: 767px)  { .hw-hero__text { padding: 40px 24px 60px; } }
 
 .hw-hero__eyebrow {
   display: flex;
@@ -8168,18 +8170,34 @@ body {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 3px;
+  align-items: start;
 }
 @media (max-width: 1024px) { .hw2-obsessions__grid { grid-template-columns: repeat(3, 1fr); } }
 @media (max-width: 700px)  { .hw2-obsessions__grid { grid-template-columns: repeat(2, 1fr); } }
 
 .hw2-obs-card {
   position: relative;
-  aspect-ratio: 9/16;
+  /* 9:16 portrait using padding trick — works reliably in all grid contexts */
+  width: 100%;
+  padding-bottom: 177.78%;
+  height: 0;
   overflow: hidden;
   text-decoration: none;
   display: block;
-  background: var(--hw2-surface);
+  background: var(--hw2-surface, #13112a);
   animation: hw2-fade-up 0.6s ease calc(var(--delay, 0s)) both;
+}
+/* All absolute children fill the card */
+.hw2-obs-card__bg,
+.hw2-obs-card__veil,
+.hw2-obs-card__glitch,
+.hw2-obs-card__glow {
+  position: absolute;
+  inset: 0;
+}
+.hw2-obs-card__body {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
 }
 .hw2-obsessions__empty {
   text-align: center;
@@ -8191,8 +8209,6 @@ body {
 
 /* Image background */
 .hw2-obs-card__bg {
-  position: absolute;
-  inset: 0;
   transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .hw2-obs-card:hover .hw2-obs-card__bg { transform: scale(1.08); }
@@ -8208,8 +8224,6 @@ body {
 
 /* Dark veil */
 .hw2-obs-card__veil {
-  position: absolute;
-  inset: 0;
   background: linear-gradient(to top, rgba(5,4,13,0.92) 0%, rgba(5,4,13,0.3) 50%, rgba(5,4,13,0.1) 100%);
   transition: opacity 0.4s;
 }
@@ -8217,8 +8231,6 @@ body {
 
 /* Glitch effect on hover */
 .hw2-obs-card__glitch {
-  position: absolute;
-  inset: 0;
   pointer-events: none;
   opacity: 0;
   background: repeating-linear-gradient(
@@ -8245,8 +8257,6 @@ body {
 
 /* Card content */
 .hw2-obs-card__body {
-  position: absolute;
-  bottom: 0; left: 0; right: 0;
   padding: 24px 20px 20px;
   display: flex;
   flex-direction: column;
@@ -8278,8 +8288,6 @@ body {
 
 /* Crimson glow border on hover */
 .hw2-obs-card__glow {
-  position: absolute;
-  inset: 0;
   border: 1px solid transparent;
   pointer-events: none;
   transition: border-color 0.3s, box-shadow 0.3s;
