@@ -73,6 +73,7 @@ export default function Header() {
     return () => document.removeEventListener("mousedown", handler);
   }, []);
   const toggleMenu  = useCallback(() => { setMenuOpen(p => !p); setThemeMenuOpen(false); }, []);
+  const closeMenu   = useCallback(() => { setMenuOpen(false); setThemeMenuOpen(false); }, []);
   const openSearch  = useCallback(() => { setSearchOpen(true); setMenuOpen(false); setTimeout(() => overlayInputRef.current?.focus(), 80); }, []);
   const closeSearch = useCallback(() => { setSearchOpen(false); setQuery(""); }, []);
   const handleSearch = useCallback((e: React.FormEvent) => {
