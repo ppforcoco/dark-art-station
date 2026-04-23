@@ -19,34 +19,8 @@ export default function Footer(): JSX.Element {
             HAUNTED<span className="logo-red">WALLPAPERS</span>
           </Link>
           <p className="footer-brand-desc">
-            Premium dark art for those who appreciate bold, original aesthetics.
-            AI-generated wallpapers for iPhone, Android &amp; PC.
+            Premium dark art for those who feel the difference. Original. Bold. AI-crafted for iPhone, Android, and every screen you carry. Some wallpapers just decorate. These ones wait. No explanations. No echoes. Just mystery in 4K. Download what should not be this quiet.
           </p>
-        </div>
-
-        {/* ── Collections ── */}
-        <div className="footer-col">
-          <h4 className="footer-col-title">Collections</h4>
-          <ul>
-            <li><Link href="/iphone">iPhone Wallpapers</Link></li>
-            <li><Link href="/android">Android Wallpapers</Link></li>
-            <li><Link href="/pc">PC &amp; Desktop</Link></li>
-            <li><Link href="/obsessions">Obsessions</Link></li>
-            <li><Link href="/favorites">My Favorites ♡</Link></li>
-          </ul>
-        </div>
-
-        {/* ── Explore ── */}
-        <div className="footer-col">
-          <h4 className="footer-col-title">Explore</h4>
-          <ul>
-            <li><Link href="/shop/dark-fantasy-art">Dark Fantasy</Link></li>
-            <li><Link href="/shop/horror-movie-posters">Horror Posters</Link></li>
-            <li><Link href="/shop/dark-minimal-horror">Dark Minimal</Link></li>
-            <li><Link href="/shop/dark-humor-wallpaper-collection">Dark Humor</Link></li>
-            {/* Renamed from "Destiny Draw" — avoids gambling-adjacent language */}
-            <li><Link href="/gacha">Random Wallpaper 🎲</Link></li>
-          </ul>
         </div>
 
         {/* ── Seasonal Themes ── */}
@@ -88,8 +62,7 @@ export default function Footer(): JSX.Element {
       <div className="footer-bottom">
         <div className="footer-bottom-left">
           <span className="footer-copy">
-            © {new Date().getFullYear()} HauntedWallpapers. All rights reserved.
-            Visions collected daily.
+            © {new Date().getFullYear()} HauntedWallpapers. All rights reserved. New visions arrive each night. You keep what finds you.
           </span>
           {/* ── AI-generated content disclosure — required for AdSense transparency ── */}
           <span className="footer-ai-disclosure">

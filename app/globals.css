@@ -5580,6 +5580,21 @@ body::after {
 }
 
 /* THE DOWNLOAD BUTTON — explicit fixed height so it never collapses */
+@keyframes download-btn-glow-pulse {
+  0%, 100% {
+    box-shadow:
+      0 0 10px rgba(139, 0, 0, 0.5),
+      0 0 24px rgba(139, 0, 0, 0.3),
+      0 0 48px rgba(139, 0, 0, 0.15);
+  }
+  50% {
+    box-shadow:
+      0 0 20px rgba(192, 0, 26, 0.75),
+      0 0 48px rgba(192, 0, 26, 0.45),
+      0 0 90px rgba(192, 0, 26, 0.2);
+  }
+}
+
 a.download-btn {
   display: flex !important;
   align-items: center;
@@ -5599,16 +5614,22 @@ a.download-btn {
   text-decoration: none !important;
   border: 1px solid;
   cursor: pointer;
-  transition: filter 0.2s ease, transform 0.15s ease;
+  transition: filter 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
   user-select: none;
   white-space: nowrap;
+  animation: download-btn-glow-pulse 2.4s ease-in-out infinite;
 }
 
 a.download-btn:hover {
   filter: brightness(1.18);
   transform: translateY(-1px);
+  box-shadow:
+    0 0 28px rgba(192, 0, 26, 0.85),
+    0 0 60px rgba(192, 0, 26, 0.55),
+    0 0 110px rgba(192, 0, 26, 0.25);
+  animation-play-state: paused;
 }
 a.download-btn:active {
   transform: translateY(0px);
