@@ -178,7 +178,7 @@ export default function DownloadButton({ href, viewCount, label, children }: Pro
     ? (state === "loading" ? "Preparing…" : state === "done" ? "✓ Download Started" : children)
     : (state === "loading" ? "Preparing…"
       : state === "done"   ? "✓ Download Started"
-      : label              ?? "↓ Download HD · Free");
+      : label              ?? "↓ Download 4K · Free");
 
   const bgColor =
     state === "done"     ? "#1a5c35"
@@ -242,7 +242,7 @@ export default function DownloadButton({ href, viewCount, label, children }: Pro
           <p className="download-share-hint">Tap ↑ to set directly as wallpaper</p>
         )}
 
-        <p className="download-sublabel">JPEG · HD resolution · No account · No watermark</p>
+        <p className="download-sublabel">JPEG · 4K resolution · No account · No watermark</p>
       </div>
 
       {/* ── Sticky Keep Exploring bar ── */}

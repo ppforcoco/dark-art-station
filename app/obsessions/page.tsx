@@ -108,11 +108,26 @@ export default async function ObsessionsPage() {
                       : null;
                     const hasImages = col._count.images > 0;
 
+                    // Rotating border palette — each card gets a distinct colored border
+                    const BORDER_PALETTE = [
+                      { border: "#7c3aed", glow: "rgba(124,58,237,0.4)"   }, // purple
+                      { border: "#c0001a", glow: "rgba(192,0,26,0.4)"     }, // crimson
+                      { border: "#9aa5b4", glow: "rgba(154,165,180,0.3)"  }, // silver
+                      { border: "#800020", glow: "rgba(128,0,32,0.4)"     }, // maroon
+                      { border: "#1a5c36", glow: "rgba(26,92,54,0.4)"     }, // dark green
+                      { border: "#111111", glow: "rgba(200,190,255,0.12)" }, // pure black
+                      { border: "#a855f7", glow: "rgba(168,85,247,0.4)"   }, // violet
+                    ];
+                    const palette = BORDER_PALETTE[i % BORDER_PALETTE.length];
+
                     const card = (
                       <div
                         className="dt-obs-card"
                         style={{
                           "--delay": `${i * 0.05}s`,
+                          "--obs-card-border": palette.border,
+                          "--obs-card-border-hover": palette.border,
+                          "--obs-card-border-glow": palette.glow,
                           aspectRatio: "9/16",
                           position: "relative",
                           overflow: "hidden",

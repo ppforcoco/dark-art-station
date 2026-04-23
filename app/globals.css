@@ -3,6 +3,15 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ── HTML color-scheme — syncs browser native UI (scrollbars, inputs) ── */
+/* Default (dark) */
+html { color-scheme: dark; }
+html[data-theme="light"] { color-scheme: light; }
+html[data-theme="ghost"] { color-scheme: dark; }
+html[data-theme="ember"] { color-scheme: dark; }
+html[data-theme="blood"] { color-scheme: dark; }
+/* Add more themes here as needed */
+
 /* ── Design Tokens ─────────────────────────────────────────── */
 :root {
   /* Layout geometry — single source of truth for nav heights */
@@ -12,27 +21,27 @@
   /* Dark Drift — background tint shifts over time (set by DarkDrift component) */
   --drift-tint: transparent;
 
-  /* Dark theme (default) */
-  --void:    #0c0b14;
-  --black:   #100f1a;
-  --deep:    #131120;
+  /* Dark theme (default) — pure black */
+  --void:    #000000;
+  --black:   #080808;
+  --deep:    #0d0d0d;
   --crimson: #8b0000;
   --blood:   #c0001a;
   --ember:   #ff3c00;
   --gold:    #c9a84c;
-  --ash:     #2a2535;
-  --smoke:   #4a445a;
-  --ghost:   #8a8099;
-  --pale:    #d4cde8;
-  --white:   #f0ecff;
+  --ash:     #1a1a1a;
+  --smoke:   #3a3a3a;
+  --ghost:   #787878;
+  --pale:    #c8c8c8;
+  --white:   #f0f0f0;
 
   /* Semantic aliases used throughout */
   --bg-primary:   var(--void);
   --bg-secondary: var(--black);
-  --text-primary: #e8e4f5;
-  --text-muted:   #b8b4cc;
-  --border-dim:   #2a2535;
-  --nav-bg:       rgba(12,11,20,0.92);
+  --text-primary: #e8e8e8;
+  --text-muted:   #a8a8a8;
+  --border-dim:   #1a1a1a;
+  --nav-bg:       rgba(0,0,0,0.92);
 }
 
 /* ── Light Theme ────────────────────────────────────────────── */
