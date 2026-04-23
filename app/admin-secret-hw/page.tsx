@@ -503,6 +503,12 @@ function CollectionsTab({password}:{password:string}){
   const[createFeatured,setCreateFeatured]=useState(false);
   const[createMsg,setCreateMsg]=useState<{type:"ok"|"err";text:string}|null>(null);
   const[creating,setCreating]=useState(false);
+  const[thumbFile,setThumbFile]=useState<File|null>(null);
+  const[thumbPreview,setThumbPreview]=useState("");
+  const[thumbDragging,setThumbDragging]=useState(false);
+  const[thumbUploading,setThumbUploading]=useState(false);
+  const[thumbMsg,setThumbMsg]=useState<{type:"ok"|"err";text:string}|null>(null);
+  const thumbInputRef=useRef<HTMLInputElement>(null);
   const r2Base=typeof process!=="undefined"?(process.env.NEXT_PUBLIC_R2_PUBLIC_URL??""):"";
 
   async function handleCreate(){
@@ -524,7 +530,12 @@ function CollectionsTab({password}:{password:string}){
 
   useEffect(()=>{load();},[load]);
 
-  function openCollection(c:CollectionRecord){setSelected(c);setDesc(c.description??"");setMetaDesc(c.metaDescription??"");setMsg(null);setDescMode("html");}
+  function openCollection(c:CollectionRecord){
+    setSelected(c);setDesc(c.description??"");setMetaDesc(c.metaDescription??"");
+    setMsg(null);setDescMode("html");
+    setThumbFile(null);setThumbPreview("");setThumbMsg(null);
+    if(thumbInputRef.current)thumbInputRef.current.value="";
+  }
 
   async function handleSave(){
     if(!selected)return;setSaving(true);setMsg(null);
@@ -533,6 +544,27 @@ function CollectionsTab({password}:{password:string}){
       if(res.ok){setMsg({type:"ok",text:`✓ Saved "${selected.title}"`});setCollections(prev=>prev.map(c=>c.slug===selected.slug?{...c,description:desc,metaDescription:metaDesc||null}:c));setSelected(s=>s?{...s,description:desc,metaDescription:metaDesc||null}:null);}
       else setMsg({type:"err",text:j.error??"Save failed."});}
     catch{setMsg({type:"err",text:"Network error."});}setSaving(false);
+  }
+
+  async function handleThumbUpload(){
+    if(!thumbFile||!selected)return;
+    setThumbUploading(true);setThumbMsg(null);
+    try{
+      const form=new FormData();
+      form.append("file",thumbFile);
+      form.append("slug",selected.slug);
+      const res=await fetch("/api/hw-admin/collections/upload-thumbnail",{method:"POST",headers:{"x-admin-password":password},body:form});
+      const j=await res.json();
+      if(res.ok){
+        setThumbMsg({type:"ok",text:"✓ Thumbnail uploaded — live on homepage & obsessions page!"});
+        const newThumb=j.thumbnail;
+        setCollections(prev=>prev.map(c=>c.slug===selected.slug?{...c,thumbnail:newThumb}:c));
+        setSelected(s=>s?{...s,thumbnail:newThumb}:null);
+        setThumbFile(null);setThumbPreview("");
+        if(thumbInputRef.current)thumbInputRef.current.value="";
+      }else setThumbMsg({type:"err",text:j.error??"Upload failed."});
+    }catch{setThumbMsg({type:"err",text:"Network error."});}
+    setThumbUploading(false);
   }
 
   const filtered=collections.filter(c=>!search||c.title.toLowerCase().includes(search.toLowerCase())||c.slug.includes(search.toLowerCase()));
@@ -572,12 +604,16 @@ function CollectionsTab({password}:{password:string}){
             const active=selected?.slug===c.slug;
             const hasContent=c.description&&c.description.length>20;
             const hasHtml=/<[a-z][\s\S]*>/i.test(c.description??"");
+            const hasThumb=!!c.thumbnail;
             return<button key={c.slug} onClick={()=>openCollection(c)} style={{display:"flex",alignItems:"center",gap:"10px",width:"100%",padding:"10px 14px",background:active?"rgba(192,0,26,0.15)":"transparent",border:"none",borderBottom:`1px solid ${C.border}`,borderLeft:`3px solid ${active?C.red:"transparent"}`,cursor:"pointer",textAlign:"left"}}>
-              {thumbUrl(c.thumbnail)?<img src={thumbUrl(c.thumbnail)} alt="" style={{width:"32px",height:"48px",objectFit:"cover",flexShrink:0,border:`1px solid ${C.border}`}} onError={e=>{(e.target as HTMLImageElement).style.display="none";}}/>:<div style={{width:"32px",height:"48px",background:"#1a1625",flexShrink:0,display:"flex",alignItems:"center",justifyContent:"center",fontSize:"0.9rem"}}>🖤</div>}
+              {thumbUrl(c.thumbnail)?<img src={thumbUrl(c.thumbnail)} alt="" style={{width:"32px",height:"48px",objectFit:"cover",flexShrink:0,border:`1px solid ${C.border}`}} onError={e=>{(e.target as HTMLImageElement).style.display="none";}}/>:<div style={{width:"32px",height:"48px",background:"#1a1625",flexShrink:0,display:"flex",alignItems:"center",justifyContent:"center",fontSize:"0.9rem",border:`1px dashed ${C.border}`}}>🖤</div>}
               <div style={{flex:1,minWidth:0}}>
                 <p style={{color:active?C.textPri:C.textSec,fontSize:"0.78rem",fontWeight:active?600:400,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{c.title}</p>
                 <p style={{color:C.textMut,fontSize:"0.6rem",marginTop:"2px"}}>{c._count.images} images · {c.category}</p>
-                {hasContent&&<p style={{color:hasHtml?C.purple:C.green,fontSize:"0.55rem",marginTop:"2px"}}>{hasHtml?"● HTML desc":"● Text desc"}</p>}
+                <div style={{display:"flex",gap:"6px",marginTop:"2px",flexWrap:"wrap"}}>
+                  {hasThumb&&<p style={{color:C.gold,fontSize:"0.55rem",margin:0}}>🖼 thumb</p>}
+                  {hasContent&&<p style={{color:hasHtml?C.purple:C.green,fontSize:"0.55rem",margin:0}}>{hasHtml?"● HTML":"● desc"}</p>}
+                </div>
               </div>
             </button>;})}
         </div>}
@@ -587,7 +623,7 @@ function CollectionsTab({password}:{password:string}){
     </Card></div>
 
     {!selected
-      ?<Card style={{padding:"48px",textAlign:"center"}}><p style={{color:C.textMut,fontSize:"0.85rem"}}>← Select a collection to edit its description</p></Card>
+      ?<Card style={{padding:"48px",textAlign:"center"}}><p style={{color:C.textMut,fontSize:"0.85rem"}}>← Select a collection to edit it</p></Card>
       :<div style={{display:"flex",flexDirection:"column",gap:"16px"}}>
         <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",flexWrap:"wrap",gap:"12px"}}>
           <div>
@@ -601,6 +637,72 @@ function CollectionsTab({password}:{password:string}){
           <Btn onClick={handleSave} disabled={saving}>{saving?"Saving…":"💾 Save Description"}</Btn>
         </div>
         <Msg msg={msg}/>
+
+        {/* ── OBSESSION THUMBNAIL ─────────────────────────────────────── */}
+        <Card style={{padding:"16px",borderColor:selected.thumbnail?C.gold:"rgba(201,168,76,0.3)",background:selected.thumbnail?"rgba(201,168,76,0.04)":C.surface}}>
+          <p style={{...lbl,marginBottom:"10px",color:C.gold}}>🖼 Obsession Card Thumbnail</p>
+          <p style={{color:C.textMut,fontSize:"0.65rem",marginBottom:"14px",lineHeight:1.6}}>This image appears on the <strong style={{color:C.textSec}}>Homepage grid</strong> and <strong style={{color:C.textSec}}>/obsessions</strong> page as the card background. Recommended: portrait 3:4 ratio, min 600px wide. JPG/PNG/WEBP.</p>
+
+          {selected.thumbnail&&thumbUrl(selected.thumbnail)&&(
+            <div style={{display:"flex",gap:"16px",alignItems:"flex-start",marginBottom:"16px",padding:"12px",background:"rgba(0,0,0,0.3)",border:`1px solid ${C.border}`}}>
+              <img src={thumbUrl(selected.thumbnail)} alt="Current thumbnail" style={{width:"60px",height:"80px",objectFit:"cover",border:`1px solid ${C.gold}`,flexShrink:0}} onError={e=>{(e.target as HTMLImageElement).style.opacity="0.2";}}/>
+              <div>
+                <p style={{color:C.gold,fontSize:"0.7rem",marginBottom:"4px"}}>✓ Current thumbnail</p>
+                <p style={{color:C.textMut,fontSize:"0.6rem",wordBreak:"break-all"}}>{selected.thumbnail}</p>
+                <p style={{color:C.textMut,fontSize:"0.6rem",marginTop:"4px"}}>Upload a new image below to replace it.</p>
+              </div>
+            </div>
+          )}
+
+          <div
+            onDragOver={e=>{e.preventDefault();setThumbDragging(true);}}
+            onDragLeave={()=>setThumbDragging(false)}
+            onDrop={e=>{
+              e.preventDefault();setThumbDragging(false);
+              const f=e.dataTransfer.files[0];
+              if(f?.type.startsWith("image/")){setThumbFile(f);setThumbPreview(URL.createObjectURL(f));setThumbMsg(null);}
+            }}
+            onClick={()=>thumbInputRef.current?.click()}
+            style={{border:`2px dashed ${thumbDragging?C.gold:thumbFile?C.green:C.border}`,background:thumbDragging?"rgba(201,168,76,0.06)":C.surface,padding:"24px",textAlign:"center",cursor:"pointer",transition:"all 0.2s",marginBottom:"10px"}}
+          >
+            <input ref={thumbInputRef} type="file" accept="image/*" style={{display:"none"}} onChange={e=>{const f=e.target.files?.[0];if(f){setThumbFile(f);setThumbPreview(URL.createObjectURL(f));setThumbMsg(null);}}}/>
+            {thumbPreview
+              ?<div style={{display:"flex",gap:"16px",alignItems:"flex-start",justifyContent:"center",flexWrap:"wrap"}}>
+                  <img src={thumbPreview} alt="New thumbnail preview" style={{width:"80px",height:"106px",objectFit:"cover",border:`2px solid ${C.green}`}}/>
+                  <div style={{textAlign:"left"}}>
+                    <p style={{color:C.green,fontSize:"0.72rem",marginBottom:"4px"}}>✓ Ready to upload</p>
+                    <p style={{color:C.textPri,fontSize:"0.8rem",marginBottom:"3px"}}>{thumbFile?.name}</p>
+                    <p style={{color:C.textSec,fontSize:"0.7rem"}}>{thumbFile?(thumbFile.size/1024/1024).toFixed(2)+" MB":""}</p>
+                    <p style={{color:C.textMut,fontSize:"0.6rem",marginTop:"6px"}}>Click to replace</p>
+                  </div>
+                </div>
+              :<>
+                <p style={{fontSize:"1.8rem",marginBottom:"8px"}}>🖼</p>
+                <p style={{color:C.textPri,fontSize:"0.85rem",marginBottom:"4px"}}>{thumbDragging?"Drop it!":"Drag & drop obsession thumbnail"}</p>
+                <p style={{color:C.textSec,fontSize:"0.7rem"}}>or click to browse · JPG, PNG, WEBP · portrait preferred</p>
+              </>
+            }
+          </div>
+
+          {thumbMsg&&<Msg msg={thumbMsg}/>}
+
+          {thumbFile&&(
+            <div style={{display:"flex",gap:"8px",alignItems:"center"}}>
+              <Btn onClick={handleThumbUpload} disabled={thumbUploading} style={{background:C.gold,color:"#000"}}>
+                {thumbUploading?"Uploading…":"⬆ Upload Thumbnail"}
+              </Btn>
+              <Btn onClick={()=>{setThumbFile(null);setThumbPreview("");setThumbMsg(null);if(thumbInputRef.current)thumbInputRef.current.value="";}} variant="ghost" disabled={thumbUploading}>
+                Cancel
+              </Btn>
+            </div>
+          )}
+
+          {!thumbFile&&!selected.thumbnail&&(
+            <p style={{color:"rgba(192,0,26,0.7)",fontSize:"0.65rem",marginTop:"4px"}}>⚠ No thumbnail — card shows icon placeholder on homepage &amp; obsessions page.</p>
+          )}
+        </Card>
+
+        {/* ── DESCRIPTION & META ──────────────────────────────────────── */}
         <Card style={{padding:"16px"}}>
           <label style={lbl}>Meta Description (Google search snippet) <span style={{color:metaDesc.length>155?C.red:C.textMut}}>({metaDesc.length}/155)</span></label>
           <input value={metaDesc} onChange={e=>setMetaDesc(e.target.value)} placeholder="130–155 char keyword-rich description for Google" style={inp}/>
@@ -624,7 +726,7 @@ function CollectionsTab({password}:{password:string}){
         </Card>
         <Card style={{padding:"14px 16px",background:"rgba(124,58,237,0.08)",borderColor:"rgba(124,58,237,0.3)"}}>
           <p style={{color:C.purple,fontSize:"0.75rem",marginBottom:"4px"}}>✦ How this works</p>
-          <p style={{color:C.textSec,fontSize:"0.72rem",lineHeight:1.7}}>Saved description renders at <code style={{color:C.gold}}>/shop/{selected.slug}</code> as the editorial intro — visible to Google and visitors. The meta description goes in &lt;head&gt; for search results only.</p>
+          <p style={{color:C.textSec,fontSize:"0.72rem",lineHeight:1.7}}>The <strong style={{color:C.gold}}>thumbnail</strong> shows as the card background on the homepage obsessions grid and /obsessions page. The <strong style={{color:C.gold}}>description</strong> renders at <code style={{color:C.gold}}>/shop/{selected.slug}</code> as the editorial intro. Meta description goes in &lt;head&gt; for Google only.</p>
         </Card>
       </div>}
   </div>;

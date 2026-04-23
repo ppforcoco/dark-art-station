@@ -52,6 +52,16 @@ export default async function ObsessionsPage() {
     return acc;
   }, {});
 
+  // Parse pageContent.body HTML into individual card blocks for horizontal layout
+  const bodyHtml = pageContent?.body ?? "";
+  // Split on common block separators so we can lay them out in a row
+  const bodyBlocks: string[] = bodyHtml
+    ? bodyHtml
+        .split(/(?=<(?:div|section|article|p|blockquote|h[1-6])[^>]*class[^>]*(?:card|block|item|quote|box|text)[^>]*>)/i)
+        .map(s => s.trim())
+        .filter(Boolean)
+    : [];
+
   return (
     <main style={{ minHeight: "100vh", backgroundColor: "var(--bg-primary)", color: "var(--text-primary)" }}>
 
@@ -162,12 +172,85 @@ export default async function ObsessionsPage() {
           </>
         )}
 
-        {pageContent?.body && (
-          <div
-            className="device-page-intro"
-            style={{ marginTop: "48px", maxWidth: "860px" }}
-            dangerouslySetInnerHTML={{ __html: pageContent.body }}
-          />
+        {/* ── Page body content: horizontal scrolling landscape strip ── */}
+        {bodyHtml && (
+          <div style={{ marginTop: "56px" }}>
+            {/* Divider */}
+            <div style={{
+              display: "flex", alignItems: "center", gap: "16px",
+              marginBottom: "28px",
+            }}>
+              <div style={{ flex: 1, height: "1px", background: "linear-gradient(to right, transparent, #2a2535)" }} />
+              <span style={{ fontFamily: "var(--font-space,monospace)", fontSize: "0.5rem", letterSpacing: "0.3em", textTransform: "uppercase", color: "#4a445a" }}>
+                ✦ lore ✦
+              </span>
+              <div style={{ flex: 1, height: "1px", background: "linear-gradient(to left, transparent, #2a2535)" }} />
+            </div>
+
+            {/* Horizontal scrolling row of description cards */}
+            <div style={{
+              display: "grid",
+              gridTemplateColumns: bodyBlocks.length > 1
+                ? `repeat(${Math.min(bodyBlocks.length, 3)}, 1fr)`
+                : "1fr",
+              gap: "clamp(12px, 2vw, 24px)",
+            }}
+              className="obs-body-grid"
+            >
+              {bodyBlocks.length > 1 ? (
+                bodyBlocks.map((block, i) => (
+                  <div
+                    key={i}
+                    className="obs-body-card device-page-intro"
+                    dangerouslySetInnerHTML={{ __html: block }}
+                    style={{
+                      background: "rgba(10,6,18,0.7)",
+                      border: "1px solid #2a2535",
+                      padding: "clamp(16px,2.5vw,28px)",
+                      fontSize: "clamp(0.7rem,1.2vw,0.85rem)",
+                      lineHeight: 1.75,
+                    }}
+                  />
+                ))
+              ) : (
+                /* Single body block — render inline, no card wrapping */
+                <div
+                  className="device-page-intro obs-body-single"
+                  dangerouslySetInnerHTML={{ __html: bodyHtml }}
+                  style={{
+                    maxWidth: "860px",
+                    fontSize: "clamp(0.75rem,1.2vw,0.9rem)",
+                    lineHeight: 1.8,
+                  }}
+                />
+              )}
+            </div>
+
+            <style>{`
+              /* Obsessions body grid — responsive */
+              @media (max-width: 900px) {
+                .obs-body-grid {
+                  grid-template-columns: repeat(2, 1fr) !important;
+                }
+              }
+              @media (max-width: 560px) {
+                .obs-body-grid {
+                  grid-template-columns: 1fr !important;
+                }
+              }
+              /* Trim excessive font-size from CMS-injected cards */
+              .obs-body-card p,
+              .obs-body-card div {
+                font-size: inherit !important;
+                line-height: inherit !important;
+              }
+              /* Ensure text inside doesn't overflow */
+              .obs-body-card {
+                overflow: hidden;
+                word-break: break-word;
+              }
+            `}</style>
+          </div>
         )}
       </div>
 

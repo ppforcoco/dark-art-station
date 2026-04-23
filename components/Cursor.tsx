@@ -20,9 +20,25 @@ export default function Cursor() {
     ring.style.display = "block";
     dot.style.display  = "block";
 
-    // Event-driven: no rAF loop. mousemove already fires at display refresh rate.
-    // A perpetual rAF loop burns GPU every frame even when mouse is still.
+    let initialised = false;
+
     const onMove = (e: MouseEvent) => {
+      // On very first move: snap to position instantly (no transition), then re-enable
+      if (!initialised) {
+        initialised = true;
+        ring.style.transition = "none";
+        dot.style.transition  = "none";
+        ring.style.transform = `translate(${e.clientX - 20}px, ${e.clientY - 20}px)`;
+        dot.style.transform  = `translate(${e.clientX - 5}px,  ${e.clientY - 5}px)`;
+        ring.style.opacity = "1";
+        dot.style.opacity  = "1";
+        // Re-enable smooth transitions after one paint frame
+        requestAnimationFrame(() => {
+          ring.style.transition = "";
+          dot.style.transition  = "";
+        });
+        return;
+      }
       ring.style.transform = `translate(${e.clientX - 20}px, ${e.clientY - 20}px)`;
       dot.style.transform  = `translate(${e.clientX - 5}px,  ${e.clientY - 5}px)`;
     };
