@@ -254,21 +254,19 @@ export default async function Home() {
         const todayStr = new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" });
         return (
           <section className="dt-daily">
+            {/* Full-bleed background image with dark overlay */}
+            <div className="dt-daily__bg" aria-hidden="true">
+              <Image src={wotdUrl} alt="" fill priority unoptimized className="object-cover" sizes="100vw"
+                style={{ objectPosition: "center top" }} />
+              <div className="dt-daily__bg-veil" />
+            </div>
+
             <div className="dt-daily__inner">
-              <div className="dt-daily__text">
-                <p className="dt-daily__eyebrow">
-                  <span className="dt-daily__dot" />
-                  Tonight&rsquo;s Pick · {todayStr}
-                </p>
-                <h2 className="dt-daily__title">{wotd.title}</h2>
-                {wotd.description && <div className="dt-daily__desc" dangerouslySetInnerHTML={{ __html: wotd.description }} />}
-                <Link href={wotdHref} className="dt-btn dt-btn--enter dt-btn--sm">
-                  <span>Download This Wallpaper →</span>
-                </Link>
-              </div>
+              {/* LEFT — tall image card (phone mockup style) */}
               <Link href={wotdHref} className="dt-daily__img-frame" aria-label={wotd.title}>
                 <div className="dt-daily__img-wrap">
-                  <Image src={wotdUrl} alt={wotd.title} fill priority unoptimized className="object-cover" sizes="380px" />
+                  <Image src={wotdUrl} alt={wotd.title} fill priority unoptimized className="object-cover"
+                    sizes="(max-width:768px) 80vw, 340px" style={{ objectPosition: "center top" }} />
                 </div>
                 <div className="dt-daily__img-corners" aria-hidden="true">
                   <span /><span /><span /><span />
@@ -276,8 +274,146 @@ export default async function Home() {
                 {wotd.deviceType && (
                   <span className="dt-daily__badge">{wotd.deviceType.charAt(0) + wotd.deviceType.slice(1).toLowerCase()}</span>
                 )}
+                <div className="dt-daily__img-hover" aria-hidden="true">
+                  <span>View Wallpaper</span>
+                </div>
               </Link>
+
+              {/* RIGHT — text block */}
+              <div className="dt-daily__text">
+                <p className="dt-daily__eyebrow">
+                  <span className="dt-daily__dot" />
+                  Tonight&rsquo;s Pick · {todayStr}
+                </p>
+                <h2 className="dt-daily__title">{wotd.title}</h2>
+                {wotd.description && (
+                  <div className="dt-daily__desc" dangerouslySetInnerHTML={{ __html: wotd.description }} />
+                )}
+                <div className="dt-daily__actions">
+                  <Link href={wotdHref} className="dt-btn dt-btn--enter">
+                    <span>Download This Wallpaper →</span>
+                  </Link>
+                  <Link href={`/${devicePath}`} className="dt-btn dt-btn--ghost dt-btn--sm">
+                    <span>Browse {devicePath.charAt(0).toUpperCase() + devicePath.slice(1)} →</span>
+                  </Link>
+                </div>
+              </div>
             </div>
+
+            <style>{`
+              .dt-daily {
+                position: relative;
+                overflow: hidden;
+                padding: clamp(48px, 8vw, 96px) clamp(16px, 5vw, 80px);
+              }
+              .dt-daily__bg {
+                position: absolute;
+                inset: 0;
+                z-index: 0;
+              }
+              .dt-daily__bg-veil {
+                position: absolute;
+                inset: 0;
+                background: linear-gradient(
+                  105deg,
+                  rgba(6,4,2,0.97) 0%,
+                  rgba(10,4,4,0.88) 40%,
+                  rgba(20,6,6,0.65) 70%,
+                  rgba(30,8,8,0.45) 100%
+                );
+                backdrop-filter: blur(0px);
+              }
+              .dt-daily__inner {
+                position: relative;
+                z-index: 1;
+                display: grid;
+                grid-template-columns: clamp(180px, 22vw, 320px) 1fr;
+                gap: clamp(24px, 4vw, 72px);
+                align-items: center;
+                max-width: 1100px;
+                margin: 0 auto;
+              }
+              .dt-daily__img-frame {
+                position: relative;
+                display: block;
+                aspect-ratio: 9 / 16;
+                width: 100%;
+                border-radius: 20px;
+                overflow: hidden;
+                border: 1.5px solid rgba(192,0,26,0.35);
+                box-shadow:
+                  0 0 0 1px rgba(255,34,51,0.08),
+                  0 8px 40px rgba(0,0,0,0.7),
+                  0 0 60px rgba(192,0,26,0.12);
+                flex-shrink: 0;
+                text-decoration: none;
+                transition: transform 0.3s ease, box-shadow 0.3s ease;
+              }
+              .dt-daily__img-frame:hover {
+                transform: translateY(-4px) scale(1.01);
+                box-shadow:
+                  0 0 0 1px rgba(255,34,51,0.2),
+                  0 16px 60px rgba(0,0,0,0.8),
+                  0 0 80px rgba(192,0,26,0.25);
+              }
+              .dt-daily__img-wrap {
+                position: absolute;
+                inset: 0;
+              }
+              .dt-daily__img-hover {
+                position: absolute;
+                inset: 0;
+                background: rgba(192,0,26,0.12);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                opacity: 0;
+                transition: opacity 0.25s ease;
+                font-size: 0.85rem;
+                letter-spacing: 0.15em;
+                text-transform: uppercase;
+                color: #fff;
+                font-weight: 600;
+              }
+              .dt-daily__img-frame:hover .dt-daily__img-hover {
+                opacity: 1;
+              }
+              .dt-daily__text {
+                display: flex;
+                flex-direction: column;
+                gap: 1.25rem;
+              }
+              .dt-daily__title {
+                font-size: clamp(1.6rem, 3.5vw, 2.8rem);
+                line-height: 1.15;
+                margin: 0;
+              }
+              .dt-daily__desc {
+                font-size: clamp(0.9rem, 1.5vw, 1.05rem);
+                line-height: 1.7;
+                max-width: 540px;
+                opacity: 0.85;
+              }
+              .dt-daily__actions {
+                display: flex;
+                gap: 0.75rem;
+                flex-wrap: wrap;
+                align-items: center;
+                margin-top: 0.5rem;
+              }
+              @media (max-width: 680px) {
+                .dt-daily__inner {
+                  grid-template-columns: 1fr !important;
+                }
+                .dt-daily__img-frame {
+                  max-width: 240px;
+                  margin: 0 auto;
+                }
+                .dt-daily__bg-veil {
+                  background: linear-gradient(180deg,rgba(6,4,2,0.92) 0%,rgba(6,4,2,0.82) 100%) !important;
+                }
+              }
+            `}</style>
           </section>
         );
       })()}
