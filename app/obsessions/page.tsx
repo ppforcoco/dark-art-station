@@ -6,7 +6,9 @@ import { db, getPageContent } from "@/lib/db";
 import AdSlot from "@/components/AdSlot";
 import AgeGateLink from "@/components/AgeGateLink";
 
-export const revalidate = 60;
+// No cache — always serve fresh so admin changes show instantly
+export const revalidate = 0;
+export const dynamic = "force-dynamic";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
 
@@ -52,16 +54,6 @@ export default async function ObsessionsPage() {
     return acc;
   }, {});
 
-  // Parse pageContent.body HTML into individual card blocks for horizontal layout
-  const bodyHtml = pageContent?.body ?? "";
-  // Split on common block separators so we can lay them out in a row
-  const bodyBlocks: string[] = bodyHtml
-    ? bodyHtml
-        .split(/(?=<(?:div|section|article|p|blockquote|h[1-6])[^>]*class[^>]*(?:card|block|item|quote|box|text)[^>]*>)/i)
-        .map(s => s.trim())
-        .filter(Boolean)
-    : [];
-
   return (
     <main style={{ minHeight: "100vh", backgroundColor: "var(--bg-primary)", color: "var(--text-primary)" }}>
 
@@ -102,7 +94,10 @@ export default async function ObsessionsPage() {
                   gap: "clamp(6px,1.5vw,16px)",
                 }}>
                   {cols.map((col, i) => {
-                    const thumb = col.thumbnail ? `${r2Base}/${col.thumbnail}` : null;
+                    // Show thumbnail whenever it exists (even on empty collections)
+                    const thumb = col.thumbnail && col.thumbnail.trim() !== ""
+                      ? `${r2Base}/${col.thumbnail}`
+                      : null;
                     const hasImages = col._count.images > 0;
 
                     const card = (
@@ -111,10 +106,13 @@ export default async function ObsessionsPage() {
                         style={{ "--delay": `${i * 0.05}s` } as React.CSSProperties}
                       >
                         <div className="dt-obs-card__bg">
-                          {thumb && hasImages ? (
+                          {thumb ? (
                             <Image
-                              src={thumb} alt={col.thumbnailAlt ?? col.title}
-                              fill unoptimized className="object-cover"
+                              src={thumb}
+                              alt={col.thumbnailAlt ?? col.title}
+                              fill
+                              unoptimized
+                              className="object-cover"
                               sizes="(max-width:480px) 50vw, (max-width:900px) 33vw, 25vw"
                             />
                           ) : (
@@ -125,7 +123,7 @@ export default async function ObsessionsPage() {
                             }}>
                               <span style={{ fontSize: "clamp(1.8rem,4vw,2.5rem)" }}>{col.icon ?? "🖤"}</span>
                               <span style={{ fontSize: "0.6rem", letterSpacing: "0.12em", color: "rgba(255,255,255,0.3)", textTransform: "uppercase" }}>
-                                Coming Soon
+                                {hasImages ? col.tag : "Coming Soon"}
                               </span>
                             </div>
                           )}
@@ -134,6 +132,7 @@ export default async function ObsessionsPage() {
                         <div className="dt-obs-card__glitch" aria-hidden="true" />
                         <div className="dt-obs-card__drip" aria-hidden="true" />
                         <div className="dt-obs-card__body">
+                          <span className="dt-obs-card__tag">{col.tag}</span>
                           <h3 className="dt-obs-card__title" style={{ fontSize: "clamp(0.65rem,1.8vw,0.85rem)" }}>{col.title}</h3>
                           <span className="dt-obs-card__count" style={{ fontSize: "clamp(0.55rem,1.2vw,0.72rem)" }}>
                             {hasImages ? `${col._count.images} wallpapers` : "Coming soon"}
@@ -172,85 +171,19 @@ export default async function ObsessionsPage() {
           </>
         )}
 
-        {/* ── Page body content: horizontal scrolling landscape strip ── */}
-        {bodyHtml && (
-          <div style={{ marginTop: "56px" }}>
-            {/* Divider */}
-            <div style={{
-              display: "flex", alignItems: "center", gap: "16px",
-              marginBottom: "28px",
-            }}>
-              <div style={{ flex: 1, height: "1px", background: "linear-gradient(to right, transparent, #2a2535)" }} />
-              <span style={{ fontFamily: "var(--font-space,monospace)", fontSize: "0.5rem", letterSpacing: "0.3em", textTransform: "uppercase", color: "#4a445a" }}>
-                ✦ lore ✦
-              </span>
-              <div style={{ flex: 1, height: "1px", background: "linear-gradient(to left, transparent, #2a2535)" }} />
-            </div>
-
-            {/* Horizontal scrolling row of description cards */}
-            <div style={{
-              display: "grid",
-              gridTemplateColumns: bodyBlocks.length > 1
-                ? `repeat(${Math.min(bodyBlocks.length, 3)}, 1fr)`
-                : "1fr",
-              gap: "clamp(12px, 2vw, 24px)",
+        {/* SEO body text from admin — rendered as plain editorial prose only */}
+        {pageContent?.body && (
+          <div
+            className="device-page-intro"
+            style={{
+              marginTop: "48px",
+              maxWidth: "860px",
+              fontSize: "0.9rem",
+              lineHeight: "1.8",
+              color: "var(--text-secondary, #8a809a)",
             }}
-              className="obs-body-grid"
-            >
-              {bodyBlocks.length > 1 ? (
-                bodyBlocks.map((block, i) => (
-                  <div
-                    key={i}
-                    className="obs-body-card device-page-intro"
-                    dangerouslySetInnerHTML={{ __html: block }}
-                    style={{
-                      background: "rgba(10,6,18,0.7)",
-                      border: "1px solid #2a2535",
-                      padding: "clamp(16px,2.5vw,28px)",
-                      fontSize: "clamp(0.7rem,1.2vw,0.85rem)",
-                      lineHeight: 1.75,
-                    }}
-                  />
-                ))
-              ) : (
-                /* Single body block — render inline, no card wrapping */
-                <div
-                  className="device-page-intro obs-body-single"
-                  dangerouslySetInnerHTML={{ __html: bodyHtml }}
-                  style={{
-                    maxWidth: "860px",
-                    fontSize: "clamp(0.75rem,1.2vw,0.9rem)",
-                    lineHeight: 1.8,
-                  }}
-                />
-              )}
-            </div>
-
-            <style>{`
-              /* Obsessions body grid — responsive */
-              @media (max-width: 900px) {
-                .obs-body-grid {
-                  grid-template-columns: repeat(2, 1fr) !important;
-                }
-              }
-              @media (max-width: 560px) {
-                .obs-body-grid {
-                  grid-template-columns: 1fr !important;
-                }
-              }
-              /* Trim excessive font-size from CMS-injected cards */
-              .obs-body-card p,
-              .obs-body-card div {
-                font-size: inherit !important;
-                line-height: inherit !important;
-              }
-              /* Ensure text inside doesn't overflow */
-              .obs-body-card {
-                overflow: hidden;
-                word-break: break-word;
-              }
-            `}</style>
-          </div>
+            dangerouslySetInnerHTML={{ __html: pageContent.body }}
+          />
         )}
       </div>
 
