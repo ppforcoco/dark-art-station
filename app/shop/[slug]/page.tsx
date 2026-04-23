@@ -7,6 +7,7 @@ import { db } from "@/lib/db";
 import { getPublicUrl } from "@/lib/r2";
 import AdSlot from "@/components/AdSlot";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import AdminHtmlBlock from "@/components/AdminHtmlBlock";
 import { sanitizeAdminHtml } from "@/lib/sanitize-html";
 
 export const dynamicParams = true;
@@ -117,13 +118,11 @@ export default async function CollectionPage({ params }: PageProps) {
 
   const r2Base = process.env.NEXT_PUBLIC_R2_PUBLIC_URL ?? "";
 
-  // Always sanitize the description — strips full-page HTML wrappers, keeps prose
-  const descHtml = collection.description
-    ? sanitizeAdminHtml(collection.description)
-    : `<p>${collection.title} is a curated collection of free dark art wallpapers from Haunted Wallpapers. ` +
-      `Each piece in this ${collection.category ?? "dark"} collection is available as an instant free download ` +
-      `— no account required, no watermarks. Images are formatted for mobile portrait screens (9:16) ` +
-      `and look exceptional on AMOLED displays where true blacks create maximum contrast.</p>`;
+  const fallbackDesc =
+    `${collection.title} is a curated collection of free dark art wallpapers from Haunted Wallpapers. ` +
+    `Each piece in this ${collection.category ?? "dark"} collection is available as an instant free download ` +
+    `— no account required, no watermarks. Images are formatted for mobile portrait screens (9:16) ` +
+    `and look exceptional on AMOLED displays where true blacks create maximum contrast.`;
 
   return (
     <main
@@ -168,11 +167,15 @@ export default async function CollectionPage({ params }: PageProps) {
           — {collection.images.length} wallpaper{collection.images.length !== 1 ? "s" : ""} · {collection._count.downloads} downloads · {collection.category}
         </p>
 
-        {/* Description from admin — sanitized prose, full HTML support */}
-        <div
-          className="device-page-intro"
-          dangerouslySetInnerHTML={{ __html: descHtml }}
-        />
+        {/* Description from admin — rendered in iframe, supports any HTML */}
+        {collection.description && (
+          <AdminHtmlBlock html={collection.description} />
+        )}
+        {!collection.description && (
+          <div className="device-page-intro">
+            <p>{fallbackDesc}</p>
+          </div>
+        )}
       </section>
 
       <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_MAIN} width={728} height={90} />

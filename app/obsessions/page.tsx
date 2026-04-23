@@ -6,6 +6,7 @@ import { db, getPageContent } from "@/lib/db";
 import AdSlot from "@/components/AdSlot";
 import AgeGateLink from "@/components/AgeGateLink";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import AdminHtmlBlock from "@/components/AdminHtmlBlock";
 import { sanitizeAdminHtml } from "@/lib/sanitize-html";
 
 // No cache — always serve fresh so admin changes show instantly
@@ -70,12 +71,9 @@ export default async function ObsessionsPage() {
           Choose Your <span style={{ color: "#c9a84c", fontStyle: "italic" }}>Obsession</span>
         </h1>
 
-        {/* Description from admin — shown at top, landscape prose style */}
+        {/* Description from admin — rendered in iframe, supports any HTML */}
         {pageContent?.body && (
-          <div
-            className="device-page-intro"
-            dangerouslySetInnerHTML={{ __html: sanitizeAdminHtml(pageContent.body) }}
-          />
+          <AdminHtmlBlock html={pageContent.body} />
         )}
       </section>
 
