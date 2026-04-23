@@ -5,12 +5,42 @@
 
 /* ── HTML color-scheme — syncs browser native UI (scrollbars, inputs) ── */
 /* Default (dark) */
-html { color-scheme: dark; }
-html[data-theme="light"] { color-scheme: light; }
-html[data-theme="ghost"] { color-scheme: dark; }
-html[data-theme="ember"] { color-scheme: dark; }
-html[data-theme="blood"] { color-scheme: dark; }
+html { color-scheme: dark; background-color: #000000; }
+html[data-theme="light"]  { color-scheme: light; background-color: #f4f1ea; }
+html[data-theme="ghost"]  { color-scheme: dark;  background-color: #1a1a1e; }
+html[data-theme="ember"]  { color-scheme: dark;  background-color: #0a0600; }
+html[data-theme="blood"]  { color-scheme: dark;  background-color: #080000; }
 /* Add more themes here as needed */
+
+/* ── Rotating Rainbow Glow — applied to .card-glow elements ─────────────── */
+@keyframes cardGlowRotate {
+  0%   { box-shadow: 0 0 14px 3px rgba(139,0,0,0.7),   inset 0 0 8px rgba(139,0,0,0.3);   border-color: #8b0000; }
+  10%  { box-shadow: 0 0 14px 3px rgba(192,0,26,0.75),  inset 0 0 8px rgba(192,0,26,0.3);  border-color: #c0001a; }
+  20%  { box-shadow: 0 0 14px 3px rgba(255,60,0,0.7),   inset 0 0 8px rgba(255,60,0,0.3);  border-color: #ff3c00; }
+  30%  { box-shadow: 0 0 14px 3px rgba(201,168,76,0.65),inset 0 0 8px rgba(201,168,76,0.3);border-color: #c9a84c; }
+  40%  { box-shadow: 0 0 14px 3px rgba(45,180,60,0.65), inset 0 0 8px rgba(45,180,60,0.3); border-color: #2db43c; }
+  50%  { box-shadow: 0 0 14px 3px rgba(0,180,200,0.65), inset 0 0 8px rgba(0,180,200,0.3); border-color: #00b4c8; }
+  60%  { box-shadow: 0 0 14px 3px rgba(0,100,220,0.65), inset 0 0 8px rgba(0,100,220,0.3); border-color: #0064dc; }
+  70%  { box-shadow: 0 0 14px 3px rgba(100,0,200,0.7),  inset 0 0 8px rgba(100,0,200,0.3); border-color: #6400c8; }
+  80%  { box-shadow: 0 0 14px 3px rgba(180,0,180,0.7),  inset 0 0 8px rgba(180,0,180,0.3); border-color: #b400b4; }
+  90%  { box-shadow: 0 0 14px 3px rgba(220,0,80,0.7),   inset 0 0 8px rgba(220,0,80,0.3);  border-color: #dc0050; }
+  100% { box-shadow: 0 0 14px 3px rgba(139,0,0,0.7),   inset 0 0 8px rgba(139,0,0,0.3);   border-color: #8b0000; }
+}
+
+/* Each card gets a different animation-delay so colors are staggered */
+.card-glow {
+  animation: cardGlowRotate 8s linear infinite;
+  border: 1px solid #8b0000;
+}
+.card-glow:nth-child(2)  { animation-delay: -0.8s; }
+.card-glow:nth-child(3)  { animation-delay: -1.6s; }
+.card-glow:nth-child(4)  { animation-delay: -2.4s; }
+.card-glow:nth-child(5)  { animation-delay: -3.2s; }
+.card-glow:nth-child(6)  { animation-delay: -4.0s; }
+.card-glow:nth-child(7)  { animation-delay: -4.8s; }
+.card-glow:nth-child(8)  { animation-delay: -5.6s; }
+.card-glow:nth-child(9)  { animation-delay: -6.4s; }
+.card-glow:nth-child(10) { animation-delay: -7.2s; }
 
 /* ── Design Tokens ─────────────────────────────────────────── */
 :root {
