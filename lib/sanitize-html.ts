@@ -1,69 +1,98 @@
 /**
  * sanitizeAdminHtml
  *
- * Admin-entered HTML can be a full standalone page (with <html>, <body>, <style>,
- * <script> tags) OR clean prose markup (<p>, <h2>, <ul> etc.).
+ * Admin HTML can be a full standalone page with <style>, <script>, <svg>,
+ * layout divs, grids, animations — or clean prose markup.
  *
- * This function strips all layout/style wrappers and returns ONLY the readable
- * prose content that is safe to render inside a <div>.
+ * Strategy:
+ *  1. Nuke everything that is purely presentational (style, script, svg, img…)
+ *  2. Extract ONLY <p> paragraph content — the actual readable text
+ *  3. Rebuild as clean prose-only HTML safe to drop inside a <div>
  *
- * Works server-side with no DOM — pure string/regex transforms.
+ * This is intentionally aggressive: we'd rather lose a <h2> subheading
+ * than accidentally render a CSS grid or animated SVG inside the page.
  */
 export function sanitizeAdminHtml(raw: string): string {
   if (!raw || !raw.trim()) return "";
 
   let html = raw;
 
-  // 1. Remove <style>…</style> blocks entirely
+  // ── Phase 1: Nuke entire block-level non-prose elements ──────────────────
+
+  // Remove <style>…</style>
   html = html.replace(/<style[\s\S]*?<\/style>/gi, "");
-
-  // 2. Remove <script>…</script> blocks entirely
+  // Remove <script>…</script>
   html = html.replace(/<script[\s\S]*?<\/script>/gi, "");
-
-  // 3. Remove <head>…</head>
+  // Remove <head>…</head>
   html = html.replace(/<head[\s\S]*?<\/head>/gi, "");
+  // Remove <svg>…</svg>  (kills ALL inline SVGs/illustrations)
+  html = html.replace(/<svg[\s\S]*?<\/svg>/gi, "");
+  // Remove <noscript>
+  html = html.replace(/<noscript[\s\S]*?<\/noscript>/gi, "");
 
-  // 4. If there's a <body>, extract only its contents
-  const bodyMatch = html.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
-  if (bodyMatch) {
-    html = bodyMatch[1];
-  }
-
-  // 5. Unwrap structural/layout divs that carry no semantic prose value.
-  //    We keep: p, h1-h6, ul, ol, li, em, strong, span, a, br, blockquote, hr
-  //    We unwrap (remove tag but keep inner content): div, section, article,
-  //    main, aside, header, footer, nav, figure, figcaption, form
-  const UNWRAP_TAGS = [
-    "div","section","article","main","aside",
-    "header","footer","nav","figure","figcaption","form",
-    "html","body","table","tbody","tr","td","th",
+  // Remove paired non-prose tags AND their contents entirely
+  const NUKE_PAIRED = [
+    "canvas","video","audio","iframe","embed","object",
+    "picture","figure","map","table","thead","tbody","tfoot",
+    "select","datalist","details","dialog","menu",
   ];
-  for (const tag of UNWRAP_TAGS) {
-    // Remove opening tag (with any attributes)
-    html = html.replace(new RegExp(`<${tag}[^>]*>`, "gi"), "");
-    // Remove closing tag
-    html = html.replace(new RegExp(`<\\/${tag}>`, "gi"), "");
+  for (const tag of NUKE_PAIRED) {
+    html = html.replace(new RegExp(`<${tag}[\\s\\S]*?<\\/${tag}>`, "gi"), "");
   }
 
-  // 6. Strip inline style="" and class="" attributes from remaining tags
-  //    (keeps the tag but removes layout-specific overrides)
-  html = html.replace(/\s+style="[^"]*"/gi, "");
-  html = html.replace(/\s+class="[^"]*"/gi, "");
-
-  // 7. Remove on* event handlers
-  html = html.replace(/\s+on\w+="[^"]*"/gi, "");
-
-  // 8. Collapse excessive blank lines (3+ newlines → 2)
-  html = html.replace(/\n{3,}/g, "\n\n");
-
-  // 9. Trim
-  html = html.trim();
-
-  // 10. If after all this we have no <p> tags at all (e.g. content was pure text),
-  //     wrap bare text runs in <p> tags so they render with prose styling.
-  if (!/<p[\s\S]*?>/i.test(html) && html.length > 0) {
-    html = `<p>${html.replace(/\n\n+/g, "</p><p>").replace(/\n/g, "<br/>")}</p>`;
+  // Remove self-closing / void non-prose tags
+  const NUKE_VOID = ["img","input","br","hr","source","track","area","col","link","meta","base","wbr"];
+  for (const tag of NUKE_VOID) {
+    html = html.replace(new RegExp(`<${tag}[^>]*\\/?>`, "gi"), " ");
   }
 
-  return html;
+  // ── Phase 2: Extract <body> if this is a full page ───────────────────────
+  const bodyMatch = html.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
+  if (bodyMatch) html = bodyMatch[1];
+
+  // ── Phase 3: Collect all <p> paragraphs ─────────────────────────────────
+  const paragraphs: string[] = [];
+  const pRegex = /<p[^>]*>([\s\S]*?)<\/p>/gi;
+  let match;
+  while ((match = pRegex.exec(html)) !== null) {
+    const inner = match[1]
+      // strip any remaining tags inside <p> except em, strong, span, a
+      .replace(/<(?!\/?(em|strong|span|a|b|i|u|mark|code|abbr)\b)[^>]+>/gi, "")
+      // strip style/class/on* attributes from surviving inline tags
+      .replace(/\s+style="[^"]*"/gi, "")
+      .replace(/\s+style='[^']*'/gi, "")
+      .replace(/\s+class="[^"]*"/gi, "")
+      .replace(/\s+class='[^']*'/gi, "")
+      .replace(/\s+on\w+="[^"]*"/gi, "")
+      .replace(/\s+id="[^"]*"/gi, "")
+      .trim();
+
+    if (inner.length > 0) {
+      paragraphs.push(`<p>${inner}</p>`);
+    }
+  }
+
+  // ── Phase 4: If no <p> tags found, fall back to h1-h6 / li text ─────────
+  if (paragraphs.length === 0) {
+    // Try to grab heading text
+    const headingRegex = /<h[1-6][^>]*>([\s\S]*?)<\/h[1-6]>/gi;
+    while ((match = headingRegex.exec(html)) !== null) {
+      const inner = match[1].replace(/<[^>]+>/g, "").trim();
+      if (inner) paragraphs.push(`<p>${inner}</p>`);
+    }
+    // Try list items
+    const liRegex = /<li[^>]*>([\s\S]*?)<\/li>/gi;
+    while ((match = liRegex.exec(html)) !== null) {
+      const inner = match[1].replace(/<[^>]+>/g, "").trim();
+      if (inner) paragraphs.push(`<p>${inner}</p>`);
+    }
+  }
+
+  // ── Phase 5: If still nothing, strip ALL tags and wrap in <p> ────────────
+  if (paragraphs.length === 0) {
+    const text = html.replace(/<[^>]+>/g, " ").replace(/\s{2,}/g, " ").trim();
+    if (text) paragraphs.push(`<p>${text}</p>`);
+  }
+
+  return paragraphs.join("\n");
 }
