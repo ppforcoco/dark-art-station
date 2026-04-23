@@ -171,9 +171,7 @@ export default async function Home() {
                     <div className="dt-hero-phone__btn dt-hero-phone__btn--vol1" aria-hidden="true" />
                     <div className="dt-hero-phone__btn dt-hero-phone__btn--vol2" aria-hidden="true" />
                     <div className="dt-hero-phone__screen">
-                      <div className="dt-hero-phone__notch" aria-hidden="true">
-                        <span className="dt-hero-phone__notch-cam" />
-                      </div>
+  
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
                         src={phone.src}
@@ -186,7 +184,7 @@ export default async function Home() {
                     </div>
                     <div className="dt-hero-phone__bar" aria-hidden="true" />
                   </div>
-                  <span className="dt-hero-phone__label">{phone.alt}</span>
+
                 </div>
               ))}
             </div>
@@ -471,18 +469,6 @@ export default async function Home() {
                     loading="lazy"
                   />
 
-                  {/* Lock screen overlay UI (decorative) */}
-                  <div className="dt-phone-card__lockscreen" aria-hidden="true">
-                    <div className="dt-phone-card__ls-time">
-                      <span className="dt-phone-card__ls-hour">11:11</span>
-                      <span className="dt-phone-card__ls-date">Haunted Town</span>
-                    </div>
-                    <div className="dt-phone-card__ls-actions">
-                      <span className="dt-phone-card__ls-icon">🔦</span>
-                      <div className="dt-phone-card__ls-bar" />
-                      <span className="dt-phone-card__ls-icon">📷</span>
-                    </div>
-                  </div>
 
                   {/* Glass gloss */}
                   <div className="dt-phone-card__gloss" aria-hidden="true" />
@@ -497,8 +483,7 @@ export default async function Home() {
                 <div className="dt-phone-card__indicator" aria-hidden="true" />
               </div>
 
-              {/* Label below phone */}
-              <span className="dt-phone-card__label">{phone.label}</span>
+
             </div>
           ))}
         </div>
