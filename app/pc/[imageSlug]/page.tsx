@@ -32,15 +32,17 @@ function buildFallbackDescription(title: string, tags: string[]): string {
   const firstTag = tags[0] ?? "dark fantasy";
   const secondTag = tags[1] ?? "atmospheric";
 
-  return `${title} is a free high-resolution PC wallpaper from the Haunted Wallpapers dark art collection. ` +
-    `Crafted for desktop and widescreen monitors, this piece immerses your screen in themes of ${tagList}. ` +
-    `Formatted at a native 16:9 aspect ratio, it fits seamlessly across 1080p, 1440p, and 4K displays without cropping or distortion. ` +
-    `Whether you gravitate toward ${firstTag} aesthetics or simply want a ${secondTag} backdrop that stands out, ` +
-    `this wallpaper delivers moody, original artwork at no cost. ` +
-    `No account or sign-up is required — click download and the full-resolution file is yours instantly. ` +
-    `Every image in our PC collection is produced exclusively for Haunted Wallpapers, ` +
-    `so you won't find this artwork duplicated across generic wallpaper repositories. ` +
-    `Browse the related wallpapers below to discover more pieces that share a similar dark atmosphere and artistic style.`;
+  return (
+    title + " is a free high-resolution PC wallpaper from the Haunted Wallpapers dark art collection. " +
+    "Crafted for desktop and widescreen monitors, this piece immerses your screen in themes of " + tagList + ". " +
+    "Formatted at a native 16:9 aspect ratio, it fits seamlessly across 1080p, 1440p, and 4K displays without cropping or distortion. " +
+    "Whether you gravitate toward " + firstTag + " aesthetics or simply want a " + secondTag + " backdrop that stands out, " +
+    "this wallpaper delivers moody, original artwork at no cost. " +
+    "No account or sign-up is required — click download and the full-resolution file is yours instantly. " +
+    "Every image in our PC collection is produced exclusively for Haunted Wallpapers, " +
+    "so you will not find this artwork duplicated across generic wallpaper repositories. " +
+    "Browse the related wallpapers below to discover more pieces that share a similar dark atmosphere and artistic style."
+  );
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
@@ -54,18 +56,20 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const ogImage = getPublicUrl(image.r2Key);
   const tagLine = image.tags.slice(0, 3).map((t) => `#${t}`).join(" ");
 
-  // Use dedicated metaDescription if set, otherwise fall back to description snippet
   const metaDesc = image.metaDescription
     ?? image.description
     ?? `${image.title} — free dark fantasy PC wallpaper. ${tagLine}. Download instantly, no account required.`;
 
+  // Strip HTML tags for meta description
+  const plainMetaDesc = metaDesc.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
+
   return {
     title: `${image.title} — Free PC Wallpaper | HAUNTED WALLPAPERS`,
-    description: metaDesc,
+    description: plainMetaDesc,
     keywords: ["pc wallpaper", "dark wallpaper pc", "hd pc wallpaper", image.title, ...image.tags],
     openGraph: {
       title: `${image.title} | HAUNTED WALLPAPERS`,
-      description: image.metaDescription ?? image.description ?? `Free HD PC wallpaper: ${image.title}`,
+      description: plainMetaDesc,
       url: `${siteUrl}/pc/${imageSlug}`,
       siteName: "HAUNTED WALLPAPERS",
       images: [{ url: ogImage, width: 1920, height: 1080, alt: image.title }],
@@ -74,7 +78,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     twitter: {
       card: "summary_large_image",
       title: `${image.title} | HAUNTED WALLPAPERS`,
-      description: image.metaDescription ?? image.description ?? `Free HD PC wallpaper: ${image.title}`,
+      description: plainMetaDesc,
       images: [ogImage],
     },
     alternates: { canonical: `${siteUrl}/pc/${imageSlug}` },
@@ -113,7 +117,7 @@ export default async function PcImagePage({ params }: PageProps) {
 
   const thumbUrl = getPublicUrl(image.r2Key);
 
-  // Use real description or auto-generate one — never show a blank page
+  // Always show description — real or auto-generated. Supports HTML.
   const displayDescription = image.description ?? buildFallbackDescription(image.title, image.tags);
   const plainDescription = displayDescription.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
 
@@ -148,7 +152,16 @@ export default async function PcImagePage({ params }: PageProps) {
           <div className="pc-detail-image-wrap">
             <DeviceMockup deviceType="PC">
               <div className="relative w-full h-full">
-                <Image src={thumbUrl} alt={image.title} fill className="object-cover" priority quality={90} unoptimized sizes="(max-width: 768px) 100vw, 65vw" />
+                <Image
+                  src={thumbUrl}
+                  alt={image.title}
+                  fill
+                  className="object-cover"
+                  priority
+                  quality={90}
+                  unoptimized
+                  sizes="(max-width: 768px) 100vw, 65vw"
+                />
               </div>
             </DeviceMockup>
           </div>
@@ -163,10 +176,11 @@ export default async function PcImagePage({ params }: PageProps) {
               </h1>
             </div>
 
-            {/* Always rendered — real description or auto-generated fallback */}
-            <div className="font-body text-[1rem] text-[#a89bc0] leading-relaxed description-html" dangerouslySetInnerHTML={{ __html: displayDescription }} />
-
-
+            {/* Always rendered — real description or auto-generated fallback. Supports HTML. */}
+            <div
+              className="font-body text-[1rem] text-[#a89bc0] leading-relaxed description-html"
+              dangerouslySetInnerHTML={{ __html: displayDescription }}
+            />
 
             <div style={{ display: "flex", flexWrap: "wrap", gap: "12px", alignItems: "center" }}>
               <span className="font-mono text-[0.6rem] tracking-[0.2em] uppercase text-[#4a445a] border border-[#2a2535] px-3 py-1">
@@ -174,7 +188,7 @@ export default async function PcImagePage({ params }: PageProps) {
               </span>
             </div>
 
-            {/* Download button — primary CTA, highest on the panel */}
+            {/* Download button — primary CTA */}
             <DownloadButton
               href={`/api/download/image/${image.id}`}
               viewCount={image.viewCount}
@@ -216,9 +230,16 @@ export default async function PcImagePage({ params }: PageProps) {
         @media (min-width: 1024px) {
           .pc-detail-image-wrap { flex: 0 0 640px; }
         }
+        .description-html p { margin-bottom: 0.75rem; }
+        .description-html p:last-child { margin-bottom: 0; }
+        .description-html a { color: #8b0000; text-decoration: underline; }
+        .description-html a:hover { color: #c0001a; }
+        .description-html strong, .description-html b { color: #f0ecff; }
+        .description-html ul, .description-html ol { padding-left: 1.25rem; margin-bottom: 0.75rem; }
+        .description-html li { margin-bottom: 0.25rem; }
       `}</style>
 
-      {/* ── Prev / Next — clean grid on mobile ── */}
+      {/* ── Prev / Next ── */}
       {(prevImage || nextImage) && (
         <nav style={{
           maxWidth: "1280px", margin: "0 auto",
@@ -230,14 +251,14 @@ export default async function PcImagePage({ params }: PageProps) {
         }}>
           {prevImage ? (
             <Link href={`/pc/${prevImage.slug}`}
-              style={{ display: "flex", flexDirection: "column", gap: "8px", padding: "16px", border: "1px solid #2a2535", textDecoration: "none" }}
+              style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: "12px", padding: "10px", border: "1px solid #2a2535", textDecoration: "none" }}
               className="hover:border-[rgba(139,0,0,0.5)] transition-colors">
-              <span className="font-mono text-[0.5rem] tracking-[0.2em] uppercase text-[#4a445a]">← Previous</span>
-              <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                <div style={{ position: "relative", width: "80px", height: "45px", flexShrink: 0, overflow: "hidden" }}>
-                  <Image src={getPublicUrl(prevImage.r2Key)} alt={prevImage.title} fill className="object-cover" unoptimized sizes="80px" />
-                </div>
-                <span className="font-body italic text-[0.8rem] text-[#f0ecff]"
+              <div style={{ position: "relative", flexShrink: 0, width: "86px", height: "48px", overflow: "hidden", borderRadius: "4px" }}>
+                <Image src={getPublicUrl(prevImage.r2Key)} alt={prevImage.title} fill className="object-cover" unoptimized sizes="86px" />
+              </div>
+              <div style={{ display: "flex", flexDirection: "column", gap: "4px", minWidth: 0 }}>
+                <span className="font-mono text-[0.5rem] tracking-[0.2em] uppercase text-[#4a445a]">← Previous</span>
+                <span className="font-body italic text-[0.75rem] text-[#f0ecff]"
                   style={{ display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" as const, overflow: "hidden" }}>
                   {prevImage.title}
                 </span>
@@ -247,17 +268,17 @@ export default async function PcImagePage({ params }: PageProps) {
 
           {nextImage ? (
             <Link href={`/pc/${nextImage.slug}`}
-              style={{ display: "flex", flexDirection: "column", gap: "8px", padding: "16px", border: "1px solid #2a2535", textDecoration: "none", textAlign: "right" }}
+              style={{ display: "flex", flexDirection: "row-reverse", alignItems: "center", gap: "12px", padding: "10px", border: "1px solid #2a2535", textDecoration: "none" }}
               className="hover:border-[rgba(139,0,0,0.5)] transition-colors">
-              <span className="font-mono text-[0.5rem] tracking-[0.2em] uppercase text-[#4a445a]">Next →</span>
-              <div style={{ display: "flex", alignItems: "center", gap: "10px", justifyContent: "flex-end" }}>
-                <span className="font-body italic text-[0.8rem] text-[#f0ecff]"
+              <div style={{ position: "relative", flexShrink: 0, width: "86px", height: "48px", overflow: "hidden", borderRadius: "4px" }}>
+                <Image src={getPublicUrl(nextImage.r2Key)} alt={nextImage.title} fill className="object-cover" unoptimized sizes="86px" />
+              </div>
+              <div style={{ display: "flex", flexDirection: "column", gap: "4px", minWidth: 0, textAlign: "right" }}>
+                <span className="font-mono text-[0.5rem] tracking-[0.2em] uppercase text-[#4a445a]">Next →</span>
+                <span className="font-body italic text-[0.75rem] text-[#f0ecff]"
                   style={{ display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" as const, overflow: "hidden" }}>
                   {nextImage.title}
                 </span>
-                <div style={{ position: "relative", width: "80px", height: "45px", flexShrink: 0, overflow: "hidden" }}>
-                  <Image src={getPublicUrl(nextImage.r2Key)} alt={nextImage.title} fill className="object-cover" unoptimized sizes="80px" />
-                </div>
               </div>
             </Link>
           ) : <div />}
