@@ -74,7 +74,7 @@ export default async function Home() {
       {/* ══════════════════════════════════════════════════════════
           SECTION 1 — HERO: SPLIT LAYOUT (text left, phones right)
       ══════════════════════════════════════════════════════════ */}
-      <section className="dt-gate dt-gate--collage" style={{ padding: "calc(var(--nav-h, 64px) + 4px) 0 0", minHeight: "unset" }}>
+      <section className="dt-gate dt-gate--collage" style={{ padding: "calc(var(--nav-h, 64px) + 24px) 0 0", minHeight: "unset" }}>
 
         <div className="dt-gate__crack" aria-hidden="true" />
 
@@ -88,7 +88,7 @@ export default async function Home() {
         }}>
 
           {/* LEFT — Text block */}
-          <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem", padding: "clamp(8px,2vw,24px) clamp(16px,4vw,52px) 24px" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem", padding: "clamp(16px,4vw,48px) clamp(16px,4vw,52px) 24px" }}>
             <span className="dt-gate__eyebrow" style={{ fontSize: "0.75rem", letterSpacing: "0.25em" }}>You have arrived in</span>
 
             <div className="dt-gate__collection-badge" style={{ marginBottom: "0" }}>
@@ -261,7 +261,7 @@ export default async function Home() {
                   Tonight&rsquo;s Pick · {todayStr}
                 </p>
                 <h2 className="dt-daily__title">{wotd.title}</h2>
-                {wotd.description && <p className="dt-daily__desc">{wotd.description}</p>}
+                {wotd.description && <div className="dt-daily__desc" dangerouslySetInnerHTML={{ __html: wotd.description }} />}
                 <Link href={wotdHref} className="dt-btn dt-btn--enter dt-btn--sm">
                   <span>Download This Wallpaper →</span>
                 </Link>
