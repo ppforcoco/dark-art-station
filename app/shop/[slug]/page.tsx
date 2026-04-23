@@ -7,6 +7,7 @@ import { db } from "@/lib/db";
 import { getPublicUrl } from "@/lib/r2";
 import AdSlot from "@/components/AdSlot";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import { sanitizeAdminHtml } from "@/lib/sanitize-html";
 
 export const dynamicParams = true;
 export const revalidate = 0;
@@ -116,13 +117,13 @@ export default async function CollectionPage({ params }: PageProps) {
 
   const r2Base = process.env.NEXT_PUBLIC_R2_PUBLIC_URL ?? "";
 
-  // Description: HTML or plain text
-  const isHtml = collection.description && /<[a-z][\s\S]*>/i.test(collection.description);
-  const fallbackDesc =
-    `${collection.title} is a curated collection of free dark art wallpapers from Haunted Wallpapers. ` +
-    `Each piece in this ${collection.category ?? "dark"} collection is available as an instant free download ` +
-    `— no account required, no watermarks. Images are formatted for mobile portrait screens (9:16) ` +
-    `and look exceptional on AMOLED displays where true blacks create maximum contrast.`;
+  // Always sanitize the description — strips full-page HTML wrappers, keeps prose
+  const descHtml = collection.description
+    ? sanitizeAdminHtml(collection.description)
+    : `<p>${collection.title} is a curated collection of free dark art wallpapers from Haunted Wallpapers. ` +
+      `Each piece in this ${collection.category ?? "dark"} collection is available as an instant free download ` +
+      `— no account required, no watermarks. Images are formatted for mobile portrait screens (9:16) ` +
+      `and look exceptional on AMOLED displays where true blacks create maximum contrast.</p>`;
 
   return (
     <main
@@ -167,16 +168,11 @@ export default async function CollectionPage({ params }: PageProps) {
           — {collection.images.length} wallpaper{collection.images.length !== 1 ? "s" : ""} · {collection._count.downloads} downloads · {collection.category}
         </p>
 
-        {/* Description from admin — full HTML support, landscape prose style */}
-        <div className="device-page-intro">
-          {collection.description ? (
-            isHtml
-              ? <div dangerouslySetInnerHTML={{ __html: collection.description }} />
-              : <p>{collection.description}</p>
-          ) : (
-            <p>{fallbackDesc}</p>
-          )}
-        </div>
+        {/* Description from admin — sanitized prose, full HTML support */}
+        <div
+          className="device-page-intro"
+          dangerouslySetInnerHTML={{ __html: descHtml }}
+        />
       </section>
 
       <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_MAIN} width={728} height={90} />

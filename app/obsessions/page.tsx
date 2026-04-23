@@ -6,6 +6,7 @@ import { db, getPageContent } from "@/lib/db";
 import AdSlot from "@/components/AdSlot";
 import AgeGateLink from "@/components/AgeGateLink";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import { sanitizeAdminHtml } from "@/lib/sanitize-html";
 
 // No cache — always serve fresh so admin changes show instantly
 export const revalidate = 0;
@@ -73,7 +74,7 @@ export default async function ObsessionsPage() {
         {pageContent?.body && (
           <div
             className="device-page-intro"
-            dangerouslySetInnerHTML={{ __html: pageContent.body }}
+            dangerouslySetInnerHTML={{ __html: sanitizeAdminHtml(pageContent.body) }}
           />
         )}
       </section>
