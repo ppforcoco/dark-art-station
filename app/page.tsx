@@ -435,12 +435,12 @@ export default async function Home() {
             return (
               <Link
                 key={obs.id}
-                href={`/search?tag=${encodeURIComponent(obs.slug)}`}
+                href={`/shop/${encodeURIComponent(obs.slug)}`}
                 className="dt-obs-card"
                 style={{ "--delay": `${i * 0.07}s` } as React.CSSProperties}
               >
                 <div className="dt-obs-card__bg">
-                  {thumb && hasImages ? (
+                  {thumb ? (
                     <Image
                       src={thumb}
                       alt={obs.title}

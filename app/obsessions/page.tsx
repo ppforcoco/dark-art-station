@@ -5,6 +5,7 @@ import Image from "next/image";
 import { db, getPageContent } from "@/lib/db";
 import AdSlot from "@/components/AdSlot";
 import AgeGateLink from "@/components/AgeGateLink";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 // No cache — always serve fresh so admin changes show instantly
 export const revalidate = 0;
@@ -57,18 +58,30 @@ export default async function ObsessionsPage() {
   return (
     <main style={{ minHeight: "100vh", backgroundColor: "var(--bg-primary)", color: "var(--text-primary)" }}>
 
-      <div style={{ paddingTop: "calc(var(--nav-h, 64px) + 32px)", paddingBottom: "24px", paddingLeft: "clamp(16px,4vw,60px)", paddingRight: "clamp(16px,4vw,60px)" }}>
-        <h1 style={{ fontFamily: "var(--font-cinzel,serif)", fontSize: "clamp(1.8rem,5vw,3.2rem)", fontWeight: 700, lineHeight: 1.1, margin: 0 }}>
+      <Breadcrumbs items={[
+        { label: "Home", href: "/" },
+        { label: "Obsessions", href: "/obsessions" },
+      ]} />
+
+      {/* ── Title + Description (matches iPhone/Android page style) ── */}
+      <section className="max-w-7xl mx-auto px-6 md:px-[60px] pt-10 pb-8">
+        <h1 className="font-display text-3xl md:text-4xl font-bold leading-tight mb-6">
           Choose Your <span style={{ color: "#c9a84c", fontStyle: "italic" }}>Obsession</span>
         </h1>
-        <p style={{ fontFamily: "var(--font-space,monospace)", fontSize: "0.6rem", letterSpacing: "0.25em", textTransform: "uppercase", color: "#4a445a", marginTop: "10px" }}>
-          — {collections.length} {collections.length === 1 ? "obsession" : "obsessions"} available
-        </p>
-      </div>
+
+        {/* Description from admin — shown at top, landscape prose style */}
+        {pageContent?.body && (
+          <div
+            className="device-page-intro"
+            dangerouslySetInnerHTML={{ __html: pageContent.body }}
+          />
+        )}
+      </section>
 
       <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_MAIN} width={728} height={90} />
 
-      <div style={{ paddingLeft: "clamp(12px,3vw,40px)", paddingRight: "clamp(12px,3vw,40px)", paddingBottom: "60px" }}>
+      {/* ── Collections Grid ── */}
+      <section className="max-w-7xl mx-auto px-6 md:px-[60px] py-10">
         {collections.length === 0 ? (
           <div className="hw-coming-soon" style={{ marginTop: "60px" }}>
             <div className="hw-coming-soon__sigil">✦ ☽ ✦</div>
@@ -88,13 +101,9 @@ export default async function ObsessionsPage() {
                   — {category}
                 </p>
 
-                <div style={{
-                  display: "grid",
-                  gridTemplateColumns: "repeat(auto-fill, minmax(clamp(130px, 22vw, 260px), 1fr))",
-                  gap: "clamp(6px,1.5vw,16px)",
-                }}>
+                {/* 9:16 portrait grid — same column count as iPhone page */}
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
                   {cols.map((col, i) => {
-                    // Show thumbnail whenever it exists (even on empty collections)
                     const thumb = col.thumbnail && col.thumbnail.trim() !== ""
                       ? `${r2Base}/${col.thumbnail}`
                       : null;
@@ -103,9 +112,17 @@ export default async function ObsessionsPage() {
                     const card = (
                       <div
                         className="dt-obs-card"
-                        style={{ "--delay": `${i * 0.05}s` } as React.CSSProperties}
+                        style={{
+                          "--delay": `${i * 0.05}s`,
+                          aspectRatio: "9/16",
+                          position: "relative",
+                          overflow: "hidden",
+                          borderRadius: "4px",
+                          display: "block",
+                          width: "100%",
+                        } as React.CSSProperties}
                       >
-                        <div className="dt-obs-card__bg">
+                        <div className="dt-obs-card__bg" style={{ position: "absolute", inset: 0 }}>
                           {thumb ? (
                             <Image
                               src={thumb}
@@ -154,9 +171,9 @@ export default async function ObsessionsPage() {
                     );
 
                     return col.isAdult ? (
-                      <AgeGateLink key={col.id} slug={col.slug} style={{ textDecoration: "none" }}>{card}</AgeGateLink>
+                      <AgeGateLink key={col.id} slug={col.slug} style={{ textDecoration: "none", display: "block" }}>{card}</AgeGateLink>
                     ) : (
-                      <Link key={col.id} href={`/shop/${col.slug}`} style={{ textDecoration: "none" }}>{card}</Link>
+                      <Link key={col.id} href={`/shop/${col.slug}`} style={{ textDecoration: "none", display: "block" }}>{card}</Link>
                     );
                   })}
                 </div>
@@ -170,22 +187,7 @@ export default async function ObsessionsPage() {
             ))}
           </>
         )}
-
-        {/* SEO body text from admin — rendered as plain editorial prose only */}
-        {pageContent?.body && (
-          <div
-            className="device-page-intro"
-            style={{
-              marginTop: "48px",
-              maxWidth: "860px",
-              fontSize: "0.9rem",
-              lineHeight: "1.8",
-              color: "var(--text-secondary, #8a809a)",
-            }}
-            dangerouslySetInnerHTML={{ __html: pageContent.body }}
-          />
-        )}
-      </div>
+      </section>
 
       <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_FOOTER} width={728} height={90} className="mt-8" />
 
