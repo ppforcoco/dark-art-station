@@ -4,7 +4,6 @@ import Link from "next/link";
 import Image from "next/image";
 import { db, getPageContent } from "@/lib/db";
 import AdSlot from "@/components/AdSlot";
-import Breadcrumbs from "@/components/Breadcrumbs";
 import AgeGateLink from "@/components/AgeGateLink";
 
 export const revalidate = 60;
@@ -13,27 +12,21 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.
 
 export async function generateMetadata(): Promise<Metadata> {
   const pageContent = await getPageContent("obsessions");
-  const desc = pageContent?.metaDesc ??
+  const desc =
+    pageContent?.metaDesc ??
     "Browse all dark fantasy wallpaper obsessions — horror, gothic, dark humor and more. Free HD downloads for iPhone, Android and PC.";
-  const title = pageContent?.title ?? "Obsessions | Dark Wallpaper Collections | Haunted Wallpapers";
+  const title =
+    pageContent?.title ?? "Obsessions | Dark Wallpaper Collections | Haunted Wallpapers";
   return {
     title,
     description: desc,
     alternates: { canonical: `${SITE_URL}/obsessions` },
     openGraph: {
-      title,
-      description: desc,
-      url: `${SITE_URL}/obsessions`,
-      siteName: "Haunted Wallpapers",
-      type: "website",
+      title, description: desc,
+      url: `${SITE_URL}/obsessions`, siteName: "Haunted Wallpapers", type: "website",
       images: [{ url: `${SITE_URL}/og-image.jpg`, width: 1200, height: 630, alt: "Haunted Wallpapers — Obsessions" }],
     },
-    twitter: {
-      card: "summary_large_image",
-      title,
-      description: desc,
-      images: [`${SITE_URL}/og-image.jpg`],
-    },
+    twitter: { card: "summary_large_image", title, description: desc, images: [`${SITE_URL}/og-image.jpg`] },
   };
 }
 
@@ -53,7 +46,6 @@ export default async function ObsessionsPage() {
 
   const r2Base = process.env.NEXT_PUBLIC_R2_PUBLIC_URL ?? "";
 
-  // Group by category
   const grouped = collections.reduce<Record<string, typeof collections>>((acc, col) => {
     if (!acc[col.category]) acc[col.category] = [];
     acc[col.category].push(col);
@@ -61,28 +53,22 @@ export default async function ObsessionsPage() {
   }, {});
 
   return (
-    <main className="min-h-screen" style={{ backgroundColor: "var(--bg-primary)", color: "var(--text-primary)" }}>
-      <Breadcrumbs items={[
-        { label: "Home", href: "/" },
-        { label: "Obsessions", href: "/obsessions" },
-      ]} />
+    <main style={{ minHeight: "100vh", backgroundColor: "var(--bg-primary)", color: "var(--text-primary)" }}>
 
-      <section className="max-w-7xl mx-auto px-6 md:px-[60px] pt-10 pb-8">
-        <h1 className="font-display text-3xl md:text-4xl font-bold leading-tight mb-6">
-          Choose Your <span className="text-[#c9a84c] italic">Obsession</span>
+      <div style={{ paddingTop: "calc(var(--nav-h, 64px) + 32px)", paddingBottom: "24px", paddingLeft: "clamp(16px,4vw,60px)", paddingRight: "clamp(16px,4vw,60px)" }}>
+        <h1 style={{ fontFamily: "var(--font-cinzel,serif)", fontSize: "clamp(1.8rem,5vw,3.2rem)", fontWeight: 700, lineHeight: 1.1, margin: 0 }}>
+          Choose Your <span style={{ color: "#c9a84c", fontStyle: "italic" }}>Obsession</span>
         </h1>
-
-        {/* Admin-editable page intro */}
-        {pageContent?.body && (
-          <div className="device-page-intro" dangerouslySetInnerHTML={{ __html: pageContent.body }} />
-        )}
-      </section>
+        <p style={{ fontFamily: "var(--font-space,monospace)", fontSize: "0.6rem", letterSpacing: "0.25em", textTransform: "uppercase", color: "#4a445a", marginTop: "10px" }}>
+          — {collections.length} {collections.length === 1 ? "obsession" : "obsessions"} available
+        </p>
+      </div>
 
       <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_MAIN} width={728} height={90} />
 
-      <section className="max-w-7xl mx-auto px-6 md:px-[60px] py-10">
+      <div style={{ paddingLeft: "clamp(12px,3vw,40px)", paddingRight: "clamp(12px,3vw,40px)", paddingBottom: "60px" }}>
         {collections.length === 0 ? (
-          <div className="hw-coming-soon">
+          <div className="hw-coming-soon" style={{ marginTop: "60px" }}>
             <div className="hw-coming-soon__sigil">✦ ☽ ✦</div>
             <div className="hw-coming-soon__bar" />
             <h2 className="hw-coming-soon__title">Coming Soon</h2>
@@ -91,40 +77,35 @@ export default async function ObsessionsPage() {
         ) : (
           <>
             {Object.entries(grouped).map(([category, cols], groupIdx) => (
-              <div key={category} style={{ marginBottom: "56px" }}>
-                {/* Category heading */}
-                <h2 style={{
-                  fontFamily: "var(--font-space, monospace)",
-                  fontSize: "0.6rem",
-                  letterSpacing: "0.3em",
-                  textTransform: "uppercase",
-                  color: "#4a445a",
-                  marginBottom: "20px",
-                  paddingBottom: "10px",
-                  borderBottom: "1px solid #2a2535",
+              <div key={category} style={{ marginBottom: "48px" }}>
+                <p style={{
+                  fontFamily: "var(--font-space,monospace)", fontSize: "0.58rem",
+                  letterSpacing: "0.3em", textTransform: "uppercase", color: "#4a445a",
+                  marginBottom: "14px", paddingBottom: "8px", borderBottom: "1px solid #2a2535",
                 }}>
                   — {category}
-                </h2>
+                </p>
 
-                <div className="dt-obs-grid">
+                <div style={{
+                  display: "grid",
+                  gridTemplateColumns: "repeat(auto-fill, minmax(clamp(130px, 22vw, 260px), 1fr))",
+                  gap: "clamp(6px,1.5vw,16px)",
+                }}>
                   {cols.map((col, i) => {
                     const thumb = col.thumbnail ? `${r2Base}/${col.thumbnail}` : null;
                     const hasImages = col._count.images > 0;
 
-                    const cardContent = (
+                    const card = (
                       <div
                         className="dt-obs-card"
-                        style={{ "--delay": `${i * 0.06}s` } as React.CSSProperties}
+                        style={{ "--delay": `${i * 0.05}s` } as React.CSSProperties}
                       >
                         <div className="dt-obs-card__bg">
                           {thumb && hasImages ? (
                             <Image
-                              src={thumb}
-                              alt={col.thumbnailAlt ?? col.title}
-                              fill
-                              unoptimized
-                              className="object-cover"
-                              sizes="(max-width:600px) 50vw, (max-width:1024px) 33vw, 25vw"
+                              src={thumb} alt={col.thumbnailAlt ?? col.title}
+                              fill unoptimized className="object-cover"
+                              sizes="(max-width:480px) 50vw, (max-width:900px) 33vw, 25vw"
                             />
                           ) : (
                             <div className="dt-obs-card__placeholder" style={{
@@ -132,11 +113,10 @@ export default async function ObsessionsPage() {
                               alignItems: "center", justifyContent: "center",
                               height: "100%", gap: "0.5rem",
                             }}>
-                              <span style={{ fontSize: "2.5rem" }}>{col.icon ?? "🖤"}</span>
-                              <span style={{
-                                fontSize: "0.7rem", letterSpacing: "0.15em",
-                                color: "rgba(255,255,255,0.35)", textTransform: "uppercase",
-                              }}>Coming Soon</span>
+                              <span style={{ fontSize: "clamp(1.8rem,4vw,2.5rem)" }}>{col.icon ?? "🖤"}</span>
+                              <span style={{ fontSize: "0.6rem", letterSpacing: "0.12em", color: "rgba(255,255,255,0.3)", textTransform: "uppercase" }}>
+                                Coming Soon
+                              </span>
                             </div>
                           )}
                           <div className="dt-obs-card__veil" />
@@ -144,62 +124,52 @@ export default async function ObsessionsPage() {
                         <div className="dt-obs-card__glitch" aria-hidden="true" />
                         <div className="dt-obs-card__drip" aria-hidden="true" />
                         <div className="dt-obs-card__body">
-                          <h3 className="dt-obs-card__title">{col.title}</h3>
-                          <span className="dt-obs-card__count">
+                          <h3 className="dt-obs-card__title" style={{ fontSize: "clamp(0.65rem,1.8vw,0.85rem)" }}>{col.title}</h3>
+                          <span className="dt-obs-card__count" style={{ fontSize: "clamp(0.55rem,1.2vw,0.72rem)" }}>
                             {hasImages ? `${col._count.images} wallpapers` : "Coming soon"}
                           </span>
                         </div>
                         <div className="dt-obs-card__glow" aria-hidden="true" />
                         <span className="dt-obs-card__corner dt-obs-card__corner--tl">†</span>
                         <span className="dt-obs-card__corner dt-obs-card__corner--br">†</span>
-                        {/* 16+ badge */}
                         {col.isAdult && (
                           <div style={{
                             position: "absolute", bottom: 0, left: 0, right: 0, zIndex: 10,
                             display: "flex", alignItems: "center", justifyContent: "center",
-                            gap: "6px", background: "#000", borderTop: "2px solid #fff",
-                            padding: "5px 8px",
+                            background: "#000", borderTop: "2px solid #fff", padding: "4px",
                           }}>
-                            <span style={{
-                              background: "#c0001a", color: "#fff",
-                              fontFamily: "monospace", fontSize: "0.65rem",
-                              fontWeight: 900, padding: "1px 6px",
-                            }}>16+</span>
+                            <span style={{ background: "#c0001a", color: "#fff", fontFamily: "monospace", fontSize: "0.6rem", fontWeight: 900, padding: "1px 6px" }}>16+</span>
                           </div>
                         )}
                       </div>
                     );
 
-                    if (col.isAdult) {
-                      return (
-                        <AgeGateLink key={col.id} slug={col.slug} style={{ textDecoration: "none" }}>
-                          {cardContent}
-                        </AgeGateLink>
-                      );
-                    }
-
-                    return (
-                      <Link key={col.id} href={`/shop/${col.slug}`} style={{ textDecoration: "none" }}>
-                        {cardContent}
-                      </Link>
+                    return col.isAdult ? (
+                      <AgeGateLink key={col.id} slug={col.slug} style={{ textDecoration: "none" }}>{card}</AgeGateLink>
+                    ) : (
+                      <Link key={col.id} href={`/shop/${col.slug}`} style={{ textDecoration: "none" }}>{card}</Link>
                     );
                   })}
                 </div>
 
                 {groupIdx % 2 === 1 && (
-                  <div style={{ marginTop: "32px", display: "flex", justifyContent: "center" }}>
+                  <div style={{ marginTop: "28px", display: "flex", justifyContent: "center" }}>
                     <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_MAIN} width={728} height={90} />
                   </div>
                 )}
               </div>
             ))}
-
-            <p className="font-mono text-[0.6rem] tracking-[0.2em] uppercase text-[#4a445a] mt-4">
-              — {collections.length} obsessions total
-            </p>
           </>
         )}
-      </section>
+
+        {pageContent?.body && (
+          <div
+            className="device-page-intro"
+            style={{ marginTop: "48px", maxWidth: "860px" }}
+            dangerouslySetInnerHTML={{ __html: pageContent.body }}
+          />
+        )}
+      </div>
 
       <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_FOOTER} width={728} height={90} className="mt-8" />
 

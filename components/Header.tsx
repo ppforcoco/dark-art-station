@@ -5,10 +5,8 @@ import { useRouter } from "next/navigation";
 import { Menu, X, Search, Shuffle } from "lucide-react";
 
 const NAV_LINKS = [
-  { label: "iPhone",      href: "/iphone"      },
-  { label: "Android",     href: "/android"     },
+  { label: "Mobile",      href: "/iphone",     sub: [{ label: "iPhone", href: "/iphone" }, { label: "Android", href: "/android" }] },
   { label: "PC",          href: "/pc"          },
-  { label: "Obsessions",  href: "/collections" },
   { label: "Blog & Guides", href: "/blog"      },
 ];
 
@@ -62,7 +60,18 @@ export default function Header() {
     setMenuOpen(false);
   }, [router]);
 
-  const closeMenu   = useCallback(() => setMenuOpen(false), []);
+  const [mobileDropOpen, setMobileDropOpen] = useState(false);
+  const mobileDropRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (mobileDropRef.current && !mobileDropRef.current.contains(e.target as Node)) {
+        setMobileDropOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
   const toggleMenu  = useCallback(() => { setMenuOpen(p => !p); setThemeMenuOpen(false); }, []);
   const openSearch  = useCallback(() => { setSearchOpen(true); setMenuOpen(false); setTimeout(() => overlayInputRef.current?.focus(), 80); }, []);
   const closeSearch = useCallback(() => { setSearchOpen(false); setQuery(""); }, []);
@@ -152,7 +161,37 @@ export default function Header() {
 
         <div className="nav-links">
           {NAV_LINKS.map(l => (
-            <Link key={l.href} href={l.href} className="hw2-nav__link">{l.label}</Link>
+            l.sub ? (
+              <div key={l.href} ref={mobileDropRef} style={{position:"relative"}}>
+                <button
+                  type="button"
+                  className="hw2-nav__link"
+                  onClick={() => setMobileDropOpen(p => !p)}
+                  style={{background:"none",border:"none",cursor:"pointer",display:"flex",alignItems:"center",gap:"4px"}}
+                >
+                  {l.label}
+                  <span style={{fontSize:"0.6rem",opacity:0.6,marginTop:"1px"}}>{mobileDropOpen ? "▲" : "▼"}</span>
+                </button>
+                {mobileDropOpen && (
+                  <div style={{
+                    position:"absolute",top:"calc(100% + 8px)",left:"50%",transform:"translateX(-50%)",
+                    background:"var(--bg-secondary, #0d0b18)",border:"1px solid #2a2535",
+                    minWidth:"130px",zIndex:200,boxShadow:"0 8px 32px rgba(0,0,0,0.5)"
+                  }}>
+                    {l.sub.map(s => (
+                      <Link key={s.href} href={s.href} className="hw2-nav__link"
+                        onClick={() => setMobileDropOpen(false)}
+                        style={{display:"block",padding:"10px 18px",whiteSpace:"nowrap"}}
+                      >
+                        {s.label}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ) : (
+              <Link key={l.href} href={l.href} className="hw2-nav__link">{l.label}</Link>
+            )
           ))}
         </div>
 
@@ -207,11 +246,21 @@ export default function Header() {
       <div className={`mobile-menu-panel${menuOpen?" mobile-menu-panel--open":""}`} aria-hidden={!menuOpen}>
         <div className="mobile-menu-topbar"/>
         <nav className="mobile-menu-nav">
-          {NAV_LINKS.map((l,i) => (
-            <Link key={l.href} href={l.href} className="mobile-menu-link hw2-mobile-link" style={{"--mi":i} as React.CSSProperties} onClick={closeMenu}>
-              {l.label}
-            </Link>
-          ))}
+          {NAV_LINKS.flatMap((l, i) =>
+            l.sub
+              ? l.sub.map((s, j) => (
+                  <Link key={s.href} href={s.href} className="mobile-menu-link hw2-mobile-link"
+                    style={{"--mi": i + j} as React.CSSProperties} onClick={closeMenu}>
+                    {s.label}
+                  </Link>
+                ))
+              : [
+                  <Link key={l.href} href={l.href} className="mobile-menu-link hw2-mobile-link"
+                    style={{"--mi": i} as React.CSSProperties} onClick={closeMenu}>
+                    {l.label}
+                  </Link>
+                ]
+          )}
           <button className="mobile-menu-link hw2-mobile-link" style={{"--mi":NAV_LINKS.length} as React.CSSProperties} onClick={handleRandom}>
             ⚡ Random Wallpaper
           </button>

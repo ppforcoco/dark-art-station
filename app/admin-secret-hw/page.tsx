@@ -497,6 +497,10 @@ function CollectionsTab({password}:{password:string}){
   const[showCreate,setShowCreate]=useState(false);
   const[createTitle,setCreateTitle]=useState("");
   const[createSlug,setCreateSlug]=useState("");
+  const[createCategory,setCreateCategory]=useState("General");
+  const[createIcon,setCreateIcon]=useState("🖤");
+  const[createTag,setCreateTag]=useState("Collection");
+  const[createFeatured,setCreateFeatured]=useState(false);
   const[createMsg,setCreateMsg]=useState<{type:"ok"|"err";text:string}|null>(null);
   const[creating,setCreating]=useState(false);
   const r2Base=typeof process!=="undefined"?(process.env.NEXT_PUBLIC_R2_PUBLIC_URL??""):"";
@@ -504,9 +508,9 @@ function CollectionsTab({password}:{password:string}){
   async function handleCreate(){
     if(!createTitle.trim()||!createSlug.trim())return;
     setCreating(true);setCreateMsg(null);
-    try{const res=await fetch("/api/hw-admin/collections",{method:"POST",headers:{"Content-Type":"application/json","x-admin-password":password},body:JSON.stringify({title:createTitle.trim(),slug:createSlug.trim()})});
+    try{const res=await fetch("/api/hw-admin/collections",{method:"POST",headers:{"Content-Type":"application/json","x-admin-password":password},body:JSON.stringify({title:createTitle.trim(),slug:createSlug.trim(),category:createCategory.trim()||"General",icon:createIcon.trim()||"🖤",tag:createTag.trim()||"Collection",featured:createFeatured})});
       const j=await res.json();
-      if(res.ok){setCreateMsg({type:"ok",text:`✓ Created "${createTitle}"`});setCreateTitle("");setCreateSlug("");setShowCreate(false);load();}
+      if(res.ok){setCreateMsg({type:"ok",text:`✓ Created "${createTitle}"`});setCreateTitle("");setCreateSlug("");setCreateCategory("General");setCreateIcon("🖤");setCreateTag("Collection");setCreateFeatured(false);setShowCreate(false);load();}
       else setCreateMsg({type:"err",text:j.error??"Create failed."});}
     catch{setCreateMsg({type:"err",text:"Network error."});}setCreating(false);
   }
@@ -544,8 +548,17 @@ function CollectionsTab({password}:{password:string}){
       </div>
       {showCreate&&<div style={{padding:"12px 14px",borderBottom:`1px solid ${C.border}`,background:"#0d0a1a"}}>
         <p style={{color:C.purple,fontSize:"0.65rem",fontWeight:700,margin:"0 0 8px",letterSpacing:"0.1em",textTransform:"uppercase"}}>Create Collection</p>
-        <input value={createTitle} onChange={e=>{setCreateTitle(e.target.value);setCreateSlug(e.target.value.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,""));}} placeholder="Title" style={{...inp,fontSize:"0.78rem",marginBottom:"6px"}}/>
-        <input value={createSlug} onChange={e=>setCreateSlug(e.target.value)} placeholder="slug (auto-filled)" style={{...inp,fontSize:"0.78rem",fontFamily:"monospace",marginBottom:"8px"}}/>
+        <input value={createTitle} onChange={e=>{setCreateTitle(e.target.value);setCreateSlug(e.target.value.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,""));}} placeholder="Title (e.g. The Classic District)" style={{...inp,fontSize:"0.78rem",marginBottom:"6px"}}/>
+        <input value={createSlug} onChange={e=>setCreateSlug(e.target.value)} placeholder="slug (auto-filled)" style={{...inp,fontSize:"0.78rem",fontFamily:"monospace",marginBottom:"6px"}}/>
+        <input value={createCategory} onChange={e=>setCreateCategory(e.target.value)} placeholder="Category (e.g. Themes, Aesthetic)" style={{...inp,fontSize:"0.78rem",marginBottom:"6px"}}/>
+        <div style={{display:"flex",gap:"6px",marginBottom:"6px"}}>
+          <input value={createIcon} onChange={e=>setCreateIcon(e.target.value)} placeholder="Icon emoji 🖤" style={{...inp,fontSize:"0.85rem",width:"70px",textAlign:"center",flexShrink:0}}/>
+          <input value={createTag} onChange={e=>setCreateTag(e.target.value)} placeholder="Tag label (e.g. Gothic)" style={{...inp,fontSize:"0.78rem",flex:1}}/>
+        </div>
+        <label style={{display:"flex",alignItems:"center",gap:"8px",cursor:"pointer",marginBottom:"8px"}}>
+          <input type="checkbox" checked={createFeatured} onChange={e=>setCreateFeatured(e.target.checked)} style={{accentColor:C.gold}}/>
+          <span style={{color:C.textSec,fontSize:"0.72rem"}}>Featured (shows at top)</span>
+        </label>
         {createMsg&&<p style={{fontSize:"0.72rem",color:createMsg.type==="ok"?C.green:C.red,margin:"0 0 6px"}}>{createMsg.text}</p>}
         <Btn onClick={handleCreate} disabled={creating||!createTitle.trim()||!createSlug.trim()}>{creating?"Creating…":"Create Collection"}</Btn>
       </div>}

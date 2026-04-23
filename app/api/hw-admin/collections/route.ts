@@ -33,7 +33,55 @@ export async function GET(req: NextRequest) {
   return NextResponse.json({ collections });
 }
 
-// PATCH — update description and/or metaDescription for a collection
+// POST — create a new collection
+export async function POST(req: NextRequest) {
+  if (!checkAuth(req)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  try {
+    const { title, slug, category, icon, bgClass, tag, featured, description } = await req.json();
+    if (!title?.trim() || !slug?.trim()) {
+      return NextResponse.json({ error: "title and slug are required" }, { status: 400 });
+    }
+
+    const collection = await db.collection.create({
+      data: {
+        title:       title.trim(),
+        slug:        slug.trim(),
+        category:    category?.trim()  || "General",
+        icon:        icon?.trim()      || "🖤",
+        bgClass:     bgClass?.trim()   || "p-bg-1",
+        tag:         tag?.trim()       || "Collection",
+        featured:    featured === true,
+        description: description?.trim() || "",
+        thumbnail:   "",
+      },
+    });
+
+    return NextResponse.json({ ok: true, collection });
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : "Create failed";
+    if (msg.includes("Unique constraint")) {
+      return NextResponse.json({ error: "A collection with that slug already exists." }, { status: 409 });
+    }
+    console.error("[admin/collections POST]", err);
+    return NextResponse.json({ error: msg }, { status: 500 });
+  }
+}
+
+// DELETE — delete a collection by slug
+export async function DELETE(req: NextRequest) {
+  if (!checkAuth(req)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  try {
+    const { slug } = await req.json();
+    if (!slug) return NextResponse.json({ error: "slug required" }, { status: 400 });
+    await db.collection.delete({ where: { slug } });
+    return NextResponse.json({ ok: true });
+  } catch (err) {
+    console.error("[admin/collections DELETE]", err);
+    return NextResponse.json({ error: "Delete failed" }, { status: 500 });
+  }
+}
 export async function PATCH(req: NextRequest) {
   if (!checkAuth(req)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 

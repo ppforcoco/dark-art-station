@@ -74,40 +74,37 @@ export default async function Home() {
       {/* ══════════════════════════════════════════════════════════
           SECTION 1 — HERO: SPLIT LAYOUT (text left, phones right)
       ══════════════════════════════════════════════════════════ */}
-      <section className="dt-gate dt-gate--collage" style={{ padding: "4rem 2rem 3rem" }}>
+      <section className="dt-gate dt-gate--collage" style={{ padding: "calc(var(--nav-h, 64px) + 24px) 0 0", minHeight: "unset" }}>
 
         <div className="dt-gate__crack" aria-hidden="true" />
 
-        {/* ── Split grid: text left / phones right on desktop ── */}
-        <div style={{
+        {/* ── Responsive split: stacked on mobile/foldable, side-by-side on desktop ── */}
+        <div className="hw-hero-split" style={{
           display: "grid",
           gridTemplateColumns: "1fr",
-          gap: "3rem",
-          alignItems: "center",
-          maxWidth: "1280px",
-          margin: "0 auto",
+          alignItems: "flex-start",
           width: "100%",
-        }} className="hw-hero-split">
+          maxWidth: "100%",
+        }}>
 
           {/* LEFT — Text block */}
-          <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
-            <span className="dt-gate__eyebrow" style={{ fontSize: "0.85rem", letterSpacing: "0.25em" }}>You have arrived in</span>
+          <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem", padding: "clamp(16px,4vw,48px) clamp(16px,4vw,52px) 24px" }}>
+            <span className="dt-gate__eyebrow" style={{ fontSize: "0.75rem", letterSpacing: "0.25em" }}>You have arrived in</span>
 
             <div className="dt-gate__collection-badge" style={{ marginBottom: "0" }}>
-              <span className="dt-gate__collection-num" style={{ fontSize: "3rem" }}>{fmt(totalImages)}</span>
+              <span className="dt-gate__collection-num" style={{ fontSize: "clamp(2rem,5vw,3rem)" }}>{fmt(totalImages)}</span>
               <span className="dt-gate__collection-label">wallpapers &amp; growing</span>
             </div>
 
-            <p className="dt-gate__sub" style={{ fontSize: "1.1rem", lineHeight: "1.7", maxWidth: "520px", margin: 0 }}>
+            <p className="dt-gate__sub" style={{ fontSize: "clamp(0.95rem,2vw,1.1rem)", lineHeight: "1.65", maxWidth: "480px", margin: 0 }}>
               Where every wallpaper has a secret.
             </p>
 
             {/* Daily vault copy */}
-            <p style={{
-              fontSize: "0.82rem",
+            <p className="hw-hero-vault-text" style={{
+              fontSize: "0.8rem",
               lineHeight: "1.75",
-              color: "rgba(200,180,230,0.7)",
-              maxWidth: "500px",
+              maxWidth: "460px",
               fontStyle: "italic",
               borderLeft: "2px solid #8b0000",
               paddingLeft: "1rem",
@@ -117,7 +114,7 @@ export default async function Home() {
             </p>
 
             {/* Browse All CTA */}
-            <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap", marginTop: "0.5rem" }}>
+            <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap" }}>
               <Link href="/iphone" className="dt-btn dt-btn--enter">
                 <span>Browse All Wallpapers →</span>
               </Link>
@@ -127,7 +124,7 @@ export default async function Home() {
             </div>
 
             {/* Stat cards */}
-            <div className="dt-coffin-row dt-coffin-row--compact" style={{ marginTop: "0.5rem" }}>
+            <div className="dt-coffin-row dt-coffin-row--compact">
               <div className="dt-coffin">
                 <span className="dt-coffin__num">{fmt(totalImages)}</span>
                 <span className="dt-coffin__label">The Archive</span>
@@ -147,9 +144,9 @@ export default async function Home() {
             </div>
           </div>
 
-          {/* RIGHT — Phone mockups */}
-          <div style={{ display: "flex", justifyContent: "center" }}>
-            <div className="dt-hero-phones" style={{ gap: "1.25rem", alignItems: "center" }}>
+          {/* RIGHT — Phone mockups, flush to bottom of section */}
+          <div className="hw-hero-phones-wrap">
+            <div className="dt-hero-phones" style={{ gap: "clamp(6px,1.2vw,20px)", alignItems: "flex-end", padding: 0 }}>
               {[
                 { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/wallpapers/houston-snapback-skeleton.jpeg", alt: "Skeleton", featured: false },
                 { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/wallpapers/shadows-have-eyes-android.webp", alt: "Shadow Eyes", featured: false },
@@ -163,13 +160,13 @@ export default async function Home() {
                   style={{
                     "--phone-i": i,
                     transform: phone.featured
-                      ? "scale(1.22) translateY(-18px)"
+                      ? "scale(1.18) translateY(-12px)"
                       : i === 1 || i === 3
-                      ? "scale(1.08) translateY(-6px)"
-                      : "scale(0.94) translateY(6px)",
+                      ? "scale(1.06) translateY(-4px)"
+                      : "scale(0.92) translateY(4px)",
                   } as React.CSSProperties}
                 >
-                  <div className="dt-hero-phone" style={{ width: "190px", height: "390px", borderRadius: "32px" }}>
+                  <div className="dt-hero-phone" style={{ width: "clamp(100px,13vw,185px)", height: "clamp(200px,26vw,375px)", borderRadius: "clamp(18px,2vw,30px)" }}>
                     <div className="dt-hero-phone__btn dt-hero-phone__btn--power" aria-hidden="true" />
                     <div className="dt-hero-phone__btn dt-hero-phone__btn--vol1" aria-hidden="true" />
                     <div className="dt-hero-phone__btn dt-hero-phone__btn--vol2" aria-hidden="true" />
@@ -200,11 +197,46 @@ export default async function Home() {
       </section>
 
       <style>{`
-        @media (min-width: 900px) {
+        /* Desktop: side by side, text left phones right */
+        @media (min-width: 860px) {
           .hw-hero-split {
-            grid-template-columns: 1fr 1fr !important;
+            grid-template-columns: minmax(320px,420px) 1fr !important;
+            align-items: flex-end !important;
+          }
+          .hw-hero-phones-wrap {
+            padding-bottom: 0;
           }
         }
+        /* Foldable / tablet: generous but not full desktop */
+        @media (min-width: 540px) and (max-width: 859px) {
+          .hw-hero-split {
+            grid-template-columns: 1fr !important;
+          }
+          .hw-hero-phones-wrap {
+            padding: 0 clamp(12px,3vw,32px);
+            overflow-x: auto;
+          }
+          .dt-hero-phones {
+            justify-content: flex-start !important;
+          }
+        }
+        /* Small phones */
+        @media (max-width: 539px) {
+          .hw-hero-split { grid-template-columns: 1fr !important; }
+          .hw-hero-phones-wrap { padding: 0 12px; overflow-x: auto; }
+          .dt-hero-phones { justify-content: flex-start !important; }
+        }
+        /* Light theme text fixes */
+        [data-theme="light"] .dt-gate__eyebrow { color: #8b0000 !important; }
+        [data-theme="light"] .dt-gate__collection-num { color: #1a1410 !important; }
+        [data-theme="light"] .dt-gate__collection-label { color: #5a4838 !important; }
+        [data-theme="light"] .dt-gate__sub { color: #2a1e10 !important; }
+        [data-theme="light"] .hw-hero-vault-text { color: rgba(60,40,20,0.75) !important; }
+        [data-theme="light"] .dt-coffin { background: rgba(255,255,255,0.6) !important; border-color: rgba(139,0,0,0.2) !important; }
+        [data-theme="light"] .dt-coffin__num { color: #8b0000 !important; }
+        [data-theme="light"] .dt-coffin__label { color: rgba(60,40,30,0.6) !important; }
+        [data-theme="light"] .dt-btn--ghost { color: #3a2010 !important; border-color: rgba(60,40,20,0.35) !important; }
+        [data-theme="light"] .dt-btn--ghost:hover { color: #1a1008 !important; border-color: #1a1008 !important; }
       `}</style>
 
 
