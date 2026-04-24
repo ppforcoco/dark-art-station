@@ -170,8 +170,8 @@ html[data-theme="blood"]  { color-scheme: dark;  background-color: #080000; }
 [data-theme="ember"] .products-bg { background: #120900 !important; }
 [data-theme="ember"] .product-grid .group { background: #1a0e00 !important; }
 [data-theme="ember"] .cat-tag { color: #ff6600 !important; border-color: rgba(255,102,0,0.4) !important; }
-[data-theme="ember"] .marquee-section { background: #120900 !important; border-color: rgba(255,102,0,0.25) !important; }
-[data-theme="ember"] .marquee-dot { color: #ff4400 !important; }
+[data-theme="ember"] 
+[data-theme="ember"] 
 [data-theme="ember"] .site-footer { background: #120900 !important; border-color: rgba(255,102,0,0.2) !important; }
 [data-theme="ember"] .footer-bottom { border-color: rgba(255,102,0,0.2) !important; }
 [data-theme="ember"] .mobile-menu-panel { background: rgba(10,6,0,0.98) !important; border-color: rgba(255,102,0,0.2) !important; }
@@ -448,11 +448,8 @@ html[data-theme="blood"]  { color-scheme: dark;  background-color: #080000; }
 }
 
 /* ── Marquee, ad slots, section dividers ── */
-[data-theme="light"] .marquee-section {
-  background: #ece8df !important;
-  border-color: rgba(139,0,0,0.15) !important;
-}
-[data-theme="light"] .marquee-item { color: #7a7468 !important; }
+[data-theme="light"] 
+[data-theme="light"] 
 [data-theme="light"] .ad-banner {
   background: #ece8df !important;
   border-color: rgba(139,0,0,0.2) !important;
@@ -708,14 +705,8 @@ body::before {
 ::-webkit-scrollbar-thumb  { background: #c0001a; }
 
 /* ── Marquee ───────────────────────────────────────────────── */
-@keyframes marquee {
-  from { transform: translateX(0); }
+
   to   { transform: translateX(-50%); }
-}
-.animate-marquee {
-  display: inline-flex;
-  animation: marquee 30s linear infinite;
-  white-space: nowrap;
 }
 
 /* ── FadeUp ────────────────────────────────────────────────── */
@@ -1409,21 +1400,6 @@ body::before {
 /* Animated card base — inline styles handle per-card stagger */
 
 /* ── Marquee ───────────────────────────────────────────────── */
-.marquee-section {
-  background: var(--bg-secondary);
-  border-top: 1px solid rgba(139,0,0,0.3);
-  border-bottom: 1px solid rgba(139,0,0,0.3);
-  padding: 16px 0;
-  overflow: hidden;
-}
-.marquee-item {
-  font-family: var(--font-space), monospace;
-  font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase;
-  color: #4a445a;
-  display: inline-flex; align-items: center; gap: 20px;
-  margin-right: 60px; flex-shrink: 0;
-}
-.marquee-dot { color: #c0001a; font-size: 0.5rem; }
 
 /* ──────────────────────────────────────────────────────────── */
 /*  SECTION SHARED                                              */
@@ -3027,64 +3003,15 @@ body::before {
 /*  SKELETON CARD                                               */
 /* ──────────────────────────────────────────────────────────── */
 
-.skeleton-card {
-  position: relative;
-  background: #12101a;
-  overflow: hidden;
-  border: 1px solid #1a1727;
-}
-
 /* Portrait ratio (9:16) — matches wallpaper cards */
-.skeleton-card::before {
-  content: "";
-  display: block;
-  padding-top: 177.78%;   /* 16/9 × 100 */
-}
 
 /* Shimmer sweep */
-.skeleton-card::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    105deg,
-    transparent 40%,
-    rgba(201, 168, 76, 0.06) 50%,
-    transparent 60%
-  );
-  background-size: 200% 100%;
-  animation: sk-shimmer 1.8s ease-in-out infinite;
-}
 
-@keyframes sk-shimmer {
-  0%   { background-position: 200% 0; }
   100% { background-position: -200% 0; }
 }
 
 /* Info bar at the bottom of skeleton */
-.skeleton-info {
-  position: absolute;
-  bottom: 0; left: 0; right: 0;
-  padding: 12px 14px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-.skeleton-line {
-  height: 8px;
-  border-radius: 2px;
-  background: #1e1a2e;
-  animation: sk-pulse 1.8s ease-in-out infinite;
-}
-.skeleton-line-short {
-  width: 45%;
-}
-.skeleton-line-long {
-  width: 75%;
-}
 
-@keyframes sk-pulse {
-  0%, 100% { opacity: 0.5; }
   50%       { opacity: 1; }
 }
 
@@ -6415,7 +6342,6 @@ body:has([data-force-blog="true"]) .halloween-bar {
   border-color: rgba(255,255,255,0.1) !important;
 }
 
-/* ── Gacha / Tools / Seasonal pages ── */
 [data-theme="light"] .seasonal-page { background: var(--bg-primary) !important; color: var(--text-primary) !important; }
 [data-theme="ghost"] .seasonal-page { background: #1a1a1e !important; color: #f8f8ff !important; }
 [data-theme="ember"] .seasonal-page { background: #0a0600 !important; color: #ffe8d0 !important; }
@@ -6439,8 +6365,8 @@ body:has([data-force-blog="true"]) .halloween-bar {
 [data-theme="ember"] .device-page-guide-link a:hover { color: #fff0e0 !important; }
 
 /* ── All themes: marquee / ticker ── */
-[data-theme="light"] .marquee-section { background: #ece8df !important; border-color: rgba(0,0,0,0.07) !important; }
-[data-theme="ghost"] .marquee-section { background: #222228 !important; border-color: rgba(255,255,255,0.05) !important; }
+[data-theme="light"] 
+[data-theme="ghost"] 
 
 /* ── Light: Pagination ── */
 [data-theme="light"] .page-btn         { color: #3a3430 !important; border-color: #cdc8bc !important; background: transparent !important; }
@@ -8828,10 +8754,7 @@ button:active:not(:disabled) { transform: translateY(0px) scale(0.98) !important
 
 /* Marquee ticker */
 [data-theme="light"] .hw-marquee,
-[data-theme="light"] .marquee-ticker {
-  background: rgba(220,215,205,0.6) !important;
-  border-color: rgba(139,0,0,0.15) !important;
-}
+[data-theme="light"] 
 
 /* Section titles */
 [data-theme="light"] .hw2-section-title,
@@ -10505,7 +10428,6 @@ button:active:not(:disabled) { transform: translateY(0px) scale(0.98) !important
 /* Keep .dt-gate__crack for texture overlay — it's CSS-only, fine */
 
 /* ── Marquee hidden (removed from page but keep CSS harmless) ── */
-.marquee-section { display: none !important; }
 
 /* ═══════════════════════════════════════════════════════════════════════════
    HERO PHONE MOCKUPS — dt-hero-phone-*
