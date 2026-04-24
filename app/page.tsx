@@ -37,7 +37,7 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export const revalidate = 3600; // Re-check every hour; WOTD itself changes at UTC midnight
+export const revalidate = 60; // 60s cache — new collections/WOTD appear quickly
 
 export default async function Home() {
   const wotd = await getWallpaperOfTheDay();
@@ -548,7 +548,7 @@ export default async function Home() {
         {/* Always show the grid — use placeholders for empty collections */}
         <div className="dt-obs-grid">
           {obsessions.map((obs, i) => {
-            const thumb = obs.thumbnail ? `${r2Base}/${obs.thumbnail}` : null;
+            const thumb = obs.thumbnail ? (obs.thumbnail.startsWith('http') ? obs.thumbnail : `${r2Base}/${obs.thumbnail}`) : null;
             const hasImages = obs._count.images > 0;
             return (
               <Link
