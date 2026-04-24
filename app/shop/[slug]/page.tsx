@@ -10,6 +10,18 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 import AdminHtmlBlock from "@/components/AdminHtmlBlock";
 import { sanitizeAdminHtml } from "@/lib/sanitize-html";
 
+// District slug → tag mapping
+// When a collection slug matches a district, standalone images with the
+// district tag are merged in so they appear on the /shop/[slug] page.
+const DISTRICT_TAG_MAP: Record<string, string> = {
+  "the-classic-district": "classic-district",
+  "the-city-center":      "city-center",
+  "bone-street":          "bone-street",
+  "the-nature-trail":     "nature-trail",
+  "minimalist-row":       "minimalist-row",
+  "the-character-ward":   "character-ward",
+};
+
 export const dynamicParams = true;
 export const revalidate = 0;
 
@@ -98,6 +110,35 @@ export default async function CollectionPage({ params }: PageProps) {
 
   if (!collection) notFound();
 
+  // Fetch standalone district images by tag (if this collection has a matching district tag)
+  const districtTag = DISTRICT_TAG_MAP[slug];
+  const districtImages = districtTag
+    ? await db.image.findMany({
+        where: {
+          collectionId: null,
+          tags: { has: districtTag },
+        },
+        orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
+        select: {
+          id: true,
+          slug: true,
+          title: true,
+          altText: true,
+          r2Key: true,
+          tags: true,
+          sortOrder: true,
+          deviceType: true,
+        },
+      })
+    : [];
+
+  // Merge: collection-linked images first, then district tag images (deduped by id)
+  const collectionImageIds = new Set(collection.images.map((i) => i.id));
+  const mergedImages = [
+    ...collection.images,
+    ...districtImages.filter((i) => !collectionImageIds.has(i.id)),
+  ];
+
   // Related collections
   const relatedRaw = await db.collection.findMany({
     where: { slug: { not: slug } },
@@ -164,7 +205,7 @@ export default async function CollectionPage({ params }: PageProps) {
           color: "#4a445a",
           marginBottom: "24px",
         }}>
-          — {collection.images.length} wallpaper{collection.images.length !== 1 ? "s" : ""} · {collection._count.downloads} downloads · {collection.category}
+          — {mergedImages.length} wallpaper{mergedImages.length !== 1 ? "s" : ""} · {collection._count.downloads} downloads · {collection.category}
         </p>
 
         {/* Description from admin — rendered in iframe, supports any HTML */}
@@ -182,7 +223,7 @@ export default async function CollectionPage({ params }: PageProps) {
 
       {/* ── Image Grid — full-width 9:16, matches iPhone/Android page ── */}
       <section className="max-w-7xl mx-auto px-6 md:px-[60px] py-10">
-        {collection.images.length === 0 ? (
+        {mergedImages.length === 0 ? (
           <div className="hw-coming-soon">
             <div className="hw-coming-soon__sigil">✦ ☽ ✦</div>
             <div className="hw-coming-soon__bar" />
@@ -194,10 +235,10 @@ export default async function CollectionPage({ params }: PageProps) {
         ) : (
           <>
             <p className="font-mono text-[0.6rem] tracking-[0.2em] uppercase text-[#4a445a] mb-6">
-              — {collection.images.length} wallpaper{collection.images.length !== 1 ? "s" : ""}
+              — {mergedImages.length} wallpaper{mergedImages.length !== 1 ? "s" : ""}
             </p>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
-              {collection.images.map((img, idx) => {
+              {mergedImages.map((img, idx) => {
                 const thumbUrl = getPublicUrl(img.r2Key);
                 const imgAlt =
                   img.altText ??
@@ -205,7 +246,12 @@ export default async function CollectionPage({ params }: PageProps) {
                 return (
                   <Link
                     key={img.id}
-                    href={`/shop/${slug}/${img.slug}`}
+                    href={
+                      // District standalone images link to their device page
+                      !collectionImageIds.has(img.id) && (img as {deviceType?: string|null}).deviceType
+                        ? `/${(img as {deviceType?: string|null}).deviceType!.toLowerCase()}/${img.slug}`
+                        : `/shop/${slug}/${img.slug}`
+                    }
                     style={{ textDecoration: "none", display: "block" }}
                   >
                     <div style={{
