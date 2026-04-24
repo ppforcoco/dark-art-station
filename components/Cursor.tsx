@@ -71,11 +71,7 @@ export default function Cursor() {
     const dagger = daggerRef.current;
     if (!dagger) return;
 
-    // Hide native cursor
-    const style = document.createElement("style");
-    style.id = "cursor-hide-native";
-    style.textContent = "html,body,*,*::before,*::after{cursor:none!important}";
-    document.head.appendChild(style);
+    // cursor:none is in globals.css — no dynamic injection needed
 
     dagger.style.display = "block";
 
@@ -126,7 +122,7 @@ export default function Cursor() {
       document.removeEventListener("mouseover",  onOver);
       document.removeEventListener("mouseleave", onLeave);
       document.removeEventListener("mouseenter", onEnter);
-      document.getElementById("cursor-hide-native")?.remove();
+
     };
   }, []);
 

@@ -64,10 +64,11 @@ export default function HalloweenCountdown() {
     setRemaining(calcRemaining());
     setTopbarVar(BAR_HEIGHT);
 
+    // 10s interval — seconds digit removed, saves ~60 React re-renders/min
     const id = setInterval(() => {
       setHalloween(isHalloween());
       setRemaining(calcRemaining());
-    }, 1000);
+    }, 10_000);
 
     return () => {
       clearInterval(id);
@@ -104,11 +105,7 @@ export default function HalloweenCountdown() {
             <span className="hc-label">min</span>
           </div>
 
-          <span className="hc-sep">·</span>
-          <div className="hc-segment">
-            <span className="hc-num">{pad(remaining.seconds)}</span>
-            <span className="hc-label">sec</span>
-          </div>
+
         </>
       )}
     </div>
