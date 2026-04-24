@@ -35,7 +35,8 @@ const MAX_SIZE = 20 * 1024 * 1024; // 20 MB
 export async function POST(req: NextRequest) {
   const form = await req.formData();
   const files = form.getAll("files") as File[];
-  const districtTag = form.get("tags") as string | null;
+  const districtTag  = form.get("tags")       as string | null;
+  const deviceType   = form.get("deviceType") as string | null;
 
   if (!districtTag) {
     return NextResponse.json({ message: "District tag is required" }, { status: 400 });
@@ -89,6 +90,7 @@ export async function POST(req: NextRequest) {
         highResKey: r2Key,
         tags: [districtTag],
         isAdult: false,
+        ...(deviceType ? { deviceType: deviceType as "IPHONE" | "ANDROID" | "PC" } : {}),
       },
     });
 

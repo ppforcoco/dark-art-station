@@ -10020,14 +10020,12 @@ button:active:not(:disabled) { transform: translateY(0px) scale(0.98) !important
 .dt-daily__desc {
   font-family: var(--dt-font-body);
   font-size: 1.05rem;
-  color: #6a6080;
+  color: #b8b0cc;
   line-height: 1.75;
-  max-width: 480px;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+  max-width: 540px;
 }
+.dt-daily__desc p { margin: 0 0 0.75em; }
+.dt-daily__desc p:last-child { margin-bottom: 0; }
 .dt-daily__tags {
   display: flex;
   flex-wrap: wrap;

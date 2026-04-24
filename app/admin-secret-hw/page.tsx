@@ -745,6 +745,7 @@ function DistrictsTab({password}:{password:string}){
   const[selected,setSelected]=useState<Set<string>>(new Set());
   const[uploadMsg,setUploadMsg]=useState<{type:"ok"|"err";text:string}|null>(null);
   const[removing,setRemoving]=useState(false);
+  const[districtDeviceType,setDistrictDeviceType]=useState<"IPHONE"|"ANDROID"|"PC"|"">("IPHONE");
   const fileRef=useRef<HTMLInputElement>(null);
   const r2Base=process.env.NEXT_PUBLIC_R2_PUBLIC_URL??"";
   const active=DISTRICTS_LIST.find(d=>d.id===activeId)!;
@@ -763,7 +764,7 @@ function DistrictsTab({password}:{password:string}){
     setUploadMsg({type:"ok",text:"Uploading..."});
     const form=new FormData();
     Array.from(files).forEach(f=>form.append("files",f));
-    form.append("tags",active.tag);form.append("districtId",active.id);
+    form.append("tags",active.tag);form.append("districtId",active.id);if(districtDeviceType)form.append("deviceType",districtDeviceType);
     try{const res=await fetch("/api/admin/districts/upload",{method:"POST",headers:{"x-admin-password":password},body:form});
       if(!res.ok)throw new Error((await res.json()).message??"Upload failed");
       const j=await res.json();setUploadMsg({type:"ok",text:`Uploaded ${j.count} image(s)`});await load(active);}
@@ -810,6 +811,7 @@ function DistrictsTab({password}:{password:string}){
         <div style={{display:"flex",alignItems:"center",gap:"12px",flexWrap:"wrap"}}>
           <span style={{fontSize:"1.6rem"}}>📁</span>
           <div style={{flex:1,color:C.textSec,fontSize:"0.82rem",lineHeight:1.6}}><strong style={{color:C.textPri}}>Drop images here</strong> or click Choose Files<br/><small>PNG · JPEG · WEBP · Max 20MB · Auto-tagged as <code style={{color:C.purple}}>{active.tag}</code></small></div>
+          <select value={districtDeviceType} onChange={e=>setDistrictDeviceType(e.target.value as "IPHONE"|"ANDROID"|"PC"|"")} style={{background:"#1a1020",border:`1px solid ${C.border}`,color:C.textPri,padding:"7px 10px",borderRadius:"6px",fontSize:"0.76rem",cursor:"pointer"}}><option value="">No Device</option><option value="IPHONE">iPhone</option><option value="ANDROID">Android</option><option value="PC">PC</option></select>
           <label style={{background:C.purple,color:"#fff",padding:"8px 16px",borderRadius:"6px",cursor:"pointer",fontSize:"0.78rem",fontWeight:600,display:"inline-block"}} htmlFor="district-upload-inline">Choose Files</label>
           <input id="district-upload-inline" type="file" accept="image/*" multiple ref={fileRef} onChange={handleUpload} style={{display:"none"}}/>
         </div>

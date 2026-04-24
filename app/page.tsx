@@ -37,7 +37,7 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export const revalidate = 60;
+export const revalidate = 3600; // Re-check every hour; WOTD itself changes at UTC midnight
 
 export default async function Home() {
   const wotd = await getWallpaperOfTheDay();
@@ -138,7 +138,7 @@ export default async function Home() {
                 <span className="dt-coffin__label">Always</span>
               </div>
               <div className="dt-coffin dt-coffin--gold">
-                <span className="dt-coffin__num">No</span>
+                <span className="dt-coffin__num">No Sign‑Up</span>
                 <span className="dt-coffin__label">Pure Privacy</span>
               </div>
             </div>
@@ -473,10 +473,7 @@ export default async function Home() {
                   {/* Glass gloss */}
                   <div className="dt-phone-card__gloss" aria-hidden="true" />
 
-                  {/* Hover reveal: crimson overlay */}
-                  <div className="dt-phone-card__hover-veil" aria-hidden="true">
-                    <span className="dt-phone-card__hover-text">View →</span>
-                  </div>
+
                 </div>
 
                 {/* Home indicator */}
