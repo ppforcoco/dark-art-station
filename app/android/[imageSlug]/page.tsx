@@ -152,6 +152,14 @@ export default async function AndroidImagePage({ params }: PageProps) {
             </DeviceMockup>
           </div>
 
+          {/* ── Mobile-only download CTA — sits right under the preview ── */}
+          <div className="android-detail-mobile-dl">
+            <DownloadButton
+              href={`/api/download/image/${image.id}`}
+              viewCount={image.viewCount}
+            />
+          </div>
+
           <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
             <div>
               <Link href="/android" className="font-mono text-[0.6rem] tracking-[0.25em] uppercase text-[#8b0000] hover:text-[#c0001a] transition-colors">
@@ -173,11 +181,13 @@ export default async function AndroidImagePage({ params }: PageProps) {
               </span>
             </div>
 
-            {/* Download button — primary CTA, highest on the panel */}
-            <DownloadButton
-              href={`/api/download/image/${image.id}`}
-              viewCount={image.viewCount}
-            />
+            {/* Download button — hidden on mobile (shown above image), visible on desktop */}
+            <div className="android-detail-desktop-dl">
+              <DownloadButton
+                href={`/api/download/image/${image.id}`}
+                viewCount={image.viewCount}
+              />
+            </div>
 
             {/* Save to favorites */}
             <div className="detail-fav-row">
@@ -203,17 +213,26 @@ export default async function AndroidImagePage({ params }: PageProps) {
 
       {/* Desktop two-column layout via CSS */}
       <style>{`
+                .android-detail-mobile-dl { display: block; }
+        .android-detail-desktop-dl { display: none; }
         .android-detail-image-wrap {
           display: flex;
           justify-content: center;
         }
         @media (min-width: 768px) {
           .android-detail-grid { flex-direction: row !important; align-items: flex-start; gap: 56px !important; }
-          .android-detail-image-wrap { flex: 0 0 420px; justify-content: flex-start; }
+          .android-detail-mobile-dl { display: none; }
+          .android-detail-desktop-dl { display: block; }
+          
+                  .android-detail-mobile-dl { display: block; }
+        .android-detail-desktop-dl { display: none; }
+        .android-detail-image-wrap { flex: 0 0 420px; justify-content: flex-start; }
           .android-detail-grid > div:last-child { flex: 1; position: sticky; top: 100px; }
         }
         @media (min-width: 1024px) {
-          .android-detail-image-wrap { flex: 0 0 480px; }
+                  .android-detail-mobile-dl { display: block; }
+        .android-detail-desktop-dl { display: none; }
+        .android-detail-image-wrap { flex: 0 0 480px; }
         }
       `}</style>
 

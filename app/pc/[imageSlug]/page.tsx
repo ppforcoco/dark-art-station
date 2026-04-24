@@ -166,6 +166,14 @@ export default async function PcImagePage({ params }: PageProps) {
             </DeviceMockup>
           </div>
 
+          {/* ── Mobile-only download CTA — sits right under the preview ── */}
+          <div className="pc-detail-mobile-dl">
+            <DownloadButton
+              href={`/api/download/image/${image.id}`}
+              viewCount={image.viewCount}
+            />
+          </div>
+
           <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
             <div>
               <Link href="/pc" className="font-mono text-[0.6rem] tracking-[0.25em] uppercase text-[#8b0000] hover:text-[#c0001a] transition-colors">
@@ -188,11 +196,13 @@ export default async function PcImagePage({ params }: PageProps) {
               </span>
             </div>
 
-            {/* Download button — primary CTA */}
-            <DownloadButton
-              href={`/api/download/image/${image.id}`}
-              viewCount={image.viewCount}
-            />
+            {/* Download button — hidden on mobile (shown above image), visible on desktop */}
+            <div className="pc-detail-desktop-dl">
+              <DownloadButton
+                href={`/api/download/image/${image.id}`}
+                viewCount={image.viewCount}
+              />
+            </div>
 
             {/* Save to favorites */}
             <div className="detail-fav-row">
@@ -218,17 +228,26 @@ export default async function PcImagePage({ params }: PageProps) {
 
       {/* Desktop two-column layout via CSS */}
       <style>{`
+                .pc-detail-mobile-dl { display: block; }
+        .pc-detail-desktop-dl { display: none; }
         .pc-detail-image-wrap {
           display: flex;
           justify-content: center;
         }
         @media (min-width: 768px) {
           .pc-detail-grid { flex-direction: row !important; align-items: flex-start; gap: 56px !important; }
-          .pc-detail-image-wrap { flex: 0 0 560px; justify-content: flex-start; }
+          .pc-detail-mobile-dl { display: none; }
+          .pc-detail-desktop-dl { display: block; }
+          
+                  .pc-detail-mobile-dl { display: block; }
+        .pc-detail-desktop-dl { display: none; }
+        .pc-detail-image-wrap { flex: 0 0 560px; justify-content: flex-start; }
           .pc-detail-grid > div:last-child { flex: 1; position: sticky; top: 100px; }
         }
         @media (min-width: 1024px) {
-          .pc-detail-image-wrap { flex: 0 0 640px; }
+                  .pc-detail-mobile-dl { display: block; }
+        .pc-detail-desktop-dl { display: none; }
+        .pc-detail-image-wrap { flex: 0 0 640px; }
         }
         .description-html p { margin-bottom: 0.75rem; }
         .description-html p:last-child { margin-bottom: 0; }
