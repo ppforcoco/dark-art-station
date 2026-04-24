@@ -145,15 +145,15 @@ export default async function IphoneImagePage({ params }: PageProps) {
                 <Image src={thumbUrl} alt={image.title} fill className="object-cover" priority quality={90} unoptimized sizes="(max-width: 768px) 100vw, 65vw" />
               </div>
             </DeviceMockup>
+            {/* ↓ Download button — directly below the device preview on all screen sizes */}
+            <div style={{ marginTop: "16px", width: "100%" }}>
+              <DownloadButton
+                href={`/api/download/image/${image.id}`}
+                viewCount={image.viewCount}
+              />
+            </div>
           </div>
 
-          {/* ── Mobile-only download CTA — sits right under the preview ── */}
-          <div className="iphone-detail-mobile-dl">
-            <DownloadButton
-              href={`/api/download/image/${image.id}`}
-              viewCount={image.viewCount}
-            />
-          </div>
 
           <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
             <div>
@@ -176,13 +176,7 @@ export default async function IphoneImagePage({ params }: PageProps) {
               </span>
             </div>
 
-            {/* Download button — hidden on mobile (shown above image), visible on desktop */}
-            <div className="iphone-detail-desktop-dl">
-              <DownloadButton
-                href={`/api/download/image/${image.id}`}
-                viewCount={image.viewCount}
-              />
-            </div>
+
 
             {/* Save to favorites */}
             <div className="detail-fav-row">
@@ -208,26 +202,19 @@ export default async function IphoneImagePage({ params }: PageProps) {
 
       {/* Desktop two-column layout via CSS */}
       <style>{`
-                .iphone-detail-mobile-dl { display: block; }
-        .iphone-detail-desktop-dl { display: none; }
-        .iphone-detail-image-wrap {
+                .iphone-detail-image-wrap {
           display: flex;
-          justify-content: center;
+          flex-direction: column;
+          align-items: center;
         }
         @media (min-width: 768px) {
           .iphone-detail-grid { flex-direction: row !important; align-items: flex-start; gap: 56px !important; }
-          .iphone-detail-mobile-dl { display: none; }
-          .iphone-detail-desktop-dl { display: block; }
           
-                  .iphone-detail-mobile-dl { display: block; }
-        .iphone-detail-desktop-dl { display: none; }
-        .iphone-detail-image-wrap { flex: 0 0 420px; justify-content: flex-start; }
+                  .iphone-detail-image-wrap { flex: 0 0 420px; justify-content: flex-start; }
           .iphone-detail-grid > div:last-child { flex: 1; position: sticky; top: 100px; }
         }
         @media (min-width: 1024px) {
-                  .iphone-detail-mobile-dl { display: block; }
-        .iphone-detail-desktop-dl { display: none; }
-        .iphone-detail-image-wrap { flex: 0 0 480px; }
+                  .iphone-detail-image-wrap { flex: 0 0 480px; }
         }
       `}</style>
 
