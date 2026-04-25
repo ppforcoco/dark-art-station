@@ -14,6 +14,7 @@ import SocialShare from "@/components/SocialShare";
 import PageTracker from "@/components/PageTracker";
 import FavoriteButton from "@/components/FavoriteButton";
 import { shouldCountPageView } from "@/lib/analytics-filter";
+import PreviewButton from "@/components/PreviewButton";
 
 export const dynamicParams = true;
 export const revalidate = 3600;
@@ -151,11 +152,12 @@ export default async function AndroidImagePage({ params }: PageProps) {
               </div>
             </DeviceMockup>
             {/* ↓ Download button — directly below the device preview on all screen sizes */}
-            <div style={{ marginTop: "16px", width: "100%" }}>
+            <div style={{ marginTop: "16px", width: "100%", display: "flex", flexDirection: "column", gap: "10px" }}>
               <DownloadButton
                 href={`/api/download/image/${image.id}`}
                 viewCount={image.viewCount}
               />
+              <PreviewButton src={thumbUrl} title={image.title} />
             </div>
           </div>
 

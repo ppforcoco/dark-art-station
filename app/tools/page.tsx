@@ -1160,16 +1160,41 @@ const LS_DEVICES = [
 ] as const;
 
 function LockScreenTool() {
-  const [imgUrl, setImgUrl]         = useState<string | null>(null);
+  // Support ?wallpaper=URL query param for direct-from-site preview
+  const [imgUrl, setImgUrl]         = useState<string | null>(() => {
+    if (typeof window !== "undefined") {
+      const p = new URLSearchParams(window.location.search);
+      return p.get("wallpaper") ?? null;
+    }
+    return null;
+  });
+  const [imgTitle, setImgTitle]     = useState<string>(() => {
+    if (typeof window !== "undefined") {
+      const p = new URLSearchParams(window.location.search);
+      return p.get("title") ?? "";
+    }
+    return "";
+  });
   const [device, setDevice]         = useState<typeof LS_DEVICES[number]>(LS_DEVICES[0]);
   const [showClock, setShowClock]   = useState(true);
   const [showIcons, setShowIcons]   = useState(true);
   const [showNotif, setShowNotif]   = useState(false);
   const [clockPos, setClockPos]     = useState<"top"|"middle">("top");
 
+  // Also read URL params on mount
+  useEffect(() => {
+    const p = new URLSearchParams(window.location.search);
+    const w = p.get("wallpaper");
+    const t = p.get("title");
+    if (w && !imgUrl) setImgUrl(w);
+    if (t && !imgTitle) setImgTitle(t);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   function handleFile(file: File) {
     const url = URL.createObjectURL(file);
     setImgUrl(url);
+    setImgTitle(file.name.replace(/\.[^.]+$/, ""));
   }
 
   // Scale the mock to fit panel
@@ -1188,24 +1213,49 @@ function LockScreenTool() {
         notifications, and app icons. See if the creature's eyes are covered before you download.
       </p>
 
+      {imgUrl && imgTitle && (
+        <div style={{
+          padding: "10px 14px",
+          background: "rgba(192,0,26,0.07)",
+          border: "1px solid rgba(192,0,26,0.25)",
+          borderRadius: "6px",
+          display: "flex",
+          alignItems: "center",
+          gap: "10px",
+        }}>
+          <span style={{ fontSize: "1.1rem" }}>📱</span>
+          <div>
+            <p style={{ fontFamily: "var(--font-space), monospace", fontSize: "0.52rem", letterSpacing: "0.12em", textTransform: "uppercase", color: "#c0001a", margin: "0 0 2px" }}>Previewing</p>
+            <p style={{ fontFamily: "var(--font-cormorant), serif", fontSize: "0.95rem", color: "#f0ecff", margin: 0, fontStyle: "italic" }}>{imgTitle}</p>
+          </div>
+          <button onClick={() => { setImgUrl(null); setImgTitle(""); }} style={{
+            marginLeft: "auto", padding: "4px 10px",
+            background: "transparent", border: "1px solid rgba(255,255,255,0.12)",
+            color: "#6a6080", fontFamily: "var(--font-space), monospace",
+            fontSize: "0.5rem", cursor: "pointer", letterSpacing: "0.1em",
+          }}>
+            Change
+          </button>
+        </div>
+      )}
+
       {/* Upload */}
-      <div
-        className={`tool-drop ${imgUrl ? "tool-drop--filled" : ""}`}
-        onClick={() => document.getElementById("ls-input")?.click()}
-        onDrop={e => { e.preventDefault(); const f = e.dataTransfer.files[0]; if (f?.type.startsWith("image/")) handleFile(f); }}
-        onDragOver={e => e.preventDefault()}
-      >
-        <input id="ls-input" type="file" accept="image/*" style={{ display: "none" }}
-          onChange={e => { const f = e.target.files?.[0]; if (f) handleFile(f); }} />
-        {!imgUrl && (
+      {!imgUrl && (
+        <div
+          className="tool-drop"
+          onClick={() => document.getElementById("ls-input")?.click()}
+          onDrop={e => { e.preventDefault(); const f = e.dataTransfer.files[0]; if (f?.type.startsWith("image/")) handleFile(f); }}
+          onDragOver={e => e.preventDefault()}
+        >
+          <input id="ls-input" type="file" accept="image/*" style={{ display: "none" }}
+            onChange={e => { const f = e.target.files?.[0]; if (f) handleFile(f); }} />
           <div className="tool-drop-empty">
             <span className="tool-drop-icon">📱</span>
             <p className="tool-drop-label">Drop wallpaper here or click to upload</p>
-            <p className="tool-drop-sub">Preview it as a lock screen before downloading</p>
+            <p className="tool-drop-sub">Or click "📱 Preview" on any wallpaper on the site</p>
           </div>
-        )}
-        {imgUrl && <p className="tool-change-hint" style={{padding:"12px"}}>Click to change image</p>}
-      </div>
+        </div>
+      )}
 
       {/* Controls row */}
       <div className="tool-section">
