@@ -123,6 +123,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" dir="ltr">
       <head>
+        {/* ── Cursor: hide native cursor instantly — before any paint ─── */}
+        <style dangerouslySetInnerHTML={{ __html: `@media(pointer:fine){html,body,*,*::before,*::after{cursor:none!important}}` }} />
         {/* ── Dark mode + Night mode scripts ────────────────────────────── */}
         <script
           dangerouslySetInnerHTML={{

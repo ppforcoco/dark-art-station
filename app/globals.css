@@ -11369,3 +11369,9 @@ button:active:not(:disabled) { transform: translateY(0px) scale(0.98) !important
 }
 [data-theme="ember"] .dt-manifesto__quote,
 [data-theme="ember"] .dt-manifesto__body { color: #d88040 !important; }
+
+/* PC hero 2-column layout — stacks on mobile */
+.pc-hero-layout { grid-template-columns: 1fr 1fr !important; }
+@media (max-width: 768px) {
+  .pc-hero-layout { grid-template-columns: 1fr !important; }
+}
