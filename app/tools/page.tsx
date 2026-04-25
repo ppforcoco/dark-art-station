@@ -1161,7 +1161,7 @@ const LS_DEVICES = [
 
 function LockScreenTool() {
   const [imgUrl, setImgUrl]         = useState<string | null>(null);
-  const [device, setDevice]         = useState(LS_DEVICES[0]);
+  const [device, setDevice]         = useState<typeof LS_DEVICES[number]>(LS_DEVICES[0]);
   const [showClock, setShowClock]   = useState(true);
   const [showIcons, setShowIcons]   = useState(true);
   const [showNotif, setShowNotif]   = useState(false);
