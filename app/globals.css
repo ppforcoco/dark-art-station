@@ -11224,3 +11224,185 @@ button:active:not(:disabled) { transform: translateY(0px) scale(0.98) !important
 [data-theme="fog"] .blog-post-card { background: #dde0e5; border-color: #b0b8c4; }
 [data-theme="fog"] .blog-post-card-title { color: #12181e; }
 [data-theme="fog"] .blog-post-card-excerpt { color: #4a5460; }
+/* ══════════════════════════════════════════════════════════════════════════
+   UNIVERSAL THEME FIX — Adaptive text & background for Ghost + Fog themes
+   Added: visibility fix so all text is readable on both light and dark themes
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* ── GHOST: Force full-page dark background — prevents white flash ── */
+[data-theme="ghost"],
+[data-theme="ghost"] html,
+[data-theme="ghost"] body,
+[data-theme="ghost"] #__next,
+[data-theme="ghost"] main,
+[data-theme="ghost"] .shop-page,
+[data-theme="ghost"] .search-page,
+[data-theme="ghost"] .static-page,
+[data-theme="ghost"] .hero-section,
+[data-theme="ghost"] .products-bg,
+[data-theme="ghost"] .manifesto-section,
+[data-theme="ghost"] .newsletter-section,
+[data-theme="ghost"] .wotd-section,
+[data-theme="ghost"] .seasonal-page,
+[data-theme="ghost"] .error-page {
+  background-color: #0d0d14 !important;
+  color: #e0e0f8 !important;
+}
+
+/* ── GHOST: Override ALL hardcoded dark bg classes ── */
+[data-theme="ghost"] .bg-\[\#050505\],
+[data-theme="ghost"] .bg-\[\#070710\],
+[data-theme="ghost"] .bg-\[\#0a0a0a\],
+[data-theme="ghost"] .bg-\[\#0e0c14\],
+[data-theme="ghost"] .bg-\[\#0c0b14\],
+[data-theme="ghost"] .bg-\[\#080e14\],
+[data-theme="ghost"] .bg-black,
+[data-theme="ghost"] .bg-\[\#12121c\],
+[data-theme="ghost"] .bg-\[\#18182a\] {
+  background-color: #0d0d14 !important;
+}
+
+/* ── GHOST: Universal text visibility — adaptive neutral that works on dark ── */
+/* The chosen color #c8c8e8 is light lavender — visible on dark bg, clear contrast */
+[data-theme="ghost"] .text-white,
+[data-theme="ghost"] .text-\[\#f0ecff\],
+[data-theme="ghost"] .text-\[\#d4cde8\] {
+  color: #e8e8ff !important;
+}
+
+[data-theme="ghost"] .text-\[\#a89bc0\],
+[data-theme="ghost"] .text-\[\#8a8099\] {
+  color: #a0a0cc !important;
+}
+
+[data-theme="ghost"] .text-\[\#4a445a\],
+[data-theme="ghost"] .text-gray-400,
+[data-theme="ghost"] .text-gray-500 {
+  color: #8080aa !important;
+}
+
+/* ── GHOST: Section & page text — catch all p, h*, span that inherit wrong color ── */
+[data-theme="ghost"] p,
+[data-theme="ghost"] h1,
+[data-theme="ghost"] h2,
+[data-theme="ghost"] h3,
+[data-theme="ghost"] h4,
+[data-theme="ghost"] h5,
+[data-theme="ghost"] h6,
+[data-theme="ghost"] span,
+[data-theme="ghost"] li,
+[data-theme="ghost"] label {
+  color: inherit;
+}
+
+/* Make sure the ghost body text color cascades */
+[data-theme="ghost"] body {
+  color: #e0e0f8 !important;
+}
+
+/* ── GHOST: Cards & panels ── */
+[data-theme="ghost"] .card-glow,
+[data-theme="ghost"] .product-grid .group,
+[data-theme="ghost"] .blog-post-card {
+  background: #18182a !important;
+  border-color: rgba(144,144,200,0.15) !important;
+  color: #e0e0f8 !important;
+}
+
+[data-theme="ghost"] .blog-post-card-title { color: #e8e8ff !important; }
+[data-theme="ghost"] .blog-post-card-excerpt { color: #9090b8 !important; }
+
+/* ── GHOST: Borders ── */
+[data-theme="ghost"] .border-\[\#2a2535\] {
+  border-color: rgba(144,144,200,0.2) !important;
+}
+
+/* ── GHOST: Inputs & buttons ── */
+[data-theme="ghost"] input,
+[data-theme="ghost"] textarea,
+[data-theme="ghost"] select {
+  background-color: #12121c !important;
+  color: #e0e0f8 !important;
+  border-color: rgba(144,144,200,0.25) !important;
+}
+
+[data-theme="ghost"] input::placeholder,
+[data-theme="ghost"] textarea::placeholder {
+  color: #6060a0 !important;
+}
+
+/* ── GHOST: Buttons inherit properly ── */
+[data-theme="ghost"] button,
+[data-theme="ghost"] .btn,
+[data-theme="ghost"] .dt-btn--ghost {
+  color: #e0e0f8 !important;
+  border-color: rgba(144,144,200,0.3) !important;
+}
+
+/* ── FOG: Ensure no dark text becomes invisible on light bg ── */
+[data-theme="fog"] .text-\[\#f0ecff\],
+[data-theme="fog"] .text-\[\#d4cde8\],
+[data-theme="fog"] .text-\[\#a89bc0\],
+[data-theme="fog"] .text-\[\#8a8099\],
+[data-theme="fog"] .text-\[\#4a445a\] {
+  /* Already handled above — keeping for clarity */
+}
+
+/* ── FOG: Cards ── */
+[data-theme="fog"] .card-glow,
+[data-theme="fog"] .blog-post-card {
+  background: #dde0e5 !important;
+  border-color: #b0b8c4 !important;
+  color: #12181e !important;
+}
+
+/* ── GHOST: device-page & read-more ── */
+[data-theme="ghost"] .device-page-intro {
+  background: rgba(96,96,160,0.1) !important;
+  border-color: rgba(144,144,200,0.2) !important;
+}
+[data-theme="ghost"] .device-page-intro p { color: #a0a0cc !important; }
+[data-theme="ghost"] .read-more-toggle {
+  border-color: rgba(144,144,200,0.3) !important;
+  color: #9090f0 !important;
+}
+
+/* ── GHOST: DT phone cards light text ── */
+[data-theme="ghost"] .dt-phone-card__ls-hour {
+  color: rgba(224,224,248,0.9) !important;
+}
+[data-theme="ghost"] .dt-phone-card__ls-date {
+  color: rgba(160,160,200,0.7) !important;
+}
+[data-theme="ghost"] .dt-phone-card__label { color: #9090b8 !important; }
+
+/* ── GHOST: Nav fixes ── */
+[data-theme="ghost"] .site-nav {
+  background: rgba(13,13,20,0.97) !important;
+  border-bottom-color: rgba(96,96,192,0.15) !important;
+}
+[data-theme="ghost"] .mobile-menu-panel {
+  background: rgba(13,13,20,0.99) !important;
+}
+[data-theme="ghost"] .mobile-menu-panel a,
+[data-theme="ghost"] .mobile-menu-panel span,
+[data-theme="ghost"] .mobile-menu-panel p {
+  color: #c0c0e0 !important;
+}
+
+/* ── GHOST: Footer ── */
+[data-theme="ghost"] .site-footer {
+  background: #12121c !important;
+  border-color: rgba(96,96,192,0.12) !important;
+  color: #a0a0cc !important;
+}
+[data-theme="ghost"] .footer-bottom {
+  border-color: rgba(96,96,192,0.12) !important;
+  color: #7070a0 !important;
+}
+[data-theme="ghost"] .site-footer a { color: #9090cc !important; }
+[data-theme="ghost"] .site-footer a:hover { color: #d0d0f8 !important; }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   END UNIVERSAL THEME FIX
+   ══════════════════════════════════════════════════════════════════════════ */
