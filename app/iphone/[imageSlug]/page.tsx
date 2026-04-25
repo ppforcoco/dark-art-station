@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { db, getRelatedImages } from "@/lib/db";
+import { shouldCountPageView } from "@/lib/analytics-filter";
 import { getPublicUrl } from "@/lib/r2";
 import AdSlot from "@/components/AdSlot";
 import DeviceMockup from "@/components/DeviceMockup";
