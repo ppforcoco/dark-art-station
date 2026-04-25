@@ -244,8 +244,7 @@ export default async function AndroidImagePage({ params }: PageProps) {
               </div>
               <div style={{ display: "flex", flexDirection: "column", gap: "4px", minWidth: 0 }}>
                 <span className="font-mono text-[0.5rem] tracking-[0.2em] uppercase" style={{ color: "var(--text-muted)" }}>← Previous</span>
-                <span className="font-body italic text-[0.75rem]" style={{ color: "var(--text-primary)" }}
-                  style={{ display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" as const, overflow: "hidden" }}>
+                <span className="font-body italic text-[0.75rem]" style={{ color: "var(--text-primary)", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" as const, overflow: "hidden" }}>
                   {prevImage.title}
                 </span>
               </div>
@@ -261,8 +260,7 @@ export default async function AndroidImagePage({ params }: PageProps) {
               </div>
               <div style={{ display: "flex", flexDirection: "column", gap: "4px", minWidth: 0, textAlign: "right" }}>
                 <span className="font-mono text-[0.5rem] tracking-[0.2em] uppercase" style={{ color: "var(--text-muted)" }}>Next →</span>
-                <span className="font-body italic text-[0.75rem]" style={{ color: "var(--text-primary)" }}
-                  style={{ display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" as const, overflow: "hidden" }}>
+                <span className="font-body italic text-[0.75rem]" style={{ color: "var(--text-primary)", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" as const, overflow: "hidden" }}>
                   {nextImage.title}
                 </span>
               </div>
