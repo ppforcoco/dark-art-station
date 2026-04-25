@@ -6,7 +6,6 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import HalloweenCountdown from "@/components/HalloweenCountdown";
 import Cursor from "@/components/Cursor";
-import ScrollToTop from "@/components/ScrollToTop";
 import ScrollToTopButton from "@/components/ScrollToTopButton";
 import CookieBanner from "@/components/CookieBanner";
 import ScrollReset from "@/components/ScrollReset";

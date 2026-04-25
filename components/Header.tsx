@@ -5,10 +5,11 @@ import { useRouter } from "next/navigation";
 import { Menu, X, Search, Shuffle } from "lucide-react";
 
 const NAV_LINKS = [
-  { label: "iPhone",       href: "/iphone"  },
-  { label: "Android",      href: "/android" },
-  { label: "PC",           href: "/pc"      },
-  { label: "Blog & Guides", href: "/blog"   },
+  { label: "iPhone",       href: "/iphone"     },
+  { label: "Android",      href: "/android"    },
+  { label: "PC",           href: "/pc"         },
+  { label: "Collections",  href: "/obsessions" },
+  { label: "Blog & Guides", href: "/blog"      },
 ];
 
 type Theme = "dark" | "blood" | "light" | "ghost" | "ember";
@@ -215,6 +216,9 @@ export default function Header() {
           <button className="mobile-menu-link hw2-mobile-link" style={{"--mi":NAV_LINKS.length} as React.CSSProperties} onClick={handleRandom}>
             ⚡ Random Wallpaper
           </button>
+          <Link href="/favorites" className="mobile-menu-link hw2-mobile-link" style={{"--mi":NAV_LINKS.length+1} as React.CSSProperties} onClick={closeMenu}>
+            ♥ Saved Wallpapers
+          </Link>
         </nav>
         <div className="mobile-theme-row">
           {([["dark","☽","Dark"],["blood","🌑","Crimson"],["light","☀","Light"],["ghost","👻","Ghost"],["ember","🔥","Ember"]] as [Theme,string,string][]).map(([t,icon,label])=>(

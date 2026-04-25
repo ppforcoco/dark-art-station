@@ -4,10 +4,6 @@
 import Link from "next/link";
 import type { JSX } from "react";
 
-const SOCIAL_LINKS = [
-  { label: "Pinterest", href: "https://www.pinterest.com/TheFreemiumWallpapers/" },
-];
-
 export default function Footer(): JSX.Element {
   return (
     <footer className="site-footer">
@@ -38,6 +34,8 @@ export default function Footer(): JSX.Element {
         <div className="footer-col">
           <h4 className="footer-col-title">Company</h4>
           <ul>
+            <li><Link href="/obsessions">Collections</Link></li>
+            <li><Link href="/favorites">♥ Saved Wallpapers</Link></li>
             <li><Link href="/about">About</Link></li>
             <li><Link href="/blog">Blog &amp; Guides</Link></li>
             <li><Link href="/tools">Free Tools</Link></li>
@@ -70,19 +68,7 @@ export default function Footer(): JSX.Element {
           </span>
         </div>
         <div className="footer-bottom-right">
-          <div className="footer-socials">
-            {SOCIAL_LINKS.map(({ label, href }) => (
-              <a
-                key={label}
-                href={href}
-                className="social-link"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {label}
-              </a>
-            ))}
-          </div>
+  
           <button
             className="footer-report-btn"
             onClick={() => window.dispatchEvent(new CustomEvent("open-feedback"))}
