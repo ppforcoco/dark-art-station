@@ -196,11 +196,11 @@ export default function CookieBanner() {
           .cookie-actions { flex-direction: row; }
           .cookie-btn { flex: 1; }
         }
-        [data-theme="light"] .cookie-banner { background: #f4f1ea; border-top-color: rgba(192,0,26,0.3); }
-        [data-theme="light"] .cookie-title { color: #1a1814; }
-        [data-theme="light"] .cookie-desc  { color: #5a5450; }
-        [data-theme="light"] .cookie-btn--decline { border-color: #cdc8bc; color: #5a5450; }
-        [data-theme="light"] .cookie-btn--decline:hover { border-color: #5a5450; color: #1a1814; }
+        [data-theme="fog"] .cookie-banner { background: #f4f1ea; border-top-color: rgba(192,0,26,0.3); }
+        [data-theme="fog"] .cookie-title { color: #1a1814; }
+        [data-theme="fog"] .cookie-desc  { color: #5a5450; }
+        [data-theme="fog"] .cookie-btn--decline { border-color: #cdc8bc; color: #5a5450; }
+        [data-theme="fog"] .cookie-btn--decline:hover { border-color: #5a5450; color: #1a1814; }
       `}</style>
     </>
   );

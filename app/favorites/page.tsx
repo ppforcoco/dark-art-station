@@ -186,7 +186,7 @@ export default function FavoritesPage() {
           margin-bottom: 12px;
         }
         .fav-title em { color: #c9a84c; font-style: italic; }
-        [data-theme="light"] .fav-title { color: #1a1814; }
+        [data-theme="fog"] .fav-title { color: #1a1814; }
         .fav-count {
           font-family: var(--font-space), monospace;
           font-size: 0.62rem;
@@ -213,7 +213,7 @@ export default function FavoritesPage() {
           color: #f0ecff;
           margin: 0;
         }
-        [data-theme="light"] .fav-empty-title { color: #1a1814; }
+        [data-theme="fog"] .fav-empty-title { color: #1a1814; }
         .fav-empty-sub {
           font-family: var(--font-cormorant), serif;
           font-size: 1.05rem;
@@ -311,7 +311,7 @@ export default function FavoritesPage() {
           border-color: rgba(192,0,26,0.45);
           transform: translateY(-3px);
         }
-        [data-theme="light"] .fav-card { background: #f0ebe0; border-color: rgba(0,0,0,0.08); }
+        [data-theme="fog"] .fav-card { background: #f0ebe0; border-color: rgba(0,0,0,0.08); }
 
         .fav-card-img-wrap {
           position: relative;
@@ -363,7 +363,7 @@ export default function FavoritesPage() {
           -webkit-box-orient: vertical;
           overflow: hidden;
         }
-        [data-theme="light"] .fav-card-title { color: #3a3450; }
+        [data-theme="fog"] .fav-card-title { color: #3a3450; }
 
         .fav-card-row {
           display: flex;
@@ -405,7 +405,7 @@ export default function FavoritesPage() {
           transition: color 0.15s, border-color 0.15s;
         }
         .fav-remove-btn:hover { color: #c0001a; border-color: rgba(192,0,26,0.4); }
-        [data-theme="light"] .fav-remove-btn { border-color: rgba(0,0,0,0.1); color: #8a8090; }
+        [data-theme="fog"] .fav-remove-btn { border-color: rgba(0,0,0,0.1); color: #8a8090; }
 
         /* ── Custom Clear-All Dialog ── */
         .fav-dialog-backdrop {
@@ -420,7 +420,7 @@ export default function FavoritesPage() {
           from { opacity: 0; }
           to   { opacity: 1; }
         }
-        [data-theme="light"] .fav-dialog-backdrop {
+        [data-theme="fog"] .fav-dialog-backdrop {
           background: rgba(244,241,234,0.88);
         }
         .fav-dialog {
@@ -436,7 +436,7 @@ export default function FavoritesPage() {
           from { opacity: 0; transform: translateY(-16px) scale(0.97); }
           to   { opacity: 1; transform: translateY(0) scale(1); }
         }
-        [data-theme="light"] .fav-dialog {
+        [data-theme="fog"] .fav-dialog {
           background: #f0ebe0;
           border-color: rgba(192,0,26,0.3);
           box-shadow: 0 24px 80px rgba(0,0,0,0.25);
@@ -455,7 +455,7 @@ export default function FavoritesPage() {
           margin: 0 0 10px;
           line-height: 1.25;
         }
-        [data-theme="light"] .fav-dialog-title { color: #1a1814; }
+        [data-theme="fog"] .fav-dialog-title { color: #1a1814; }
         .fav-dialog-body {
           font-family: var(--font-cormorant), serif;
           font-size: 1rem;
@@ -463,7 +463,7 @@ export default function FavoritesPage() {
           line-height: 1.65;
           margin: 0 0 28px;
         }
-        [data-theme="light"] .fav-dialog-body { color: #5a5450; }
+        [data-theme="fog"] .fav-dialog-body { color: #5a5450; }
         .fav-dialog-actions {
           display: flex; gap: 10px; flex-wrap: wrap;
         }
@@ -479,10 +479,10 @@ export default function FavoritesPage() {
           min-height: 44px;
         }
         .fav-dialog-cancel:hover { border-color: rgba(255,255,255,0.25); color: #f0ecff; }
-        [data-theme="light"] .fav-dialog-cancel {
+        [data-theme="fog"] .fav-dialog-cancel {
           border-color: rgba(0,0,0,0.12); color: #7a7468;
         }
-        [data-theme="light"] .fav-dialog-cancel:hover {
+        [data-theme="fog"] .fav-dialog-cancel:hover {
           border-color: rgba(0,0,0,0.3); color: #1a1814;
         }
         .fav-dialog-confirm {

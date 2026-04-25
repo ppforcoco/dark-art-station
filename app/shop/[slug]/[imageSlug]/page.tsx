@@ -224,13 +224,13 @@ export default async function CollectionImagePage({ params }: PageProps) {
 
             {/* Format badge */}
             <div style={{ display: "flex", flexWrap: "wrap", gap: "12px", alignItems: "center" }}>
-              <span className="font-mono text-[0.6rem] tracking-[0.2em] uppercase text-[#4a445a] border border-[#2a2535] px-3 py-1">
+              <span className="font-mono text-[0.6rem] tracking-[0.2em] uppercase px-3 py-1" style={{ color: "var(--text-muted)", border: "1px solid var(--border-dim)" }}>
                 HD · Free
               </span>
-              <span className="font-mono text-[0.6rem] tracking-[0.2em] uppercase text-[#4a445a] border border-[#2a2535] px-3 py-1">
+              <span className="font-mono text-[0.6rem] tracking-[0.2em] uppercase px-3 py-1" style={{ color: "var(--text-muted)", border: "1px solid var(--border-dim)" }}>
                 JPEG
               </span>
-              <span className="font-mono text-[0.6rem] tracking-[0.2em] uppercase text-[#4a445a] border border-[#2a2535] px-3 py-1">
+              <span className="font-mono text-[0.6rem] tracking-[0.2em] uppercase px-3 py-1" style={{ color: "var(--text-muted)", border: "1px solid var(--border-dim)" }}>
                 9:16 Portrait
               </span>
             </div>
@@ -316,7 +316,7 @@ export default async function CollectionImagePage({ params }: PageProps) {
           border: 1px solid rgba(139,0,0,0.3);
           background: rgba(7,7,16,0.6);
         }
-        [data-theme="light"] .download-section {
+        [data-theme="fog"] .download-section {
           background: #f0ebe0;
           border: 1px solid rgba(139,0,0,0.2);
           box-shadow: 0 2px 14px rgba(0,0,0,0.07), inset 0 1px 0 rgba(255,255,255,0.5);
@@ -352,7 +352,7 @@ export default async function CollectionImagePage({ params }: PageProps) {
           margin: 0;
           text-align: center;
         }
-        [data-theme="light"] .download-note { color: #7a7468; }
+        [data-theme="fog"] .download-note { color: #7a7468; }
 
         .detail-fav-row {
           display: flex;
@@ -366,7 +366,7 @@ export default async function CollectionImagePage({ params }: PageProps) {
           text-transform: uppercase;
           color: var(--text-muted, #6b6480);
         }
-        [data-theme="light"] .detail-fav-label { color: #7a7468; }
+        [data-theme="fog"] .detail-fav-label { color: #7a7468; }
 
         /* ── Prev / Next navigation ── */
         .prev-next-nav {
@@ -381,7 +381,7 @@ export default async function CollectionImagePage({ params }: PageProps) {
           z-index: 10;
           background: var(--bg-primary, #0c0b14);
         }
-        [data-theme="light"] .prev-next-nav { border-top-color: #ddd8ce; }
+        [data-theme="fog"] .prev-next-nav { border-top-color: #ddd8ce; }
         .prev-next-link {
           display: flex;
           flex-direction: row;
@@ -403,11 +403,11 @@ export default async function CollectionImagePage({ params }: PageProps) {
           border-color: rgba(139,0,0,0.5);
           background: rgba(12,11,20,0.8);
         }
-        [data-theme="light"] .prev-next-link {
+        [data-theme="fog"] .prev-next-link {
           background: #f0ebe0;
           border-color: #cdc8bc;
         }
-        [data-theme="light"] .prev-next-link:hover {
+        [data-theme="fog"] .prev-next-link:hover {
           border-color: rgba(139,0,0,0.4);
           background: #e8e3d8;
         }
@@ -429,7 +429,7 @@ export default async function CollectionImagePage({ params }: PageProps) {
           border: 1px solid rgba(255,255,255,0.07);
           border-radius: 3px;
         }
-        [data-theme="light"] .prev-next-thumb-wrap { border-color: rgba(0,0,0,0.1); }
+        [data-theme="fog"] .prev-next-thumb-wrap { border-color: rgba(0,0,0,0.1); }
 
         .prev-next-text {
           display: flex;
@@ -446,7 +446,7 @@ export default async function CollectionImagePage({ params }: PageProps) {
           color: #4a445a;
           flex-shrink: 0;
         }
-        [data-theme="light"] .prev-next-label { color: #8a8468; }
+        [data-theme="fog"] .prev-next-label { color: #8a8468; }
         .prev-next-title {
           font-family: var(--font-cormorant), serif;
           font-style: italic;

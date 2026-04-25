@@ -168,12 +168,12 @@ export default async function IphoneImagePage({ params }: PageProps) {
             </div>
 
             {/* Always rendered — real description or auto-generated fallback */}
-            <div className="font-body text-[1rem] text-[#a89bc0] leading-relaxed description-html" dangerouslySetInnerHTML={{ __html: displayDescription }} />
+            <div className="font-body text-[1rem] leading-relaxed description-html" style={{ color: "var(--text-muted)" }} dangerouslySetInnerHTML={{ __html: displayDescription }} />
 
 
 
             <div style={{ display: "flex", flexWrap: "wrap", gap: "12px", alignItems: "center" }}>
-              <span className="font-mono text-[0.6rem] tracking-[0.2em] uppercase text-[#4a445a] border border-[#2a2535] px-3 py-1">
+              <span className="font-mono text-[0.6rem] tracking-[0.2em] uppercase px-3 py-1" style={{ color: "var(--text-muted)", border: "1px solid var(--border-dim)" }}>
                 iPhone · 9:16
               </span>
             </div>
@@ -228,19 +228,19 @@ export default async function IphoneImagePage({ params }: PageProps) {
           display: "grid",
           gridTemplateColumns: "1fr 1fr",
           gap: "12px",
-          borderTop: "1px solid #1e1b2e",
+          borderTop: "1px solid var(--border-dim)",
         }}>
           {prevImage ? (
             <Link href={`/iphone/${prevImage.slug}`}
-              style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: "12px", padding: "10px", border: "1px solid #2a2535", textDecoration: "none" }}
+              style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: "12px", padding: "10px", border: "1px solid var(--border-dim)", textDecoration: "none" }}
               className="hover:border-[rgba(139,0,0,0.5)] transition-colors">
               <div style={{ position: "relative", flexShrink: 0, width: "48px", height: "86px", overflow: "hidden", borderRadius: "4px" }}>
                 <Image src={getPublicUrl(prevImage.r2Key)} alt={prevImage.title} fill className="object-cover" unoptimized sizes="48px" />
               </div>
               <div style={{ display: "flex", flexDirection: "column", gap: "4px", minWidth: 0 }}>
-                <span className="font-mono text-[0.5rem] tracking-[0.2em] uppercase text-[#4a445a]">← Previous</span>
-                <span className="font-body italic text-[0.75rem] text-[#f0ecff]"
-                  style={{ display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" as const, overflow: "hidden" }}>
+                <span className="font-mono text-[0.5rem] tracking-[0.2em] uppercase" style={{ color: "var(--text-muted)" }}>← Previous</span>
+                <span className="font-body italic text-[0.75rem]"
+                  style={{ color: "var(--text-primary)", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" as const, overflow: "hidden" }}>
                   {prevImage.title}
                 </span>
               </div>
@@ -249,15 +249,15 @@ export default async function IphoneImagePage({ params }: PageProps) {
 
           {nextImage ? (
             <Link href={`/iphone/${nextImage.slug}`}
-              style={{ display: "flex", flexDirection: "row-reverse", alignItems: "center", gap: "12px", padding: "10px", border: "1px solid #2a2535", textDecoration: "none" }}
+              style={{ display: "flex", flexDirection: "row-reverse", alignItems: "center", gap: "12px", padding: "10px", border: "1px solid var(--border-dim)", textDecoration: "none" }}
               className="hover:border-[rgba(139,0,0,0.5)] transition-colors">
               <div style={{ position: "relative", flexShrink: 0, width: "48px", height: "86px", overflow: "hidden", borderRadius: "4px" }}>
                 <Image src={getPublicUrl(nextImage.r2Key)} alt={nextImage.title} fill className="object-cover" unoptimized sizes="48px" />
               </div>
               <div style={{ display: "flex", flexDirection: "column", gap: "4px", minWidth: 0, textAlign: "right" }}>
-                <span className="font-mono text-[0.5rem] tracking-[0.2em] uppercase text-[#4a445a]">Next →</span>
-                <span className="font-body italic text-[0.75rem] text-[#f0ecff]"
-                  style={{ display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" as const, overflow: "hidden" }}>
+                <span className="font-mono text-[0.5rem] tracking-[0.2em] uppercase" style={{ color: "var(--text-muted)" }}>Next →</span>
+                <span className="font-body italic text-[0.75rem]"
+                  style={{ color: "var(--text-primary)", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" as const, overflow: "hidden" }}>
                   {nextImage.title}
                 </span>
               </div>

@@ -79,7 +79,7 @@ export default function LockScreenPreviewModal({ src, title, onClose }: Props) {
 
         .lsp-panel {
           background: var(--bg-secondary, #12121c);
-          border: 1px solid rgba(255,255,255,0.1);
+          border: 1px solid var(--border-dim, rgba(255,255,255,0.1));
           border-radius: 16px;
           display: flex;
           gap: 0;
@@ -94,21 +94,21 @@ export default function LockScreenPreviewModal({ src, title, onClose }: Props) {
         .lsp-close {
           position: absolute; top: 14px; right: 14px; z-index: 10;
           width: 32px; height: 32px;
-          background: rgba(255,255,255,0.08);
-          border: 1px solid rgba(255,255,255,0.12);
+          background: rgba(128,128,128,0.12);
+          border: 1px solid var(--border-dim, rgba(255,255,255,0.12));
           border-radius: 50%;
-          color: #aaa; font-size: 1rem;
+          color: var(--text-muted, #aaa); font-size: 1rem;
           cursor: pointer; display: flex; align-items: center; justify-content: center;
           transition: background 0.2s;
         }
-        .lsp-close:hover { background: rgba(255,255,255,0.16); color: #fff; }
+        .lsp-close:hover { background: rgba(128,128,128,0.22); color: var(--text-primary, #fff); }
 
         /* ── Left: phone preview ── */
         .lsp-preview {
           flex: 0 0 auto;
           width: 280px;
           min-width: 280px;
-          background: #070710;
+          background: var(--bg-primary, #070710);
           display: flex;
           align-items: center;
           justify-content: center;
@@ -289,7 +289,7 @@ export default function LockScreenPreviewModal({ src, title, onClose }: Props) {
         }
         .lsp-frame-btn {
           padding: 9px 14px;
-          border: 1px solid rgba(255,255,255,0.08);
+          border: 1px solid var(--border-dim, rgba(255,255,255,0.08));
           background: transparent;
           color: var(--text-muted, #8888aa);
           font-family: var(--font-space), monospace;
@@ -300,7 +300,7 @@ export default function LockScreenPreviewModal({ src, title, onClose }: Props) {
           text-align: left;
           transition: all 0.2s;
         }
-        .lsp-frame-btn:hover { border-color: rgba(255,255,255,0.18); color: var(--text-primary, #e0e0f8); }
+        .lsp-frame-btn:hover { border-color: var(--border-dim, rgba(255,255,255,0.18)); color: var(--text-primary, #e0e0f8); }
         .lsp-frame-btn--active {
           border-color: var(--blood, #a01818) !important;
           color: var(--text-primary, #e0e0f8) !important;
@@ -327,7 +327,7 @@ export default function LockScreenPreviewModal({ src, title, onClose }: Props) {
         }
         .lsp-toggle {
           width: 36px; height: 20px;
-          background: rgba(255,255,255,0.1);
+          background: var(--border-dim, rgba(255,255,255,0.1));
           border-radius: 10px;
           position: relative;
           cursor: pointer;
@@ -354,7 +354,7 @@ export default function LockScreenPreviewModal({ src, title, onClose }: Props) {
         .lsp-pos-btn {
           flex: 1;
           padding: 7px;
-          border: 1px solid rgba(255,255,255,0.08);
+          border: 1px solid var(--border-dim, rgba(255,255,255,0.08));
           background: transparent;
           color: var(--text-muted, #8888aa);
           font-family: var(--font-space), monospace;

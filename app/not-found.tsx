@@ -94,13 +94,13 @@ export default async function NotFound() {
           min-height: 100vh;
           color: #f0ecff;
         }
-        [data-theme="light"] .nf-page { background: var(--bg-primary) !important; color: var(--text-primary) !important; }
-        [data-theme="light"] .nf-title { color: #1a1814 !important; }
-        [data-theme="light"] .nf-desc { color: #5a5450 !important; }
-        [data-theme="light"] .nf-suggestions-label { color: #7a7468 !important; }
-        [data-theme="light"] .nf-card { background: #e8e3d8 !important; border-color: rgba(0,0,0,0.08) !important; }
-        [data-theme="light"] .nf-btn-secondary { color: #a07828 !important; border-color: rgba(160,120,40,0.4) !important; }
-        [data-theme="light"] .nf-btn-secondary:hover { border-color: #a07828 !important; background: rgba(160,120,40,0.08) !important; }
+        [data-theme="fog"] .nf-page { background: var(--bg-primary) !important; color: var(--text-primary) !important; }
+        [data-theme="fog"] .nf-title { color: #1a1814 !important; }
+        [data-theme="fog"] .nf-desc { color: #5a5450 !important; }
+        [data-theme="fog"] .nf-suggestions-label { color: #7a7468 !important; }
+        [data-theme="fog"] .nf-card { background: #e8e3d8 !important; border-color: rgba(0,0,0,0.08) !important; }
+        [data-theme="fog"] .nf-btn-secondary { color: #a07828 !important; border-color: rgba(160,120,40,0.4) !important; }
+        [data-theme="fog"] .nf-btn-secondary:hover { border-color: #a07828 !important; background: rgba(160,120,40,0.08) !important; }
         [data-theme="ghost"] .nf-page { background: #1a1a1e !important; color: #f8f8ff !important; }
         [data-theme="ember"] .nf-page { background: #0a0600 !important; color: #ffe8d0 !important; }
         [data-theme="ember"] .nf-desc { color: #c07030 !important; }

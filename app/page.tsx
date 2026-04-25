@@ -225,16 +225,16 @@ export default async function Home() {
           .dt-hero-phones { justify-content: flex-start !important; }
         }
         /* Light theme text fixes */
-        [data-theme="light"] .dt-gate__eyebrow { color: #8b0000 !important; }
-        [data-theme="light"] .dt-gate__collection-num { color: #1a1410 !important; }
-        [data-theme="light"] .dt-gate__collection-label { color: #5a4838 !important; }
-        [data-theme="light"] .dt-gate__sub { color: #2a1e10 !important; }
-        [data-theme="light"] .hw-hero-vault-text { color: rgba(60,40,20,0.75) !important; }
-        [data-theme="light"] .dt-coffin { background: rgba(255,255,255,0.6) !important; border-color: rgba(139,0,0,0.2) !important; }
-        [data-theme="light"] .dt-coffin__num { color: #8b0000 !important; }
-        [data-theme="light"] .dt-coffin__label { color: rgba(60,40,30,0.6) !important; }
-        [data-theme="light"] .dt-btn--ghost { color: #3a2010 !important; border-color: rgba(60,40,20,0.35) !important; }
-        [data-theme="light"] .dt-btn--ghost:hover { color: #1a1008 !important; border-color: #1a1008 !important; }
+        [data-theme="fog"] .dt-gate__eyebrow { color: #8b0000 !important; }
+        [data-theme="fog"] .dt-gate__collection-num { color: #1a1410 !important; }
+        [data-theme="fog"] .dt-gate__collection-label { color: #5a4838 !important; }
+        [data-theme="fog"] .dt-gate__sub { color: #2a1e10 !important; }
+        [data-theme="fog"] .hw-hero-vault-text { color: rgba(60,40,20,0.75) !important; }
+        [data-theme="fog"] .dt-coffin { background: rgba(255,255,255,0.6) !important; border-color: rgba(139,0,0,0.2) !important; }
+        [data-theme="fog"] .dt-coffin__num { color: #8b0000 !important; }
+        [data-theme="fog"] .dt-coffin__label { color: rgba(60,40,30,0.6) !important; }
+        [data-theme="fog"] .dt-btn--ghost { color: #3a2010 !important; border-color: rgba(60,40,20,0.35) !important; }
+        [data-theme="fog"] .dt-btn--ghost:hover { color: #1a1008 !important; border-color: #1a1008 !important; }
       `}</style>
 
 

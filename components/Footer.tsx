@@ -94,7 +94,7 @@ export default function Footer(): JSX.Element {
           color: #4a445a;
           line-height: 1.5;
         }
-        [data-theme="light"] .footer-ai-disclosure {
+        [data-theme="fog"] .footer-ai-disclosure {
           color: #9a9288;
         }
       `}</style>

@@ -401,11 +401,11 @@ export default async function CollectionPage({ params }: PageProps) {
           transition: opacity 0.25s;
         }
         .coll-img-card:hover .coll-card-overlay { opacity: 1; }
-        [data-theme="light"] .coll-img-card {
+        [data-theme="fog"] .coll-img-card {
           background: #f0ebe0 !important;
           border-color: rgba(0,0,0,0.07) !important;
         }
-        [data-theme="light"] .coll-img-card:hover {
+        [data-theme="fog"] .coll-img-card:hover {
           border-color: rgba(192,0,26,0.35) !important;
         }
       `}</style>

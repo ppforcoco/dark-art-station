@@ -1124,20 +1124,20 @@ function OledTool() {
         .oled-phone-btn { display: flex; flex-direction: column; gap: 2px; padding: 10px 12px; background: transparent; border: 1px solid rgba(255,255,255,0.08); cursor: pointer; text-align: left; transition: border-color .15s, background .15s; }
         .oled-phone-btn:hover { border-color: rgba(201,168,76,0.5); background: rgba(201,168,76,0.04); }
         .oled-phone-btn--active { border-color: #c9a84c; background: rgba(201,168,76,0.1); }
-        [data-theme="light"] .oled-phone-btn { border-color: rgba(0,0,0,0.1); }
+        [data-theme="fog"] .oled-phone-btn { border-color: rgba(0,0,0,0.1); }
         .oled-brand { font-family: var(--font-space), monospace; font-size: 0.48rem; letter-spacing: 0.14em; text-transform: uppercase; color: #c9a84c; }
         .oled-model { font-family: var(--font-space), monospace; font-size: 0.6rem; color: #f0ecff; font-weight: 600; }
-        [data-theme="light"] .oled-model { color: #1a1814; }
+        [data-theme="fog"] .oled-model { color: #1a1814; }
         .oled-batt { font-family: var(--font-space), monospace; font-size: 0.48rem; color: #4a445a; }
         .oled-result { border: 1px solid rgba(201,168,76,0.3); background: rgba(201,168,76,0.04); padding: 22px; display: flex; flex-direction: column; gap: 16px; }
         .oled-result-header { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
         .oled-result-phone { font-family: var(--font-cinzel), cursive; font-size: 1rem; font-weight: 700; color: #f0ecff; }
-        [data-theme="light"] .oled-result-phone { color: #1a1814; }
+        [data-theme="fog"] .oled-result-phone { color: #1a1814; }
         .oled-result-badge { font-family: var(--font-space), monospace; font-size: 0.5rem; letter-spacing: 0.1em; text-transform: uppercase; color: #c9a84c; border: 1px solid rgba(201,168,76,0.4); padding: 3px 8px; }
         .oled-result-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
         @media (max-width: 540px) { .oled-result-grid { grid-template-columns: 1fr; } }
         .oled-stat { display: flex; flex-direction: column; gap: 4px; padding: 16px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.05); }
-        [data-theme="light"] .oled-stat { background: rgba(0,0,0,0.04); }
+        [data-theme="fog"] .oled-stat { background: rgba(0,0,0,0.04); }
         .oled-stat-val { font-family: var(--font-cinzel), cursive; font-size: 1.4rem; font-weight: 900; color: #c9a84c; }
         .oled-stat-label { font-family: var(--font-space), monospace; font-size: 0.5rem; letter-spacing: 0.12em; text-transform: uppercase; color: #6a6080; }
         .oled-disclaimer { font-family: var(--font-cormorant), serif; font-size: 0.8rem; color: #4a445a; font-style: italic; margin: 0; line-height: 1.6; }
@@ -1145,7 +1145,7 @@ function OledTool() {
         .oled-tip-icon { font-size: 1.3rem; flex-shrink: 0; margin-top: 2px; }
         .oled-tip-title { font-family: var(--font-space), monospace; font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase; color: #c0001a; margin: 0 0 6px; }
         .oled-tip-body { font-family: var(--font-cormorant), serif; font-size: 0.95rem; color: #8a8099; margin: 0; line-height: 1.65; }
-        [data-theme="light"] .oled-tip-body { color: #5a5058; }
+        [data-theme="fog"] .oled-tip-body { color: #5a5058; }
       `}</style>
     </div>
   );
@@ -1407,7 +1407,7 @@ function LockScreenTool() {
           box-shadow: 0 0 0 4px rgba(255,255,255,0.06), 0 24px 48px rgba(0,0,0,0.7);
           background: #0a0814;
         }
-        [data-theme="light"] .ls-phone {
+        [data-theme="fog"] .ls-phone {
           border-color: rgba(0,0,0,0.2);
           box-shadow: 0 0 0 4px rgba(0,0,0,0.06), 0 24px 48px rgba(0,0,0,0.3);
         }
@@ -1507,9 +1507,9 @@ export default function ToolsPage() {
         .tools-eyebrow { font-family: var(--font-space), monospace; font-size: 0.6rem; letter-spacing: 0.3em; text-transform: uppercase; color: #c0001a; display: block; margin-bottom: 12px; }
         .tools-title { font-family: var(--font-cinzel), cursive; font-size: clamp(2rem,5vw,3.2rem); font-weight: 900; color: #f0ecff; line-height: 1.1; margin-bottom: 14px; }
         .tools-title em { color: #c9a84c; font-style: italic; }
-        [data-theme="light"] .tools-title { color: #1a1814; }
+        [data-theme="fog"] .tools-title { color: #1a1814; }
         .tools-sub { font-family: var(--font-cormorant), serif; font-size: 1.05rem; color: #8a8099; line-height: 1.7; max-width: 520px; margin: 0; }
-        [data-theme="light"] .tools-sub { color: #5a5058; }
+        [data-theme="fog"] .tools-sub { color: #5a5058; }
 
         /* ── Layout ── */
         .tools-layout { display: grid; grid-template-columns: 220px 1fr; gap: 28px; align-items: start; }
@@ -1521,31 +1521,31 @@ export default function ToolsPage() {
         .tools-nav-btn { display: flex; align-items: center; gap: 10px; padding: 14px 16px; background: transparent; border: 1px solid rgba(255,255,255,0.06); cursor: pointer; text-align: left; transition: background .18s, border-color .18s; }
         .tools-nav-btn:hover { background: rgba(255,255,255,0.03); border-color: rgba(192,0,26,0.3); }
         .tools-nav-btn--active { background: rgba(192,0,26,0.08); border-color: rgba(192,0,26,0.5); }
-        [data-theme="light"] .tools-nav-btn { border-color: rgba(0,0,0,0.08); background: #f4f0e8; }
-        [data-theme="light"] .tools-nav-btn--active { background: rgba(192,0,26,0.06); border-color: rgba(192,0,26,0.3); }
+        [data-theme="fog"] .tools-nav-btn { border-color: rgba(0,0,0,0.08); background: #f4f0e8; }
+        [data-theme="fog"] .tools-nav-btn--active { background: rgba(192,0,26,0.06); border-color: rgba(192,0,26,0.3); }
         .tools-nav-icon { font-size: 1.1rem; flex-shrink: 0; }
         .tools-nav-info { display: flex; flex-direction: column; gap: 2px; }
         .tools-nav-label { font-family: var(--font-space), monospace; font-size: 0.62rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #f0ecff; }
-        [data-theme="light"] .tools-nav-label { color: #1a1814; }
+        [data-theme="fog"] .tools-nav-label { color: #1a1814; }
         .tools-nav-sub { font-family: var(--font-cormorant), serif; font-size: 0.85rem; color: #6a6080; }
 
         /* ── Panel ── */
         .tools-panel { border: 1px solid rgba(255,255,255,0.07); background: rgba(255,255,255,0.02); padding: 28px; min-height: 480px; }
-        [data-theme="light"] .tools-panel { background: #f4f0e8; border-color: rgba(0,0,0,0.08); }
+        [data-theme="fog"] .tools-panel { background: #f4f0e8; border-color: rgba(0,0,0,0.08); }
         .tools-panel-title { font-family: var(--font-cinzel), cursive; font-size: 1.05rem; font-weight: 700; color: #f0ecff; margin-bottom: 20px; padding-bottom: 14px; border-bottom: 1px solid rgba(192,0,26,0.2); display: flex; align-items: center; gap: 10px; }
-        [data-theme="light"] .tools-panel-title { color: #1a1814; }
+        [data-theme="fog"] .tools-panel-title { color: #1a1814; }
 
         /* ── Tool body ── */
         .tool-body { display: flex; flex-direction: column; gap: 20px; }
         .tool-desc { font-family: var(--font-cormorant), serif; font-size: 1.05rem; color: #8a8099; line-height: 1.7; margin: 0; }
-        [data-theme="light"] .tool-desc { color: #5a5058; }
+        [data-theme="fog"] .tool-desc { color: #5a5058; }
 
         /* ── Drop zone ── */
         .tool-drop { border: 2px dashed rgba(192,0,26,0.35); background: rgba(192,0,26,0.03); cursor: pointer; display: flex; align-items: center; justify-content: center; min-height: 160px; transition: border-color .2s, background .2s; }
         .tool-drop:hover { border-color: rgba(192,0,26,0.65); background: rgba(192,0,26,0.06); }
         .tool-drop--filled { border-style: solid; border-color: rgba(192,0,26,0.3); background: #0a0a14; min-height: 220px; }
-        [data-theme="light"] .tool-drop { background: #ede9e0; border-color: rgba(192,0,26,0.25); }
-        [data-theme="light"] .tool-drop--filled { background: #e0dbd0; }
+        [data-theme="fog"] .tool-drop { background: #ede9e0; border-color: rgba(192,0,26,0.25); }
+        [data-theme="fog"] .tool-drop--filled { background: #e0dbd0; }
         .tool-drop-empty { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 40px 24px; text-align: center; }
         .tool-drop-icon { font-size: 1.8rem; }
         .tool-drop-label { font-family: var(--font-space), monospace; font-size: 0.68rem; letter-spacing: 0.1em; color: #8a8099; margin: 0; }
@@ -1557,9 +1557,9 @@ export default function ToolsPage() {
         /* ── Sections ── */
         .tool-section { display: flex; flex-direction: column; gap: 10px; }
         .tool-label { font-family: var(--font-space), monospace; font-size: 0.6rem; letter-spacing: 0.16em; text-transform: uppercase; color: #8a8099; margin: 0; }
-        [data-theme="light"] .tool-label { color: #5a5058; }
+        [data-theme="fog"] .tool-label { color: #5a5058; }
         .tool-label strong { color: #f0ecff; }
-        [data-theme="light"] .tool-label strong { color: #1a1814; }
+        [data-theme="fog"] .tool-label strong { color: #1a1814; }
         .tool-hint { font-family: var(--font-cormorant), serif; font-size: 0.9rem; color: #4a445a; font-style: italic; margin: 0; }
 
         /* ── Preset grid ── */
@@ -1567,9 +1567,9 @@ export default function ToolsPage() {
         .tool-preset { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; padding: 9px 12px; background: transparent; border: 1px solid rgba(255,255,255,0.08); cursor: pointer; text-align: left; transition: border-color .15s, background .15s; }
         .tool-preset:hover { border-color: rgba(192,0,26,0.4); background: rgba(192,0,26,0.04); }
         .tool-preset--active { border-color: #c0001a; background: rgba(192,0,26,0.1); }
-        [data-theme="light"] .tool-preset { border-color: rgba(0,0,0,0.1); }
+        [data-theme="fog"] .tool-preset { border-color: rgba(0,0,0,0.1); }
         .tool-preset-name { font-family: var(--font-space), monospace; font-size: 0.6rem; letter-spacing: 0.06em; color: #f0ecff; }
-        [data-theme="light"] .tool-preset-name { color: #1a1814; }
+        [data-theme="fog"] .tool-preset-name { color: #1a1814; }
         .tool-preset-size { font-family: var(--font-space), monospace; font-size: 0.5rem; color: #4a445a; }
 
         /* ── Fit buttons ── */
@@ -1577,16 +1577,16 @@ export default function ToolsPage() {
         .tool-fit-btn { flex: 1; padding: 10px; background: transparent; border: 1px solid rgba(255,255,255,0.08); cursor: pointer; font-family: var(--font-space), monospace; font-size: 0.58rem; letter-spacing: 0.1em; text-transform: uppercase; color: #8a8099; transition: all .15s; }
         .tool-fit-btn:hover { border-color: rgba(192,0,26,0.4); color: #f0ecff; }
         .tool-fit-btn--active { border-color: #c0001a; background: rgba(192,0,26,0.1); color: #f0ecff; }
-        [data-theme="light"] .tool-fit-btn { border-color: rgba(0,0,0,0.1); color: #5a5058; }
-        [data-theme="light"] .tool-fit-btn--active { color: #1a1814; }
+        [data-theme="fog"] .tool-fit-btn { border-color: rgba(0,0,0,0.1); color: #5a5058; }
+        [data-theme="fog"] .tool-fit-btn--active { color: #1a1814; }
 
         /* ── Color row ── */
         .tool-color-row { display: flex; flex-wrap: wrap; gap: 6px; }
         .tool-color-btn { display: flex; align-items: center; gap: 7px; padding: 7px 11px; background: transparent; border: 1px solid rgba(255,255,255,0.08); cursor: pointer; font-family: var(--font-space), monospace; font-size: 0.58rem; letter-spacing: 0.06em; color: #8a8099; transition: all .15s; }
         .tool-color-btn:hover { border-color: rgba(192,0,26,0.4); color: #f0ecff; }
         .tool-color-btn--active { border-color: #c0001a; color: #f0ecff; background: rgba(192,0,26,0.08); }
-        [data-theme="light"] .tool-color-btn { border-color: rgba(0,0,0,0.1); color: #5a5058; }
-        [data-theme="light"] .tool-color-btn--active { color: #1a1814; }
+        [data-theme="fog"] .tool-color-btn { border-color: rgba(0,0,0,0.1); color: #5a5058; }
+        [data-theme="fog"] .tool-color-btn--active { color: #1a1814; }
         .tool-color-swatch { width: 14px; height: 14px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.15); flex-shrink: 0; display: block; }
 
         /* ── Range ── */
@@ -1629,7 +1629,7 @@ export default function ToolsPage() {
           border-radius: 4px;
           background: rgba(255,255,255,0.02);
         }
-        [data-theme="light"] .tools-seo-card {
+        [data-theme="fog"] .tools-seo-card {
           border-color: rgba(0,0,0,0.07);
           background: rgba(0,0,0,0.02);
         }
