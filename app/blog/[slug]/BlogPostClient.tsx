@@ -246,9 +246,9 @@ export default function BlogPostClient({ post, allPosts }: { post: Post; allPost
           backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
           border-bottom: 1px solid rgba(192,0,26,0.15); padding: 0 24px;
         }
-        [data-theme="light"] .blog-topnav { background: rgba(242,237,225,0.95); border-color: rgba(192,0,26,0.1); }
+        [data-theme="fog"] .blog-topnav { background: rgba(242,237,225,0.95); border-color: rgba(192,0,26,0.1); }
         [data-theme="ghost"] .blog-topnav { background: rgba(20,20,24,0.95); border-color: rgba(248,248,255,0.08); }
-        [data-theme="ember"] .blog-topnav { background: rgba(10,5,0,0.95); border-color: rgba(255,102,0,0.15); }
+        [data-theme="fog"] .blog-topnav { background: rgba(10,5,0,0.95); border-color: rgba(255,102,0,0.15); }
         .blog-topnav-inner {
           max-width: 1280px; margin: 0 auto; display: flex;
           align-items: center; justify-content: space-between; height: 52px; gap: 20px;
@@ -259,7 +259,7 @@ export default function BlogPostClient({ post, allPosts }: { post: Post; allPost
           font-weight: 900; letter-spacing: 0.15em; text-transform: uppercase;
           color: #f0ecff; display: flex; flex-direction: column; line-height: 1.15;
         }
-        [data-theme="light"] .blog-topnav-logo-text { color: #1a1814; }
+        [data-theme="fog"] .blog-topnav-logo-text { color: #1a1814; }
         .blog-topnav-logo-text span { color: #c0001a; font-size: 0.55rem; letter-spacing: 0.25em; }
         .blog-topnav-links { display: flex; align-items: center; gap: 4px; overflow-x: auto; scrollbar-width: none; }
         .blog-topnav-links::-webkit-scrollbar { display: none; }
@@ -270,15 +270,15 @@ export default function BlogPostClient({ post, allPosts }: { post: Post; allPost
           white-space: nowrap; transition: color 0.2s, border-color 0.2s, background 0.2s;
         }
         .blog-topnav-link:hover { color: #f0ecff; border-color: rgba(192,0,26,0.4); background: rgba(192,0,26,0.06); }
-        [data-theme="light"] .blog-topnav-link { color: #7a7468; }
-        [data-theme="light"] .blog-topnav-link:hover { color: #1a1814; }
+        [data-theme="fog"] .blog-topnav-link { color: #7a7468; }
+        [data-theme="fog"] .blog-topnav-link:hover { color: #1a1814; }
 
         .blog-post-footer-nav {
-          max-width: 720px; margin: 48px auto 0; padding-top: 28px;
+          max-width: 960px; margin: 48px auto 0; padding-top: 28px;
           border-top: 1px solid #2a2535; display: flex;
           justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;
         }
-        [data-theme="light"] .blog-post-footer-nav { border-color: #cdc8bc; }
+        [data-theme="fog"] .blog-post-footer-nav { border-color: #cdc8bc; }
         .blog-post-footer-back {
           color: #c0001a; text-decoration: none; font-size: 0.8rem;
           font-family: monospace; letter-spacing: 0.1em; text-transform: uppercase; transition: color 0.2s;
@@ -290,20 +290,20 @@ export default function BlogPostClient({ post, allPosts }: { post: Post; allPost
           font-family: monospace; letter-spacing: 0.08em; transition: color 0.2s;
         }
         .blog-post-footer-link:hover { color: #c4bdd8; }
-        [data-theme="light"] .blog-post-footer-link { color: #8a8468; }
-        [data-theme="light"] .blog-post-footer-link:hover { color: #3a3450; }
+        [data-theme="fog"] .blog-post-footer-link { color: #8a8468; }
+        [data-theme="fog"] .blog-post-footer-link:hover { color: #3a3450; }
 
         .blog-wallpaper-cta {
-          max-width: 720px; margin: 32px auto 0; padding: 20px 24px;
+          max-width: 960px; margin: 32px auto 0; padding: 20px 24px;
           border: 1px solid rgba(192,0,26,0.2); background: rgba(192,0,26,0.04);
         }
-        [data-theme="light"] .blog-wallpaper-cta { border-color: rgba(192,0,26,0.18); background: rgba(192,0,26,0.03); }
+        [data-theme="fog"] .blog-wallpaper-cta { border-color: rgba(192,0,26,0.18); background: rgba(192,0,26,0.03); }
         .blog-wallpaper-cta-text {
           font-family: var(--font-space), monospace; font-size: 0.65rem;
           letter-spacing: 0.12em; text-transform: uppercase;
           color: #8a8099; margin: 0 0 12px; display: flex; align-items: center; gap: 8px;
         }
-        [data-theme="light"] .blog-wallpaper-cta-text { color: #5a5468; }
+        [data-theme="fog"] .blog-wallpaper-cta-text { color: #5a5468; }
         .blog-wallpaper-cta-links { display: flex; flex-wrap: wrap; gap: 8px; }
         .blog-wallpaper-cta-btn {
           font-family: var(--font-space), monospace; font-size: 0.58rem;
@@ -313,32 +313,32 @@ export default function BlogPostClient({ post, allPosts }: { post: Post; allPost
           transition: background 0.2s, border-color 0.2s, color 0.2s;
         }
         .blog-wallpaper-cta-btn:hover { background: rgba(192,0,26,0.1); border-color: rgba(192,0,26,0.6); color: #ff2233; }
-        [data-theme="light"] .blog-wallpaper-cta-btn { color: #c0001a; border-color: rgba(192,0,26,0.3); }
-        [data-theme="light"] .blog-wallpaper-cta-btn:hover { background: rgba(192,0,26,0.07); }
-        [data-theme="light"] .blog-html-content h1,
-        [data-theme="light"] .blog-html-content h2,
-        [data-theme="light"] .blog-html-content h3,
-        [data-theme="light"] .blog-html-content h4 { color: #1a1814; }
-        [data-theme="light"] .blog-html-content h3 { color: #8b4200; }
-        [data-theme="light"] .blog-html-content h4 { color: #5a3a70; }
-        [data-theme="light"] .blog-html-content p { color: #3a3028; font-size: 1.05rem; line-height: 1.8; }
-        [data-theme="light"] .blog-html-content li { color: #3a3028; }
-        [data-theme="light"] .blog-html-content strong { color: #1a1814; }
-        [data-theme="light"] .blog-html-content em { color: #8b4200; }
-        [data-theme="light"] .blog-html-content a { color: #c0001a; border-color: rgba(192,0,26,0.3); }
-        [data-theme="light"] .blog-html-content a:hover { color: #900015; border-color: rgba(192,0,26,0.6); }
+        [data-theme="fog"] .blog-wallpaper-cta-btn { color: #c0001a; border-color: rgba(192,0,26,0.3); }
+        [data-theme="fog"] .blog-wallpaper-cta-btn:hover { background: rgba(192,0,26,0.07); }
+        [data-theme="fog"] .blog-html-content h1,
+        [data-theme="fog"] .blog-html-content h2,
+        [data-theme="fog"] .blog-html-content h3,
+        [data-theme="fog"] .blog-html-content h4 { color: #1a1814; }
+        [data-theme="fog"] .blog-html-content h3 { color: #8b4200; }
+        [data-theme="fog"] .blog-html-content h4 { color: #5a3a70; }
+        [data-theme="fog"] .blog-html-content p { color: #3a3028; font-size: 1.05rem; line-height: 1.8; }
+        [data-theme="fog"] .blog-html-content li { color: #3a3028; }
+        [data-theme="fog"] .blog-html-content strong { color: #1a1814; }
+        [data-theme="fog"] .blog-html-content em { color: #8b4200; }
+        [data-theme="fog"] .blog-html-content a { color: #c0001a; border-color: rgba(192,0,26,0.3); }
+        [data-theme="fog"] .blog-html-content a:hover { color: #900015; border-color: rgba(192,0,26,0.6); }
         /* Force readable colors on blog post page regardless of stored theme */
         .blog-post-page .static-page-title { color: #1a1814 !important; }
         .blog-post-page .static-page-title em { color: #8b4000 !important; }
         .blog-post-page .static-page-label { color: #8a8468 !important; }
         .blog-post-page .static-page-header { border-bottom-color: #cdc8bc !important; }
-        [data-theme="light"] .static-page-title { color: #1a1814; }
-        [data-theme="light"] .static-page-label { color: #8a8468; }
+        [data-theme="fog"] .static-page-title { color: #1a1814; }
+        [data-theme="fog"] .static-page-label { color: #8a8468; }
 
         /* ── Related posts ── */
         /* ── Related posts — always light (blog pages always use cream bg) ── */
         .related-posts-section {
-          max-width: 720px; margin: 0 auto 60px; padding-top: 8px;
+          max-width: 960px; margin: 0 auto 60px; padding-top: 8px;
         }
         .related-posts-heading {
           font-family: var(--font-cinzel), cursive; font-size: 0.85rem;

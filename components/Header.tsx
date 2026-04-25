@@ -12,7 +12,7 @@ const NAV_LINKS = [
   { label: "Blog & Guides", href: "/blog"      },
 ];
 
-type Theme = "dark" | "blood" | "light" | "ghost" | "ember";
+type Theme = "dark" | "blood" | "fog" | "ghost";
 
 export default function Header() {
   const router = useRouter();
@@ -39,7 +39,7 @@ export default function Header() {
   useEffect(() => {
     try {
       const saved = localStorage.getItem("hw-theme") as Theme | null;
-      const valid: Theme[] = ["dark", "blood", "light", "ghost", "ember"];
+      const valid: Theme[] = ["dark", "blood", "fog", "ghost"];
       if (saved && valid.includes(saved)) {
         setTheme(saved);
         document.documentElement.setAttribute("data-theme", saved);
@@ -105,8 +105,8 @@ export default function Header() {
     return () => window.removeEventListener("keydown", onKey);
   }, [closeMenu, closeSearch]);
 
-  const themeIcon  = theme === "dark" ? "☽" : theme === "blood" ? "🌑" : theme === "ghost" ? "👻" : theme === "ember" ? "🔥" : "☀";
-  const themeLabel = theme === "dark" ? "Dark" : theme === "blood" ? "Crimson" : theme === "ghost" ? "Ghost" : theme === "ember" ? "Ember" : "Light";
+  const themeIcon  = theme === "dark" ? "☽" : theme === "blood" ? "🌑" : theme === "ghost" ? "👻" : "🌫";
+  const themeLabel = theme === "dark" ? "Dark" : theme === "blood" ? "Crimson" : theme === "ghost" ? "Ghost" : "Fog";
 
   return (
     <>
@@ -126,14 +126,18 @@ export default function Header() {
         [data-theme="blood"] .manifesto-quote{color:#fff0f0!important}
         [data-theme="blood"] .site-footer{background:#100000!important;border-color:#340808!important}
         [data-theme="blood"] .mobile-menu-panel{background:rgba(8,0,0,.98)!important}
-        [data-theme="light"] .hw-hero{background:var(--bg-primary)}
-        [data-theme="light"] .hw-hero__title-top,[data-theme="light"] .hw-hero__title-mid{color:#1a1814}
-        [data-theme="light"] .hw-hero__sub{color:#7a7468}
-        [data-theme="light"] .hw-hero__stat-num{color:#8b0000}
-        [data-theme="light"] .hw-hero__mosaic-wrap{border-left-color:rgba(192,0,26,.1)}
+        [data-theme="fog"] {
+          --bg-primary:#1a1a1f;--bg-secondary:#141418;--text-primary:#d4cfca;--text-muted:#8a8580;--border-dim:#2a2a30;
+        }
+        [data-theme="fog"] body{background-color:#1a1a1f!important}
+        [data-theme="fog"] .hw-hero{background:radial-gradient(ellipse at 50% 0%,rgba(180,160,140,.07) 0%,#1a1a1f 65%)}
+        [data-theme="fog"] .hw-hero__title-top,[data-theme="fog"] .hw-hero__title-mid{color:#e8e4de}
+        [data-theme="fog"] .hw-hero__sub{color:#8a8580}
+        [data-theme="fog"] .hw-hero__stat-num{color:#c0001a}
+        [data-theme="fog"] .site-nav{background:rgba(22,22,26,0.97)!important;border-bottom-color:rgba(192,0,26,.2)!important}
+        [data-theme="fog"] .site-footer{background:#141418!important;border-color:#2a2a30!important}
+        [data-theme="fog"] .mobile-menu-panel{background:rgba(22,22,26,.99)!important}
         [data-theme="ghost"] .hw-hero{background:radial-gradient(ellipse at 50% 0%,rgba(200,220,255,.06) 0%,transparent 70%),#070712}
-        [data-theme="ember"] .hw-hero{background:radial-gradient(ellipse at 70% 0%,rgba(255,100,0,.1) 0%,#07040a 65%)}
-        [data-theme="ember"] .logo-red{color:#ff6600!important;text-shadow:0 0 18px rgba(255,100,0,.6)!important}
       `}</style>
 
       {/* ── NAV ── */}
@@ -175,7 +179,7 @@ export default function Header() {
               <div className="theme-menu">
                 {([
                   ["dark","☽","Dark"],["blood","🌑","Crimson"],
-                  ["light","☀","Light"],["ghost","👻","Ghost"],["ember","🔥","Ember"],
+                  ["ghost","👻","Ghost"],["fog","🌫","Fog"],
                 ] as [Theme,string,string][]).map(([t,icon,label]) => (
                   <button key={t} type="button" className={`theme-option${theme===t?" theme-option--active":""}`} onClick={()=>setThemeAndClose(t)}>
                     <span>{icon}</span><span>{label}</span>
@@ -221,7 +225,7 @@ export default function Header() {
           </Link>
         </nav>
         <div className="mobile-theme-row">
-          {([["dark","☽","Dark"],["blood","🌑","Crimson"],["light","☀","Light"],["ghost","👻","Ghost"],["ember","🔥","Ember"]] as [Theme,string,string][]).map(([t,icon,label])=>(
+          {([["dark","☽","Dark"],["blood","🌑","Crimson"],["ghost","👻","Ghost"],["fog","🌫","Fog"]] as [Theme,string,string][]).map(([t,icon,label])=>(
             <button key={t} type="button" className={`mobile-theme-btn${theme===t?" mobile-theme-btn--active":""}`} onClick={()=>setThemeAndClose(t)}>
               <span>{icon}</span><span>{label}</span>
             </button>
