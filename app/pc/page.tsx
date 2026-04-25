@@ -7,6 +7,7 @@ import Pagination from "@/components/Pagination";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import DeviceImageCard from "@/components/DeviceImageCard";
 import PcHeroSlideshow from "@/components/PcHeroSlideshow";
+import ReadMoreIntro from "@/components/ReadMoreIntro";
 
 export const revalidate = 60;
 
