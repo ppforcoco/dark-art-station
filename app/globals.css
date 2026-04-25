@@ -2942,12 +2942,14 @@ body::before {
 /* Portrait ratio (9:16) — matches wallpaper cards */
 
 /* Shimmer sweep */
-
+@keyframes shimmer {
+  0%   { background-position: 200% 0; }
   100% { background-position: -200% 0; }
 }
 
 /* Info bar at the bottom of skeleton */
-
+@keyframes skeletonPulse {
+  0%, 100% { opacity: 0.4; }
   50%       { opacity: 1; }
 }
 

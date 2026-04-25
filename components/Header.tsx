@@ -9,6 +9,7 @@ const NAV_LINKS = [
   { label: "Android",      href: "/android"    },
   { label: "PC",           href: "/pc"         },
   { label: "Collections",  href: "/obsessions" },
+  { label: "Mood",         href: "/mood"       },
   { label: "Blog & Guides", href: "/blog"      },
 ];
 
