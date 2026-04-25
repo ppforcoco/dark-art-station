@@ -9,18 +9,16 @@ export const revalidate = 300;
 export const metadata: Metadata = {
   title: "Mood Wallpapers — Find Your Vibe | Haunted Wallpapers",
   description:
-    "Don't browse by category — browse by feeling. Paranoid, Melancholy, Powerful, Aggressive, or Quiet. Find the wallpaper that matches your psychological state.",
+    "Don't browse by category — browse by feeling. Paranoid, Melancholy, Powerful, Aggressive, Quiet, and 10 more psychological states. Find the wallpaper that matches your inner world.",
   openGraph: {
     title: "Mood Wallpapers — Find Your Vibe",
-    description: "Browse 5 psychological vibes. Each mood pulls dark art that matches your state of mind.",
+    description: "15 psychological moods. Each pulls dark art that matches your state of mind right now.",
     type: "website",
   },
 };
 
 // ── Mood definitions ──────────────────────────────────────────────────────────
-// Each mood maps to a set of tags that exist (or could exist) on your images.
-// The query does hasSome — any image with ≥1 matching tag shows up.
-// Add more tags to a mood to pull more images. Add these tags in the admin panel.
+// Each mood maps to tags on your images. hasSome — any ≥1 tag match shows up.
 export const MOODS = [
   {
     id:       "paranoid",
@@ -67,11 +65,100 @@ export const MOODS = [
     gradient: "radial-gradient(ellipse at 50% 0%, rgba(136,136,187,0.12) 0%, transparent 65%)",
     tags:     ["quiet", "minimal", "minimalist", "moon", "space", "void", "dark", "night", "calm", "silhouette", "black"],
   },
+  {
+    id:       "haunted",
+    label:    "Haunted",
+    glyph:    "🕯",
+    desc:     "You carry something old with you. It won't leave.",
+    color:    "#d4a847",
+    gradient: "radial-gradient(ellipse at 50% 0%, rgba(212,168,71,0.14) 0%, transparent 65%)",
+    tags:     ["haunted", "ghost", "spirit", "candle", "graveyard", "gothic", "Victorian", "specter", "wraith", "apparition"],
+  },
+  {
+    id:       "obsessed",
+    label:    "Obsessed",
+    glyph:    "🔁",
+    desc:     "One thought. Looping. You can't stop.",
+    color:    "#9b30d0",
+    gradient: "radial-gradient(ellipse at 50% 0%, rgba(155,48,208,0.15) 0%, transparent 65%)",
+    tags:     ["obsessed", "spiral", "loop", "hypnotic", "surreal", "glitch", "distorted", "trance", "ritual"],
+  },
+  {
+    id:       "cold",
+    label:    "Cold",
+    glyph:    "❄️",
+    desc:     "Frozen inside. No warmth. No apologies.",
+    color:    "#60b8d8",
+    gradient: "radial-gradient(ellipse at 50% 0%, rgba(96,184,216,0.13) 0%, transparent 65%)",
+    tags:     ["cold", "ice", "winter", "frost", "snow", "frozen", "pale", "arctic", "blizzard", "tundra"],
+  },
+  {
+    id:       "violent",
+    label:    "Violent",
+    glyph:    "💀",
+    desc:     "The darkness that isn't poetic. It just is.",
+    color:    "#cc2200",
+    gradient: "radial-gradient(ellipse at 50% 0%, rgba(204,34,0,0.16) 0%, transparent 65%)",
+    tags:     ["violent", "skull", "death", "gore", "brutal", "war", "destruction", "carnage", "reaper"],
+  },
+  {
+    id:       "dreaming",
+    label:    "Dreaming",
+    glyph:    "🌌",
+    desc:     "Half asleep. The edges of reality softening.",
+    color:    "#7060c8",
+    gradient: "radial-gradient(ellipse at 50% 0%, rgba(112,96,200,0.15) 0%, transparent 65%)",
+    tags:     ["dreaming", "dream", "cosmic", "galaxy", "nebula", "surreal", "psychedelic", "ethereal", "astral", "fantasy"],
+  },
+  {
+    id:       "isolated",
+    label:    "Isolated",
+    glyph:    "🏚",
+    desc:     "Alone is different from lonely. This is both.",
+    color:    "#6a7a6a",
+    gradient: "radial-gradient(ellipse at 50% 0%, rgba(106,122,106,0.13) 0%, transparent 65%)",
+    tags:     ["isolated", "abandoned", "ruin", "empty", "alone", "desolate", "wasteland", "post-apocalyptic", "decayed"],
+  },
+  {
+    id:       "feral",
+    label:    "Feral",
+    glyph:    "🐺",
+    desc:     "Something primal just woke up behind your eyes.",
+    color:    "#c87820",
+    gradient: "radial-gradient(ellipse at 50% 0%, rgba(200,120,32,0.14) 0%, transparent 65%)",
+    tags:     ["feral", "wolf", "beast", "animal", "primal", "hunt", "predator", "wilderness", "creature", "teeth", "claws"],
+  },
+  {
+    id:       "glitching",
+    label:    "Glitching",
+    glyph:    "📡",
+    desc:     "Reality keeps buffering. Error. Error. Error.",
+    color:    "#00d4aa",
+    gradient: "radial-gradient(ellipse at 50% 0%, rgba(0,212,170,0.12) 0%, transparent 65%)",
+    tags:     ["glitch", "glitching", "digital", "cyber", "cyberpunk", "neon", "corruption", "error", "matrix", "vaporwave"],
+  },
+  {
+    id:       "sinister",
+    label:    "Sinister",
+    glyph:    "🎭",
+    desc:     "Everything is fine. That's the problem.",
+    color:    "#c030c0",
+    gradient: "radial-gradient(ellipse at 50% 0%, rgba(192,48,192,0.14) 0%, transparent 65%)",
+    tags:     ["sinister", "villain", "evil", "clown", "mask", "smile", "dread", "uncanny", "wrong", "disturbing"],
+  },
+  {
+    id:       "mythic",
+    label:    "Mythic",
+    glyph:    "🐉",
+    desc:     "Ancient. Vast. You are not the main character.",
+    color:    "#e8c060",
+    gradient: "radial-gradient(ellipse at 50% 0%, rgba(232,192,96,0.14) 0%, transparent 65%)",
+    tags:     ["mythic", "myth", "dragon", "titan", "eldritch", "elder", "god", "cosmic", "ancient", "legendary", "kraken"],
+  },
 ] as const;
 
 export type MoodId = (typeof MOODS)[number]["id"];
 
-// ── Image type ────────────────────────────────────────────────────────────────
 export interface MoodImage {
   id:         string;
   slug:       string;
@@ -82,7 +169,6 @@ export interface MoodImage {
 }
 
 export default async function MoodPage() {
-  // Fetch all moods in parallel — each mood gets up to 24 images
   const results = await Promise.all(
     MOODS.map(async (mood) => {
       const images = await db.image.findMany({
@@ -91,7 +177,7 @@ export default async function MoodPage() {
           tags:    { hasSome: mood.tags as unknown as string[] },
         },
         orderBy: [{ viewCount: "desc" }, { createdAt: "desc" }],
-        take: 24,
+        take: 48,
         select: {
           id:         true,
           slug:       true,
@@ -115,7 +201,6 @@ export default async function MoodPage() {
     })
   );
 
-  // Build a map: moodId → images
   const imagesByMood = Object.fromEntries(
     results.map(({ moodId, images }) => [moodId, images])
   ) as Record<MoodId, MoodImage[]>;

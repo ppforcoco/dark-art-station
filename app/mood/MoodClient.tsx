@@ -1,26 +1,39 @@
+// app/mood/MoodClient.tsx
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import type { MoodId, MoodImage } from "./page";
 import { MOODS } from "./page";
+
+const LockScreenPreviewModal = dynamic(
+  () => import("@/components/LockScreenPreviewModal"),
+  { ssr: false }
+);
 
 interface Props {
   moods:        typeof MOODS;
   imagesByMood: Record<MoodId, MoodImage[]>;
 }
 
+interface PreviewTarget {
+  src:   string;
+  title: string;
+}
+
 export default function MoodClient({ moods, imagesByMood }: Props) {
-  const [active, setActive]     = useState<MoodId>("paranoid");
-  const [visible, setVisible]   = useState(12);
-  const [animKey, setAnimKey]   = useState(0);
+  const [active,   setActive]   = useState<MoodId>("paranoid");
+  const [visible,  setVisible]  = useState(12);
+  const [animKey,  setAnimKey]  = useState(0);
+  const [preview,  setPreview]  = useState<PreviewTarget | null>(null);
   const gridRef                 = useRef<HTMLDivElement>(null);
 
-  const activeMood   = moods.find((m) => m.id === active)!;
-  const allImages    = imagesByMood[active] ?? [];
-  const shownImages  = allImages.slice(0, visible);
-  const hasMore      = allImages.length > visible;
+  const activeMood  = moods.find((m) => m.id === active)!;
+  const allImages   = imagesByMood[active] ?? [];
+  const shownImages = allImages.slice(0, visible);
+  const hasMore     = allImages.length > visible;
 
   const switchMood = (id: MoodId) => {
     if (id === active) return;
@@ -30,7 +43,6 @@ export default function MoodClient({ moods, imagesByMood }: Props) {
     gridRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
-  // Animate cards in when mood changes
   useEffect(() => {
     const cards = gridRef.current?.querySelectorAll<HTMLElement>(".mood-card");
     if (!cards) return;
@@ -41,25 +53,31 @@ export default function MoodClient({ moods, imagesByMood }: Props) {
         card.style.transition = "opacity 0.4s ease, transform 0.4s ease";
         card.style.opacity = "1";
         card.style.transform = "translateY(0)";
-      }, i * 40);
+      }, i * 35);
     });
   }, [animKey]);
 
   const devicePath = (img: MoodImage) => {
     const d = img.deviceType?.toLowerCase();
-    if (d === "iphone") return `/iphone/${img.slug}`;
+    if (d === "iphone")  return `/iphone/${img.slug}`;
     if (d === "android") return `/android/${img.slug}`;
-    if (d === "pc") return `/pc/${img.slug}`;
+    if (d === "pc")      return `/pc/${img.slug}`;
     return `/iphone/${img.slug}`;
   };
+
+  const openPreview = useCallback((e: React.MouseEvent, img: MoodImage) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setPreview({ src: img.url, title: img.title });
+  }, []);
 
   return (
     <>
       <style>{`
         .mood-page {
           min-height: 100vh;
-          background: var(--bg-primary, #07050e);
-          color: var(--text-primary, #e8e4f5);
+          background: var(--bg-primary);
+          color: var(--text-primary);
         }
 
         /* ── Hero ── */
@@ -73,14 +91,11 @@ export default function MoodClient({ moods, imagesByMood }: Props) {
         }
         .mood-hero::before {
           content: "";
-          position: absolute;
-          inset: 0;
+          position: absolute; inset: 0;
           background: repeating-linear-gradient(
             0deg,
-            transparent,
-            transparent 2px,
-            rgba(255,255,255,0.012) 2px,
-            rgba(255,255,255,0.012) 4px
+            transparent, transparent 2px,
+            rgba(128,120,100,0.04) 2px, rgba(128,120,100,0.04) 4px
           );
           pointer-events: none;
         }
@@ -106,11 +121,11 @@ export default function MoodClient({ moods, imagesByMood }: Props) {
           font-weight: 900;
           letter-spacing: 0.06em;
           text-transform: uppercase;
-          color: #f0ecff;
+          color: var(--text-primary);
           margin-bottom: 14px;
           line-height: 1;
           text-shadow: 0 0 40px var(--mood-color);
-          transition: text-shadow 0.5s ease;
+          transition: text-shadow 0.5s ease, color 0.4s ease;
         }
         .mood-hero-title em {
           color: var(--mood-color);
@@ -120,7 +135,7 @@ export default function MoodClient({ moods, imagesByMood }: Props) {
         .mood-hero-desc {
           font-family: var(--font-cormorant), serif;
           font-size: clamp(1.1rem, 2.5vw, 1.5rem);
-          color: #9b95b0;
+          color: var(--text-muted);
           max-width: 480px;
           margin: 0 auto;
           font-style: italic;
@@ -139,55 +154,53 @@ export default function MoodClient({ moods, imagesByMood }: Props) {
         .mood-selector {
           display: flex;
           justify-content: center;
-          gap: 8px;
+          gap: 6px;
           flex-wrap: wrap;
-          padding: 28px 24px 0;
+          padding: 24px 20px;
           position: sticky;
           top: 60px;
           z-index: 40;
-          background: var(--bg-primary, #07050e);
-          border-bottom: 1px solid rgba(255,255,255,0.05);
-          padding-bottom: 20px;
+          background: var(--bg-primary);
+          border-bottom: 1px solid var(--border-dim);
         }
         .mood-btn {
           display: flex;
           align-items: center;
-          gap: 8px;
-          padding: 10px 20px;
-          border: 1px solid rgba(255,255,255,0.1);
-          background: rgba(255,255,255,0.02);
-          color: #7a748a;
+          gap: 7px;
+          padding: 9px 16px;
+          border: 1px solid var(--border-dim);
+          background: transparent;
+          color: var(--text-muted);
           font-family: var(--font-space), monospace;
-          font-size: 0.65rem;
-          letter-spacing: 0.16em;
+          font-size: 0.6rem;
+          letter-spacing: 0.14em;
           text-transform: uppercase;
           cursor: pointer;
-          transition: all 0.25s ease;
-          border-radius: 3px;
+          transition: all 0.22s ease;
+          border-radius: 4px;
           position: relative;
           overflow: hidden;
         }
         .mood-btn::before {
           content: "";
-          position: absolute;
-          inset: 0;
+          position: absolute; inset: 0;
           background: var(--btn-color);
           opacity: 0;
-          transition: opacity 0.25s;
+          transition: opacity 0.22s;
         }
-        .mood-btn:hover::before { opacity: 0.08; }
+        .mood-btn:hover::before { opacity: 0.07; }
         .mood-btn:hover {
-          color: #d0cce0;
+          color: var(--text-primary);
           border-color: var(--btn-color);
         }
         .mood-btn--active {
           border-color: var(--btn-color) !important;
-          color: #f0ecff !important;
-          background: rgba(255,255,255,0.04) !important;
-          box-shadow: 0 0 16px rgba(0,0,0,0.4), inset 0 0 0 1px var(--btn-color);
+          color: var(--text-primary) !important;
+          background: transparent !important;
+          box-shadow: inset 0 0 0 1px var(--btn-color);
         }
-        .mood-btn--active::before { opacity: 0.12 !important; }
-        .mood-btn-glyph { font-size: 1rem; line-height: 1; }
+        .mood-btn--active::before { opacity: 0.10 !important; }
+        .mood-btn-glyph { font-size: 0.95rem; line-height: 1; }
         .mood-btn-dot {
           width: 5px; height: 5px;
           border-radius: 50%;
@@ -198,11 +211,11 @@ export default function MoodClient({ moods, imagesByMood }: Props) {
         }
         .mood-btn--active .mood-btn-dot { opacity: 1; }
 
-        /* ── Grid ── */
+        /* ── Grid section ── */
         .mood-grid-section {
           max-width: 1400px;
           margin: 0 auto;
-          padding: 36px 24px 60px;
+          padding: 36px 20px 60px;
         }
         .mood-grid-header {
           display: flex;
@@ -220,41 +233,44 @@ export default function MoodClient({ moods, imagesByMood }: Props) {
         .mood-grid-count {
           font-size: 0.55rem;
           font-family: var(--font-space), monospace;
-          color: #4a445a;
+          color: var(--text-muted);
           letter-spacing: 0.15em;
         }
 
         .mood-grid {
           display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+          grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
           gap: 10px;
         }
+        @media (min-width: 480px)  { .mood-grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); } }
         @media (min-width: 640px)  { .mood-grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); } }
         @media (min-width: 1024px) { .mood-grid { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; } }
 
+        /* ── Mood card ── */
         .mood-card {
           position: relative;
           aspect-ratio: 9/16;
           overflow: hidden;
-          border: 1px solid rgba(255,255,255,0.06);
+          border: 1px solid var(--border-dim);
           cursor: pointer;
           display: block;
           text-decoration: none;
-          background: #0e0b18;
-          border-radius: 4px;
+          background: var(--bg-secondary);
+          border-radius: 6px;
+          transition: border-color 0.25s ease;
         }
         .mood-card:hover { border-color: var(--mood-color); }
         .mood-card:hover .mood-card-overlay { opacity: 1; }
-        .mood-card:hover .mood-card-title { transform: translateY(0); opacity: 1; }
-        .mood-card:hover img { transform: scale(1.05); }
+        .mood-card:hover .mood-card-title   { transform: translateY(0); opacity: 1; }
+        .mood-card:hover .mood-card-preview { opacity: 1; transform: translateY(0); }
+        .mood-card:hover img                { transform: scale(1.05); }
 
         .mood-card img {
           transition: transform 0.4s ease;
           object-fit: cover;
         }
         .mood-card-overlay {
-          position: absolute;
-          inset: 0;
+          position: absolute; inset: 0;
           background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 55%);
           opacity: 0;
           transition: opacity 0.3s ease;
@@ -262,9 +278,7 @@ export default function MoodClient({ moods, imagesByMood }: Props) {
         }
         .mood-card-title {
           position: absolute;
-          bottom: 10px;
-          left: 10px;
-          right: 10px;
+          bottom: 10px; left: 10px; right: 10px;
           z-index: 3;
           font-family: var(--font-cormorant), serif;
           font-size: 0.82rem;
@@ -277,21 +291,40 @@ export default function MoodClient({ moods, imagesByMood }: Props) {
         }
         .mood-card-device {
           position: absolute;
-          top: 8px;
-          right: 8px;
-          z-index: 3;
+          top: 8px; right: 8px; z-index: 3;
           font-family: var(--font-space), monospace;
-          font-size: 0.48rem;
+          font-size: 0.45rem;
           letter-spacing: 0.15em;
           text-transform: uppercase;
           color: var(--mood-color);
-          background: rgba(0,0,0,0.7);
+          background: rgba(0,0,0,0.65);
           padding: 2px 6px;
           border-radius: 2px;
           opacity: 0;
           transition: opacity 0.3s;
         }
         .mood-card:hover .mood-card-device { opacity: 1; }
+
+        /* Preview button on card */
+        .mood-card-preview {
+          position: absolute;
+          top: 8px; left: 8px; z-index: 4;
+          padding: 4px 9px;
+          background: rgba(0,0,0,0.72);
+          border: 1px solid rgba(255,255,255,0.2);
+          border-radius: 3px;
+          color: #fff;
+          font-family: var(--font-space), monospace;
+          font-size: 0.44rem;
+          letter-spacing: 0.12em;
+          text-transform: uppercase;
+          cursor: pointer;
+          opacity: 0;
+          transform: translateY(-4px);
+          transition: opacity 0.22s ease, transform 0.22s ease, background 0.2s;
+          backdrop-filter: blur(4px);
+        }
+        .mood-card-preview:hover { background: rgba(160,24,24,0.8); }
 
         /* ── Empty state ── */
         .mood-empty {
@@ -303,7 +336,7 @@ export default function MoodClient({ moods, imagesByMood }: Props) {
         .mood-empty-title {
           font-family: var(--font-cinzel), serif;
           font-size: 1.2rem;
-          color: #4a445a;
+          color: var(--text-muted);
           margin-bottom: 8px;
           text-transform: uppercase;
           letter-spacing: 0.1em;
@@ -311,8 +344,9 @@ export default function MoodClient({ moods, imagesByMood }: Props) {
         .mood-empty-desc {
           font-family: var(--font-space), monospace;
           font-size: 0.62rem;
-          color: #3a3450;
+          color: var(--text-muted);
           letter-spacing: 0.12em;
+          opacity: 0.6;
         }
         .mood-empty-tags {
           margin-top: 20px;
@@ -325,8 +359,8 @@ export default function MoodClient({ moods, imagesByMood }: Props) {
           font-family: var(--font-space), monospace;
           font-size: 0.55rem;
           padding: 3px 10px;
-          border: 1px solid #2a2535;
-          color: #4a445a;
+          border: 1px solid var(--border-dim);
+          color: var(--text-muted);
           letter-spacing: 0.1em;
           border-radius: 2px;
         }
@@ -336,54 +370,66 @@ export default function MoodClient({ moods, imagesByMood }: Props) {
           display: block;
           margin: 36px auto 0;
           padding: 14px 40px;
-          border: 1px solid rgba(255,255,255,0.12);
+          border: 1px solid var(--border-dim);
           background: transparent;
-          color: #8a8099;
+          color: var(--text-muted);
           font-family: var(--font-space), monospace;
           font-size: 0.62rem;
           letter-spacing: 0.18em;
           text-transform: uppercase;
           cursor: pointer;
           transition: all 0.2s ease;
-          border-radius: 3px;
+          border-radius: 4px;
         }
         .mood-load-more:hover {
           border-color: var(--mood-color);
-          color: #d0cce0;
-          background: rgba(255,255,255,0.03);
+          color: var(--text-primary);
+          background: rgba(128,128,128,0.04);
         }
 
         /* ── Tags hint ── */
         .mood-tags-hint {
           max-width: 1400px;
           margin: 0 auto;
-          padding: 0 24px 48px;
+          padding: 0 20px 48px;
+          border-top: 1px solid var(--border-dim);
+          padding-top: 24px;
         }
         .mood-tags-hint-title {
           font-family: var(--font-space), monospace;
           font-size: 0.55rem;
           letter-spacing: 0.18em;
           text-transform: uppercase;
-          color: #3a3450;
+          color: var(--text-muted);
           margin-bottom: 10px;
+          opacity: 0.5;
         }
         .mood-tag-pill {
           display: inline-block;
           font-family: var(--font-space), monospace;
-          font-size: 0.55rem;
+          font-size: 0.52rem;
           padding: 3px 10px;
-          border: 1px solid #2a2535;
-          color: #4a445a;
+          border: 1px solid var(--border-dim);
+          color: var(--text-muted);
           letter-spacing: 0.1em;
           margin: 3px;
           border-radius: 2px;
+          opacity: 0.6;
         }
       `}</style>
+
+      {preview && (
+        <LockScreenPreviewModal
+          src={preview.src}
+          title={preview.title}
+          onClose={() => setPreview(null)}
+        />
+      )}
 
       <div
         className="mood-page"
         style={{
-          ["--mood-color" as string]: activeMood.color,
+          ["--mood-color"    as string]: activeMood.color,
           ["--mood-gradient" as string]: activeMood.gradient,
         }}
       >
@@ -398,7 +444,7 @@ export default function MoodClient({ moods, imagesByMood }: Props) {
           <p className="mood-count">
             {allImages.length > 0
               ? `${allImages.length} wallpaper${allImages.length !== 1 ? "s" : ""} match this mood`
-              : "No wallpapers yet — add tags in the admin panel"}
+              : "No wallpapers yet — add tags in admin panel"}
           </p>
         </div>
 
@@ -425,9 +471,7 @@ export default function MoodClient({ moods, imagesByMood }: Props) {
               {activeMood.glyph} {activeMood.label} Wallpapers
             </span>
             {allImages.length > 0 && (
-              <span className="mood-grid-count">
-                — {allImages.length} found
-              </span>
+              <span className="mood-grid-count">— {allImages.length} found</span>
             )}
           </div>
 
@@ -448,10 +492,17 @@ export default function MoodClient({ moods, imagesByMood }: Props) {
                     style={{ objectFit: "cover" }}
                   />
                   <div className="mood-card-overlay" />
-                  <span className="mood-card-device">
-                    {img.deviceType ?? ""}
-                  </span>
+                  <span className="mood-card-device">{img.deviceType ?? ""}</span>
                   <span className="mood-card-title">{img.title}</span>
+                  {/* Preview button */}
+                  <button
+                    className="mood-card-preview"
+                    onClick={(e) => openPreview(e, img)}
+                    aria-label="Preview on lock screen"
+                    tabIndex={-1}
+                  >
+                    📱 Preview
+                  </button>
                 </Link>
               ))
             ) : (
@@ -459,7 +510,7 @@ export default function MoodClient({ moods, imagesByMood }: Props) {
                 <div className="mood-empty-glyph">{activeMood.glyph}</div>
                 <p className="mood-empty-title">No wallpapers tagged yet</p>
                 <p className="mood-empty-desc">
-                  Add these tags to your images in the admin panel
+                  Add these tags to your images in the admin panel:
                 </p>
                 <div className="mood-empty-tags">
                   {activeMood.tags.map((t) => (
@@ -480,7 +531,7 @@ export default function MoodClient({ moods, imagesByMood }: Props) {
           )}
         </section>
 
-        {/* ── Tag hint for admin ── */}
+        {/* ── Tag hint ── */}
         <div className="mood-tags-hint">
           <p className="mood-tags-hint-title">
             Tags that trigger &quot;{activeMood.label}&quot; mood:

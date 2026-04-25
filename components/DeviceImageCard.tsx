@@ -4,6 +4,12 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import dynamic from "next/dynamic";
+
+const LockScreenPreviewModal = dynamic(
+  () => import("./LockScreenPreviewModal"),
+  { ssr: false }
+);
 
 interface DeviceImageCardProps {
   href: string;
@@ -19,16 +25,11 @@ interface DeviceImageCardProps {
   glowOffset?: number;
 }
 
-// ── Rotating glow — driven by CSS animation defined in globals.css ──────────
-// We only need a per-card delay so neighbours cycle different colours.
-// The full keyframe (cardGlowRotate, 8 s) lives in globals.css.
-
 function glowDelay(seed: string, offset = 0): string {
   let hash = 0;
   for (let i = 0; i < seed.length; i++) {
     hash = (hash * 31 + seed.charCodeAt(i)) >>> 0;
   }
-  // spread across 0 – 7.9 s
   const seconds = ((hash % 80) / 10 + offset * 0.7) % 8;
   return `-${seconds.toFixed(1)}s`;
 }
@@ -45,21 +46,19 @@ export default function DeviceImageCard({
   sizes = "(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 20vw",
   glowOffset = 0,
 }: DeviceImageCardProps) {
-  const [revealed, setRevealed] = useState(false);
-  const [flipping, setFlipping] = useState(false);
-  const [hovered, setHovered] = useState(false);
+  const [revealed,    setRevealed]    = useState(false);
+  const [flipping,    setFlipping]    = useState(false);
+  const [hovered,     setHovered]     = useState(false);
+  const [previewOpen, setPreviewOpen] = useState(false);
 
   const delay = glowDelay(src, glowOffset);
 
-  // Shared animated-glow style — border colour + box-shadow cycle via keyframe
   const glowStyle: React.CSSProperties = {
     animationName: "cardGlowRotate",
-    animationDuration: hovered ? "4s" : "8s",   // faster on hover
+    animationDuration: hovered ? "4s" : "8s",
     animationTimingFunction: "linear",
     animationIterationCount: "infinite",
     animationDelay: delay,
-    // border is controlled by the keyframe too, but we set a starting value:
-    border: "1px solid #8b0000",
     transition: "animation-duration 0.3s ease",
   };
 
@@ -72,7 +71,13 @@ export default function DeviceImageCard({
     }, 320);
   }
 
-  // ── Adult unrevealed state ────────────────────────────────────────────────
+  function handlePreview(e: React.MouseEvent) {
+    e.preventDefault();
+    e.stopPropagation();
+    setPreviewOpen(true);
+  }
+
+  // ── Adult unrevealed ──────────────────────────────────────────────────────
   if (isAdult && !revealed) {
     return (
       <>
@@ -115,7 +120,6 @@ export default function DeviceImageCard({
             sizes={sizes}
             aria-hidden="true"
           />
-
           <div
             style={{
               position: "absolute", inset: 0, zIndex: 5,
@@ -131,7 +135,7 @@ export default function DeviceImageCard({
               border: "2.5px solid currentColor",
               borderRadius: "50%",
               display: "flex", alignItems: "center", justifyContent: "center",
-              color: "#c0001a",
+              color: "var(--blood, #a01818)",
               animation: "adultPulse 2s ease-in-out infinite",
             }}>
               <span style={{
@@ -155,32 +159,84 @@ export default function DeviceImageCard({
     );
   }
 
-  // ── Normal (or revealed adult) card ──────────────────────────────────────
+  // ── Normal card ───────────────────────────────────────────────────────────
   return (
-    <Link
-      href={href}
-      className="group relative overflow-hidden bg-[#0a0a0a]"
-      style={{
-        aspectRatio: aspectRatio.replace("/", " / "),
-        display: "block",
-        ...glowStyle,
-      }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-    >
-      <Image
-        src={src}
-        alt={alt}
-        fill
-        loading={priority ? "eager" : "lazy"}
-        priority={priority}
-        unoptimized
-        className="object-cover transition-transform duration-500 group-hover:scale-105"
-        sizes={sizes}
-      />
-      <div className="absolute inset-0 bg-gradient-to-t from-[rgba(5,5,5,0.92)] via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-3">
-        <p className="font-body italic text-[0.85rem] text-white leading-tight">{title}</p>
-      </div>
-    </Link>
+    <>
+      <style>{`
+        .dic-preview-btn {
+          position: absolute;
+          top: 8px; left: 8px;
+          z-index: 10;
+          padding: 5px 10px;
+          background: rgba(0,0,0,0.72);
+          border: 1px solid rgba(255,255,255,0.18);
+          border-radius: 4px;
+          color: #fff;
+          font-family: var(--font-space), monospace;
+          font-size: 0.48rem;
+          letter-spacing: 0.14em;
+          text-transform: uppercase;
+          cursor: pointer;
+          opacity: 0;
+          transform: translateY(-4px);
+          transition: opacity 0.22s ease, transform 0.22s ease, background 0.2s;
+          backdrop-filter: blur(4px);
+        }
+        .dic-preview-btn:hover {
+          background: rgba(160,24,24,0.75);
+          border-color: rgba(255,255,255,0.3);
+        }
+        .dic-wrap:hover .dic-preview-btn {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      `}</style>
+
+      {previewOpen && (
+        <LockScreenPreviewModal
+          src={src}
+          title={title}
+          onClose={() => setPreviewOpen(false)}
+        />
+      )}
+
+      <Link
+        href={href}
+        className="dic-wrap group relative overflow-hidden bg-[#0a0a0a]"
+        style={{
+          aspectRatio: aspectRatio.replace("/", " / "),
+          display: "block",
+          ...glowStyle,
+        }}
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
+      >
+        <Image
+          src={src}
+          alt={alt}
+          fill
+          loading={priority ? "eager" : "lazy"}
+          priority={priority}
+          unoptimized
+          className="object-cover transition-transform duration-500 group-hover:scale-105"
+          sizes={sizes}
+        />
+
+        {/* Preview button — top-left on hover */}
+        <button
+          className="dic-preview-btn"
+          onClick={handlePreview}
+          aria-label="Preview on lock screen"
+          tabIndex={-1}
+        >
+          📱 Preview
+        </button>
+
+        {/* Title overlay — bottom on hover */}
+        <div className="absolute inset-0 bg-gradient-to-t from-[rgba(5,5,5,0.92)] via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-3">
+          <p className="font-body italic text-[0.85rem] text-white leading-tight">{title}</p>
+        </div>
+      </Link>
+    </>
   );
 }

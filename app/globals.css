@@ -4,13 +4,9 @@
 @tailwind utilities;
 
 /* ── HTML color-scheme — syncs browser native UI (scrollbars, inputs) ── */
-/* Default (dark) */
-html { color-scheme: dark; background-color: #000000; }
-html[data-theme="fog"]  { color-scheme: light; background-color: #f4f1ea; }
-html[data-theme="ghost"]  { color-scheme: dark;  background-color: #1a1a1e; }
-html
-html[data-theme="blood"]  { color-scheme: dark;  background-color: #080000; }
-/* Add more themes here as needed */
+html                      { color-scheme: light; background-color: #f4f1ea; } /* default = fog */
+html[data-theme="fog"]    { color-scheme: light; background-color: #f4f1ea; }
+html[data-theme="ghost"]  { color-scheme: dark;  background-color: #0d0d14; }
 
 /* ── Rotating Rainbow Glow — applied to .card-glow elements ─────────────── */
 @keyframes cardGlowRotate {
@@ -21,9 +17,8 @@ html[data-theme="blood"]  { color-scheme: dark;  background-color: #080000; }
 
 /* Each card gets a different animation-delay so colors are staggered */
 .card-glow {
-  /* Removed per-card infinite animation — was repainting every frame for every card */
-  border: 1px solid #8b0000;
-  box-shadow: 0 0 10px 2px rgba(139,0,0,0.5);
+  border: 1px solid rgba(160,140,120,0.3);
+  box-shadow: 0 0 10px 2px rgba(140,120,100,0.15);
 }
 .card-glow:nth-child(2)  { animation-delay: -0.8s; }
 .card-glow:nth-child(3)  { animation-delay: -1.6s; }
@@ -44,90 +39,90 @@ html[data-theme="blood"]  { color-scheme: dark;  background-color: #080000; }
   /* Dark Drift — background tint shifts over time (set by DarkDrift component) */
   --drift-tint: transparent;
 
-  /* Dark theme (default) — pure black */
-  --void:    #000000;
-  --black:   #080808;
-  --deep:    #0d0d0d;
-  --crimson: #8b0000;
-  --blood:   #c0001a;
-  --ember:   #ff3c00;
-  --gold:    #c9a84c;
-  --ash:     #1a1a1a;
-  --smoke:   #3a3a3a;
-  --ghost:   #787878;
-  --pale:    #c8c8c8;
-  --white:   #f0f0f0;
+  /* Fog (default) — warm parchment */
+  --void:    #f4f1ea;
+  --black:   #ece8df;
+  --deep:    #e4dfd4;
+  --crimson: #7a1010;
+  --blood:   #a01818;
+  --ember:   #c84000;
+  --gold:    #806028;
+  --ash:     #d4cfc4;
+  --smoke:   #9a9490;
+  --ghost:   #6a6460;
+  --pale:    #2a2420;
+  --white:   #0a0908;
 
   /* Semantic aliases used throughout */
-  --bg-primary:   var(--void);
-  --bg-secondary: var(--black);
-  --text-primary: #e8e8e8;
-  --text-muted:   #a8a8a8;
-  --border-dim:   #1a1a1a;
-  --nav-bg:       rgba(0,0,0,0.92);
+  --bg-primary:   #f4f1ea;
+  --bg-secondary: #ece8df;
+  --text-primary: #1a1614;
+  --text-muted:   #5a5450;
+  --border-dim:   #cac5bc;
+  --nav-bg:       rgba(244,241,234,0.97);
 }
 
-/* ── Light Theme ────────────────────────────────────────────── */
+/* ── Fog Theme — warm misty parchment, true light mode ─────── */
 [data-theme="fog"] {
   --void:    #f4f1ea;
   --black:   #ece8df;
   --deep:    #e4dfd4;
-  --ash:     #cdc8bc;
-  --smoke:   #7a7468;
-  --ghost:   #5a5450;
-  --pale:    #1a1814;
+  --ash:     #d4cfc4;
+  --smoke:   #9a9490;
+  --ghost:   #6a6460;
+  --pale:    #2a2420;
   --white:   #0a0908;
 
   --bg-primary:   #f4f1ea;
   --bg-secondary: #ece8df;
-  --text-primary: #1a1814;
-  --text-muted:   #3a3430;
-  --border-dim:   #cdc8bc;
-  --nav-bg:       rgba(244,241,234,0.96);
+  --text-primary: #1a1614;
+  --text-muted:   #5a5450;
+  --border-dim:   #cac5bc;
+  --nav-bg:       rgba(244,241,234,0.97);
 
-  --crimson: #8b0000;
-  --blood:   #c0001a;
-  --ember:   #cc3000;
-  --gold:    #a07828;
+  --crimson: #7a1010;
+  --blood:   #a01818;
+  --ember:   #c84000;
+  --gold:    #806028;
 }
 
-/* ── Ghost Theme — High contrast charcoal + pure white ─────── */
+/* ── Ghost Theme — deep blue-black, spectral violet accents ─── */
 [data-theme="ghost"] {
-  --void:         #1a1a1e;
-  --black:        #222228;
-  --deep:         #2a2a32;
-  --ash:          #3a3a44;
-  --smoke:        #8888a0;
-  --ghost:        #bbbbcc;
-  --pale:         #e8e8f0;
-  --white:        #f8f8ff;
-  --bg-primary:   #1a1a1e;
-  --bg-secondary: #222228;
-  --text-primary: #f8f8ff;
-  --text-muted:   #bbbbcc;
-  --border-dim:   #3a3a44;
-  --nav-bg:       rgba(26,26,30,0.96);
-  --crimson:      #8b0000;
-  --blood:        #c0001a;
-  --ember:        #ff3c00;
-  --gold:         #e8e8f0;
+  --void:         #0d0d14;
+  --black:        #12121c;
+  --deep:         #18182a;
+  --ash:          #24243a;
+  --smoke:        #60608a;
+  --ghost:        #9090b8;
+  --pale:         #d8d8f0;
+  --white:        #f0f0ff;
+  --bg-primary:   #0d0d14;
+  --bg-secondary: #12121c;
+  --text-primary: #e0e0f8;
+  --text-muted:   #8888aa;
+  --border-dim:   #20203a;
+  --nav-bg:       rgba(13,13,20,0.96);
+  --crimson:      #6060c0;
+  --blood:        #7878d8;
+  --ember:        #9090f0;
+  --gold:         #a0a0e0;
 }
 [data-theme="ghost"] body,
-[data-theme="ghost"] main { background-color: #1a1a1e !important; }
-[data-theme="ghost"] .site-nav { background: rgba(26,26,30,0.97) !important; border-bottom-color: rgba(248,248,255,0.1) !important; }
-[data-theme="ghost"] .nav-logo { color: #f8f8ff !important; }
-[data-theme="ghost"] .logo-red { color: #c0001a !important; }
-[data-theme="ghost"] .nav-links a { color: #bbbbcc !important; }
-[data-theme="ghost"] .nav-links a:hover { color: #f8f8ff !important; }
-[data-theme="ghost"] .section-title { color: #f8f8ff !important; }
-[data-theme="ghost"] .section-eyebrow { color: #c0001a !important; }
-[data-theme="ghost"] .hero-title { color: #f8f8ff !important; }
-[data-theme="ghost"] .hero-subtitle { color: #bbbbcc !important; }
-[data-theme="ghost"] .products-bg { background: #222228 !important; }
-[data-theme="ghost"] .product-grid .group { background: #2a2a32 !important; }
-[data-theme="ghost"] .site-footer { background: #222228 !important; border-color: rgba(248,248,255,0.08) !important; }
-[data-theme="ghost"] .footer-bottom { border-color: rgba(248,248,255,0.08) !important; }
-[data-theme="ghost"] .mobile-menu-panel { background: rgba(26,26,30,0.98) !important; }
+[data-theme="ghost"] main { background-color: #0d0d14 !important; }
+[data-theme="ghost"] .site-nav { background: rgba(13,13,20,0.96) !important; border-bottom-color: rgba(96,96,192,0.15) !important; }
+[data-theme="ghost"] .nav-logo { color: #e0e0f8 !important; }
+[data-theme="ghost"] .logo-red { color: #9090f0 !important; text-shadow: 0 0 14px rgba(144,144,240,0.5) !important; }
+[data-theme="ghost"] .nav-links a { color: #8888aa !important; }
+[data-theme="ghost"] .nav-links a:hover { color: #e0e0f8 !important; }
+[data-theme="ghost"] .section-title { color: #e0e0f8 !important; }
+[data-theme="ghost"] .section-eyebrow { color: #7878d8 !important; }
+[data-theme="ghost"] .hero-title { color: #e0e0f8 !important; }
+[data-theme="ghost"] .hero-subtitle { color: #8888aa !important; }
+[data-theme="ghost"] .products-bg { background: #12121c !important; }
+[data-theme="ghost"] .product-grid .group { background: #18182a !important; }
+[data-theme="ghost"] .site-footer { background: #12121c !important; border-color: rgba(96,96,192,0.12) !important; }
+[data-theme="ghost"] .footer-bottom { border-color: rgba(96,96,192,0.12) !important; }
+[data-theme="ghost"] .mobile-menu-panel { background: rgba(13,13,20,0.99) !important; }
 
 /* ── Ember Theme — Deep black + fire-orange glow ────────────── */
 
@@ -510,8 +505,9 @@ html[data-theme="blood"]  { color-scheme: dark;  background-color: #080000; }
 }
 
 /* ── Scrollbar ── */
-[data-theme="fog"] ::-webkit-scrollbar-track { background: #e8e3d8 !important; }
-[data-theme="fog"] ::-webkit-scrollbar-thumb { background: #c0001a !important; }
+[data-theme="fog"] ::-webkit-scrollbar-track { background: #e4dfd4 !important; }
+[data-theme="fog"] ::-webkit-scrollbar-thumb { background: #c0b8ac !important; }
+[data-theme="fog"] ::-webkit-scrollbar-thumb:hover { background: #a01818 !important; }
 
 /* ── Global Reset ──────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -649,8 +645,8 @@ body::before {
 
 /* ── Custom Scrollbar ──────────────────────────────────────── */
 ::-webkit-scrollbar        { width: 4px; }
-::-webkit-scrollbar-track  { background: #0a0a0a; }
-::-webkit-scrollbar-thumb  { background: #c0001a; }
+::-webkit-scrollbar-track  { background: #e4dfd4; }
+::-webkit-scrollbar-thumb  { background: #c0b8ac; }
 
 /* ── Marquee (removed — MarqueeTicker component deleted) ── */
 
@@ -11205,18 +11201,20 @@ button:active:not(:disabled) { transform: translateY(0px) scale(0.98) !important
   .pc-hero-layout { grid-template-columns: 1fr !important; }
 }
 
-/* ── Fog theme — desaturated dark, like a graveyard in November ── */
+/* ── Fog theme — warm parchment light mode ── */
 [data-theme="fog"] {
-  --bg-primary:    #1a1a1f;
-  --bg-secondary:  #141418;
-  --text-primary:  #d4cfca;
-  --text-muted:    #8a8580;
-  --border-dim:    #2a2a30;
+  --bg-primary:    #f4f1ea;
+  --bg-secondary:  #ece8df;
+  --text-primary:  #1a1614;
+  --text-muted:    #5a5450;
+  --border-dim:    #cac5bc;
 }
-[data-theme="fog"] body { background-color: #1a1a1f; color: #d4cfca; }
-[data-theme="fog"] .device-page-intro p { color: #b0aba6; }
-[data-theme="fog"] .device-page-intro { background: rgba(255,255,255,0.03); border-color: rgba(192,0,26,0.15); }
-[data-theme="fog"] .read-more-toggle { border-color: rgba(192,0,26,0.3); color: #c0001a; }
-[data-theme="fog"] .blog-post-card { background: #1e1e23; border-color: #2e2e35; }
+[data-theme="fog"] body { background-color: #f4f1ea; color: #1a1614; }
+[data-theme="fog"] .device-page-intro p { color: #4a4440; }
+[data-theme="fog"] .device-page-intro { background: rgba(160,140,120,0.08); border-color: rgba(160,24,24,0.15); }
+[data-theme="fog"] .read-more-toggle { border-color: rgba(160,24,24,0.3); color: #a01818; }
+[data-theme="fog"] .blog-post-card { background: #ece8df; border-color: #d4cfc4; }
+[data-theme="fog"] .blog-post-card-title { color: #1a1614; }
+[data-theme="fog"] .blog-post-card-excerpt { color: #5a5450; }
 [data-theme="fog"] .blog-post-card-title { color: #e0dbd6; }
 [data-theme="fog"] .blog-post-card-excerpt { color: #8a8580; }

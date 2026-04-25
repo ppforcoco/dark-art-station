@@ -5,22 +5,22 @@ import { useRouter } from "next/navigation";
 import { Menu, X, Search, Shuffle } from "lucide-react";
 
 const NAV_LINKS = [
-  { label: "iPhone",       href: "/iphone"     },
-  { label: "Android",      href: "/android"    },
-  { label: "PC",           href: "/pc"         },
-  { label: "Collections",  href: "/obsessions" },
-  { label: "Mood",         href: "/mood"       },
-  { label: "Blog & Guides", href: "/blog"      },
+  { label: "iPhone",        href: "/iphone"     },
+  { label: "Android",       href: "/android"    },
+  { label: "PC",            href: "/pc"         },
+  { label: "Collections",   href: "/obsessions" },
+  { label: "Mood",          href: "/mood"       },
+  { label: "Blog & Guides", href: "/blog"       },
 ];
 
-type Theme = "dark" | "blood" | "fog" | "ghost";
+type Theme = "fog" | "ghost";
 
 export default function Header() {
   const router = useRouter();
   const [menuOpen,      setMenuOpen]      = useState(false);
   const [searchOpen,    setSearchOpen]    = useState(false);
   const [query,         setQuery]         = useState("");
-  const [theme,         setTheme]         = useState<Theme>("dark");
+  const [theme,         setTheme]         = useState<Theme>("fog");
   const [themeMenuOpen, setThemeMenuOpen] = useState(false);
   const [randomSpin,    setRandomSpin]    = useState(false);
   const [scrolled,      setScrolled]      = useState(false);
@@ -40,12 +40,17 @@ export default function Header() {
   useEffect(() => {
     try {
       const saved = localStorage.getItem("hw-theme") as Theme | null;
-      const valid: Theme[] = ["dark", "blood", "fog", "ghost"];
+      const valid: Theme[] = ["fog", "ghost"];
       if (saved && valid.includes(saved)) {
         setTheme(saved);
         document.documentElement.setAttribute("data-theme", saved);
+      } else {
+        // Default to fog
+        document.documentElement.setAttribute("data-theme", "fog");
       }
-    } catch {}
+    } catch {
+      document.documentElement.setAttribute("data-theme", "fog");
+    }
   }, []);
 
   const setThemeAndClose = useCallback((t: Theme) => {
@@ -106,44 +111,133 @@ export default function Header() {
     return () => window.removeEventListener("keydown", onKey);
   }, [closeMenu, closeSearch]);
 
-  const themeIcon  = theme === "dark" ? "☽" : theme === "blood" ? "🌑" : theme === "ghost" ? "👻" : "🌫";
-  const themeLabel = theme === "dark" ? "Dark" : theme === "blood" ? "Crimson" : theme === "ghost" ? "Ghost" : "Fog";
+  const themeIcon  = theme === "ghost" ? "👻" : "🌫";
+  const themeLabel = theme === "ghost" ? "Ghost" : "Fog";
 
   return (
     <>
       <style>{`
-        [data-theme="blood"] {
-          --bg-primary:#080000;--bg-secondary:#100000;--void:#080000;--black:#100000;--deep:#160000;--ash:#280808;--smoke:#622020;--ghost:#aa5858;--pale:#ffd0d0;--white:#fff0f0;--crimson:#7a0000;--blood:#cc0000;--ember:#ff2200;--gold:#ff6060;--text-primary:#ffe4e4;--text-muted:#b07878;--border-dim:#340808;--nav-bg:rgba(8,0,0,0.96);
-        }
-        [data-theme="blood"] body{background-color:#080000!important}
-        [data-theme="blood"] .site-nav{border-bottom-color:rgba(192,0,0,.35)!important}
-        [data-theme="blood"] .nav-logo{color:#ff5555!important}
-        [data-theme="blood"] .logo-red{color:#ff0000!important;text-shadow:0 0 18px rgba(255,0,0,.65)!important}
-        [data-theme="blood"] .nav-links a{color:#cc7070!important}
-        [data-theme="blood"] .nav-links a:hover{color:#fff0f0!important}
-        [data-theme="blood"] .hw-hero{background:radial-gradient(ellipse at 65% 0%,#380000 0%,#080000 65%)!important}
-        [data-theme="blood"] .section-title{color:#fff0f0!important}
-        [data-theme="blood"] .wotd-title{color:#fff0f0!important}
-        [data-theme="blood"] .manifesto-quote{color:#fff0f0!important}
-        [data-theme="blood"] .site-footer{background:#100000!important;border-color:#340808!important}
-        [data-theme="blood"] .mobile-menu-panel{background:rgba(8,0,0,.98)!important}
+        /* ── FOG THEME — misty warm grey, light mode ── */
         [data-theme="fog"] {
-          --bg-primary:#1a1a1f;--bg-secondary:#141418;--text-primary:#d4cfca;--text-muted:#8a8580;--border-dim:#2a2a30;
+          --bg-primary:#f4f1ea;
+          --bg-secondary:#ece8df;
+          --void:#f4f1ea;
+          --black:#ece8df;
+          --deep:#e4dfd4;
+          --ash:#d4cfc4;
+          --smoke:#9a9490;
+          --ghost:#6a6460;
+          --pale:#2a2420;
+          --white:#0a0908;
+          --crimson:#7a1010;
+          --blood:#a01818;
+          --ember:#c84000;
+          --gold:#806028;
+          --text-primary:#1a1614;
+          --text-muted:#5a5450;
+          --border-dim:#cac5bc;
+          --nav-bg:rgba(244,241,234,0.97);
+          color-scheme: light;
         }
-        [data-theme="fog"] body{background-color:#1a1a1f!important}
-        [data-theme="fog"] .hw-hero{background:radial-gradient(ellipse at 50% 0%,rgba(180,160,140,.07) 0%,#1a1a1f 65%)}
-        [data-theme="fog"] .hw-hero__title-top,[data-theme="fog"] .hw-hero__title-mid{color:#e8e4de}
-        [data-theme="fog"] .hw-hero__sub{color:#8a8580}
-        [data-theme="fog"] .hw-hero__stat-num{color:#c0001a}
-        [data-theme="fog"] .site-nav{background:rgba(22,22,26,0.97)!important;border-bottom-color:rgba(192,0,26,.2)!important}
-        [data-theme="fog"] .site-footer{background:#141418!important;border-color:#2a2a30!important}
-        [data-theme="fog"] .mobile-menu-panel{background:rgba(22,22,26,.99)!important}
-        [data-theme="ghost"] .hw-hero{background:radial-gradient(ellipse at 50% 0%,rgba(200,220,255,.06) 0%,transparent 70%),#070712}
+        [data-theme="fog"] body { background-color:#f4f1ea!important; }
+        [data-theme="fog"] .site-nav {
+          background: rgba(244,241,234,0.97)!important;
+          border-bottom: 1px solid rgba(170,160,145,0.35)!important;
+          box-shadow: 0 1px 20px rgba(120,110,95,0.10)!important;
+        }
+        [data-theme="fog"] .nav-logo { color:#1a1614!important; }
+        [data-theme="fog"] .logo-red { color:#a01818!important; text-shadow:none!important; }
+        [data-theme="fog"] .nav-links a { color:#4a4440!important; }
+        [data-theme="fog"] .nav-links a:hover { color:#1a1614!important; }
+        [data-theme="fog"] .hw-nav-icon { color:#4a4440!important; }
+        [data-theme="fog"] .hw-nav-icon:hover { color:#1a1614!important; }
+        [data-theme="fog"] .theme-btn { color:#4a4440!important; border-color:rgba(160,150,135,0.4)!important; }
+        [data-theme="fog"] .theme-menu { background:#ece8df!important; border-color:rgba(160,150,135,0.4)!important; box-shadow:0 4px 24px rgba(80,70,60,0.18)!important; }
+        [data-theme="fog"] .theme-option { color:#4a4440!important; }
+        [data-theme="fog"] .theme-option:hover, [data-theme="fog"] .theme-option--active { background:#ddd8cf!important; color:#1a1614!important; }
+        [data-theme="fog"] .hw-hero {
+          background: radial-gradient(ellipse at 50% -10%, rgba(180,165,145,0.18) 0%, #f4f1ea 65%)!important;
+        }
+        [data-theme="fog"] .hw-hero__title-top,
+        [data-theme="fog"] .hw-hero__title-mid { color:#1a1614!important; }
+        [data-theme="fog"] .hw-hero__sub { color:#6a6460!important; }
+        [data-theme="fog"] .hw-hero__stat-num { color:#a01818!important; }
+        [data-theme="fog"] .hw-hero__stat-label { color:#6a6460!important; }
+        [data-theme="fog"] .section-title { color:#1a1614!important; }
+        [data-theme="fog"] .section-eyebrow { color:#a01818!important; }
+        [data-theme="fog"] .wotd-title { color:#1a1614!important; }
+        [data-theme="fog"] .manifesto-quote { color:#2a2420!important; }
+        [data-theme="fog"] .site-footer {
+          background:#ece8df!important;
+          border-color:rgba(160,150,135,0.35)!important;
+          color:#5a5450!important;
+        }
+        [data-theme="fog"] .site-footer a { color:#6a6460!important; }
+        [data-theme="fog"] .site-footer a:hover { color:#1a1614!important; }
+        [data-theme="fog"] .mobile-menu-panel {
+          background: rgba(244,241,234,0.99)!important;
+          border-right: 1px solid rgba(160,150,135,0.3)!important;
+        }
+        [data-theme="fog"] .mobile-menu-link { color:#3a3430!important; }
+        [data-theme="fog"] .mobile-menu-link:hover { color:#1a1614!important; }
+        [data-theme="fog"] .mobile-link-index { color:#a01818!important; }
+        [data-theme="fog"] .mobile-theme-btn { color:#4a4440!important; border-color:rgba(160,150,135,0.4)!important; }
+        [data-theme="fog"] .mobile-theme-btn--active { background:#ddd8cf!important; color:#1a1614!important; border-color:#a01818!important; }
+        [data-theme="fog"] .mobile-menu-watermark { color:#9a9490!important; }
+        [data-theme="fog"] .card-glow { border-color:rgba(160,140,120,0.3)!important; box-shadow:0 0 10px 2px rgba(140,120,100,0.15)!important; }
+        [data-theme="fog"] .hw2-search-overlay { background:rgba(244,241,234,0.95)!important; }
+        [data-theme="fog"] .hw2-search-form { background:#ece8df!important; border-color:rgba(160,150,135,0.5)!important; }
+        [data-theme="fog"] .hw2-search-input { color:#1a1614!important; background:#f4f1ea!important; }
+        [data-theme="fog"] .hw2-search-input::placeholder { color:#9a9490!important; }
+        [data-theme="fog"] .hw2-search-btn { background:#a01818!important; color:#f4f1ea!important; }
+        [data-theme="fog"] ::-webkit-scrollbar-track { background:#ece8df!important; }
+        [data-theme="fog"] ::-webkit-scrollbar-thumb { background:#c0b8ac!important; }
+        [data-theme="fog"] ::-webkit-scrollbar-thumb:hover { background:#a01818!important; }
+        /* drip hidden in fog — doesn't fit the aesthetic */
+        [data-theme="fog"] .hw2-nav__drip { display:none!important; }
+
+        /* ── GHOST THEME — charcoal blue-black, cool whites ── */
+        [data-theme="ghost"] {
+          --bg-primary:#0d0d14;
+          --bg-secondary:#12121c;
+          --void:#0d0d14;
+          --black:#12121c;
+          --deep:#18182a;
+          --ash:#24243a;
+          --smoke:#60608a;
+          --ghost:#9090b8;
+          --pale:#d8d8f0;
+          --white:#f0f0ff;
+          --crimson:#6060c0;
+          --blood:#7878d8;
+          --ember:#9090f0;
+          --gold:#a0a0e0;
+          --text-primary:#e0e0f8;
+          --text-muted:#8888aa;
+          --border-dim:#20203a;
+          --nav-bg:rgba(13,13,20,0.96);
+          color-scheme: dark;
+        }
+        [data-theme="ghost"] body { background-color:#0d0d14!important; }
+        [data-theme="ghost"] .site-nav {
+          background: rgba(13,13,20,0.96)!important;
+          border-bottom: 1px solid rgba(96,96,192,0.15)!important;
+        }
+        [data-theme="ghost"] .logo-red { color:#9090f0!important; text-shadow:0 0 14px rgba(144,144,240,0.5)!important; }
+        [data-theme="ghost"] .section-eyebrow { color:#7878d8!important; }
+        [data-theme="ghost"] .hw-hero {
+          background: radial-gradient(ellipse at 50% 0%, rgba(96,96,200,0.08) 0%, transparent 70%), #0d0d14!important;
+        }
+        [data-theme="ghost"] .hw-hero__stat-num { color:#9090f0!important; }
+        [data-theme="ghost"] .site-footer { background:#12121c!important; border-color:#20203a!important; }
+        [data-theme="ghost"] .mobile-menu-panel { background:rgba(13,13,20,0.99)!important; }
+        [data-theme="ghost"] .card-glow { border-color:rgba(100,100,200,0.35)!important; box-shadow:0 0 10px 2px rgba(100,100,220,0.25)!important; }
+        [data-theme="ghost"] ::-webkit-scrollbar-thumb { background:#7878d8!important; }
       `}</style>
 
       {/* ── NAV ── */}
       <nav className={`site-nav hw2-nav-enhanced${scrolled ? " hw2-nav-enhanced--scrolled" : ""}`}>
-        {/* Blood drip */}
+        {/* Blood drip — only visible in ghost theme */}
         <div className="hw2-nav__drip" aria-hidden="true">
           {Array.from({length:8}).map((_,i) => (
             <span key={i} className="hw2-nav__drip-drop" style={{"--di":i} as React.CSSProperties}/>
@@ -179,8 +273,8 @@ export default function Header() {
             {themeMenuOpen && (
               <div className="theme-menu">
                 {([
-                  ["dark","☽","Dark"],["blood","🌑","Crimson"],
-                  ["ghost","👻","Ghost"],["fog","🌫","Fog"],
+                  ["fog","🌫","Fog"],
+                  ["ghost","👻","Ghost"],
                 ] as [Theme,string,string][]).map(([t,icon,label]) => (
                   <button key={t} type="button" className={`theme-option${theme===t?" theme-option--active":""}`} onClick={()=>setThemeAndClose(t)}>
                     <span>{icon}</span><span>{label}</span>
@@ -226,7 +320,7 @@ export default function Header() {
           </Link>
         </nav>
         <div className="mobile-theme-row">
-          {([["dark","☽","Dark"],["blood","🌑","Crimson"],["ghost","👻","Ghost"],["fog","🌫","Fog"]] as [Theme,string,string][]).map(([t,icon,label])=>(
+          {([["fog","🌫","Fog"],["ghost","👻","Ghost"]] as [Theme,string,string][]).map(([t,icon,label])=>(
             <button key={t} type="button" className={`mobile-theme-btn${theme===t?" mobile-theme-btn--active":""}`} onClick={()=>setThemeAndClose(t)}>
               <span>{icon}</span><span>{label}</span>
             </button>
