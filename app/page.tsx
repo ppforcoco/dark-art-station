@@ -321,6 +321,18 @@ export default async function Home() {
                 );
                 backdrop-filter: blur(0px);
               }
+              [data-theme="fog"] .dt-daily__bg-veil {
+                background: linear-gradient(
+                  105deg,
+                  rgba(236,233,226,0.96) 0%,
+                  rgba(236,233,226,0.88) 40%,
+                  rgba(236,233,226,0.70) 70%,
+                  rgba(236,233,226,0.45) 100%
+                ) !important;
+              }
+              [data-theme="fog"] .dt-daily__bg {
+                filter: grayscale(40%) brightness(1.3) saturate(0.6);
+              }
               .dt-daily__inner {
                 position: relative;
                 z-index: 1;
@@ -411,6 +423,25 @@ export default async function Home() {
                   background: linear-gradient(180deg,rgba(6,4,2,0.92) 0%,rgba(6,4,2,0.82) 100%) !important;
                 }
               }
+              [data-theme="fog"] .dt-daily__bg-veil {
+                background: linear-gradient(
+                  105deg,
+                  rgba(236,233,226,0.97) 0%,
+                  rgba(236,233,226,0.90) 40%,
+                  rgba(236,233,226,0.72) 70%,
+                  rgba(236,233,226,0.50) 100%
+                ) !important;
+              }
+              [data-theme="fog"] .dt-daily__bg {
+                filter: grayscale(30%) brightness(1.4) saturate(0.5);
+              }
+              [data-theme="fog"] .dt-daily__eyebrow { color: #8b0000 !important; }
+              [data-theme="fog"] .dt-daily__title { color: #1c1a17 !important; }
+              [data-theme="fog"] .dt-daily__desc,
+              [data-theme="fog"] .dt-daily__desc * { color: #3a3630 !important; }
+              [data-theme="fog"] .dt-btn--enter { background: #8b0000 !important; color: #fff !important; border-color: #8b0000 !important; }
+              [data-theme="fog"] .dt-btn--ghost { color: #3a3630 !important; border-color: rgba(0,0,0,0.25) !important; }
+              [data-theme="fog"] .dt-btn--ghost:hover { background: rgba(0,0,0,0.06) !important; color: #1c1a17 !important; }
             `}</style>
           </section>
         );
