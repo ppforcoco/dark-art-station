@@ -224,17 +224,6 @@ export default async function Home() {
           .hw-hero-phones-wrap { padding: 0 12px; overflow-x: auto; }
           .dt-hero-phones { justify-content: flex-start !important; }
         }
-        /* Light theme text fixes */
-        [data-theme="fog"] .dt-gate__eyebrow { color: #8b0000 !important; }
-        [data-theme="fog"] .dt-gate__collection-num { color: #1a1410 !important; }
-        [data-theme="fog"] .dt-gate__collection-label { color: #5a4838 !important; }
-        [data-theme="fog"] .dt-gate__sub { color: #2a1e10 !important; }
-        [data-theme="fog"] .hw-hero-vault-text { color: rgba(60,40,20,0.75) !important; }
-        [data-theme="fog"] .dt-coffin { background: rgba(255,255,255,0.6) !important; border-color: rgba(139,0,0,0.2) !important; }
-        [data-theme="fog"] .dt-coffin__num { color: #8b0000 !important; }
-        [data-theme="fog"] .dt-coffin__label { color: rgba(60,40,30,0.6) !important; }
-        [data-theme="fog"] .dt-btn--ghost { color: #3a2010 !important; border-color: rgba(60,40,20,0.35) !important; }
-        [data-theme="fog"] .dt-btn--ghost:hover { color: #1a1008 !important; border-color: #1a1008 !important; }
       `}</style>
 
 
@@ -346,7 +335,7 @@ export default async function Home() {
               /* ── WOTD SECTION SHELL ─────────────────────────────────── */
               .wotd-section {
                 position: relative;
-                padding: clamp(48px,8vw,96px) clamp(16px,5vw,72px);
+                padding: clamp(24px,4vw,48px) clamp(16px,5vw,72px);
                 background: #080508;
                 overflow: hidden;
               }
@@ -398,7 +387,7 @@ export default async function Home() {
                 display: flex;
                 align-items: center;
                 gap: 1.25rem;
-                margin-bottom: clamp(24px, 4vw, 48px);
+                margin-bottom: clamp(12px, 2vw, 24px);
                 max-width: 1100px;
                 margin-left: auto;
                 margin-right: auto;
@@ -536,10 +525,10 @@ export default async function Home() {
                 position: relative;
                 z-index: 1;
                 display: grid;
-                grid-template-columns: clamp(160px, 22vw, 300px) 1fr;
-                gap: clamp(24px, 4vw, 64px);
+                grid-template-columns: clamp(120px, 14vw, 200px) 1fr;
+                gap: clamp(16px, 3vw, 40px);
                 align-items: center;
-                padding: clamp(32px, 5vw, 64px) clamp(24px, 5vw, 56px);
+                padding: clamp(20px, 3vw, 40px) clamp(20px, 4vw, 48px);
               }
 
               /* ── IMAGE FRAME ─────────────────────────────────────────── */
@@ -649,10 +638,10 @@ export default async function Home() {
               .wotd-text {
                 display: flex;
                 flex-direction: column;
-                gap: 1.4rem;
+                gap: 0.9rem;
               }
               .wotd-title {
-                font-size: clamp(1.7rem, 3.5vw, 2.9rem);
+                font-size: clamp(1.2rem, 2.2vw, 1.9rem);
                 line-height: 1.12;
                 margin: 0;
                 color: #f0e8d8;
@@ -661,8 +650,8 @@ export default async function Home() {
                 letter-spacing: 0.02em;
               }
               .wotd-desc {
-                font-size: clamp(0.95rem, 1.5vw, 1.08rem);
-                line-height: 1.75;
+                font-size: clamp(0.82rem, 1.2vw, 0.95rem);
+                line-height: 1.65;
                 color: rgba(220,200,170,0.82);
                 max-width: 520px;
               }
@@ -772,28 +761,14 @@ export default async function Home() {
               @media (max-width: 680px) {
                 .wotd-box__inner {
                   grid-template-columns: 1fr;
-                  padding: 28px 20px 32px;
+                  padding: 20px 16px 24px;
                 }
                 .wotd-img-frame {
-                  max-width: 220px;
+                  max-width: 160px;
                   margin: 0 auto;
                 }
-                .wotd-title { font-size: clamp(1.4rem, 5vw, 2rem); }
+                .wotd-title { font-size: clamp(1.1rem, 4vw, 1.5rem); }
               }
-
-              /* ── PARCHMENT (fog) THEME — box stays dark always ──────── */
-              /* The horror box is ALWAYS dark regardless of site theme — it's a void */
-              [data-theme="fog"] .wotd-section {
-                background: #0e0a06;
-              }
-              [data-theme="fog"] .wotd-box {
-                background: linear-gradient(135deg, #100808 0%, #120a06 50%, #0c0604 100%);
-                border-color: rgba(192,0,26,0.35);
-              }
-              [data-theme="fog"] .wotd-title    { color: #f0e8d8; }
-              [data-theme="fog"] .wotd-desc,
-              [data-theme="fog"] .wotd-desc *   { color: rgba(220,195,155,0.82); }
-              [data-theme="fog"] .wotd-eyebrow  { color: #c0001a; }
             `}</style>
           </section>
         );

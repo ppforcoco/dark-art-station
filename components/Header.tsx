@@ -13,48 +13,25 @@ const NAV_LINKS = [
   { label: "Blog & Guides", href: "/blog"       },
 ];
 
-type Theme = "fog" | "ghost";
-
 export default function Header() {
   const router = useRouter();
-  const [menuOpen,      setMenuOpen]      = useState(false);
-  const [searchOpen,    setSearchOpen]    = useState(false);
-  const [query,         setQuery]         = useState("");
-  const [theme,         setTheme]         = useState<Theme>("fog");
-  const [themeMenuOpen, setThemeMenuOpen] = useState(false);
-  const [randomSpin,    setRandomSpin]    = useState(false);
-  const [scrolled,      setScrolled]      = useState(false);
+  const [menuOpen,   setMenuOpen]   = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [query,      setQuery]      = useState("");
+  const [randomSpin, setRandomSpin] = useState(false);
+  const [scrolled,   setScrolled]   = useState(false);
   const overlayInputRef = useRef<HTMLInputElement>(null);
+
+  /* Always ghost theme */
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", "ghost");
+  }, []);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
-
-  const applyTheme = useCallback((t: Theme) => {
-    document.documentElement.setAttribute("data-theme", t);
-    try { localStorage.setItem("hw-theme", t); } catch {}
-  }, []);
-
-  useEffect(() => {
-    try {
-      const saved = localStorage.getItem("hw-theme") as Theme | null;
-      const valid: Theme[] = ["fog", "ghost"];
-      if (saved && valid.includes(saved)) {
-        setTheme(saved);
-        document.documentElement.setAttribute("data-theme", saved);
-      } else {
-        document.documentElement.setAttribute("data-theme", "fog");
-      }
-    } catch {
-      document.documentElement.setAttribute("data-theme", "fog");
-    }
-  }, []);
-
-  const setThemeAndClose = useCallback((t: Theme) => {
-    setTheme(t); applyTheme(t); setThemeMenuOpen(false);
-  }, [applyTheme]);
 
   const handleRandom = useCallback(async () => {
     setRandomSpin(true);
@@ -67,8 +44,8 @@ export default function Header() {
     setMenuOpen(false);
   }, [router]);
 
-  const toggleMenu  = useCallback(() => { setMenuOpen(p => !p); setThemeMenuOpen(false); }, []);
-  const closeMenu   = useCallback(() => { setMenuOpen(false); setThemeMenuOpen(false); }, []);
+  const toggleMenu  = useCallback(() => setMenuOpen(p => !p), []);
+  const closeMenu   = useCallback(() => setMenuOpen(false), []);
   const openSearch  = useCallback(() => { setSearchOpen(true); setMenuOpen(false); setTimeout(() => overlayInputRef.current?.focus(), 80); }, []);
   const closeSearch = useCallback(() => { setSearchOpen(false); setQuery(""); }, []);
   const handleSearch = useCallback((e: React.FormEvent) => {
@@ -104,80 +81,17 @@ export default function Header() {
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") { closeMenu(); closeSearch(); setThemeMenuOpen(false); }
+      if (e.key === "Escape") { closeMenu(); closeSearch(); }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [closeMenu, closeSearch]);
 
-  const themeIcon  = theme === "ghost" ? "👻" : "🌫";
-  const themeLabel = theme === "ghost" ? "Ghost" : "Fog";
-
   return (
     <>
       <style>{`
-        /* ── Google Fonts import (fallback for non-Next.js contexts) ── */
+        /* ── Google Fonts import ── */
         @import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Space+Mono:wght@400;700&display=swap');
-
-        /* ── FOG THEME — misty warm grey, light mode ── */
-        [data-theme="fog"] {
-          --bg-primary:#f4f1ea;
-          --bg-secondary:#ece8df;
-          --void:#f4f1ea;
-          --black:#ece8df;
-          --deep:#e4dfd4;
-          --ash:#d4cfc4;
-          --smoke:#9a9490;
-          --ghost:#6a6460;
-          --pale:#2a2420;
-          --white:#0a0908;
-          --crimson:#7a1010;
-          --blood:#a01818;
-          --ember:#c84000;
-          --gold:#806028;
-          --text-primary:#1a1614;
-          --text-muted:#5a5450;
-          --border-dim:#cac5bc;
-          --nav-bg:rgba(244,241,234,0.97);
-          color-scheme: light;
-        }
-        [data-theme="fog"] body { background-color:#f4f1ea!important; }
-        [data-theme="fog"] .site-nav {
-          background: rgba(244,241,234,0.97)!important;
-          border-bottom: 1px solid rgba(170,160,145,0.35)!important;
-          box-shadow: 0 1px 20px rgba(120,110,95,0.10)!important;
-        }
-        [data-theme="fog"] .nav-logo { color:#1a1614!important; }
-        [data-theme="fog"] .logo-red { color:#a01818!important; text-shadow:none!important; }
-        [data-theme="fog"] .nav-links a { color:#4a4440!important; }
-        [data-theme="fog"] .nav-links a:hover { color:#1a1614!important; }
-        [data-theme="fog"] .hw-nav-icon { color:#4a4440!important; }
-        [data-theme="fog"] .hw-nav-icon:hover { color:#1a1614!important; }
-        [data-theme="fog"] .theme-btn { color:#4a4440!important; border-color:rgba(160,150,135,0.4)!important; }
-        [data-theme="fog"] .theme-menu { background:#ece8df!important; border-color:rgba(160,150,135,0.4)!important; box-shadow:0 4px 24px rgba(80,70,60,0.18)!important; }
-        [data-theme="fog"] .theme-option { color:#4a4440!important; }
-        [data-theme="fog"] .theme-option:hover, [data-theme="fog"] .theme-option--active { background:#ddd8cf!important; color:#1a1614!important; }
-        [data-theme="fog"] .mobile-menu-panel {
-          background: rgba(244,241,234,0.99)!important;
-          border-right: 1px solid rgba(160,150,135,0.3)!important;
-        }
-        [data-theme="fog"] .mobile-menu-link { color:#3a3430!important; }
-        [data-theme="fog"] .mobile-menu-link:hover { color:#1a1614!important; }
-        [data-theme="fog"] .mobile-link-index { color:#a01818!important; }
-        [data-theme="fog"] .mobile-theme-btn { color:#4a4440!important; border-color:rgba(160,150,135,0.4)!important; }
-        [data-theme="fog"] .mobile-theme-btn--active { background:#ddd8cf!important; color:#1a1614!important; border-color:#a01818!important; }
-        [data-theme="fog"] .hw2-search-overlay { background:rgba(244,241,234,0.95)!important; }
-        [data-theme="fog"] .hw2-search-form { background:#ece8df!important; border-color:rgba(160,150,135,0.5)!important; }
-        [data-theme="fog"] .hw2-search-input { color:#1a1614!important; background:#f4f1ea!important; }
-        [data-theme="fog"] .hw2-search-input::placeholder { color:#9a9490!important; }
-        [data-theme="fog"] .hw2-search-btn { background:#a01818!important; color:#f4f1ea!important; }
-        [data-theme="fog"] ::-webkit-scrollbar-track { background:#ece8df!important; }
-        [data-theme="fog"] ::-webkit-scrollbar-thumb { background:#c0b8ac!important; }
-        [data-theme="fog"] ::-webkit-scrollbar-thumb:hover { background:#a01818!important; }
-        [data-theme="fog"] .hw2-nav__drip { display:none!important; }
-        [data-theme="fog"] .breadcrumb-link { color:#5a5450!important; }
-        [data-theme="fog"] .breadcrumb-current { color:#1a1814!important; opacity:1!important; }
-        [data-theme="fog"] .breadcrumb-sep { color:#9a9490!important; }
 
         /* ── GHOST THEME — charcoal blue-black, cool whites ── */
         [data-theme="ghost"] {
@@ -298,56 +212,6 @@ export default function Header() {
         .hw-nav-icon.spinning { animation: spin 0.7s linear; }
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
-        /* ── THEME SWITCHER ── */
-        .theme-btn {
-          display: flex;
-          align-items: center;
-          gap: 5px;
-          background: none;
-          border: 1px solid rgba(144,144,184,0.25);
-          border-radius: 20px;
-          padding: 4px 10px;
-          cursor: pointer;
-          font-family: var(--font-space), 'Space Mono', monospace;
-          font-size: 0.65rem;
-          letter-spacing: 0.1em;
-          color: var(--ghost, #9090b8);
-          transition: all 0.2s;
-        }
-        .theme-label { display: inline; }
-        .theme-menu {
-          position: absolute;
-          top: calc(100% + 8px);
-          right: 0;
-          background: var(--deep, #18182a);
-          border: 1px solid rgba(144,144,184,0.25);
-          border-radius: 10px;
-          overflow: hidden;
-          min-width: 110px;
-          z-index: 700;
-          box-shadow: 0 4px 24px rgba(0,0,0,0.4);
-        }
-        .theme-option {
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          width: 100%;
-          background: none;
-          border: none;
-          padding: 10px 14px;
-          cursor: pointer;
-          font-family: var(--font-space), 'Space Mono', monospace;
-          font-size: 0.68rem;
-          letter-spacing: 0.1em;
-          color: var(--ghost, #9090b8);
-          transition: background 0.15s, color 0.15s;
-        }
-        .theme-option:hover,
-        .theme-option--active {
-          background: var(--ash, #24243a);
-          color: var(--white, #f0f0ff);
-        }
-
         /* ── MOBILE HAMBURGER ── */
         .mobile-menu-btn {
           display: none;
@@ -407,7 +271,7 @@ export default function Header() {
           text-overflow: ellipsis;
         }
 
-        /* ── BLOOD DRIP (ghost theme only) ── */
+        /* ── BLOOD DRIP ── */
         .hw2-nav__drip {
           position: absolute;
           bottom: -18px;
@@ -549,7 +413,6 @@ export default function Header() {
           width: 100%;
           text-align: left;
           transition: color 0.2s, background 0.2s;
-          /* Staggered slide-in animation */
           animation: slideInLink 0.35s ease calc(var(--mi, 0) * 0.05s) both;
         }
         @keyframes slideInLink {
@@ -562,40 +425,7 @@ export default function Header() {
           background: rgba(144,144,184,0.06);
         }
 
-        /* ── MOBILE THEME ROW ── */
-        .mobile-theme-row {
-          display: flex;
-          gap: 10px;
-          padding: 20px 24px;
-          border-top: 1px solid rgba(144,144,184,0.12);
-          flex-shrink: 0;
-        }
-        .mobile-theme-btn {
-          flex: 1;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 6px;
-          background: none;
-          border: 1px solid rgba(144,144,184,0.2);
-          border-radius: 8px;
-          padding: 10px 8px;
-          cursor: pointer;
-          font-family: var(--font-space), 'Space Mono', monospace;
-          font-size: 0.65rem;
-          letter-spacing: 0.1em;
-          color: var(--ghost, #9090b8);
-          transition: all 0.2s;
-        }
-        .mobile-theme-btn--active {
-          background: rgba(144,144,184,0.12);
-          color: var(--white, #f0f0ff);
-          border-color: var(--blood, #7878d8);
-        }
-
         /* ── RESPONSIVE BREAKPOINTS ── */
-
-        /* Tablet: hide desktop links, show hamburger */
         @media (max-width: 1024px) {
           .site-nav { padding: 16px 32px; }
           .nav-links { gap: 20px; }
@@ -603,22 +433,18 @@ export default function Header() {
         @media (max-width: 860px) {
           .site-nav { padding: 14px 20px; }
           .nav-links { display: none; }
-          .theme-label { display: none; }
           .mobile-menu-btn { display: flex; }
           .logo-full { display: inline; }
         }
-        /* Phone: compact logo */
         @media (max-width: 480px) {
           .site-nav { padding: 12px 16px; }
           .logo-compact { display: inline; font-size: 1.1rem; }
           .logo-full    { display: none; }
           .nav-logo { font-size: 1rem; }
-          .theme-btn { padding: 4px 8px; }
           .breadcrumb-link { max-width: 110px; }
           .breadcrumb-current { max-width: 180px; }
           .breadcrumb-sep { margin: 0 4px; }
         }
-        /* Safe areas for notch/home-bar phones */
         @supports (padding-left: env(safe-area-inset-left)) {
           .site-nav {
             padding-left: max(16px, env(safe-area-inset-left));
@@ -629,7 +455,7 @@ export default function Header() {
 
       {/* ── NAV ── */}
       <nav className={`site-nav hw2-nav-enhanced${scrolled ? " hw2-nav-enhanced--scrolled" : ""}`} style={{position:"relative"}}>
-        {/* Blood drip — only visible in ghost theme */}
+        {/* Blood drip */}
         <div className="hw2-nav__drip" aria-hidden="true">
           {Array.from({length:8}).map((_,i) => (
             <span key={i} className="hw2-nav__drip-drop" style={{"--di":i} as React.CSSProperties}/>
@@ -663,25 +489,6 @@ export default function Header() {
           >
             <Shuffle size={18}/>
           </button>
-          {/* Theme switcher */}
-          <div className="theme-switcher" style={{position:"relative"}}>
-            <button type="button" className="theme-btn" onClick={()=>setThemeMenuOpen(p=>!p)} aria-label="Change theme" aria-expanded={themeMenuOpen}>
-              <span style={{fontSize:"1rem"}}>{themeIcon}</span>
-              <span className="theme-label">{themeLabel}</span>
-            </button>
-            {themeMenuOpen && (
-              <div className="theme-menu">
-                {([
-                  ["fog","🌫","Fog"],
-                  ["ghost","👻","Ghost"],
-                ] as [Theme,string,string][]).map(([t,icon,label]) => (
-                  <button key={t} type="button" className={`theme-option${theme===t?" theme-option--active":""}`} onClick={()=>setThemeAndClose(t)}>
-                    <span>{icon}</span><span>{label}</span>
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
           {/* Hamburger — mobile only */}
           <button
             type="button"
@@ -746,19 +553,6 @@ export default function Header() {
             ♥ Saved Wallpapers
           </Link>
         </nav>
-        {/* Theme toggles */}
-        <div className="mobile-theme-row">
-          {([["fog","🌫","Fog"],["ghost","👻","Ghost"]] as [Theme,string,string][]).map(([t,icon,label])=>(
-            <button
-              key={t}
-              type="button"
-              className={`mobile-theme-btn${theme===t?" mobile-theme-btn--active":""}`}
-              onClick={()=>setThemeAndClose(t)}
-            >
-              <span>{icon}</span><span>{label}</span>
-            </button>
-          ))}
-        </div>
       </div>
     </>
   );

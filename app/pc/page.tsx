@@ -7,7 +7,6 @@ import Pagination from "@/components/Pagination";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import DeviceImageCard from "@/components/DeviceImageCard";
 import PcHeroSlideshow from "@/components/PcHeroSlideshow";
-import ReadMoreIntro from "@/components/ReadMoreIntro";
 
 export const revalidate = 60;
 
@@ -55,7 +54,7 @@ export default async function PcPage({ searchParams }: PageProps) {
   };
 
   const heroWhere = { collectionId: null, deviceType: "PC" as const };
-  const [images, total, pageContent, heroImages] = await Promise.all([
+  const [images, total, heroImages] = await Promise.all([
     db.image.findMany({
       where,
       orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
@@ -64,7 +63,6 @@ export default async function PcPage({ searchParams }: PageProps) {
       skip,
     }),
     db.image.count({ where }),
-    getPageContent("pc"),
     db.image.findMany({
       where: heroWhere,
       orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
@@ -72,6 +70,7 @@ export default async function PcPage({ searchParams }: PageProps) {
       take: 6,
     }),
   ]);
+
   const r2Base = process.env.NEXT_PUBLIC_R2_PUBLIC_URL ?? "";
   const slides = heroImages.map(img => ({
     id: img.id,
@@ -102,40 +101,16 @@ export default async function PcPage({ searchParams }: PageProps) {
           {page > 1 && <span className="text-[#4a445a] text-2xl"> — Page {page}</span>}
         </h1>
 
-        {!tag && (
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "40px", alignItems: "start" }}
-               className="pc-hero-layout">
-            {/* Left: description */}
-            <ReadMoreIntro html={pageContent?.body ?? null}>
-              <p>
-                PC and desktop wallpapers here are landscape 16:9 format, high-resolution
-                masters. They are designed for modern monitors including 1080p and 1440p displays,
-                as well as ultrawide setups. The dark backgrounds work particularly well
-                on IPS and OLED monitors where deep blacks add to the atmosphere.
-              </p>
-              <p>
-                On Windows, right-click your desktop → Personalise → Background to apply any image.
-                On Mac, go to System Settings → Wallpaper and drag your downloaded file in.
-                Multi-monitor setups are supported — you can set a different wallpaper on each display.
-                Everything is free, instant, and requires no account.
-              </p>
-              <div className="device-page-guide-link">
-                <span>Want a step-by-step walkthrough?</span>
-                <a href="/blog/the-dark-aesthetic-a-complete-guide-to-customizing-your-devices">Read our wallpaper guide →</a>
-              </div>
-            </ReadMoreIntro>
-            {/* Right: slideshow */}
-            {slides.length > 0 && <PcHeroSlideshow slides={slides} />}
-          </div>
+        {!tag && slides.length > 0 && (
+          <PcHeroSlideshow slides={slides} />
         )}
-
       </section>
 
       <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_MAIN} width={728} height={90} />
 
       <section className="max-w-7xl mx-auto px-6 md:px-[60px] py-10">
         {images.length === 0 ? (
-                    <div className="hw-coming-soon">
+          <div className="hw-coming-soon">
             <div className="hw-coming-soon__sigil">✦ ☽ ✦</div>
             <div className="hw-coming-soon__bar" />
             <h2 className="hw-coming-soon__title">Coming Soon</h2>
