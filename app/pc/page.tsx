@@ -86,10 +86,10 @@ export default async function PcPage({ searchParams }: PageProps) {
           {page > 1 && <span className="text-[#4a445a] text-2xl"> — Page {page}</span>}
         </h1>
 
-        {!tag && pageContent?.description && (
-          <div
-            className="image-description-html prose prose-invert max-w-none text-[var(--text-muted)] leading-relaxed mb-2"
-            dangerouslySetInnerHTML={{ __html: pageContent.description }}
+        {!tag && pageContent?.body && (
+  <div
+    className="image-description-html prose prose-invert max-w-none text-[var(--text-muted)] leading-relaxed mb-2"
+    dangerouslySetInnerHTML={{ __html: pageContent.body }}
           />
         )}
       </section>
