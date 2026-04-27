@@ -242,7 +242,7 @@ export default function DownloadButton({ href, viewCount, label, children }: Pro
           <p className="download-share-hint">Tap ↑ to set directly as wallpaper</p>
         )}
 
-        <p className="download-sublabel">JPEG · 4K resolution · No account · No watermark</p>
+        
       </div>
 
       {/* ── Sticky Keep Exploring bar ── */}

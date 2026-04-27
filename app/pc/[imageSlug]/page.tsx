@@ -176,10 +176,26 @@ export default async function PcImagePage({ params }: PageProps) {
 
           <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
             <div>
-              <Link href="/pc" className="font-mono text-[0.6rem] tracking-[0.25em] uppercase text-[#8b0000] hover:text-[#c0001a] transition-colors">
+              <Link href="/pc" style={{
+                fontFamily: "var(--font-space, monospace)",
+                fontSize: "0.6rem",
+                letterSpacing: "0.25em",
+                textTransform: "uppercase",
+                color: "#c0001a",
+                textDecoration: "none",
+                transition: "color 0.2s",
+              }}>
                 ← PC Wallpapers
               </Link>
-              <h1 className="font-display text-2xl md:text-3xl font-bold mt-3 leading-tight">
+              <h1 style={{
+                fontFamily: "var(--font-cinzel, serif)",
+                fontSize: "clamp(1.5rem, 3vw, 2.4rem)",
+                fontWeight: 700,
+                lineHeight: 1.15,
+                letterSpacing: "0.04em",
+                marginTop: "0.75rem",
+                color: "var(--text-primary)",
+              }}>
                 {image.title}
               </h1>
             </div>
@@ -189,12 +205,6 @@ export default async function PcImagePage({ params }: PageProps) {
               className="font-body text-[1rem] leading-relaxed description-html" style={{ color: "var(--text-muted)" }}
               dangerouslySetInnerHTML={{ __html: displayDescription }}
             />
-
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "12px", alignItems: "center" }}>
-              <span className="font-mono text-[0.6rem] tracking-[0.2em] uppercase px-3 py-1" style={{ color: "var(--text-muted)", border: "1px solid var(--border-dim)" }}>
-                PC · 16:9
-              </span>
-            </div>
 
 
 

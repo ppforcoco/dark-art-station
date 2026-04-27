@@ -78,6 +78,60 @@ export default function Breadcrumbs({ items }: BreadcrumbsProps) {
             })}
           </ol>
         </nav>
+        <style>{`
+          .path-bar {
+            padding: 10px clamp(16px,4vw,52px);
+            border-bottom: 1px solid var(--border-dim);
+            background: var(--bg-secondary, var(--bg-primary));
+          }
+          .breadcrumbs {
+            display: flex;
+            align-items: center;
+            gap: 0;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            flex-wrap: wrap;
+          }
+          .breadcrumb-item {
+            display: flex;
+            align-items: center;
+            gap: 0;
+          }
+          .breadcrumb-sep {
+            font-family: var(--font-space, monospace);
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            opacity: 0.4;
+            margin: 0 6px;
+          }
+          .breadcrumb-link {
+            font-family: var(--font-space, monospace);
+            font-size: 0.62rem;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: color 0.2s;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 160px;
+          }
+          .breadcrumb-link:hover { color: var(--text-primary); }
+          .breadcrumb-current {
+            font-family: var(--font-space, monospace);
+            font-size: 0.62rem;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--text-primary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 220px;
+            display: inline-block;
+          }
+        `}</style>
       </div>
     </>
   );
