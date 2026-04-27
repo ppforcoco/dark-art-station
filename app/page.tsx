@@ -262,72 +262,40 @@ export default async function Home() {
               <span className="wotd-header__rule" aria-hidden="true" />
             </div>
 
-            {/* ── The Horror Box ── */}
-            <div className="wotd-box">
-
-              {/* Animated border glow */}
-              <div className="wotd-box__border-glow" aria-hidden="true" />
-
-              {/* Corner runes */}
-              <span className="wotd-box__rune wotd-box__rune--tl" aria-hidden="true">✦</span>
-              <span className="wotd-box__rune wotd-box__rune--tr" aria-hidden="true">✦</span>
-              <span className="wotd-box__rune wotd-box__rune--bl" aria-hidden="true">✦</span>
-              <span className="wotd-box__rune wotd-box__rune--br" aria-hidden="true">✦</span>
-
-              {/* Drip effect top */}
-              <div className="wotd-box__drip" aria-hidden="true">
-                {Array.from({ length: 8 }).map((_, i) => (
-                  <span key={i} className="wotd-box__drip-drop" style={{ "--di": i } as React.CSSProperties} />
-                ))}
-              </div>
-
-              <div className="wotd-box__inner">
-                {/* LEFT — phone frame */}
-                <Link href={wotdHref} className="wotd-img-frame" aria-label={wotd.title}>
-                  <div className="wotd-img-frame__wrap">
-                    <Image src={wotdUrl} alt={wotd.title} fill priority unoptimized className="object-cover"
-                      sizes="(max-width:768px) 80vw, 320px" style={{ objectPosition: "center top" }} />
-                  </div>
-                  {/* scan line overlay */}
-                  <div className="wotd-img-frame__scanlines" aria-hidden="true" />
-                  {/* corner brackets */}
-                  <div className="wotd-img-frame__corners" aria-hidden="true">
-                    <span /><span /><span /><span />
-                  </div>
-                  {wotd.deviceType && (
-                    <span className="wotd-img-frame__badge">{wotd.deviceType.charAt(0) + wotd.deviceType.slice(1).toLowerCase()}</span>
-                  )}
-                  <div className="wotd-img-frame__hover" aria-hidden="true">
-                    <span className="wotd-img-frame__hover-text">View Wallpaper</span>
-                  </div>
-                  {/* pulsing red eye at bottom */}
-                  <div className="wotd-img-frame__eye" aria-hidden="true" />
-                </Link>
-
-                {/* RIGHT — horror text block */}
-                <div className="wotd-text">
-                  <h2 className="wotd-title">{wotd.title}</h2>
-
-                  {wotd.description && (
-                    <div className="wotd-desc" dangerouslySetInnerHTML={{ __html: wotd.description }} />
-                  )}
-
-                  {/* Creep bar */}
-                  <div className="wotd-creep-bar" aria-hidden="true">
-                    <span className="wotd-creep-bar__line" />
-                    <span className="wotd-creep-bar__skull">†</span>
-                    <span className="wotd-creep-bar__line" />
-                  </div>
-
-                  <div className="wotd-actions">
-                    <Link href={wotdHref} className="wotd-btn-primary">
-                      Download This Wallpaper →
-                    </Link>
-                    <Link href={`/${devicePath}`} className="wotd-btn-ghost">
-                      Browse {devicePath.charAt(0).toUpperCase() + devicePath.slice(1)} →
-                    </Link>
-                  </div>
+            {/* ── Phone mockup — top, centered ── */}
+            <div className="wotd-top-frame">
+              <Link href={wotdHref} className="wotd-img-frame" aria-label={wotd.title}>
+                <div className="wotd-img-frame__wrap">
+                  <Image src={wotdUrl} alt={wotd.title} fill priority unoptimized className="object-cover"
+                    sizes="(max-width:768px) 80vw, 320px" style={{ objectPosition: "center top" }} />
                 </div>
+                {/* scan line overlay */}
+                <div className="wotd-img-frame__scanlines" aria-hidden="true" />
+                {/* corner brackets */}
+                <div className="wotd-img-frame__corners" aria-hidden="true">
+                  <span /><span /><span /><span />
+                </div>
+                {wotd.deviceType && (
+                  <span className="wotd-img-frame__badge">{wotd.deviceType.charAt(0) + wotd.deviceType.slice(1).toLowerCase()}</span>
+                )}
+                <div className="wotd-img-frame__hover" aria-hidden="true">
+                  <span className="wotd-img-frame__hover-text">View Wallpaper</span>
+                </div>
+                {/* pulsing red eye at bottom */}
+                <div className="wotd-img-frame__eye" aria-hidden="true" />
+              </Link>
+            </div>
+
+            {/* ── Title + actions below ── */}
+            <div className="wotd-below">
+              <h2 className="wotd-title">{wotd.title}</h2>
+              <div className="wotd-actions">
+                <Link href={wotdHref} className="wotd-btn-primary">
+                  Download This Wallpaper →
+                </Link>
+                <Link href={`/${devicePath}`} className="wotd-btn-ghost">
+                  Browse {devicePath.charAt(0).toUpperCase() + devicePath.slice(1)} →
+                </Link>
               </div>
             </div>
 
@@ -420,7 +388,24 @@ export default async function Home() {
                 50%       { opacity: 0.6; box-shadow: 0 0 0 5px rgba(192,0,26,0); }
               }
 
-              /* ── THE HORROR BOX ─────────────────────────────────────── */
+              /* ── CENTERED LAYOUT ─────────────────────────────────────── */
+              .wotd-top-frame {
+                display: flex;
+                justify-content: center;
+                margin-bottom: 1.5rem;
+              }
+              .wotd-top-frame .wotd-img-frame {
+                width: clamp(160px, 22vw, 280px);
+              }
+              .wotd-below {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 1rem;
+                text-align: center;
+              }
+
+              /* ── THE HORROR BOX (kept for reference, unused) ─────────── */
               .wotd-box {
                 position: relative;
                 max-width: 1100px;
@@ -634,12 +619,7 @@ export default async function Home() {
                 50%       { opacity: 1;   width: 70%; box-shadow: 0 0 28px 10px rgba(192,0,26,0.5); }
               }
 
-              /* ── TEXT BLOCK ─────────────────────────────────────────── */
-              .wotd-text {
-                display: flex;
-                flex-direction: column;
-                gap: 0.9rem;
-              }
+              /* ── TITLE ──────────────────────────────────────────────── */
               .wotd-title {
                 font-size: clamp(1.2rem, 2.2vw, 1.9rem);
                 line-height: 1.12;
@@ -649,53 +629,7 @@ export default async function Home() {
                 text-shadow: 0 2px 20px rgba(192,0,26,0.2);
                 letter-spacing: 0.02em;
               }
-              .wotd-desc {
-                font-size: clamp(0.82rem, 1.2vw, 0.95rem);
-                line-height: 1.65;
-                color: rgba(220,200,170,0.82);
-                max-width: 520px;
-              }
-              .wotd-desc * { color: rgba(220,200,170,0.82); }
-              .wotd-desc strong, .wotd-desc b { color: #f0e8d8; }
-              .wotd-desc em, .wotd-desc i { color: #c9a84c; font-style: italic; }
-              .wotd-desc blockquote {
-                border-left: 2px solid rgba(192,0,26,0.5);
-                padding-left: 1rem;
-                margin: 0;
-                font-style: italic;
-                color: rgba(200,180,140,0.75);
-              }
-              .wotd-desc h3 {
-                font-size: 0.7rem;
-                letter-spacing: 0.2em;
-                text-transform: uppercase;
-                color: rgba(192,0,26,0.8);
-                font-family: var(--font-space, monospace);
-                margin: 0 0 0.5rem;
-              }
-
-              /* Creep bar */
-              .wotd-creep-bar {
-                display: flex;
-                align-items: center;
-                gap: 0.75rem;
-                opacity: 0.35;
-              }
-              .wotd-creep-bar__line {
-                flex: 1;
-                height: 1px;
-                background: linear-gradient(90deg, transparent, rgba(192,0,26,0.8), transparent);
-              }
-              .wotd-creep-bar__skull {
-                font-size: 0.85rem;
-                color: rgba(192,0,26,0.9);
-                animation: wotdCreepSpin 8s linear infinite;
-                display: inline-block;
-              }
-              @keyframes wotdCreepSpin {
-                0%, 45%, 55%, 100% { transform: rotate(0deg); }
-                50% { transform: rotate(180deg); }
-              }
+              /* Creep bar removed */
 
               /* ── BUTTONS ─────────────────────────────────────────────── */
               .wotd-actions {
@@ -759,13 +693,8 @@ export default async function Home() {
 
               /* ── RESPONSIVE ──────────────────────────────────────────── */
               @media (max-width: 680px) {
-                .wotd-box__inner {
-                  grid-template-columns: 1fr;
-                  padding: 20px 16px 24px;
-                }
-                .wotd-img-frame {
-                  max-width: 160px;
-                  margin: 0 auto;
+                .wotd-top-frame .wotd-img-frame {
+                  width: clamp(140px, 50vw, 200px);
                 }
                 .wotd-title { font-size: clamp(1.1rem, 4vw, 1.5rem); }
               }

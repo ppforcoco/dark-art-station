@@ -6,7 +6,6 @@ import AdSlot from "@/components/AdSlot";
 import Pagination from "@/components/Pagination";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import DeviceImageCard from "@/components/DeviceImageCard";
-import PcHeroSlideshow from "@/components/PcHeroSlideshow";
 
 export const revalidate = 60;
 
@@ -53,8 +52,7 @@ export default async function PcPage({ searchParams }: PageProps) {
     ...(tag ? { tags: { has: tag } } : {}),
   };
 
-  const heroWhere = { collectionId: null, deviceType: "PC" as const };
-  const [images, total, heroImages] = await Promise.all([
+  const [images, total, pageContent] = await Promise.all([
     db.image.findMany({
       where,
       orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
@@ -63,21 +61,8 @@ export default async function PcPage({ searchParams }: PageProps) {
       skip,
     }),
     db.image.count({ where }),
-    db.image.findMany({
-      where: heroWhere,
-      orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
-      select: { id: true, slug: true, title: true, r2Key: true },
-      take: 6,
-    }),
+    getPageContent("pc"),
   ]);
-
-  const r2Base = process.env.NEXT_PUBLIC_R2_PUBLIC_URL ?? "";
-  const slides = heroImages.map(img => ({
-    id: img.id,
-    slug: img.slug,
-    title: img.title,
-    url: `${r2Base}/${img.r2Key}`,
-  }));
 
   const totalPages = Math.ceil(total / PAGE_SIZE);
   const baseUrl    = tag ? `/pc?tag=${encodeURIComponent(tag)}` : "/pc";
@@ -101,8 +86,11 @@ export default async function PcPage({ searchParams }: PageProps) {
           {page > 1 && <span className="text-[#4a445a] text-2xl"> — Page {page}</span>}
         </h1>
 
-        {!tag && slides.length > 0 && (
-          <PcHeroSlideshow slides={slides} />
+        {!tag && pageContent?.description && (
+          <div
+            className="image-description-html prose prose-invert max-w-none text-[var(--text-muted)] leading-relaxed mb-2"
+            dangerouslySetInnerHTML={{ __html: pageContent.description }}
+          />
         )}
       </section>
 
