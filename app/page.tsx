@@ -89,20 +89,20 @@ export default async function Home() {
 
           {/* LEFT — Text block */}
           <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem", padding: "clamp(16px,4vw,48px) clamp(16px,4vw,52px) 24px" }}>
-            <span className="dt-gate__eyebrow" style={{ fontSize: "0.75rem", letterSpacing: "0.25em" }}>You have arrived in</span>
+            <span className="dt-gate__eyebrow" style={{ fontSize: "0.9rem", letterSpacing: "0.25em" }}>You have arrived in</span>
 
             <div className="dt-gate__collection-badge" style={{ marginBottom: "0" }}>
-              <span className="dt-gate__collection-num" style={{ fontSize: "clamp(2rem,5vw,3rem)" }}>{fmt(totalImages)}</span>
-              <span className="dt-gate__collection-label">wallpapers &amp; growing</span>
+              <span className="dt-gate__collection-num" style={{ fontSize: "clamp(2.4rem,5vw,3.5rem)" }}>{fmt(totalImages)}</span>
+              <span className="dt-gate__collection-label" style={{ fontSize: "clamp(0.85rem,1.5vw,1rem)" }}>wallpapers &amp; growing</span>
             </div>
 
-            <p className="dt-gate__sub" style={{ fontSize: "clamp(0.95rem,2vw,1.1rem)", lineHeight: "1.65", maxWidth: "480px", margin: 0 }}>
+            <p className="dt-gate__sub" style={{ fontSize: "clamp(1.1rem,2vw,1.3rem)", lineHeight: "1.65", maxWidth: "480px", margin: 0 }}>
               Where every wallpaper has a secret.
             </p>
 
             {/* Daily vault copy */}
             <p className="hw-hero-vault-text" style={{
-              fontSize: "0.8rem",
+              fontSize: "0.95rem",
               lineHeight: "1.75",
               maxWidth: "460px",
               fontStyle: "italic",
@@ -144,9 +144,9 @@ export default async function Home() {
             </div>
           </div>
 
-          {/* RIGHT — Phone mockups, flush to bottom of section */}
-          <div className="hw-hero-phones-wrap">
-            <div className="dt-hero-phones" style={{ gap: "clamp(6px,1.2vw,20px)", alignItems: "flex-end", padding: 0 }}>
+          {/* RIGHT — Phone mockups, lifted up so they're visible */}
+          <div className="hw-hero-phones-wrap" style={{ marginTop: "-40px" }}>
+            <div className="dt-hero-phones" style={{ gap: "clamp(6px,1.2vw,20px)", alignItems: "center", padding: 0 }}>
               {[
                 { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/wallpapers/houston-snapback-skeleton.jpeg", alt: "Skeleton", featured: false },
                 { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/wallpapers/shadows-have-eyes-android.webp", alt: "Shadow Eyes", featured: false },
@@ -160,10 +160,10 @@ export default async function Home() {
                   style={{
                     "--phone-i": i,
                     transform: phone.featured
-                      ? "scale(1.18) translateY(-12px)"
+                      ? "scale(1.18) translateY(-28px)"
                       : i === 1 || i === 3
-                      ? "scale(1.06) translateY(-4px)"
-                      : "scale(0.92) translateY(4px)",
+                      ? "scale(1.06) translateY(-14px)"
+                      : "scale(0.92) translateY(-4px)",
                   } as React.CSSProperties}
                 >
                   <div className="dt-hero-phone" style={{ width: "clamp(100px,13vw,185px)", height: "clamp(200px,26vw,375px)", borderRadius: "clamp(18px,2vw,30px)" }}>
@@ -225,16 +225,16 @@ export default async function Home() {
           .dt-hero-phones { justify-content: flex-start !important; }
         }
         /* Light theme text fixes */
-        [data-theme="fog"] .dt-gate__eyebrow { color: #8b0000 !important; }
-        [data-theme="fog"] .dt-gate__collection-num { color: #1a1410 !important; }
-        [data-theme="fog"] .dt-gate__collection-label { color: #5a4838 !important; }
-        [data-theme="fog"] .dt-gate__sub { color: #2a1e10 !important; }
-        [data-theme="fog"] .hw-hero-vault-text { color: rgba(60,40,20,0.75) !important; }
-        [data-theme="fog"] .dt-coffin { background: rgba(255,255,255,0.6) !important; border-color: rgba(139,0,0,0.2) !important; }
-        [data-theme="fog"] .dt-coffin__num { color: #8b0000 !important; }
-        [data-theme="fog"] .dt-coffin__label { color: rgba(60,40,30,0.6) !important; }
-        [data-theme="fog"] .dt-btn--ghost { color: #3a2010 !important; border-color: rgba(60,40,20,0.35) !important; }
-        [data-theme="fog"] .dt-btn--ghost:hover { color: #1a1008 !important; border-color: #1a1008 !important; }
+        [data-theme="fog"] .dt-gate__eyebrow { color: #c0001a !important; }
+        [data-theme="fog"] .dt-gate__collection-num { color: #e8dcc8 !important; }
+        [data-theme="fog"] .dt-gate__collection-label { color: #9a8a6a !important; }
+        [data-theme="fog"] .dt-gate__sub { color: #c0b090 !important; }
+        [data-theme="fog"] .hw-hero-vault-text { color: rgba(192,168,120,0.85) !important; }
+        [data-theme="fog"] .dt-coffin { background: rgba(200,170,110,0.06) !important; border-color: rgba(192,0,26,0.2) !important; }
+        [data-theme="fog"] .dt-coffin__num { color: #c0001a !important; }
+        [data-theme="fog"] .dt-coffin__label { color: rgba(154,138,106,0.8) !important; }
+        [data-theme="fog"] .dt-btn--ghost { color: #c0b090 !important; border-color: rgba(200,170,110,0.3) !important; }
+        [data-theme="fog"] .dt-btn--ghost:hover { color: #e8dcc8 !important; border-color: rgba(200,170,110,0.6) !important; }
       `}</style>
 
 
@@ -324,14 +324,14 @@ export default async function Home() {
               [data-theme="fog"] .dt-daily__bg-veil {
                 background: linear-gradient(
                   105deg,
-                  rgba(236,233,226,0.96) 0%,
-                  rgba(236,233,226,0.88) 40%,
-                  rgba(236,233,226,0.70) 70%,
-                  rgba(236,233,226,0.45) 100%
+                  rgba(20,14,6,0.97) 0%,
+                  rgba(28,18,8,0.90) 40%,
+                  rgba(36,22,10,0.72) 70%,
+                  rgba(44,26,12,0.50) 100%
                 ) !important;
               }
               [data-theme="fog"] .dt-daily__bg {
-                filter: grayscale(40%) brightness(1.3) saturate(0.6);
+                filter: grayscale(20%) brightness(0.85) saturate(0.7);
               }
               .dt-daily__inner {
                 position: relative;
@@ -426,22 +426,19 @@ export default async function Home() {
               [data-theme="fog"] .dt-daily__bg-veil {
                 background: linear-gradient(
                   105deg,
-                  rgba(236,233,226,0.97) 0%,
-                  rgba(236,233,226,0.90) 40%,
-                  rgba(236,233,226,0.72) 70%,
-                  rgba(236,233,226,0.50) 100%
+                  rgba(20,14,6,0.97) 0%,
+                  rgba(28,18,8,0.92) 40%,
+                  rgba(36,22,10,0.75) 70%,
+                  rgba(44,26,12,0.52) 100%
                 ) !important;
               }
-              [data-theme="fog"] .dt-daily__bg {
-                filter: grayscale(30%) brightness(1.4) saturate(0.5);
-              }
-              [data-theme="fog"] .dt-daily__eyebrow { color: #8b0000 !important; }
-              [data-theme="fog"] .dt-daily__title { color: #1c1a17 !important; }
+              [data-theme="fog"] .dt-daily__eyebrow { color: #c0001a !important; }
+              [data-theme="fog"] .dt-daily__title { color: #e8dcc8 !important; }
               [data-theme="fog"] .dt-daily__desc,
-              [data-theme="fog"] .dt-daily__desc * { color: #3a3630 !important; }
-              [data-theme="fog"] .dt-btn--enter { background: #8b0000 !important; color: #fff !important; border-color: #8b0000 !important; }
-              [data-theme="fog"] .dt-btn--ghost { color: #3a3630 !important; border-color: rgba(0,0,0,0.25) !important; }
-              [data-theme="fog"] .dt-btn--ghost:hover { background: rgba(0,0,0,0.06) !important; color: #1c1a17 !important; }
+              [data-theme="fog"] .dt-daily__desc * { color: #9a8a6a !important; }
+              [data-theme="fog"] .dt-btn--enter { background: #c0001a !important; color: #fff !important; border-color: #c0001a !important; }
+              [data-theme="fog"] .dt-btn--ghost { color: #c0b090 !important; border-color: rgba(200,170,110,0.3) !important; }
+              [data-theme="fog"] .dt-btn--ghost:hover { background: rgba(200,170,110,0.08) !important; color: #e8dcc8 !important; }
             `}</style>
           </section>
         );
