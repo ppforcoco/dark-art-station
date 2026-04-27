@@ -12099,3 +12099,81 @@ html[data-theme="ghost"] body {
 /* ══════════════════════════════════════════════════════════════════════════
    END MASTER THEME FIX v3
    ══════════════════════════════════════════════════════════════════════════ */
+/* ══════════════════════════════════════════════════════════════════════════
+   PARCHMENT THEME — FINAL COLOR FIX (beats all previous fog overrides)
+   These selectors appear last so they win every specificity battle.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* ── HERO / GATE SECTION ──────────────────────────────────────────────── */
+html[data-theme="fog"] .dt-gate,
+[data-theme="fog"] .dt-gate {
+  background-color: #1c1710 !important;
+  color: #e8dcc8 !important;
+}
+[data-theme="fog"] .dt-gate__eyebrow,
+[data-theme="fog"] .dt-eyebrow,
+[data-theme="fog"] .dt-section-head .dt-eyebrow { color: #c0001a !important; }
+
+[data-theme="fog"] .dt-gate__collection-num,
+[data-theme="fog"] .dt-section-title             { color: #e8dcc8 !important; }
+
+[data-theme="fog"] .dt-gate__collection-label,
+[data-theme="fog"] .dt-section-sub,
+[data-theme="fog"] .dt-gate__sub                 { color: #9a8a6a !important; }
+
+[data-theme="fog"] .dt-gate__crack               { opacity: 0.06 !important; }
+
+/* ── COFFINS ──────────────────────────────────────────────────────────── */
+[data-theme="fog"] .dt-coffin {
+  border-color: rgba(200,170,110,0.2) !important;
+  background: rgba(200,170,110,0.06) !important;
+}
+[data-theme="fog"] .dt-coffin__num   { color: #c0001a !important; }
+[data-theme="fog"] .dt-coffin__label { color: #9a8a6a !important; }
+
+/* ── GHOST BUTTONS ────────────────────────────────────────────────────── */
+[data-theme="fog"] .dt-btn--ghost {
+  color: #c0b090 !important;
+  border-color: rgba(200,170,110,0.3) !important;
+}
+[data-theme="fog"] .dt-btn--ghost:hover {
+  color: #e8dcc8 !important;
+  border-color: rgba(200,170,110,0.6) !important;
+  background: rgba(200,170,110,0.06) !important;
+}
+
+/* ── MANIFESTO + OBSESSIONS ───────────────────────────────────────────── */
+[data-theme="fog"] .dt-manifesto,
+[data-theme="fog"] .dt-obsessions {
+  background-color: #1c1710 !important;
+  color: #e8dcc8 !important;
+}
+[data-theme="fog"] .dt-manifesto__quote,
+[data-theme="fog"] .dt-manifesto__body  { color: #c0b090 !important; }
+[data-theme="fog"] .dt-manifesto__em    { color: #e8dcc8 !important; }
+
+/* ── MONITOR (PC section) ─────────────────────────────────────────────── */
+[data-theme="fog"] .dt-monitor__bezel   {
+  background: #241d12 !important;
+  border-color: rgba(200,170,110,0.15) !important;
+}
+[data-theme="fog"] .dt-monitor__neck,
+[data-theme="fog"] .dt-monitor__foot    { background: #2a2015 !important; }
+
+/* ── MOBILE SECTION ───────────────────────────────────────────────────── */
+[data-theme="fog"] .dt-mobile          { background-color: #1c1710 !important; }
+[data-theme="fog"] .dt-section-title   { color: #e8dcc8 !important; }
+[data-theme="fog"] .dt-section-sub     { color: #9a8a6a !important; }
+
+/* ── DAILY / WOTD SECTION ─────────────────────────────────────────────── */
+[data-theme="fog"] .dt-daily__eyebrow  { color: #c0001a !important; }
+[data-theme="fog"] .dt-daily__title    { color: #e8dcc8 !important; }
+[data-theme="fog"] .dt-daily__desc,
+[data-theme="fog"] .dt-daily__desc *   { color: #9a8a6a !important; }
+
+/* ── FOG OVERLAY ──────────────────────────────────────────────────────── */
+[data-theme="fog"] .dt-fog             { display: none !important; }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   END PARCHMENT FINAL FIX
+   ══════════════════════════════════════════════════════════════════════════ */

@@ -89,20 +89,20 @@ export default async function Home() {
 
           {/* LEFT — Text block */}
           <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem", padding: "clamp(16px,4vw,48px) clamp(16px,4vw,52px) 24px" }}>
-            <span className="dt-gate__eyebrow" style={{ fontSize: "0.9rem", letterSpacing: "0.25em" }}>You have arrived in</span>
+            <span className="dt-gate__eyebrow" style={{ fontSize: "0.75rem", letterSpacing: "0.25em" }}>You have arrived in</span>
 
             <div className="dt-gate__collection-badge" style={{ marginBottom: "0" }}>
-              <span className="dt-gate__collection-num" style={{ fontSize: "clamp(2.4rem,5vw,3.5rem)" }}>{fmt(totalImages)}</span>
-              <span className="dt-gate__collection-label" style={{ fontSize: "clamp(0.85rem,1.5vw,1rem)" }}>wallpapers &amp; growing</span>
+              <span className="dt-gate__collection-num" style={{ fontSize: "clamp(2rem,5vw,3rem)" }}>{fmt(totalImages)}</span>
+              <span className="dt-gate__collection-label">wallpapers &amp; growing</span>
             </div>
 
-            <p className="dt-gate__sub" style={{ fontSize: "clamp(1.1rem,2vw,1.3rem)", lineHeight: "1.65", maxWidth: "480px", margin: 0 }}>
+            <p className="dt-gate__sub" style={{ fontSize: "clamp(0.95rem,2vw,1.1rem)", lineHeight: "1.65", maxWidth: "480px", margin: 0 }}>
               Where every wallpaper has a secret.
             </p>
 
             {/* Daily vault copy */}
             <p className="hw-hero-vault-text" style={{
-              fontSize: "0.95rem",
+              fontSize: "0.8rem",
               lineHeight: "1.75",
               maxWidth: "460px",
               fontStyle: "italic",
@@ -144,9 +144,9 @@ export default async function Home() {
             </div>
           </div>
 
-          {/* RIGHT — Phone mockups, lifted up so they're visible */}
-          <div className="hw-hero-phones-wrap" style={{ marginTop: "-40px" }}>
-            <div className="dt-hero-phones" style={{ gap: "clamp(6px,1.2vw,20px)", alignItems: "center", padding: 0 }}>
+          {/* RIGHT — Phone mockups, flush to bottom of section */}
+          <div className="hw-hero-phones-wrap">
+            <div className="dt-hero-phones" style={{ gap: "clamp(6px,1.2vw,20px)", alignItems: "flex-end", padding: 0 }}>
               {[
                 { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/wallpapers/houston-snapback-skeleton.jpeg", alt: "Skeleton", featured: false },
                 { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/wallpapers/shadows-have-eyes-android.webp", alt: "Shadow Eyes", featured: false },
@@ -160,10 +160,10 @@ export default async function Home() {
                   style={{
                     "--phone-i": i,
                     transform: phone.featured
-                      ? "scale(1.18) translateY(-28px)"
+                      ? "scale(1.18) translateY(-12px)"
                       : i === 1 || i === 3
-                      ? "scale(1.06) translateY(-14px)"
-                      : "scale(0.92) translateY(-4px)",
+                      ? "scale(1.06) translateY(-4px)"
+                      : "scale(0.92) translateY(4px)",
                   } as React.CSSProperties}
                 >
                   <div className="dt-hero-phone" style={{ width: "clamp(100px,13vw,185px)", height: "clamp(200px,26vw,375px)", borderRadius: "clamp(18px,2vw,30px)" }}>
@@ -225,16 +225,16 @@ export default async function Home() {
           .dt-hero-phones { justify-content: flex-start !important; }
         }
         /* Light theme text fixes */
-        [data-theme="fog"] .dt-gate__eyebrow { color: #c0001a !important; }
-        [data-theme="fog"] .dt-gate__collection-num { color: #e8dcc8 !important; }
-        [data-theme="fog"] .dt-gate__collection-label { color: #9a8a6a !important; }
-        [data-theme="fog"] .dt-gate__sub { color: #c0b090 !important; }
-        [data-theme="fog"] .hw-hero-vault-text { color: rgba(192,168,120,0.85) !important; }
-        [data-theme="fog"] .dt-coffin { background: rgba(200,170,110,0.06) !important; border-color: rgba(192,0,26,0.2) !important; }
-        [data-theme="fog"] .dt-coffin__num { color: #c0001a !important; }
-        [data-theme="fog"] .dt-coffin__label { color: rgba(154,138,106,0.8) !important; }
-        [data-theme="fog"] .dt-btn--ghost { color: #c0b090 !important; border-color: rgba(200,170,110,0.3) !important; }
-        [data-theme="fog"] .dt-btn--ghost:hover { color: #e8dcc8 !important; border-color: rgba(200,170,110,0.6) !important; }
+        [data-theme="fog"] .dt-gate__eyebrow { color: #8b0000 !important; }
+        [data-theme="fog"] .dt-gate__collection-num { color: #1a1410 !important; }
+        [data-theme="fog"] .dt-gate__collection-label { color: #5a4838 !important; }
+        [data-theme="fog"] .dt-gate__sub { color: #2a1e10 !important; }
+        [data-theme="fog"] .hw-hero-vault-text { color: rgba(60,40,20,0.75) !important; }
+        [data-theme="fog"] .dt-coffin { background: rgba(255,255,255,0.6) !important; border-color: rgba(139,0,0,0.2) !important; }
+        [data-theme="fog"] .dt-coffin__num { color: #8b0000 !important; }
+        [data-theme="fog"] .dt-coffin__label { color: rgba(60,40,30,0.6) !important; }
+        [data-theme="fog"] .dt-btn--ghost { color: #3a2010 !important; border-color: rgba(60,40,20,0.35) !important; }
+        [data-theme="fog"] .dt-btn--ghost:hover { color: #1a1008 !important; border-color: #1a1008 !important; }
       `}</style>
 
 
@@ -251,194 +251,549 @@ export default async function Home() {
         const wotdHref = `/${devicePath}/${wotd.slug}`;
         const todayStr = new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" });
         return (
-          <section className="dt-daily">
-            {/* Full-bleed background image with dark overlay */}
-            <div className="dt-daily__bg" aria-hidden="true">
-              <Image src={wotdUrl} alt="" fill priority unoptimized className="object-cover" sizes="100vw"
-                style={{ objectPosition: "center top" }} />
-              <div className="dt-daily__bg-veil" />
+          <section className="wotd-section">
+
+            {/* ── Atmospheric particles (CSS only, no emoji) ── */}
+            <div className="wotd-particles" aria-hidden="true">
+              {Array.from({ length: 18 }).map((_, i) => (
+                <span key={i} className="wotd-particle" style={{ "--pi": i } as React.CSSProperties} />
+              ))}
             </div>
 
-            <div className="dt-daily__inner">
-              {/* LEFT — tall image card (phone mockup style) */}
-              <Link href={wotdHref} className="dt-daily__img-frame" aria-label={wotd.title}>
-                <div className="dt-daily__img-wrap">
-                  <Image src={wotdUrl} alt={wotd.title} fill priority unoptimized className="object-cover"
-                    sizes="(max-width:768px) 80vw, 340px" style={{ objectPosition: "center top" }} />
-                </div>
-                <div className="dt-daily__img-corners" aria-hidden="true">
-                  <span /><span /><span /><span />
-                </div>
-                {wotd.deviceType && (
-                  <span className="dt-daily__badge">{wotd.deviceType.charAt(0) + wotd.deviceType.slice(1).toLowerCase()}</span>
-                )}
-                <div className="dt-daily__img-hover" aria-hidden="true">
-                  <span>View Wallpaper</span>
-                </div>
-              </Link>
+            {/* ── Section header ── */}
+            <div className="wotd-header">
+              <span className="wotd-header__rule" aria-hidden="true" />
+              <div className="wotd-header__center">
+                <span className="wotd-eyebrow">
+                  <span className="wotd-eyebrow__dot" />
+                  Tonight&rsquo;s Pick &middot; {todayStr}
+                  <span className="wotd-eyebrow__dot" />
+                </span>
+              </div>
+              <span className="wotd-header__rule" aria-hidden="true" />
+            </div>
 
-              {/* RIGHT — text block */}
-              <div className="dt-daily__text">
-                <p className="dt-daily__eyebrow">
-                  <span className="dt-daily__dot" />
-                  Tonight&rsquo;s Pick · {todayStr}
-                </p>
-                <h2 className="dt-daily__title">{wotd.title}</h2>
-                {wotd.description && (
-                  <div className="dt-daily__desc" dangerouslySetInnerHTML={{ __html: wotd.description }} />
-                )}
-                <div className="dt-daily__actions">
-                  <Link href={wotdHref} className="dt-btn dt-btn--enter">
-                    <span>Download This Wallpaper →</span>
-                  </Link>
-                  <Link href={`/${devicePath}`} className="dt-btn dt-btn--ghost dt-btn--sm">
-                    <span>Browse {devicePath.charAt(0).toUpperCase() + devicePath.slice(1)} →</span>
-                  </Link>
+            {/* ── The Horror Box ── */}
+            <div className="wotd-box">
+
+              {/* Animated border glow */}
+              <div className="wotd-box__border-glow" aria-hidden="true" />
+
+              {/* Corner runes */}
+              <span className="wotd-box__rune wotd-box__rune--tl" aria-hidden="true">✦</span>
+              <span className="wotd-box__rune wotd-box__rune--tr" aria-hidden="true">✦</span>
+              <span className="wotd-box__rune wotd-box__rune--bl" aria-hidden="true">✦</span>
+              <span className="wotd-box__rune wotd-box__rune--br" aria-hidden="true">✦</span>
+
+              {/* Drip effect top */}
+              <div className="wotd-box__drip" aria-hidden="true">
+                {Array.from({ length: 8 }).map((_, i) => (
+                  <span key={i} className="wotd-box__drip-drop" style={{ "--di": i } as React.CSSProperties} />
+                ))}
+              </div>
+
+              <div className="wotd-box__inner">
+                {/* LEFT — phone frame */}
+                <Link href={wotdHref} className="wotd-img-frame" aria-label={wotd.title}>
+                  <div className="wotd-img-frame__wrap">
+                    <Image src={wotdUrl} alt={wotd.title} fill priority unoptimized className="object-cover"
+                      sizes="(max-width:768px) 80vw, 320px" style={{ objectPosition: "center top" }} />
+                  </div>
+                  {/* scan line overlay */}
+                  <div className="wotd-img-frame__scanlines" aria-hidden="true" />
+                  {/* corner brackets */}
+                  <div className="wotd-img-frame__corners" aria-hidden="true">
+                    <span /><span /><span /><span />
+                  </div>
+                  {wotd.deviceType && (
+                    <span className="wotd-img-frame__badge">{wotd.deviceType.charAt(0) + wotd.deviceType.slice(1).toLowerCase()}</span>
+                  )}
+                  <div className="wotd-img-frame__hover" aria-hidden="true">
+                    <span className="wotd-img-frame__hover-text">View Wallpaper</span>
+                  </div>
+                  {/* pulsing red eye at bottom */}
+                  <div className="wotd-img-frame__eye" aria-hidden="true" />
+                </Link>
+
+                {/* RIGHT — horror text block */}
+                <div className="wotd-text">
+                  <h2 className="wotd-title">{wotd.title}</h2>
+
+                  {wotd.description && (
+                    <div className="wotd-desc" dangerouslySetInnerHTML={{ __html: wotd.description }} />
+                  )}
+
+                  {/* Creep bar */}
+                  <div className="wotd-creep-bar" aria-hidden="true">
+                    <span className="wotd-creep-bar__line" />
+                    <span className="wotd-creep-bar__skull">†</span>
+                    <span className="wotd-creep-bar__line" />
+                  </div>
+
+                  <div className="wotd-actions">
+                    <Link href={wotdHref} className="wotd-btn-primary">
+                      Download This Wallpaper →
+                    </Link>
+                    <Link href={`/${devicePath}`} className="wotd-btn-ghost">
+                      Browse {devicePath.charAt(0).toUpperCase() + devicePath.slice(1)} →
+                    </Link>
+                  </div>
                 </div>
               </div>
             </div>
 
             <style>{`
-              .dt-daily {
+              /* ── WOTD SECTION SHELL ─────────────────────────────────── */
+              .wotd-section {
                 position: relative;
+                padding: clamp(48px,8vw,96px) clamp(16px,5vw,72px);
+                background: #080508;
                 overflow: hidden;
-                padding: clamp(48px, 8vw, 96px) clamp(16px, 5vw, 80px);
               }
-              .dt-daily__bg {
+
+              /* Subtle radial red glow in background */
+              .wotd-section::before {
+                content: '';
                 position: absolute;
                 inset: 0;
+                background:
+                  radial-gradient(ellipse 70% 50% at 50% 100%, rgba(192,0,26,0.12) 0%, transparent 65%),
+                  radial-gradient(ellipse 40% 30% at 20% 30%, rgba(80,0,10,0.15) 0%, transparent 60%);
+                pointer-events: none;
+              }
+
+              /* ── PARTICLES (small floating ash specks, CSS only) ──── */
+              .wotd-particles {
+                position: absolute;
+                inset: 0;
+                pointer-events: none;
+                overflow: hidden;
+              }
+              .wotd-particle {
+                position: absolute;
+                display: block;
+                width: 2px;
+                height: 2px;
+                border-radius: 50%;
+                background: rgba(192,0,26,0.4);
+                left: calc(var(--pi, 0) * 5.8% + 2%);
+                bottom: -10px;
+                animation: wotdFloat calc(6s + var(--pi, 0) * 0.7s) ease-in infinite;
+                animation-delay: calc(var(--pi, 0) * 0.4s);
+                opacity: 0;
+              }
+              .wotd-particle:nth-child(odd) {
+                background: rgba(150,100,50,0.3);
+                width: 1.5px; height: 1.5px;
+              }
+              @keyframes wotdFloat {
+                0%   { transform: translateY(0) translateX(0); opacity: 0; }
+                10%  { opacity: 0.6; }
+                80%  { opacity: 0.3; }
+                100% { transform: translateY(-100vh) translateX(calc(sin(var(--pi, 0)) * 40px)); opacity: 0; }
+              }
+
+              /* ── SECTION HEADER ─────────────────────────────────────── */
+              .wotd-header {
+                display: flex;
+                align-items: center;
+                gap: 1.25rem;
+                margin-bottom: clamp(24px, 4vw, 48px);
+                max-width: 1100px;
+                margin-left: auto;
+                margin-right: auto;
+              }
+              .wotd-header__rule {
+                flex: 1;
+                height: 1px;
+                background: linear-gradient(90deg, transparent, rgba(192,0,26,0.5), transparent);
+              }
+              .wotd-header__center { flex-shrink: 0; }
+              .wotd-eyebrow {
+                display: flex;
+                align-items: center;
+                gap: 0.6rem;
+                font-size: 0.72rem;
+                letter-spacing: 0.22em;
+                text-transform: uppercase;
+                color: #c0001a;
+                font-family: var(--font-space, monospace);
+              }
+              .wotd-eyebrow__dot {
+                display: inline-block;
+                width: 5px; height: 5px;
+                border-radius: 50%;
+                background: #c0001a;
+                animation: wotdPulse 2.4s ease-in-out infinite;
+              }
+              @keyframes wotdPulse {
+                0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(192,0,26,0.6); }
+                50%       { opacity: 0.6; box-shadow: 0 0 0 5px rgba(192,0,26,0); }
+              }
+
+              /* ── THE HORROR BOX ─────────────────────────────────────── */
+              .wotd-box {
+                position: relative;
+                max-width: 1100px;
+                margin: 0 auto;
+                background: linear-gradient(135deg, #0e0608 0%, #110709 50%, #0a0406 100%);
+                border: 1px solid rgba(192,0,26,0.3);
+                border-radius: 4px;
+                overflow: hidden;
+                box-shadow:
+                  0 0 0 1px rgba(192,0,26,0.08),
+                  0 0 40px rgba(192,0,26,0.08),
+                  0 20px 80px rgba(0,0,0,0.8),
+                  inset 0 0 80px rgba(192,0,26,0.03);
+              }
+
+              /* Animated border glow — sweeps around the box */
+              .wotd-box__border-glow {
+                position: absolute;
+                inset: -1px;
+                border-radius: 4px;
+                background: transparent;
+                border: 1px solid transparent;
+                background-clip: padding-box;
+                pointer-events: none;
                 z-index: 0;
               }
-              .dt-daily__bg-veil {
+              .wotd-box::after {
+                content: '';
                 position: absolute;
                 inset: 0;
+                border-radius: 4px;
+                padding: 1px;
                 background: linear-gradient(
-                  105deg,
-                  rgba(6,4,2,0.97) 0%,
-                  rgba(10,4,4,0.88) 40%,
-                  rgba(20,6,6,0.65) 70%,
-                  rgba(30,8,8,0.45) 100%
+                  var(--wotd-angle, 0deg),
+                  transparent 30%,
+                  rgba(192,0,26,0.6) 50%,
+                  transparent 70%
                 );
-                backdrop-filter: blur(0px);
+                -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+                -webkit-mask-composite: xor;
+                mask-composite: exclude;
+                animation: wotdBorderSpin 6s linear infinite;
+                pointer-events: none;
               }
-              [data-theme="fog"] .dt-daily__bg-veil {
-                background: linear-gradient(
-                  105deg,
-                  rgba(20,14,6,0.97) 0%,
-                  rgba(28,18,8,0.90) 40%,
-                  rgba(36,22,10,0.72) 70%,
-                  rgba(44,26,12,0.50) 100%
-                ) !important;
+              @keyframes wotdBorderSpin {
+                0%   { --wotd-angle: 0deg; }
+                100% { --wotd-angle: 360deg; }
               }
-              [data-theme="fog"] .dt-daily__bg {
-                filter: grayscale(20%) brightness(0.85) saturate(0.7);
+
+              /* Corner runes */
+              .wotd-box__rune {
+                position: absolute;
+                font-size: 0.9rem;
+                color: rgba(192,0,26,0.5);
+                line-height: 1;
+                animation: wotdRuneFlicker 4s ease-in-out infinite;
+                z-index: 2;
               }
-              .dt-daily__inner {
+              .wotd-box__rune--tl { top: 10px; left: 14px; animation-delay: 0s; }
+              .wotd-box__rune--tr { top: 10px; right: 14px; animation-delay: 1.1s; }
+              .wotd-box__rune--bl { bottom: 10px; left: 14px; animation-delay: 2.2s; }
+              .wotd-box__rune--br { bottom: 10px; right: 14px; animation-delay: 0.6s; }
+              @keyframes wotdRuneFlicker {
+                0%, 90%, 100% { opacity: 0.5; }
+                92%           { opacity: 0.1; }
+                94%           { opacity: 0.5; }
+                96%           { opacity: 0.15; }
+                98%           { opacity: 0.5; }
+              }
+
+              /* Blood drip from top */
+              .wotd-box__drip {
+                position: absolute;
+                top: 0; left: 0; right: 0;
+                height: 40px;
+                pointer-events: none;
+                z-index: 1;
+                display: flex;
+                justify-content: space-around;
+                align-items: flex-start;
+                padding: 0 10%;
+              }
+              .wotd-box__drip-drop {
+                display: block;
+                width: clamp(2px, 0.3vw, 4px);
+                background: linear-gradient(to bottom, #c0001a, rgba(100,0,10,0.2));
+                border-radius: 0 0 50% 50%;
+                animation: wotdDrip calc(3s + var(--di, 0) * 0.8s) ease-in infinite;
+                animation-delay: calc(var(--di, 0) * 0.5s);
+                transform-origin: top center;
+                height: 0;
+              }
+              @keyframes wotdDrip {
+                0%   { height: 0; opacity: 0; }
+                15%  { height: clamp(8px,2vw,24px); opacity: 0.9; }
+                60%  { height: clamp(8px,2vw,24px); opacity: 0.6; }
+                100% { height: clamp(4px,1vw,14px); opacity: 0; }
+              }
+
+              /* ── BOX INNER GRID ──────────────────────────────────────── */
+              .wotd-box__inner {
                 position: relative;
                 z-index: 1;
                 display: grid;
-                grid-template-columns: clamp(180px, 22vw, 320px) 1fr;
-                gap: clamp(24px, 4vw, 72px);
+                grid-template-columns: clamp(160px, 22vw, 300px) 1fr;
+                gap: clamp(24px, 4vw, 64px);
                 align-items: center;
-                max-width: 1100px;
-                margin: 0 auto;
+                padding: clamp(32px, 5vw, 64px) clamp(24px, 5vw, 56px);
               }
-              .dt-daily__img-frame {
+
+              /* ── IMAGE FRAME ─────────────────────────────────────────── */
+              .wotd-img-frame {
                 position: relative;
                 display: block;
                 aspect-ratio: 9 / 16;
                 width: 100%;
-                border-radius: 20px;
+                border-radius: 16px;
                 overflow: hidden;
-                border: 1.5px solid rgba(192,0,26,0.35);
+                border: 1.5px solid rgba(192,0,26,0.4);
                 box-shadow:
-                  0 0 0 1px rgba(255,34,51,0.08),
-                  0 8px 40px rgba(0,0,0,0.7),
-                  0 0 60px rgba(192,0,26,0.12);
-                flex-shrink: 0;
+                  0 0 0 1px rgba(255,34,51,0.06),
+                  0 8px 40px rgba(0,0,0,0.8),
+                  0 0 60px rgba(192,0,26,0.15);
                 text-decoration: none;
-                transition: transform 0.3s ease, box-shadow 0.3s ease;
+                transition: transform 0.35s ease, box-shadow 0.35s ease;
+                flex-shrink: 0;
               }
-              .dt-daily__img-frame:hover {
-                transform: translateY(-4px) scale(1.01);
+              .wotd-img-frame:hover {
+                transform: translateY(-6px) scale(1.015);
                 box-shadow:
-                  0 0 0 1px rgba(255,34,51,0.2),
-                  0 16px 60px rgba(0,0,0,0.8),
-                  0 0 80px rgba(192,0,26,0.25);
+                  0 0 0 1px rgba(255,34,51,0.18),
+                  0 20px 70px rgba(0,0,0,0.9),
+                  0 0 90px rgba(192,0,26,0.28);
               }
-              .dt-daily__img-wrap {
+              .wotd-img-frame__wrap { position: absolute; inset: 0; }
+              .wotd-img-frame__scanlines {
                 position: absolute;
                 inset: 0;
+                background: repeating-linear-gradient(
+                  0deg,
+                  transparent,
+                  transparent 3px,
+                  rgba(0,0,0,0.06) 3px,
+                  rgba(0,0,0,0.06) 4px
+                );
+                pointer-events: none;
               }
-              .dt-daily__img-hover {
+              .wotd-img-frame__corners {
                 position: absolute;
                 inset: 0;
-                background: rgba(192,0,26,0.12);
+                pointer-events: none;
+              }
+              .wotd-img-frame__corners span {
+                position: absolute;
+                width: 16px; height: 16px;
+                border-color: rgba(192,0,26,0.7);
+                border-style: solid;
+              }
+              .wotd-img-frame__corners span:nth-child(1) { top: 8px; left: 8px; border-width: 1.5px 0 0 1.5px; }
+              .wotd-img-frame__corners span:nth-child(2) { top: 8px; right: 8px; border-width: 1.5px 1.5px 0 0; }
+              .wotd-img-frame__corners span:nth-child(3) { bottom: 8px; left: 8px; border-width: 0 0 1.5px 1.5px; }
+              .wotd-img-frame__corners span:nth-child(4) { bottom: 8px; right: 8px; border-width: 0 1.5px 1.5px 0; }
+              .wotd-img-frame__badge {
+                position: absolute;
+                top: 12px; left: 12px;
+                font-size: 0.6rem;
+                letter-spacing: 0.18em;
+                text-transform: uppercase;
+                padding: 3px 8px;
+                background: rgba(0,0,0,0.75);
+                border: 1px solid rgba(192,0,26,0.4);
+                color: #c0001a;
+                border-radius: 2px;
+                font-family: var(--font-space, monospace);
+              }
+              .wotd-img-frame__hover {
+                position: absolute;
+                inset: 0;
+                background: rgba(192,0,26,0.15);
                 display: flex;
                 align-items: center;
                 justify-content: center;
                 opacity: 0;
                 transition: opacity 0.25s ease;
-                font-size: 0.85rem;
-                letter-spacing: 0.15em;
+                backdrop-filter: blur(2px);
+              }
+              .wotd-img-frame:hover .wotd-img-frame__hover { opacity: 1; }
+              .wotd-img-frame__hover-text {
+                font-size: 0.8rem;
+                letter-spacing: 0.2em;
                 text-transform: uppercase;
                 color: #fff;
-                font-weight: 600;
+                font-family: var(--font-space, monospace);
+                padding: 8px 16px;
+                border: 1px solid rgba(255,255,255,0.3);
+                border-radius: 2px;
               }
-              .dt-daily__img-frame:hover .dt-daily__img-hover {
-                opacity: 1;
+              /* pulsing red eye glow at bottom of frame */
+              .wotd-img-frame__eye {
+                position: absolute;
+                bottom: 0; left: 50%;
+                transform: translateX(-50%);
+                width: 60%; height: 2px;
+                background: rgba(192,0,26,0.7);
+                box-shadow: 0 0 18px 6px rgba(192,0,26,0.4);
+                animation: wotdEyePulse 3s ease-in-out infinite;
+                border-radius: 50%;
               }
-              .dt-daily__text {
+              @keyframes wotdEyePulse {
+                0%, 100% { opacity: 0.5; width: 40%; }
+                50%       { opacity: 1;   width: 70%; box-shadow: 0 0 28px 10px rgba(192,0,26,0.5); }
+              }
+
+              /* ── TEXT BLOCK ─────────────────────────────────────────── */
+              .wotd-text {
                 display: flex;
                 flex-direction: column;
-                gap: 1.25rem;
+                gap: 1.4rem;
               }
-              .dt-daily__title {
-                font-size: clamp(1.6rem, 3.5vw, 2.8rem);
-                line-height: 1.15;
+              .wotd-title {
+                font-size: clamp(1.7rem, 3.5vw, 2.9rem);
+                line-height: 1.12;
                 margin: 0;
+                color: #f0e8d8;
+                font-family: var(--font-cinzel, serif);
+                text-shadow: 0 2px 20px rgba(192,0,26,0.2);
+                letter-spacing: 0.02em;
               }
-              .dt-daily__desc {
-                font-size: clamp(0.9rem, 1.5vw, 1.05rem);
-                line-height: 1.7;
-                max-width: 540px;
-                opacity: 0.85;
+              .wotd-desc {
+                font-size: clamp(0.95rem, 1.5vw, 1.08rem);
+                line-height: 1.75;
+                color: rgba(220,200,170,0.82);
+                max-width: 520px;
               }
-              .dt-daily__actions {
+              .wotd-desc * { color: rgba(220,200,170,0.82); }
+              .wotd-desc strong, .wotd-desc b { color: #f0e8d8; }
+              .wotd-desc em, .wotd-desc i { color: #c9a84c; font-style: italic; }
+              .wotd-desc blockquote {
+                border-left: 2px solid rgba(192,0,26,0.5);
+                padding-left: 1rem;
+                margin: 0;
+                font-style: italic;
+                color: rgba(200,180,140,0.75);
+              }
+              .wotd-desc h3 {
+                font-size: 0.7rem;
+                letter-spacing: 0.2em;
+                text-transform: uppercase;
+                color: rgba(192,0,26,0.8);
+                font-family: var(--font-space, monospace);
+                margin: 0 0 0.5rem;
+              }
+
+              /* Creep bar */
+              .wotd-creep-bar {
+                display: flex;
+                align-items: center;
+                gap: 0.75rem;
+                opacity: 0.35;
+              }
+              .wotd-creep-bar__line {
+                flex: 1;
+                height: 1px;
+                background: linear-gradient(90deg, transparent, rgba(192,0,26,0.8), transparent);
+              }
+              .wotd-creep-bar__skull {
+                font-size: 0.85rem;
+                color: rgba(192,0,26,0.9);
+                animation: wotdCreepSpin 8s linear infinite;
+                display: inline-block;
+              }
+              @keyframes wotdCreepSpin {
+                0%, 45%, 55%, 100% { transform: rotate(0deg); }
+                50% { transform: rotate(180deg); }
+              }
+
+              /* ── BUTTONS ─────────────────────────────────────────────── */
+              .wotd-actions {
                 display: flex;
                 gap: 0.75rem;
                 flex-wrap: wrap;
                 align-items: center;
-                margin-top: 0.5rem;
               }
+              .wotd-btn-primary {
+                display: inline-flex;
+                align-items: center;
+                gap: 0.5rem;
+                padding: 0.75rem 1.5rem;
+                background: #c0001a;
+                color: #fff;
+                border: 1px solid #c0001a;
+                border-radius: 2px;
+                font-size: 0.8rem;
+                letter-spacing: 0.12em;
+                text-transform: uppercase;
+                text-decoration: none;
+                font-family: var(--font-space, monospace);
+                transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
+                position: relative;
+                overflow: hidden;
+              }
+              .wotd-btn-primary::before {
+                content: '';
+                position: absolute;
+                inset: 0;
+                background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.08) 50%, transparent 100%);
+                transform: translateX(-100%);
+                transition: transform 0.4s ease;
+              }
+              .wotd-btn-primary:hover::before { transform: translateX(100%); }
+              .wotd-btn-primary:hover {
+                background: #a0001a;
+                box-shadow: 0 0 24px rgba(192,0,26,0.5);
+                transform: translateY(-1px);
+              }
+              .wotd-btn-ghost {
+                display: inline-flex;
+                align-items: center;
+                padding: 0.75rem 1.25rem;
+                background: transparent;
+                color: rgba(200,180,140,0.8);
+                border: 1px solid rgba(200,170,110,0.25);
+                border-radius: 2px;
+                font-size: 0.8rem;
+                letter-spacing: 0.1em;
+                text-transform: uppercase;
+                text-decoration: none;
+                font-family: var(--font-space, monospace);
+                transition: color 0.2s, border-color 0.2s, background 0.2s;
+              }
+              .wotd-btn-ghost:hover {
+                color: #f0e8d8;
+                border-color: rgba(200,170,110,0.5);
+                background: rgba(200,170,110,0.05);
+              }
+
+              /* ── RESPONSIVE ──────────────────────────────────────────── */
               @media (max-width: 680px) {
-                .dt-daily__inner {
-                  grid-template-columns: 1fr !important;
+                .wotd-box__inner {
+                  grid-template-columns: 1fr;
+                  padding: 28px 20px 32px;
                 }
-                .dt-daily__img-frame {
-                  max-width: 240px;
+                .wotd-img-frame {
+                  max-width: 220px;
                   margin: 0 auto;
                 }
-                .dt-daily__bg-veil {
-                  background: linear-gradient(180deg,rgba(6,4,2,0.92) 0%,rgba(6,4,2,0.82) 100%) !important;
-                }
+                .wotd-title { font-size: clamp(1.4rem, 5vw, 2rem); }
               }
-              [data-theme="fog"] .dt-daily__bg-veil {
-                background: linear-gradient(
-                  105deg,
-                  rgba(20,14,6,0.97) 0%,
-                  rgba(28,18,8,0.92) 40%,
-                  rgba(36,22,10,0.75) 70%,
-                  rgba(44,26,12,0.52) 100%
-                ) !important;
+
+              /* ── PARCHMENT (fog) THEME — box stays dark always ──────── */
+              /* The horror box is ALWAYS dark regardless of site theme — it's a void */
+              [data-theme="fog"] .wotd-section {
+                background: #0e0a06;
               }
-              [data-theme="fog"] .dt-daily__eyebrow { color: #c0001a !important; }
-              [data-theme="fog"] .dt-daily__title { color: #e8dcc8 !important; }
-              [data-theme="fog"] .dt-daily__desc,
-              [data-theme="fog"] .dt-daily__desc * { color: #9a8a6a !important; }
-              [data-theme="fog"] .dt-btn--enter { background: #c0001a !important; color: #fff !important; border-color: #c0001a !important; }
-              [data-theme="fog"] .dt-btn--ghost { color: #c0b090 !important; border-color: rgba(200,170,110,0.3) !important; }
-              [data-theme="fog"] .dt-btn--ghost:hover { background: rgba(200,170,110,0.08) !important; color: #e8dcc8 !important; }
+              [data-theme="fog"] .wotd-box {
+                background: linear-gradient(135deg, #100808 0%, #120a06 50%, #0c0604 100%);
+                border-color: rgba(192,0,26,0.35);
+              }
+              [data-theme="fog"] .wotd-title    { color: #f0e8d8; }
+              [data-theme="fog"] .wotd-desc,
+              [data-theme="fog"] .wotd-desc *   { color: rgba(220,195,155,0.82); }
+              [data-theme="fog"] .wotd-eyebrow  { color: #c0001a; }
             `}</style>
           </section>
         );
