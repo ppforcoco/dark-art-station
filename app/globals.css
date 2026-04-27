@@ -266,8 +266,7 @@ body {
 
 /* Dark theme contrast boost for muted text */
 [data-theme="dark"] .breadcrumb-link,
-[data-theme="dark"] .breadcrumb-current,
-body:not(
+[data-theme="dark"] .breadcrumb-current { color: #9090b8 !important; }
 
 /* ── Noise Texture Overlay ─────────────────────────────────── */
 
@@ -10957,7 +10956,6 @@ html[data-theme="ghost"] body {
    END MASTER THEME FIX v3
    ══════════════════════════════════════════════════════════════════════════ */
 /* ── HERO / GATE SECTION ──────────────────────────────────────────────── */
-html
 
 
 /* ── COFFINS ──────────────────────────────────────────────────────────── */
