@@ -80,37 +80,36 @@ export default function Breadcrumbs({ items }: BreadcrumbsProps) {
         </nav>
         <style>{`
           .path-bar {
-            padding: 10px clamp(16px,4vw,52px);
+            padding: 8px clamp(16px,4vw,60px);
             border-bottom: 1px solid var(--border-dim);
             background: var(--bg-secondary, var(--bg-primary));
           }
           .breadcrumbs {
             display: flex;
             align-items: center;
-            gap: 0;
             list-style: none;
             margin: 0;
             padding: 0;
             flex-wrap: wrap;
+            gap: 0;
           }
           .breadcrumb-item {
             display: flex;
             align-items: center;
-            gap: 0;
           }
           .breadcrumb-sep {
-            font-family: var(--font-space, monospace);
-            font-size: 0.65rem;
-            color: var(--text-muted);
-            opacity: 0.4;
-            margin: 0 6px;
+            font-family: var(--font-space, 'Space Mono', monospace);
+            font-size: 0.6rem;
+            color: var(--text-muted, #8888aa);
+            opacity: 0.35;
+            margin: 0 8px;
           }
           .breadcrumb-link {
-            font-family: var(--font-space, monospace);
-            font-size: 0.62rem;
-            letter-spacing: 0.18em;
+            font-family: var(--font-space, 'Space Mono', monospace);
+            font-size: 0.6rem;
+            letter-spacing: 0.2em;
             text-transform: uppercase;
-            color: var(--text-muted);
+            color: var(--text-muted, #8888aa);
             text-decoration: none;
             transition: color 0.2s;
             white-space: nowrap;
@@ -118,18 +117,25 @@ export default function Breadcrumbs({ items }: BreadcrumbsProps) {
             text-overflow: ellipsis;
             max-width: 160px;
           }
-          .breadcrumb-link:hover { color: var(--text-primary); }
+          .breadcrumb-link:hover {
+            color: var(--text-primary, #e0e0f8);
+          }
           .breadcrumb-current {
-            font-family: var(--font-space, monospace);
-            font-size: 0.62rem;
-            letter-spacing: 0.18em;
+            font-family: var(--font-space, 'Space Mono', monospace);
+            font-size: 0.6rem;
+            letter-spacing: 0.2em;
             text-transform: uppercase;
-            color: var(--text-primary);
+            color: var(--text-primary, #e0e0f8);
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
             max-width: 220px;
             display: inline-block;
+          }
+          @media (max-width: 480px) {
+            .breadcrumb-link    { max-width: 100px; font-size: 0.55rem; }
+            .breadcrumb-current { max-width: 160px; font-size: 0.55rem; }
+            .breadcrumb-sep     { margin: 0 5px; }
           }
         `}</style>
       </div>

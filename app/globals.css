@@ -1393,36 +1393,36 @@ body::before {
 .site-footer {
   background: var(--bg-secondary);
   border-top: 1px solid #2a2535;
-  padding: 52px 60px 32px;
+  padding: 36px 60px 24px;
 }
-@media (max-width: 767px) { .site-footer { padding: 60px 24px 32px; } }
+@media (max-width: 767px) { .site-footer { padding: 28px 24px 20px; } }
 /* Always push footer above sticky ad on mobile; revert when ad dismissed */
 @media (max-width: 767px) { body:not(.sticky-ad-dismissed) .site-footer { padding-bottom: calc(58px + 24px + env(safe-area-inset-bottom)); } }
 
 .footer-grid {
   display: grid;
   grid-template-columns: 2fr 1fr 1fr;
-  gap: 60px; margin-bottom: 40px;
+  gap: 48px; margin-bottom: 24px;
 }
 @media (max-width: 1023px) { .footer-grid { grid-template-columns: 1fr 1fr; gap: 40px; } }
 @media (max-width: 639px)  { .footer-grid { grid-template-columns: 1fr; } }
 
 .footer-brand-desc {
-  font-family: var(--font-cormorant), serif;
-  font-size: 1.05rem; font-style: italic;
-  color: #4a445a; line-height: 1.7; max-width: 280px;
-  margin-top: 20px;
+  font-family: var(--font-cormorant), 'Cormorant Garamond', Georgia, serif;
+  font-size: 1.0rem; font-style: italic;
+  color: #4a445a; line-height: 1.65; max-width: 320px;
+  margin-top: 10px;
 }
 .footer-col-title {
-  font-family: var(--font-space), monospace;
-  font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase;
-  color: #8a8099; margin-bottom: 20px;
+  font-family: var(--font-space), 'Space Mono', monospace;
+  font-size: 0.62rem; letter-spacing: 0.22em; text-transform: uppercase;
+  color: #8a8099; margin-bottom: 12px;
 }
 .footer-col ul { list-style: none; }
-.footer-col li { margin-bottom: 10px; }
+.footer-col li { margin-bottom: 6px; }
 .footer-col a {
-  font-family: var(--font-cormorant), serif;
-  font-size: 1.05rem; font-style: italic;
+  font-family: var(--font-cormorant), 'Cormorant Garamond', Georgia, serif;
+  font-size: 1.0rem; font-style: italic;
   color: #4a445a; text-decoration: none;
   transition: color 0.2s;
 }
@@ -1430,8 +1430,8 @@ body::before {
 
 .footer-bottom {
   display: flex; align-items: center; justify-content: space-between;
-  padding-top: 24px; border-top: 1px solid #2a2535;
-  flex-wrap: wrap; gap: 16px;
+  padding-top: 16px; border-top: 1px solid #2a2535;
+  flex-wrap: wrap; gap: 12px;
 }
 .footer-copy {
   font-family: var(--font-space), monospace;
@@ -3705,25 +3705,16 @@ body::before {
   font-size: 1.1rem !important;
 }
 
-/* ── 5. Footer — 5-column grid + consistent vertical alignment ─
-   Brand col is wider; the 4 nav cols are equal-width and
-   top-aligned so their headings sit on the same baseline.       */
+/* ── 5. Footer — 3-column grid (Brand + Company + Legal) ──────── */
 .footer-grid {
-  grid-template-columns: 2fr 1fr 1fr 1fr 1fr 1fr !important;
+  grid-template-columns: 2fr 1fr 1fr !important;
+  gap: 48px !important;
   align-items: start !important;
-}
-@media (max-width: 1439px) {
-  .footer-grid {
-    grid-template-columns: 1fr 1fr 1fr !important;
-  }
-  .footer-col--brand {
-    grid-column: 1 / -1;
-  }
 }
 @media (max-width: 1023px) {
   .footer-grid {
     grid-template-columns: 1fr 1fr !important;
-    gap: 40px !important;
+    gap: 32px !important;
   }
   .footer-col--brand {
     grid-column: 1 / -1;
@@ -3732,28 +3723,29 @@ body::before {
 @media (max-width: 639px) {
   .footer-grid {
     grid-template-columns: 1fr !important;
+    gap: 24px !important;
   }
   .footer-col--brand {
     grid-column: unset;
   }
 }
 
-/* Ensure all footer nav columns share the same baseline */
+/* Footer column internals */
 .footer-col {
   display: flex;
   flex-direction: column;
 }
 .footer-col-title {
-  margin-bottom: 20px;
+  margin-bottom: 14px;
   padding-bottom: 0;
 }
 .footer-col ul {
   display: flex;
   flex-direction: column;
-  gap: 10px;  /* even vertical spacing between links */
+  gap: 8px;
 }
 .footer-col li {
-  margin-bottom: 0; /* gap handles spacing */
+  margin-bottom: 0;
 }
 
 /* ── 6. Collection grid image cards — text contrast ──────────
@@ -10977,42 +10969,3 @@ html[data-theme="ghost"] body {
 
 
 /* ── FOG OVERLAY ──────────────────────────────────────────────────────── */
-/* ══════════════════════════════════════════════════════════════════════════
-   ADMIN-PANEL HTML ANIMATIONS — globally declared so they survive SSR/CSP
-   These keyframes are used inside dangerouslySetInnerHTML rich content.
-   ══════════════════════════════════════════════════════════════════════════ */
-
-/* PC page: vertical infinite scroll slideshow */
-@keyframes hw-vertical-scroll {
-  0%   { transform: translateY(0); }
-  100% { transform: translateY(-50%); }
-}
-
-/* PC page: pulsing maroon border glow on text box */
-@keyframes hw-pulse-pc {
-  0%,100% { box-shadow: 0 0 0 2px #881337, 0 0 18px 4px rgba(136,19,55,0.3); }
-  50%      { box-shadow: 0 0 0 2px #be123c, 0 0 42px 10px rgba(136,19,55,0.5); }
-}
-
-/* Force admin-panel slideshow elements to animate — overrides any
-   prefers-reduced-motion or animation-play-state: paused kills      */
-.hw-track {
-  animation-play-state: running !important;
-  will-change: transform;
-}
-.hw-collage:hover .hw-track {
-  animation-play-state: paused !important;
-}
-.hw-textbox {
-  animation-play-state: running !important;
-}
-
-/* Ensure these classes are never affected by the reduced-motion blanket */
-@media (prefers-reduced-motion: reduce) {
-  .hw-track,
-  .hw-textbox {
-    animation-duration: 20s !important;
-    animation-iteration-count: infinite !important;
-    transition-duration: 0.3s !important;
-  }
-}
