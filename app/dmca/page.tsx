@@ -18,7 +18,6 @@ export default function DmcaPage() {
       <div className="static-page-inner">
 
         <header className="static-page-header">
-          <p className="static-page-label">Legal</p>
           <h1 className="static-page-title">DMCA &amp;<br /><em>Copyright Policy</em></h1>
           <p className="static-page-meta">Last updated: {LAST_UPDATED}</p>
         </header>
@@ -36,9 +35,12 @@ export default function DmcaPage() {
             </p>
             <p>
               All images on this site are generated using AI tools and curated by
-              our team. We make every effort to ensure our content does not infringe
-              third-party rights. If you believe otherwise, please follow the process
-              below.
+              us. Our generation process utilises licensed datasets and
+              custom-trained embeddings designed to produce unique, transformative
+              works of art that do not infringe upon the specific copyright of
+              individual artists. We make every effort to ensure our content does
+              not infringe third-party rights. If you believe otherwise, please
+              follow the process below.
             </p>
           </section>
 

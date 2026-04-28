@@ -26,11 +26,8 @@ export default function Footer(): JSX.Element {
             <li><Link href="/obsessions">Collections</Link></li>
             <li><Link href="/mood">Mood Wallpapers</Link></li>
             <li><Link href="/favorites">♥ Saved Wallpapers</Link></li>
-            <li><Link href="/about">About</Link></li>
             <li><Link href="/blog">Blog &amp; Guides</Link></li>
             <li><Link href="/tools">Free Tools</Link></li>
-            <li><Link href="/faq">FAQ</Link></li>
-            <li><Link href="/contact">Contact</Link></li>
           </ul>
         </div>
 
@@ -38,6 +35,9 @@ export default function Footer(): JSX.Element {
         <div className="footer-col">
           <h4 className="footer-col-title">Legal</h4>
           <ul>
+            <li><Link href="/about">About</Link></li>
+            <li><Link href="/contact">Contact</Link></li>
+            <li><Link href="/faq">FAQ</Link></li>
             <li><Link href="/privacy">Privacy Policy</Link></li>
             <li><Link href="/terms">Terms of Service</Link></li>
             <li><Link href="/licensing">Licensing &amp; Usage</Link></li>
@@ -52,13 +52,11 @@ export default function Footer(): JSX.Element {
           <span className="footer-copy">
             © {new Date().getFullYear()} HauntedWallpapers. All rights reserved. New visions arrive each night. You keep what finds you.
           </span>
-          {/* ── AI-generated content disclosure — required for AdSense transparency ── */}
           <span className="footer-ai-disclosure">
             All artwork on this site is AI-generated using diffusion model pipelines.
           </span>
         </div>
         <div className="footer-bottom-right">
-  
           <button
             className="footer-report-btn"
             onClick={() => window.dispatchEvent(new CustomEvent("open-feedback"))}
@@ -69,7 +67,6 @@ export default function Footer(): JSX.Element {
         </div>
       </div>
 
-      {/* ── AI disclosure style — add to globals.css if preferred ── */}
       <style>{`
         .footer-bottom-left {
           display: flex;

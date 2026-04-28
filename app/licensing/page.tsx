@@ -17,7 +17,6 @@ export default function LicensingPage() {
       <div className="static-page-inner">
 
         <header className="static-page-header">
-          <p className="static-page-label">Legal</p>
           <h1 className="static-page-title">Licensing &amp;<br /><em>Terms of Use</em></h1>
           <p className="static-page-meta">Last updated: {LAST_UPDATED}</p>
         </header>
@@ -140,8 +139,7 @@ export default function LicensingPage() {
             <h2>Questions?</h2>
             <p>
               If you have any questions about licensing, please reach out at{" "}
-              <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a> or use
-              our <a href="/contact">contact form</a>.
+              <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>.
             </p>
           </section>
 

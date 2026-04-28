@@ -82,9 +82,10 @@ export default async function Home() {
         <div className="hw-hero-split" style={{
           display: "grid",
           gridTemplateColumns: "1fr",
-          alignItems: "flex-start",
+          alignItems: "center",
           width: "100%",
           maxWidth: "100%",
+          overflow: "hidden",
         }}>
 
           {/* LEFT — Text block */}
@@ -145,7 +146,7 @@ export default async function Home() {
           </div>
 
           {/* RIGHT — Phone mockups, flush to bottom of section */}
-          <div className="hw-hero-phones-wrap" style={{ marginTop: "0" }}>
+          <div className="hw-hero-phones-wrap" style={{ marginTop: "0", overflow: "hidden", paddingBottom: "8px" }}>
             <div className="dt-hero-phones" style={{ gap: "clamp(6px,1.2vw,20px)", alignItems: "center", padding: 0 }}>
               {[
                 { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/wallpapers/houston-snapback-skeleton.jpeg", alt: "Skeleton", featured: false },
@@ -160,10 +161,10 @@ export default async function Home() {
                   style={{
                     "--phone-i": i,
                     transform: phone.featured
-                      ? "scale(1.18) translateY(-48px)"
+                      ? "scale(1.12) translateY(-12px)"
                       : i === 1 || i === 3
-                      ? "scale(1.06) translateY(-28px)"
-                      : "scale(0.92) translateY(-10px)",
+                      ? "scale(1.04) translateY(-6px)"
+                      : "scale(0.92) translateY(0px)",
                   } as React.CSSProperties}
                 >
                   <div className="dt-hero-phone" style={{ width: "clamp(100px,13vw,185px)", height: "clamp(200px,26vw,375px)", borderRadius: "clamp(18px,2vw,30px)" }}>
@@ -199,7 +200,7 @@ export default async function Home() {
         @media (min-width: 860px) {
           .hw-hero-split {
             grid-template-columns: minmax(320px,420px) 1fr !important;
-            align-items: flex-end !important;
+            align-items: center !important;
           }
           .hw-hero-phones-wrap {
             padding-bottom: 0;

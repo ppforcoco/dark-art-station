@@ -1,193 +1,147 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Terms of Service — HauntedWallpapers",
+  title: "Licensing & Terms of Use — HauntedWallpapers",
   description:
-    "Terms of Service for HauntedWallpapers. Rules governing your use of the Site, " +
-    "downloads, advertising, and your rights as a visitor.",
+    "Understand your rights when downloading art from HauntedWallpapers. " +
+    "Personal use is always free. Commercial use requires a licence.",
   robots: { index: true, follow: true },
 };
 
-const LAST_UPDATED  = "28 March 2026";
-const SITE_NAME     = "HauntedWallpapers";
-const SITE_URL      = "https://hauntedwallpapers.com";
-const CONTACT_EMAIL = "hello@hauntedwallpapers.com";
+const LAST_UPDATED   = "20 March 2026";
+const CONTACT_EMAIL  = "hello@hauntedwallpapers.com";
 
-export default function TermsPage() {
+export default function LicensingPage() {
   return (
     <main className="static-page">
       <div className="static-page-inner">
 
         <header className="static-page-header">
           <p className="static-page-label">Legal</p>
-          <h1 className="static-page-title">Terms of<br /><em>Service</em></h1>
+          <h1 className="static-page-title">Licensing &amp;<br /><em>Terms of Use</em></h1>
           <p className="static-page-meta">Last updated: {LAST_UPDATED}</p>
         </header>
 
         <div className="static-page-body">
 
           <section className="static-section">
-            <h2>1. Acceptance of Terms</h2>
+            <h2>Overview</h2>
             <p>
-              By accessing or using {SITE_NAME} at{" "}
-              <a href={SITE_URL}>{SITE_URL}</a> (the &quot;Site&quot;), you agree
-              to be bound by these Terms of Service (&quot;Terms&quot;). If you do
-              not agree to these Terms, please do not use the Site.
-            </p>
-            <p>
-              We reserve the right to modify these Terms at any time. Changes take
-              effect immediately upon posting. Your continued use of the Site after
-              any modification constitutes your acceptance of the revised Terms. The
-              date at the top of this page reflects the most recent update.
+              All artwork available on HauntedWallpapers is created by us using
+              AI generation tools. Unless otherwise stated, all images are our
+              intellectual property. By downloading any image from this Site, you
+              agree to the terms below.
             </p>
           </section>
 
           <section className="static-section">
-            <h2>2. Description of the Site</h2>
+            <h2>Personal Use Licence — Free</h2>
             <p>
-              {SITE_NAME} is a digital art platform that offers dark fantasy, horror,
-              gothic, and street-style wallpapers for personal download. Images are
-              created using AI generation tools and curated by our team. The Site is
-              free to use and supported by advertising revenue.
+              Every image on HauntedWallpapers may be downloaded and used for
+              personal, non-commercial purposes at no cost. This includes:
             </p>
-          </section>
-
-          <section className="static-section">
-            <h2>3. Permitted Use</h2>
-            <p>You may use the Site and download images for personal,
-              non-commercial purposes only. Permitted uses include:</p>
             <ul>
-              <li>Viewing and browsing artwork on the Site</li>
-              <li>Downloading images to use as wallpapers on your personal devices</li>
-              <li>Sharing images on personal social media with credit to {SITE_NAME}</li>
-              <li>Printing images for your own private, non-commercial display</li>
+              <li>Setting an image as a wallpaper on your personal device(s)</li>
+              <li>Printing an image for your own private display (not for sale)</li>
+              <li>Sharing images on personal social media with credit to
+                HauntedWallpapers</li>
+            </ul>
+            <p>
+              Personal use means use solely for your own enjoyment, with no direct
+              or indirect financial gain.
+            </p>
+          </section>
+
+          <section className="static-section">
+            <h2>What Is Not Permitted</h2>
+            <p>
+              The following uses are <strong>not permitted</strong> without a
+              separate commercial licence:
+            </p>
+            <ul>
+              <li>Selling or reselling our images (as prints, merchandise,
+                NFTs, or any other format)</li>
+              <li>Using our images in paid products, apps, or services</li>
+              <li>Using our images in advertising or promotional material
+                for a business</li>
+              <li>Removing or obscuring any watermark or attribution</li>
+              <li>Claiming our artwork as your own original creation</li>
+              <li>Uploading our images to stock photo or AI training datasets</li>
             </ul>
           </section>
 
           <section className="static-section">
-            <h2>4. Prohibited Use</h2>
-            <p>You agree NOT to:</p>
-            <ul>
-              <li>Use the Site for any unlawful purpose</li>
-              <li>Resell, redistribute, or sublicense any image downloaded from the Site</li>
-              <li>Use images in any commercial product, service, or advertisement without a separate commercial licence</li>
-              <li>Use automated tools, bots, or scrapers to bulk-download content</li>
-              <li>Attempt to circumvent any download limits, access controls, or security features</li>
-              <li>Upload our artwork to stock photo sites, AI training datasets, or any redistribution platform</li>
-              <li>Claim our artwork as your own original creation</li>
-              <li>Remove, alter, or obscure any watermark, credit, or attribution</li>
-              <li>Interfere with or disrupt the integrity or performance of the Site</li>
-            </ul>
-          </section>
-
-          <section className="static-section">
-            <h2>5. Intellectual Property</h2>
+            <h2>Commercial Licence</h2>
             <p>
-              All artwork, graphics, text, logos, and other content on the Site are
-              the intellectual property of {SITE_NAME} unless otherwise stated. All
-              rights are reserved. Nothing on this Site transfers ownership of any
-              intellectual property to you.
+              If you wish to use our artwork for commercial purposes — including
+              product mockups, brand assets, merchandise, or editorial use — please
+              contact us to discuss a commercial licence.
             </p>
             <p>
-              Downloading an image grants you a limited, non-exclusive,
-              non-transferable personal use licence as described in our{" "}
-              <a href="/licensing">Licensing &amp; Terms of Use</a> page. This
-              licence does not include any right to sublicense, distribute, or use
-              the image commercially.
+              Commercial licences are granted on a per-image or per-collection
+              basis. Pricing is determined by intended use, distribution scale,
+              and exclusivity.
+            </p>
+            <p>
+              Contact:{" "}
+              <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
             </p>
           </section>
 
           <section className="static-section">
-            <h2>6. Advertising</h2>
+            <h2>Premium Downloads</h2>
             <p>
-              The Site displays advertisements via Google AdSense to fund its
-              operation and keep content free. By using the Site, you acknowledge
-              that advertisements may be displayed alongside content. We do not
-              endorse any advertiser or their products.
-            </p>
-            <p>
-              Advertising cookies are only placed after you provide consent
-              via our cookie banner. See our{" "}
-              <a href="/privacy#adsense">Privacy Policy — Advertising section</a> for
-              full details.
-            </p>
-          </section>
-
-          <section className="static-section">
-            <h2>7. User-Submitted Content</h2>
-            <p>
-              HauntedWallpapers does not currently accept user-submitted artwork or
-              images. If you contact us through the contact form, any message content
-              you provide is used solely to respond to your enquiry and is not shared
-              with third parties or used for marketing purposes.
-            </p>
-          </section>
-
-          <section className="static-section">
-            <h2>8. Third-Party Links</h2>
-            <p>
-              The Site may contain links to third-party websites. These links are
-              provided for your convenience only. We have no control over the content
-              of those sites and accept no responsibility for them or for any loss or
-              damage that may arise from your use of them.
-            </p>
-          </section>
-
-          <section className="static-section">
-            <h2>9. Disclaimer of Warranties</h2>
-            <p>
-              The Site and all content are provided &quot;as is&quot; and &quot;as
-              available&quot; without any warranties of any kind, express or implied,
-              including but not limited to warranties of merchantability, fitness for
-              a particular purpose, or non-infringement.
-            </p>
-            <p>
-              We do not warrant that the Site will be uninterrupted, error-free, or
-              free of viruses or other harmful components. We do not warrant the
-              accuracy, completeness, or usefulness of any content on the Site.
-            </p>
-          </section>
-
-          <section className="static-section">
-            <h2>10. Limitation of Liability</h2>
-            <p>
-              To the fullest extent permitted by applicable law, {SITE_NAME} shall
-              not be liable for any indirect, incidental, special, consequential, or
-              punitive damages arising out of or related to your use of, or inability
-              to use, the Site or its content — even if we have been advised of the
-              possibility of such damages.
-            </p>
-            <p>
-              Our total liability to you for any claim arising out of these Terms or
-              your use of the Site shall not exceed the amount you paid to us, if
-              any, in the twelve months preceding the claim.
-            </p>
-          </section>
-
-          <section className="static-section">
-            <h2>11. Governing Law</h2>
-            <p>
-              These Terms are governed by and construed in accordance with applicable
-              law. Any disputes arising out of or related to these Terms or the Site
-              shall be resolved through good-faith negotiation in the first instance.
-            </p>
-          </section>
-
-          <section className="static-section">
-            <h2>12. Contact</h2>
-            <p>
-              If you have any questions about these Terms, please contact us:
+              Some images and collections are available as paid &quot;Premium&quot;
+              downloads. Purchasing a premium download grants you an extended
+              personal licence, which includes:
             </p>
             <ul>
-              <li>
-                Email:{" "}
-                <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
-              </li>
-              <li>
-                Contact form:{" "}
-                <a href="/contact">hauntedwallpapers.com/contact</a>
-              </li>
+              <li>Access to the highest available resolution file</li>
+              <li>Use across all of your personal devices</li>
+              <li>Use in personal print-on-demand items (for personal use only,
+                not for resale)</li>
             </ul>
+            <p>
+              Premium downloads do not grant commercial rights unless a separate
+              commercial licence has been purchased.
+            </p>
+          </section>
+
+          <section className="static-section">
+            <h2>Attribution</h2>
+            <p>
+              Attribution is not required for personal use but is always
+              appreciated. If you share our work publicly, please credit
+              &quot;HauntedWallpapers.com&quot; in your post or description.
+            </p>
+          </section>
+
+          <section className="static-section">
+            <h2>Disclaimer</h2>
+            <p>
+              All artwork is provided &quot;as is&quot; without warranty of any
+              kind. We make no guarantees regarding the fitness of any image for
+              a particular purpose. We are not liable for any damages arising from
+              the use or inability to use our images.
+            </p>
+          </section>
+
+          <section className="static-section">
+            <h2>Changes to These Terms</h2>
+            <p>
+              We reserve the right to modify these terms at any time. Continued
+              use of the Site following any changes constitutes acceptance of
+              the revised terms. The date at the top of this page reflects the
+              most recent update.
+            </p>
+          </section>
+
+          <section className="static-section">
+            <h2>Questions?</h2>
+            <p>
+              If you have any questions about licensing, please reach out at{" "}
+              <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>.
+            </p>
           </section>
 
         </div>

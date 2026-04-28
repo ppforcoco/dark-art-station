@@ -15,7 +15,6 @@ export default function PrivacyPage() {
     <main className="static-page">
       <div className="static-page-inner">
         <header className="static-page-header">
-          <p className="static-page-label">Legal</p>
           <h1 className="static-page-title">Privacy Policy</h1>
           <p className="static-page-meta">Last updated: {LAST_UPDATED}</p>
         </header>
@@ -68,7 +67,7 @@ export default function PrivacyPage() {
             <h3>Publisher ID</h3>
             <p>Our Google AdSense Publisher ID is <code>ca-pub-4048523199842586</code>.</p>
             <h3>No Sale of Personal Data to Advertisers</h3>
-            <p>We do not sell your personal data to advertisers. Ad targeting is managed entirely by Google&apos;s systems. For full details, see <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">Google&apos;s Privacy Policy</a>.</p>
+            <p>We do not sell your personal data to advertisers. Ad targeting is managed entirely by Google&apos;s systems. For full details on how Google collects and uses data, see <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">Google&apos;s Privacy Policy</a> and <a href="https://policies.google.com/technologies/ads" target="_blank" rel="noopener noreferrer">Google&apos;s Advertising Policies</a>.</p>
           </section>
           <section className="static-section">
             <h2>5. How We Use Your Information</h2>
@@ -98,7 +97,7 @@ export default function PrivacyPage() {
           </section>
           <section className="static-section">
             <h2>8. User-Submitted Content</h2>
-            <p>At this time, HauntedWallpapers does not accept user-submitted content, artwork, or uploads from visitors. All images on the Site are created and curated by our team. If you wish to get in touch, please use our <a href="/contact">contact page</a>.</p>
+            <p>At this time, HauntedWallpapers does not accept user-submitted content, artwork, or uploads from visitors. All images on the Site are created and curated by us. If you wish to get in touch, please use our <a href="/contact">contact page</a>.</p>
           </section>
           <section className="static-section">
             <h2>9. Children&apos;s Privacy</h2>

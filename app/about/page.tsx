@@ -16,7 +16,6 @@ export default async function AboutPage() {
       <div className="static-page-inner">
 
         <header className="static-page-header">
-          <p className="static-page-label">Our Story</p>
           <h1 className="static-page-title">Born in the Dark,<br /><em>Built for the Dark</em></h1>
         </header>
 

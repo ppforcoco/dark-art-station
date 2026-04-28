@@ -192,7 +192,6 @@ export default async function FaqPage() {
       />
       <div className="static-page-inner">
         <header className="static-page-header">
-          <p className="static-page-label">Help</p>
           <h1 className="static-page-title">
             Frequently<br /><em>Asked Questions</em>
           </h1>
