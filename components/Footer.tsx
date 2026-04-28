@@ -19,17 +19,6 @@ export default function Footer(): JSX.Element {
           </p>
         </div>
 
-        {/* ── Seasonal Themes ── */}
-        <div className="footer-col">
-          <h4 className="footer-col-title">Seasonal</h4>
-          <ul>
-            <li><Link href="/halloween">🎃 Halloween</Link></li>
-            <li><Link href="/dark-valentine">🖤 Dark Valentine</Link></li>
-            <li><Link href="/day-of-the-dead">💀 Day of the Dead</Link></li>
-            <li><Link href="/blood-moon">🌑 Crimson Moon</Link></li>
-          </ul>
-        </div>
-
         {/* ── Company ── */}
         <div className="footer-col">
           <h4 className="footer-col-title">Company</h4>

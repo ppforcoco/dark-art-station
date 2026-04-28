@@ -35,13 +35,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${siteUrl}/dmca`,          lastModified: new Date(), changeFrequency: "yearly"  as const, priority: 0.3  },
   ];
 
-  const EVENT_SLUGS = ['halloween', 'dark-valentine', 'day-of-the-dead', 'blood-moon'];
-  const eventRoutes: MetadataRoute.Sitemap = EVENT_SLUGS.map((slug) => ({
-    url: `${siteUrl}/${slug}`,
-    lastModified: new Date(),
-    changeFrequency: "monthly" as const,
-    priority: 0.75,
-  }));
+
 
   // ✅ Wrap all DB calls in try/catch so a DB blip never breaks the sitemap response
   try {
@@ -106,10 +100,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       images: [r2Url(img.r2Key)],
     }));
 
-    return [...staticRoutes, ...eventRoutes, ...blogRoutes, ...collectionRoutes, ...imageRoutes, ...standaloneRoutes];
+    return [...staticRoutes, ...blogRoutes, ...collectionRoutes, ...imageRoutes, ...standaloneRoutes];
   } catch (err) {
     // If DB is unreachable, still return static routes so sitemap never 500s
     console.error("[sitemap] DB query failed, returning static routes only:", err);
-    return [...staticRoutes, ...eventRoutes];
+    return [...staticRoutes];
   }
 }

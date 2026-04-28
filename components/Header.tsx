@@ -154,7 +154,7 @@ export default function Header() {
         /* ── LOGO ── */
         .nav-logo {
           font-family: var(--font-cinzel), 'Cinzel Decorative', cursive;
-          font-size: 1.1rem;
+          font-size: 1.25rem;
           font-weight: 700;
           letter-spacing: 0.08em;
           color: #c9a84c;
@@ -179,7 +179,7 @@ export default function Header() {
         .nav-links a,
         .hw2-nav__link {
           font-family: var(--font-space), 'Space Mono', monospace;
-          font-size: 0.7rem;
+          font-size: 0.82rem;
           letter-spacing: 0.14em;
           text-transform: uppercase;
           color: var(--ghost, #9090b8);
@@ -438,7 +438,7 @@ export default function Header() {
         }
         @media (max-width: 480px) {
           .site-nav { padding: 12px 16px; }
-          .logo-compact { display: inline; font-size: 1.1rem; }
+          .logo-compact { display: inline; font-size: 1.25rem; }
           .logo-full    { display: none; }
           .nav-logo { font-size: 1rem; }
           .breadcrumb-link { max-width: 110px; }
