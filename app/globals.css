@@ -1393,7 +1393,7 @@ body::before {
 .site-footer {
   background: var(--bg-secondary);
   border-top: 1px solid #2a2535;
-  padding: 80px 60px 40px;
+  padding: 52px 60px 32px;
 }
 @media (max-width: 767px) { .site-footer { padding: 60px 24px 32px; } }
 /* Always push footer above sticky ad on mobile; revert when ad dismissed */
@@ -1401,8 +1401,8 @@ body::before {
 
 .footer-grid {
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr 1fr 1fr;
-  gap: 60px; margin-bottom: 60px;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 60px; margin-bottom: 40px;
 }
 @media (max-width: 1023px) { .footer-grid { grid-template-columns: 1fr 1fr; gap: 40px; } }
 @media (max-width: 639px)  { .footer-grid { grid-template-columns: 1fr; } }
@@ -1430,7 +1430,7 @@ body::before {
 
 .footer-bottom {
   display: flex; align-items: center; justify-content: space-between;
-  padding-top: 40px; border-top: 1px solid #2a2535;
+  padding-top: 24px; border-top: 1px solid #2a2535;
   flex-wrap: wrap; gap: 16px;
 }
 .footer-copy {

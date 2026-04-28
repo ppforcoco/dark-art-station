@@ -6,7 +6,6 @@ import AdSlot from "@/components/AdSlot";
 import Pagination from "@/components/Pagination";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import DeviceImageCard from "@/components/DeviceImageCard";
-import PcHeroSlideshow from "@/components/PcHeroSlideshow";
 
 export const revalidate = 60;
 
@@ -23,8 +22,8 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
   const siteUrl   = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
 
   const title = tag
-    ? `Dark #${tag} Desktop Wallpapers for PC${pageLabel} | HAUNTED WALLPAPERS`
-    : `Dark Desktop Wallpapers Free Download (PC)${pageLabel} | HAUNTED WALLPAPERS`;
+    ? `Dark #${tag} Desktop Wallpapers for PC & iPhone${pageLabel} | HAUNTED WALLPAPERS`
+    : `Dark Desktop Wallpapers Free Download (PC & iPhone)${pageLabel} | HAUNTED WALLPAPERS`;
 
   const description = tag
     ? `Browse free dark fantasy desktop wallpapers tagged #${tag}. Download instantly, no account required.`
@@ -53,7 +52,7 @@ export default async function PcPage({ searchParams }: PageProps) {
     ...(tag ? { tags: { has: tag } } : {}),
   };
 
-  const [images, total, pageContent, slideshowImages] = await Promise.all([
+  const [images, total, pageContent] = await Promise.all([
     db.image.findMany({
       where,
       orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
@@ -63,81 +62,36 @@ export default async function PcPage({ searchParams }: PageProps) {
     }),
     db.image.count({ where }),
     getPageContent("pc"),
-    // fetch first 6 PC images for slideshow (no tag filter)
-    db.image.findMany({
-      where: { collectionId: null, deviceType: "PC" },
-      orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
-      select: { id: true, slug: true, title: true, r2Key: true },
-      take: 6,
-    }),
   ]);
 
   const totalPages = Math.ceil(total / PAGE_SIZE);
   const baseUrl    = tag ? `/pc?tag=${encodeURIComponent(tag)}` : "/pc";
 
-  const slides = slideshowImages.map(img => ({
-    id:    img.id,
-    slug:  img.slug,
-    title: img.title,
-    url:   getPublicUrl(img.r2Key),
-  }));
-
   return (
     <main className="min-h-screen" style={{ backgroundColor: "var(--bg-primary)", color: "var(--text-primary)" }}>
 
       <Breadcrumbs items={[
-        { label: "Home", href: "/" },
-        { label: "PC",   href: "/pc" },
+        { label: "Home", href: "/"    },
+        { label: "PC",   href: "/pc"  },
         ...(tag ? [{ label: `#${tag}` }] : []),
       ]} />
 
-      {/* ── Hero: title + description left, slideshow right ── */}
-      <section style={{
-        maxWidth: "1280px",
-        margin: "0 auto",
-        padding: "clamp(32px,5vw,64px) clamp(16px,5vw,60px)",
-        display: "grid",
-        gridTemplateColumns: "minmax(280px,420px) 1fr",
-        gap: "clamp(24px,4vw,64px)",
-        alignItems: "center",
-      }}>
-        <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
-          <h1 style={{
-            fontFamily: "var(--font-cinzel, serif)",
-            fontSize: "clamp(1.6rem, 3vw, 2.6rem)",
-            fontWeight: 700,
-            lineHeight: 1.15,
-            letterSpacing: "0.04em",
-            margin: 0,
-            color: "var(--text-primary)",
-          }}>
-            {tag ? (
-              <>Dark <span style={{ color: "#c9a84c", fontStyle: "italic" }}>#{tag}</span> Desktop Wallpapers</>
-            ) : (
-              <>Free Dark PC <span style={{ color: "#c9a84c", fontStyle: "italic" }}>Wallpapers</span></>
-            )}
-            {page > 1 && <span style={{ color: "var(--text-muted)", fontSize: "1.4rem" }}> — Page {page}</span>}
-          </h1>
-
-          {!tag && pageContent?.body && (
-            <div
-              className="image-description-html"
-              style={{ fontSize: "0.95rem", lineHeight: 1.75, color: "var(--text-muted)", maxWidth: "420px" }}
-              dangerouslySetInnerHTML={{ __html: pageContent.body }}
-            />
+      <section className="max-w-7xl mx-auto px-6 md:px-[60px] pt-10 pb-8">
+        <h1 className="font-display text-3xl md:text-4xl font-bold leading-tight mb-6">
+          {tag ? (
+            <>Dark <span className="text-[#c9a84c] italic">#{tag}</span> Desktop Wallpapers for PC</>
+          ) : (
+            <>Free Dark PC <span className="text-[#c9a84c] italic">Wallpapers</span></>
           )}
-        </div>
+          {page > 1 && <span className="text-[#4a445a] text-2xl"> — Page {page}</span>}
+        </h1>
 
-        {/* Slideshow */}
-        <div>
-          <PcHeroSlideshow slides={slides} />
-        </div>
-
-        <style>{`
-          @media (max-width: 720px) {
-            section { grid-template-columns: 1fr !important; }
-          }
-        `}</style>
+        {!tag && pageContent?.body && (
+  <div
+    className="image-description-html prose prose-invert max-w-none text-[var(--text-muted)] leading-relaxed mb-2"
+    dangerouslySetInnerHTML={{ __html: pageContent.body }}
+          />
+        )}
       </section>
 
       <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_MAIN} width={728} height={90} />
@@ -149,7 +103,7 @@ export default async function PcPage({ searchParams }: PageProps) {
             <div className="hw-coming-soon__bar" />
             <h2 className="hw-coming-soon__title">Coming Soon</h2>
             <p className="hw-coming-soon__sub">
-              {tag ? `New wallpapers tagged #${tag} are on their way.` : "Dark art is brewing."}
+              {tag ? `New wallpapers tagged #${tag} are on their way.` : "Dark art is brewing. Upload images from the admin panel to fill this page."}
             </p>
           </div>
         ) : (
