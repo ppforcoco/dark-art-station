@@ -74,7 +74,7 @@ export default async function Home() {
       {/* ══════════════════════════════════════════════════════════
           SECTION 1 — HERO: SPLIT LAYOUT (text left, phones right)
       ══════════════════════════════════════════════════════════ */}
-      <section className="dt-gate dt-gate--collage" style={{ padding: "0", minHeight: "unset" }}>
+      <section className="dt-gate dt-gate--collage hw-hero-gate-override" style={{ padding: "0", minHeight: "unset" }}>
 
         <div className="dt-gate__crack" aria-hidden="true" />
 
@@ -196,6 +196,11 @@ export default async function Home() {
       </section>
 
       <style>{`
+        /* Kill the dt-gate default top padding */
+        .hw-hero-gate-override {
+          padding-top: 16px !important;
+          padding-bottom: 0 !important;
+        }
         /* Desktop: side by side, text left phones right */
         @media (min-width: 860px) {
           .hw-hero-split {
