@@ -26,8 +26,8 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
     : `Dark Android Wallpapers Free Download (iPhone & Android)${pageLabel} | HAUNTED WALLPAPERS`;
 
   const description = tag
-    ? `Browse free dark fantasy Android and iPhone wallpapers tagged #${tag}. Download instantly, no account required.`
-    : "Free dark fantasy wallpapers for Android and iPhone. Portrait 9:16 optimised. New drops daily. No account required.";
+    ? `Browse free AMOLED-optimised dark wallpapers for Android tagged #${tag}. Download instantly, no account required.`
+    : "Free AMOLED-optimised dark wallpapers for Android. Deep blacks, zero battery waste on OLED screens. Samsung, Pixel, OnePlus ready. No account required.";
 
   const canonical = tag ? `${siteUrl}/android?tag=${tag}` : `${siteUrl}/android`;
 

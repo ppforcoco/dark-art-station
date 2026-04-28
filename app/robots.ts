@@ -15,6 +15,7 @@ export default function robots(): MetadataRoute.Robots {
           "/admin-secret-hw", // Secret admin panel
           "/*.json",         // JSON files (except those public-facing)
           "/*?*search*",     // Dynamic search parameters
+          "/shop",             // Duplicate of /obsessions — noindexed
         ],
         crawlDelay: 0.5,  // ✅ Moved inside the rule
       },

@@ -86,11 +86,34 @@ export default async function PcPage({ searchParams }: PageProps) {
           {page > 1 && <span className="text-[#4a445a] text-2xl"> — Page {page}</span>}
         </h1>
 
-        {!tag && pageContent?.body && (
-  <div
-    className="image-description-html prose prose-invert max-w-none text-[var(--text-muted)] leading-relaxed mb-2"
-    dangerouslySetInnerHTML={{ __html: pageContent.body }}
-          />
+        {!tag && (
+          <div className="device-page-intro">
+            {pageContent?.body
+              ? <div dangerouslySetInnerHTML={{ __html: pageContent.body }} />
+              : <>
+                  <p>
+                    Every wallpaper in this collection is built for desktop and widescreen monitors —
+                    native 16:9 landscape format, sized for 1080p, 1440p, and 4K displays without
+                    cropping or distortion. Images are generated at high resolution and downsampled
+                    cleanly, so edges stay sharp and shadows stay deep no matter how large your screen is.
+                  </p>
+                  <p>
+                    Dark desktop wallpapers hit differently on a large monitor. These are not phone
+                    wallpapers stretched to fill a screen — they are built wide, with composition and
+                    atmosphere designed for the horizontal canvas. Gothic architecture, cosmic horror,
+                    cyberpunk decay, dark fantasy — every piece is made to own your workspace.
+                  </p>
+                  <p>
+                    All wallpapers are free to download with no account required. Right-click any image
+                    and save, or use the download button for the full-resolution file. Works on Windows,
+                    Mac, and Linux. New collections added regularly.
+                  </p>
+                  <div className="device-page-guide-link">
+                    <span>Need help setting it up?</span>
+                    <a href="/blog/the-dark-aesthetic-a-complete-guide-to-customizing-your-devices">Read our wallpaper guide →</a>
+                  </div>
+                </>}
+          </div>
         )}
       </section>
 
