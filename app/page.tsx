@@ -841,7 +841,21 @@ export default async function Home() {
         {/* Always show the grid — use placeholders for empty collections */}
         <div className="dt-obs-grid">
           {obsessions.map((obs, i) => {
-            const thumb = obs.thumbnail ? (obs.thumbnail.startsWith('http') ? obs.thumbnail : `${r2Base}/${obs.thumbnail}`) : null;
+            // Robust thumbnail resolution — handles all formats admin panel may save:
+            // 1. Full URL: "https://..."
+            // 2. R2 key with leading slash: "/wallpapers/anime-world.jpg"
+            // 3. R2 key without slash: "wallpapers/anime-world.jpg"
+            // 4. Just filename: "anime-world.jpg"
+            let thumb: string | null = null;
+            if (obs.thumbnail) {
+              const t = obs.thumbnail.trim();
+              if (t.startsWith('http://') || t.startsWith('https://')) {
+                thumb = t;
+              } else {
+                const key = t.startsWith('/') ? t.slice(1) : t;
+                thumb = `${r2Base}/${key}`;
+              }
+            }
             const hasImages = obs._count.images > 0;
             return (
               <Link
@@ -852,13 +866,14 @@ export default async function Home() {
               >
                 <div className="dt-obs-card__bg">
                   {thumb ? (
-                    <Image
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
                       src={thumb}
                       alt={obs.title}
-                      fill
-                      unoptimized
                       className="object-cover"
-                      sizes="(max-width:600px) 50vw, (max-width:1024px) 33vw, 25vw"
+                      style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }}
+                      loading={i < 4 ? "eager" : "lazy"}
+                      onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
                     />
                   ) : (
                     <div className="dt-obs-card__placeholder" style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", height: "100%", gap: "0.5rem" }}>

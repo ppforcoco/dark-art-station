@@ -39,7 +39,6 @@ export default function Footer(): JSX.Element {
             <li><Link href="/contact">Contact</Link></li>
             <li><Link href="/faq">FAQ</Link></li>
             <li><Link href="/privacy">Privacy Policy</Link></li>
-            <li><Link href="/terms">Terms of Service</Link></li>
             <li><Link href="/licensing">Licensing &amp; Usage</Link></li>
             <li><Link href="/dmca">DMCA &amp; Copyright</Link></li>
           </ul>
