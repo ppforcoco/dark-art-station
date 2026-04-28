@@ -74,7 +74,7 @@ export default async function Home() {
       {/* ══════════════════════════════════════════════════════════
           SECTION 1 — HERO: SPLIT LAYOUT (text left, phones right)
       ══════════════════════════════════════════════════════════ */}
-      <section className="dt-gate dt-gate--collage" style={{ padding: "calc(var(--nav-h, 64px) + 0px) 0 0", minHeight: "unset" }}>
+      <section className="dt-gate dt-gate--collage" style={{ padding: "0", minHeight: "unset" }}>
 
         <div className="dt-gate__crack" aria-hidden="true" />
 
@@ -145,7 +145,7 @@ export default async function Home() {
           </div>
 
           {/* RIGHT — Phone mockups, flush to bottom of section */}
-          <div className="hw-hero-phones-wrap" style={{ marginTop: "-60px" }}>
+          <div className="hw-hero-phones-wrap" style={{ marginTop: "0" }}>
             <div className="dt-hero-phones" style={{ gap: "clamp(6px,1.2vw,20px)", alignItems: "center", padding: 0 }}>
               {[
                 { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/wallpapers/houston-snapback-skeleton.jpeg", alt: "Skeleton", featured: false },

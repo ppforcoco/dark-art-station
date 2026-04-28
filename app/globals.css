@@ -10977,3 +10977,42 @@ html[data-theme="ghost"] body {
 
 
 /* ── FOG OVERLAY ──────────────────────────────────────────────────────── */
+/* ══════════════════════════════════════════════════════════════════════════
+   ADMIN-PANEL HTML ANIMATIONS — globally declared so they survive SSR/CSP
+   These keyframes are used inside dangerouslySetInnerHTML rich content.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* PC page: vertical infinite scroll slideshow */
+@keyframes hw-vertical-scroll {
+  0%   { transform: translateY(0); }
+  100% { transform: translateY(-50%); }
+}
+
+/* PC page: pulsing maroon border glow on text box */
+@keyframes hw-pulse-pc {
+  0%,100% { box-shadow: 0 0 0 2px #881337, 0 0 18px 4px rgba(136,19,55,0.3); }
+  50%      { box-shadow: 0 0 0 2px #be123c, 0 0 42px 10px rgba(136,19,55,0.5); }
+}
+
+/* Force admin-panel slideshow elements to animate — overrides any
+   prefers-reduced-motion or animation-play-state: paused kills      */
+.hw-track {
+  animation-play-state: running !important;
+  will-change: transform;
+}
+.hw-collage:hover .hw-track {
+  animation-play-state: paused !important;
+}
+.hw-textbox {
+  animation-play-state: running !important;
+}
+
+/* Ensure these classes are never affected by the reduced-motion blanket */
+@media (prefers-reduced-motion: reduce) {
+  .hw-track,
+  .hw-textbox {
+    animation-duration: 20s !important;
+    animation-iteration-count: infinite !important;
+    transition-duration: 0.3s !important;
+  }
+}
