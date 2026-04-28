@@ -74,7 +74,7 @@ export default async function Home() {
       {/* ══════════════════════════════════════════════════════════
           SECTION 1 — HERO: SPLIT LAYOUT (text left, phones right)
       ══════════════════════════════════════════════════════════ */}
-      <section className="dt-gate dt-gate--collage" style={{ padding: "calc(var(--nav-h, 64px) + 4px) 0 0", minHeight: "unset" }}>
+      <section className="dt-gate dt-gate--collage" style={{ padding: "calc(var(--nav-h, 64px) + 0px) 0 0", minHeight: "unset" }}>
 
         <div className="dt-gate__crack" aria-hidden="true" />
 
@@ -145,8 +145,8 @@ export default async function Home() {
           </div>
 
           {/* RIGHT — Phone mockups, flush to bottom of section */}
-          <div className="hw-hero-phones-wrap">
-            <div className="dt-hero-phones" style={{ gap: "clamp(6px,1.2vw,20px)", alignItems: "flex-end", padding: 0 }}>
+          <div className="hw-hero-phones-wrap" style={{ marginTop: "-60px" }}>
+            <div className="dt-hero-phones" style={{ gap: "clamp(6px,1.2vw,20px)", alignItems: "center", padding: 0 }}>
               {[
                 { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/wallpapers/houston-snapback-skeleton.jpeg", alt: "Skeleton", featured: false },
                 { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/wallpapers/shadows-have-eyes-android.webp", alt: "Shadow Eyes", featured: false },
@@ -160,10 +160,10 @@ export default async function Home() {
                   style={{
                     "--phone-i": i,
                     transform: phone.featured
-                      ? "scale(1.18) translateY(-12px)"
+                      ? "scale(1.18) translateY(-48px)"
                       : i === 1 || i === 3
-                      ? "scale(1.06) translateY(-4px)"
-                      : "scale(0.92) translateY(4px)",
+                      ? "scale(1.06) translateY(-28px)"
+                      : "scale(0.92) translateY(-10px)",
                   } as React.CSSProperties}
                 >
                   <div className="dt-hero-phone" style={{ width: "clamp(100px,13vw,185px)", height: "clamp(200px,26vw,375px)", borderRadius: "clamp(18px,2vw,30px)" }}>
