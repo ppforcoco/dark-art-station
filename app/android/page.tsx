@@ -1,5 +1,7 @@
 // app/android/page.tsx
+import React from "react";
 import type { Metadata } from "next";
+import Link from "next/link";
 import { db, getPageContent } from "@/lib/db";
 import { getPublicUrl } from "@/lib/r2";
 import AdSlot from "@/components/AdSlot";
@@ -34,7 +36,6 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
   return {
     title,
     description,
-    // ✅ FIX: removed "HD android wallpaper" — replaced with "hd android wallpaper" (accurate)
     keywords: ["android wallpaper", "dark wallpaper android", "hd android wallpaper", "free android wallpaper", tag ?? "dark", "dark fantasy"].filter(Boolean),
     openGraph: { title, description, url: canonical, siteName: "HAUNTED WALLPAPERS", type: "website" },
     twitter: { card: "summary_large_image", title, description },
@@ -49,20 +50,28 @@ export default async function AndroidPage({ searchParams }: PageProps) {
 
   const where = {
     collectionId: null,
-    isAdult: false, // ✅ FIX: hide adult/mature images from public listing
+    isAdult: false,
     deviceType: "ANDROID" as const,
     ...(tag ? { tags: { has: tag } } : {}),
   };
 
-  const [images, total, pageContent] = await Promise.all([
+  const [pinnedImages, images, total, pageContent] = await Promise.all([
+    (!tag && page === 1)
+      ? db.image.findMany({
+          where: { collectionId: null, deviceType: "ANDROID", sortOrder: { lt: 0 } },
+          orderBy: { sortOrder: "asc" },
+          select: { id: true, slug: true, title: true, r2Key: true, viewCount: true, tags: true, isAdult: true },
+          take: 3,
+        })
+      : Promise.resolve([] as Array<{ id: string; slug: string; title: string; r2Key: string; viewCount: number; tags: string[]; isAdult: boolean }>),
     db.image.findMany({
-      where,
+      where: { ...where, sortOrder: { gte: 0 } },
       orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
       select: { id: true, slug: true, title: true, r2Key: true, viewCount: true, tags: true, isAdult: true },
       take: PAGE_SIZE,
       skip,
     }),
-    db.image.count({ where }),
+    db.image.count({ where: { ...where, sortOrder: { gte: 0 } } }),
     getPageContent("android"),
   ]);
 
@@ -112,14 +121,49 @@ export default async function AndroidPage({ searchParams }: PageProps) {
                 </>}
           </div>
         )}
-
       </section>
 
       <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_MAIN} width={728} height={90} />
 
+      {/* ── Pinned "The Most Haunted" top 3 — only on page 1, no tag filter ── */}
+      {pinnedImages.length > 0 && (
+        <section className="max-w-7xl mx-auto px-6 md:px-[60px] pb-10">
+          <div style={{ display: "flex", alignItems: "center", gap: "14px", marginBottom: "20px" }}>
+            <span style={{
+              fontFamily: "var(--font-space, monospace)",
+              fontSize: "0.58rem",
+              letterSpacing: "0.22em",
+              textTransform: "uppercase",
+              color: "#c0001a",
+              border: "1px solid rgba(192,0,26,0.5)",
+              padding: "5px 12px",
+              background: "rgba(192,0,26,0.08)",
+              boxShadow: "0 0 12px rgba(192,0,26,0.15)",
+            }}>★ The Most Haunted</span>
+            <div style={{ flex: 1, height: "1px", background: "linear-gradient(to right, rgba(192,0,26,0.35), transparent)" }} />
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "12px", maxWidth: "480px" }}>
+            {pinnedImages.map((img) => (
+              <DeviceImageCard
+                key={img.id}
+                href={`/android/${img.slug}`}
+                src={getPublicUrl(img.r2Key)}
+                alt={`${img.title} — free dark Android wallpaper HD`}
+                title={img.title}
+                tags={img.tags}
+                isAdult={img.isAdult}
+                priority={true}
+                aspectRatio="9/16"
+                sizes="(max-width: 640px) 33vw, 160px"
+              />
+            ))}
+          </div>
+        </section>
+      )}
+
       <section className="max-w-7xl mx-auto px-6 md:px-[60px] py-10">
         {images.length === 0 ? (
-                    <div className="hw-coming-soon">
+          <div className="hw-coming-soon">
             <div className="hw-coming-soon__sigil">✦ ☽ ✦</div>
             <div className="hw-coming-soon__bar" />
             <h2 className="hw-coming-soon__title">Coming Soon</h2>
@@ -134,9 +178,8 @@ export default async function AndroidPage({ searchParams }: PageProps) {
             </p>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
               {images.map((img, idx) => (
-                <>
+                <React.Fragment key={img.id}>
                   <DeviceImageCard
-                    key={img.id}
                     href={`/android/${img.slug}`}
                     src={getPublicUrl(img.r2Key)}
                     alt={`${img.title} — free dark Android wallpaper HD`}
@@ -152,7 +195,7 @@ export default async function AndroidPage({ searchParams }: PageProps) {
                       <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_MAIN} width={728} height={90} />
                     </div>
                   )}
-                </>
+                </React.Fragment>
               ))}
             </div>
             <Pagination currentPage={page} totalPages={totalPages} baseUrl={baseUrl} />
@@ -162,13 +205,62 @@ export default async function AndroidPage({ searchParams }: PageProps) {
 
       <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_FOOTER} width={728} height={90} className="mt-8" />
 
+      {/* ── Cross-Link Footer ── */}
+      <section style={{
+        maxWidth: "860px",
+        margin: "0 auto",
+        padding: "40px 24px 64px",
+        borderTop: "1px solid rgba(192,0,26,0.18)",
+        textAlign: "center",
+      }}>
+        <p style={{
+          fontFamily: "var(--font-space, monospace)",
+          fontSize: "0.6rem",
+          letterSpacing: "0.22em",
+          textTransform: "uppercase",
+          color: "#4a445a",
+          marginBottom: "20px",
+        }}>Too bright for you? Explore more darkness</p>
+        <div style={{ display: "flex", gap: "14px", justifyContent: "center", flexWrap: "wrap" }}>
+          <Link href="/iphone" className="hw-crosslink-btn">
+            📱 iPhone Wallpapers
+          </Link>
+          <Link href="/pc" className="hw-crosslink-btn">
+            🖥 Desktop PC Nightmares
+          </Link>
+        </div>
+      </section>
+
+      <style>{`
+        .hw-crosslink-btn {
+          font-family: var(--font-space, monospace);
+          font-size: 0.72rem;
+          letter-spacing: 0.14em;
+          text-transform: uppercase;
+          color: #e8e4f8;
+          text-decoration: none;
+          border: 1px solid rgba(192,0,26,0.4);
+          padding: 13px 26px;
+          background: rgba(192,0,26,0.06);
+          transition: all 0.25s ease;
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+        }
+        .hw-crosslink-btn:hover {
+          border-color: rgba(192,0,26,0.8);
+          background: rgba(192,0,26,0.13);
+          color: #ffffff;
+          box-shadow: 0 0 22px rgba(192,0,26,0.22);
+        }
+      `}</style>
+
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
           __html: JSON.stringify({
             "@context": "https://schema.org",
             "@type": "ItemList",
-            // ✅ FIX: removed "4K" from schema name — replaced with "HD"
             name: tag ? `Dark #${tag} Android Wallpapers | Haunted Wallpapers` : "Free Dark Android Wallpapers HD | Haunted Wallpapers",
             url: tag ? `${process.env.NEXT_PUBLIC_SITE_URL}/android?tag=${tag}` : `${process.env.NEXT_PUBLIC_SITE_URL}/android`,
             numberOfItems: total,

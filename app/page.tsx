@@ -149,9 +149,9 @@ export default async function Home() {
           <div className="hw-hero-phones-wrap" style={{ marginTop: "0", overflow: "visible", paddingTop: "20px", paddingBottom: "16px" }}>
             <div className="dt-hero-phones" style={{ gap: "clamp(6px,1.2vw,20px)", alignItems: "flex-end", padding: "0 8px" }}>
               {[
-                { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/wallpapers/houston-snapback-skeleton.jpeg", alt: "Skeleton", featured: false },
+                { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/pin/gorilla-iphone-wallpaper.jpeg", alt: "Gorilla", featured: false },
                 { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/wallpapers/shadows-have-eyes-android.webp", alt: "Shadow Eyes", featured: false },
-                { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/wallpapers/haunted-house-moon.jpeg", alt: "Haunted Moon", featured: true },
+                { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/pin/sinister-cat-shadow.jpeg", alt: "Sinister Cat", featured: true },
                 { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/wallpapers/hero-1.jpeg", alt: "Hero Art", featured: false },
                 { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/wallpapers/hero-2.jpeg", alt: "Dark Art", featured: false },
               ].map((phone, i) => (

@@ -146,13 +146,17 @@ export default async function IphoneImagePage({ params }: PageProps) {
                 <Image src={thumbUrl} alt={image.title} fill className="object-cover" priority quality={90} unoptimized sizes="(max-width: 768px) 100vw, 65vw" />
               </div>
             </DeviceMockup>
-            {/* ↓ Download button — directly below the device preview on all screen sizes */}
+            {/* ↓ Download + Preview buttons — glowing CTA below device */}
             <div style={{ marginTop: "16px", width: "100%", display: "flex", flexDirection: "column", gap: "10px" }}>
-              <DownloadButton
-                href={`/api/download/image/${image.id}`}
-                viewCount={image.viewCount}
-              />
-              <PreviewButton src={thumbUrl} title={image.title} />
+              <div className="hw-glow-btn-wrap hw-glow-btn-wrap--download">
+                <DownloadButton
+                  href={`/api/download/image/${image.id}`}
+                  viewCount={image.viewCount}
+                />
+              </div>
+              <div className="hw-glow-btn-wrap hw-glow-btn-wrap--preview">
+                <PreviewButton src={thumbUrl} title={image.title} />
+              </div>
             </div>
           </div>
 
@@ -172,11 +176,7 @@ export default async function IphoneImagePage({ params }: PageProps) {
 
 
 
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "12px", alignItems: "center" }}>
-              <span className="font-mono text-[0.6rem] tracking-[0.2em] uppercase px-3 py-1" style={{ color: "var(--text-muted)", border: "1px solid var(--border-dim)" }}>
-                iPhone · 9:16
-              </span>
-            </div>
+            {/* Label removed */}
 
 
 
@@ -217,6 +217,24 @@ export default async function IphoneImagePage({ params }: PageProps) {
         }
         @media (min-width: 1024px) {
                   .iphone-detail-image-wrap { flex: 0 0 480px; }
+        }
+        /* ── Glowing Download 4K button ── */
+        .hw-glow-btn-wrap--download {
+          animation: hwDlGlowPulse 2.8s ease-in-out infinite;
+          border-radius: 2px;
+        }
+        @keyframes hwDlGlowPulse {
+          0%, 100% { box-shadow: 0 0 12px rgba(192,0,26,0.35), 0 0 28px rgba(192,0,26,0.15); }
+          50%       { box-shadow: 0 0 22px rgba(192,0,26,0.65), 0 0 50px rgba(192,0,26,0.28); }
+        }
+        /* ── Glowing Lock Screen Preview button ── */
+        .hw-glow-btn-wrap--preview {
+          border-radius: 2px;
+          box-shadow: 0 0 10px rgba(201,168,76,0.2), 0 0 22px rgba(201,168,76,0.08);
+          transition: box-shadow 0.3s ease;
+        }
+        .hw-glow-btn-wrap--preview:hover {
+          box-shadow: 0 0 18px rgba(201,168,76,0.45), 0 0 38px rgba(201,168,76,0.2);
         }
       `}</style>
 

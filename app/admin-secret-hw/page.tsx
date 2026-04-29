@@ -1064,6 +1064,120 @@ function HighResUploadTab({password}:{password:string}){
 }
 
 
+function PinTab({password}:{password:string}){
+  const DEVICES=["IPHONE","ANDROID","PC"] as const;
+  type DeviceType=typeof DEVICES[number];
+  const[device,setDevice]=useState<DeviceType>("IPHONE");
+  const[search,setSearch]=useState("");
+  const[images,setImages]=useState<ImageRecord[]>([]);
+  const[pinned,setPinned]=useState<ImageRecord[]>([]);
+  const[loading,setLoading]=useState(false);
+  const[saving,setSaving]=useState<string|null>(null);
+  const[msg,setMsg]=useState<{type:"ok"|"err";text:string}|null>(null);
+
+  const load=useCallback(async()=>{
+    setLoading(true);setMsg(null);
+    try{
+      const qs=new URLSearchParams({device,page:"1",limit:"60",...(search?{q:search}:{})});
+      const res=await fetch(`/api/hw-admin/images?${qs}`,{headers:{"x-admin-password":password}});
+      if(!res.ok)throw new Error("Failed");
+      const data=await res.json();
+      const all:ImageRecord[]=data.images??[];
+      setPinned(all.filter((i:ImageRecord)=>typeof i.sortOrder==="number"&&i.sortOrder<0).sort((a,b)=>(a.sortOrder??0)-(b.sortOrder??0)));
+      setImages(all.filter((i:ImageRecord)=>!i.sortOrder||i.sortOrder>=0));
+    }catch{setMsg({type:"err",text:"Could not load images."});}
+    setLoading(false);
+  },[device,search,password]);
+
+  useEffect(()=>{load();},[load]);
+
+  async function pin(img:ImageRecord,slot:number){
+    setSaving(img.id);setMsg(null);
+    // slot is 1-based position → sortOrder is -3,-2,-1 (slot 1 = -3 = highest priority)
+    const so=(slot-4); // slot 1 → -3, slot 2 → -2, slot 3 → -1
+    try{
+      const res=await fetch(`/api/hw-admin/images/${img.id}`,{method:"PATCH",headers:{"Content-Type":"application/json","x-admin-password":password},body:JSON.stringify({sortOrder:so})});
+      if(!res.ok)throw new Error("Failed");
+      setMsg({type:"ok",text:`✓ Pinned "${img.title}" as #${slot} for ${device}`});
+      load();
+    }catch{setMsg({type:"err",text:"Pin failed."});}
+    setSaving(null);
+  }
+
+  async function unpin(img:ImageRecord){
+    setSaving(img.id);setMsg(null);
+    try{
+      const res=await fetch(`/api/hw-admin/images/${img.id}`,{method:"PATCH",headers:{"Content-Type":"application/json","x-admin-password":password},body:JSON.stringify({sortOrder:0})});
+      if(!res.ok)throw new Error("Failed");
+      setMsg({type:"ok",text:`✓ Unpinned "${img.title}"`});
+      load();
+    }catch{setMsg({type:"err",text:"Unpin failed."});}
+    setSaving(null);
+  }
+
+  const deviceLabel:Record<DeviceType,string>={IPHONE:"iPhone",ANDROID:"Android",PC:"PC"};
+
+  return<div>
+    <Card style={{padding:"14px 18px",marginBottom:"20px",borderColor:C.red}}>
+      <strong style={{color:C.gold}}>📌 Pin Wallpapers — The Most Haunted</strong>
+      <span style={{color:C.textSec,marginLeft:"8px",fontSize:"0.82rem"}}>Pin up to 3 wallpapers per device. They appear at the top of the listing page under "The Most Haunted" heading.</span>
+    </Card>
+
+    {/* Device selector */}
+    <div style={{display:"flex",gap:"8px",marginBottom:"20px"}}>
+      {DEVICES.map(d=><button key={d} onClick={()=>{setDevice(d);setSearch("");}} style={{background:device===d?C.red:"transparent",border:`1px solid ${device===d?C.red:C.border}`,color:device===d?"#fff":C.textSec,padding:"8px 20px",cursor:"pointer",fontSize:"0.72rem",fontFamily:"monospace",letterSpacing:"0.08em",textTransform:"uppercase"}}>{deviceLabel[d]}</button>)}
+    </div>
+
+    <Msg msg={msg}/>
+
+    {/* Currently pinned */}
+    <Card style={{marginBottom:"24px"}}>
+      <p style={eyebrow}>Currently Pinned — {deviceLabel[device]} (max 3)</p>
+      {pinned.length===0
+        ?<p style={{color:C.textMut,fontSize:"0.78rem",padding:"12px 0"}}>No wallpapers pinned for {deviceLabel[device]} yet. Search below and click a slot to pin.</p>
+        :<div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:"12px",marginTop:"12px"}}>
+          {[1,2,3].map(slot=>{
+            const img=pinned.find(p=>p.sortOrder===(slot-4));
+            return<div key={slot} style={{border:`1px solid ${img?C.red:C.border}`,padding:"12px",textAlign:"center",background:img?"rgba(192,0,26,0.06)":"rgba(255,255,255,0.01)"}}>
+              <p style={{color:C.textMut,fontSize:"0.58rem",letterSpacing:"0.15em",textTransform:"uppercase",marginBottom:"8px"}}>Slot #{slot}</p>
+              {img
+                ?<>
+                  <p style={{color:C.textPri,fontSize:"0.78rem",marginBottom:"8px",lineHeight:1.3,overflow:"hidden",textOverflow:"ellipsis",display:"-webkit-box",WebkitLineClamp:2,WebkitBoxOrient:"vertical" as const}}>{img.title}</p>
+                  <img src={`https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/${img.r2Key}`} alt={img.title} style={{width:"100%",aspectRatio:device==="PC"?"16/9":"9/16",objectFit:"cover",marginBottom:"8px",maxHeight:device==="PC"?"90px":"140px"}}/>
+                  <Btn variant="danger" onClick={()=>unpin(img)} disabled={saving===img.id} style={{width:"100%",fontSize:"0.62rem",padding:"6px"}}>{saving===img.id?"…":"Unpin"}</Btn>
+                </>
+                :<p style={{color:C.textMut,fontSize:"0.7rem",padding:"20px 0"}}>Empty</p>
+              }
+            </div>;
+          })}
+        </div>
+      }
+    </Card>
+
+    {/* Search & pin new */}
+    <Card>
+      <p style={eyebrow}>Search & Pin a Wallpaper</p>
+      <div style={{display:"flex",gap:"8px",marginBottom:"16px"}}>
+        <input value={search} onChange={e=>setSearch(e.target.value)} onKeyDown={e=>e.key==="Enter"&&load()} placeholder="Search by title…" style={{...inp,flex:1,fontSize:"0.8rem"}}/>
+        <Btn onClick={load} disabled={loading}>{loading?"…":"Search"}</Btn>
+      </div>
+      {images.length===0&&!loading&&<p style={{color:C.textMut,fontSize:"0.78rem"}}>No results.</p>}
+      <div style={{display:"flex",flexDirection:"column",gap:"6px",maxHeight:"480px",overflowY:"auto"}}>
+        {images.map(img=><div key={img.id} style={{display:"flex",alignItems:"center",gap:"12px",padding:"10px",border:`1px solid ${C.border}`,background:"rgba(255,255,255,0.01)"}}>
+          <img src={`https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/${img.r2Key}`} alt={img.title} style={{flexShrink:0,width:device==="PC"?"80px":"44px",height:device==="PC"?"45px":"80px",objectFit:"cover",borderRadius:"2px"}}/>
+          <div style={{flex:1,minWidth:0}}>
+            <p style={{color:C.textPri,fontSize:"0.82rem",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{img.title}</p>
+            <p style={{color:C.textMut,fontSize:"0.62rem",marginTop:"2px"}}>{img.tags?.slice(0,3).join(", ")}</p>
+          </div>
+          <div style={{display:"flex",gap:"6px",flexShrink:0}}>
+            {[1,2,3].map(slot=><button key={slot} onClick={()=>pin(img,slot)} disabled={!!saving} style={{background:"rgba(192,0,26,0.12)",border:`1px solid rgba(192,0,26,0.4)`,color:C.red,padding:"5px 10px",cursor:saving?"not-allowed":"pointer",fontSize:"0.65rem",fontFamily:"monospace",opacity:saving?0.5:1}}>#{slot}</button>)}
+          </div>
+        </div>)}
+      </div>
+    </Card>
+  </div>;
+}
+
 function NukeTab({password}:{password:string}){
   const PHRASE="DELETE EVERYTHING";
   const[input,setInput]=useState("");
@@ -1101,8 +1215,8 @@ function NukeTab({password}:{password:string}){
   </div>;
 }
 
-type Tab="analytics"|"pages"|"collections"|"districts"|"upload"|"published"|"bulkai"|"highres"|"blog"|"manage18"|"backdate"|"preview"|"feedback"|"nuke";
-const NAV_ITEMS:[Tab,string,string][]=[["analytics","📊","Analytics"],["pages","📝","Page Content"],["collections","🗂","Collections"],["districts","🏚️","Districts"],["upload","📤","Upload Image"],["published","📸","Published"],["bulkai","🤖","Bulk AI Update"],["highres","⬆️","Upload 4K"],["blog","✍️","Blog Posts"],["manage18","⚠","16+ Manage"],["backdate","📅","Backdate"],["preview","🌐","Live Preview"],["feedback","⚑","Reports"],["nuke","💣","Nuke Everything"]];
+type Tab="analytics"|"pages"|"collections"|"districts"|"upload"|"published"|"bulkai"|"highres"|"blog"|"manage18"|"backdate"|"preview"|"feedback"|"nuke"|"pin";
+const NAV_ITEMS:[Tab,string,string][]=[["analytics","📊","Analytics"],["pages","📝","Page Content"],["collections","🗂","Collections"],["districts","🏚️","Districts"],["upload","📤","Upload Image"],["published","📸","Published"],["bulkai","🤖","Bulk AI Update"],["highres","⬆️","Upload 4K"],["blog","✍️","Blog Posts"],["manage18","⚠","16+ Manage"],["backdate","📅","Backdate"],["preview","🌐","Live Preview"],["feedback","⚑","Reports"],["pin","📌","Pin Wallpapers"],["nuke","💣","Nuke Everything"]];
 
 export default function AdminClient(){
   const[authed,setAuthed]=useState(false);const[password,setPw]=useState("");const[tab,setTab]=useState<Tab>("analytics");const[sidebarOpen,setSidebarOpen]=useState(true);const[prefillTitle,setPrefillTitle]=useState("");const[prefillLabel,setPrefillLabel]=useState("");
@@ -1148,6 +1262,7 @@ export default function AdminClient(){
         {tab==="backdate"&&<BackdateTab password={password}/>}
         {tab==="preview"&&<LivePreviewTab/>}
         {tab==="feedback"&&<Card style={{padding:"48px",textAlign:"center"}}><p style={{color:C.textMut}}>Feedback reports will appear here when the feedback API route is connected.</p></Card>}
+        {tab==="pin"&&<PinTab password={password}/>}
         {tab==="nuke"&&<NukeTab password={password}/>}
       </div>
     </div>

@@ -18,8 +18,12 @@ export async function GET(req: NextRequest) {
   const skip         = (page - 1) * limit;
   const q            = searchParams.get("q") ?? "";
   const collectionId = searchParams.get("collectionId") ?? "";
+  const device       = searchParams.get("device") ?? ""; // IPHONE | ANDROID | PC
 
   const where: Record<string, unknown> = {};
+  if (device) {
+    where.deviceType = device;
+  }
   if (collectionId) {
     where.collectionId = collectionId;
   } else if (q) {

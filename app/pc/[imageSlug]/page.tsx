@@ -10,6 +10,7 @@ import DeviceMockup from "@/components/DeviceMockup";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import RelatedWallpapers from "@/components/RelatedWallpapers";
 import DownloadButton from "@/components/DownloadButton";
+import PreviewButton from "@/components/PreviewButton";
 import RecentlyViewed from "@/components/RecentlyViewed";
 import SocialShare from "@/components/SocialShare";
 import PageTracker from "@/components/PageTracker";
@@ -164,12 +165,17 @@ export default async function PcImagePage({ params }: PageProps) {
                 />
               </div>
             </DeviceMockup>
-            {/* ↓ Download button — directly below the device preview on all screen sizes */}
-            <div style={{ marginTop: "16px", width: "100%" }}>
-              <DownloadButton
-                href={`/api/download/image/${image.id}`}
-                viewCount={image.viewCount}
-              />
+            {/* ↓ Download + Preview buttons — glowing CTA below device */}
+            <div style={{ marginTop: "16px", width: "100%", display: "flex", flexDirection: "column", gap: "10px" }}>
+              <div className="hw-glow-btn-wrap hw-glow-btn-wrap--download">
+                <DownloadButton
+                  href={`/api/download/image/${image.id}`}
+                  viewCount={image.viewCount}
+                />
+              </div>
+              <div className="hw-glow-btn-wrap hw-glow-btn-wrap--preview">
+                <PreviewButton src={thumbUrl} title={image.title} />
+              </div>
             </div>
           </div>
 
@@ -253,6 +259,22 @@ export default async function PcImagePage({ params }: PageProps) {
         .description-html strong, .description-html b { color: #f0ecff; }
         .description-html ul, .description-html ol { padding-left: 1.25rem; margin-bottom: 0.75rem; }
         .description-html li { margin-bottom: 0.25rem; }
+        .hw-glow-btn-wrap--download {
+          animation: hwDlGlowPulse 2.8s ease-in-out infinite;
+          border-radius: 2px;
+        }
+        @keyframes hwDlGlowPulse {
+          0%, 100% { box-shadow: 0 0 12px rgba(192,0,26,0.35), 0 0 28px rgba(192,0,26,0.15); }
+          50%       { box-shadow: 0 0 22px rgba(192,0,26,0.65), 0 0 50px rgba(192,0,26,0.28); }
+        }
+        .hw-glow-btn-wrap--preview {
+          border-radius: 2px;
+          box-shadow: 0 0 10px rgba(201,168,76,0.2), 0 0 22px rgba(201,168,76,0.08);
+          transition: box-shadow 0.3s ease;
+        }
+        .hw-glow-btn-wrap--preview:hover {
+          box-shadow: 0 0 18px rgba(201,168,76,0.45), 0 0 38px rgba(201,168,76,0.2);
+        }
       `}</style>
 
       {/* ── Prev / Next ── */}
