@@ -85,7 +85,7 @@ export default async function Home() {
           alignItems: "center",
           width: "100%",
           maxWidth: "100%",
-          overflow: "hidden",
+          overflow: "visible",
         }}>
 
           {/* LEFT — Text block */}
@@ -145,9 +145,9 @@ export default async function Home() {
             </div>
           </div>
 
-          {/* RIGHT — Phone mockups, flush to bottom of section */}
-          <div className="hw-hero-phones-wrap" style={{ marginTop: "0", overflow: "hidden", paddingBottom: "8px" }}>
-            <div className="dt-hero-phones" style={{ gap: "clamp(6px,1.2vw,20px)", alignItems: "center", padding: 0 }}>
+          {/* RIGHT — Phone mockups */}
+          <div className="hw-hero-phones-wrap" style={{ marginTop: "0", overflow: "visible", paddingTop: "20px", paddingBottom: "16px" }}>
+            <div className="dt-hero-phones" style={{ gap: "clamp(6px,1.2vw,20px)", alignItems: "flex-end", padding: "0 8px" }}>
               {[
                 { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/wallpapers/houston-snapback-skeleton.jpeg", alt: "Skeleton", featured: false },
                 { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/wallpapers/shadows-have-eyes-android.webp", alt: "Shadow Eyes", featured: false },
@@ -161,13 +161,14 @@ export default async function Home() {
                   style={{
                     "--phone-i": i,
                     transform: phone.featured
-                      ? "scale(1.12) translateY(-12px)"
+                      ? "scale(1.06)"
                       : i === 1 || i === 3
-                      ? "scale(1.04) translateY(-6px)"
-                      : "scale(0.92) translateY(0px)",
+                      ? "scale(1.0)"
+                      : "scale(0.94)",
+                    transformOrigin: "bottom center",
                   } as React.CSSProperties}
                 >
-                  <div className="dt-hero-phone" style={{ width: "clamp(100px,13vw,185px)", height: "clamp(200px,26vw,375px)", borderRadius: "clamp(18px,2vw,30px)" }}>
+                  <div className="dt-hero-phone" style={{ width: "clamp(90px,11vw,165px)", height: "clamp(180px,22vw,340px)", borderRadius: "clamp(16px,2vw,28px)" }}>
                     <div className="dt-hero-phone__btn dt-hero-phone__btn--power" aria-hidden="true" />
                     <div className="dt-hero-phone__btn dt-hero-phone__btn--vol1" aria-hidden="true" />
                     <div className="dt-hero-phone__btn dt-hero-phone__btn--vol2" aria-hidden="true" />
@@ -200,15 +201,18 @@ export default async function Home() {
         .hw-hero-gate-override {
           padding-top: 16px !important;
           padding-bottom: 0 !important;
+          overflow: visible !important;
         }
         /* Desktop: side by side, text left phones right */
         @media (min-width: 860px) {
           .hw-hero-split {
             grid-template-columns: minmax(320px,420px) 1fr !important;
-            align-items: center !important;
+            align-items: flex-end !important;
           }
           .hw-hero-phones-wrap {
-            padding-bottom: 0;
+            overflow: visible !important;
+            padding-top: 24px !important;
+            padding-bottom: 0 !important;
           }
         }
         /* Foldable / tablet: generous but not full desktop */
@@ -217,8 +221,9 @@ export default async function Home() {
             grid-template-columns: 1fr !important;
           }
           .hw-hero-phones-wrap {
-            padding: 0 clamp(12px,3vw,32px);
-            overflow-x: auto;
+            padding: 16px clamp(12px,3vw,32px) 0 !important;
+            overflow-x: auto !important;
+            overflow-y: visible !important;
           }
           .dt-hero-phones {
             justify-content: flex-start !important;
@@ -227,7 +232,11 @@ export default async function Home() {
         /* Small phones */
         @media (max-width: 539px) {
           .hw-hero-split { grid-template-columns: 1fr !important; }
-          .hw-hero-phones-wrap { padding: 0 12px; overflow-x: auto; }
+          .hw-hero-phones-wrap {
+            padding: 16px 12px 0 !important;
+            overflow-x: auto !important;
+            overflow-y: visible !important;
+          }
           .dt-hero-phones { justify-content: flex-start !important; }
         }
       `}</style>
