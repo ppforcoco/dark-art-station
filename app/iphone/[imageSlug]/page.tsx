@@ -156,9 +156,6 @@ export default async function IphoneImagePage({ params }: PageProps) {
 
           <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
             <div>
-              <Link href="/iphone" className="font-mono text-[0.6rem] tracking-[0.25em] uppercase text-[#8b0000] hover:text-[#c0001a] transition-colors">
-                ← iPhone Wallpapers
-              </Link>
               <h1 className="font-display text-2xl md:text-3xl font-bold mt-3 leading-tight">
                 {image.title}
               </h1>

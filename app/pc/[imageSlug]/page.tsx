@@ -175,17 +175,6 @@ export default async function PcImagePage({ params }: PageProps) {
 
           <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
             <div>
-              <Link href="/pc" style={{
-                fontFamily: "var(--font-space, monospace)",
-                fontSize: "0.6rem",
-                letterSpacing: "0.25em",
-                textTransform: "uppercase",
-                color: "#c0001a",
-                textDecoration: "none",
-                transition: "color 0.2s",
-              }}>
-                ← PC Wallpapers
-              </Link>
               <h1 style={{
                 fontFamily: "var(--font-cinzel, serif)",
                 fontSize: "clamp(1.5rem, 3vw, 2.4rem)",
