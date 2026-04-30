@@ -4,7 +4,6 @@ import { db, getPageContent } from "@/lib/db";
 import Link from "next/link";
 import ProductCard from "@/components/ProductCard";
 import Pagination from "@/components/Pagination";
-import Breadcrumbs from "@/components/Breadcrumbs";
 import AdSlot from "@/components/AdSlot";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
@@ -87,13 +86,6 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
 
   return (
     <main className="shop-page" style={{ backgroundColor: "var(--bg-primary)", color: "var(--text-primary)" }}>
-
-      <Breadcrumbs items={[
-        { label: "Home",        href: "/"     },
-        { label: "Collections", href: "/shop" },
-        ...(category ? [{ label: category }] : []),
-        ...(filter === "free" ? [{ label: "Free Downloads" }] : []),
-      ]} />
 
       <div className="shop-header">
         <h1 className="section-title shop-page-title">

@@ -9630,8 +9630,11 @@ button:active:not(:disabled) { transform: translateY(0px) scale(0.98) !important
   will-change: transform;
 }
 /* Disable non-essential animations for users who prefer reduced motion */
+/* hw-track excluded so the device-page slideshow always runs */
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
+  *:not(.hw-track):not(.hw-monitor),
+  *:not(.hw-track):not(.hw-monitor)::before,
+  *:not(.hw-track):not(.hw-monitor)::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
@@ -10987,3 +10990,186 @@ html[data-theme="ghost"] body {
 
 
 /* ── FOG OVERLAY ──────────────────────────────────────────────────────── */
+/* ═══════════════════════════════════════════════════════════════
+   DEVICE PAGE INTRO — Scrolling monitor/phone slideshow strip
+   Used in: /pc, /iphone, /android page HTML content blocks
+   ═══════════════════════════════════════════════════════════════ */
+
+@keyframes hw-vertical-scroll {
+  0%   { transform: translateY(0); }
+  100% { transform: translateY(-50%); }
+}
+
+@keyframes hw-pulse-pc {
+  0%,100% { box-shadow: 0 0 0 2px #881337, 0 0 18px 4px rgba(136,19,55,0.3); }
+  50%     { box-shadow: 0 0 0 2px #be123c, 0 0 42px 10px rgba(136,19,55,0.5); }
+}
+
+/* Layout wrapper */
+.hw-outer {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  align-items: center;
+}
+
+/* Text box */
+.hw-textbox {
+  border: 2px solid #881337;
+  animation: hw-pulse-pc 4s ease-in-out infinite;
+  padding: 36px 40px;
+  position: relative;
+  align-self: center;
+  background: linear-gradient(180deg, rgba(136,19,55,0.04) 0%, transparent 100%);
+}
+.hw-textbox::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 0% 50%, rgba(136,19,55,0.08) 0%, transparent 60%);
+  pointer-events: none;
+}
+.hw-textbox p {
+  font-size: 0.97rem !important;
+  line-height: 1.75 !important;
+  font-weight: 300 !important;
+  margin-bottom: 9px !important;
+  color: var(--text-secondary, #8a8099) !important;
+}
+.hw-gold  { color: #fb7185; font-style: italic; }
+.hw-strong { color: var(--text-primary, #e0e0f8); font-weight: 600; }
+.hw-pc-section-break { margin-top: 16px; margin-bottom: 8px; }
+
+.hw-footer {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px dashed rgba(106,96,128,0.2);
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+.hw-footer-label {
+  font-family: var(--font-space, monospace);
+  font-size: 0.5rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted, #9a9099);
+}
+.hw-footer a {
+  font-family: var(--font-space, monospace);
+  font-size: 0.52rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #fb7185;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* Collage container */
+.hw-collage {
+  position: relative;
+  height: 400px;
+  overflow: hidden;
+  background: rgba(0,0,0,0.3);
+  border-radius: 20px;
+  box-shadow: inset 0 0 30px rgba(0,0,0,0.8), 0 0 20px rgba(136,19,55,0.1);
+}
+
+/* Scrolling track — ALWAYS running, immune to reduced-motion override */
+.hw-track {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px 10px;
+  width: 100%;
+  animation: hw-vertical-scroll 20s linear infinite !important;
+  animation-play-state: running !important;
+  will-change: transform;
+}
+
+/* Pause on hover */
+.hw-collage:hover .hw-track {
+  animation-play-state: paused !important;
+}
+
+/* Monitor frame — 16:9 */
+.hw-monitor {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 0 0 1px rgba(136,19,55,0.4), 0 0 0 2px rgba(0,0,0,0.8), 0 10px 30px rgba(0,0,0,0.6);
+  border: 1px solid #2a1218;
+  position: relative;
+  flex-shrink: 0;
+}
+.hw-monitor::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background: linear-gradient(120deg, rgba(136,19,55,0.1) 0%, transparent 40%, transparent 85%, rgba(0,0,0,0.3) 100%);
+  transition: background 0.3s ease;
+}
+.hw-monitor img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.hw-monitor:hover {
+  box-shadow: 0 0 0 2px #fb7185, 0 0 0 4px #000, 0 15px 40px rgba(0,0,0,0.8) !important;
+  transform: scale(1.02);
+  z-index: 10;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.hw-monitor:hover::before {
+  background: linear-gradient(120deg, rgba(136,19,55,0.2) 0%, transparent 40%, transparent 85%, rgba(0,0,0,0.1) 100%);
+}
+
+/* Fade masks */
+.hw-fade-top, .hw-fade-bottom {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 60px;
+  z-index: 5;
+  pointer-events: none;
+}
+.hw-fade-top    { top: 0;    background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent); }
+.hw-fade-bottom { bottom: 0; background: linear-gradient(to top,   rgba(0,0,0,0.8), transparent); }
+
+/* iPhone / Android phone strip variant */
+.hw-phone-strip {
+  position: relative;
+  height: 420px;
+  overflow: hidden;
+  background: rgba(0,0,0,0.25);
+  border-radius: 20px;
+  box-shadow: inset 0 0 30px rgba(0,0,0,0.7);
+}
+.hw-phone-frame {
+  width: 100%;
+  aspect-ratio: 9 / 19.5;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 0 0 1px rgba(180,30,60,0.35), 0 8px 24px rgba(0,0,0,0.7);
+  border: 1px solid #1e1014;
+  position: relative;
+  flex-shrink: 0;
+}
+.hw-phone-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .hw-outer   { grid-template-columns: 1fr; }
+  .hw-collage { display: none; }
+  .hw-phone-strip { display: none; }
+  .hw-textbox { width: 100%; }
+}

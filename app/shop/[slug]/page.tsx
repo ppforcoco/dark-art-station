@@ -6,7 +6,6 @@ import Link from "next/link";
 import { db } from "@/lib/db";
 import { getPublicUrl } from "@/lib/r2";
 import AdSlot from "@/components/AdSlot";
-import Breadcrumbs from "@/components/Breadcrumbs";
 import AdminHtmlBlock from "@/components/AdminHtmlBlock";
 import { sanitizeAdminHtml } from "@/lib/sanitize-html";
 
@@ -170,13 +169,6 @@ export default async function CollectionPage({ params }: PageProps) {
       className="min-h-screen"
       style={{ backgroundColor: "var(--bg-primary)", color: "var(--text-primary)" }}
     >
-      <Breadcrumbs
-        items={[
-          { label: "Home", href: "/" },
-          { label: "Obsessions", href: "/obsessions" },
-          { label: collection.title },
-        ]}
-      />
 
       {/* ── Title + Description — matches iPhone/Android page style ── */}
       <section className="max-w-7xl mx-auto px-6 md:px-[60px] pt-10 pb-8">

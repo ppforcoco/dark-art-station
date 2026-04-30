@@ -5,7 +5,6 @@ import Image from "next/image";
 import { db, getPageContent } from "@/lib/db";
 import AdSlot from "@/components/AdSlot";
 import AgeGateLink from "@/components/AgeGateLink";
-import Breadcrumbs from "@/components/Breadcrumbs";
 import AdminHtmlBlock from "@/components/AdminHtmlBlock";
 import { sanitizeAdminHtml } from "@/lib/sanitize-html";
 
@@ -59,11 +58,6 @@ export default async function ObsessionsPage() {
 
   return (
     <main style={{ minHeight: "100vh", backgroundColor: "var(--bg-primary)", color: "var(--text-primary)" }}>
-
-      <Breadcrumbs items={[
-        { label: "Home", href: "/" },
-        { label: "Obsessions", href: "/obsessions" },
-      ]} />
 
       {/* ── Title + Description (matches iPhone/Android page style) ── */}
       <section className="max-w-7xl mx-auto px-6 md:px-[60px] pt-10 pb-8">
