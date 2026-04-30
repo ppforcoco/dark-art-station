@@ -7,7 +7,6 @@ import { shouldCountPageView } from "@/lib/analytics-filter";
 import { getPublicUrl } from "@/lib/r2";
 import AdSlot from "@/components/AdSlot";
 import DeviceMockup from "@/components/DeviceMockup";
-
 import RelatedWallpapers from "@/components/RelatedWallpapers";
 import DownloadButton from "@/components/DownloadButton";
 import RecentlyViewed from "@/components/RecentlyViewed";

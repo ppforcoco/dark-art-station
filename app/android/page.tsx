@@ -6,7 +6,6 @@ import { db, getPageContent } from "@/lib/db";
 import { getPublicUrl } from "@/lib/r2";
 import AdSlot from "@/components/AdSlot";
 import Pagination from "@/components/Pagination";
-
 import DeviceImageCard from "@/components/DeviceImageCard";
 
 export const revalidate = 60;
