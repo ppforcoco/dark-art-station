@@ -6,7 +6,7 @@ import { db, getPageContent } from "@/lib/db";
 import { getPublicUrl } from "@/lib/r2";
 import AdSlot from "@/components/AdSlot";
 import Pagination from "@/components/Pagination";
-import Breadcrumbs from "@/components/Breadcrumbs";
+
 import DeviceImageCard from "@/components/DeviceImageCard";
 
 export const revalidate = 60;
@@ -80,12 +80,6 @@ export default async function IphonePage({ searchParams }: PageProps) {
 
   return (
     <main className="min-h-screen" style={{ backgroundColor: "var(--bg-primary)", color: "var(--text-primary)" }}>
-
-      <Breadcrumbs items={[
-        { label: "Home",    href: "/"       },
-        { label: "iPhone", href: "/iphone" },
-        ...(tag ? [{ label: `#${tag}` }] : []),
-      ]} />
 
       <section className="max-w-7xl mx-auto px-6 md:px-[60px] pt-10 pb-8">
         <h1 className="font-display text-3xl md:text-4xl font-bold leading-tight mb-6">

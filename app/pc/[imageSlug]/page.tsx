@@ -7,7 +7,7 @@ import { db, getRelatedImages } from "@/lib/db";
 import { getPublicUrl } from "@/lib/r2";
 import AdSlot from "@/components/AdSlot";
 import DeviceMockup from "@/components/DeviceMockup";
-import Breadcrumbs from "@/components/Breadcrumbs";
+
 import RelatedWallpapers from "@/components/RelatedWallpapers";
 import DownloadButton from "@/components/DownloadButton";
 import PreviewButton from "@/components/PreviewButton";
@@ -136,12 +136,6 @@ export default async function PcImagePage({ params }: PageProps) {
 
   return (
     <main className="min-h-screen" style={{ backgroundColor: "var(--bg-primary)", color: "var(--text-primary)" }}>
-
-      <Breadcrumbs items={[
-        { label: "Home", href: "/"   },
-        { label: "PC",   href: "/pc" },
-        { label: image.title },
-      ]} />
 
       <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_MAIN} width={728} height={90} />
 
