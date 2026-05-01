@@ -222,6 +222,40 @@ export default function DeviceImageCard({
           sizes={sizes}
         />
 
+        {/* ── Badge chips — derived from tags, no emojis ── */}
+        {(() => {
+          const BADGE_MAP: Record<string, { label: string; color: string; bg: string }> = {
+            "badge-new":       { label: "NEW",       color: "#4caf50", bg: "rgba(76,175,80,0.15)"   },
+            "badge-premium":   { label: "PREMIUM",   color: "#c9a84c", bg: "rgba(201,168,76,0.15)"  },
+            "badge-trending":  { label: "TRENDING",  color: "#ff6b35", bg: "rgba(255,107,53,0.15)"  },
+            "badge-hot":       { label: "HOT",       color: "#c0001a", bg: "rgba(192,0,26,0.15)"    },
+            "badge-exclusive": { label: "EXCLUSIVE", color: "#9b59b6", bg: "rgba(155,89,182,0.15)"  },
+            "badge-limited":   { label: "LIMITED",   color: "#e67e22", bg: "rgba(230,126,34,0.15)"  },
+          };
+          const found = tags.find(t => BADGE_MAP[t]);
+          if (!found) return null;
+          const { label, color, bg } = BADGE_MAP[found];
+          return (
+            <div style={{
+              position: "absolute", top: "10px", left: "8px", zIndex: 10,
+              background: bg,
+              border: `1px solid ${color}`,
+              color,
+              fontSize: "0.42rem",
+              fontFamily: "var(--font-space, monospace)",
+              fontWeight: 700,
+              padding: "2px 7px",
+              letterSpacing: "0.16em",
+              textTransform: "uppercase",
+              borderRadius: "2px",
+              backdropFilter: "blur(4px)",
+              pointerEvents: "none",
+            }}>
+              {label}
+            </div>
+          );
+        })()}
+
         {/* Preview button — top-left on hover */}
         <button
           className="dic-preview-btn"

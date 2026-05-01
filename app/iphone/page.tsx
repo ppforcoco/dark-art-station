@@ -54,8 +54,8 @@ export default async function IphonePage({ searchParams }: PageProps) {
     ...(tag ? { tags: { has: tag } } : {}),
   };
 
-  // Fetch pinned (sortOrder < 0), regular images, total, page content in parallel
-  const [pinnedImages, images, total, pageContent] = await Promise.all([
+  // Fetch pinned (sortOrder < 0), regular images, total, page content, fresh drops in parallel
+  const [pinnedImages, images, total, pageContent, freshDrops] = await Promise.all([
     (!tag && page === 1)
       ? db.image.findMany({
           where: { collectionId: null, deviceType: "IPHONE", sortOrder: { lt: 0 } },
@@ -73,6 +73,15 @@ export default async function IphonePage({ searchParams }: PageProps) {
     }),
     db.image.count({ where: { ...where, sortOrder: { gte: 0 } } }),
     getPageContent("iphone"),
+    // Fresh Drops: badge-new iPhone images, no date restriction
+    (!tag && page === 1)
+      ? db.image.findMany({
+          where: { tags: { has: "badge-new" }, deviceType: "IPHONE", isAdult: false },
+          orderBy: { updatedAt: "desc" },
+          take: 10,
+          select: { id: true, slug: true, title: true, r2Key: true, viewCount: true, tags: true, isAdult: true },
+        })
+      : Promise.resolve([] as Array<{ id: string; slug: string; title: string; r2Key: string; viewCount: number; tags: string[]; isAdult: boolean }>),
   ]);
 
   const totalPages = Math.ceil(total / PAGE_SIZE);
@@ -160,8 +169,55 @@ export default async function IphonePage({ searchParams }: PageProps) {
         </section>
       )}
 
+      {/* ── Fresh Drops: badge-new iPhone images, 9:16, shown only on page 1, no tag ── */}
+      {freshDrops.length > 0 && (
+        <section className="max-w-7xl mx-auto px-6 md:px-[60px] pb-10">
+          <div style={{ display: "flex", alignItems: "center", gap: "14px", marginBottom: "20px" }}>
+            <span style={{
+              fontFamily: "var(--font-space, monospace)",
+              fontSize: "0.58rem",
+              letterSpacing: "0.22em",
+              textTransform: "uppercase",
+              color: "#4caf50",
+              border: "1px solid rgba(76,175,80,0.5)",
+              padding: "5px 12px",
+              background: "rgba(76,175,80,0.08)",
+              boxShadow: "0 0 12px rgba(76,175,80,0.15)",
+            }}>Fresh Drops</span>
+            <div style={{ flex: 1, height: "1px", background: "linear-gradient(to right, rgba(76,175,80,0.35), transparent)" }} />
+            <span style={{
+              fontFamily: "var(--font-space, monospace)",
+              fontSize: "0.52rem",
+              letterSpacing: "0.14em",
+              color: "rgba(76,175,80,0.6)",
+              textTransform: "uppercase",
+            }}>{freshDrops.length} wallpaper{freshDrops.length !== 1 ? "s" : ""}</span>
+          </div>
+
+          <div style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fill, minmax(120px, 1fr))",
+            gap: "clamp(10px,1.8vw,20px)",
+          }}>
+            {freshDrops.map((img, idx) => (
+              <DeviceImageCard
+                key={img.id}
+                href={`/iphone/${img.slug}`}
+                src={getPublicUrl(img.r2Key)}
+                alt={`${img.title} — new dark iPhone wallpaper HD`}
+                title={img.title}
+                tags={img.tags}
+                isAdult={img.isAdult}
+                priority={idx < 5}
+                aspectRatio="9/16"
+                sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 15vw"
+              />
+            ))}
+          </div>
+        </section>
+      )}
+
       <section className="max-w-7xl mx-auto px-6 md:px-[60px] py-10">
-        {images.length === 0 ? (
           <div className="hw-coming-soon">
             <div className="hw-coming-soon__sigil">✦ ☽ ✦</div>
             <div className="hw-coming-soon__bar" />

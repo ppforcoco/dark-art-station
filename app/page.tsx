@@ -60,15 +60,11 @@ export default async function Home() {
   });
 
 
-  // Badge sections — New This Week + Premium This Week
-  const ONE_WEEK_AGO = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
-
-  const [newThisWeek, premiumThisWeek] = await Promise.all([
+  // Badge sections — New This Week + Premium This Week  const [newThisWeek, premiumThisWeek] = await Promise.all([
     db.image.findMany({
       where: {
         tags: { has: "badge-new" },
         isAdult: false,
-        createdAt: { gte: ONE_WEEK_AGO },
       },
       orderBy: { updatedAt: "desc" },
       take: 6,
@@ -78,7 +74,6 @@ export default async function Home() {
       where: {
         tags: { has: "badge-premium" },
         isAdult: false,
-        createdAt: { gte: ONE_WEEK_AGO },
       },
       orderBy: { updatedAt: "desc" },
       take: 6,
@@ -173,7 +168,7 @@ export default async function Home() {
 
           {/* RIGHT — Phone mockups */}
           <div className="hw-hero-phones-wrap" style={{ marginTop: "0", overflow: "visible", paddingTop: "20px", paddingBottom: "16px" }}>
-            <div className="dt-hero-phones" style={{ gap: "clamp(6px,1.2vw,20px)", alignItems: "flex-end", padding: "0 8px" }}>
+            <div className="dt-hero-phones" style={{ gap: "clamp(10px,1.8vw,28px)", alignItems: "flex-end", padding: "0 8px" }}>
               {[
                 { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/pin/gorilla-iphone-wallpaper.jpeg", alt: "Gorilla", featured: false },
                 { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/wallpapers/shadows-have-eyes-android.webp", alt: "Shadow Eyes", featured: false },
@@ -194,7 +189,7 @@ export default async function Home() {
                     transformOrigin: "bottom center",
                   } as React.CSSProperties}
                 >
-                  <div className="dt-hero-phone" style={{ width: "clamp(90px,11vw,165px)", height: "clamp(280px,38vw,520px)", borderRadius: "clamp(16px,2vw,28px)" }}>
+                  <div className="dt-hero-phone" style={{ width: "clamp(70px,8vw,120px)", height: "clamp(200px,26vw,380px)", borderRadius: "clamp(12px,1.5vw,22px)" }}>
                     <div className="dt-hero-phone__btn dt-hero-phone__btn--power" aria-hidden="true" />
                     <div className="dt-hero-phone__btn dt-hero-phone__btn--vol1" aria-hidden="true" />
                     <div className="dt-hero-phone__btn dt-hero-phone__btn--vol2" aria-hidden="true" />
@@ -293,7 +288,7 @@ export default async function Home() {
           <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse 60% 40% at 50% 0%, rgba(76,175,80,0.06) 0%, transparent 70%)", pointerEvents: "none" }} />
 
           <div className="dt-section-head dt-section-head--center" style={{ marginBottom: "clamp(24px,4vw,40px)" }}>
-            <span className="dt-eyebrow" style={{ color: "#4caf50" }}>✨ Fresh From The Vault</span>
+            <span className="dt-eyebrow" style={{ color: "#4caf50" }}>Fresh From The Vault</span>
             <h2 className="dt-section-title">New This Week</h2>
             <p className="dt-section-sub" style={{ maxWidth: "480px", margin: "0 auto" }}>
               Just surfaced. These disappear from this section in 48 hours.
@@ -328,7 +323,7 @@ export default async function Home() {
                       <div style={{ position: "absolute", inset: 0, background: "linear-gradient(135deg, rgba(255,255,255,0.06) 0%, transparent 50%)", borderRadius: "20px", pointerEvents: "none" }} />
 
                       {/* NEW badge */}
-                      <div style={{ position: "absolute", top: "18px", left: "8px", background: "rgba(76,175,80,0.15)", border: "1px solid #4caf50", color: "#4caf50", fontSize: "0.5rem", fontFamily: "monospace", padding: "2px 6px", letterSpacing: "0.1em" }}>✨ NEW</div>
+                      <div style={{ position: "absolute", top: "18px", left: "8px", background: "rgba(76,175,80,0.15)", border: "1px solid #4caf50", color: "#4caf50", fontSize: "0.5rem", fontFamily: "monospace", padding: "2px 6px", letterSpacing: "0.1em" }}>NEW</div>
 
                       {/* Home indicator */}
                       <div style={{ position: "absolute", bottom: "6px", left: "50%", transform: "translateX(-50%)", width: "40px", height: "3px", background: "rgba(255,255,255,0.3)", borderRadius: "2px" }} />
@@ -359,7 +354,7 @@ export default async function Home() {
           <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse 60% 40% at 50% 0%, rgba(201,168,76,0.07) 0%, transparent 70%)", pointerEvents: "none" }} />
 
           <div className="dt-section-head dt-section-head--center" style={{ marginBottom: "clamp(24px,4vw,40px)" }}>
-            <span className="dt-eyebrow" style={{ color: "#c9a84c" }}>⭐ Hand-Picked Excellence</span>
+            <span className="dt-eyebrow" style={{ color: "#c9a84c" }}>Hand-Picked Excellence</span>
             <h2 className="dt-section-title">Premium This Week</h2>
             <p className="dt-section-sub" style={{ maxWidth: "480px", margin: "0 auto" }}>
               The finest pieces from the archive. Here for 48 hours, then back in the vault.
@@ -394,7 +389,7 @@ export default async function Home() {
                       <div style={{ position: "absolute", inset: 0, background: "linear-gradient(135deg, rgba(255,255,255,0.06) 0%, transparent 50%)", borderRadius: "20px", pointerEvents: "none" }} />
 
                       {/* PREMIUM badge */}
-                      <div style={{ position: "absolute", top: "18px", left: "8px", background: "rgba(201,168,76,0.15)", border: "1px solid #c9a84c", color: "#c9a84c", fontSize: "0.5rem", fontFamily: "monospace", padding: "2px 6px", letterSpacing: "0.1em" }}>⭐ PREMIUM</div>
+                      <div style={{ position: "absolute", top: "18px", left: "8px", background: "rgba(201,168,76,0.15)", border: "1px solid #c9a84c", color: "#c9a84c", fontSize: "0.5rem", fontFamily: "monospace", padding: "2px 6px", letterSpacing: "0.1em" }}>PREMIUM</div>
 
                       {/* Gold shimmer overlay */}
                       <div style={{ position: "absolute", inset: 0, background: "linear-gradient(135deg, rgba(201,168,76,0.04) 0%, transparent 60%)", borderRadius: "20px", pointerEvents: "none" }} />
