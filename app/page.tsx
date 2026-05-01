@@ -60,7 +60,8 @@ export default async function Home() {
   });
 
 
-  // Badge sections — New This Week + Premium This Week  const [newThisWeek, premiumThisWeek] = await Promise.all([
+  // Badge sections — New This Week + Premium This Week
+  const [newThisWeek, premiumThisWeek] = await Promise.all([
     db.image.findMany({
       where: {
         tags: { has: "badge-new" },
