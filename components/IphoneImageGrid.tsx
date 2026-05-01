@@ -32,7 +32,7 @@ interface IphoneImageGridProps {
   priorityCount?: number;
   /** When true, ALL images get priority={true}. Overrides priorityCount. */
   priority?: boolean;
-  aspectRatio?: string;
+  aspectRatio?: "9/16" | "16/9";
   sizes?: string;
   /**
    * Insert an empty spacer div after this 0-based index.
