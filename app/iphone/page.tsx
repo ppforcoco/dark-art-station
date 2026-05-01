@@ -43,6 +43,21 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
   };
 }
 
+// ── Serialisable image shape passed from Server → Client ──────────────────────
+interface ImageItem {
+  id: string;
+  slug: string;
+  title: string;
+  src: string;          // pre-resolved public URL — no functions crossing the boundary
+  viewCount: number;
+  tags: string[];
+  isAdult: boolean;
+}
+
+// ── Thin client wrapper so DeviceImageCard's mouse handlers stay client-side ──
+import IphoneImageGrid from "@/components/IphoneImageGrid";
+// NOTE: If IphoneImageGrid doesn't exist yet, see instructions in comments below.
+
 export default async function IphonePage({ searchParams }: PageProps) {
   const { tag, page: rawPage } = await searchParams;
   const page = Math.max(1, parseInt(rawPage ?? "1", 10) || 1);
@@ -54,8 +69,7 @@ export default async function IphonePage({ searchParams }: PageProps) {
     ...(tag ? { tags: { has: tag } } : {}),
   };
 
-  // Fetch pinned (sortOrder < 0), regular images, total, page content, fresh drops in parallel
-  const [pinnedImages, images, total, pageContent, freshDrops] = await Promise.all([
+  const [pinnedRaw, imagesRaw, total, pageContent, freshDropsRaw] = await Promise.all([
     (!tag && page === 1)
       ? db.image.findMany({
           where: { collectionId: null, deviceType: "IPHONE", sortOrder: { lt: 0 } },
@@ -73,7 +87,6 @@ export default async function IphonePage({ searchParams }: PageProps) {
     }),
     db.image.count({ where: { ...where, sortOrder: { gte: 0 } } }),
     getPageContent("iphone"),
-    // Fresh Drops: badge-new iPhone images, no date restriction
     (!tag && page === 1)
       ? db.image.findMany({
           where: { tags: { has: "badge-new" }, deviceType: "IPHONE", isAdult: false },
@@ -84,8 +97,42 @@ export default async function IphonePage({ searchParams }: PageProps) {
       : Promise.resolve([] as Array<{ id: string; slug: string; title: string; r2Key: string; viewCount: number; tags: string[]; isAdult: boolean }>),
   ]);
 
+  // ── Resolve all public URLs here on the server, pass plain strings to client ──
+  const pinnedImages: ImageItem[] = pinnedRaw.map((img) => ({
+    id: img.id, slug: img.slug, title: img.title,
+    src: getPublicUrl(img.r2Key),
+    viewCount: img.viewCount, tags: img.tags, isAdult: img.isAdult,
+  }));
+
+  const images: ImageItem[] = imagesRaw.map((img) => ({
+    id: img.id, slug: img.slug, title: img.title,
+    src: getPublicUrl(img.r2Key),
+    viewCount: img.viewCount, tags: img.tags, isAdult: img.isAdult,
+  }));
+
+  const freshDrops: ImageItem[] = freshDropsRaw.map((img) => ({
+    id: img.id, slug: img.slug, title: img.title,
+    src: getPublicUrl(img.r2Key),
+    viewCount: img.viewCount, tags: img.tags, isAdult: img.isAdult,
+  }));
+
   const totalPages = Math.ceil(total / PAGE_SIZE);
   const baseUrl    = tag ? `/iphone?tag=${encodeURIComponent(tag)}` : "/iphone";
+
+  const jsonLd = JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: tag ? `Dark #${tag} iPhone Wallpapers | Haunted Wallpapers` : "Free Dark iPhone Wallpapers HD | Haunted Wallpapers",
+    url: tag ? `${process.env.NEXT_PUBLIC_SITE_URL}/iphone?tag=${tag}` : `${process.env.NEXT_PUBLIC_SITE_URL}/iphone`,
+    numberOfItems: total,
+    itemListElement: images.map((img, i) => ({
+      "@type": "ListItem",
+      position: skip + i + 1,
+      url: `${process.env.NEXT_PUBLIC_SITE_URL}/iphone/${img.slug}`,
+      name: img.title,
+      image: img.src,
+    })),
+  });
 
   return (
     <main className="min-h-screen" style={{ backgroundColor: "var(--bg-primary)", color: "var(--text-primary)" }}>
@@ -132,7 +179,6 @@ export default async function IphonePage({ searchParams }: PageProps) {
         )}
       </section>
 
-
       {/* ── Pinned "The Most Haunted" top 3 — only on page 1, no tag filter ── */}
       {pinnedImages.length > 0 && (
         <section className="max-w-7xl mx-auto px-6 md:px-[60px] pb-10">
@@ -150,22 +196,19 @@ export default async function IphonePage({ searchParams }: PageProps) {
             }}>★ The Most Haunted</span>
             <div style={{ flex: 1, height: "1px", background: "linear-gradient(to right, rgba(192,0,26,0.35), transparent)" }} />
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "12px", maxWidth: "480px" }}>
-            {pinnedImages.map((img) => (
-              <DeviceImageCard
-                key={img.id}
-                href={`/iphone/${img.slug}`}
-                src={getPublicUrl(img.r2Key)}
-                alt={`${img.title} — free dark iPhone wallpaper HD`}
-                title={img.title}
-                tags={img.tags}
-                isAdult={img.isAdult}
-                priority={true}
-                aspectRatio="9/16"
-                sizes="(max-width: 640px) 33vw, 160px"
-              />
-            ))}
-          </div>
+          {/*
+            IphoneImageGrid is a "use client" component that renders DeviceImageCard internally.
+            Passing plain serialisable props (no functions) across the server→client boundary.
+          */}
+          <IphoneImageGrid
+            images={pinnedImages}
+            hrefPrefix="/iphone"
+            altSuffix="free dark iPhone wallpaper HD"
+            gridStyle={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "12px", maxWidth: "480px" }}
+            priority
+            aspectRatio="9/16"
+            sizes="(max-width: 640px) 33vw, 160px"
+          />
         </section>
       )}
 
@@ -194,26 +237,19 @@ export default async function IphonePage({ searchParams }: PageProps) {
             }}>{freshDrops.length} wallpaper{freshDrops.length !== 1 ? "s" : ""}</span>
           </div>
 
-          <div style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(120px, 1fr))",
-            gap: "clamp(10px,1.8vw,20px)",
-          }}>
-            {freshDrops.map((img, idx) => (
-              <DeviceImageCard
-                key={img.id}
-                href={`/iphone/${img.slug}`}
-                src={getPublicUrl(img.r2Key)}
-                alt={`${img.title} — new dark iPhone wallpaper HD`}
-                title={img.title}
-                tags={img.tags}
-                isAdult={img.isAdult}
-                priority={idx < 5}
-                aspectRatio="9/16"
-                sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 15vw"
-              />
-            ))}
-          </div>
+          <IphoneImageGrid
+            images={freshDrops}
+            hrefPrefix="/iphone"
+            altSuffix="new dark iPhone wallpaper HD"
+            gridStyle={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fill, minmax(120px, 1fr))",
+              gap: "clamp(10px,1.8vw,20px)",
+            }}
+            priorityCount={5}
+            aspectRatio="9/16"
+            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 15vw"
+          />
         </section>
       )}
 
@@ -232,32 +268,20 @@ export default async function IphonePage({ searchParams }: PageProps) {
             <p className="font-mono text-[0.6rem] tracking-[0.2em] uppercase text-[#4a445a] mb-6">
               — {total} wallpapers · page {page} of {totalPages}
             </p>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
-              {images.map((img, idx) => (
-                <React.Fragment key={img.id}>
-                  <DeviceImageCard
-                    href={`/iphone/${img.slug}`}
-                    src={getPublicUrl(img.r2Key)}
-                    alt={`${img.title} — free dark iPhone wallpaper HD`}
-                    title={img.title}
-                    tags={img.tags}
-                    isAdult={img.isAdult}
-                    priority={idx < 10}
-                    aspectRatio="9/16"
-                    sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 20vw"
-                  />
-                  {idx === 9 && (
-                    <div className="col-span-2 sm:col-span-3 md:col-span-4 lg:col-span-5 my-2">
-                    </div>
-                  )}
-                </React.Fragment>
-              ))}
-            </div>
+            <IphoneImageGrid
+              images={images}
+              hrefPrefix="/iphone"
+              altSuffix="free dark iPhone wallpaper HD"
+              gridClassName="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3"
+              priorityCount={10}
+              aspectRatio="9/16"
+              sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 20vw"
+              insertAfter={9}
+            />
             <Pagination currentPage={page} totalPages={totalPages} baseUrl={baseUrl} />
           </>
         )}
       </section>
-
 
       {/* ── Cross-Link: Don't let the page just end ── */}
       <section style={{
@@ -311,22 +335,7 @@ export default async function IphonePage({ searchParams }: PageProps) {
 
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "ItemList",
-            name: tag ? `Dark #${tag} iPhone Wallpapers | Haunted Wallpapers` : "Free Dark iPhone Wallpapers HD | Haunted Wallpapers",
-            url: tag ? `${process.env.NEXT_PUBLIC_SITE_URL}/iphone?tag=${tag}` : `${process.env.NEXT_PUBLIC_SITE_URL}/iphone`,
-            numberOfItems: total,
-            itemListElement: images.map((img, i) => ({
-              "@type": "ListItem",
-              position: skip + i + 1,
-              url: `${process.env.NEXT_PUBLIC_SITE_URL}/iphone/${img.slug}`,
-              name: img.title,
-              image: getPublicUrl(img.r2Key),
-            })),
-          }),
-        }}
+        dangerouslySetInnerHTML={{ __html: jsonLd }}
       />
     </main>
   );
