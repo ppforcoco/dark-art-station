@@ -194,7 +194,7 @@ export default async function Home() {
                     transformOrigin: "bottom center",
                   } as React.CSSProperties}
                 >
-                  <div className="dt-hero-phone" style={{ width: "clamp(90px,11vw,165px)", height: "clamp(180px,22vw,340px)", borderRadius: "clamp(16px,2vw,28px)" }}>
+                  <div className="dt-hero-phone" style={{ width: "clamp(90px,11vw,165px)", height: "clamp(280px,38vw,520px)", borderRadius: "clamp(16px,2vw,28px)" }}>
                     <div className="dt-hero-phone__btn dt-hero-phone__btn--power" aria-hidden="true" />
                     <div className="dt-hero-phone__btn dt-hero-phone__btn--vol1" aria-hidden="true" />
                     <div className="dt-hero-phone__btn dt-hero-phone__btn--vol2" aria-hidden="true" />
@@ -238,12 +238,19 @@ export default async function Home() {
         @media (min-width: 860px) {
           .hw-hero-split {
             grid-template-columns: minmax(320px,420px) 1fr !important;
-            align-items: flex-end !important;
+            align-items: stretch !important;
+            min-height: calc(100vh - var(--topbar-total, 72px) - var(--nav-h, 88px));
           }
           .hw-hero-phones-wrap {
             overflow: visible !important;
-            padding-top: 24px !important;
+            padding-top: 0 !important;
             padding-bottom: 0 !important;
+            display: flex !important;
+            align-items: flex-end !important;
+          }
+          .dt-hero-phones {
+            align-items: flex-end !important;
+            height: 100% !important;
           }
         }
         /* Foldable / tablet: generous but not full desktop */
@@ -271,6 +278,10 @@ export default async function Home() {
           .dt-hero-phones { justify-content: flex-start !important; }
         }
       `}</style>
+
+
+      <div className="hw-ad-row">
+      </div>
 
 
       {/* ══════════════════════════════════════════════════════════
@@ -1061,6 +1072,9 @@ export default async function Home() {
       </section>
 
       <HorrorFact />
+
+      <div className="hw-ad-row">
+      </div>
 
       {/* ══════════════════════════════════════════════════════════
           SECTION 5 — ABOUT / STORY
