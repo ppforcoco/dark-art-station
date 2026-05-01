@@ -5,7 +5,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { db, getRelatedImages } from "@/lib/db";
 import { getPublicUrl } from "@/lib/r2";
-import AdSlot from "@/components/AdSlot";
 import DeviceMockup from "@/components/DeviceMockup";
 import RelatedWallpapers from "@/components/RelatedWallpapers";
 import DownloadButton from "@/components/DownloadButton";
@@ -136,7 +135,6 @@ export default async function PcImagePage({ params }: PageProps) {
   return (
     <main className="min-h-screen" style={{ backgroundColor: "var(--bg-primary)", color: "var(--text-primary)" }}>
 
-      <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_MAIN} width={728} height={90} />
 
       {/* ── Main layout: image centered on mobile, side-by-side on md+ ── */}
       <section style={{ maxWidth: "1280px", margin: "0 auto", padding: "24px 24px 40px" }}>
@@ -175,6 +173,17 @@ export default async function PcImagePage({ params }: PageProps) {
 
           <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
             <div>
+              <Link href="/pc" style={{
+                fontFamily: "var(--font-space, monospace)",
+                fontSize: "0.6rem",
+                letterSpacing: "0.25em",
+                textTransform: "uppercase",
+                color: "#c0001a",
+                textDecoration: "none",
+                transition: "color 0.2s",
+              }}>
+                ← PC Wallpapers
+              </Link>
               <h1 style={{
                 fontFamily: "var(--font-cinzel, serif)",
                 fontSize: "clamp(1.5rem, 3vw, 2.4rem)",
@@ -213,7 +222,6 @@ export default async function PcImagePage({ params }: PageProps) {
             </div>
 
             {/* Ad unit — below download button for higher viewability score */}
-            <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_SIDEBAR} width={300} height={250} className="mt-2" />
           </div>
         </div>
       </section>
@@ -303,7 +311,6 @@ export default async function PcImagePage({ params }: PageProps) {
         </nav>
       )}
 
-      <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_FOOTER} width={728} height={90} />
 
       <RelatedWallpapers images={related} heading="More Dark Art You'll Like" landscape />
       <PageTracker item={{

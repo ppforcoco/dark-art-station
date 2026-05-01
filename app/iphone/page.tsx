@@ -4,7 +4,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { db, getPageContent } from "@/lib/db";
 import { getPublicUrl } from "@/lib/r2";
-import AdSlot from "@/components/AdSlot";
 import Pagination from "@/components/Pagination";
 import DeviceImageCard from "@/components/DeviceImageCard";
 
@@ -117,7 +116,6 @@ export default async function IphonePage({ searchParams }: PageProps) {
         )}
       </section>
 
-      <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_MAIN} width={728} height={90} />
 
       {/* ── Pinned "The Most Haunted" top 3 — only on page 1, no tag filter ── */}
       {pinnedImages.length > 0 && (
@@ -186,7 +184,6 @@ export default async function IphonePage({ searchParams }: PageProps) {
                   />
                   {idx === 9 && (
                     <div className="col-span-2 sm:col-span-3 md:col-span-4 lg:col-span-5 my-2">
-                      <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_MAIN} width={728} height={90} />
                     </div>
                   )}
                 </React.Fragment>
@@ -197,7 +194,6 @@ export default async function IphonePage({ searchParams }: PageProps) {
         )}
       </section>
 
-      <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_FOOTER} width={728} height={90} className="mt-8" />
 
       {/* ── Cross-Link: Don't let the page just end ── */}
       <section style={{

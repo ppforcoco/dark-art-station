@@ -4,7 +4,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { db, getPageContent } from "@/lib/db";
 import { getPublicUrl } from "@/lib/r2";
-import AdSlot from "@/components/AdSlot";
 import Pagination from "@/components/Pagination";
 import DeviceImageCard from "@/components/DeviceImageCard";
 
@@ -120,7 +119,6 @@ export default async function PcPage({ searchParams }: PageProps) {
         )}
       </section>
 
-      <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_MAIN} width={728} height={90} />
 
       {/* ── Pinned "The Most Haunted" top 3 — 16:9 ratio for PC ── */}
       {pinnedImages.length > 0 && (
@@ -190,7 +188,6 @@ export default async function PcPage({ searchParams }: PageProps) {
                   />
                   {idx === 5 && (
                     <div className="col-span-1 sm:col-span-2 lg:col-span-3 my-2">
-                      <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_MAIN} width={728} height={90} />
                     </div>
                   )}
                 </React.Fragment>
@@ -201,7 +198,6 @@ export default async function PcPage({ searchParams }: PageProps) {
         )}
       </section>
 
-      <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_FOOTER} width={728} height={90} className="mt-8" />
 
       {/* ── Cross-Link Footer ── */}
       <section style={{

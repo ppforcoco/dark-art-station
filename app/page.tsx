@@ -5,7 +5,6 @@ import Link from "next/link";
 import Image from "next/image";
 import { db, getWallpaperOfTheDay, getPageContent } from "@/lib/db";
 import { getPublicUrl } from "@/lib/r2";
-import AdSlot from "@/components/AdSlot";
 import RecentlyViewed from "@/components/RecentlyViewed";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
@@ -243,7 +242,6 @@ export default async function Home() {
 
 
       <div className="hw-ad-row">
-        <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_MAIN} width={728} height={90} />
       </div>
 
       {/* ══════════════════════════════════════════════════════════
@@ -899,7 +897,6 @@ export default async function Home() {
       </section>
 
       <div className="hw-ad-row">
-        <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_FOOTER} width={728} height={90} />
       </div>
 
       {/* ══════════════════════════════════════════════════════════

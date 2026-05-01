@@ -9103,7 +9103,7 @@ button:active:not(:disabled) { transform: translateY(0px) scale(0.98) !important
   border: 1px solid #1e1c2a;
   overflow: hidden;
   transition: border-color 0.3s, transform 0.3s;
-  aspect-ratio: 3 / 4;
+  aspect-ratio: 9 / 16;
   cursor: pointer;
   animation: dtFadeUp 0.5s ease calc(var(--delay, 0s)) both;
 }
@@ -9142,17 +9142,12 @@ button:active:not(:disabled) { transform: translateY(0px) scale(0.98) !important
   transition: opacity 0.3s;
 }
 .dt-obs-card:hover .dt-obs-card__veil {
-  background: linear-gradient(to top, rgba(139,0,0,0.7) 0%, rgba(0,0,0,0.3) 60%, transparent 100%);
+  background: linear-gradient(to top, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.3) 60%, transparent 100%);
 }
 
 /* Glitch stripe on hover */
 .dt-obs-card__glitch {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 3;
-  animation: dtGlitch 5s steps(1) infinite;
-  background: rgba(192,0,26,0.2);
+  display: none;
 }
 
 /* Blood drip on hover */
@@ -9630,11 +9625,11 @@ button:active:not(:disabled) { transform: translateY(0px) scale(0.98) !important
   will-change: transform;
 }
 /* Disable non-essential animations for users who prefer reduced motion */
-/* hw-track excluded so the device-page slideshow always runs */
+/* hw-track, hw-monitor, hw-phone, hw-p1-p5 excluded — device-page slideshow always runs */
 @media (prefers-reduced-motion: reduce) {
-  *:not(.hw-track):not(.hw-monitor),
-  *:not(.hw-track):not(.hw-monitor)::before,
-  *:not(.hw-track):not(.hw-monitor)::after {
+  *:not(.hw-track):not(.hw-monitor):not(.hw-phone):not(.hw-p1):not(.hw-p2):not(.hw-p3):not(.hw-p4):not(.hw-p5):not(.hw-collage-inner),
+  *:not(.hw-track):not(.hw-monitor):not(.hw-phone):not(.hw-p1):not(.hw-p2):not(.hw-p3):not(.hw-p4):not(.hw-p5):not(.hw-collage-inner)::before,
+  *:not(.hw-track):not(.hw-monitor):not(.hw-phone):not(.hw-p1):not(.hw-p2):not(.hw-p3):not(.hw-p4):not(.hw-p5):not(.hw-collage-inner)::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
@@ -11164,6 +11159,105 @@ html[data-theme="ghost"] body {
   height: 100%;
   object-fit: cover;
   display: block;
+}
+
+
+/* ── Floating phone collage — used in /iphone and /android page HTML content ── */
+/* hw-phone = the full floating collage container */
+.hw-phone {
+  position: relative;
+  height: 520px;
+  overflow: visible;
+}
+
+/* hw-collage-inner = absolutely positioned wrapper for all floating phones */
+.hw-collage-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+/* Individual phone positions — portrait 9:16 cards */
+.hw-p1, .hw-p2, .hw-p3, .hw-p4, .hw-p5 {
+  position: absolute;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow:
+    0 0 0 2px rgba(192,0,26,0.35),
+    0 16px 40px rgba(0,0,0,0.75),
+    0 0 24px rgba(192,0,26,0.12);
+  will-change: transform;
+}
+.hw-p1 img, .hw-p2 img, .hw-p3 img, .hw-p4 img, .hw-p5 img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Default positions & sizes — desktop */
+.hw-p1 { width: 130px; height: 235px; left: 0%;   top: 10%; animation: hw-float1 6s ease-in-out infinite !important; z-index: 1; }
+.hw-p2 { width: 150px; height: 272px; left: 18%;  top: 0%;  animation: hw-float2 7s ease-in-out infinite !important; z-index: 3; }
+.hw-p3 { width: 170px; height: 308px; left: 38%;  top: 8%;  animation: hw-float3 5.5s ease-in-out infinite !important; z-index: 5; box-shadow: 0 0 0 2.5px rgba(192,0,26,0.7), 0 20px 50px rgba(0,0,0,0.9), 0 0 40px rgba(192,0,26,0.3); }
+.hw-p4 { width: 150px; height: 272px; left: 62%;  top: 2%;  animation: hw-float4 6.5s ease-in-out infinite !important; z-index: 3; }
+.hw-p5 { width: 130px; height: 235px; left: 80%;  top: 14%; animation: hw-float5 7.5s ease-in-out infinite !important; z-index: 1; }
+
+/* Float keyframes — each phone bobs at a different rhythm */
+@keyframes hw-float1 {
+  0%, 100% { transform: translateY(0px) rotate(-3deg); }
+  50%       { transform: translateY(-14px) rotate(-3deg); }
+}
+@keyframes hw-float2 {
+  0%, 100% { transform: translateY(0px) rotate(1.5deg); }
+  50%       { transform: translateY(-18px) rotate(1.5deg); }
+}
+@keyframes hw-float3 {
+  0%, 100% { transform: translateY(-8px) rotate(0deg) scale(1); }
+  50%       { transform: translateY(-22px) rotate(0deg) scale(1.02); }
+}
+@keyframes hw-float4 {
+  0%, 100% { transform: translateY(0px) rotate(-1deg); }
+  50%       { transform: translateY(-16px) rotate(-1deg); }
+}
+@keyframes hw-float5 {
+  0%, 100% { transform: translateY(0px) rotate(3deg); }
+  50%       { transform: translateY(-12px) rotate(3deg); }
+}
+
+/* Hover: pause float, pop glow */
+.hw-p1:hover, .hw-p2:hover, .hw-p4:hover, .hw-p5:hover {
+  animation-play-state: paused !important;
+  box-shadow:
+    0 0 0 2px rgba(220,20,50,0.85),
+    0 20px 50px rgba(0,0,0,0.9),
+    0 0 40px rgba(192,0,26,0.4) !important;
+  z-index: 10;
+  transition: box-shadow 0.25s ease;
+}
+.hw-p3:hover {
+  animation-play-state: paused !important;
+  box-shadow:
+    0 0 0 3px rgba(220,20,50,1),
+    0 24px 60px rgba(0,0,0,0.95),
+    0 0 60px rgba(192,0,26,0.55) !important;
+  z-index: 10;
+  transition: box-shadow 0.25s ease;
+}
+
+/* Pulse animations for android/iphone variants */
+@keyframes hw-pulse-android {
+  0%,100% { box-shadow: 0 0 0 2px #881337, 0 0 18px 4px rgba(136,19,55,0.28); }
+  50%     { box-shadow: 0 0 0 2px #be123c, 0 0 42px 10px rgba(136,19,55,0.5); }
+}
+@keyframes hw-pulse-iphone {
+  0%,100% { box-shadow: 0 0 0 2px #881337, 0 0 18px 4px rgba(136,19,55,0.28); }
+  50%     { box-shadow: 0 0 0 2px #c0001a, 0 0 42px 10px rgba(192,0,26,0.5); }
+}
+
+/* Responsive — collapse to strip on mobile */
+@media (max-width: 768px) {
+  .hw-phone { display: none; }
+  .hw-collage-inner { display: none; }
 }
 
 /* Responsive */

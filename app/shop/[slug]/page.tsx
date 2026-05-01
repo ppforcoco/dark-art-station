@@ -5,7 +5,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { db } from "@/lib/db";
 import { getPublicUrl } from "@/lib/r2";
-import AdSlot from "@/components/AdSlot";
 import AdminHtmlBlock from "@/components/AdminHtmlBlock";
 import { sanitizeAdminHtml } from "@/lib/sanitize-html";
 
@@ -211,7 +210,6 @@ export default async function CollectionPage({ params }: PageProps) {
         )}
       </section>
 
-      <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_MAIN} width={728} height={90} />
 
       {/* ── Image Grid — full-width 9:16, matches iPhone/Android page ── */}
       <section className="max-w-7xl mx-auto px-6 md:px-[60px] py-10">
@@ -295,7 +293,6 @@ export default async function CollectionPage({ params }: PageProps) {
         )}
       </section>
 
-      <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_FOOTER} width={728} height={90} className="mt-8" />
 
       {/* ── You May Also Like ── */}
       {relatedCollections.length > 0 && (

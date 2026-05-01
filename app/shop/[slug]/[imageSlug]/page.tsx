@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { db, getRelatedImages } from "@/lib/db";
 import { getPublicUrl } from "@/lib/r2";
-import AdSlot from "@/components/AdSlot";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import DownloadButton from "@/components/DownloadButton";
 import RelatedWallpapers from "@/components/RelatedWallpapers";
 import SocialShare from "@/components/SocialShare";
@@ -146,8 +146,15 @@ export default async function CollectionImagePage({ params }: PageProps) {
       className="min-h-screen"
       style={{ backgroundColor: "var(--bg-primary)", color: "var(--text-primary)" }}
     >
+      <Breadcrumbs
+        items={[
+          { label: "Home", href: "/" },
+          { label: "Collections", href: "/collections" },
+          { label: collection.title, href: `/shop/${slug}` },
+          { label: image.title },
+        ]}
+      />
 
-      <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_MAIN} width={728} height={90} />
 
       {/* ── Main layout ── */}
       <section style={{ maxWidth: "1280px", margin: "0 auto", padding: "16px 24px 0" }}>
@@ -181,6 +188,12 @@ export default async function CollectionImagePage({ params }: PageProps) {
           {/* ── Right: info + download ── */}
           <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
             <div>
+              <Link
+                href={`/shop/${slug}`}
+                className="font-mono text-[0.6rem] tracking-[0.25em] uppercase text-[#8b0000] hover:text-[#c0001a] transition-colors"
+              >
+                ← {collection.title}
+              </Link>
               <h1 className="font-display text-2xl md:text-3xl font-bold mt-3 leading-tight">
                 {image.title}
               </h1>
@@ -254,13 +267,6 @@ export default async function CollectionImagePage({ params }: PageProps) {
               <span className="detail-fav-label">Save to Favorites</span>
             </div>
 
-            <AdSlot
-              slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_SIDEBAR}
-              format="rectangle"
-              width={300}
-              height={250}
-              className="mt-2"
-            />
           </div>
         </div>
       </section>
@@ -502,11 +508,6 @@ export default async function CollectionImagePage({ params }: PageProps) {
         </nav>
       )}
 
-      <AdSlot
-        slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_FOOTER}
-        width={728}
-        height={90}
-      />
 
       <RelatedWallpapers images={related} heading="More Dark Art You'll Like" />
 
@@ -566,6 +567,22 @@ export default async function CollectionImagePage({ params }: PageProps) {
                 "@type": "Organization",
                 name: "Haunted Wallpapers",
                 url: siteUrl,
+              },
+              shippingDetails: {
+                "@type": "OfferShippingDetails",
+                shippingRate: { "@type": "MonetaryAmount", value: "0", currency: "USD" },
+                shippingDestination: { "@type": "DefinedRegion", addressCountry: "US" },
+                deliveryTime: {
+                  "@type": "ShippingDeliveryTime",
+                  handlingTime: { "@type": "QuantitativeValue", minValue: 0, maxValue: 0, unitCode: "DAY" },
+                  transitTime: { "@type": "QuantitativeValue", minValue: 0, maxValue: 0, unitCode: "DAY" },
+                },
+              },
+              hasMerchantReturnPolicy: {
+                "@type": "MerchantReturnPolicy",
+                applicableCountry: "US",
+                returnPolicyCategory: "https://schema.org/MerchantReturnNotPermitted",
+                merchantReturnDays: 0,
               },
             },
             potentialAction: {

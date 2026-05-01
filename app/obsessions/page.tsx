@@ -3,7 +3,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { db, getPageContent } from "@/lib/db";
-import AdSlot from "@/components/AdSlot";
 import AgeGateLink from "@/components/AgeGateLink";
 import AdminHtmlBlock from "@/components/AdminHtmlBlock";
 import { sanitizeAdminHtml } from "@/lib/sanitize-html";
@@ -71,7 +70,6 @@ export default async function ObsessionsPage() {
         )}
       </section>
 
-      <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_MAIN} width={728} height={90} />
 
       {/* ── Collections Grid ── */}
       <section className="max-w-7xl mx-auto px-6 md:px-[60px] py-10">
@@ -188,7 +186,6 @@ export default async function ObsessionsPage() {
 
                 {groupIdx % 2 === 1 && (
                   <div style={{ marginTop: "28px", display: "flex", justifyContent: "center" }}>
-                    <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_MAIN} width={728} height={90} />
                   </div>
                 )}
               </div>
@@ -197,7 +194,6 @@ export default async function ObsessionsPage() {
         )}
       </section>
 
-      <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_FOOTER} width={728} height={90} className="mt-8" />
 
       <script
         type="application/ld+json"

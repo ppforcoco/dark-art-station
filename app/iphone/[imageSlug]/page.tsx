@@ -5,7 +5,6 @@ import Link from "next/link";
 import { db, getRelatedImages } from "@/lib/db";
 import { shouldCountPageView } from "@/lib/analytics-filter";
 import { getPublicUrl } from "@/lib/r2";
-import AdSlot from "@/components/AdSlot";
 import DeviceMockup from "@/components/DeviceMockup";
 import RelatedWallpapers from "@/components/RelatedWallpapers";
 import DownloadButton from "@/components/DownloadButton";
@@ -126,7 +125,6 @@ export default async function IphoneImagePage({ params }: PageProps) {
   return (
     <main className="min-h-screen" style={{ backgroundColor: "var(--bg-primary)", color: "var(--text-primary)" }}>
 
-      <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_MAIN} width={728} height={90} />
 
       {/* ── Main layout: image centered on mobile, side-by-side on md+ ── */}
       <section style={{ maxWidth: "1280px", margin: "0 auto", padding: "24px 24px 40px" }}>
@@ -156,6 +154,9 @@ export default async function IphoneImagePage({ params }: PageProps) {
 
           <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
             <div>
+              <Link href="/iphone" className="font-mono text-[0.6rem] tracking-[0.25em] uppercase text-[#8b0000] hover:text-[#c0001a] transition-colors">
+                ← iPhone Wallpapers
+              </Link>
               <h1 className="font-display text-2xl md:text-3xl font-bold mt-3 leading-tight">
                 {image.title}
               </h1>
@@ -187,7 +188,6 @@ export default async function IphoneImagePage({ params }: PageProps) {
             </div>
 
             {/* Ad unit — below download button for higher viewability score */}
-            <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_SIDEBAR} width={300} height={250} className="mt-2" />
           </div>
         </div>
       </section>
@@ -274,7 +274,6 @@ export default async function IphoneImagePage({ params }: PageProps) {
         </nav>
       )}
 
-      <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_FOOTER} width={728} height={90} />
 
       <RelatedWallpapers images={related} heading="More Dark Art You'll Like" />
       <PageTracker item={{

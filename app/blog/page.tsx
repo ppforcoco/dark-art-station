@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import AdSlot from "@/components/AdSlot";
 import { PrismaClient } from "@prisma/client";
 import { getPageContent } from "@/lib/db";
 
@@ -146,7 +145,6 @@ export default async function BlogPage() {
       <div className="blog-index-body">
 
         <div className="blog-index-ad">
-          <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_MAIN} width={728} height={90} />
         </div>
 
         {posts.length === 0 ? (
@@ -254,7 +252,6 @@ export default async function BlogPage() {
         )}
 
         <div className="blog-index-ad">
-          <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_FOOTER} width={728} height={90} />
         </div>
 
       </div>

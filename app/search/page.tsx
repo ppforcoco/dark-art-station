@@ -4,7 +4,6 @@ import Image from "next/image";
 import { searchWallpapers, type SearchResultItem } from "@/lib/db";
 import Pagination from "@/components/Pagination";
 import SearchPageClient from "@/components/SearchPageClient";
-import AdSlot from "@/components/AdSlot";
 
 const PAGE_SIZE = 24;
 
@@ -166,7 +165,6 @@ export default async function SearchPage({
 
       {/* Top ad */}
       <div className="search-ad-top">
-        <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_MAIN} width={728} height={90} />
       </div>
 
       {/* Big live search bar */}
@@ -229,7 +227,6 @@ export default async function SearchPage({
                   <ResultCard key={item.id} item={item} />
                   {idx === 5 && (
                     <div key="search-mid-ad" style={{ gridColumn: "1 / -1" }}>
-                      <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_MAIN} width={728} height={90} />
                     </div>
                   )}
                 </>
@@ -249,11 +246,6 @@ export default async function SearchPage({
         <aside className="search-sidebar">
           <div className="search-sidebar-ad-sticky">
             <p className="search-sidebar-label">Sponsored</p>
-            <AdSlot
-              slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_SIDEBAR}
-              width={300}
-              height={250}
-            />
           </div>
         </aside>
       </div>
@@ -261,7 +253,6 @@ export default async function SearchPage({
       {/* Bottom ad */}
       {(hasResults || query) && (
         <div className="search-ad-bottom">
-          <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_FOOTER} width={728} height={90} />
         </div>
       )}
 
