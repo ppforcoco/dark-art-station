@@ -21,6 +21,9 @@ export default function Header() {
   const [randomSpin, setRandomSpin] = useState(false);
   const [scrolled,   setScrolled]   = useState(false);
   const overlayInputRef = useRef<HTMLInputElement>(null);
+  const [liveResults, setLiveResults] = useState<{id:string;title:string;slug:string;r2Key:string;deviceType:string|null;collectionSlug:string|null}[]>([]);
+  const [liveLoading, setLiveLoading] = useState(false);
+  const debounceRef = useRef<ReturnType<typeof setTimeout>|null>(null);
 
   /* Always ghost theme */
   useEffect(() => {
@@ -47,7 +50,25 @@ export default function Header() {
   const toggleMenu  = useCallback(() => setMenuOpen(p => !p), []);
   const closeMenu   = useCallback(() => setMenuOpen(false), []);
   const openSearch  = useCallback(() => { setSearchOpen(true); setMenuOpen(false); setTimeout(() => overlayInputRef.current?.focus(), 80); }, []);
-  const closeSearch = useCallback(() => { setSearchOpen(false); setQuery(""); }, []);
+
+  const handleLiveSearch = useCallback((val: string) => {
+    setQuery(val);
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    if (!val.trim()) { setLiveResults([]); return; }
+    debounceRef.current = setTimeout(async () => {
+      setLiveLoading(true);
+      try {
+        const res = await fetch(`/api/search-live?q=${encodeURIComponent(val.trim())}&limit=6`);
+        if (res.ok) { const data = await res.json(); setLiveResults(data.results ?? []); }
+      } catch { setLiveResults([]); }
+      setLiveLoading(false);
+    }, 280);
+  }, []);
+
+  const closeSearchFull = useCallback(() => {
+    setSearchOpen(false); setQuery(""); setLiveResults([]);
+  }, []);
+  const closeSearch = closeSearchFull;
   const handleSearch = useCallback((e: React.FormEvent) => {
     e.preventDefault();
     const q = query.trim();
@@ -354,6 +375,76 @@ export default function Header() {
         }
         .hw2-search-close:hover { color: var(--white, #f0f0ff); }
 
+        /* Live search wrapper */
+        .hw2-search-wrap {
+          width: 100%;
+          max-width: 560px;
+          display: flex;
+          flex-direction: column;
+        }
+        .hw2-search-form {
+          max-width: 100%;
+        }
+        .hw2-live-results {
+          background: var(--deep, #18182a);
+          border: 1px solid rgba(144,144,184,0.2);
+          border-top: none;
+          border-radius: 0 0 12px 12px;
+          overflow: hidden;
+          display: flex;
+          flex-direction: column;
+        }
+        .hw2-live-loading {
+          padding: 12px 16px;
+          font-family: var(--font-space), monospace;
+          font-size: 0.7rem;
+          color: var(--smoke, #60608a);
+          letter-spacing: 0.08em;
+        }
+        .hw2-live-item {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          padding: 8px 14px;
+          text-decoration: none;
+          transition: background 0.15s;
+          border-top: 1px solid rgba(144,144,184,0.08);
+        }
+        .hw2-live-item:hover { background: rgba(144,144,184,0.07); }
+        .hw2-live-thumb {
+          width: 36px;
+          height: 64px;
+          border-radius: 4px;
+          overflow: hidden;
+          flex-shrink: 0;
+        }
+        .hw2-live-thumb img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          display: block;
+        }
+        .hw2-live-title {
+          font-family: var(--font-space), monospace;
+          font-size: 0.72rem;
+          color: var(--white, #f0f0ff);
+          letter-spacing: 0.03em;
+          line-height: 1.3;
+        }
+        .hw2-live-see-all {
+          display: block;
+          padding: 10px 16px;
+          font-family: var(--font-space), monospace;
+          font-size: 0.6rem;
+          letter-spacing: 0.12em;
+          text-transform: uppercase;
+          color: #c0001a;
+          text-decoration: none;
+          text-align: right;
+          border-top: 1px solid rgba(144,144,184,0.1);
+        }
+        .hw2-live-see-all:hover { color: #ff0022; }
+
         /* ── MOBILE MENU BACKDROP ── */
         .mobile-menu-backdrop {
           position: fixed;
@@ -505,19 +596,46 @@ export default function Header() {
 
       {/* ── SEARCH OVERLAY ── */}
       {searchOpen && (
-        <div className="hw2-search-overlay" onClick={closeSearch}>
-          <form className="hw2-search-form" onClick={e=>e.stopPropagation()} onSubmit={handleSearch}>
-            <input
-              ref={overlayInputRef}
-              className="hw2-search-input"
-              value={query}
-              onChange={e=>setQuery(e.target.value)}
-              placeholder="Search wallpapers…"
-              autoComplete="off"
-            />
-            <button type="submit" className="hw2-search-btn">Search</button>
-            <button type="button" className="hw2-search-close" onClick={closeSearch} aria-label="Close">✕</button>
-          </form>
+        <div className="hw2-search-overlay" onClick={closeSearchFull}>
+          <div className="hw2-search-wrap" onClick={e=>e.stopPropagation()}>
+            <form className="hw2-search-form" onSubmit={handleSearch}>
+              <input
+                ref={overlayInputRef}
+                className="hw2-search-input"
+                value={query}
+                onChange={e=>handleLiveSearch(e.target.value)}
+                placeholder="Search wallpapers…"
+                autoComplete="off"
+              />
+              <button type="submit" className="hw2-search-btn">Search</button>
+              <button type="button" className="hw2-search-close" onClick={closeSearchFull} aria-label="Close">✕</button>
+            </form>
+            {(liveResults.length > 0 || liveLoading) && (
+              <div className="hw2-live-results">
+                {liveLoading && <div className="hw2-live-loading">Searching…</div>}
+                {liveResults.map(img => {
+                  const href = img.collectionSlug
+                    ? `/shop/${img.collectionSlug}/${img.slug}`
+                    : img.deviceType
+                      ? `/${img.deviceType.toLowerCase()}/${img.slug}`
+                      : `/search?q=${encodeURIComponent(query)}`;
+                  return (
+                    <Link key={img.id} href={href} className="hw2-live-item" onClick={closeSearchFull}>
+                      <div className="hw2-live-thumb">
+                        <img src={`https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/${img.r2Key}`} alt={img.title} />
+                      </div>
+                      <span className="hw2-live-title">{img.title}</span>
+                    </Link>
+                  );
+                })}
+                {!liveLoading && liveResults.length > 0 && (
+                  <Link href={`/search?q=${encodeURIComponent(query)}`} className="hw2-live-see-all" onClick={closeSearchFull}>
+                    See all results →
+                  </Link>
+                )}
+              </div>
+            )}
+          </div>
         </div>
       )}
 

@@ -13,6 +13,7 @@ import PageTracker from "@/components/PageTracker";
 import FavoriteButton from "@/components/FavoriteButton";
 import { shouldCountPageView } from "@/lib/analytics-filter";
 import PreviewButton from "@/components/PreviewButton";
+import WallpaperTips from "@/components/WallpaperTips";
 
 export const dynamicParams = true;
 export const revalidate = 3600;
@@ -76,6 +77,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       images: [ogImage],
     },
     alternates: { canonical: `${siteUrl}/android/${imageSlug}` },
+    ...(image.isAdult ? { robots: { index: false, follow: false, nosnippet: true } } : {}),
   };
 }
 
@@ -129,6 +131,7 @@ export default async function AndroidImagePage({ params }: PageProps) {
 
   return (
     <main className="min-h-screen" style={{ backgroundColor: "var(--bg-primary)", color: "var(--text-primary)" }}>
+      <WallpaperTips mode="banner" />
 
 
       {/* ── Main layout: image centered on mobile, side-by-side on md+ ── */}
@@ -165,6 +168,28 @@ export default async function AndroidImagePage({ params }: PageProps) {
               <h1 className="font-display text-2xl md:text-3xl font-bold mt-3 leading-tight">
                 {image.title}
               </h1>
+              {/* FOMO Badges */}
+              {image.tags.filter((t: string) => t.startsWith("badge-")).length > 0 && (
+                <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", marginTop: "10px", marginBottom: "4px" }}>
+                  {image.tags.filter((t: string) => t.startsWith("badge-")).map((tag: string) => {
+                    const badgeMap: Record<string, { label: string; color: string; bg: string }> = {
+                      "badge-premium":   { label: "⭐ Premium",   color: "#c9a84c", bg: "rgba(201,168,76,0.15)" },
+                      "badge-trending":  { label: "🔥 Trending",  color: "#ff6b35", bg: "rgba(255,107,53,0.15)" },
+                      "badge-new":       { label: "✨ New",        color: "#4caf50", bg: "rgba(76,175,80,0.15)" },
+                      "badge-hot":       { label: "💀 Hot",        color: "#e040fb", bg: "rgba(224,64,251,0.15)" },
+                      "badge-exclusive": { label: "🌙 Exclusive",  color: "#42a5f5", bg: "rgba(66,165,245,0.15)" },
+                      "badge-limited":   { label: "⏳ Limited",    color: "#ff5252", bg: "rgba(255,82,82,0.15)" },
+                    };
+                    const b = badgeMap[tag];
+                    if (!b) return null;
+                    return (
+                      <span key={tag} style={{ background: b.bg, border: `1px solid ${b.color}`, color: b.color, fontSize: "0.65rem", fontFamily: "monospace", padding: "3px 10px", letterSpacing: "0.08em" }}>
+                        {b.label}
+                      </span>
+                    );
+                  })}
+                </div>
+              )}
             </div>
 
             {/* Always rendered — real description or auto-generated fallback */}

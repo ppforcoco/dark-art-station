@@ -14,6 +14,7 @@ import SocialShare from "@/components/SocialShare";
 import PageTracker from "@/components/PageTracker";
 import FavoriteButton from "@/components/FavoriteButton";
 import { shouldCountPageView } from "@/lib/analytics-filter";
+import WallpaperTips from "@/components/WallpaperTips";
 
 export const dynamicParams = true;
 export const revalidate = 3600;
@@ -81,6 +82,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       images: [ogImage],
     },
     alternates: { canonical: `${siteUrl}/pc/${imageSlug}` },
+    ...(image.isAdult ? { robots: { index: false, follow: false, nosnippet: true } } : {}),
   };
 }
 
@@ -134,6 +136,7 @@ export default async function PcImagePage({ params }: PageProps) {
 
   return (
     <main className="min-h-screen" style={{ backgroundColor: "var(--bg-primary)", color: "var(--text-primary)" }}>
+      <WallpaperTips mode="banner" />
 
 
       {/* ── Main layout: image centered on mobile, side-by-side on md+ ── */}

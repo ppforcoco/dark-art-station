@@ -896,6 +896,8 @@ export default async function Home() {
         </div>
       </section>
 
+      <HorrorFact />
+
       <div className="hw-ad-row">
       </div>
 
