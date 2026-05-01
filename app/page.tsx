@@ -6,6 +6,7 @@ import Image from "next/image";
 import { db, getWallpaperOfTheDay, getPageContent } from "@/lib/db";
 import { getPublicUrl } from "@/lib/r2";
 import RecentlyViewed from "@/components/RecentlyViewed";
+import HorrorFact from "@/components/HorrorFact";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
 const OG_IMAGE = `${SITE_URL}/og-image.jpg`;
