@@ -23,9 +23,8 @@ export async function GET(req: NextRequest) {
       slug: true,
       r2Key: true,
       deviceType: true,
-      collections: {
-        select: { collection: { select: { slug: true } } },
-        take: 1,
+      collection: {
+        select: { slug: true },
       },
     },
     orderBy: { viewCount: "desc" },
@@ -38,7 +37,7 @@ export async function GET(req: NextRequest) {
     slug:           img.slug,
     r2Key:          img.r2Key,
     deviceType:     img.deviceType,
-    collectionSlug: img.collections[0]?.collection?.slug ?? null,
+    collectionSlug: img.collection?.slug ?? null,
   }));
 
   return NextResponse.json({ results }, {
