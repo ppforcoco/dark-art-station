@@ -55,20 +55,20 @@ export default async function Home() {
     select: {
       id: true, slug: true, title: true, thumbnail: true,
       tag: true, icon: true, bgClass: true,
-      _count: { select: { images: true } },
+      _count: { select: { images: { where: { deviceType: "IPHONE" } } } },
     },
   });
 
 
   // Badge sections — New This Week + Premium This Week
-  const TWO_DAYS_AGO = new Date(Date.now() - 2 * 24 * 60 * 60 * 1000);
+  const ONE_WEEK_AGO = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
 
   const [newThisWeek, premiumThisWeek] = await Promise.all([
     db.image.findMany({
       where: {
         tags: { has: "badge-new" },
         isAdult: false,
-        updatedAt: { gte: TWO_DAYS_AGO },
+        createdAt: { gte: ONE_WEEK_AGO },
       },
       orderBy: { updatedAt: "desc" },
       take: 6,
@@ -78,7 +78,7 @@ export default async function Home() {
       where: {
         tags: { has: "badge-premium" },
         isAdult: false,
-        updatedAt: { gte: TWO_DAYS_AGO },
+        createdAt: { gte: ONE_WEEK_AGO },
       },
       orderBy: { updatedAt: "desc" },
       take: 6,

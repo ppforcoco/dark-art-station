@@ -15,6 +15,7 @@ import PageTracker from "@/components/PageTracker";
 import FavoriteButton from "@/components/FavoriteButton";
 import { shouldCountPageView } from "@/lib/analytics-filter";
 import WallpaperTips from "@/components/WallpaperTips";
+import KeyboardNav from "@/components/KeyboardNav";
 
 export const dynamicParams = true;
 export const revalidate = 3600;
@@ -328,6 +329,10 @@ export default async function PcImagePage({ params }: PageProps) {
         pageUrl={`${siteUrl}/pc/${imageSlug}`}
       />
       <RecentlyViewed currentSlug={image.slug} />
+      <KeyboardNav
+        prevHref={prevImage ? `/pc/${prevImage.slug}` : null}
+        nextHref={nextImage ? `/pc/${nextImage.slug}` : null}
+      />
 
       <script type="application/ld+json" dangerouslySetInnerHTML={{
         __html: JSON.stringify({

@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
+import KeyboardNav from "@/components/KeyboardNav";
 import { db, getRelatedImages } from "@/lib/db";
 import { getPublicUrl } from "@/lib/r2";
 import Breadcrumbs from "@/components/Breadcrumbs";
@@ -243,18 +244,7 @@ export default async function CollectionImagePage({ params }: PageProps) {
               </div>
             )}
 
-            {/* Format badge */}
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "12px", alignItems: "center" }}>
-              <span className="font-mono text-[0.6rem] tracking-[0.2em] uppercase px-3 py-1" style={{ color: "var(--text-muted)", border: "1px solid var(--border-dim)" }}>
-                HD · Free
-              </span>
-              <span className="font-mono text-[0.6rem] tracking-[0.2em] uppercase px-3 py-1" style={{ color: "var(--text-muted)", border: "1px solid var(--border-dim)" }}>
-                JPEG
-              </span>
-              <span className="font-mono text-[0.6rem] tracking-[0.2em] uppercase px-3 py-1" style={{ color: "var(--text-muted)", border: "1px solid var(--border-dim)" }}>
-                9:16 Portrait
-              </span>
-            </div>
+
 
             {/* ── DOWNLOAD SECTION ── */}
             <div className="download-section">
@@ -531,6 +521,11 @@ export default async function CollectionImagePage({ params }: PageProps) {
         </nav>
       )}
 
+
+      <KeyboardNav
+        prevHref={prevImage ? `/shop/${slug}/${prevImage.slug}` : null}
+        nextHref={nextImage ? `/shop/${slug}/${nextImage.slug}` : null}
+      />
 
       <RelatedWallpapers images={related} heading="More Dark Art You'll Like" />
 

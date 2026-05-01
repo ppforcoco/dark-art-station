@@ -14,6 +14,7 @@ import PageTracker from "@/components/PageTracker";
 import FavoriteButton from "@/components/FavoriteButton";
 import PreviewButton from "@/components/PreviewButton";
 import WallpaperTips from "@/components/WallpaperTips";
+import KeyboardNav from "@/components/KeyboardNav";
 
 export const dynamicParams = true;
 export const revalidate = 3600;
@@ -313,6 +314,10 @@ export default async function IphoneImagePage({ params }: PageProps) {
         pageUrl={`${siteUrl}/iphone/${imageSlug}`}
       />
       <RecentlyViewed currentSlug={image.slug} />
+      <KeyboardNav
+        prevHref={prevImage ? `/iphone/${prevImage.slug}` : null}
+        nextHref={nextImage ? `/iphone/${nextImage.slug}` : null}
+      />
 
       <script type="application/ld+json" dangerouslySetInnerHTML={{
         __html: JSON.stringify({

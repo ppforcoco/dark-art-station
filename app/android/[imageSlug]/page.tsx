@@ -14,6 +14,7 @@ import FavoriteButton from "@/components/FavoriteButton";
 import { shouldCountPageView } from "@/lib/analytics-filter";
 import PreviewButton from "@/components/PreviewButton";
 import WallpaperTips from "@/components/WallpaperTips";
+import KeyboardNav from "@/components/KeyboardNav";
 
 export const dynamicParams = true;
 export const revalidate = 3600;
@@ -314,6 +315,10 @@ export default async function AndroidImagePage({ params }: PageProps) {
         pageUrl={`${siteUrl}/android/${imageSlug}`}
       />
       <RecentlyViewed currentSlug={image.slug} />
+      <KeyboardNav
+        prevHref={prevImage ? `/android/${prevImage.slug}` : null}
+        nextHref={nextImage ? `/android/${nextImage.slug}` : null}
+      />
 
       <script type="application/ld+json" dangerouslySetInnerHTML={{
         __html: JSON.stringify({
