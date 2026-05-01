@@ -4,7 +4,7 @@ import { db, getPageContent } from "@/lib/db";
 import Link from "next/link";
 import ProductCard from "@/components/ProductCard";
 import Pagination from "@/components/Pagination";
-import AdSlot from "@/components/AdSlot";
+// AdSlot removed — disabled pending AdSense approval
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
 const OG_IMAGE = `${SITE_URL}/og-image.jpg`;
@@ -136,18 +136,6 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
                   isAdult={p.isAdult}
                 />
               );
-              if ((idx + 1) % 8 === 0) {
-                return [card, (
-                  <div key={`ad-${idx}`} style={{ gridColumn: "1 / -1" }}>
-                    <AdSlot
-                      slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_INFEED ?? process.env.NEXT_PUBLIC_ADSENSE_SLOT_MAIN}
-                      format="auto"
-                      width={728}
-                      height={90}
-                    />
-                  </div>
-                )];
-              }
               return [card];
             })}
           </div>

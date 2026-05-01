@@ -139,7 +139,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {/* ── Preconnect to CDN for faster asset loading ─────────────────── */}
         <link rel="preconnect" href="https://assets.hauntedwallpapers.com" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://assets.hauntedwallpapers.com" />
-        <link rel="preconnect" href="https://pagead2.googlesyndication.com" />
         <link rel="preconnect" href="https://www.googletagmanager.com" />
         
         {/* ── PWA & Icons ──────────────────────────────────────────────────── */}
@@ -161,19 +160,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <meta name="google-site-verification" content={process.env.NEXT_PUBLIC_GSC_VERIFICATION} />
         )}
         
-        {/* ── Google AdSense Account Verification ──────────────────────────── */}
-        {process.env.NEXT_PUBLIC_ADSENSE_PID && (
-          <meta name="google-adsense-account" content={process.env.NEXT_PUBLIC_ADSENSE_PID} />
-        )}
-        
-        {/* ── Google AdSense Script ────────────────────────────────────────── */}
-        {process.env.NEXT_PUBLIC_ADSENSE_PID && (
-          <script
-            async
-            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${process.env.NEXT_PUBLIC_ADSENSE_PID}`}
-            crossOrigin="anonymous"
-          />
-        )}
+        {/* ── Google AdSense — DISABLED pending approval ────────────────────── */}
+        {/* Re-enable after AdSense approval by uncommenting the lines below    */}
+        {/* <meta name="google-adsense-account" content={process.env.NEXT_PUBLIC_ADSENSE_PID} /> */}
+        {/* <script async src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${process.env.NEXT_PUBLIC_ADSENSE_PID}`} crossOrigin="anonymous" /> */}
         
         {/* ── Google Consent Mode v2 ───────────────────────────────────────── */}
         {/*                                                                     */}

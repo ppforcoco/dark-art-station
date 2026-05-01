@@ -214,14 +214,11 @@ export default function BlogPostClient({ post, allPosts }: { post: Post; allPost
 
         {/* ── Browse wallpapers CTA ── */}
         <div className="blog-wallpaper-cta">
-          <p className="blog-wallpaper-cta-text">
-            <span style={{ color: "#c0001a" }}>✦</span> Like what you read? Browse the collections.
-          </p>
           <div className="blog-wallpaper-cta-links">
-            <Link href="/collections"                    className="blog-wallpaper-cta-btn">All Collections</Link>
-            <Link href="/shop/dark-fantasy-art"          className="blog-wallpaper-cta-btn">Dark Fantasy</Link>
-            <Link href="/shop/horror-movie-posters"      className="blog-wallpaper-cta-btn">Horror Posters</Link>
-            <Link href="/shop/dark-minimal-horror"       className="blog-wallpaper-cta-btn">Dark Minimal</Link>
+            <Link href="/shop/dark-creatures-world"  className="blog-wallpaper-cta-btn">Dark Creatures</Link>
+            <Link href="/shop/the-anime-world"       className="blog-wallpaper-cta-btn">Anime World</Link>
+            <Link href="/shop/the-bone-street"       className="blog-wallpaper-cta-btn">Bone Street</Link>
+            <Link href="/shop/the-character-ward"    className="blog-wallpaper-cta-btn">Character Ward</Link>
           </div>
         </div>
 

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import AdSlot from "@/components/AdSlot";
+// AdSlot removed — disabled pending AdSense approval
 import { getPageContent } from "@/lib/db";
 
 export const metadata: Metadata = {
@@ -222,9 +222,6 @@ export default async function FaqPage() {
             </p>
           </section>
         </div>
-      </div>
-      <div style={{ maxWidth: "1280px", margin: "0 auto", padding: "0 24px 60px" }}>
-        <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_FOOTER} width={728} height={90} />
       </div>
     </main>
   );

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useCallback, useEffect } from "react";
-import AdSlot from "@/components/AdSlot";
+// AdSlot removed — disabled pending AdSense approval
 
 type ActiveTool = "resizer" | "darkener" | "upscaler" | "text" | "blur" | "split" | "oled" | "lockscreen";
 type ImgFormat = "jpeg" | "png" | "webp";
@@ -1457,11 +1457,6 @@ export default function ToolsPage() {
         <span className="tools-eyebrow">Free Utilities</span>
         <h1 className="tools-title">Wallpaper<br /><em>Tools</em></h1>
         <p className="tools-sub">Browser-based tools for customising wallpapers. Nothing is uploaded — everything runs on your device.</p>
-      </div>
-
-      {/* Ad between hero and tools */}
-      <div style={{ marginBottom: "32px" }}>
-        <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_MAIN} width={728} height={90} />
       </div>
 
       <div className="tools-layout">
