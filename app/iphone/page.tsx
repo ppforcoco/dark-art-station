@@ -218,6 +218,7 @@ export default async function IphonePage({ searchParams }: PageProps) {
       )}
 
       <section className="max-w-7xl mx-auto px-6 md:px-[60px] py-10">
+        {images.length === 0 ? (
           <div className="hw-coming-soon">
             <div className="hw-coming-soon__sigil">✦ ☽ ✦</div>
             <div className="hw-coming-soon__bar" />
