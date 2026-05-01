@@ -10,7 +10,6 @@ export async function GET(req: NextRequest) {
 
   const images = await db.image.findMany({
     where: {
-      published: true,
       isAdult: false,
       OR: [
         { title:       { contains: q, mode: "insensitive" } },
