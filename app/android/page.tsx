@@ -81,6 +81,27 @@ export default async function AndroidPage({ searchParams }: PageProps) {
     <main className="min-h-screen" style={{ backgroundColor: "var(--bg-primary)", color: "var(--text-primary)" }}>
       <WallpaperTips mode="banner" />
 
+      {/* ── Keyboard nav hint ── */}
+      <div style={{
+        borderBottom: "1px solid var(--border-dim, #2a2535)",
+        padding: "10px clamp(16px,4vw,60px)",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: "24px",
+        background: "var(--bg-secondary, var(--bg-primary))",
+      }}>
+        <span style={{ display: "flex", alignItems: "center", gap: "8px", fontFamily: "monospace", fontSize: "0.6rem", letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--text-muted, #6b6480)" }}>
+          <kbd style={{ border: "1px solid #3a3545", borderRadius: "3px", padding: "2px 7px", fontSize: "0.7rem", color: "var(--text-primary, #e0e0f8)", background: "#1a1625", lineHeight: 1.4 }}>←</kbd>
+          Prev
+        </span>
+        <span style={{ fontFamily: "monospace", fontSize: "0.5rem", letterSpacing: "0.2em", color: "#3a3545" }}>USE ARROW KEYS TO BROWSE</span>
+        <span style={{ display: "flex", alignItems: "center", gap: "8px", fontFamily: "monospace", fontSize: "0.6rem", letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--text-muted, #6b6480)" }}>
+          Next
+          <kbd style={{ border: "1px solid #3a3545", borderRadius: "3px", padding: "2px 7px", fontSize: "0.7rem", color: "var(--text-primary, #e0e0f8)", background: "#1a1625", lineHeight: 1.4 }}>→</kbd>
+        </span>
+      </div>
+
       <section className="max-w-7xl mx-auto px-6 md:px-[60px] pt-10 pb-8">
         <h1 className="font-display text-3xl md:text-4xl font-bold leading-tight mb-6">
           {tag ? (

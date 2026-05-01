@@ -16,6 +16,7 @@ import FavoriteButton from "@/components/FavoriteButton";
 import { shouldCountPageView } from "@/lib/analytics-filter";
 import WallpaperTips from "@/components/WallpaperTips";
 import KeyboardNav from "@/components/KeyboardNav";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 export const dynamicParams = true;
 export const revalidate = 3600;
@@ -139,6 +140,57 @@ export default async function PcImagePage({ params }: PageProps) {
     <main className="min-h-screen" style={{ backgroundColor: "var(--bg-primary)", color: "var(--text-primary)" }}>
       <WallpaperTips mode="banner" />
 
+      {/* ── Breadcrumb ── */}
+      <Breadcrumbs items={[
+        { label: "Home", href: "/" },
+        { label: "PC Wallpapers", href: "/pc" },
+        { label: image.title },
+      ]} />
+
+      {/* ── Prev / Next — TOP ── */}
+      {(prevImage || nextImage) && (
+        <nav style={{
+          maxWidth: "1280px", margin: "0 auto",
+          padding: "16px 24px",
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr",
+          gap: "12px",
+          borderBottom: "1px solid var(--border-dim)",
+        }}>
+          {prevImage ? (
+            <Link href={`/pc/${prevImage.slug}`}
+              style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: "12px", padding: "10px", border: "1px solid var(--border-dim)", textDecoration: "none" }}
+              className="hover:border-[rgba(139,0,0,0.5)] transition-colors">
+              <div style={{ position: "relative", flexShrink: 0, width: "86px", height: "54px", overflow: "hidden", borderRadius: "4px" }}>
+                <Image src={getPublicUrl(prevImage.r2Key)} alt={prevImage.title} fill className="object-cover" unoptimized sizes="86px" />
+              </div>
+              <div style={{ display: "flex", flexDirection: "column", gap: "4px", minWidth: 0 }}>
+                <span className="font-mono text-[0.5rem] tracking-[0.2em] uppercase" style={{ color: "var(--text-muted)" }}>← Previous</span>
+                <span className="font-body italic text-[0.75rem]"
+                  style={{ color: "var(--text-primary)", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" as const, overflow: "hidden" }}>
+                  {prevImage.title}
+                </span>
+              </div>
+            </Link>
+          ) : <div />}
+          {nextImage ? (
+            <Link href={`/pc/${nextImage.slug}`}
+              style={{ display: "flex", flexDirection: "row-reverse", alignItems: "center", gap: "12px", padding: "10px", border: "1px solid var(--border-dim)", textDecoration: "none" }}
+              className="hover:border-[rgba(139,0,0,0.5)] transition-colors">
+              <div style={{ position: "relative", flexShrink: 0, width: "86px", height: "54px", overflow: "hidden", borderRadius: "4px" }}>
+                <Image src={getPublicUrl(nextImage.r2Key)} alt={nextImage.title} fill className="object-cover" unoptimized sizes="86px" />
+              </div>
+              <div style={{ display: "flex", flexDirection: "column", gap: "4px", minWidth: 0, textAlign: "right" }}>
+                <span className="font-mono text-[0.5rem] tracking-[0.2em] uppercase" style={{ color: "var(--text-muted)" }}>Next →</span>
+                <span className="font-body italic text-[0.75rem]"
+                  style={{ color: "var(--text-primary)", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" as const, overflow: "hidden" }}>
+                  {nextImage.title}
+                </span>
+              </div>
+            </Link>
+          ) : <div />}
+        </nav>
+      )}
 
       {/* ── Main layout: image centered on mobile, side-by-side on md+ ── */}
       <section style={{ maxWidth: "1280px", margin: "0 auto", padding: "24px 24px 40px" }}>
@@ -177,17 +229,6 @@ export default async function PcImagePage({ params }: PageProps) {
 
           <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
             <div>
-              <Link href="/pc" style={{
-                fontFamily: "var(--font-space, monospace)",
-                fontSize: "0.6rem",
-                letterSpacing: "0.25em",
-                textTransform: "uppercase",
-                color: "#c0001a",
-                textDecoration: "none",
-                transition: "color 0.2s",
-              }}>
-                ← PC Wallpapers
-              </Link>
               <h1 style={{
                 fontFamily: "var(--font-cinzel, serif)",
                 fontSize: "clamp(1.5rem, 3vw, 2.4rem)",
@@ -271,49 +312,7 @@ export default async function PcImagePage({ params }: PageProps) {
         }
       `}</style>
 
-      {/* ── Prev / Next ── */}
-      {(prevImage || nextImage) && (
-        <nav style={{
-          maxWidth: "1280px", margin: "0 auto",
-          padding: "48px 24px 40px",
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr",
-          gap: "12px",
-          borderTop: "1px solid var(--border-dim)",
-        }}>
-          {prevImage ? (
-            <Link href={`/pc/${prevImage.slug}`}
-              style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: "12px", padding: "10px", border: "1px solid var(--border-dim)", textDecoration: "none" }}
-              className="hover:border-[rgba(139,0,0,0.5)] transition-colors">
-              <div style={{ position: "relative", flexShrink: 0, width: "86px", height: "48px", overflow: "hidden", borderRadius: "4px" }}>
-                <Image src={getPublicUrl(prevImage.r2Key)} alt={prevImage.title} fill className="object-cover" unoptimized sizes="86px" />
-              </div>
-              <div style={{ display: "flex", flexDirection: "column", gap: "4px", minWidth: 0 }}>
-                <span className="font-mono text-[0.5rem] tracking-[0.2em] uppercase" style={{ color: "var(--text-muted)" }}>← Previous</span>
-                <span className="font-body italic text-[0.75rem]" style={{ color: "var(--text-primary)", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" as const, overflow: "hidden" }}>
-                  {prevImage.title}
-                </span>
-              </div>
-            </Link>
-          ) : <div />}
 
-          {nextImage ? (
-            <Link href={`/pc/${nextImage.slug}`}
-              style={{ display: "flex", flexDirection: "row-reverse", alignItems: "center", gap: "12px", padding: "10px", border: "1px solid var(--border-dim)", textDecoration: "none" }}
-              className="hover:border-[rgba(139,0,0,0.5)] transition-colors">
-              <div style={{ position: "relative", flexShrink: 0, width: "86px", height: "48px", overflow: "hidden", borderRadius: "4px" }}>
-                <Image src={getPublicUrl(nextImage.r2Key)} alt={nextImage.title} fill className="object-cover" unoptimized sizes="86px" />
-              </div>
-              <div style={{ display: "flex", flexDirection: "column", gap: "4px", minWidth: 0, textAlign: "right" }}>
-                <span className="font-mono text-[0.5rem] tracking-[0.2em] uppercase" style={{ color: "var(--text-muted)" }}>Next →</span>
-                <span className="font-body italic text-[0.75rem]" style={{ color: "var(--text-primary)", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" as const, overflow: "hidden" }}>
-                  {nextImage.title}
-                </span>
-              </div>
-            </Link>
-          ) : <div />}
-        </nav>
-      )}
 
 
       <RelatedWallpapers images={related} heading="More Dark Art You'll Like" landscape />

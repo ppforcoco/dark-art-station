@@ -15,6 +15,7 @@ import FavoriteButton from "@/components/FavoriteButton";
 import PreviewButton from "@/components/PreviewButton";
 import WallpaperTips from "@/components/WallpaperTips";
 import KeyboardNav from "@/components/KeyboardNav";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 export const dynamicParams = true;
 export const revalidate = 3600;
@@ -129,6 +130,58 @@ export default async function IphoneImagePage({ params }: PageProps) {
     <main className="min-h-screen" style={{ backgroundColor: "var(--bg-primary)", color: "var(--text-primary)" }}>
       <WallpaperTips mode="banner" />
 
+      {/* ── Breadcrumb ── */}
+      <Breadcrumbs items={[
+        { label: "Home", href: "/" },
+        { label: "iPhone Wallpapers", href: "/iphone" },
+        { label: image.title },
+      ]} />
+
+      {/* ── Prev / Next — TOP, visible immediately ── */}
+      {(prevImage || nextImage) && (
+        <nav style={{
+          maxWidth: "1280px", margin: "0 auto",
+          padding: "16px 24px",
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr",
+          gap: "12px",
+          borderBottom: "1px solid var(--border-dim)",
+        }}>
+          {prevImage ? (
+            <Link href={`/iphone/${prevImage.slug}`}
+              style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: "12px", padding: "10px", border: "1px solid var(--border-dim)", textDecoration: "none" }}
+              className="hover:border-[rgba(139,0,0,0.5)] transition-colors">
+              <div style={{ position: "relative", flexShrink: 0, width: "48px", height: "86px", overflow: "hidden", borderRadius: "4px" }}>
+                <Image src={getPublicUrl(prevImage.r2Key)} alt={prevImage.title} fill className="object-cover" unoptimized sizes="48px" />
+              </div>
+              <div style={{ display: "flex", flexDirection: "column", gap: "4px", minWidth: 0 }}>
+                <span className="font-mono text-[0.5rem] tracking-[0.2em] uppercase" style={{ color: "var(--text-muted)" }}>← Previous</span>
+                <span className="font-body italic text-[0.75rem]"
+                  style={{ color: "var(--text-primary)", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" as const, overflow: "hidden" }}>
+                  {prevImage.title}
+                </span>
+              </div>
+            </Link>
+          ) : <div />}
+
+          {nextImage ? (
+            <Link href={`/iphone/${nextImage.slug}`}
+              style={{ display: "flex", flexDirection: "row-reverse", alignItems: "center", gap: "12px", padding: "10px", border: "1px solid var(--border-dim)", textDecoration: "none" }}
+              className="hover:border-[rgba(139,0,0,0.5)] transition-colors">
+              <div style={{ position: "relative", flexShrink: 0, width: "48px", height: "86px", overflow: "hidden", borderRadius: "4px" }}>
+                <Image src={getPublicUrl(nextImage.r2Key)} alt={nextImage.title} fill className="object-cover" unoptimized sizes="48px" />
+              </div>
+              <div style={{ display: "flex", flexDirection: "column", gap: "4px", minWidth: 0, textAlign: "right" }}>
+                <span className="font-mono text-[0.5rem] tracking-[0.2em] uppercase" style={{ color: "var(--text-muted)" }}>Next →</span>
+                <span className="font-body italic text-[0.75rem]"
+                  style={{ color: "var(--text-primary)", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" as const, overflow: "hidden" }}>
+                  {nextImage.title}
+                </span>
+              </div>
+            </Link>
+          ) : <div />}
+        </nav>
+      )}
 
       {/* ── Main layout: image centered on mobile, side-by-side on md+ ── */}
       <section style={{ maxWidth: "1280px", margin: "0 auto", padding: "24px 24px 40px" }}>
@@ -158,9 +211,6 @@ export default async function IphoneImagePage({ params }: PageProps) {
 
           <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
             <div>
-              <Link href="/iphone" className="font-mono text-[0.6rem] tracking-[0.25em] uppercase text-[#8b0000] hover:text-[#c0001a] transition-colors">
-                ← iPhone Wallpapers
-              </Link>
               <h1 className="font-display text-2xl md:text-3xl font-bold mt-3 leading-tight">
                 {image.title}
               </h1>
@@ -190,12 +240,6 @@ export default async function IphoneImagePage({ params }: PageProps) {
 
             {/* Always rendered — real description or auto-generated fallback */}
             <div className="font-body text-[1rem] leading-relaxed description-html" style={{ color: "var(--text-muted)" }} dangerouslySetInnerHTML={{ __html: displayDescription }} />
-
-
-
-            {/* Label removed */}
-
-
 
             {/* Save to favorites */}
             <div className="detail-fav-row">
@@ -253,53 +297,6 @@ export default async function IphoneImagePage({ params }: PageProps) {
           box-shadow: 0 0 18px rgba(201,168,76,0.45), 0 0 38px rgba(201,168,76,0.2);
         }
       `}</style>
-
-      {/* ── Prev / Next ── */}
-      {(prevImage || nextImage) && (
-        <nav style={{
-          maxWidth: "1280px", margin: "0 auto",
-          padding: "48px 24px 40px",
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr",
-          gap: "12px",
-          borderTop: "1px solid var(--border-dim)",
-        }}>
-          {prevImage ? (
-            <Link href={`/iphone/${prevImage.slug}`}
-              style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: "12px", padding: "10px", border: "1px solid var(--border-dim)", textDecoration: "none" }}
-              className="hover:border-[rgba(139,0,0,0.5)] transition-colors">
-              <div style={{ position: "relative", flexShrink: 0, width: "48px", height: "86px", overflow: "hidden", borderRadius: "4px" }}>
-                <Image src={getPublicUrl(prevImage.r2Key)} alt={prevImage.title} fill className="object-cover" unoptimized sizes="48px" />
-              </div>
-              <div style={{ display: "flex", flexDirection: "column", gap: "4px", minWidth: 0 }}>
-                <span className="font-mono text-[0.5rem] tracking-[0.2em] uppercase" style={{ color: "var(--text-muted)" }}>← Previous</span>
-                <span className="font-body italic text-[0.75rem]"
-                  style={{ color: "var(--text-primary)", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" as const, overflow: "hidden" }}>
-                  {prevImage.title}
-                </span>
-              </div>
-            </Link>
-          ) : <div />}
-
-          {nextImage ? (
-            <Link href={`/iphone/${nextImage.slug}`}
-              style={{ display: "flex", flexDirection: "row-reverse", alignItems: "center", gap: "12px", padding: "10px", border: "1px solid var(--border-dim)", textDecoration: "none" }}
-              className="hover:border-[rgba(139,0,0,0.5)] transition-colors">
-              <div style={{ position: "relative", flexShrink: 0, width: "48px", height: "86px", overflow: "hidden", borderRadius: "4px" }}>
-                <Image src={getPublicUrl(nextImage.r2Key)} alt={nextImage.title} fill className="object-cover" unoptimized sizes="48px" />
-              </div>
-              <div style={{ display: "flex", flexDirection: "column", gap: "4px", minWidth: 0, textAlign: "right" }}>
-                <span className="font-mono text-[0.5rem] tracking-[0.2em] uppercase" style={{ color: "var(--text-muted)" }}>Next →</span>
-                <span className="font-body italic text-[0.75rem]"
-                  style={{ color: "var(--text-primary)", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" as const, overflow: "hidden" }}>
-                  {nextImage.title}
-                </span>
-              </div>
-            </Link>
-          ) : <div />}
-        </nav>
-      )}
-
 
       <RelatedWallpapers images={related} heading="More Dark Art You'll Like" />
       <PageTracker item={{

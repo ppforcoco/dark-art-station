@@ -22,7 +22,6 @@ export default function FeedbackWidget() {
   }, []);
 
   async function handleSubmit(e: React.MouseEvent) {
-    e.stopPropagation();
     if (!category || !message.trim()) return;
     setStep("sending");
     try {
@@ -59,17 +58,31 @@ export default function FeedbackWidget() {
         position: "fixed",
         inset: 0,
         zIndex: 9999,
-        background: "rgba(0,0,0,0.6)",
-        backdropFilter: "blur(4px)",
+        pointerEvents: "none",
         display: "flex",
         alignItems: "flex-end",
         justifyContent: "flex-end",
         padding: "20px",
       }}
-      onClick={handleClose}
     >
+      {/* Backdrop — catches clicks to close, sits behind the panel */}
+      <div
+        onClick={handleClose}
+        style={{
+          position: "absolute",
+          inset: 0,
+          background: "rgba(0,0,0,0.6)",
+          backdropFilter: "blur(4px)",
+          pointerEvents: "auto",
+          zIndex: 0,
+        }}
+      />
+
+      {/* Panel — fully interactive, cursor works normally */}
       <div
         style={{
+          position: "relative",
+          zIndex: 1,
           background: "#0f0d1a",
           border: "1px solid #2a2535",
           borderTop: "2px solid #c0001a",
@@ -78,8 +91,8 @@ export default function FeedbackWidget() {
           padding: "24px",
           fontFamily: "monospace",
           boxShadow: "0 -8px 40px rgba(0,0,0,0.6)",
+          pointerEvents: "auto",
         }}
-        onClick={e => e.stopPropagation()}
       >
         {/* Header */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "20px" }}>
@@ -92,7 +105,7 @@ export default function FeedbackWidget() {
             </h3>
           </div>
           <button
-            onClick={e => { e.stopPropagation(); handleClose(); }}
+            onClick={handleClose}
             style={{ background: "transparent", border: "none", color: "#6b6480", cursor: "pointer", fontSize: "1.1rem", lineHeight: 1, padding: "0 0 0 12px" }}
             aria-label="Close"
           >
@@ -115,7 +128,7 @@ export default function FeedbackWidget() {
         {step === "error" && (
           <div style={{ textAlign: "center", padding: "20px 0" }}>
             <p style={{ color: "#c0001a", fontSize: "0.7rem", margin: "0 0 12px" }}>Something went wrong. Please try again.</p>
-            <button onClick={e => { e.stopPropagation(); setStep("open"); }} style={btnStyle}>Try Again</button>
+            <button onClick={() => setStep("open")} style={btnStyle}>Try Again</button>
           </div>
         )}
 
@@ -133,7 +146,6 @@ export default function FeedbackWidget() {
               <select
                 value={category}
                 onChange={e => setCategory(e.target.value)}
-                onClick={e => e.stopPropagation()}
                 style={{ ...inputStyle, appearance: "none" as const, cursor: "pointer" }}
                 disabled={step === "sending"}
               >
@@ -154,7 +166,6 @@ export default function FeedbackWidget() {
               <textarea
                 value={message}
                 onChange={e => setMessage(e.target.value)}
-                onClick={e => e.stopPropagation()}
                 placeholder="What happened? What did you expect to happen?"
                 rows={3}
                 style={{ ...inputStyle, resize: "vertical" as const, minHeight: "72px" }}
@@ -168,7 +179,6 @@ export default function FeedbackWidget() {
                 type="email"
                 value={email}
                 onChange={e => setEmail(e.target.value)}
-                onClick={e => e.stopPropagation()}
                 placeholder="you@example.com"
                 style={inputStyle}
                 disabled={step === "sending"}

@@ -100,7 +100,7 @@ export default async function Home() {
       {/* ══════════════════════════════════════════════════════════
           SECTION 1 — HERO: SPLIT LAYOUT (text left, phones right)
       ══════════════════════════════════════════════════════════ */}
-      <section className="dt-gate dt-gate--collage hw-hero-gate-override" style={{ padding: "0", minHeight: "unset" }}>
+      <section className="dt-gate dt-gate--collage hw-hero-gate-override" style={{ padding: "0", minHeight: "unset", marginTop: "calc(-1 * (var(--topbar-total, 72px) + var(--nav-h, 88px)))" }}>
 
         <div className="dt-gate__crack" aria-hidden="true" />
 
@@ -223,11 +223,16 @@ export default async function Home() {
       </section>
 
       <style>{`
-        /* Kill the dt-gate default top padding */
+        /* Hero: cancel content-wrapper offset, add back nav height + small gap */
         .hw-hero-gate-override {
-          padding-top: 16px !important;
+          padding-top: calc(var(--topbar-total, 72px) + var(--nav-h, 88px) + 16px) !important;
           padding-bottom: 0 !important;
           overflow: visible !important;
+        }
+        @media (max-width: 1279px) {
+          .hw-hero-gate-override {
+            padding-top: calc(var(--topbar-total, 72px) + var(--nav-h-mob, 84px) + 16px) !important;
+          }
         }
         /* Desktop: side by side, text left phones right */
         @media (min-width: 860px) {
