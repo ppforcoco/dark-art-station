@@ -26,7 +26,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   const image = await db.image.findFirst({
     where: { slug: imageSlug, collection: { slug } },
-    select: { title: true, description: true, altText: true, r2Key: true, tags: true },
+    select: { title: true, description: true, altText: true, r2Key: true, tags: true, isAdult: true },
   });
   const collection = await db.collection.findUnique({
     where: { slug },

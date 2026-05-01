@@ -50,7 +50,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
   const image = await db.image.findUnique({
     where: { slug: imageSlug },
-    select: { title: true, description: true, metaDescription: true, r2Key: true, tags: true, deviceType: true },
+    select: { title: true, description: true, metaDescription: true, r2Key: true, tags: true, isAdult: true, deviceType: true },
   });
   if (!image || image.deviceType !== "PC") return { title: "Not Found | HAUNTED WALLPAPERS" };
   const ogImage = getPublicUrl(image.r2Key);
