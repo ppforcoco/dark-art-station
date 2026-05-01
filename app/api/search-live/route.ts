@@ -6,32 +6,84 @@ export async function GET(req: NextRequest) {
   const q     = (searchParams.get("q") ?? "").trim();
   const limit = Math.min(parseInt(searchParams.get("limit") ?? "6", 10), 12);
 
-  if (!q) return NextResponse.json({ results: [] });
+  if (!q || q.length < 2) return NextResponse.json({ results: [] });
 
-  const images = await db.image.findMany({
-    where: {
-      isAdult: false,
-      OR: [
-        { title:       { contains: q, mode: "insensitive" } },
-        { tags:        { has: q.toLowerCase() }              },
-        { description: { contains: q, mode: "insensitive" } },
-      ],
-    },
-    select: {
-      id: true,
-      title: true,
-      slug: true,
-      r2Key: true,
-      deviceType: true,
-      collection: {
-        select: { slug: true },
+  const qLower = q.toLowerCase();
+
+  // Search priority:
+  // 1. Exact tag match  — "cat" only finds images tagged exactly "cat"
+  // 2. Title starts with query — "cat" finds "Cat in the Dark" but NOT "intricate"
+  // 3. Title contains whole word — "cat" finds "Dark Cat Wallpaper" but NOT "delicate"
+  //
+  // Description is intentionally excluded — substring matching on long text
+  // causes false positives (e.g. "cat" matches "intricate", "dedicated", etc.)
+
+  const [tagMatches, titleMatches] = await Promise.all([
+    // Exact tag match
+    db.image.findMany({
+      where: {
+        isAdult: false,
+        tags: { has: qLower },
       },
-    },
-    orderBy: { viewCount: "desc" },
-    take: limit,
-  });
+      select: {
+        id: true, title: true, slug: true, r2Key: true, deviceType: true,
+        collection: { select: { slug: true } },
+      },
+      orderBy: { viewCount: "desc" },
+      take: limit,
+    }),
+    // Title starts with query (most relevant titles first)
+    db.image.findMany({
+      where: {
+        isAdult: false,
+        title: { startsWith: q, mode: "insensitive" },
+      },
+      select: {
+        id: true, title: true, slug: true, r2Key: true, deviceType: true,
+        collection: { select: { slug: true } },
+      },
+      orderBy: { viewCount: "desc" },
+      take: limit,
+    }),
+  ]);
 
-  const results = images.map(img => ({
+  // Merge: tag matches first, then title matches, deduplicate by id
+  const seen = new Set<string>();
+  const merged = [...tagMatches, ...titleMatches].filter(img => {
+    if (seen.has(img.id)) return false;
+    seen.add(img.id);
+    return true;
+  }).slice(0, limit);
+
+  // If still under limit, fill with title contains whole-word match
+  if (merged.length < limit) {
+    const needed = limit - merged.length;
+    const existingIds = new Set(merged.map(m => m.id));
+
+    // Use a word-boundary approach: title contains " cat " or starts/ends with "cat"
+    // Prisma doesn't support word boundaries natively, so we fetch a wider set
+    // and filter in JS — safe because we limit the DB query
+    const titleContains = await db.image.findMany({
+      where: {
+        isAdult: false,
+        title: { contains: q, mode: "insensitive" },
+        id: { notIn: Array.from(existingIds) },
+      },
+      select: {
+        id: true, title: true, slug: true, r2Key: true, deviceType: true,
+        collection: { select: { slug: true } },
+      },
+      orderBy: { viewCount: "desc" },
+      take: needed * 4, // fetch extra, filter down
+    });
+
+    // Only keep results where q appears as a whole word in the title
+    const wordBoundary = new RegExp(`(^|\\s|-)${q.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}(\\s|-|$)`, "i");
+    const filtered = titleContains.filter(img => wordBoundary.test(img.title)).slice(0, needed);
+    merged.push(...filtered);
+  }
+
+  const results = merged.map(img => ({
     id:             img.id,
     title:          img.title,
     slug:           img.slug,

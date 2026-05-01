@@ -6,6 +6,7 @@ import { db, getPageContent } from "@/lib/db";
 import AgeGateLink from "@/components/AgeGateLink";
 import AdminHtmlBlock from "@/components/AdminHtmlBlock";
 import { sanitizeAdminHtml } from "@/lib/sanitize-html";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 // No cache — always serve fresh so admin changes show instantly
 export const revalidate = 0;
@@ -58,26 +59,10 @@ export default async function ObsessionsPage() {
   return (
     <main style={{ minHeight: "100vh", backgroundColor: "var(--bg-primary)", color: "var(--text-primary)" }}>
 
-      {/* ── Keyboard nav hint ── */}
-      <div style={{
-        borderBottom: "1px solid var(--border-dim, #2a2535)",
-        padding: "10px clamp(16px,4vw,60px)",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        gap: "24px",
-        background: "var(--bg-secondary, var(--bg-primary))",
-      }}>
-        <span style={{ display: "flex", alignItems: "center", gap: "8px", fontFamily: "monospace", fontSize: "0.6rem", letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--text-muted, #6b6480)" }}>
-          <kbd style={{ border: "1px solid #3a3545", borderRadius: "3px", padding: "2px 7px", fontSize: "0.7rem", color: "var(--text-primary, #e0e0f8)", background: "#1a1625", lineHeight: 1.4 }}>←</kbd>
-          Prev
-        </span>
-        <span style={{ fontFamily: "monospace", fontSize: "0.5rem", letterSpacing: "0.2em", color: "#3a3545" }}>USE ARROW KEYS TO BROWSE</span>
-        <span style={{ display: "flex", alignItems: "center", gap: "8px", fontFamily: "monospace", fontSize: "0.6rem", letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--text-muted, #6b6480)" }}>
-          Next
-          <kbd style={{ border: "1px solid #3a3545", borderRadius: "3px", padding: "2px 7px", fontSize: "0.7rem", color: "var(--text-primary, #e0e0f8)", background: "#1a1625", lineHeight: 1.4 }}>→</kbd>
-        </span>
-      </div>
+      <Breadcrumbs items={[
+        { label: "Home", href: "/" },
+        { label: "Obsessions" },
+      ]} />
 
       {/* ── Title + Description (matches iPhone/Android page style) ── */}
       <section className="max-w-7xl mx-auto px-6 md:px-[60px] pt-10 pb-8">

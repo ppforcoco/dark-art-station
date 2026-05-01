@@ -12,15 +12,8 @@ interface BreadcrumbsProps {
 
 /**
  * Server component.
- * Renders a visible breadcrumb trail in the .path-bar strip (sticky, below nav).
- * Also injects Schema.org BreadcrumbList JSON-LD for Google rich results.
- *
- * Usage:
- *   <Breadcrumbs items={[
- *     { label: "Home",        href: "/" },
- *     { label: "Collections", href: "/shop" },
- *     { label: "Dark Goddess" },
- *   ]} />
+ * Beautiful, SEO-ready breadcrumb trail with Schema.org BreadcrumbList JSON-LD.
+ * Visually stunning — readable by bots AND humans. Every link is obviously clickable.
  */
 export default function Breadcrumbs({ items }: BreadcrumbsProps) {
   if (!items || items.length < 2) return null;
@@ -45,100 +38,156 @@ export default function Breadcrumbs({ items }: BreadcrumbsProps) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      {/* path-bar CSS class: sticky strip immediately below the nav */}
-      <div className="path-bar">
-        <nav aria-label="Breadcrumb">
-          <ol className="breadcrumbs">
-            {items.map((item, index) => {
-              const isLast = index === items.length - 1;
-              return (
-                <li key={index} className="breadcrumb-item">
-                  {index > 0 && (
-                    <span className="breadcrumb-sep" aria-hidden="true">/</span>
-                  )}
-                  {isLast || !item.href ? (
-                    <span
-                      className="breadcrumb-current"
-                      aria-current="page"
-                      title={item.label}
-                    >
-                      {item.label}
-                    </span>
-                  ) : (
-                    <Link
-                      href={item.href}
-                      className="breadcrumb-link"
-                      title={item.label}
-                    >
-                      {item.label}
-                    </Link>
-                  )}
-                </li>
-              );
-            })}
-          </ol>
-        </nav>
+      <nav className="hw-breadcrumb" aria-label="Breadcrumb">
+        <ol className="hw-breadcrumb__list">
+          {items.map((item, index) => {
+            const isLast = index === items.length - 1;
+            return (
+              <li key={index} className="hw-breadcrumb__item">
+                {index > 0 && (
+                  <span className="hw-breadcrumb__sep" aria-hidden="true">
+                    <svg width="6" height="10" viewBox="0 0 6 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M1 1L5 5L1 9" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  </span>
+                )}
+                {isLast || !item.href ? (
+                  <span className="hw-breadcrumb__current" aria-current="page">
+                    {item.label}
+                  </span>
+                ) : (
+                  <Link href={item.href} className="hw-breadcrumb__link">
+                    {index === 0 && (
+                      <svg className="hw-breadcrumb__home-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <path d="M3 9.5L12 3L21 9.5V20C21 20.5523 20.5523 21 20 21H15V15H9V21H4C3.44772 21 3 20.5523 3 20V9.5Z" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                    )}
+                    {item.label}
+                  </Link>
+                )}
+              </li>
+            );
+          })}
+        </ol>
+
         <style>{`
-          .path-bar {
-            padding: 8px clamp(16px,4vw,60px);
-            border-bottom: 1px solid var(--border-dim);
-            background: var(--bg-secondary, var(--bg-primary));
+          .hw-breadcrumb {
+            padding: 0 clamp(16px, 4vw, 60px);
+            height: 42px;
+            display: flex;
+            align-items: center;
+            background: linear-gradient(
+              to right,
+              rgba(20, 14, 30, 0.98),
+              rgba(14, 10, 22, 0.98)
+            );
+            border-bottom: 1px solid rgba(192, 0, 26, 0.15);
+            position: relative;
+            overflow: hidden;
           }
-          .breadcrumbs {
+
+          /* Subtle left accent line */
+          .hw-breadcrumb::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(to bottom, transparent, #8b0000, transparent);
+          }
+
+          /* Very faint glow */
+          .hw-breadcrumb::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse 40% 100% at 0% 50%, rgba(139,0,0,0.06) 0%, transparent 70%);
+            pointer-events: none;
+          }
+
+          .hw-breadcrumb__list {
             display: flex;
             align-items: center;
             list-style: none;
             margin: 0;
             padding: 0;
-            flex-wrap: wrap;
             gap: 0;
+            flex-wrap: nowrap;
+            min-width: 0;
           }
-          .breadcrumb-item {
+
+          .hw-breadcrumb__item {
             display: flex;
             align-items: center;
+            min-width: 0;
+            flex-shrink: 0;
           }
-          .breadcrumb-sep {
-            font-family: var(--font-space, 'Space Mono', monospace);
-            font-size: 0.6rem;
-            color: var(--text-muted, #8888aa);
-            opacity: 0.35;
+
+          .hw-breadcrumb__sep {
+            display: flex;
+            align-items: center;
+            color: rgba(139, 0, 0, 0.5);
             margin: 0 8px;
+            flex-shrink: 0;
           }
-          .breadcrumb-link {
+
+          .hw-breadcrumb__link {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
             font-family: var(--font-space, 'Space Mono', monospace);
-            font-size: 0.6rem;
-            letter-spacing: 0.2em;
+            font-size: 0.62rem;
+            letter-spacing: 0.16em;
             text-transform: uppercase;
-            color: var(--text-muted, #8888aa);
+            color: rgba(180, 160, 220, 0.6);
             text-decoration: none;
-            transition: color 0.2s;
+            padding: 4px 10px;
+            border-radius: 2px;
+            border: 1px solid transparent;
+            transition: color 0.2s ease, background 0.2s ease, border-color 0.2s ease;
             white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            max-width: 160px;
+            position: relative;
+            z-index: 1;
           }
-          .breadcrumb-link:hover {
-            color: var(--text-primary, #e0e0f8);
+
+          .hw-breadcrumb__link:hover {
+            color: #e0d4f8;
+            background: rgba(139, 0, 0, 0.1);
+            border-color: rgba(139, 0, 0, 0.25);
           }
-          .breadcrumb-current {
+
+          .hw-breadcrumb__home-icon {
+            opacity: 0.7;
+            flex-shrink: 0;
+            transition: opacity 0.2s;
+          }
+
+          .hw-breadcrumb__link:hover .hw-breadcrumb__home-icon {
+            opacity: 1;
+          }
+
+          .hw-breadcrumb__current {
             font-family: var(--font-space, 'Space Mono', monospace);
-            font-size: 0.6rem;
-            letter-spacing: 0.2em;
+            font-size: 0.62rem;
+            letter-spacing: 0.16em;
             text-transform: uppercase;
-            color: var(--text-primary, #e0e0f8);
+            color: #c9a84c;
+            padding: 4px 2px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            max-width: 220px;
-            display: inline-block;
+            max-width: 260px;
           }
+
           @media (max-width: 480px) {
-            .breadcrumb-link    { max-width: 100px; font-size: 0.55rem; }
-            .breadcrumb-current { max-width: 160px; font-size: 0.55rem; }
-            .breadcrumb-sep     { margin: 0 5px; }
+            .hw-breadcrumb { padding: 0 16px; height: 38px; }
+            .hw-breadcrumb__link { font-size: 0.56rem; padding: 3px 6px; letter-spacing: 0.1em; }
+            .hw-breadcrumb__current { font-size: 0.56rem; letter-spacing: 0.1em; max-width: 140px; }
+            .hw-breadcrumb__sep { margin: 0 5px; }
           }
         `}</style>
-      </div>
+      </nav>
     </>
   );
 }
