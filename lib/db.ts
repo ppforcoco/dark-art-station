@@ -15,23 +15,24 @@ if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = db;
 //
 // Deterministic daily selection — no randomness per-request, no extra columns.
 // Algorithm:
-//   1. Fetch all standalone image IDs (collectionId = null, deviceType set).
-//   2. Derive a numeric seed from today's UTC date string (YYYY-MM-DD).
-//   3. Pick index = seed % total — same result for every visitor, every server
-//      instance, all day long. Changes at UTC midnight automatically.
+//   1. Fetch all eligible image IDs (phone/tablet only, stable createdAt order).
+//   2. Seed = days since Unix epoch (increments by exactly 1 each UTC midnight).
+//      Using char-code sum was the bug — "2026-05-01" and "2026-05-10" produced
+//      the same sum (490), so the same image appeared on both days.
+//   3. Pick index = seed % total — guaranteed unique per day, stable all day.
 //   4. Fetch the full record for that image.
 //
-// Returns null if no standalone images exist yet.
+// Returns null if no eligible images exist yet.
 
 export type WotdImage = {
-  id:         string;
-  slug:       string;
-  title:      string;
+  id:          string;
+  slug:        string;
+  title:       string;
   description: string | null;
-  r2Key:      string;
-  deviceType: string | null;
-  tags:       string[];
-  viewCount:  number;
+  r2Key:       string;
+  deviceType:  string | null;
+  tags:        string[];
+  viewCount:   number;
 };
 
 export async function getWallpaperOfTheDay(): Promise<WotdImage | null> {
@@ -43,17 +44,20 @@ export async function getWallpaperOfTheDay(): Promise<WotdImage | null> {
       deviceType: { in: [DeviceType.IPHONE, DeviceType.ANDROID] },
     },
     select: { id: true },
-    orderBy: { createdAt: "asc" }, // stable order across calls
+    orderBy: { createdAt: "asc" }, // stable order across all calls
   });
 
   if (ids.length === 0) return null;
 
-  // Step 2 — date seed: "2025-06-15" → sum of char codes → integer
-  const today = new Date().toISOString().slice(0, 10); // "YYYY-MM-DD"
-  const seed  = today.split("").reduce((acc, ch) => acc + ch.charCodeAt(0), 0);
+  // Step 2 — seed = days since Unix epoch (UTC)
+  // This increments by exactly 1 at UTC midnight every day.
+  // Unlike char-code sum, every date produces a unique number.
+  const now        = new Date();
+  const msPerDay   = 86_400_000;
+  const daysSinceEpoch = Math.floor(now.getTime() / msPerDay);
 
-  // Step 3 — deterministic index
-  const index = seed % ids.length;
+  // Step 3 — deterministic index, changes daily
+  const index = daysSinceEpoch % ids.length;
 
   // Step 4 — fetch full record
   return db.image.findUnique({
@@ -363,6 +367,7 @@ export async function getSeasonalImages(
     collectionSlug: img.collection?.slug ?? null,
   }));
 }
+
 // ─── Page Content helper ───────────────────────────────────────────────────────
 // Fetch editable page content by slug. Returns null if not set (pages should
 // fall back to their hardcoded default text).
