@@ -203,7 +203,7 @@ export default async function Home() {
                       {/* dynamic island */}
                       <div style={{ position: "absolute", top: "7px", left: "50%", transform: "translateX(-50%)", width: "32%", height: "9px", background: "#000", borderRadius: "6px", zIndex: 4 }} />
                       {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={phone.src} alt={phone.alt} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} loading={i < 3 ? "eager" : "lazy"} />
+                      <img src={phone.src} alt={phone.alt} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} loading={i < 3 ? "eager" : "lazy"} onContextMenu={(e) => e.preventDefault()} />
                       {/* gloss */}
                       <div style={{ position: "absolute", inset: 0, background: "linear-gradient(135deg, rgba(255,255,255,0.07) 0%, transparent 42%)", pointerEvents: "none" }} />
                       {/* home bar */}
@@ -844,6 +844,7 @@ export default async function Home() {
                     alt={phone.alt}
                     className="dt-phone-card__img"
                     loading="lazy"
+                    onContextMenu={(e) => e.preventDefault()}
                   />
 
 
@@ -890,6 +891,7 @@ export default async function Home() {
                   src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/monster-flower-offering-pc.webp"
                   alt="Monster Flower Offering — PC wallpaper 16:9"
                   className="dt-monitor__img"
+                  onContextMenu={(e) => e.preventDefault()}
                 />
                 <div className="dt-monitor__scanlines" aria-hidden="true" />
                 <div className="dt-monitor__glitch" aria-hidden="true" />
