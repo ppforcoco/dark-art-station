@@ -289,9 +289,6 @@ export default async function Home() {
             }))}
           />
 
-          <div style={{ textAlign: "center", marginTop: "clamp(20px,3vw,32px)" }}>
-            <Link href="/iphone" className="dt-btn dt-btn--ghost" style={{ borderColor: "rgba(76,175,80,0.4)", color: "#4caf50" }}>See All Wallpapers →</Link>
-          </div>
         </section>
       )}
 
@@ -324,9 +321,6 @@ export default async function Home() {
             }))}
           />
 
-          <div style={{ textAlign: "center", marginTop: "clamp(20px,3vw,32px)" }}>
-            <Link href="/iphone" className="dt-btn dt-btn--ghost" style={{ borderColor: "rgba(201,168,76,0.4)", color: "#c9a84c" }}>Browse All Wallpapers →</Link>
-          </div>
         </section>
       )}
 
@@ -391,9 +385,6 @@ export default async function Home() {
               <div className="wotd-actions">
                 <Link href={wotdHref} className="wotd-btn-primary">
                   Download This Wallpaper →
-                </Link>
-                <Link href={`/${devicePath}`} className="wotd-btn-ghost">
-                  Browse {devicePath.charAt(0).toUpperCase() + devicePath.slice(1)} →
                 </Link>
               </div>
             </div>

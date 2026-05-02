@@ -54,7 +54,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
           slug: true, title: true, r2Key: true, updatedAt: true,
           collection: { select: { slug: true } },
         },
-        where: { collectionId: { not: null } },
+        where: { collectionId: { not: null }, isAdult: false },
         orderBy: { updatedAt: "desc" },
       }),
       db.image.findMany({
@@ -62,7 +62,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
           slug: true, title: true, r2Key: true, updatedAt: true,
           deviceType: true,
         },
-        where: { collectionId: null, deviceType: { not: null } },
+        where: { collectionId: null, deviceType: { not: null }, isAdult: false },
         orderBy: { updatedAt: "desc" },
       }),
     ]);
