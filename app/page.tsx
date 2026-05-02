@@ -112,7 +112,7 @@ export default async function Home() {
         }}>
 
           {/* LEFT — Text block */}
-          <div style={{ display: "flex", flexDirection: "column", gap: "0.6rem", padding: "20px 28px 20px" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "0.6rem", padding: "20px 24px 20px" }}>
             <span className="dt-gate__eyebrow" style={{ fontSize: "0.75rem", letterSpacing: "0.25em" }}>You have arrived in</span>
 
             <div className="dt-gate__collection-badge" style={{ marginBottom: "0" }}>
@@ -172,9 +172,9 @@ export default async function Home() {
           <div className="hw-hero-phones-wrap" style={{
             display: "flex",
             alignItems: "center",
-            justifyContent: "center",
-            padding: "0 12px",
-            overflow: "hidden",
+            justifyContent: "flex-start",
+            padding: "0 0 0 12px",
+            overflow: "visible",
             gap: "10px",
           }}>
               {[
@@ -222,17 +222,17 @@ export default async function Home() {
         .hw-hero-gate-override {
           padding-top: 8px !important;
           padding-bottom: 0 !important;
-          overflow: hidden !important;
+          overflow: visible !important;
         }
         @media (min-width: 860px) {
           .hw-hero-split {
-            grid-template-columns: 300px 1fr !important;
+            grid-template-columns: 370px 1fr !important;
             align-items: center !important;
-            height: 540px !important;
+            height: 560px !important;
           }
           .hw-hero-phones-wrap {
-            height: 540px !important;
-            overflow: hidden !important;
+            height: 560px !important;
+            overflow: visible !important;
             align-items: center !important;
           }
         }
