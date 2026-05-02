@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { getSignedDownloadUrl } from "@/lib/r2";
 import { createHash } from "crypto";
+import { shouldCountRequest } from "@/lib/analytics-filter";
 
 // ─── Rate limiter ─────────────────────────────────────────────────────────────
 const RATE_LIMIT_MAX       = 30;
@@ -93,9 +94,12 @@ export async function GET(
       .create({ data: { imageId: image.id, ipHash } })
       .catch((err) => console.error("[IMAGE_DOWNLOAD_TELEMETRY]", err));
 
-    db.image
-      .update({ where: { id: image.id }, data: { viewCount: { increment: 1 } } })
-      .catch((err) => console.error("[IMAGE_VIEWCOUNT_INCREMENT]", err));
+    // Only count views from real humans — skip bots and admin IPs
+    if (shouldCountRequest(req)) {
+      db.image
+        .update({ where: { id: image.id }, data: { viewCount: { increment: 1 } } })
+        .catch((err) => console.error("[IMAGE_VIEWCOUNT_INCREMENT]", err));
+    }
 
     // ── Fetch from R2 and stream back with correct headers ────────────────────
     // This bypasses the R2 ResponseContentDisposition limitation on signed URLs.

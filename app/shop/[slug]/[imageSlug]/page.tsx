@@ -13,6 +13,7 @@ import SocialShare from "@/components/SocialShare";
 import FavoriteButton from "@/components/FavoriteButton";
 import PageTracker from "@/components/PageTracker";
 import RecentlyViewed from "@/components/RecentlyViewed";
+import { shouldCountPageView } from "@/lib/analytics-filter";
 
 export const dynamicParams = true;
 export const revalidate = 0; // always fetch fresh from DB
@@ -124,10 +125,12 @@ export default async function CollectionImagePage({ params }: PageProps) {
 
   if (!collection) notFound();
 
-  // Fire-and-forget view count increment
-  db.image
-    .update({ where: { id: image.id }, data: { viewCount: { increment: 1 } } })
-    .catch(() => {});
+  // Fire-and-forget view count — only for real humans, skip bots & admin IPs
+  if (await shouldCountPageView()) {
+    db.image
+      .update({ where: { id: image.id }, data: { viewCount: { increment: 1 } } })
+      .catch(() => {});
+  }
 
   const thumbUrl = getPublicUrl(image.r2Key);
 
