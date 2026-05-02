@@ -112,7 +112,7 @@ export default async function Home() {
         }}>
 
           {/* LEFT — Text block */}
-          <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem", padding: "clamp(16px,4vw,48px) clamp(16px,4vw,52px) 24px" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "1rem", padding: "clamp(12px,2vw,28px) clamp(16px,3vw,40px) 20px" }}>
             <span className="dt-gate__eyebrow" style={{ fontSize: "0.75rem", letterSpacing: "0.25em" }}>You have arrived in</span>
 
             <div className="dt-gate__collection-badge" style={{ marginBottom: "0" }}>
@@ -173,9 +173,9 @@ export default async function Home() {
             display: "flex",
             alignItems: "flex-end",
             justifyContent: "center",
-            padding: "40px 24px 0",
+            padding: "0 16px 0",
             overflow: "visible",
-            gap: "14px",
+            gap: "12px",
           }}>
               {[
                 { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/pin/gorilla-iphone-wallpaper.jpeg", alt: "Gorilla", featured: false },
@@ -184,10 +184,9 @@ export default async function Home() {
                 { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/pin/girl-doll.jpeg", alt: "Girl Doll", featured: false },
                 { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/wallpapers/hero-2.jpeg", alt: "Dark Art", featured: false },
               ].map((phone, i) => {
-                // Fixed px sizes — no vw scaling that collapses at mid viewports
-                const w = phone.featured ? "165px" : "120px";
-                const h = phone.featured ? "360px" : "260px";
-                const br = phone.featured ? "30px" : "22px";
+                const w = phone.featured ? "200px" : "145px";
+                const h = phone.featured ? "435px" : "315px";
+                const br = phone.featured ? "36px" : "26px";
                 return (
                   <div key={i} style={{ flexShrink: 0, filter: phone.featured ? "drop-shadow(0 0 28px rgba(139,0,0,0.55))" : "none" }}>
                     <div style={{
@@ -232,14 +231,13 @@ export default async function Home() {
         }
         @media (min-width: 860px) {
           .hw-hero-split {
-            grid-template-columns: 380px 1fr !important;
+            grid-template-columns: 340px 1fr !important;
             align-items: flex-end !important;
           }
           .hw-hero-phones-wrap {
             overflow: visible !important;
             align-items: flex-end !important;
             padding-bottom: 0 !important;
-            justify-content: center !important;
             flex-wrap: nowrap !important;
           }
         }
