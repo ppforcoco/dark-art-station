@@ -173,9 +173,9 @@ export default async function Home() {
             display: "flex",
             alignItems: "flex-end",
             justifyContent: "center",
-            padding: "0 clamp(8px,2vw,32px) 0",
+            padding: "32px clamp(16px,3vw,48px) 0",
             overflow: "visible",
-            gap: "clamp(8px,1.2vw,16px)",
+            gap: "clamp(12px,1.8vw,22px)",
           }}>
               {[
                 { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/pin/gorilla-iphone-wallpaper.jpeg", alt: "Gorilla", featured: false },
@@ -184,9 +184,9 @@ export default async function Home() {
                 { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/pin/girl-doll.jpeg", alt: "Girl Doll", featured: false },
                 { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/wallpapers/hero-2.jpeg", alt: "Dark Art", featured: false },
               ].map((phone, i) => {
-                const w = phone.featured ? "clamp(100px,10vw,148px)" : "clamp(72px,7.5vw,110px)";
-                const h = phone.featured ? "clamp(210px,22vw,330px)" : "clamp(158px,16.5vw,246px)";
-                const br = phone.featured ? "clamp(16px,1.8vw,26px)" : "clamp(12px,1.4vw,20px)";
+                const w = phone.featured ? "clamp(150px,14vw,210px)" : "clamp(110px,10.5vw,158px)";
+                const h = phone.featured ? "clamp(310px,30vw,470px)" : "clamp(230px,22vw,350px)";
+                const br = phone.featured ? "clamp(22px,2.4vw,36px)" : "clamp(16px,1.8vw,28px)";
                 return (
                   <div key={i} style={{ flexShrink: 0, filter: phone.featured ? "drop-shadow(0 0 28px rgba(139,0,0,0.55))" : "none" }}>
                     <div style={{
@@ -231,13 +231,14 @@ export default async function Home() {
         }
         @media (min-width: 860px) {
           .hw-hero-split {
-            grid-template-columns: minmax(320px,420px) 1fr !important;
+            grid-template-columns: minmax(300px,400px) 1fr !important;
             align-items: center !important;
           }
           .hw-hero-phones-wrap {
             overflow: visible !important;
             align-items: flex-end !important;
             padding-bottom: 0 !important;
+            min-height: 480px !important;
           }
         }
         @media (min-width: 540px) and (max-width: 859px) {
