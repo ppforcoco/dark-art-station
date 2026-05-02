@@ -172,8 +172,8 @@ export default async function Home() {
           <div className="hw-hero-phones-wrap" style={{
             display: "flex",
             alignItems: "center",
-            justifyContent: "flex-start",
-            padding: "0 0 0 12px",
+            justifyContent: "center",
+            padding: "0 16px",
             overflow: "visible",
             gap: "10px",
           }}>
@@ -226,7 +226,7 @@ export default async function Home() {
         }
         @media (min-width: 860px) {
           .hw-hero-split {
-            grid-template-columns: 370px 1fr !important;
+            grid-template-columns: 380px 1fr !important;
             align-items: center !important;
             height: 560px !important;
           }
@@ -234,6 +234,7 @@ export default async function Home() {
             height: 560px !important;
             overflow: visible !important;
             align-items: center !important;
+            justify-content: center !important;
           }
         }
         @media (min-width: 540px) and (max-width: 859px) {
