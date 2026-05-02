@@ -168,27 +168,15 @@ export default async function Home() {
             </div>
           </div>
 
-          {/* RIGHT — Phone mockups (image-2 style: centered, large, spaced) */}
+          {/* RIGHT — Phone mockups */}
           <div className="hw-hero-phones-wrap" style={{
             display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
+            alignItems: "flex-end",
             justifyContent: "center",
-            padding: "clamp(32px,4vw,64px) clamp(16px,3vw,48px)",
+            padding: "0 clamp(8px,2vw,32px) 0",
             overflow: "visible",
+            gap: "clamp(8px,1.2vw,16px)",
           }}>
-            <span style={{ fontFamily: "var(--font-space, monospace)", fontSize: "0.58rem", letterSpacing: "0.25em", textTransform: "uppercase", color: "rgba(255,255,255,0.35)", marginBottom: "16px" }}>Pocket‑Sized Darkness</span>
-            <h2 style={{ fontFamily: "var(--font-display, serif)", fontSize: "clamp(1.8rem,3.5vw,3rem)", fontWeight: 700, color: "#e8e4f8", margin: "0 0 8px", textAlign: "center", lineHeight: 1.1 }}>Mobile Wallpapers</h2>
-            <p style={{ fontSize: "clamp(0.85rem,1.5vw,1rem)", color: "rgba(232,228,248,0.5)", margin: "0 0 clamp(24px,3vw,40px)", textAlign: "center", fontStyle: "italic" }}>Your lock screen deserves something worth staring at.</p>
-
-            {/* Phone row */}
-            <div style={{
-              display: "flex",
-              alignItems: "flex-end",
-              justifyContent: "center",
-              gap: "clamp(10px,1.8vw,20px)",
-              width: "100%",
-            }}>
               {[
                 { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/pin/gorilla-iphone-wallpaper.jpeg", alt: "Gorilla", featured: false },
                 { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/wallpapers/shadows-have-eyes-android.webp", alt: "Shadow Eyes", featured: false },
@@ -196,62 +184,34 @@ export default async function Home() {
                 { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/pin/girl-doll.jpeg", alt: "Girl Doll", featured: false },
                 { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/wallpapers/hero-2.jpeg", alt: "Dark Art", featured: false },
               ].map((phone, i) => {
-                const w = phone.featured ? "clamp(110px,11vw,160px)" : "clamp(80px,8.5vw,124px)";
-                const h = phone.featured ? "clamp(240px,24vw,360px)" : "clamp(178px,18vw,268px)";
-                const r = phone.featured ? "clamp(18px,2vw,28px)" : "clamp(14px,1.6vw,22px)";
+                const w = phone.featured ? "clamp(100px,10vw,148px)" : "clamp(72px,7.5vw,110px)";
+                const h = phone.featured ? "clamp(210px,22vw,330px)" : "clamp(158px,16.5vw,246px)";
+                const br = phone.featured ? "clamp(16px,1.8vw,26px)" : "clamp(12px,1.4vw,20px)";
                 return (
-                  <div
-                    key={i}
-                    style={{
-                      position: "relative",
-                      width: w,
-                      flexShrink: 0,
-                      filter: phone.featured ? "drop-shadow(0 0 32px rgba(139,0,0,0.5))" : "none",
-                    }}
-                  >
-                    {/* Phone shell */}
+                  <div key={i} style={{ flexShrink: 0, filter: phone.featured ? "drop-shadow(0 0 28px rgba(139,0,0,0.55))" : "none" }}>
                     <div style={{
-                      width: w,
-                      height: h,
-                      borderRadius: r,
-                      background: "#0a0a0f",
-                      border: phone.featured ? "2px solid rgba(139,0,0,0.8)" : "1.5px solid rgba(255,255,255,0.12)",
-                      position: "relative",
-                      overflow: "hidden",
-                      boxShadow: phone.featured
-                        ? "0 20px 60px rgba(0,0,0,0.8), 0 0 0 3px rgba(139,0,0,0.3)"
-                        : "0 12px 40px rgba(0,0,0,0.6)",
+                      width: w, height: h, borderRadius: br,
+                      background: "#080810",
+                      border: phone.featured ? "2px solid rgba(139,0,0,0.85)" : "1.5px solid rgba(255,255,255,0.1)",
+                      position: "relative", overflow: "hidden",
+                      boxShadow: phone.featured ? "0 24px 64px rgba(0,0,0,0.85), 0 0 0 3px rgba(139,0,0,0.25)" : "0 10px 36px rgba(0,0,0,0.65)",
                     }}>
-                      {/* Side buttons */}
-                      <div style={{ position: "absolute", right: "-3px", top: "22%", width: "3px", height: "28px", background: "#1a1a2e", borderRadius: "0 2px 2px 0" }} />
-                      <div style={{ position: "absolute", left: "-3px", top: "20%", width: "3px", height: "18px", background: "#1a1a2e", borderRadius: "2px 0 0 2px" }} />
-                      <div style={{ position: "absolute", left: "-3px", top: "32%", width: "3px", height: "18px", background: "#1a1a2e", borderRadius: "2px 0 0 2px" }} />
-
-                      {/* Dynamic island */}
-                      <div style={{ position: "absolute", top: "8px", left: "50%", transform: "translateX(-50%)", width: "30%", height: "10px", background: "#000", borderRadius: "8px", zIndex: 4 }} />
-
-                      {/* Wallpaper image */}
+                      {/* side buttons */}
+                      <div style={{ position: "absolute", right: "-3px", top: "22%", width: "3px", height: "26px", background: "#1a1a2e", borderRadius: "0 2px 2px 0" }} />
+                      <div style={{ position: "absolute", left: "-3px", top: "19%", width: "3px", height: "16px", background: "#1a1a2e", borderRadius: "2px 0 0 2px" }} />
+                      <div style={{ position: "absolute", left: "-3px", top: "30%", width: "3px", height: "16px", background: "#1a1a2e", borderRadius: "2px 0 0 2px" }} />
+                      {/* dynamic island */}
+                      <div style={{ position: "absolute", top: "7px", left: "50%", transform: "translateX(-50%)", width: "32%", height: "9px", background: "#000", borderRadius: "6px", zIndex: 4 }} />
                       {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        src={phone.src}
-                        alt={phone.alt}
-                        style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
-                        loading={i < 3 ? "eager" : "lazy"}
-                      />
-
-                      {/* Glass gloss */}
-                      <div style={{ position: "absolute", inset: 0, background: "linear-gradient(135deg, rgba(255,255,255,0.07) 0%, transparent 45%)", pointerEvents: "none", borderRadius: r }} />
-
-                      {/* Glow ring for featured */}
-                      {phone.featured && <div style={{ position: "absolute", inset: "-2px", borderRadius: r, border: "2px solid rgba(139,0,0,0.6)", pointerEvents: "none" }} />}
-
-                      {/* Home indicator */}
-                      <div style={{ position: "absolute", bottom: "7px", left: "50%", transform: "translateX(-50%)", width: "35%", height: "3px", background: "rgba(255,255,255,0.25)", borderRadius: "2px" }} />
+                      <img src={phone.src} alt={phone.alt} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} loading={i < 3 ? "eager" : "lazy"} />
+                      {/* gloss */}
+                      <div style={{ position: "absolute", inset: 0, background: "linear-gradient(135deg, rgba(255,255,255,0.07) 0%, transparent 42%)", pointerEvents: "none" }} />
+                      {/* home bar */}
+                      <div style={{ position: "absolute", bottom: "6px", left: "50%", transform: "translateX(-50%)", width: "33%", height: "3px", background: "rgba(255,255,255,0.22)", borderRadius: "2px" }} />
                     </div>
                   </div>
                 );
               })}
-            </div>
           </div>
 
         </div>
@@ -259,7 +219,6 @@ export default async function Home() {
       </section>
 
       <style>{`
-        /* Hero: cancel content-wrapper offset, add back nav height + small gap */
         .hw-hero-gate-override {
           padding-top: calc(var(--topbar-total, 72px) + var(--nav-h, 88px) + 16px) !important;
           padding-bottom: 0 !important;
@@ -270,48 +229,32 @@ export default async function Home() {
             padding-top: calc(var(--topbar-total, 72px) + var(--nav-h-mob, 84px) + 16px) !important;
           }
         }
-        /* Desktop: side by side, text left phones right */
         @media (min-width: 860px) {
           .hw-hero-split {
             grid-template-columns: minmax(320px,420px) 1fr !important;
-            align-items: stretch !important;
-            min-height: calc(100vh - var(--topbar-total, 72px) - var(--nav-h, 88px));
+            align-items: center !important;
           }
           .hw-hero-phones-wrap {
             overflow: visible !important;
-            padding-top: 0 !important;
+            align-items: flex-end !important;
             padding-bottom: 0 !important;
-            display: flex !important;
-            align-items: flex-end !important;
-          }
-          .dt-hero-phones {
-            align-items: flex-end !important;
-            height: 100% !important;
           }
         }
-        /* Foldable / tablet: generous but not full desktop */
         @media (min-width: 540px) and (max-width: 859px) {
-          .hw-hero-split {
-            grid-template-columns: 1fr !important;
-          }
+          .hw-hero-split { grid-template-columns: 1fr !important; }
           .hw-hero-phones-wrap {
-            padding: 16px clamp(12px,3vw,32px) 0 !important;
+            padding: 16px clamp(12px,3vw,32px) 16px !important;
             overflow-x: auto !important;
-            overflow-y: visible !important;
-          }
-          .dt-hero-phones {
             justify-content: flex-start !important;
           }
         }
-        /* Small phones */
         @media (max-width: 539px) {
           .hw-hero-split { grid-template-columns: 1fr !important; }
           .hw-hero-phones-wrap {
-            padding: 16px 12px 0 !important;
+            padding: 12px 12px 16px !important;
             overflow-x: auto !important;
-            overflow-y: visible !important;
+            justify-content: flex-start !important;
           }
-          .dt-hero-phones { justify-content: flex-start !important; }
         }
       `}</style>
 
