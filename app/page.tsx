@@ -97,7 +97,7 @@ export default async function Home() {
       {/* ══════════════════════════════════════════════════════════
           SECTION 1 — HERO: SPLIT LAYOUT (text left, phones right)
       ══════════════════════════════════════════════════════════ */}
-      <section className="dt-gate dt-gate--collage hw-hero-gate-override" style={{ padding: "0", minHeight: "unset", marginTop: "calc(-1 * (var(--topbar-total, 72px) + var(--nav-h, 88px)))" }}>
+      <section className="dt-gate dt-gate--collage hw-hero-gate-override" style={{ padding: "0", minHeight: "unset" }}>
 
         <div className="dt-gate__crack" aria-hidden="true" />
 
@@ -112,7 +112,7 @@ export default async function Home() {
         }}>
 
           {/* LEFT — Text block */}
-          <div style={{ display: "flex", flexDirection: "column", gap: "1rem", padding: "clamp(12px,2vw,28px) clamp(16px,3vw,40px) 20px" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "0.6rem", padding: "20px 28px 20px" }}>
             <span className="dt-gate__eyebrow" style={{ fontSize: "0.75rem", letterSpacing: "0.25em" }}>You have arrived in</span>
 
             <div className="dt-gate__collection-badge" style={{ marginBottom: "0" }}>
@@ -171,11 +171,11 @@ export default async function Home() {
           {/* RIGHT — Phone mockups */}
           <div className="hw-hero-phones-wrap" style={{
             display: "flex",
-            alignItems: "flex-end",
+            alignItems: "center",
             justifyContent: "center",
-            padding: "0 16px 0",
-            overflow: "visible",
-            gap: "12px",
+            padding: "0 12px",
+            overflow: "hidden",
+            gap: "10px",
           }}>
               {[
                 { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/pin/gorilla-iphone-wallpaper.jpeg", alt: "Gorilla", featured: false },
@@ -184,9 +184,9 @@ export default async function Home() {
                 { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/pin/girl-doll.jpeg", alt: "Girl Doll", featured: false },
                 { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/wallpapers/hero-2.jpeg", alt: "Dark Art", featured: false },
               ].map((phone, i) => {
-                const w = phone.featured ? "200px" : "145px";
-                const h = phone.featured ? "435px" : "315px";
-                const br = phone.featured ? "36px" : "26px";
+                const w = phone.featured ? "240px" : "170px";
+                const h = phone.featured ? "520px" : "368px";
+                const br = phone.featured ? "42px" : "30px";
                 return (
                   <div key={i} style={{ flexShrink: 0, filter: phone.featured ? "drop-shadow(0 0 28px rgba(139,0,0,0.55))" : "none" }}>
                     <div style={{
@@ -220,25 +220,20 @@ export default async function Home() {
 
       <style>{`
         .hw-hero-gate-override {
-          padding-top: calc(var(--topbar-total, 72px) + var(--nav-h, 88px) + 16px) !important;
+          padding-top: 8px !important;
           padding-bottom: 0 !important;
-          overflow: visible !important;
-        }
-        @media (max-width: 1279px) {
-          .hw-hero-gate-override {
-            padding-top: calc(var(--topbar-total, 72px) + var(--nav-h-mob, 84px) + 16px) !important;
-          }
+          overflow: hidden !important;
         }
         @media (min-width: 860px) {
           .hw-hero-split {
-            grid-template-columns: 340px 1fr !important;
-            align-items: flex-end !important;
+            grid-template-columns: 300px 1fr !important;
+            align-items: center !important;
+            height: 540px !important;
           }
           .hw-hero-phones-wrap {
-            overflow: visible !important;
-            align-items: flex-end !important;
-            padding-bottom: 0 !important;
-            flex-wrap: nowrap !important;
+            height: 540px !important;
+            overflow: hidden !important;
+            align-items: center !important;
           }
         }
         @media (min-width: 540px) and (max-width: 859px) {
