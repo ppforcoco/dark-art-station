@@ -168,50 +168,89 @@ export default async function Home() {
             </div>
           </div>
 
-          {/* RIGHT — Phone mockups */}
-          <div className="hw-hero-phones-wrap" style={{ marginTop: "0", overflow: "visible", paddingTop: "20px", paddingBottom: "16px" }}>
-            <div className="dt-hero-phones" style={{ gap: "clamp(10px,1.8vw,28px)", alignItems: "flex-end", padding: "0 8px" }}>
+          {/* RIGHT — Phone mockups (image-2 style: centered, large, spaced) */}
+          <div className="hw-hero-phones-wrap" style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: "clamp(32px,4vw,64px) clamp(16px,3vw,48px)",
+            overflow: "visible",
+          }}>
+            <span style={{ fontFamily: "var(--font-space, monospace)", fontSize: "0.58rem", letterSpacing: "0.25em", textTransform: "uppercase", color: "rgba(255,255,255,0.35)", marginBottom: "16px" }}>Pocket‑Sized Darkness</span>
+            <h2 style={{ fontFamily: "var(--font-display, serif)", fontSize: "clamp(1.8rem,3.5vw,3rem)", fontWeight: 700, color: "#e8e4f8", margin: "0 0 8px", textAlign: "center", lineHeight: 1.1 }}>Mobile Wallpapers</h2>
+            <p style={{ fontSize: "clamp(0.85rem,1.5vw,1rem)", color: "rgba(232,228,248,0.5)", margin: "0 0 clamp(24px,3vw,40px)", textAlign: "center", fontStyle: "italic" }}>Your lock screen deserves something worth staring at.</p>
+
+            {/* Phone row */}
+            <div style={{
+              display: "flex",
+              alignItems: "flex-end",
+              justifyContent: "center",
+              gap: "clamp(10px,1.8vw,20px)",
+              width: "100%",
+            }}>
               {[
                 { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/pin/gorilla-iphone-wallpaper.jpeg", alt: "Gorilla", featured: false },
                 { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/wallpapers/shadows-have-eyes-android.webp", alt: "Shadow Eyes", featured: false },
                 { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/pin/sinister-cat-shadow.jpeg", alt: "Sinister Cat", featured: true },
                 { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/pin/girl-doll.jpeg", alt: "Girl Doll", featured: false },
                 { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/wallpapers/hero-2.jpeg", alt: "Dark Art", featured: false },
-              ].map((phone, i) => (
-                <div
-                  key={i}
-                  className={`dt-hero-phone-wrap${phone.featured ? " dt-hero-phone-wrap--featured" : ""}`}
-                  style={{
-                    "--phone-i": i,
-                    transform: phone.featured
-                      ? "scale(1.06)"
-                      : i === 1 || i === 3
-                      ? "scale(1.0)"
-                      : "scale(0.94)",
-                    transformOrigin: "bottom center",
-                  } as React.CSSProperties}
-                >
-                  <div className="dt-hero-phone" style={{ width: "clamp(70px,8vw,120px)", height: "clamp(200px,26vw,380px)", borderRadius: "clamp(12px,1.5vw,22px)" }}>
-                    <div className="dt-hero-phone__btn dt-hero-phone__btn--power" aria-hidden="true" />
-                    <div className="dt-hero-phone__btn dt-hero-phone__btn--vol1" aria-hidden="true" />
-                    <div className="dt-hero-phone__btn dt-hero-phone__btn--vol2" aria-hidden="true" />
-                    <div className="dt-hero-phone__screen">
-  
+              ].map((phone, i) => {
+                const w = phone.featured ? "clamp(110px,11vw,160px)" : "clamp(80px,8.5vw,124px)";
+                const h = phone.featured ? "clamp(240px,24vw,360px)" : "clamp(178px,18vw,268px)";
+                const r = phone.featured ? "clamp(18px,2vw,28px)" : "clamp(14px,1.6vw,22px)";
+                return (
+                  <div
+                    key={i}
+                    style={{
+                      position: "relative",
+                      width: w,
+                      flexShrink: 0,
+                      filter: phone.featured ? "drop-shadow(0 0 32px rgba(139,0,0,0.5))" : "none",
+                    }}
+                  >
+                    {/* Phone shell */}
+                    <div style={{
+                      width: w,
+                      height: h,
+                      borderRadius: r,
+                      background: "#0a0a0f",
+                      border: phone.featured ? "2px solid rgba(139,0,0,0.8)" : "1.5px solid rgba(255,255,255,0.12)",
+                      position: "relative",
+                      overflow: "hidden",
+                      boxShadow: phone.featured
+                        ? "0 20px 60px rgba(0,0,0,0.8), 0 0 0 3px rgba(139,0,0,0.3)"
+                        : "0 12px 40px rgba(0,0,0,0.6)",
+                    }}>
+                      {/* Side buttons */}
+                      <div style={{ position: "absolute", right: "-3px", top: "22%", width: "3px", height: "28px", background: "#1a1a2e", borderRadius: "0 2px 2px 0" }} />
+                      <div style={{ position: "absolute", left: "-3px", top: "20%", width: "3px", height: "18px", background: "#1a1a2e", borderRadius: "2px 0 0 2px" }} />
+                      <div style={{ position: "absolute", left: "-3px", top: "32%", width: "3px", height: "18px", background: "#1a1a2e", borderRadius: "2px 0 0 2px" }} />
+
+                      {/* Dynamic island */}
+                      <div style={{ position: "absolute", top: "8px", left: "50%", transform: "translateX(-50%)", width: "30%", height: "10px", background: "#000", borderRadius: "8px", zIndex: 4 }} />
+
+                      {/* Wallpaper image */}
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
                         src={phone.src}
                         alt={phone.alt}
-                        className="dt-hero-phone__img"
+                        style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
                         loading={i < 3 ? "eager" : "lazy"}
                       />
-                      <div className="dt-hero-phone__gloss" aria-hidden="true" />
-                      {phone.featured && <div className="dt-hero-phone__glow-ring" aria-hidden="true" />}
-                    </div>
-                    <div className="dt-hero-phone__bar" aria-hidden="true" />
-                  </div>
 
-                </div>
-              ))}
+                      {/* Glass gloss */}
+                      <div style={{ position: "absolute", inset: 0, background: "linear-gradient(135deg, rgba(255,255,255,0.07) 0%, transparent 45%)", pointerEvents: "none", borderRadius: r }} />
+
+                      {/* Glow ring for featured */}
+                      {phone.featured && <div style={{ position: "absolute", inset: "-2px", borderRadius: r, border: "2px solid rgba(139,0,0,0.6)", pointerEvents: "none" }} />}
+
+                      {/* Home indicator */}
+                      <div style={{ position: "absolute", bottom: "7px", left: "50%", transform: "translateX(-50%)", width: "35%", height: "3px", background: "rgba(255,255,255,0.25)", borderRadius: "2px" }} />
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
 
