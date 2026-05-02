@@ -66,7 +66,7 @@ export default async function IphonePage({ searchParams }: PageProps) {
   const where = {
     collectionId: null,
     deviceType: "IPHONE" as const,
-    ...(tag ? { tags: { has: tag } } : {}),
+    ...(tag ? { tags: { has: tag } } : { NOT: { tags: { has: "badge-new" } } }),
   };
 
   const [pinnedRaw, imagesRaw, total, pageContent, freshDropsRaw] = await Promise.all([
