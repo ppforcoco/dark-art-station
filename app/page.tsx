@@ -10,6 +10,7 @@ import HorrorFact from "@/components/HorrorFact";
 import WallpaperCardGrid from "@/components/WallpaperCardGrid";
 import ProtectedImg from "@/components/ProtectedImg";
 import ProtectionOverlay from "@/components/ProtectionOverlay";
+import PremiumCountdown from "@/components/PremiumCountdown";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
 const OG_IMAGE = `${SITE_URL}/og-image.jpg`;
@@ -310,12 +311,17 @@ export default async function Home() {
           return {
             id: img.id,
             slug: img.slug,
-            title: isLocked ? "Back in the Vault" : img.title,
+            title: isLocked ? "Sealed Away" : img.title,
             src: getPublicUrl(img.r2Key),
             devicePath,
             isLocked,
+            updatedAt: img.updatedAt ? new Date(img.updatedAt).toISOString() : null,
           };
         });
+
+        // Pick the first unlocked item's updatedAt for the section-level countdown
+        const firstUnlocked = premiumItems.find((i) => !i.isLocked && i.updatedAt);
+
         return (
         <section style={{ padding: "clamp(32px,5vw,64px) clamp(16px,5vw,72px)", background: "#0a0810", position: "relative", overflow: "hidden" }}>
           <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse 60% 40% at 50% 0%, rgba(201,168,76,0.07) 0%, transparent 70%)", pointerEvents: "none" }} />
@@ -324,8 +330,13 @@ export default async function Home() {
             <span className="dt-eyebrow" style={{ color: "#c9a84c" }}>Hand-Picked Excellence</span>
             <h2 className="dt-section-title">Premium This Week</h2>
             <p className="dt-section-sub" style={{ maxWidth: "480px", margin: "0 auto" }}>
-              The finest pieces from the archive. Here for 48 hours, then back in the vault.
+              The finest pieces from the archive. Surfaces for 48 hours, then sealed away.
             </p>
+            {firstUnlocked?.updatedAt && (
+              <div style={{ marginTop: "1rem", display: "flex", justifyContent: "center" }}>
+                <PremiumCountdown updatedAt={firstUnlocked.updatedAt} />
+              </div>
+            )}
           </div>
 
           <WallpaperCardGrid
