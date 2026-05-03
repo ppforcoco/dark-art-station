@@ -8,6 +8,8 @@ import { getPublicUrl } from "@/lib/r2";
 import RecentlyViewed from "@/components/RecentlyViewed";
 import HorrorFact from "@/components/HorrorFact";
 import WallpaperCardGrid from "@/components/WallpaperCardGrid";
+import ProtectedImg from "@/components/ProtectedImg";
+import LightsOffToggle from "@/components/LightsOffToggle";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
 const OG_IMAGE = `${SITE_URL}/og-image.jpg`;
@@ -203,7 +205,9 @@ export default async function Home() {
                       {/* dynamic island */}
                       <div style={{ position: "absolute", top: "7px", left: "50%", transform: "translateX(-50%)", width: "32%", height: "9px", background: "#000", borderRadius: "6px", zIndex: 4 }} />
                       {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={phone.src} alt={phone.alt} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", userSelect: "none" }} loading={i < 3 ? "eager" : "lazy"} />
+                      <ProtectedImg src={phone.src} alt={phone.alt} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} loading={i < 3 ? "eager" : "lazy"} />
+                      {/* Protection overlay — blocks right-click & drag */}
+                      <div aria-hidden="true" style={{ position: "absolute", inset: 0, zIndex: 3 }} onContextMenu={(e) => e.preventDefault()} onDragStart={(e) => e.preventDefault()} />
                       {/* gloss */}
                       <div style={{ position: "absolute", inset: 0, background: "linear-gradient(135deg, rgba(255,255,255,0.07) 0%, transparent 42%)", pointerEvents: "none" }} />
                       {/* home bar */}
@@ -297,9 +301,22 @@ export default async function Home() {
       ══════════════════════════════════════════════════════════ */}
       {premiumThisWeek.length > 0 && (() => {
         const now = Date.now();
+        const premiumItems = premiumThisWeek.map((img) => {
+          const updatedAt = img.updatedAt ? new Date(img.updatedAt).getTime() : 0;
+          const hoursOld = (now - updatedAt) / (1000 * 60 * 60);
+          const isLocked = hoursOld > 48;
+          const devicePath = img.deviceType === "IPHONE" ? "iphone" : img.deviceType === "ANDROID" ? "android" : "pc";
+          return {
+            id: img.id,
+            slug: img.slug,
+            title: isLocked ? "Back in the Vault" : img.title,
+            src: getPublicUrl(img.r2Key),
+            devicePath,
+            isLocked,
+          };
+        });
         return (
         <section style={{ padding: "clamp(32px,5vw,64px) clamp(16px,5vw,72px)", background: "#0a0810", position: "relative", overflow: "hidden" }}>
-          {/* Background gold glow */}
           <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse 60% 40% at 50% 0%, rgba(201,168,76,0.07) 0%, transparent 70%)", pointerEvents: "none" }} />
 
           <div className="dt-section-head dt-section-head--center" style={{ marginBottom: "clamp(24px,4vw,40px)" }}>
@@ -310,80 +327,12 @@ export default async function Home() {
             </p>
           </div>
 
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))", gap: "clamp(12px,2vw,20px)" }}>
-            {premiumThisWeek.map((img) => {
-              const updatedAt = img.updatedAt ? new Date(img.updatedAt).getTime() : 0;
-              const hoursOld = (now - updatedAt) / (1000 * 60 * 60);
-              const isLocked = hoursOld > 48;
-              const devicePath = img.deviceType === "IPHONE" ? "iphone" : img.deviceType === "ANDROID" ? "android" : "pc";
-              const href = `/${devicePath}/${img.slug}`;
-              return (
-                <div key={img.id} style={{ position: "relative", borderRadius: "8px", overflow: "hidden", aspectRatio: "9/16", background: "#0a0810" }}>
-                  {/* Card image */}
-                  <Link href={isLocked ? "#" : href} style={{ display: "block", width: "100%", height: "100%", pointerEvents: isLocked ? "none" : "auto" }}>
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={getPublicUrl(img.r2Key)}
-                      alt={img.title}
-                      style={{
-                        width: "100%", height: "100%", objectFit: "cover", display: "block",
-                        filter: isLocked ? "blur(6px) brightness(0.4)" : "none",
-                        transition: "filter 0.3s ease",
-                        userSelect: "none",
-                      }}
-                      loading="lazy"
-                    />
-                  </Link>
-
-                  {/* Premium badge */}
-                  {!isLocked && (
-                    <span style={{
-                      position: "absolute", top: "10px", left: "10px",
-                      fontSize: "0.55rem", letterSpacing: "0.18em", textTransform: "uppercase",
-                      padding: "3px 8px", background: "rgba(0,0,0,0.75)",
-                      border: "1px solid rgba(201,168,76,0.6)", color: "#c9a84c",
-                      borderRadius: "2px", fontFamily: "monospace",
-                    }}>PREMIUM</span>
-                  )}
-
-                  {/* Vault lock overlay */}
-                  {isLocked && (
-                    <div style={{
-                      position: "absolute", inset: 0,
-                      display: "flex", flexDirection: "column",
-                      alignItems: "center", justifyContent: "center",
-                      gap: "0.5rem", padding: "1rem", textAlign: "center",
-                      background: "rgba(10,8,16,0.6)",
-                    }}>
-                      <span style={{ fontSize: "1.8rem", lineHeight: 1 }}>🔒</span>
-                      <span style={{
-                        fontSize: "0.6rem", letterSpacing: "0.2em",
-                        textTransform: "uppercase", color: "#c9a84c",
-                        fontFamily: "monospace", fontWeight: 700,
-                      }}>Back in the Vault</span>
-                      <span style={{
-                        fontSize: "0.55rem", color: "rgba(201,168,76,0.6)",
-                        fontFamily: "monospace", lineHeight: 1.4,
-                      }}>Returns next rotation</span>
-                    </div>
-                  )}
-
-                  {/* Title bar at bottom */}
-                  {!isLocked && (
-                    <div style={{
-                      position: "absolute", bottom: 0, left: 0, right: 0,
-                      padding: "20px 10px 10px",
-                      background: "linear-gradient(transparent, rgba(0,0,0,0.85))",
-                    }}>
-                      <p style={{ margin: 0, fontSize: "0.7rem", color: "#e8dcc8", fontFamily: "monospace", lineHeight: 1.3 }}>
-                        {img.title}
-                      </p>
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
+          <WallpaperCardGrid
+            accentRgb="201,168,76"
+            badge="PREMIUM"
+            badgeColor="#c9a84c"
+            items={premiumItems}
+          />
 
         </section>
         );
@@ -903,15 +852,14 @@ export default async function Home() {
                   </div>
 
                   {/* Wallpaper image */}
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
+                  <ProtectedImg
                     src={phone.src}
                     alt={phone.alt}
                     className="dt-phone-card__img"
                     loading="lazy"
-                    style={{ userSelect: "none" }}
                   />
-
+                  {/* Protection overlay — blocks right-click & drag */}
+                  <div aria-hidden="true" style={{ position: "absolute", inset: 0, zIndex: 3 }} onContextMenu={(e) => e.preventDefault()} onDragStart={(e) => e.preventDefault()} />
 
                   {/* Glass gloss */}
                   <div className="dt-phone-card__gloss" aria-hidden="true" />
@@ -952,12 +900,13 @@ export default async function Home() {
               <span className="dt-monitor__cam" />
               <div className="dt-monitor__screen">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
+                <ProtectedImg
                   src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/monster-flower-offering-pc.webp"
                   alt="Monster Flower Offering — PC wallpaper 16:9"
                   className="dt-monitor__img"
-                  style={{ userSelect: "none" }}
                 />
+                {/* Protection overlay */}
+                <div aria-hidden="true" style={{ position: "absolute", inset: 0, zIndex: 3 }} onContextMenu={(e) => e.preventDefault()} onDragStart={(e) => e.preventDefault()} />
                 <div className="dt-monitor__scanlines" aria-hidden="true" />
                 <div className="dt-monitor__glitch" aria-hidden="true" />
               </div>
@@ -1086,6 +1035,8 @@ export default async function Home() {
       <RecentlyViewed />
 
 
+
+      <LightsOffToggle />
 
       <script type="application/ld+json" dangerouslySetInnerHTML={{
         __html: JSON.stringify({
