@@ -909,7 +909,7 @@ export default async function Home() {
                     alt={phone.alt}
                     className="dt-phone-card__img"
                     loading="lazy"
-                    onContextMenu={(e) => e.preventDefault()}
+                    style={{ userSelect: "none" }}
                   />
 
 
