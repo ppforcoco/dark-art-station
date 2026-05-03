@@ -7,6 +7,7 @@ import { db } from "@/lib/db";
 import { getPublicUrl } from "@/lib/r2";
 import AdminHtmlBlock from "@/components/AdminHtmlBlock";
 import { sanitizeAdminHtml } from "@/lib/sanitize-html";
+import { isPremiumLocked } from "@/lib/premium-lock";
 
 // District slug → tag mapping
 // When a collection slug matches a district, standalone images with the
@@ -100,6 +101,7 @@ export default async function CollectionPage({ params }: PageProps) {
           r2Key: true,
           tags: true,
           sortOrder: true,
+          updatedAt: true,
         },
       },
       _count: { select: { downloads: true } },
@@ -125,6 +127,7 @@ export default async function CollectionPage({ params }: PageProps) {
           r2Key: true,
           tags: true,
           sortOrder: true,
+          updatedAt: true,
           deviceType: true,
         },
       })
@@ -233,6 +236,7 @@ export default async function CollectionPage({ params }: PageProps) {
                 const imgAlt =
                   img.altText ??
                   `${img.title} — free dark wallpaper from ${collection.title}`;
+                const imgLocked = (img.tags ?? []).includes("badge-premium") && isPremiumLocked((img as {updatedAt?: Date|null}).updatedAt);
                 return (
                   <Link
                     key={img.id}
@@ -242,7 +246,7 @@ export default async function CollectionPage({ params }: PageProps) {
                         ? `/${(img as {deviceType?: string|null}).deviceType!.toLowerCase()}/${img.slug}`
                         : `/shop/${slug}/${img.slug}`
                     }
-                    style={{ textDecoration: "none", display: "block" }}
+                    style={{ textDecoration: "none", display: "block", pointerEvents: imgLocked ? "none" : "auto" }}
                   >
                     <div style={{
                       position: "relative",
@@ -262,16 +266,31 @@ export default async function CollectionPage({ params }: PageProps) {
                         className="object-cover"
                         sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 20vw"
                         priority={idx < 10}
+                        style={{ filter: imgLocked ? "blur(10px) brightness(0.25)" : "none" }}
                       />
-                      <div className="coll-card-overlay">
-                        <span style={{
-                          fontFamily: "var(--font-space, monospace)",
-                          fontSize: "0.48rem",
-                          letterSpacing: "0.12em",
-                          textTransform: "uppercase",
-                          color: "#c9a84c",
-                        }}>View & Download →</span>
-                      </div>
+                      {imgLocked ? (
+                        <div style={{
+                          position: "absolute", inset: 0, zIndex: 5,
+                          display: "flex", flexDirection: "column",
+                          alignItems: "center", justifyContent: "center",
+                          gap: "8px", textAlign: "center",
+                          background: "rgba(10,8,16,0.5)",
+                        }}>
+                          <span style={{ fontSize: "1.6rem" }}>🔒</span>
+                          <span style={{ fontSize: "0.5rem", letterSpacing: "0.2em", textTransform: "uppercase", color: "#c9a84c", fontFamily: "monospace", fontWeight: 700 }}>Back in the Vault</span>
+                          <span style={{ fontSize: "0.45rem", color: "rgba(201,168,76,0.6)", fontFamily: "monospace" }}>Returns in 24h</span>
+                        </div>
+                      ) : (
+                        <div className="coll-card-overlay">
+                          <span style={{
+                            fontFamily: "var(--font-space, monospace)",
+                            fontSize: "0.48rem",
+                            letterSpacing: "0.12em",
+                            textTransform: "uppercase",
+                            color: "#c9a84c",
+                          }}>View & Download →</span>
+                        </div>
+                      )}
                     </div>
                     <div style={{ padding: "8px 4px 4px" }}>
                       <span style={{

@@ -9,6 +9,7 @@
 
 import React from "react";
 import DeviceImageCard from "@/components/DeviceImageCard";
+import { isPremiumLocked } from "@/lib/premium-lock";
 
 export interface ImageItem {
   id: string;
@@ -18,6 +19,7 @@ export interface ImageItem {
   viewCount: number;
   tags: string[];
   isAdult: boolean;
+  updatedAt?: string | null;
 }
 
 interface IphoneImageGridProps {
@@ -64,6 +66,7 @@ export default function IphoneImageGrid({
             title={img.title}
             tags={img.tags}
             isAdult={img.isAdult}
+            isLocked={img.tags.includes("badge-premium") && isPremiumLocked(img.updatedAt)}
             priority={priority || idx < priorityCount}
             aspectRatio={aspectRatio}
             sizes={sizes}

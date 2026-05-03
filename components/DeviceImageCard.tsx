@@ -23,6 +23,8 @@ interface DeviceImageCardProps {
   sizes?: string;
   /** Optional offset (0-9) so adjacent cards don't start on the same color */
   glowOffset?: number;
+  /** Whether this premium wallpaper is currently in its locked (vault) period */
+  isLocked?: boolean;
 }
 
 function glowDelay(seed: string, offset = 0): string {
@@ -45,6 +47,7 @@ export default function DeviceImageCard({
   aspectRatio = "9/16",
   sizes = "(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 20vw",
   glowOffset = 0,
+  isLocked = false,
 }: DeviceImageCardProps) {
   const [revealed,    setRevealed]    = useState(false);
   const [flipping,    setFlipping]    = useState(false);
@@ -156,6 +159,55 @@ export default function DeviceImageCard({
           </div>
         </div>
       </>
+    );
+  }
+
+
+  // ── Premium locked card ───────────────────────────────────────────────────
+  if (isLocked) {
+    return (
+      <div
+        style={{
+          aspectRatio: aspectRatio.replace("/", " / "),
+          position: "relative",
+          overflow: "hidden",
+          background: "#0a0810",
+          borderRadius: "inherit",
+          cursor: "default",
+        }}
+      >
+        {/* Blurred background image */}
+        <Image
+          src={src}
+          alt=""
+          fill
+          loading="lazy"
+          unoptimized
+          className="object-cover"
+          style={{ filter: "blur(12px) brightness(0.25)", transform: "scale(1.1)" }}
+          sizes={sizes}
+          aria-hidden="true"
+        />
+        {/* Lock overlay */}
+        <div style={{
+          position: "absolute", inset: 0, zIndex: 5,
+          display: "flex", flexDirection: "column",
+          alignItems: "center", justifyContent: "center",
+          gap: "10px", padding: "1rem", textAlign: "center",
+          background: "rgba(10,8,16,0.5)",
+        }}>
+          <span style={{ fontSize: "1.8rem", lineHeight: 1 }}>🔒</span>
+          <span style={{
+            fontSize: "0.55rem", letterSpacing: "0.2em",
+            textTransform: "uppercase", color: "#c9a84c",
+            fontFamily: "monospace", fontWeight: 700,
+          }}>Back in the Vault</span>
+          <span style={{
+            fontSize: "0.5rem", color: "rgba(201,168,76,0.6)",
+            fontFamily: "monospace", lineHeight: 1.4,
+          }}>Returns in 24h</span>
+        </div>
+      </div>
     );
   }
 

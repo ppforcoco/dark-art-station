@@ -10,7 +10,6 @@ import HorrorFact from "@/components/HorrorFact";
 import WallpaperCardGrid from "@/components/WallpaperCardGrid";
 import ProtectedImg from "@/components/ProtectedImg";
 import ProtectionOverlay from "@/components/ProtectionOverlay";
-import LightsOffToggle from "@/components/LightsOffToggle";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
 const OG_IMAGE = `${SITE_URL}/og-image.jpg`;
@@ -305,7 +304,8 @@ export default async function Home() {
         const premiumItems = premiumThisWeek.map((img) => {
           const updatedAt = img.updatedAt ? new Date(img.updatedAt).getTime() : 0;
           const hoursOld = (now - updatedAt) / (1000 * 60 * 60);
-          const isLocked = hoursOld > 48;
+          const cycle = hoursOld % 72;
+          const isLocked = cycle > 48;
           const devicePath = img.deviceType === "IPHONE" ? "iphone" : img.deviceType === "ANDROID" ? "android" : "pc";
           return {
             id: img.id,
@@ -1037,7 +1037,6 @@ export default async function Home() {
 
 
 
-      <LightsOffToggle />
 
       <script type="application/ld+json" dangerouslySetInnerHTML={{
         __html: JSON.stringify({

@@ -60,14 +60,14 @@ export default async function AndroidPage({ searchParams }: PageProps) {
       ? db.image.findMany({
           where: { collectionId: null, deviceType: "ANDROID", sortOrder: { lt: 0 } },
           orderBy: { sortOrder: "asc" },
-          select: { id: true, slug: true, title: true, r2Key: true, viewCount: true, tags: true, isAdult: true },
+          select: { id: true, slug: true, title: true, r2Key: true, viewCount: true, tags: true, isAdult: true, updatedAt: true },
           take: 3,
         })
       : Promise.resolve([] as Array<{ id: string; slug: string; title: string; r2Key: string; viewCount: number; tags: string[]; isAdult: boolean }>),
     db.image.findMany({
       where: { ...where, sortOrder: { gte: 0 } },
       orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
-      select: { id: true, slug: true, title: true, r2Key: true, viewCount: true, tags: true, isAdult: true },
+      select: { id: true, slug: true, title: true, r2Key: true, viewCount: true, tags: true, isAdult: true, updatedAt: true },
       take: PAGE_SIZE,
       skip,
     }),
