@@ -9,6 +9,8 @@ import RecentlyViewed from "@/components/RecentlyViewed";
 import HorrorFact from "@/components/HorrorFact";
 import WallpaperCardGrid from "@/components/WallpaperCardGrid";
 import ProtectedImg from "@/components/ProtectedImg";
+import ProtectionOverlay from "@/components/ProtectionOverlay";
+import LightsOffToggle from "@/components/LightsOffToggle";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
 const OG_IMAGE = `${SITE_URL}/og-image.jpg`;
@@ -205,8 +207,8 @@ export default async function Home() {
                       <div style={{ position: "absolute", top: "7px", left: "50%", transform: "translateX(-50%)", width: "32%", height: "9px", background: "#000", borderRadius: "6px", zIndex: 4 }} />
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <ProtectedImg src={phone.src} alt={phone.alt} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} loading={i < 3 ? "eager" : "lazy"} />
-                      {/* Protection overlay — blocks right-click & drag */}
-                      <div aria-hidden="true" style={{ position: "absolute", inset: 0, zIndex: 3 }} onContextMenu={(e) => e.preventDefault()} onDragStart={(e) => e.preventDefault()} />
+                      {/* Protection overlay */}
+                      <ProtectionOverlay />
                       {/* gloss */}
                       <div style={{ position: "absolute", inset: 0, background: "linear-gradient(135deg, rgba(255,255,255,0.07) 0%, transparent 42%)", pointerEvents: "none" }} />
                       {/* home bar */}
@@ -857,8 +859,8 @@ export default async function Home() {
                     className="dt-phone-card__img"
                     loading="lazy"
                   />
-                  {/* Protection overlay — blocks right-click & drag */}
-                  <div aria-hidden="true" style={{ position: "absolute", inset: 0, zIndex: 3 }} onContextMenu={(e) => e.preventDefault()} onDragStart={(e) => e.preventDefault()} />
+                  {/* Protection overlay */}
+                  <ProtectionOverlay />
 
                   {/* Glass gloss */}
                   <div className="dt-phone-card__gloss" aria-hidden="true" />
@@ -905,7 +907,7 @@ export default async function Home() {
                   className="dt-monitor__img"
                 />
                 {/* Protection overlay */}
-                <div aria-hidden="true" style={{ position: "absolute", inset: 0, zIndex: 3 }} onContextMenu={(e) => e.preventDefault()} onDragStart={(e) => e.preventDefault()} />
+                <ProtectionOverlay />
                 <div className="dt-monitor__scanlines" aria-hidden="true" />
                 <div className="dt-monitor__glitch" aria-hidden="true" />
               </div>
@@ -1035,6 +1037,7 @@ export default async function Home() {
 
 
 
+      <LightsOffToggle />
 
       <script type="application/ld+json" dangerouslySetInnerHTML={{
         __html: JSON.stringify({
