@@ -9,7 +9,6 @@ import RecentlyViewed from "@/components/RecentlyViewed";
 import HorrorFact from "@/components/HorrorFact";
 import WallpaperCardGrid from "@/components/WallpaperCardGrid";
 import ProtectedImg from "@/components/ProtectedImg";
-import LightsOffToggle from "@/components/LightsOffToggle";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
 const OG_IMAGE = `${SITE_URL}/og-image.jpg`;
@@ -1036,7 +1035,6 @@ export default async function Home() {
 
 
 
-      <LightsOffToggle />
 
       <script type="application/ld+json" dangerouslySetInnerHTML={{
         __html: JSON.stringify({
