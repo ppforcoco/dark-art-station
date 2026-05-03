@@ -5,53 +5,50 @@ export default function robots(): MetadataRoute.Robots {
 
   return {
     rules: [
-      // ── Allow all crawlers by default ────────────────────────────────
-      {
-        userAgent: "*",
-        allow: "/",
-        disallow: [
-          "/api/",           // API routes
-          "/admin/",         // Admin pages
-          "/admin-secret-hw", // Secret admin panel
-          "/*.json",         // JSON files (except those public-facing)
-          "/*?*search*",     // Dynamic search parameters
-          "/shop",             // Duplicate of /obsessions — noindexed
-        ],
-        crawlDelay: 0.5,  // ✅ Moved inside the rule
-      },
-      // ── GoogleBot — Aggressive crawling allowed ──────────────────────
+      // ── Googlebot first — no delay, full access ──────────────────────
       {
         userAgent: "Googlebot",
         allow: "/",
-        crawlDelay: 0,
+        disallow: [
+          "/api/",
+          "/admin/",
+          "/admin-secret-hw",
+        ],
       },
-      // ── GPTBot — Restrict to reduce training data usage ──────────────
-      {
-        userAgent: "GPTBot",
-        disallow: "/",
-      },
-      // ── ClaudeBot — Restrict to reduce training data usage ──────────
-      {
-        userAgent: "ClaudeBot",
-        disallow: "/",
-      },
-      // ── Other crawlers with restrictions ─────────────────────────────
+      // ── AdsBot — needs full access for AdSense approval ──────────────
       {
         userAgent: "AdsBot-Google",
         allow: "/",
       },
+      // ── All other crawlers ───────────────────────────────────────────
       {
-        userAgent: "Slurp",
+        userAgent: "*",
         allow: "/",
+        disallow: [
+          "/api/",
+          "/admin/",
+          "/admin-secret-hw",
+        ],
         crawlDelay: 1,
       },
+      // ── Block AI training bots ───────────────────────────────────────
       {
-        userAgent: "DuckDuckBot",
-        allow: "/",
-        crawlDelay: 1,
+        userAgent: "GPTBot",
+        disallow: "/",
+      },
+      {
+        userAgent: "ClaudeBot",
+        disallow: "/",
+      },
+      {
+        userAgent: "CCBot",
+        disallow: "/",
+      },
+      {
+        userAgent: "anthropic-ai",
+        disallow: "/",
       },
     ],
     sitemap: `${siteUrl}/sitemap.xml`,
-    // ❌ Removed crawlDelay from root level (not a valid property)
   };
 }
