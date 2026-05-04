@@ -2,23 +2,41 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 
-// ─── Consent helpers (used by AdSlot too via window flag) ─────────────────────
+// ─── Consent helpers ──────────────────────────────────────────────────────────
+// Uses a real HTTP cookie (not localStorage) so Safari ITP doesn't wipe it.
+// Cookie is SameSite=Lax; max-age 1 year. Falls back to localStorage as backup.
 export type ConsentState = "accepted" | "declined" | null;
-const STORAGE_KEY = "hw-cookie-consent";
+const COOKIE_NAME = "hw-cookie-consent";
+const MAX_AGE = 60 * 60 * 24 * 365; // 1 year in seconds
 
-export function getConsent(): ConsentState {
+function getCookieValue(): ConsentState {
+  if (typeof document === "undefined") return null;
+  const match = document.cookie
+    .split("; ")
+    .find((row) => row.startsWith(COOKIE_NAME + "="));
+  if (match) return match.split("=")[1] as ConsentState;
+  // Fallback: check localStorage for users who previously consented
   try {
-    return (localStorage.getItem(STORAGE_KEY) as ConsentState) ?? null;
+    return (localStorage.getItem(COOKIE_NAME) as ConsentState) ?? null;
   } catch {
     return null;
   }
 }
 
-export function setConsentValue(value: "accepted" | "declined") {
-  try {
-    localStorage.setItem(STORAGE_KEY, value);
-  } catch {}
+function setCookieValue(value: "accepted" | "declined") {
+  // Set real HTTP cookie — persists across Safari sessions
+  document.cookie = `${COOKIE_NAME}=${value}; max-age=${MAX_AGE}; path=/; SameSite=Lax`;
+  // Also write localStorage as belt-and-suspenders backup
+  try { localStorage.setItem(COOKIE_NAME, value); } catch {}
   window.dispatchEvent(new CustomEvent("hw-consent-change", { detail: value }));
+}
+
+export function getConsent(): ConsentState {
+  return getCookieValue();
+}
+
+export function setConsentValue(value: "accepted" | "declined") {
+  setCookieValue(value);
 }
 
 // ─── Component ────────────────────────────────────────────────────────────────
@@ -26,7 +44,7 @@ export default function CookieBanner() {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    const existing = getConsent();
+    const existing = getCookieValue();
     if (existing === null) {
       setVisible(true);
     } else if (existing === "accepted") {
@@ -44,9 +62,8 @@ export default function CookieBanner() {
   }, []);
 
   function accept() {
-    setConsentValue("accepted");
+    setCookieValue("accepted");
     setVisible(false);
-    // Consent Mode v2 — upgrade to full personalized ads + analytics
     if (typeof window !== "undefined" && typeof (window as any).gtag === "function") {
       (window as any).gtag("consent", "update", {
         ad_storage:          "granted",
@@ -58,10 +75,8 @@ export default function CookieBanner() {
   }
 
   function decline() {
-    setConsentValue("declined");
+    setCookieValue("declined");
     setVisible(false);
-    // Consent Mode v2 — keep denied but signal non-personalized ads are OK
-    // Google will still show non-personalized ads to this user
     if (typeof window !== "undefined" && typeof (window as any).gtag === "function") {
       (window as any).gtag("consent", "update", {
         ad_storage:          "denied",

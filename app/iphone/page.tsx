@@ -8,7 +8,7 @@ import Pagination from "@/components/Pagination";
 import DeviceImageCard from "@/components/DeviceImageCard";
 import WallpaperTips from "@/components/WallpaperTips";
 import Breadcrumbs from "@/components/Breadcrumbs";
-import AdminHtmlBlock from "@/components/AdminHtmlBlock"; // ← ADDED
+import AdminHtmlBlock from "@/components/AdminHtmlBlock";
 import IphoneImageGrid from "@/components/IphoneImageGrid";
 
 export const revalidate = 60;
@@ -66,51 +66,66 @@ export default async function IphonePage({ searchParams }: PageProps) {
     ...(tag ? { tags: { has: tag } } : { NOT: { tags: { has: "badge-new" } } }),
   };
 
-  const [pinnedRaw, imagesRaw, total, pageContent, freshDropsRaw] = await Promise.all([
-    (!tag && page === 1)
-      ? db.image.findMany({
-          where: { collectionId: null, deviceType: "IPHONE", sortOrder: { lt: 0 } },
-          orderBy: { sortOrder: "asc" },
-          select: { id: true, slug: true, title: true, r2Key: true, viewCount: true, tags: true, isAdult: true, updatedAt: true },
-          take: 3,
-        })
-      : Promise.resolve([] as Array<{ id: string; slug: string; title: string; r2Key: string; viewCount: number; tags: string[]; isAdult: boolean }>),
-    db.image.findMany({
-      where: { ...where, sortOrder: { gte: 0 } },
-      orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
-      select: { id: true, slug: true, title: true, r2Key: true, viewCount: true, tags: true, isAdult: true, updatedAt: true },
-      take: PAGE_SIZE,
-      skip,
-    }),
-    db.image.count({ where: { ...where, sortOrder: { gte: 0 } } }),
-    getPageContent("iphone"),
-    (!tag && page === 1)
-      ? db.image.findMany({
-          where: { tags: { has: "badge-new" }, deviceType: "IPHONE", isAdult: false },
-          orderBy: { updatedAt: "desc" },
-          take: 10,
-          select: { id: true, slug: true, title: true, r2Key: true, viewCount: true, tags: true, isAdult: true, updatedAt: true },
-        })
-      : Promise.resolve([] as Array<{ id: string; slug: string; title: string; r2Key: string; viewCount: number; tags: string[]; isAdult: boolean }>),
-  ]);
+  let pinnedImages: ImageItem[] = [];
+  let images: ImageItem[] = [];
+  let freshDrops: ImageItem[] = [];
+  let total = 0;
+  let pageContent = null;
+  let dbError = false;
 
-  const pinnedImages: ImageItem[] = pinnedRaw.map((img) => ({
-    id: img.id, slug: img.slug, title: img.title,
-    src: getPublicUrl(img.r2Key),
-    viewCount: img.viewCount, tags: img.tags, isAdult: img.isAdult,
-  }));
+  try {
+    const [pinnedRaw, imagesRaw, totalCount, content, freshDropsRaw] = await Promise.all([
+      (!tag && page === 1)
+        ? db.image.findMany({
+            where: { collectionId: null, deviceType: "IPHONE", sortOrder: { lt: 0 } },
+            orderBy: { sortOrder: "asc" },
+            select: { id: true, slug: true, title: true, r2Key: true, viewCount: true, tags: true, isAdult: true, updatedAt: true },
+            take: 3,
+          })
+        : Promise.resolve([] as Array<{ id: string; slug: string; title: string; r2Key: string; viewCount: number; tags: string[]; isAdult: boolean; updatedAt: Date }>),
+      db.image.findMany({
+        where: { ...where, sortOrder: { gte: 0 } },
+        orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
+        select: { id: true, slug: true, title: true, r2Key: true, viewCount: true, tags: true, isAdult: true, updatedAt: true },
+        take: PAGE_SIZE,
+        skip,
+      }),
+      db.image.count({ where: { ...where, sortOrder: { gte: 0 } } }),
+      getPageContent("iphone"),
+      (!tag && page === 1)
+        ? db.image.findMany({
+            where: { tags: { has: "badge-new" }, deviceType: "IPHONE", isAdult: false },
+            orderBy: { updatedAt: "desc" },
+            take: 10,
+            select: { id: true, slug: true, title: true, r2Key: true, viewCount: true, tags: true, isAdult: true, updatedAt: true },
+          })
+        : Promise.resolve([] as Array<{ id: string; slug: string; title: string; r2Key: string; viewCount: number; tags: string[]; isAdult: boolean; updatedAt: Date }>),
+    ]);
 
-  const images: ImageItem[] = imagesRaw.map((img) => ({
-    id: img.id, slug: img.slug, title: img.title,
-    src: getPublicUrl(img.r2Key),
-    viewCount: img.viewCount, tags: img.tags, isAdult: img.isAdult,
-  }));
+    total = totalCount;
+    pageContent = content;
 
-  const freshDrops: ImageItem[] = freshDropsRaw.map((img) => ({
-    id: img.id, slug: img.slug, title: img.title,
-    src: getPublicUrl(img.r2Key),
-    viewCount: img.viewCount, tags: img.tags, isAdult: img.isAdult,
-  }));
+    pinnedImages = pinnedRaw.map((img) => ({
+      id: img.id, slug: img.slug, title: img.title,
+      src: getPublicUrl(img.r2Key),
+      viewCount: img.viewCount, tags: img.tags, isAdult: img.isAdult,
+    }));
+
+    images = imagesRaw.map((img) => ({
+      id: img.id, slug: img.slug, title: img.title,
+      src: getPublicUrl(img.r2Key),
+      viewCount: img.viewCount, tags: img.tags, isAdult: img.isAdult,
+    }));
+
+    freshDrops = freshDropsRaw.map((img) => ({
+      id: img.id, slug: img.slug, title: img.title,
+      src: getPublicUrl(img.r2Key),
+      viewCount: img.viewCount, tags: img.tags, isAdult: img.isAdult,
+    }));
+  } catch (err) {
+    console.error("[iphone/page] DB error:", err);
+    dbError = true;
+  }
 
   const totalPages = Math.ceil(total / PAGE_SIZE);
   const baseUrl    = tag ? `/iphone?tag=${encodeURIComponent(tag)}` : "/iphone";
@@ -151,7 +166,7 @@ export default async function IphonePage({ searchParams }: PageProps) {
         </h1>
 
         {/* Fallback prose — only shown when there is NO admin body */}
-        {!tag && !pageContent?.body && (
+        {!tag && !pageContent?.body && !dbError && (
           <div className="device-page-intro">
             <p>
               Every wallpaper in this collection is designed specifically for iPhone screens —
@@ -170,20 +185,25 @@ export default async function IphonePage({ searchParams }: PageProps) {
             </div>
           </div>
         )}
+
+        {/* DB error state */}
+        {dbError && (
+          <div style={{ padding: "20px", border: "1px solid rgba(192,0,26,0.3)", background: "rgba(192,0,26,0.05)", marginTop: "12px" }}>
+            <p style={{ fontFamily: "var(--font-space, monospace)", fontSize: "0.7rem", color: "#c0001a", letterSpacing: "0.1em" }}>
+              ⚠ Could not load wallpapers — please try again in a moment.
+            </p>
+          </div>
+        )}
       </section>
 
-      {/*
-        ── Admin HTML rendered via AdminHtmlBlock (sandboxed iframe) ────────────
-        Lives OUTSIDE max-w-7xl so it spans full page width.
-        AdminHtmlBlock preserves all <style>, <div>, images — nothing stripped.
-      */}
+      {/* Admin HTML rendered via AdminHtmlBlock (sandboxed iframe) — full width */}
       {!tag && pageContent?.body && (
         <div className="w-full pb-8">
           <AdminHtmlBlock html={pageContent.body} />
         </div>
       )}
 
-      {/* ── Pinned "The Most Haunted" top 3 — only on page 1, no tag filter ── */}
+      {/* Pinned "The Most Haunted" top 3 — only on page 1, no tag filter */}
       {pinnedImages.length > 0 && (
         <section className="max-w-7xl mx-auto px-6 md:px-[60px] pb-10">
           <div style={{ display: "flex", alignItems: "center", gap: "14px", marginBottom: "20px" }}>
@@ -212,7 +232,7 @@ export default async function IphonePage({ searchParams }: PageProps) {
         </section>
       )}
 
-      {/* ── Fresh Drops ── */}
+      {/* Fresh Drops */}
       {freshDrops.length > 0 && (
         <section className="max-w-7xl mx-auto px-6 md:px-[60px] pb-10">
           <div style={{ display: "flex", alignItems: "center", gap: "14px", marginBottom: "20px" }}>
@@ -253,7 +273,7 @@ export default async function IphonePage({ searchParams }: PageProps) {
       )}
 
       <section className="max-w-7xl mx-auto px-6 md:px-[60px] py-10">
-        {images.length === 0 ? (
+        {images.length === 0 && !dbError ? (
           <div className="hw-coming-soon">
             <div className="hw-coming-soon__sigil">✦ ☽ ✦</div>
             <div className="hw-coming-soon__bar" />
@@ -262,7 +282,7 @@ export default async function IphonePage({ searchParams }: PageProps) {
               {tag ? `New wallpapers tagged #${tag} are on their way.` : "Dark art is brewing. Upload images from the admin panel to fill this page."}
             </p>
           </div>
-        ) : (
+        ) : !dbError ? (
           <>
             <p className="font-mono text-[0.6rem] tracking-[0.2em] uppercase text-[#4a445a] mb-6">
               — {total} wallpapers · page {page} of {totalPages}
@@ -279,7 +299,7 @@ export default async function IphonePage({ searchParams }: PageProps) {
             />
             <Pagination currentPage={page} totalPages={totalPages} baseUrl={baseUrl} />
           </>
-        )}
+        ) : null}
       </section>
 
       <section style={{

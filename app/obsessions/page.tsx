@@ -5,7 +5,6 @@ import Image from "next/image";
 import { db, getPageContent } from "@/lib/db";
 import AgeGateLink from "@/components/AgeGateLink";
 import AdminHtmlBlock from "@/components/AdminHtmlBlock";
-import { sanitizeAdminHtml } from "@/lib/sanitize-html";
 import Breadcrumbs from "@/components/Breadcrumbs";
 
 // No cache — always serve fresh so admin changes show instantly
@@ -64,18 +63,19 @@ export default async function ObsessionsPage() {
         { label: "Obsessions" },
       ]} />
 
-      {/* ── Title + Description (matches iPhone/Android page style) ── */}
-      <section className="max-w-7xl mx-auto px-6 md:px-[60px] pt-10 pb-8">
+      {/* ── Title ── */}
+      <section className="max-w-7xl mx-auto px-6 md:px-[60px] pt-10 pb-4">
         <h1 className="font-display text-3xl md:text-4xl font-bold leading-tight mb-6">
           Choose Your <span style={{ color: "#c9a84c", fontStyle: "italic" }}>Obsession</span>
         </h1>
-
-        {/* Description from admin — rendered in iframe, supports any HTML */}
-        {pageContent?.body && (
-          <AdminHtmlBlock html={pageContent.body} />
-        )}
       </section>
 
+      {/* Admin HTML — full width, outside max-w-7xl constraint */}
+      {pageContent?.body && (
+        <div className="w-full px-6 md:px-16 pb-8">
+          <AdminHtmlBlock html={pageContent.body} />
+        </div>
+      )}
 
       {/* ── Collections Grid ── */}
       <section className="max-w-7xl mx-auto px-6 md:px-[60px] py-10">
@@ -199,7 +199,6 @@ export default async function ObsessionsPage() {
           </>
         )}
       </section>
-
 
       <script
         type="application/ld+json"

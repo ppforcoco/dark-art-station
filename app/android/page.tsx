@@ -8,6 +8,7 @@ import Pagination from "@/components/Pagination";
 import WallpaperTips from "@/components/WallpaperTips";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import IphoneImageGrid from "@/components/IphoneImageGrid";
+import AdminHtmlBlock from "@/components/AdminHtmlBlock";
 
 export const revalidate = 60;
 
@@ -65,13 +66,14 @@ export default async function AndroidPage({ searchParams }: PageProps) {
     ...(tag ? { tags: { has: tag } } : {}),
   };
 
-  let pinnedRaw: Array<{ id: string; slug: string; title: string; r2Key: string; viewCount: number; tags: string[]; isAdult: boolean; updatedAt: Date }> = [];
-  let imagesRaw: Array<{ id: string; slug: string; title: string; r2Key: string; viewCount: number; tags: string[]; isAdult: boolean; updatedAt: Date }> = [];
+  let pinnedImages: ImageItem[] = [];
+  let images: ImageItem[] = [];
   let total = 0;
-  let pageContent: Awaited<ReturnType<typeof getPageContent>> = null;
+  let pageContent = null;
+  let dbError = false;
 
   try {
-    [pinnedRaw, imagesRaw, total, pageContent] = await Promise.all([
+    const [pinnedRaw, imagesRaw, totalCount, content] = await Promise.all([
       (!tag && page === 1)
         ? db.image.findMany({
             where: { collectionId: null, deviceType: "ANDROID", sortOrder: { lt: 0 } },
@@ -79,7 +81,7 @@ export default async function AndroidPage({ searchParams }: PageProps) {
             select: { id: true, slug: true, title: true, r2Key: true, viewCount: true, tags: true, isAdult: true, updatedAt: true },
             take: 3,
           })
-        : Promise.resolve([]),
+        : Promise.resolve([] as Array<{ id: string; slug: string; title: string; r2Key: string; viewCount: number; tags: string[]; isAdult: boolean; updatedAt: Date }>),
       db.image.findMany({
         where: { ...where, sortOrder: { gte: 0 } },
         orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
@@ -90,22 +92,25 @@ export default async function AndroidPage({ searchParams }: PageProps) {
       db.image.count({ where: { ...where, sortOrder: { gte: 0 } } }),
       getPageContent("android"),
     ]);
+
+    total = totalCount;
+    pageContent = content;
+
+    pinnedImages = pinnedRaw.map((img) => ({
+      id: img.id, slug: img.slug, title: img.title,
+      src: getPublicUrl(img.r2Key),
+      viewCount: img.viewCount, tags: img.tags, isAdult: img.isAdult,
+    }));
+
+    images = imagesRaw.map((img) => ({
+      id: img.id, slug: img.slug, title: img.title,
+      src: getPublicUrl(img.r2Key),
+      viewCount: img.viewCount, tags: img.tags, isAdult: img.isAdult,
+    }));
   } catch (err) {
-    console.error("[AndroidPage] DB error:", err);
-    throw err;
+    console.error("[android/page] DB error:", err);
+    dbError = true;
   }
-
-  const pinnedImages: ImageItem[] = pinnedRaw.map((img) => ({
-    id: img.id, slug: img.slug, title: img.title,
-    src: getPublicUrl(img.r2Key),
-    viewCount: img.viewCount, tags: img.tags, isAdult: img.isAdult,
-  }));
-
-  const images: ImageItem[] = imagesRaw.map((img) => ({
-    id: img.id, slug: img.slug, title: img.title,
-    src: getPublicUrl(img.r2Key),
-    viewCount: img.viewCount, tags: img.tags, isAdult: img.isAdult,
-  }));
 
   const totalPages = Math.ceil(total / PAGE_SIZE);
   const baseUrl    = tag ? `/android?tag=${encodeURIComponent(tag)}` : "/android";
@@ -143,29 +148,42 @@ export default async function AndroidPage({ searchParams }: PageProps) {
           {page > 1 && <span className="text-[#4a445a] text-2xl"> — Page {page}</span>}
         </h1>
 
-        {!tag && (
+        {/* Fallback prose — only shown when there is NO admin body */}
+        {!tag && !pageContent?.body && !dbError && (
           <div className="device-page-intro">
-            {pageContent?.body
-              ? <div dangerouslySetInnerHTML={{ __html: pageContent.body }} />
-              : <>
-                  <p>
-                    All Android wallpapers here are portrait 9:16 format, sized for modern flagship
-                    screens including Samsung Galaxy, Google Pixel, OnePlus, and Xiaomi devices.
-                    AMOLED-optimised: near-black backgrounds let your OLED screen turn pixels completely
-                    off, extending battery life while looking dramatically better.
-                  </p>
-                  <p>
-                    Download is instant — tap any image, tap download, and it saves directly to your
-                    gallery. No account, no watermarks, no limits.
-                  </p>
-                  <div className="device-page-guide-link">
-                    <span>Need help setting it up?</span>
-                    <a href="/blog/the-dark-aesthetic-a-complete-guide-to-customizing-your-devices">Read our wallpaper guide →</a>
-                  </div>
-                </>}
+            <p>
+              All Android wallpapers here are portrait 9:16 format, sized for modern flagship
+              screens including Samsung Galaxy, Google Pixel, OnePlus, and Xiaomi devices.
+              AMOLED-optimised: near-black backgrounds let your OLED screen turn pixels completely
+              off, extending battery life while looking dramatically better.
+            </p>
+            <p>
+              Download is instant — tap any image, tap download, and it saves directly to your
+              gallery. No account, no watermarks, no limits.
+            </p>
+            <div className="device-page-guide-link">
+              <span>Need help setting it up?</span>
+              <a href="/blog/the-dark-aesthetic-a-complete-guide-to-customizing-your-devices">Read our wallpaper guide →</a>
+            </div>
+          </div>
+        )}
+
+        {/* DB error state */}
+        {dbError && (
+          <div style={{ padding: "20px", border: "1px solid rgba(192,0,26,0.3)", background: "rgba(192,0,26,0.05)", marginTop: "12px" }}>
+            <p style={{ fontFamily: "var(--font-space, monospace)", fontSize: "0.7rem", color: "#c0001a", letterSpacing: "0.1em" }}>
+              ⚠ Could not load wallpapers — please try again in a moment.
+            </p>
           </div>
         )}
       </section>
+
+      {/* Admin HTML rendered via AdminHtmlBlock (sandboxed iframe) — full width */}
+      {!tag && pageContent?.body && (
+        <div className="w-full pb-8">
+          <AdminHtmlBlock html={pageContent.body} />
+        </div>
+      )}
 
       {pinnedImages.length > 0 && (
         <section className="max-w-7xl mx-auto px-6 md:px-[60px] pb-10">
@@ -196,7 +214,7 @@ export default async function AndroidPage({ searchParams }: PageProps) {
       )}
 
       <section className="max-w-7xl mx-auto px-6 md:px-[60px] py-10">
-        {images.length === 0 ? (
+        {images.length === 0 && !dbError ? (
           <div className="hw-coming-soon">
             <div className="hw-coming-soon__sigil">✦ ☽ ✦</div>
             <div className="hw-coming-soon__bar" />
@@ -205,7 +223,7 @@ export default async function AndroidPage({ searchParams }: PageProps) {
               {tag ? `New wallpapers tagged #${tag} are on their way.` : "Dark art is brewing. Upload images from the admin panel to fill this page."}
             </p>
           </div>
-        ) : (
+        ) : !dbError ? (
           <>
             <p className="font-mono text-[0.6rem] tracking-[0.2em] uppercase text-[#4a445a] mb-6">
               — {total} wallpapers · page {page} of {totalPages}
@@ -222,7 +240,7 @@ export default async function AndroidPage({ searchParams }: PageProps) {
             />
             <Pagination currentPage={page} totalPages={totalPages} baseUrl={baseUrl} />
           </>
-        )}
+        ) : null}
       </section>
 
       <section style={{
