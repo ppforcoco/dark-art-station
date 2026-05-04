@@ -59,15 +59,13 @@ export default async function IphonePage({ searchParams }: PageProps) {
   const page = Math.max(1, parseInt(rawPage ?? "1", 10) || 1);
   const skip = (page - 1) * PAGE_SIZE;
 
-  // NOTE: sortOrder removed — column not yet migrated in production DB.
-  // Using createdAt desc ordering instead. Re-add sortOrder after running:
-  //   npx prisma migrate deploy
   const where = {
     collectionId: null,
     deviceType: "IPHONE" as const,
     ...(tag ? { tags: { has: tag } } : { NOT: { tags: { has: "badge-new" } } }),
   };
 
+  let pinnedImages: ImageItem[] = [];
   let images: ImageItem[] = [];
   let freshDrops: ImageItem[] = [];
   let total = 0;
@@ -75,11 +73,19 @@ export default async function IphonePage({ searchParams }: PageProps) {
   let dbError = false;
 
   try {
-    const [imagesRaw, totalCount, content, freshDropsRaw] = await Promise.all([
+    const [pinnedRaw, imagesRaw, totalCount, content, freshDropsRaw] = await Promise.all([
+      (!tag && page === 1)
+        ? db.image.findMany({
+            where: { collectionId: null, deviceType: "IPHONE" },
+            orderBy: { createdAt: "desc" },
+            select: { id: true, slug: true, title: true, r2Key: true, viewCount: true, tags: true, isAdult: true, updatedAt: true },
+            take: 3,
+          })
+        : Promise.resolve([] as Array<{ id: string; slug: string; title: string; r2Key: string; viewCount: number; tags: string[]; isAdult: boolean; updatedAt: Date }>),
       db.image.findMany({
         where,
         orderBy: { createdAt: "desc" },
-        select: { id: true, slug: true, title: true, r2Key: true, viewCount: true, tags: true, isAdult: true },
+        select: { id: true, slug: true, title: true, r2Key: true, viewCount: true, tags: true, isAdult: true, updatedAt: true },
         take: PAGE_SIZE,
         skip,
       }),
@@ -88,25 +94,33 @@ export default async function IphonePage({ searchParams }: PageProps) {
       (!tag && page === 1)
         ? db.image.findMany({
             where: { tags: { has: "badge-new" }, deviceType: "IPHONE", isAdult: false },
-            orderBy: { createdAt: "desc" },
+            orderBy: { updatedAt: "desc" },
             take: 10,
-            select: { id: true, slug: true, title: true, r2Key: true, viewCount: true, tags: true, isAdult: true },
+            select: { id: true, slug: true, title: true, r2Key: true, viewCount: true, tags: true, isAdult: true, updatedAt: true },
           })
-        : Promise.resolve([] as Array<{ id: string; slug: string; title: string; r2Key: string; viewCount: number; tags: string[]; isAdult: boolean }>),
+        : Promise.resolve([] as Array<{ id: string; slug: string; title: string; r2Key: string; viewCount: number; tags: string[]; isAdult: boolean; updatedAt: Date }>),
     ]);
 
-    total = totalCount;
-    pageContent = content;
+    pinnedImages = pinnedRaw.map((img) => ({
+      id: img.id, slug: img.slug, title: img.title,
+      src: getPublicUrl(img.r2Key),
+      viewCount: img.viewCount, tags: img.tags, isAdult: img.isAdult,
+    }));
+
     images = imagesRaw.map((img) => ({
       id: img.id, slug: img.slug, title: img.title,
       src: getPublicUrl(img.r2Key),
       viewCount: img.viewCount, tags: img.tags, isAdult: img.isAdult,
     }));
+
     freshDrops = freshDropsRaw.map((img) => ({
       id: img.id, slug: img.slug, title: img.title,
       src: getPublicUrl(img.r2Key),
       viewCount: img.viewCount, tags: img.tags, isAdult: img.isAdult,
     }));
+
+    total = totalCount;
+    pageContent = content;
   } catch (err) {
     console.error("[iphone/page] DB error:", err);
     dbError = true;
@@ -133,7 +147,10 @@ export default async function IphonePage({ searchParams }: PageProps) {
   return (
     <main className="min-h-screen" style={{ backgroundColor: "var(--bg-primary)", color: "var(--text-primary)" }}>
       <WallpaperTips mode="banner" />
-      <Breadcrumbs items={[{ label: "Home", href: "/" }, { label: "iPhone Wallpapers" }]} />
+      <Breadcrumbs items={[
+        { label: "Home", href: "/" },
+        { label: "iPhone Wallpapers" },
+      ]} />
 
       <section className="max-w-7xl mx-auto px-6 md:px-[60px] pt-10 pb-8">
         <h1 className="font-display text-3xl md:text-4xl font-bold leading-tight mb-6">
@@ -147,7 +164,7 @@ export default async function IphonePage({ searchParams }: PageProps) {
           {page > 1 && <span className="text-[#4a445a] text-2xl"> — Page {page}</span>}
         </h1>
 
-        {!tag && !pageContent?.body && !dbError && (
+        {!tag && !pageContent?.body && (
           <div className="device-page-intro">
             <p>
               Every wallpaper in this collection is designed specifically for iPhone screens —
@@ -166,14 +183,6 @@ export default async function IphonePage({ searchParams }: PageProps) {
             </div>
           </div>
         )}
-
-        {dbError && (
-          <div style={{ padding: "20px", border: "1px solid rgba(192,0,26,0.3)", background: "rgba(192,0,26,0.05)", marginTop: "12px" }}>
-            <p style={{ fontFamily: "var(--font-space, monospace)", fontSize: "0.7rem", color: "#c0001a", letterSpacing: "0.1em" }}>
-              ⚠ Could not load wallpapers — please try again in a moment.
-            </p>
-          </div>
-        )}
       </section>
 
       {!tag && pageContent?.body && (
@@ -182,20 +191,66 @@ export default async function IphonePage({ searchParams }: PageProps) {
         </div>
       )}
 
+      {pinnedImages.length > 0 && (
+        <section className="max-w-7xl mx-auto px-6 md:px-[60px] pb-10">
+          <div style={{ display: "flex", alignItems: "center", gap: "14px", marginBottom: "20px" }}>
+            <span style={{
+              fontFamily: "var(--font-space, monospace)",
+              fontSize: "0.58rem",
+              letterSpacing: "0.22em",
+              textTransform: "uppercase",
+              color: "#c0001a",
+              border: "1px solid rgba(192,0,26,0.5)",
+              padding: "5px 12px",
+              background: "rgba(192,0,26,0.08)",
+              boxShadow: "0 0 12px rgba(192,0,26,0.15)",
+            }}>★ The Most Haunted</span>
+            <div style={{ flex: 1, height: "1px", background: "linear-gradient(to right, rgba(192,0,26,0.35), transparent)" }} />
+          </div>
+          <IphoneImageGrid
+            images={pinnedImages}
+            hrefPrefix="/iphone"
+            altSuffix="free dark iPhone wallpaper HD"
+            gridStyle={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "12px", maxWidth: "480px" }}
+            priority
+            aspectRatio="9/16"
+            sizes="(max-width: 640px) 33vw, 160px"
+          />
+        </section>
+      )}
+
       {freshDrops.length > 0 && (
         <section className="max-w-7xl mx-auto px-6 md:px-[60px] pb-10">
           <div style={{ display: "flex", alignItems: "center", gap: "14px", marginBottom: "20px" }}>
-            <span style={{ fontFamily: "var(--font-space, monospace)", fontSize: "0.58rem", letterSpacing: "0.22em", textTransform: "uppercase", color: "#4caf50", border: "1px solid rgba(76,175,80,0.5)", padding: "5px 12px", background: "rgba(76,175,80,0.08)", boxShadow: "0 0 12px rgba(76,175,80,0.15)" }}>Fresh Drops</span>
+            <span style={{
+              fontFamily: "var(--font-space, monospace)",
+              fontSize: "0.58rem",
+              letterSpacing: "0.22em",
+              textTransform: "uppercase",
+              color: "#4caf50",
+              border: "1px solid rgba(76,175,80,0.5)",
+              padding: "5px 12px",
+              background: "rgba(76,175,80,0.08)",
+              boxShadow: "0 0 12px rgba(76,175,80,0.15)",
+            }}>Fresh Drops</span>
             <div style={{ flex: 1, height: "1px", background: "linear-gradient(to right, rgba(76,175,80,0.35), transparent)" }} />
-            <span style={{ fontFamily: "var(--font-space, monospace)", fontSize: "0.52rem", letterSpacing: "0.14em", color: "rgba(76,175,80,0.6)", textTransform: "uppercase" }}>
-              {freshDrops.length} wallpaper{freshDrops.length !== 1 ? "s" : ""}
-            </span>
+            <span style={{
+              fontFamily: "var(--font-space, monospace)",
+              fontSize: "0.52rem",
+              letterSpacing: "0.14em",
+              color: "rgba(76,175,80,0.6)",
+              textTransform: "uppercase",
+            }}>{freshDrops.length} wallpaper{freshDrops.length !== 1 ? "s" : ""}</span>
           </div>
           <IphoneImageGrid
             images={freshDrops}
             hrefPrefix="/iphone"
             altSuffix="new dark iPhone wallpaper HD"
-            gridStyle={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(120px, 1fr))", gap: "clamp(10px,1.8vw,20px)" }}
+            gridStyle={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fill, minmax(120px, 1fr))",
+              gap: "clamp(10px,1.8vw,20px)",
+            }}
             priorityCount={5}
             aspectRatio="9/16"
             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 15vw"
@@ -204,7 +259,14 @@ export default async function IphonePage({ searchParams }: PageProps) {
       )}
 
       <section className="max-w-7xl mx-auto px-6 md:px-[60px] py-10">
-        {!dbError && images.length === 0 ? (
+        {dbError ? (
+          <div className="hw-coming-soon">
+            <div className="hw-coming-soon__sigil">✦ ☽ ✦</div>
+            <div className="hw-coming-soon__bar" />
+            <h2 className="hw-coming-soon__title">Something went wrong</h2>
+            <p className="hw-coming-soon__sub">Could not load wallpapers. Please try again shortly.</p>
+          </div>
+        ) : images.length === 0 ? (
           <div className="hw-coming-soon">
             <div className="hw-coming-soon__sigil">✦ ☽ ✦</div>
             <div className="hw-coming-soon__bar" />
@@ -213,7 +275,7 @@ export default async function IphonePage({ searchParams }: PageProps) {
               {tag ? `New wallpapers tagged #${tag} are on their way.` : "Dark art is brewing. Upload images from the admin panel to fill this page."}
             </p>
           </div>
-        ) : !dbError ? (
+        ) : (
           <>
             <p className="font-mono text-[0.6rem] tracking-[0.2em] uppercase text-[#4a445a] mb-6">
               — {total} wallpapers · page {page} of {totalPages}
@@ -230,34 +292,62 @@ export default async function IphonePage({ searchParams }: PageProps) {
             />
             <Pagination currentPage={page} totalPages={totalPages} baseUrl={baseUrl} />
           </>
-        ) : null}
+        )}
       </section>
 
-      <section style={{ maxWidth: "860px", margin: "0 auto", padding: "40px 24px 64px", borderTop: "1px solid rgba(192,0,26,0.18)", textAlign: "center" }}>
-        <p style={{ fontFamily: "var(--font-space, monospace)", fontSize: "0.6rem", letterSpacing: "0.22em", textTransform: "uppercase", color: "#4a445a", marginBottom: "20px" }}>
-          Too bright for you? Explore more darkness
-        </p>
+      <section style={{
+        maxWidth: "860px",
+        margin: "0 auto",
+        padding: "40px 24px 64px",
+        borderTop: "1px solid rgba(192,0,26,0.18)",
+        textAlign: "center",
+      }}>
+        <p style={{
+          fontFamily: "var(--font-space, monospace)",
+          fontSize: "0.6rem",
+          letterSpacing: "0.22em",
+          textTransform: "uppercase",
+          color: "#4a445a",
+          marginBottom: "20px",
+        }}>Too bright for you? Explore more darkness</p>
         <div style={{ display: "flex", gap: "14px", justifyContent: "center", flexWrap: "wrap" }}>
-          <Link href="/android" className="hw-crosslink-btn">🤖 Nocturnal Android Collection</Link>
-          <Link href="/pc" className="hw-crosslink-btn">🖥 Desktop PC Nightmares</Link>
+          <Link href="/android" className="hw-crosslink-btn">
+            🤖 Nocturnal Android Collection
+          </Link>
+          <Link href="/pc" className="hw-crosslink-btn">
+            🖥 Desktop PC Nightmares
+          </Link>
         </div>
       </section>
 
       <style>{`
         .hw-crosslink-btn {
-          font-family: var(--font-space, monospace); font-size: 0.72rem; letter-spacing: 0.14em;
-          text-transform: uppercase; color: #e8e4f8; text-decoration: none;
-          border: 1px solid rgba(192,0,26,0.4); padding: 13px 26px;
-          background: rgba(192,0,26,0.06); transition: all 0.25s ease;
-          display: inline-flex; align-items: center; gap: 8px;
+          font-family: var(--font-space, monospace);
+          font-size: 0.72rem;
+          letter-spacing: 0.14em;
+          text-transform: uppercase;
+          color: #e8e4f8;
+          text-decoration: none;
+          border: 1px solid rgba(192,0,26,0.4);
+          padding: 13px 26px;
+          background: rgba(192,0,26,0.06);
+          transition: all 0.25s ease;
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
         }
         .hw-crosslink-btn:hover {
-          border-color: rgba(192,0,26,0.8); background: rgba(192,0,26,0.13);
-          color: #ffffff; box-shadow: 0 0 22px rgba(192,0,26,0.22);
+          border-color: rgba(192,0,26,0.8);
+          background: rgba(192,0,26,0.13);
+          color: #ffffff;
+          box-shadow: 0 0 22px rgba(192,0,26,0.22);
         }
       `}</style>
 
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd }} />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: jsonLd }}
+      />
     </main>
   );
 }
