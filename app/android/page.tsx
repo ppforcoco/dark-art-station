@@ -5,9 +5,9 @@ import Link from "next/link";
 import { db, getPageContent } from "@/lib/db";
 import { getPublicUrl } from "@/lib/r2";
 import Pagination from "@/components/Pagination";
-import DeviceImageCard from "@/components/DeviceImageCard";
 import WallpaperTips from "@/components/WallpaperTips";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import IphoneImageGrid from "@/components/IphoneImageGrid";
 
 export const revalidate = 60;
 
@@ -43,6 +43,16 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
   };
 }
 
+interface ImageItem {
+  id: string;
+  slug: string;
+  title: string;
+  src: string;
+  viewCount: number;
+  tags: string[];
+  isAdult: boolean;
+}
+
 export default async function AndroidPage({ searchParams }: PageProps) {
   const { tag, page: rawPage } = await searchParams;
   const page = Math.max(1, parseInt(rawPage ?? "1", 10) || 1);
@@ -55,7 +65,7 @@ export default async function AndroidPage({ searchParams }: PageProps) {
     ...(tag ? { tags: { has: tag } } : {}),
   };
 
-  const [pinnedImages, images, total, pageContent] = await Promise.all([
+  const [pinnedRaw, imagesRaw, total, pageContent] = await Promise.all([
     (!tag && page === 1)
       ? db.image.findMany({
           where: { collectionId: null, deviceType: "ANDROID", sortOrder: { lt: 0 } },
@@ -63,7 +73,7 @@ export default async function AndroidPage({ searchParams }: PageProps) {
           select: { id: true, slug: true, title: true, r2Key: true, viewCount: true, tags: true, isAdult: true, updatedAt: true },
           take: 3,
         })
-      : Promise.resolve([] as Array<{ id: string; slug: string; title: string; r2Key: string; viewCount: number; tags: string[]; isAdult: boolean }>),
+      : Promise.resolve([] as Array<{ id: string; slug: string; title: string; r2Key: string; viewCount: number; tags: string[]; isAdult: boolean; updatedAt: Date }>),
     db.image.findMany({
       where: { ...where, sortOrder: { gte: 0 } },
       orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
@@ -75,8 +85,36 @@ export default async function AndroidPage({ searchParams }: PageProps) {
     getPageContent("android"),
   ]);
 
+  // Resolve URLs server-side — pass plain strings to client
+  const pinnedImages: ImageItem[] = pinnedRaw.map((img) => ({
+    id: img.id, slug: img.slug, title: img.title,
+    src: getPublicUrl(img.r2Key),
+    viewCount: img.viewCount, tags: img.tags, isAdult: img.isAdult,
+  }));
+
+  const images: ImageItem[] = imagesRaw.map((img) => ({
+    id: img.id, slug: img.slug, title: img.title,
+    src: getPublicUrl(img.r2Key),
+    viewCount: img.viewCount, tags: img.tags, isAdult: img.isAdult,
+  }));
+
   const totalPages = Math.ceil(total / PAGE_SIZE);
   const baseUrl    = tag ? `/android?tag=${encodeURIComponent(tag)}` : "/android";
+
+  const jsonLd = JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: tag ? `Dark #${tag} Android Wallpapers | Haunted Wallpapers` : "Free Dark Android Wallpapers HD | Haunted Wallpapers",
+    url: tag ? `${process.env.NEXT_PUBLIC_SITE_URL}/android?tag=${tag}` : `${process.env.NEXT_PUBLIC_SITE_URL}/android`,
+    numberOfItems: total,
+    itemListElement: images.map((img, i) => ({
+      "@type": "ListItem",
+      position: skip + i + 1,
+      url: `${process.env.NEXT_PUBLIC_SITE_URL}/android/${img.slug}`,
+      name: img.title,
+      image: img.src,
+    })),
+  });
 
   return (
     <main className="min-h-screen" style={{ backgroundColor: "var(--bg-primary)", color: "var(--text-primary)" }}>
@@ -104,14 +142,12 @@ export default async function AndroidPage({ searchParams }: PageProps) {
                   <p>
                     All Android wallpapers here are portrait 9:16 format, sized for modern flagship
                     screens including Samsung Galaxy, Google Pixel, OnePlus, and Xiaomi devices.
-                    Images are generated at HD resolution — no visible compression.
                     AMOLED-optimised: near-black backgrounds let your OLED screen turn pixels completely
-                    off, extending battery life while looking dramatically better than LCD-era wallpapers.
+                    off, extending battery life while looking dramatically better.
                   </p>
                   <p>
                     Download is instant — tap any image, tap download, and it saves directly to your
-                    gallery. Set it from your gallery app or from Settings → Wallpaper. No account,
-                    no watermarks, no limits.
+                    gallery. No account, no watermarks, no limits.
                   </p>
                   <div className="device-page-guide-link">
                     <span>Need help setting it up?</span>
@@ -122,8 +158,6 @@ export default async function AndroidPage({ searchParams }: PageProps) {
         )}
       </section>
 
-
-      {/* ── Pinned "The Most Haunted" top 3 — only on page 1, no tag filter ── */}
       {pinnedImages.length > 0 && (
         <section className="max-w-7xl mx-auto px-6 md:px-[60px] pb-10">
           <div style={{ display: "flex", alignItems: "center", gap: "14px", marginBottom: "20px" }}>
@@ -140,22 +174,15 @@ export default async function AndroidPage({ searchParams }: PageProps) {
             }}>★ The Most Haunted</span>
             <div style={{ flex: 1, height: "1px", background: "linear-gradient(to right, rgba(192,0,26,0.35), transparent)" }} />
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "12px", maxWidth: "480px" }}>
-            {pinnedImages.map((img) => (
-              <DeviceImageCard
-                key={img.id}
-                href={`/android/${img.slug}`}
-                src={getPublicUrl(img.r2Key)}
-                alt={`${img.title} — free dark Android wallpaper HD`}
-                title={img.title}
-                tags={img.tags}
-                isAdult={img.isAdult}
-                priority={true}
-                aspectRatio="9/16"
-                sizes="(max-width: 640px) 33vw, 160px"
-              />
-            ))}
-          </div>
+          <IphoneImageGrid
+            images={pinnedImages}
+            hrefPrefix="/android"
+            altSuffix="free dark Android wallpaper HD"
+            gridStyle={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "12px", maxWidth: "480px" }}
+            priority
+            aspectRatio="9/16"
+            sizes="(max-width: 640px) 33vw, 160px"
+          />
         </section>
       )}
 
@@ -174,34 +201,21 @@ export default async function AndroidPage({ searchParams }: PageProps) {
             <p className="font-mono text-[0.6rem] tracking-[0.2em] uppercase text-[#4a445a] mb-6">
               — {total} wallpapers · page {page} of {totalPages}
             </p>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
-              {images.map((img, idx) => (
-                <React.Fragment key={img.id}>
-                  <DeviceImageCard
-                    href={`/android/${img.slug}`}
-                    src={getPublicUrl(img.r2Key)}
-                    alt={`${img.title} — free dark Android wallpaper HD`}
-                    title={img.title}
-                    tags={img.tags}
-                    isAdult={img.isAdult}
-                    priority={idx < 10}
-                    aspectRatio="9/16"
-                    sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 20vw"
-                  />
-                  {idx === 9 && (
-                    <div className="col-span-2 sm:col-span-3 md:col-span-4 lg:col-span-5 my-2">
-                    </div>
-                  )}
-                </React.Fragment>
-              ))}
-            </div>
+            <IphoneImageGrid
+              images={images}
+              hrefPrefix="/android"
+              altSuffix="free dark Android wallpaper HD"
+              gridClassName="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3"
+              priorityCount={10}
+              aspectRatio="9/16"
+              sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 20vw"
+              insertAfter={9}
+            />
             <Pagination currentPage={page} totalPages={totalPages} baseUrl={baseUrl} />
           </>
         )}
       </section>
 
-
-      {/* ── Cross-Link Footer ── */}
       <section style={{
         maxWidth: "860px",
         margin: "0 auto",
@@ -218,12 +232,8 @@ export default async function AndroidPage({ searchParams }: PageProps) {
           marginBottom: "20px",
         }}>Too bright for you? Explore more darkness</p>
         <div style={{ display: "flex", gap: "14px", justifyContent: "center", flexWrap: "wrap" }}>
-          <Link href="/iphone" className="hw-crosslink-btn">
-            📱 iPhone Wallpapers
-          </Link>
-          <Link href="/pc" className="hw-crosslink-btn">
-            🖥 Desktop PC Nightmares
-          </Link>
+          <Link href="/iphone" className="hw-crosslink-btn">📱 iPhone Wallpapers</Link>
+          <Link href="/pc" className="hw-crosslink-btn">🖥 Desktop PC Nightmares</Link>
         </div>
       </section>
 
@@ -251,25 +261,7 @@ export default async function AndroidPage({ searchParams }: PageProps) {
         }
       `}</style>
 
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "ItemList",
-            name: tag ? `Dark #${tag} Android Wallpapers | Haunted Wallpapers` : "Free Dark Android Wallpapers HD | Haunted Wallpapers",
-            url: tag ? `${process.env.NEXT_PUBLIC_SITE_URL}/android?tag=${tag}` : `${process.env.NEXT_PUBLIC_SITE_URL}/android`,
-            numberOfItems: total,
-            itemListElement: images.map((img, i) => ({
-              "@type": "ListItem",
-              position: skip + i + 1,
-              url: `${process.env.NEXT_PUBLIC_SITE_URL}/android/${img.slug}`,
-              name: img.title,
-              image: getPublicUrl(img.r2Key),
-            })),
-          }),
-        }}
-      />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd }} />
     </main>
   );
 }
