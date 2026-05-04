@@ -8,6 +8,7 @@ import Pagination from "@/components/Pagination";
 import DeviceImageCard from "@/components/DeviceImageCard";
 import WallpaperTips from "@/components/WallpaperTips";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import AdminHtmlBlock from "@/components/AdminHtmlBlock"; // ← ADDED
 import IphoneImageGrid from "@/components/IphoneImageGrid";
 
 export const revalidate = 60;
@@ -65,44 +66,33 @@ export default async function IphonePage({ searchParams }: PageProps) {
     ...(tag ? { tags: { has: tag } } : { NOT: { tags: { has: "badge-new" } } }),
   };
 
-  let pinnedRaw: Array<{ id: string; slug: string; title: string; r2Key: string; viewCount: number; tags: string[]; isAdult: boolean }> = [];
-  let imagesRaw: Array<{ id: string; slug: string; title: string; r2Key: string; viewCount: number; tags: string[]; isAdult: boolean }> = [];
-  let total = 0;
-  let pageContent: Awaited<ReturnType<typeof getPageContent>> = null;
-  let freshDropsRaw: Array<{ id: string; slug: string; title: string; r2Key: string; viewCount: number; tags: string[]; isAdult: boolean }> = [];
-
-  try {
-    [pinnedRaw, imagesRaw, total, pageContent, freshDropsRaw] = await Promise.all([
-      (!tag && page === 1)
-        ? db.image.findMany({
-            where: { collectionId: null, deviceType: "IPHONE", sortOrder: { lt: 0 } },
-            orderBy: { sortOrder: "asc" },
-            select: { id: true, slug: true, title: true, r2Key: true, viewCount: true, tags: true, isAdult: true, updatedAt: true },
-            take: 3,
-          })
-        : Promise.resolve([]),
-      db.image.findMany({
-        where: { ...where, sortOrder: { gte: 0 } },
-        orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
-        select: { id: true, slug: true, title: true, r2Key: true, viewCount: true, tags: true, isAdult: true, updatedAt: true },
-        take: PAGE_SIZE,
-        skip,
-      }),
-      db.image.count({ where: { ...where, sortOrder: { gte: 0 } } }),
-      getPageContent("iphone"),
-      (!tag && page === 1)
-        ? db.image.findMany({
-            where: { tags: { has: "badge-new" }, deviceType: "IPHONE", isAdult: false },
-            orderBy: { updatedAt: "desc" },
-            take: 10,
-            select: { id: true, slug: true, title: true, r2Key: true, viewCount: true, tags: true, isAdult: true, updatedAt: true },
-          })
-        : Promise.resolve([]),
-    ]);
-  } catch (err) {
-    console.error("[IphonePage] DB error:", err);
-    throw err;
-  }
+  const [pinnedRaw, imagesRaw, total, pageContent, freshDropsRaw] = await Promise.all([
+    (!tag && page === 1)
+      ? db.image.findMany({
+          where: { collectionId: null, deviceType: "IPHONE", sortOrder: { lt: 0 } },
+          orderBy: { sortOrder: "asc" },
+          select: { id: true, slug: true, title: true, r2Key: true, viewCount: true, tags: true, isAdult: true, updatedAt: true },
+          take: 3,
+        })
+      : Promise.resolve([] as Array<{ id: string; slug: string; title: string; r2Key: string; viewCount: number; tags: string[]; isAdult: boolean }>),
+    db.image.findMany({
+      where: { ...where, sortOrder: { gte: 0 } },
+      orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
+      select: { id: true, slug: true, title: true, r2Key: true, viewCount: true, tags: true, isAdult: true, updatedAt: true },
+      take: PAGE_SIZE,
+      skip,
+    }),
+    db.image.count({ where: { ...where, sortOrder: { gte: 0 } } }),
+    getPageContent("iphone"),
+    (!tag && page === 1)
+      ? db.image.findMany({
+          where: { tags: { has: "badge-new" }, deviceType: "IPHONE", isAdult: false },
+          orderBy: { updatedAt: "desc" },
+          take: 10,
+          select: { id: true, slug: true, title: true, r2Key: true, viewCount: true, tags: true, isAdult: true, updatedAt: true },
+        })
+      : Promise.resolve([] as Array<{ id: string; slug: string; title: string; r2Key: string; viewCount: number; tags: string[]; isAdult: boolean }>),
+  ]);
 
   const pinnedImages: ImageItem[] = pinnedRaw.map((img) => ({
     id: img.id, slug: img.slug, title: img.title,
@@ -160,6 +150,7 @@ export default async function IphonePage({ searchParams }: PageProps) {
           {page > 1 && <span className="text-[#4a445a] text-2xl"> — Page {page}</span>}
         </h1>
 
+        {/* Fallback prose — only shown when there is NO admin body */}
         {!tag && !pageContent?.body && (
           <div className="device-page-intro">
             <p>
@@ -181,11 +172,18 @@ export default async function IphonePage({ searchParams }: PageProps) {
         )}
       </section>
 
-      {/* ── Admin HTML body — rendered FULL WIDTH, outside any max-w container ── */}
+      {/*
+        ── Admin HTML rendered via AdminHtmlBlock (sandboxed iframe) ────────────
+        Lives OUTSIDE max-w-7xl so it spans full page width.
+        AdminHtmlBlock preserves all <style>, <div>, images — nothing stripped.
+      */}
       {!tag && pageContent?.body && (
-        <div className="w-full px-6 md:px-16 pb-8" dangerouslySetInnerHTML={{ __html: pageContent.body }} />
+        <div className="w-full pb-8">
+          <AdminHtmlBlock html={pageContent.body} />
+        </div>
       )}
 
+      {/* ── Pinned "The Most Haunted" top 3 — only on page 1, no tag filter ── */}
       {pinnedImages.length > 0 && (
         <section className="max-w-7xl mx-auto px-6 md:px-[60px] pb-10">
           <div style={{ display: "flex", alignItems: "center", gap: "14px", marginBottom: "20px" }}>
@@ -214,6 +212,7 @@ export default async function IphonePage({ searchParams }: PageProps) {
         </section>
       )}
 
+      {/* ── Fresh Drops ── */}
       {freshDrops.length > 0 && (
         <section className="max-w-7xl mx-auto px-6 md:px-[60px] pb-10">
           <div style={{ display: "flex", alignItems: "center", gap: "14px", marginBottom: "20px" }}>
