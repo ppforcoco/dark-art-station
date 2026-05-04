@@ -44,47 +44,62 @@ export async function generateMetadata(): Promise<Metadata> {
 export const revalidate = 60; // 60s cache — new collections/WOTD appear quickly
 
 export default async function Home() {
-  const wotd = await getWallpaperOfTheDay();
-  const totalImages = await db.image.count();
+  // ── Wrap ALL db calls in try/catch so a DB hiccup never produces a 500 ──
+  // Each section gracefully degrades to empty/null instead of crashing the page.
+  let wotd:           Awaited<ReturnType<typeof getWallpaperOfTheDay>> = null;
+  let totalImages     = 0;
+  let obsessions:     Array<{ id: string; slug: string; title: string; thumbnail: string; tag: string | null; icon: string | null; bgClass: string | null; _count: { images: number } }> = [];
+  let newThisWeek:    Array<{ id: string; slug: string; title: string; r2Key: string; deviceType: string | null; tags: string[] }> = [];
+  let premiumThisWeek: Array<{ id: string; slug: string; title: string; r2Key: string; deviceType: string | null; tags: string[]; updatedAt: Date | null }> = [];
+
+  try {
+    [wotd, totalImages] = await Promise.all([
+      getWallpaperOfTheDay(),
+      db.image.count(),
+    ]);
+  } catch (err) {
+    console.error("[home/page] DB error (wotd/count):", err);
+  }
+
+  try {
+    obsessions = await db.collection.findMany({
+      orderBy: [{ featured: "desc" }, { createdAt: "asc" }],
+      where: { isAdult: false },
+      take: 10,
+      select: {
+        id: true, slug: true, title: true, thumbnail: true,
+        tag: true, icon: true, bgClass: true,
+        _count: { select: { images: { where: { deviceType: "IPHONE" } } } },
+      },
+    });
+  } catch (err) {
+    console.error("[home/page] DB error (obsessions):", err);
+  }
+
+  try {
+    // Badge sections — New This Week + Premium This Week
+    [newThisWeek, premiumThisWeek] = await Promise.all([
+      db.image.findMany({
+        where: { tags: { has: "badge-new" }, isAdult: false },
+        orderBy: { updatedAt: "desc" },
+        take: 6,
+        select: { id: true, slug: true, title: true, r2Key: true, deviceType: true, tags: true },
+      }),
+      db.image.findMany({
+        where: { tags: { has: "badge-premium" }, isAdult: false },
+        orderBy: { updatedAt: "desc" },
+        take: 6,
+        select: { id: true, slug: true, title: true, r2Key: true, deviceType: true, tags: true, updatedAt: true },
+      }),
+    ]);
+  } catch (err) {
+    console.error("[home/page] DB error (badges):", err);
+  }
 
   function fmt(n: number) {
     if (n >= 1000) return `${Math.floor(n / 100) / 10}K+`;
     return `${Math.floor(n / 50) * 50}+`;
   }
-
-  const obsessions = await db.collection.findMany({
-    orderBy: [{ featured: "desc" }, { createdAt: "asc" }],
-    where: { isAdult: false },
-    take: 10,
-    select: {
-      id: true, slug: true, title: true, thumbnail: true,
-      tag: true, icon: true, bgClass: true,
-      _count: { select: { images: { where: { deviceType: "IPHONE" } } } },
-    },
-  });
-
-
-  // Badge sections — New This Week + Premium This Week
-  const [newThisWeek, premiumThisWeek] = await Promise.all([
-    db.image.findMany({
-      where: {
-        tags: { has: "badge-new" },
-        isAdult: false,
-      },
-      orderBy: { updatedAt: "desc" },
-      take: 6,
-      select: { id: true, slug: true, title: true, r2Key: true, deviceType: true, tags: true },
-    }),
-    db.image.findMany({
-      where: {
-        tags: { has: "badge-premium" },
-        isAdult: false,
-      },
-      orderBy: { updatedAt: "desc" },
-      take: 6,
-      select: { id: true, slug: true, title: true, r2Key: true, deviceType: true, tags: true, updatedAt: true },
-    }),
-  ]);
 
   const r2Base = process.env.NEXT_PUBLIC_R2_PUBLIC_URL ?? "";
 
