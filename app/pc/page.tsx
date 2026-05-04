@@ -49,31 +49,40 @@ export default async function PcPage({ searchParams }: PageProps) {
   const page = Math.max(1, parseInt(rawPage ?? "1", 10) || 1);
   const skip = (page - 1) * PAGE_SIZE;
 
+  // NOTE: sortOrder removed — column not yet migrated in production DB.
+  // Using createdAt desc ordering instead. Re-add sortOrder after running:
+  //   npx prisma migrate deploy
   const where = {
     collectionId: null,
     deviceType: "PC" as const,
     ...(tag ? { tags: { has: tag } } : {}),
   };
 
-  const [pinnedImages, images, total, pageContent] = await Promise.all([
-    (!tag && page === 1)
-      ? db.image.findMany({
-          where: { collectionId: null, deviceType: "PC", sortOrder: { lt: 0 } },
-          orderBy: { sortOrder: "asc" },
-          select: { id: true, slug: true, title: true, r2Key: true, viewCount: true, tags: true, isAdult: true },
-          take: 3,
-        })
-      : Promise.resolve([] as Array<{ id: string; slug: string; title: string; r2Key: string; viewCount: number; tags: string[]; isAdult: boolean }>),
-    db.image.findMany({
-      where: { ...where, sortOrder: { gte: 0 } },
-      orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
-      select: { id: true, slug: true, title: true, r2Key: true, viewCount: true, tags: true, isAdult: true },
-      take: PAGE_SIZE,
-      skip,
-    }),
-    db.image.count({ where: { ...where, sortOrder: { gte: 0 } } }),
-    getPageContent("pc"),
-  ]);
+  let images: Array<{ id: string; slug: string; title: string; r2Key: string; viewCount: number; tags: string[]; isAdult: boolean }> = [];
+  let total = 0;
+  let pageContent = null;
+  let dbError = false;
+
+  try {
+    const [imagesRaw, totalCount, content] = await Promise.all([
+      db.image.findMany({
+        where,
+        orderBy: { createdAt: "desc" },
+        select: { id: true, slug: true, title: true, r2Key: true, viewCount: true, tags: true, isAdult: true },
+        take: PAGE_SIZE,
+        skip,
+      }),
+      db.image.count({ where }),
+      getPageContent("pc"),
+    ]);
+
+    total = totalCount;
+    pageContent = content;
+    images = imagesRaw;
+  } catch (err) {
+    console.error("[pc/page] DB error:", err);
+    dbError = true;
+  }
 
   const totalPages = Math.ceil(total / PAGE_SIZE);
   const baseUrl    = tag ? `/pc?tag=${encodeURIComponent(tag)}` : "/pc";
@@ -81,10 +90,7 @@ export default async function PcPage({ searchParams }: PageProps) {
   return (
     <main className="min-h-screen" style={{ backgroundColor: "var(--bg-primary)", color: "var(--text-primary)" }}>
       <WallpaperTips mode="banner" />
-      <Breadcrumbs items={[
-        { label: "Home", href: "/" },
-        { label: "PC Wallpapers" },
-      ]} />
+      <Breadcrumbs items={[{ label: "Home", href: "/" }, { label: "PC Wallpapers" }]} />
 
       <section className="max-w-7xl mx-auto px-6 md:px-[60px] pt-10 pb-8">
         <h1 className="font-display text-3xl md:text-4xl font-bold leading-tight mb-6">
@@ -95,18 +101,8 @@ export default async function PcPage({ searchParams }: PageProps) {
           )}
           {page > 1 && <span className="text-[#4a445a] text-2xl"> — Page {page}</span>}
         </h1>
-      </section>
 
-      {/* Admin HTML — full width, outside max-w-7xl constraint */}
-      {!tag && pageContent?.body && (
-        <div className="w-full px-6 md:px-16 pb-8">
-          <AdminHtmlBlock html={pageContent.body} />
-        </div>
-      )}
-
-      {/* Default intro text when no admin content */}
-      {!tag && !pageContent?.body && (
-        <section className="max-w-7xl mx-auto px-6 md:px-[60px] pb-8">
+        {!tag && !pageContent?.body && !dbError && (
           <div className="device-page-intro">
             <p>
               Every wallpaper in this collection is built for desktop and widescreen monitors —
@@ -130,48 +126,25 @@ export default async function PcPage({ searchParams }: PageProps) {
               <a href="/blog/the-dark-aesthetic-a-complete-guide-to-customizing-your-devices">Read our wallpaper guide →</a>
             </div>
           </div>
-        </section>
-      )}
+        )}
 
-      {/* ── Pinned "The Most Haunted" top 3 — 16:9 ratio for PC ── */}
-      {pinnedImages.length > 0 && (
-        <section className="max-w-7xl mx-auto px-6 md:px-[60px] pb-10">
-          <div style={{ display: "flex", alignItems: "center", gap: "14px", marginBottom: "20px" }}>
-            <span style={{
-              fontFamily: "var(--font-space, monospace)",
-              fontSize: "0.58rem",
-              letterSpacing: "0.22em",
-              textTransform: "uppercase",
-              color: "#c0001a",
-              border: "1px solid rgba(192,0,26,0.5)",
-              padding: "5px 12px",
-              background: "rgba(192,0,26,0.08)",
-              boxShadow: "0 0 12px rgba(192,0,26,0.15)",
-            }}>★ The Most Haunted</span>
-            <div style={{ flex: 1, height: "1px", background: "linear-gradient(to right, rgba(192,0,26,0.35), transparent)" }} />
+        {dbError && (
+          <div style={{ padding: "20px", border: "1px solid rgba(192,0,26,0.3)", background: "rgba(192,0,26,0.05)", marginTop: "12px" }}>
+            <p style={{ fontFamily: "var(--font-space, monospace)", fontSize: "0.7rem", color: "#c0001a", letterSpacing: "0.1em" }}>
+              ⚠ Could not load wallpapers — please try again in a moment.
+            </p>
           </div>
-          {/* 16:9 grid for PC */}
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "16px" }}>
-            {pinnedImages.map((img) => (
-              <DeviceImageCard
-                key={img.id}
-                href={`/pc/${img.slug}`}
-                src={getPublicUrl(img.r2Key)}
-                alt={`${img.title} — free dark PC desktop wallpaper`}
-                title={img.title}
-                tags={img.tags}
-                isAdult={img.isAdult}
-                priority={true}
-                aspectRatio="16/9"
-                sizes="(max-width: 640px) 100vw, 33vw"
-              />
-            ))}
-          </div>
-        </section>
+        )}
+      </section>
+
+      {!tag && pageContent?.body && (
+        <div className="w-full px-6 md:px-16 pb-8">
+          <AdminHtmlBlock html={pageContent.body} />
+        </div>
       )}
 
       <section className="max-w-7xl mx-auto px-6 md:px-[60px] py-10">
-        {images.length === 0 ? (
+        {!dbError && images.length === 0 ? (
           <div className="hw-coming-soon">
             <div className="hw-coming-soon__sigil">✦ ☽ ✦</div>
             <div className="hw-coming-soon__bar" />
@@ -180,7 +153,7 @@ export default async function PcPage({ searchParams }: PageProps) {
               {tag ? `New wallpapers tagged #${tag} are on their way.` : "Dark art is brewing. Upload images from the admin panel to fill this page."}
             </p>
           </div>
-        ) : (
+        ) : !dbError ? (
           <>
             <p className="font-mono text-[0.6rem] tracking-[0.2em] uppercase text-[#4a445a] mb-6">
               — {total} wallpapers · page {page} of {totalPages}
@@ -200,64 +173,37 @@ export default async function PcPage({ searchParams }: PageProps) {
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                   />
                   {idx === 5 && (
-                    <div className="col-span-1 sm:col-span-2 lg:col-span-3 my-2">
-                    </div>
+                    <div className="col-span-1 sm:col-span-2 lg:col-span-3 my-2" />
                   )}
                 </React.Fragment>
               ))}
             </div>
             <Pagination currentPage={page} totalPages={totalPages} baseUrl={baseUrl} />
           </>
-        )}
+        ) : null}
       </section>
 
-      {/* ── Cross-Link Footer ── */}
-      <section style={{
-        maxWidth: "860px",
-        margin: "0 auto",
-        padding: "40px 24px 64px",
-        borderTop: "1px solid rgba(192,0,26,0.18)",
-        textAlign: "center",
-      }}>
-        <p style={{
-          fontFamily: "var(--font-space, monospace)",
-          fontSize: "0.6rem",
-          letterSpacing: "0.22em",
-          textTransform: "uppercase",
-          color: "#4a445a",
-          marginBottom: "20px",
-        }}>Too bright for you? Explore more darkness</p>
+      <section style={{ maxWidth: "860px", margin: "0 auto", padding: "40px 24px 64px", borderTop: "1px solid rgba(192,0,26,0.18)", textAlign: "center" }}>
+        <p style={{ fontFamily: "var(--font-space, monospace)", fontSize: "0.6rem", letterSpacing: "0.22em", textTransform: "uppercase", color: "#4a445a", marginBottom: "20px" }}>
+          Too bright for you? Explore more darkness
+        </p>
         <div style={{ display: "flex", gap: "14px", justifyContent: "center", flexWrap: "wrap" }}>
-          <Link href="/iphone" className="hw-crosslink-btn">
-            📱 iPhone Wallpapers
-          </Link>
-          <Link href="/android" className="hw-crosslink-btn">
-            🤖 Nocturnal Android Collection
-          </Link>
+          <Link href="/iphone" className="hw-crosslink-btn">📱 iPhone Wallpapers</Link>
+          <Link href="/android" className="hw-crosslink-btn">🤖 Nocturnal Android Collection</Link>
         </div>
       </section>
 
       <style>{`
         .hw-crosslink-btn {
-          font-family: var(--font-space, monospace);
-          font-size: 0.72rem;
-          letter-spacing: 0.14em;
-          text-transform: uppercase;
-          color: #e8e4f8;
-          text-decoration: none;
-          border: 1px solid rgba(192,0,26,0.4);
-          padding: 13px 26px;
-          background: rgba(192,0,26,0.06);
-          transition: all 0.25s ease;
-          display: inline-flex;
-          align-items: center;
-          gap: 8px;
+          font-family: var(--font-space, monospace); font-size: 0.72rem; letter-spacing: 0.14em;
+          text-transform: uppercase; color: #e8e4f8; text-decoration: none;
+          border: 1px solid rgba(192,0,26,0.4); padding: 13px 26px;
+          background: rgba(192,0,26,0.06); transition: all 0.25s ease;
+          display: inline-flex; align-items: center; gap: 8px;
         }
         .hw-crosslink-btn:hover {
-          border-color: rgba(192,0,26,0.8);
-          background: rgba(192,0,26,0.13);
-          color: #ffffff;
-          box-shadow: 0 0 22px rgba(192,0,26,0.22);
+          border-color: rgba(192,0,26,0.8); background: rgba(192,0,26,0.13);
+          color: #ffffff; box-shadow: 0 0 22px rgba(192,0,26,0.22);
         }
       `}</style>
 
