@@ -160,30 +160,31 @@ export default async function IphonePage({ searchParams }: PageProps) {
           {page > 1 && <span className="text-[#4a445a] text-2xl"> — Page {page}</span>}
         </h1>
 
-        {!tag && (
+        {!tag && !pageContent?.body && (
           <div className="device-page-intro">
-            {pageContent?.body
-              ? <div dangerouslySetInnerHTML={{ __html: pageContent.body }} />
-              : <>
-                  <p>
-                    Every wallpaper in this collection is designed specifically for iPhone screens —
-                    portrait 9:16 format, optimised for the Super Retina XDR display found on iPhone 12
-                    through iPhone 16. Images are generated at HD resolution and downsampled cleanly,
-                    so you get maximum sharpness without jagged edges or compression artefacts.
-                  </p>
-                  <p>
-                    All wallpapers are free to download. No account required, no watermarks, no paywalls.
-                    Tap any image to view it full-size and download directly to your Photos library.
-                    New collections drop regularly.
-                  </p>
-                  <div className="device-page-guide-link">
-                    <span>New to setting wallpapers?</span>
-                    <a href="/blog/the-dark-aesthetic-a-complete-guide-to-customizing-your-devices">Read our wallpaper guide →</a>
-                  </div>
-                </>}
+            <p>
+              Every wallpaper in this collection is designed specifically for iPhone screens —
+              portrait 9:16 format, optimised for the Super Retina XDR display found on iPhone 12
+              through iPhone 16. Images are generated at HD resolution and downsampled cleanly,
+              so you get maximum sharpness without jagged edges or compression artefacts.
+            </p>
+            <p>
+              All wallpapers are free to download. No account required, no watermarks, no paywalls.
+              Tap any image to view it full-size and download directly to your Photos library.
+              New collections drop regularly.
+            </p>
+            <div className="device-page-guide-link">
+              <span>New to setting wallpapers?</span>
+              <a href="/blog/the-dark-aesthetic-a-complete-guide-to-customizing-your-devices">Read our wallpaper guide →</a>
+            </div>
           </div>
         )}
       </section>
+
+      {/* ── Admin HTML body — rendered FULL WIDTH, outside any max-w container ── */}
+      {!tag && pageContent?.body && (
+        <div className="w-full px-6 md:px-16 pb-8" dangerouslySetInnerHTML={{ __html: pageContent.body }} />
+      )}
 
       {pinnedImages.length > 0 && (
         <section className="max-w-7xl mx-auto px-6 md:px-[60px] pb-10">
