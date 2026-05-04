@@ -65,27 +65,36 @@ export default async function AndroidPage({ searchParams }: PageProps) {
     ...(tag ? { tags: { has: tag } } : {}),
   };
 
-  const [pinnedRaw, imagesRaw, total, pageContent] = await Promise.all([
-    (!tag && page === 1)
-      ? db.image.findMany({
-          where: { collectionId: null, deviceType: "ANDROID", sortOrder: { lt: 0 } },
-          orderBy: { sortOrder: "asc" },
-          select: { id: true, slug: true, title: true, r2Key: true, viewCount: true, tags: true, isAdult: true, updatedAt: true },
-          take: 3,
-        })
-      : Promise.resolve([] as Array<{ id: string; slug: string; title: string; r2Key: string; viewCount: number; tags: string[]; isAdult: boolean; updatedAt: Date }>),
-    db.image.findMany({
-      where: { ...where, sortOrder: { gte: 0 } },
-      orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
-      select: { id: true, slug: true, title: true, r2Key: true, viewCount: true, tags: true, isAdult: true, updatedAt: true },
-      take: PAGE_SIZE,
-      skip,
-    }),
-    db.image.count({ where: { ...where, sortOrder: { gte: 0 } } }),
-    getPageContent("android"),
-  ]);
+  let pinnedRaw: Array<{ id: string; slug: string; title: string; r2Key: string; viewCount: number; tags: string[]; isAdult: boolean; updatedAt: Date }> = [];
+  let imagesRaw: Array<{ id: string; slug: string; title: string; r2Key: string; viewCount: number; tags: string[]; isAdult: boolean; updatedAt: Date }> = [];
+  let total = 0;
+  let pageContent: Awaited<ReturnType<typeof getPageContent>> = null;
 
-  // Resolve URLs server-side — pass plain strings to client
+  try {
+    [pinnedRaw, imagesRaw, total, pageContent] = await Promise.all([
+      (!tag && page === 1)
+        ? db.image.findMany({
+            where: { collectionId: null, deviceType: "ANDROID", sortOrder: { lt: 0 } },
+            orderBy: { sortOrder: "asc" },
+            select: { id: true, slug: true, title: true, r2Key: true, viewCount: true, tags: true, isAdult: true, updatedAt: true },
+            take: 3,
+          })
+        : Promise.resolve([]),
+      db.image.findMany({
+        where: { ...where, sortOrder: { gte: 0 } },
+        orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
+        select: { id: true, slug: true, title: true, r2Key: true, viewCount: true, tags: true, isAdult: true, updatedAt: true },
+        take: PAGE_SIZE,
+        skip,
+      }),
+      db.image.count({ where: { ...where, sortOrder: { gte: 0 } } }),
+      getPageContent("android"),
+    ]);
+  } catch (err) {
+    console.error("[AndroidPage] DB error:", err);
+    throw err;
+  }
+
   const pinnedImages: ImageItem[] = pinnedRaw.map((img) => ({
     id: img.id, slug: img.slug, title: img.title,
     src: getPublicUrl(img.r2Key),

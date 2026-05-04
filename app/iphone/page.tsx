@@ -8,6 +8,7 @@ import Pagination from "@/components/Pagination";
 import DeviceImageCard from "@/components/DeviceImageCard";
 import WallpaperTips from "@/components/WallpaperTips";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import IphoneImageGrid from "@/components/IphoneImageGrid";
 
 export const revalidate = 60;
 
@@ -43,20 +44,15 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
   };
 }
 
-// ── Serialisable image shape passed from Server → Client ──────────────────────
 interface ImageItem {
   id: string;
   slug: string;
   title: string;
-  src: string;          // pre-resolved public URL — no functions crossing the boundary
+  src: string;
   viewCount: number;
   tags: string[];
   isAdult: boolean;
 }
-
-// ── Thin client wrapper so DeviceImageCard's mouse handlers stay client-side ──
-import IphoneImageGrid from "@/components/IphoneImageGrid";
-// NOTE: If IphoneImageGrid doesn't exist yet, see instructions in comments below.
 
 export default async function IphonePage({ searchParams }: PageProps) {
   const { tag, page: rawPage } = await searchParams;
@@ -69,35 +65,45 @@ export default async function IphonePage({ searchParams }: PageProps) {
     ...(tag ? { tags: { has: tag } } : { NOT: { tags: { has: "badge-new" } } }),
   };
 
-  const [pinnedRaw, imagesRaw, total, pageContent, freshDropsRaw] = await Promise.all([
-    (!tag && page === 1)
-      ? db.image.findMany({
-          where: { collectionId: null, deviceType: "IPHONE", sortOrder: { lt: 0 } },
-          orderBy: { sortOrder: "asc" },
-          select: { id: true, slug: true, title: true, r2Key: true, viewCount: true, tags: true, isAdult: true, updatedAt: true },
-          take: 3,
-        })
-      : Promise.resolve([] as Array<{ id: string; slug: string; title: string; r2Key: string; viewCount: number; tags: string[]; isAdult: boolean }>),
-    db.image.findMany({
-      where: { ...where, sortOrder: { gte: 0 } },
-      orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
-      select: { id: true, slug: true, title: true, r2Key: true, viewCount: true, tags: true, isAdult: true, updatedAt: true },
-      take: PAGE_SIZE,
-      skip,
-    }),
-    db.image.count({ where: { ...where, sortOrder: { gte: 0 } } }),
-    getPageContent("iphone"),
-    (!tag && page === 1)
-      ? db.image.findMany({
-          where: { tags: { has: "badge-new" }, deviceType: "IPHONE", isAdult: false },
-          orderBy: { updatedAt: "desc" },
-          take: 10,
-          select: { id: true, slug: true, title: true, r2Key: true, viewCount: true, tags: true, isAdult: true, updatedAt: true },
-        })
-      : Promise.resolve([] as Array<{ id: string; slug: string; title: string; r2Key: string; viewCount: number; tags: string[]; isAdult: boolean }>),
-  ]);
+  let pinnedRaw: Array<{ id: string; slug: string; title: string; r2Key: string; viewCount: number; tags: string[]; isAdult: boolean }> = [];
+  let imagesRaw: Array<{ id: string; slug: string; title: string; r2Key: string; viewCount: number; tags: string[]; isAdult: boolean }> = [];
+  let total = 0;
+  let pageContent: Awaited<ReturnType<typeof getPageContent>> = null;
+  let freshDropsRaw: Array<{ id: string; slug: string; title: string; r2Key: string; viewCount: number; tags: string[]; isAdult: boolean }> = [];
 
-  // ── Resolve all public URLs here on the server, pass plain strings to client ──
+  try {
+    [pinnedRaw, imagesRaw, total, pageContent, freshDropsRaw] = await Promise.all([
+      (!tag && page === 1)
+        ? db.image.findMany({
+            where: { collectionId: null, deviceType: "IPHONE", sortOrder: { lt: 0 } },
+            orderBy: { sortOrder: "asc" },
+            select: { id: true, slug: true, title: true, r2Key: true, viewCount: true, tags: true, isAdult: true, updatedAt: true },
+            take: 3,
+          })
+        : Promise.resolve([]),
+      db.image.findMany({
+        where: { ...where, sortOrder: { gte: 0 } },
+        orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
+        select: { id: true, slug: true, title: true, r2Key: true, viewCount: true, tags: true, isAdult: true, updatedAt: true },
+        take: PAGE_SIZE,
+        skip,
+      }),
+      db.image.count({ where: { ...where, sortOrder: { gte: 0 } } }),
+      getPageContent("iphone"),
+      (!tag && page === 1)
+        ? db.image.findMany({
+            where: { tags: { has: "badge-new" }, deviceType: "IPHONE", isAdult: false },
+            orderBy: { updatedAt: "desc" },
+            take: 10,
+            select: { id: true, slug: true, title: true, r2Key: true, viewCount: true, tags: true, isAdult: true, updatedAt: true },
+          })
+        : Promise.resolve([]),
+    ]);
+  } catch (err) {
+    console.error("[IphonePage] DB error:", err);
+    throw err;
+  }
+
   const pinnedImages: ImageItem[] = pinnedRaw.map((img) => ({
     id: img.id, slug: img.slug, title: img.title,
     src: getPublicUrl(img.r2Key),
@@ -179,7 +185,6 @@ export default async function IphonePage({ searchParams }: PageProps) {
         )}
       </section>
 
-      {/* ── Pinned "The Most Haunted" top 3 — only on page 1, no tag filter ── */}
       {pinnedImages.length > 0 && (
         <section className="max-w-7xl mx-auto px-6 md:px-[60px] pb-10">
           <div style={{ display: "flex", alignItems: "center", gap: "14px", marginBottom: "20px" }}>
@@ -196,10 +201,6 @@ export default async function IphonePage({ searchParams }: PageProps) {
             }}>★ The Most Haunted</span>
             <div style={{ flex: 1, height: "1px", background: "linear-gradient(to right, rgba(192,0,26,0.35), transparent)" }} />
           </div>
-          {/*
-            IphoneImageGrid is a "use client" component that renders DeviceImageCard internally.
-            Passing plain serialisable props (no functions) across the server→client boundary.
-          */}
           <IphoneImageGrid
             images={pinnedImages}
             hrefPrefix="/iphone"
@@ -212,7 +213,6 @@ export default async function IphonePage({ searchParams }: PageProps) {
         </section>
       )}
 
-      {/* ── Fresh Drops: badge-new iPhone images, 9:16, shown only on page 1, no tag ── */}
       {freshDrops.length > 0 && (
         <section className="max-w-7xl mx-auto px-6 md:px-[60px] pb-10">
           <div style={{ display: "flex", alignItems: "center", gap: "14px", marginBottom: "20px" }}>
@@ -236,7 +236,6 @@ export default async function IphonePage({ searchParams }: PageProps) {
               textTransform: "uppercase",
             }}>{freshDrops.length} wallpaper{freshDrops.length !== 1 ? "s" : ""}</span>
           </div>
-
           <IphoneImageGrid
             images={freshDrops}
             hrefPrefix="/iphone"
@@ -283,7 +282,6 @@ export default async function IphonePage({ searchParams }: PageProps) {
         )}
       </section>
 
-      {/* ── Cross-Link: Don't let the page just end ── */}
       <section style={{
         maxWidth: "860px",
         margin: "0 auto",
