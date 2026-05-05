@@ -41,7 +41,7 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export const revalidate = 60; // 60s cache — new collections/WOTD appear quickly
+export const revalidate = 0; // always fresh — premium/new badges update instantly
 
 export default async function Home() {
   // ── Wrap ALL db calls in try/catch so a DB hiccup never produces a 500 ──
