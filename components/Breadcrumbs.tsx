@@ -73,7 +73,7 @@ export default function Breadcrumbs({ items }: BreadcrumbsProps) {
         <style>{`
           .hw-breadcrumb {
             padding: 0 clamp(16px, 4vw, 60px);
-            height: 42px;
+            min-height: 42px;
             display: flex;
             align-items: center;
             background: linear-gradient(
@@ -83,7 +83,7 @@ export default function Breadcrumbs({ items }: BreadcrumbsProps) {
             );
             border-bottom: 1px solid rgba(192, 0, 26, 0.15);
             position: relative;
-            overflow: hidden;
+            overflow: visible;
           }
 
           /* Subtle left accent line */
@@ -111,9 +111,9 @@ export default function Breadcrumbs({ items }: BreadcrumbsProps) {
             align-items: center;
             list-style: none;
             margin: 0;
-            padding: 0;
+            padding: 6px 0;
             gap: 0;
-            flex-wrap: nowrap;
+            flex-wrap: wrap;
             min-width: 0;
           }
 
@@ -121,7 +121,7 @@ export default function Breadcrumbs({ items }: BreadcrumbsProps) {
             display: flex;
             align-items: center;
             min-width: 0;
-            flex-shrink: 0;
+            flex-shrink: 1;
           }
 
           .hw-breadcrumb__sep {
@@ -174,16 +174,15 @@ export default function Breadcrumbs({ items }: BreadcrumbsProps) {
             text-transform: uppercase;
             color: #c9a84c;
             padding: 4px 2px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            max-width: 260px;
+            white-space: normal;
+            word-break: break-word;
+            max-width: 100%;
           }
 
           @media (max-width: 480px) {
-            .hw-breadcrumb { padding: 0 16px; height: 38px; }
+            .hw-breadcrumb { padding: 0 16px; min-height: 38px; }
             .hw-breadcrumb__link { font-size: 0.56rem; padding: 3px 6px; letter-spacing: 0.1em; }
-            .hw-breadcrumb__current { font-size: 0.56rem; letter-spacing: 0.1em; max-width: 140px; }
+            .hw-breadcrumb__current { font-size: 0.56rem; letter-spacing: 0.1em; }
             .hw-breadcrumb__sep { margin: 0 5px; }
           }
         `}</style>
