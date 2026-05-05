@@ -175,8 +175,13 @@ export default function WallpaperTips({ mode = "banner" }: Props) {
   const [dismissed, setDismissed] = useState(false);
 
   useEffect(() => {
-    const saved = sessionStorage.getItem("hw-tips-dismissed");
-    if (saved) setDismissed(true);
+    try {
+      const saved = sessionStorage.getItem("hw-tips-dismissed");
+      if (saved) setDismissed(true);
+    } catch {
+      // Safari Private Browsing throws SecurityError on sessionStorage access.
+      // Silently ignore — tips will show for the session but that's fine.
+    }
   }, []);
 
   // Rotate every 60 seconds
@@ -201,7 +206,7 @@ export default function WallpaperTips({ mode = "banner" }: Props) {
         <span className={`hw-tips-text${visible ? " hw-tips-in" : " hw-tips-out"}`}>{tip.text}</span>
         <button
           className="hw-tips-dismiss"
-          onClick={() => { setDismissed(true); sessionStorage.setItem("hw-tips-dismissed", "1"); }}
+          onClick={() => { setDismissed(true); try { sessionStorage.setItem("hw-tips-dismissed", "1"); } catch {} }}
           aria-label="Dismiss tips"
         >X</button>
       </div>

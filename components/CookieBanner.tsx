@@ -24,8 +24,11 @@ function getCookieValue(): ConsentState {
 }
 
 function setCookieValue(value: "accepted" | "declined") {
-  // Set real HTTP cookie — persists across Safari sessions
-  document.cookie = `${COOKIE_NAME}=${value}; max-age=${MAX_AGE}; path=/; SameSite=Lax`;
+  // Set real HTTP cookie — persists across Safari sessions.
+  // "Secure" is required so Safari ITP does not classify this as a tracking
+  // cookie and strip it after 7 days. SameSite=Lax is kept for compatibility.
+  const secure = location.protocol === "https:" ? "; Secure" : "";
+  document.cookie = `${COOKIE_NAME}=${value}; max-age=${MAX_AGE}; path=/; SameSite=Lax${secure}`;
   // Also write localStorage as belt-and-suspenders backup
   try { localStorage.setItem(COOKIE_NAME, value); } catch {}
   window.dispatchEvent(new CustomEvent("hw-consent-change", { detail: value }));
