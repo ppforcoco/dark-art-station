@@ -96,9 +96,6 @@ model BlogPost {
   updatedAt      DateTime @updatedAt
 }
 
-// ADD THIS TO THE BOTTOM OF prisma/schema.prisma
-// (after the BlogPost model)
-
 model FeedbackReport {
   id        String   @id @default(uuid())
   page      String
@@ -122,4 +119,17 @@ model PageContent {
   metaDesc  String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+// ── Cookie Consent (Safari ITP fallback) ─────────────────────────────────────
+// Stores anonymous consent decisions server-side so Safari's ITP can't wipe them.
+// anonId is generated client-side (crypto.randomUUID) and stored in localStorage.
+model CookieConsent {
+  id        String   @id @default(uuid())
+  anonId    String   @unique   // anonymous client ID — no PII
+  value     String             // "accepted" | "declined"
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([anonId])
 }

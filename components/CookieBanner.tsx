@@ -1,16 +1,40 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 
 export type ConsentState = "accepted" | "declined" | null;
 const COOKIE_NAME = "hw-cookie-consent";
 const MAX_AGE = 60 * 60 * 24 * 365;
 
-// ── Read consent — checks cookie then localStorage fallback ──────────────────
-function readConsent(): ConsentState {
-  if (typeof document === "undefined") return null;
+// ── Generates/retrieves a stable anonymous user ID for DB fallback ────────────
+function getAnonId(): string {
+  try {
+    let id = localStorage.getItem("hw-anon-id");
+    if (!id) {
+      id = crypto.randomUUID();
+      localStorage.setItem("hw-anon-id", id);
+    }
+    return id;
+  } catch {
+    // Safari private mode — fall back to session-scoped ID stored on window
+    if (!(window as any).__hwAnonId) {
+      (window as any).__hwAnonId = crypto.randomUUID();
+    }
+    return (window as any).__hwAnonId;
+  }
+}
 
-  // 1. HTTP cookie
+// ── Cookie helpers ────────────────────────────────────────────────────────────
+function _writeCookie(value: "accepted" | "declined") {
+  if (typeof document === "undefined") return;
+  // SameSite=None + Secure is needed for Safari cross-site contexts.
+  // SameSite=Lax is fine for first-party — keep Lax here.
+  const secure = location.protocol === "https:" ? "; Secure" : "";
+  document.cookie = `${COOKIE_NAME}=${value}; max-age=${MAX_AGE}; path=/; SameSite=Lax${secure}`;
+}
+
+function _readCookie(): ConsentState {
+  if (typeof document === "undefined") return null;
   const match = document.cookie
     .split("; ")
     .find((r) => r.startsWith(COOKIE_NAME + "="));
@@ -18,62 +42,126 @@ function readConsent(): ConsentState {
     const v = match.split("=")[1];
     if (v === "accepted" || v === "declined") return v as ConsentState;
   }
-
-  // 2. localStorage fallback (Safari ITP may have stripped the cookie)
-  try {
-    const v = localStorage.getItem(COOKIE_NAME);
-    if (v === "accepted" || v === "declined") {
-      // Re-write the cookie so the next visit finds it
-      _writeCookie(v as "accepted" | "declined");
-      return v as ConsentState;
-    }
-  } catch {}
-
   return null;
 }
 
-function _writeCookie(value: "accepted" | "declined") {
-  if (typeof document === "undefined") return;
-  const secure = location.protocol === "https:" ? "; Secure" : "";
-  document.cookie = `${COOKIE_NAME}=${value}; max-age=${MAX_AGE}; path=/; SameSite=Lax${secure}`;
+// ── localStorage helpers (may throw in Safari private mode) ──────────────────
+function _readLS(): ConsentState {
+  try {
+    const v = localStorage.getItem(COOKIE_NAME);
+    if (v === "accepted" || v === "declined") return v as ConsentState;
+  } catch {}
+  return null;
 }
 
+function _writeLS(value: "accepted" | "declined") {
+  try {
+    localStorage.setItem(COOKIE_NAME, value);
+  } catch {}
+}
+
+// ── DB fallback via API route ─────────────────────────────────────────────────
+async function _readDB(): Promise<ConsentState> {
+  try {
+    const id = getAnonId();
+    const res = await fetch(`/api/consent?id=${encodeURIComponent(id)}`, {
+      cache: "no-store",
+    });
+    if (!res.ok) return null;
+    const json = await res.json();
+    if (json.value === "accepted" || json.value === "declined") return json.value;
+  } catch {}
+  return null;
+}
+
+async function _writeDB(value: "accepted" | "declined") {
+  try {
+    const id = getAnonId();
+    await fetch("/api/consent", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id, value }),
+    });
+  } catch {}
+}
+
+// ── Combined read: cookie → localStorage → DB ────────────────────────────────
+function readConsentSync(): ConsentState {
+  return _readCookie() ?? _readLS();
+}
+
+async function readConsentFull(): Promise<ConsentState> {
+  const sync = readConsentSync();
+  if (sync) return sync;
+  // Only hit DB if both client storages came up empty
+  const db = await _readDB();
+  if (db) {
+    // Re-hydrate local storages so future loads are instant
+    _writeCookie(db);
+    _writeLS(db);
+  }
+  return db;
+}
+
+// ── Combined write: all three layers ─────────────────────────────────────────
 function writeConsent(value: "accepted" | "declined") {
   _writeCookie(value);
-  try { localStorage.setItem(COOKIE_NAME, value); } catch {}
+  _writeLS(value);
+  _writeDB(value); // fire-and-forget
   window.dispatchEvent(new CustomEvent("hw-consent-change", { detail: value }));
 }
 
 // Public helpers for use in layout / gtag setup
-export function getConsent(): ConsentState { return readConsent(); }
-export function setConsentValue(value: "accepted" | "declined") { writeConsent(value); }
+export function getConsent(): ConsentState {
+  return readConsentSync();
+}
+export function setConsentValue(value: "accepted" | "declined") {
+  writeConsent(value);
+}
 
-// ── Component ────────────────────────────────────────────────────────────────
+// ── Component ─────────────────────────────────────────────────────────────────
 export default function CookieBanner() {
-  // KEY FIX: initialise visible with a lazy function so it reads storage
-  // synchronously on first render — no useEffect needed, no flicker on refresh.
-  // On the server this returns false (typeof document === "undefined"),
-  // on the client it reads the real value immediately.
-  const [visible, setVisible] = useState<boolean>(() => {
-    if (typeof document === "undefined") return false; // SSR — never show
-    return readConsent() === null; // show only when no preference stored
-  });
+  // Start hidden on SSR; on client we'll check storage immediately then
+  // optionally fall back to DB asynchronously.
+  const [visible, setVisible] = useState<boolean>(false);
+  const [checked, setChecked] = useState(false);
+  const hasChecked = useRef(false);
 
-  // For returning "accepted" users: restore gtag consent on mount
   useEffect(() => {
-    const existing = readConsent();
-    if (existing === "accepted") fireGtag("accepted");
-    // declined: stays denied (already set as default in layout.tsx)
-  }, []); // runs once, does NOT affect visibility
+    if (hasChecked.current) return;
+    hasChecked.current = true;
+
+    // 1. Sync check (instant — no flash)
+    const sync = readConsentSync();
+    if (sync !== null) {
+      // Restore gtag for accepted users
+      if (sync === "accepted") fireGtag("accepted");
+      setChecked(true);
+      return; // banner stays hidden
+    }
+
+    // 2. Async DB check (Safari ITP may have wiped cookies + localStorage)
+    readConsentFull().then((result) => {
+      if (result !== null) {
+        if (result === "accepted") fireGtag("accepted");
+        setChecked(true);
+        // banner stays hidden
+      } else {
+        // Genuinely no consent on record — show banner
+        setVisible(true);
+        setChecked(true);
+      }
+    });
+  }, []);
 
   function fireGtag(decision: "accepted" | "declined") {
     if (typeof (window as any).gtag !== "function") return;
     const granted = decision === "accepted" ? "granted" : "denied";
     (window as any).gtag("consent", "update", {
-      ad_storage:          granted,
-      ad_user_data:        granted,
-      ad_personalization:  granted,
-      analytics_storage:   granted,
+      ad_storage: granted,
+      ad_user_data: granted,
+      ad_personalization: granted,
+      analytics_storage: granted,
     });
   }
 
@@ -108,16 +196,28 @@ export default function CookieBanner() {
               We use Google AdSense to serve ads that keep this site free.
               Personalised ads use cookies based on your browsing activity.
               You can accept or decline — your choice is saved.{" "}
-              <Link href="/privacy#cookies" className="cookie-link">Privacy Policy</Link>
+              <Link href="/privacy#cookies" className="cookie-link">
+                Privacy Policy
+              </Link>
               {" · "}
-              <Link href="/terms" className="cookie-link">Terms of Service</Link>
+              <Link href="/terms" className="cookie-link">
+                Terms of Service
+              </Link>
             </p>
           </div>
           <div className="cookie-actions">
-            <button type="button" className="cookie-btn cookie-btn--decline" onClick={decline}>
+            <button
+              type="button"
+              className="cookie-btn cookie-btn--decline"
+              onClick={decline}
+            >
               Decline
             </button>
-            <button type="button" className="cookie-btn cookie-btn--accept" onClick={accept}>
+            <button
+              type="button"
+              className="cookie-btn cookie-btn--accept"
+              onClick={accept}
+            >
               Accept All
             </button>
           </div>
