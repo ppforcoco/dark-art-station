@@ -3,35 +3,54 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 
 // ─── Consent helpers ──────────────────────────────────────────────────────────
-// Uses a real HTTP cookie (not localStorage) so Safari ITP doesn't wipe it.
-// Cookie is SameSite=Lax; max-age 1 year. Falls back to localStorage as backup.
+// Uses BOTH a real HTTP cookie AND localStorage to survive Safari ITP.
+// Safari ITP strips cookies set via JS after 7 days unless Secure+SameSite=Lax.
+// We also write localStorage as a belt-and-suspenders backup.
 export type ConsentState = "accepted" | "declined" | null;
 const COOKIE_NAME = "hw-cookie-consent";
 const MAX_AGE = 60 * 60 * 24 * 365; // 1 year in seconds
 
 function getCookieValue(): ConsentState {
   if (typeof document === "undefined") return null;
+
+  // 1. Check real HTTP cookie first
   const match = document.cookie
     .split("; ")
     .find((row) => row.startsWith(COOKIE_NAME + "="));
-  if (match) return match.split("=")[1] as ConsentState;
-  // Fallback: check localStorage for users who previously consented
-  try {
-    return (localStorage.getItem(COOKIE_NAME) as ConsentState) ?? null;
-  } catch {
-    return null;
+  if (match) {
+    const val = match.split("=")[1] as ConsentState;
+    if (val === "accepted" || val === "declined") return val;
   }
+
+  // 2. Fallback: localStorage (covers Safari after ITP strips the cookie)
+  try {
+    const ls = localStorage.getItem(COOKIE_NAME) as ConsentState;
+    if (ls === "accepted" || ls === "declined") {
+      // Re-hydrate the cookie while we're here so it survives next visit too
+      _writeCookie(ls);
+      return ls;
+    }
+  } catch {
+    // Private browsing blocks localStorage — ignore
+  }
+
+  return null;
+}
+
+function _writeCookie(value: "accepted" | "declined") {
+  if (typeof document === "undefined") return;
+  const secure = location.protocol === "https:" ? "; Secure" : "";
+  document.cookie = `${COOKIE_NAME}=${value}; max-age=${MAX_AGE}; path=/; SameSite=Lax${secure}`;
 }
 
 function setCookieValue(value: "accepted" | "declined") {
-  // Set real HTTP cookie — persists across Safari sessions.
-  // "Secure" is required so Safari ITP does not classify this as a tracking
-  // cookie and strip it after 7 days. SameSite=Lax is kept for compatibility.
-  const secure = location.protocol === "https:" ? "; Secure" : "";
-  document.cookie = `${COOKIE_NAME}=${value}; max-age=${MAX_AGE}; path=/; SameSite=Lax${secure}`;
-  // Also write localStorage as belt-and-suspenders backup
-  try { localStorage.setItem(COOKIE_NAME, value); } catch {}
-  window.dispatchEvent(new CustomEvent("hw-consent-change", { detail: value }));
+  _writeCookie(value);
+  try {
+    localStorage.setItem(COOKIE_NAME, value);
+  } catch {}
+  if (typeof window !== "undefined") {
+    window.dispatchEvent(new CustomEvent("hw-consent-change", { detail: value }));
+  }
 }
 
 export function getConsent(): ConsentState {
@@ -44,50 +63,51 @@ export function setConsentValue(value: "accepted" | "declined") {
 
 // ─── Component ────────────────────────────────────────────────────────────────
 export default function CookieBanner() {
+  // Start as false — we reveal only after we've checked storage on the client.
+  // This prevents the banner flashing on returning users (SSR → hydration gap).
   const [visible, setVisible] = useState(false);
+  const [checked, setChecked] = useState(false);
 
   useEffect(() => {
+    // Only run once on mount
+    if (checked) return;
+    setChecked(true);
+
     const existing = getCookieValue();
+
     if (existing === null) {
+      // No stored preference — show the banner
       setVisible(true);
     } else if (existing === "accepted") {
-      // Returning user who already accepted — restore full consent
-      if (typeof (window as any).gtag === "function") {
-        (window as any).gtag("consent", "update", {
-          ad_storage:         "granted",
-          ad_user_data:       "granted",
-          ad_personalization: "granted",
-          analytics_storage:  "granted",
-        });
-      }
+      // Returning user who accepted — restore full consent immediately
+      fireGtag("accepted");
     }
-    // declined users: consent stays denied (already set as default in layout.tsx)
+    // declined: consent stays denied (already set as default in layout.tsx)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  function accept() {
-    setCookieValue("accepted");
-    setVisible(false);
+  function fireGtag(decision: "accepted" | "declined") {
     if (typeof window !== "undefined" && typeof (window as any).gtag === "function") {
+      const granted = decision === "accepted" ? "granted" : "denied";
       (window as any).gtag("consent", "update", {
-        ad_storage:          "granted",
-        ad_user_data:        "granted",
-        ad_personalization:  "granted",
-        analytics_storage:   "granted",
+        ad_storage:          granted,
+        ad_user_data:        granted,
+        ad_personalization:  granted,
+        analytics_storage:   granted,
       });
     }
   }
 
+  function accept() {
+    setCookieValue("accepted");
+    fireGtag("accepted");
+    setVisible(false);
+  }
+
   function decline() {
     setCookieValue("declined");
+    fireGtag("declined");
     setVisible(false);
-    if (typeof window !== "undefined" && typeof (window as any).gtag === "function") {
-      (window as any).gtag("consent", "update", {
-        ad_storage:          "denied",
-        ad_user_data:        "denied",
-        ad_personalization:  "denied",
-        analytics_storage:   "denied",
-      });
-    }
   }
 
   if (!visible) return null;
