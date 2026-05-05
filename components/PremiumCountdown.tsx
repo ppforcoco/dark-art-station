@@ -7,6 +7,11 @@ interface Props {
   updatedAt: string;
 }
 
+// Cycle: 48h total — visible for 24h, locked for 24h, then repeats
+const CYCLE_H   = 48;
+const VISIBLE_H = 24;
+const LOCKED_H  = 24;
+
 function getStatus(updatedAt: string): {
   isLocked: boolean;
   label: string;
@@ -14,19 +19,19 @@ function getStatus(updatedAt: string): {
 } {
   const updated = new Date(updatedAt).getTime();
   const hoursOld = (Date.now() - updated) / (1000 * 60 * 60);
-  const cycle = hoursOld % 72;
-  const isLocked = cycle > 48;
+  const cycle = hoursOld % CYCLE_H;
+  const isLocked = cycle > VISIBLE_H;
 
   let secondsRemaining: number;
   let label: string;
 
   if (isLocked) {
-    // Time until it comes back (end of the 72h cycle)
-    secondsRemaining = Math.round((72 - cycle) * 3600);
+    // Time until it comes back (end of the 48h cycle)
+    secondsRemaining = Math.round((CYCLE_H - cycle) * 3600);
     label = "Returns in";
   } else {
-    // Time until it goes away (48h mark)
-    secondsRemaining = Math.round((48 - cycle) * 3600);
+    // Time until it goes away (24h mark)
+    secondsRemaining = Math.round((VISIBLE_H - cycle) * 3600);
     label = "Gone in";
   }
 
