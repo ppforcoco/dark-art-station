@@ -4,48 +4,44 @@ import Link from "next/link";
 
 export type ConsentState = "accepted" | "declined" | null;
 const COOKIE_NAME = "hw-cookie-consent";
+const ANON_ID_COOKIE = "hw-anon-id";
 const MAX_AGE = 60 * 60 * 24 * 365;
 
-// ── Generates/retrieves a stable anonymous user ID for DB fallback ────────────
-function getAnonId(): string {
-  try {
-    let id = localStorage.getItem("hw-anon-id");
-    if (!id) {
-      id = crypto.randomUUID();
-      localStorage.setItem("hw-anon-id", id);
-    }
-    return id;
-  } catch {
-    // Safari private mode — fall back to session-scoped ID stored on window
-    if (!(window as any).__hwAnonId) {
-      (window as any).__hwAnonId = crypto.randomUUID();
-    }
-    return (window as any).__hwAnonId;
-  }
-}
-
-// ── Cookie helpers ────────────────────────────────────────────────────────────
-function _writeCookie(value: "accepted" | "declined") {
-  if (typeof document === "undefined") return;
-  // SameSite=None + Secure is needed for Safari cross-site contexts.
-  // SameSite=Lax is fine for first-party — keep Lax here.
-  const secure = location.protocol === "https:" ? "; Secure" : "";
-  document.cookie = `${COOKIE_NAME}=${value}; max-age=${MAX_AGE}; path=/; SameSite=Lax${secure}`;
-}
-
-function _readCookie(): ConsentState {
+// ── Cookie read/write ─────────────────────────────────────────────────────────
+function _readCookieRaw(name: string): string | null {
   if (typeof document === "undefined") return null;
-  const match = document.cookie
-    .split("; ")
-    .find((r) => r.startsWith(COOKIE_NAME + "="));
-  if (match) {
-    const v = match.split("=")[1];
-    if (v === "accepted" || v === "declined") return v as ConsentState;
+  const match = document.cookie.split("; ").find((r) => r.startsWith(name + "="));
+  return match ? match.split("=")[1] : null;
+}
+
+function _writeCookieRaw(name: string, value: string, maxAge: number) {
+  if (typeof document === "undefined") return;
+  const secure = location.protocol === "https:" ? "; Secure" : "";
+  document.cookie = `${name}=${value}; max-age=${maxAge}; path=/; SameSite=Lax${secure}`;
+}
+
+// ── Stable anon ID — stored in a COOKIE (survives Safari ITP, not localStorage)
+function getAnonId(): string {
+  let id = _readCookieRaw(ANON_ID_COOKIE);
+  if (!id) {
+    id = crypto.randomUUID();
+    _writeCookieRaw(ANON_ID_COOKIE, id, MAX_AGE);
   }
+  return id;
+}
+
+// ── Consent cookie helpers ────────────────────────────────────────────────────
+function _readConsentCookie(): ConsentState {
+  const v = _readCookieRaw(COOKIE_NAME);
+  if (v === "accepted" || v === "declined") return v;
   return null;
 }
 
-// ── localStorage helpers (may throw in Safari private mode) ──────────────────
+function _writeConsentCookie(value: "accepted" | "declined") {
+  _writeCookieRaw(COOKIE_NAME, value, MAX_AGE);
+}
+
+// ── localStorage helpers (best-effort, may fail in Safari private mode) ───────
 function _readLS(): ConsentState {
   try {
     const v = localStorage.getItem(COOKIE_NAME);
@@ -55,12 +51,10 @@ function _readLS(): ConsentState {
 }
 
 function _writeLS(value: "accepted" | "declined") {
-  try {
-    localStorage.setItem(COOKIE_NAME, value);
-  } catch {}
+  try { localStorage.setItem(COOKIE_NAME, value); } catch {}
 }
 
-// ── DB fallback via API route ─────────────────────────────────────────────────
+// ── DB fallback ───────────────────────────────────────────────────────────────
 async function _readDB(): Promise<ConsentState> {
   try {
     const id = getAnonId();
@@ -85,71 +79,59 @@ async function _writeDB(value: "accepted" | "declined") {
   } catch {}
 }
 
-// ── Combined read: cookie → localStorage → DB ────────────────────────────────
+// ── Read: cookie → localStorage → DB ─────────────────────────────────────────
 function readConsentSync(): ConsentState {
-  return _readCookie() ?? _readLS();
+  return _readConsentCookie() ?? _readLS();
 }
 
 async function readConsentFull(): Promise<ConsentState> {
   const sync = readConsentSync();
   if (sync) return sync;
-  // Only hit DB if both client storages came up empty
   const db = await _readDB();
   if (db) {
-    // Re-hydrate local storages so future loads are instant
-    _writeCookie(db);
+    // Re-hydrate all layers so future loads are instant
+    _writeConsentCookie(db);
     _writeLS(db);
   }
   return db;
 }
 
-// ── Combined write: all three layers ─────────────────────────────────────────
+// ── Write: all three layers ───────────────────────────────────────────────────
 function writeConsent(value: "accepted" | "declined") {
-  _writeCookie(value);
+  _writeConsentCookie(value);
   _writeLS(value);
   _writeDB(value); // fire-and-forget
   window.dispatchEvent(new CustomEvent("hw-consent-change", { detail: value }));
 }
 
-// Public helpers for use in layout / gtag setup
-export function getConsent(): ConsentState {
-  return readConsentSync();
-}
-export function setConsentValue(value: "accepted" | "declined") {
-  writeConsent(value);
-}
+// Public helpers
+export function getConsent(): ConsentState { return readConsentSync(); }
+export function setConsentValue(value: "accepted" | "declined") { writeConsent(value); }
 
 // ── Component ─────────────────────────────────────────────────────────────────
 export default function CookieBanner() {
-  // Start hidden on SSR; on client we'll check storage immediately then
-  // optionally fall back to DB asynchronously.
   const [visible, setVisible] = useState<boolean>(false);
-  const [checked, setChecked] = useState(false);
   const hasChecked = useRef(false);
 
   useEffect(() => {
     if (hasChecked.current) return;
     hasChecked.current = true;
 
-    // 1. Sync check (instant — no flash)
+    // 1. Instant sync check (cookie + localStorage)
     const sync = readConsentSync();
     if (sync !== null) {
-      // Restore gtag for accepted users
       if (sync === "accepted") fireGtag("accepted");
-      setChecked(true);
       return; // banner stays hidden
     }
 
-    // 2. Async DB check (Safari ITP may have wiped cookies + localStorage)
+    // 2. Async DB check (last resort fallback)
     readConsentFull().then((result) => {
       if (result !== null) {
         if (result === "accepted") fireGtag("accepted");
-        setChecked(true);
         // banner stays hidden
       } else {
-        // Genuinely no consent on record — show banner
+        // Genuinely no record anywhere — show banner
         setVisible(true);
-        setChecked(true);
       }
     });
   }, []);
