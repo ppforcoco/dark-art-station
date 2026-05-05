@@ -76,8 +76,8 @@ export default async function IphonePage({ searchParams }: PageProps) {
     const [pinnedRaw, imagesRaw, totalCount, content, freshDropsRaw] = await Promise.all([
       (!tag && page === 1)
         ? db.image.findMany({
-            where: { collectionId: null, deviceType: "IPHONE" },
-            orderBy: { createdAt: "desc" },
+            where: { collectionId: null, deviceType: "IPHONE", sortOrder: { lt: 0 } },
+            orderBy: { sortOrder: "asc" },
             select: { id: true, slug: true, title: true, r2Key: true, viewCount: true, tags: true, isAdult: true, updatedAt: true },
             take: 3,
           })
