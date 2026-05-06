@@ -3,44 +3,38 @@
 //
 // Shows a live countdown for premium wallpapers.
 //
-// LOCK STATE comes from the SERVER via `isLocked` prop — the client never
-// recalculates whether it's locked or unlocked. This prevents the server/client
-// mismatch that caused "GONE IN 05h" showing while the section said "Premium — Locked".
+// CYCLE: 24h available → 24h locked → 24h available → …
+// Anchored to a fixed epoch (Jan 1 2025 00:00 UTC) so all pages stay in sync.
 //
-// The client only calculates the REMAINING TIME (ms countdown), not the lock state.
+// Accepts TWO calling conventions — both work identically:
+//   1. <PremiumCountdown isLocked={true} />          ← from iphone/android pages
+//   2. <PremiumCountdown updatedAt={someISOString} />  ← from homepage (old call)
 //
-//   isLocked = false  → UNLOCKED → show "GONE IN  [time until lock at Mon+48h]"
-//   isLocked = true   → LOCKED   → show "BACK IN  [time until next Monday unlock]"
+//   isLocked = false  → UNLOCKED → show "GONE IN  [time until next lock]"
+//   isLocked = true   → LOCKED   → show "BACK IN  [time until next unlock]"
 
 import { useEffect, useState } from "react";
 
-interface PremiumCountdownProps {
-  /** Passed from the server — authoritative lock state. Client never overrides this. */
-  isLocked: boolean;
+// ─── Cycle constants — must match getServerLockState() in all page.tsx files ──
+const EPOCH_MS  = Date.UTC(2025, 0, 1, 0, 0, 0); // Jan 1 2025 00:00 UTC
+const CYCLE_MS  = 48 * 60 * 60 * 1000;            // 48 h full cycle
+const UNLOCK_MS = 24 * 60 * 60 * 1000;            // first 24 h = unlocked
+
+/** Derive lock state purely from current time (client side) */
+function getClientLockState(): boolean {
+  const pos = (Date.now() - EPOCH_MS) % CYCLE_MS;
+  return pos >= UNLOCK_MS;
 }
 
-/** Returns ms remaining until the next state transition using Monday 00:00 UTC weekly clock. */
+/** Ms until next state flip */
 function getMsRemaining(isLocked: boolean): number {
-  const now = Date.now();
-
-  // Find the most recent Monday 00:00 UTC
-  const d = new Date();
-  const dayOfWeek = d.getUTCDay(); // 0=Sun, 1=Mon …
-  const daysSinceMon = (dayOfWeek + 6) % 7;
-  const mon = new Date(d);
-  mon.setUTCDate(d.getUTCDate() - daysSinceMon);
-  mon.setUTCHours(0, 0, 0, 0);
-
-  const msIntoWeek    = now - mon.getTime();
-  const UNLOCK_WINDOW = 48 * 60 * 60 * 1000; // 48 h
-  const WEEK_MS       = 7  * 24 * 60 * 60 * 1000;
-
+  const pos = (Date.now() - EPOCH_MS) % CYCLE_MS;
   if (!isLocked) {
-    // Unlocked: count down to end of 48 h window
-    return Math.max(0, UNLOCK_WINDOW - msIntoWeek);
+    // Unlocked: time until lock at UNLOCK_MS
+    return Math.max(0, UNLOCK_MS - pos);
   } else {
-    // Locked: count down to next Monday (start of next unlock window)
-    return Math.max(0, WEEK_MS - msIntoWeek);
+    // Locked: time until unlock at CYCLE_MS
+    return Math.max(0, CYCLE_MS - pos);
   }
 }
 
@@ -53,12 +47,34 @@ function fmt(ms: number) {
   return { h: pad(h), m: pad(m), s: pad(s) };
 }
 
-export default function PremiumCountdown({ isLocked }: PremiumCountdownProps) {
+// ─── Props — accept either isLocked (new) or updatedAt (old homepage call) ──
+interface PremiumCountdownProps {
+  /** Authoritative lock state from server. Takes priority over updatedAt. */
+  isLocked?: boolean;
+  /**
+   * Legacy prop from homepage — ignored for lock-state calculation.
+   * Presence signals that we should derive lock state from client clock.
+   * Kept so the homepage <PremiumCountdown updatedAt={x} /> call compiles.
+   */
+  updatedAt?: string | Date | null;
+}
+
+export default function PremiumCountdown({ isLocked, updatedAt }: PremiumCountdownProps) {
+  // If isLocked was explicitly passed, use it; otherwise derive from client clock.
+  // (updatedAt is accepted to prevent the build error but doesn't affect logic)
+  const resolvedLocked = isLocked !== undefined ? isLocked : getClientLockState();
+
   const [msRemaining, setMsRemaining] = useState<number | null>(null);
+  const [locked, setLocked] = useState(resolvedLocked);
 
   useEffect(() => {
-    setMsRemaining(getMsRemaining(isLocked));
-    const id = setInterval(() => setMsRemaining(getMsRemaining(isLocked)), 1000);
+    const update = () => {
+      const clientLocked = getClientLockState();
+      setLocked(isLocked !== undefined ? isLocked : clientLocked);
+      setMsRemaining(getMsRemaining(isLocked !== undefined ? isLocked : clientLocked));
+    };
+    update();
+    const id = setInterval(update, 1000);
     return () => clearInterval(id);
   }, [isLocked]);
 
@@ -68,13 +84,13 @@ export default function PremiumCountdown({ isLocked }: PremiumCountdownProps) {
   const { h, m, s } = fmt(msRemaining);
 
   // Urgency: less than 2 hours left while unlocked
-  const urgent = !isLocked && msRemaining < 2 * 60 * 60 * 1000;
+  const urgent = !locked && msRemaining < 2 * 60 * 60 * 1000;
 
-  const label   = isLocked ? "BACK IN"  : "GONE IN";
-  const accent  = isLocked ? "#6b6b7a"  : (urgent ? "#c0001a" : "#c9a84c");
-  const bgColor = isLocked ? "rgba(30,28,40,0.85)"   : "rgba(20,14,8,0.85)";
-  const borderC = isLocked ? "rgba(107,107,122,0.3)" : (urgent ? "rgba(192,0,26,0.45)" : "rgba(201,168,76,0.35)");
-  const glowC   = isLocked ? "transparent"           : (urgent ? "rgba(192,0,26,0.2)"  : "rgba(201,168,76,0.12)");
+  const label   = locked ? "BACK IN"  : "GONE IN";
+  const accent  = locked ? "#6b6b7a"  : (urgent ? "#c0001a" : "#c9a84c");
+  const bgColor = locked ? "rgba(30,28,40,0.85)"   : "rgba(20,14,8,0.85)";
+  const borderC = locked ? "rgba(107,107,122,0.3)" : (urgent ? "rgba(192,0,26,0.45)" : "rgba(201,168,76,0.35)");
+  const glowC   = locked ? "transparent"           : (urgent ? "rgba(192,0,26,0.2)"  : "rgba(201,168,76,0.12)");
 
   return (
     <div

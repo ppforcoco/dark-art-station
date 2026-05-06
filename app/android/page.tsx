@@ -14,21 +14,15 @@ export const revalidate = 60;
 
 const PAGE_SIZE = 24;
 
-// ── Premium lock: Monday 00:00 UTC weekly clock ────────────────────────────
-// UNLOCKED = first 48 h of the week  → images visible, "GONE IN" countdown
-// LOCKED   = after 48 h              → images hidden,  "BACK IN" countdown
-// Must match PremiumCountdown.tsx exactly — single source of truth.
+// ── Premium lock: 24h on / 24h off cycle anchored to Jan 1 2025 00:00 UTC ─
+// MUST match PremiumCountdown.tsx and iphone/page.tsx exactly.
+const EPOCH_MS  = Date.UTC(2025, 0, 1, 0, 0, 0);
+const CYCLE_MS  = 48 * 60 * 60 * 1000; // 48h full cycle
+const UNLOCK_MS = 24 * 60 * 60 * 1000; // first 24h = unlocked
+
 function getServerLockState(): boolean {
-  const now = Date.now();
-  const d = new Date();
-  const dayOfWeek = d.getUTCDay(); // 0=Sun, 1=Mon …
-  const daysSinceMon = (dayOfWeek + 6) % 7;
-  const mon = new Date(d);
-  mon.setUTCDate(d.getUTCDate() - daysSinceMon);
-  mon.setUTCHours(0, 0, 0, 0);
-  const msIntoWeek = now - mon.getTime();
-  const UNLOCK_WINDOW_MS = 48 * 60 * 60 * 1000;
-  return msIntoWeek >= UNLOCK_WINDOW_MS;
+  const pos = (Date.now() - EPOCH_MS) % CYCLE_MS;
+  return pos >= UNLOCK_MS; // true = locked
 }
 
 interface PageProps {

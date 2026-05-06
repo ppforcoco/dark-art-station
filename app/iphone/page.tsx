@@ -14,19 +14,15 @@ export const revalidate = 60;
 
 const PAGE_SIZE = 24;
 
-// ── Premium lock: same 24h alternating cycle as PremiumCountdown ──────────
-// UNLOCKED (first 24h of 48h cycle) → images visible, countdown shows "GONE IN"
-// LOCKED   (next  24h of 48h cycle) → images hidden,  countdown shows "BACK IN"
-const CYCLE_H   = 48;
-const VISIBLE_H = 24;
+// ── Premium lock: 24h on / 24h off cycle anchored to Jan 1 2025 00:00 UTC ─
+// MUST match PremiumCountdown.tsx and android/page.tsx exactly.
+const EPOCH_MS  = Date.UTC(2025, 0, 1, 0, 0, 0);
+const CYCLE_MS  = 48 * 60 * 60 * 1000; // 48h full cycle
+const UNLOCK_MS = 24 * 60 * 60 * 1000; // first 24h = unlocked
 
 function getServerLockState(): boolean {
-  const EPOCH_MS = Date.UTC(2025, 0, 1, 0, 0, 0);
-  const msSinceEpoch = Date.now() - EPOCH_MS;
-  const cycleMs = CYCLE_H * 60 * 60 * 1000;
-  const posInCycle = msSinceEpoch % cycleMs;
-  const hoursInCycle = posInCycle / (1000 * 60 * 60);
-  return hoursInCycle >= VISIBLE_H;
+  const pos = (Date.now() - EPOCH_MS) % CYCLE_MS;
+  return pos >= UNLOCK_MS; // true = locked
 }
 
 interface PageProps {
