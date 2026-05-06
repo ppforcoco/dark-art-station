@@ -14,19 +14,21 @@ export const revalidate = 60;
 
 const PAGE_SIZE = 24;
 
-// ── Premium lock: same 24h alternating cycle as PremiumCountdown ──────────
-// UNLOCKED (first 24h of 48h cycle) → images visible, countdown shows "GONE IN"
-// LOCKED   (next  24h of 48h cycle) → images hidden,  countdown shows "BACK IN"
-const CYCLE_H   = 48;
-const VISIBLE_H = 24;
-
+// ── Premium lock: Monday 00:00 UTC weekly clock ────────────────────────────
+// UNLOCKED = first 48 h of the week  → images visible, "GONE IN" countdown
+// LOCKED   = after 48 h              → images hidden,  "BACK IN" countdown
+// Must match PremiumCountdown.tsx exactly — single source of truth.
 function getServerLockState(): boolean {
-  const EPOCH_MS = Date.UTC(2025, 0, 1, 0, 0, 0);
-  const msSinceEpoch = Date.now() - EPOCH_MS;
-  const cycleMs = CYCLE_H * 60 * 60 * 1000;
-  const posInCycle = msSinceEpoch % cycleMs;
-  const hoursInCycle = posInCycle / (1000 * 60 * 60);
-  return hoursInCycle >= VISIBLE_H;
+  const now = Date.now();
+  const d = new Date();
+  const dayOfWeek = d.getUTCDay(); // 0=Sun, 1=Mon …
+  const daysSinceMon = (dayOfWeek + 6) % 7;
+  const mon = new Date(d);
+  mon.setUTCDate(d.getUTCDate() - daysSinceMon);
+  mon.setUTCHours(0, 0, 0, 0);
+  const msIntoWeek = now - mon.getTime();
+  const UNLOCK_WINDOW_MS = 48 * 60 * 60 * 1000;
+  return msIntoWeek >= UNLOCK_WINDOW_MS;
 }
 
 interface PageProps {

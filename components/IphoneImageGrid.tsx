@@ -3,13 +3,13 @@
 //
 // A thin "use client" wrapper that renders DeviceImageCard in a grid.
 // All props must be plain serialisable values — no functions, no class instances.
-// This component owns the client boundary so that DeviceImageCard's
-// onMouseEnter / onMouseLeave handlers never cross the Server → Client
-// serialisation boundary (which causes the Next.js build error).
 //
 // PREMIUM LOCK DISPLAY:
-//   isLocked = true  → image is LOCKED    → show "BACK IN THE VAULT" overlay
-//   isLocked = false → image is UNLOCKED  → show "GONE IN [countdown]" overlay (via DeviceImageCard)
+//   isLocked = true  → LOCKED    → DeviceImageCard shows "BACK IN THE VAULT" overlay
+//   isLocked = false → UNLOCKED  → DeviceImageCard shows normal image + "GONE IN" badge
+//
+// isLockedGlobal comes from the server (same Monday-clock formula as PremiumCountdown)
+// so the lock state is always consistent across page and countdown.
 
 import React from "react";
 import DeviceImageCard from "@/components/DeviceImageCard";
@@ -46,9 +46,9 @@ interface IphoneImageGridProps {
    */
   insertAfter?: number;
   /**
-   * When true, ALL premium images are treated as locked regardless of their
-   * individual updatedAt timestamp. Useful for pages where the lock state is
-   * determined server-side and passed down as a single boolean.
+   * Server-computed lock state. When provided, ALL premium images use this
+   * value instead of the per-image isPremiumLocked() calculation.
+   * Always pass this from the server page so lock state is consistent.
    */
   isLockedGlobal?: boolean;
 }
@@ -71,15 +71,8 @@ export default function IphoneImageGrid({
       {images.map((img, idx) => {
         const isPremium = img.tags.includes("badge-premium");
 
-        // Determine lock state:
-        //   isLockedGlobal overrides per-image logic when provided by the server.
-        //   Otherwise fall back to the per-image isPremiumLocked() check.
+        // isLockedGlobal (server-computed) overrides per-image fallback
         const isLocked = isPremium && (isLockedGlobal ?? isPremiumLocked(img.updatedAt));
-
-        // Title display:
-        //   LOCKED   → hide the real title ("Sealed Away")
-        //   UNLOCKED → show real title (normal)
-        const displayTitle = isLocked ? "Sealed Away" : img.title;
 
         return (
           <React.Fragment key={img.id}>
@@ -87,7 +80,7 @@ export default function IphoneImageGrid({
               href={`${hrefPrefix}/${img.slug}`}
               src={img.src}
               alt={`${img.title} — ${altSuffix}`}
-              title={displayTitle}
+              title={img.title}
               tags={img.tags}
               isAdult={img.isAdult}
               isLocked={isLocked}
