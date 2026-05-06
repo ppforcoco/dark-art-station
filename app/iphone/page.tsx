@@ -14,6 +14,19 @@ export const revalidate = 60;
 
 const PAGE_SIZE = 24;
 
+// ── Premium lock: same 24h alternating cycle as PremiumCountdown ──────────
+const CYCLE_H   = 48;
+const VISIBLE_H = 24;
+
+function getServerLockState(): boolean {
+  const EPOCH_MS = Date.UTC(2025, 0, 1, 0, 0, 0);
+  const msSinceEpoch = Date.now() - EPOCH_MS;
+  const cycleMs = CYCLE_H * 60 * 60 * 1000;
+  const posInCycle = msSinceEpoch % cycleMs;
+  const hoursInCycle = posInCycle / (1000 * 60 * 60);
+  return hoursInCycle >= VISIBLE_H;
+}
+
 interface PageProps {
   searchParams: Promise<{ tag?: string; page?: string }>;
 }
@@ -59,6 +72,8 @@ export default async function IphonePage({ searchParams }: PageProps) {
   const page = Math.max(1, parseInt(rawPage ?? "1", 10) || 1);
   const skip = (page - 1) * PAGE_SIZE;
 
+  const isLockedGlobal = getServerLockState();
+
   const where = {
     collectionId: null,
     deviceType: "IPHONE" as const,
@@ -81,7 +96,7 @@ export default async function IphonePage({ searchParams }: PageProps) {
             select: { id: true, slug: true, title: true, r2Key: true, viewCount: true, tags: true, isAdult: true, updatedAt: true },
             take: 3,
           })
-        : Promise.resolve([] as Array<{ id: string; slug: string; title: string; r2Key: string; viewCount: number; tags: string[]; isAdult: boolean; updatedAt: Date }>),
+        : Promise.resolve([] as Array<{ id: string; slug: string; title: string; r2Key: string; viewCount: true; tags: string[]; isAdult: boolean; updatedAt: Date }>),
       db.image.findMany({
         where,
         orderBy: { createdAt: "desc" },
@@ -98,7 +113,7 @@ export default async function IphonePage({ searchParams }: PageProps) {
             take: 10,
             select: { id: true, slug: true, title: true, r2Key: true, viewCount: true, tags: true, isAdult: true, updatedAt: true },
           })
-        : Promise.resolve([] as Array<{ id: string; slug: string; title: string; r2Key: string; viewCount: number; tags: string[]; isAdult: boolean; updatedAt: Date }>),
+        : Promise.resolve([] as Array<{ id: string; slug: string; title: string; r2Key: string; viewCount: true; tags: string[]; isAdult: boolean; updatedAt: Date }>),
     ]);
 
     pinnedImages = pinnedRaw.map((img) => ({
@@ -215,6 +230,7 @@ export default async function IphonePage({ searchParams }: PageProps) {
             priority
             aspectRatio="9/16"
             sizes="(max-width: 640px) 33vw, 160px"
+            isLockedGlobal={isLockedGlobal}
           />
         </section>
       )}
@@ -254,6 +270,7 @@ export default async function IphonePage({ searchParams }: PageProps) {
             priorityCount={5}
             aspectRatio="9/16"
             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 15vw"
+            isLockedGlobal={isLockedGlobal}
           />
         </section>
       )}
@@ -289,6 +306,7 @@ export default async function IphonePage({ searchParams }: PageProps) {
               aspectRatio="9/16"
               sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 20vw"
               insertAfter={9}
+              isLockedGlobal={isLockedGlobal}
             />
             <Pagination currentPage={page} totalPages={totalPages} baseUrl={baseUrl} />
           </>

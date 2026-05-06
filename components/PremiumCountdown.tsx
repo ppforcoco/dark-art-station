@@ -2,40 +2,29 @@
 
 import { useEffect, useState } from "react";
 
-// ── Premium week runs Monday 00:00 UTC → Wednesday 00:00 UTC (48 hrs visible)
-// After that it's locked until next Monday.
-// This is FIXED — independent of any image's updatedAt. Never resets randomly.
+// ── Alternating 24-hour cycle ──────────────────────────────────────────────
+// Epoch (Jan 1 2025 00:00 UTC) is used as a fixed reference point.
+// Every 48 hours: first 24hrs = OPEN, next 24hrs = LOCKED, repeat forever.
+// This is completely independent of any image's updatedAt — never resets randomly.
 
-const VISIBLE_H = 1; // TEST: change back to 48 after testing // hours the premium section is open
-const CYCLE_H   = 168; // full weekly cycle (7 days)
+const CYCLE_H   = 48; // full cycle: 24 open + 24 locked
+const VISIBLE_H = 24; // hours open per cycle
 
-interface Remaining {
-  hours: number;
-  minutes: number;
-  seconds: number;
-}
-
-function getMondayStartMs(): number {
-  const now = new Date();
-  // Find the most recent Monday 00:00 UTC
-  const day = now.getUTCDay(); // 0=Sun, 1=Mon ... 6=Sat
-  const daysSinceMonday = (day + 6) % 7; // Mon=0, Tue=1 ... Sun=6
-  const monday = new Date(now);
-  monday.setUTCDate(now.getUTCDate() - daysSinceMonday);
-  monday.setUTCHours(0, 0, 0, 0);
-  return monday.getTime();
-}
-
-function calcRemaining(): { isLocked: boolean; remaining: Remaining } {
+function getCycleState(): { isLocked: boolean; remaining: { hours: number; minutes: number; seconds: number } } {
+  // Fixed epoch: Jan 1 2025 00:00:00 UTC
+  const EPOCH_MS = Date.UTC(2025, 0, 1, 0, 0, 0);
   const now = Date.now();
-  const weekStart = getMondayStartMs();
-  const hoursIntoWeek = (now - weekStart) / (1000 * 60 * 60);
 
-  const isLocked = hoursIntoWeek >= VISIBLE_H;
+  const msSinceEpoch = now - EPOCH_MS;
+  const cycleMs = CYCLE_H * 60 * 60 * 1000;
+  const posInCycle = msSinceEpoch % cycleMs; // ms into current 48h cycle
+  const hoursInCycle = posInCycle / (1000 * 60 * 60);
 
-  // Time until next transition
+  const isLocked = hoursInCycle >= VISIBLE_H;
+
+  // How many ms until next transition
   const targetHours = isLocked ? CYCLE_H : VISIBLE_H;
-  const diffSecs = Math.max(0, Math.round((targetHours - hoursIntoWeek) * 3600));
+  const diffSecs = Math.max(0, Math.round((targetHours - hoursInCycle) * 3600));
 
   return {
     isLocked,
@@ -51,16 +40,16 @@ function pad(n: number) {
   return String(n).padStart(2, "0");
 }
 
-// Props kept for backwards compatibility but no longer used
+// Props kept for backwards compatibility
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 interface Props { updatedAt?: string; }
 
 export default function PremiumCountdown(_props: Props) {
-  const [state, setState] = useState<{ isLocked: boolean; remaining: Remaining } | null>(null);
+  const [state, setState] = useState<ReturnType<typeof getCycleState> | null>(null);
 
   useEffect(() => {
-    setState(calcRemaining());
-    const id = setInterval(() => setState(calcRemaining()), 1000);
+    setState(getCycleState());
+    const id = setInterval(() => setState(getCycleState()), 1000);
     return () => clearInterval(id);
   }, []);
 
@@ -99,22 +88,22 @@ export default function PremiumCountdown(_props: Props) {
       `}</style>
 
       <span style={{ marginRight: "4px" }}>
-        {isLocked ? "Returns Monday" : "Gone in"}
+        {isLocked ? "Unlocks in" : "Gone in"}
       </span>
 
-      {/* HRS segment */}
+      {/* HRS */}
       <span style={{ fontWeight: 700 }}>{pad(remaining.hours)}</span>
       <span style={{ opacity: 0.6, fontSize: "0.6rem" }}>hrs</span>
 
       <span style={{ opacity: 0.4 }}>·</span>
 
-      {/* MIN segment */}
+      {/* MIN */}
       <span style={{ fontWeight: 700 }}>{pad(remaining.minutes)}</span>
       <span style={{ opacity: 0.6, fontSize: "0.6rem" }}>min</span>
 
       <span style={{ opacity: 0.4 }}>·</span>
 
-      {/* SEC segment */}
+      {/* SEC */}
       <span style={{ fontWeight: 700 }}>{pad(remaining.seconds)}</span>
       <span style={{ opacity: 0.6, fontSize: "0.6rem" }}>sec</span>
     </div>

@@ -14,6 +14,19 @@ export const revalidate = 60;
 
 const PAGE_SIZE = 24;
 
+// ── Premium lock: same 24h alternating cycle as PremiumCountdown ──────────
+const CYCLE_H   = 48;
+const VISIBLE_H = 24;
+
+function getServerLockState(): boolean {
+  const EPOCH_MS = Date.UTC(2025, 0, 1, 0, 0, 0);
+  const msSinceEpoch = Date.now() - EPOCH_MS;
+  const cycleMs = CYCLE_H * 60 * 60 * 1000;
+  const posInCycle = msSinceEpoch % cycleMs;
+  const hoursInCycle = posInCycle / (1000 * 60 * 60);
+  return hoursInCycle >= VISIBLE_H;
+}
+
 interface PageProps {
   searchParams: Promise<{ tag?: string; page?: string }>;
 }
@@ -58,6 +71,8 @@ export default async function AndroidPage({ searchParams }: PageProps) {
   const { tag, page: rawPage } = await searchParams;
   const page = Math.max(1, parseInt(rawPage ?? "1", 10) || 1);
   const skip = (page - 1) * PAGE_SIZE;
+
+  const isLockedGlobal = getServerLockState();
 
   const where = {
     collectionId: null,
@@ -200,6 +215,7 @@ export default async function AndroidPage({ searchParams }: PageProps) {
             priority
             aspectRatio="9/16"
             sizes="(max-width: 640px) 33vw, 160px"
+            isLockedGlobal={isLockedGlobal}
           />
         </section>
       )}
@@ -235,6 +251,7 @@ export default async function AndroidPage({ searchParams }: PageProps) {
               aspectRatio="9/16"
               sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 20vw"
               insertAfter={9}
+              isLockedGlobal={isLockedGlobal}
             />
             <Pagination currentPage={page} totalPages={totalPages} baseUrl={baseUrl} />
           </>
