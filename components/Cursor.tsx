@@ -137,7 +137,7 @@ export default function Cursor() {
         width: "32px",
         height: "64px",
         pointerEvents: "none",
-        zIndex: 9999,
+        zIndex: 99999,
         opacity: 0,
         display: "none",
         filter: "drop-shadow(0 0 4px rgba(192,0,26,0.7))",
