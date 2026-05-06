@@ -317,11 +317,14 @@ export default async function Home() {
       ══════════════════════════════════════════════════════════ */}
       {premiumThisWeek.length > 0 && (() => {
         const now = Date.now();
+        // Fixed Monday 00:00 UTC weekly cycle — matches PremiumCountdown.tsx
+        const _day = new Date().getUTCDay();
+        const _daysSince = (_day + 6) % 7;
+        const _mon = new Date(); _mon.setUTCDate(new Date().getUTCDate() - _daysSince); _mon.setUTCHours(0,0,0,0);
+        const hoursIntoWeek = (now - _mon.getTime()) / (1000 * 60 * 60);
+        const isLockedGlobal = hoursIntoWeek >= 48;
         const premiumItems = premiumThisWeek.map((img) => {
-          const updatedAt = img.updatedAt ? new Date(img.updatedAt).getTime() : 0;
-          const hoursOld = (now - updatedAt) / (1000 * 60 * 60);
-          const cycle = hoursOld % 72;
-          const isLocked = cycle > 48;
+          const isLocked = isLockedGlobal;
           const devicePath = img.deviceType === "IPHONE" ? "iphone" : img.deviceType === "ANDROID" ? "android" : "pc";
           return {
             id: img.id,
@@ -334,8 +337,7 @@ export default async function Home() {
           };
         });
 
-        // Pick the first unlocked item's updatedAt for the section-level countdown
-        const firstUnlocked = premiumItems.find((i) => !i.isLocked && i.updatedAt);
+        const firstUnlocked = { updatedAt: new Date().toISOString() }; // countdown uses fixed weekly clock
 
         return (
         <section style={{ padding: "clamp(32px,5vw,64px) clamp(16px,5vw,72px)", background: "#0a0810", position: "relative", overflow: "hidden" }}>

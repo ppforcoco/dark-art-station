@@ -2,12 +2,12 @@
 
 import { useEffect, useState } from "react";
 
-interface Props {
-  updatedAt: string;
-}
+// ── Premium week runs Monday 00:00 UTC → Wednesday 00:00 UTC (48 hrs visible)
+// After that it's locked until next Monday.
+// This is FIXED — independent of any image's updatedAt. Never resets randomly.
 
-const VISIBLE_H = 24;
-const CYCLE_H   = 48;
+const VISIBLE_H = 48; // hours the premium section is open
+const CYCLE_H   = 168; // full weekly cycle (7 days)
 
 interface Remaining {
   hours: number;
@@ -15,14 +15,27 @@ interface Remaining {
   seconds: number;
 }
 
-function calcRemaining(updatedAt: string): { isLocked: boolean; remaining: Remaining } {
-  const updated = new Date(updatedAt).getTime();
-  const hoursOld = (Date.now() - updated) / (1000 * 60 * 60);
-  const cycle = hoursOld % CYCLE_H;
-  const isLocked = cycle > VISIBLE_H;
+function getMondayStartMs(): number {
+  const now = new Date();
+  // Find the most recent Monday 00:00 UTC
+  const day = now.getUTCDay(); // 0=Sun, 1=Mon ... 6=Sat
+  const daysSinceMonday = (day + 6) % 7; // Mon=0, Tue=1 ... Sun=6
+  const monday = new Date(now);
+  monday.setUTCDate(now.getUTCDate() - daysSinceMonday);
+  monday.setUTCHours(0, 0, 0, 0);
+  return monday.getTime();
+}
 
+function calcRemaining(): { isLocked: boolean; remaining: Remaining } {
+  const now = Date.now();
+  const weekStart = getMondayStartMs();
+  const hoursIntoWeek = (now - weekStart) / (1000 * 60 * 60);
+
+  const isLocked = hoursIntoWeek >= VISIBLE_H;
+
+  // Time until next transition
   const targetHours = isLocked ? CYCLE_H : VISIBLE_H;
-  const diffSecs = Math.max(0, Math.round((targetHours - cycle) * 3600));
+  const diffSecs = Math.max(0, Math.round((targetHours - hoursIntoWeek) * 3600));
 
   return {
     isLocked,
@@ -38,14 +51,18 @@ function pad(n: number) {
   return String(n).padStart(2, "0");
 }
 
-export default function PremiumCountdown({ updatedAt }: Props) {
+// Props kept for backwards compatibility but no longer used
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+interface Props { updatedAt?: string; }
+
+export default function PremiumCountdown(_props: Props) {
   const [state, setState] = useState<{ isLocked: boolean; remaining: Remaining } | null>(null);
 
   useEffect(() => {
-    setState(calcRemaining(updatedAt));
-    const id = setInterval(() => setState(calcRemaining(updatedAt)), 1000);
+    setState(calcRemaining());
+    const id = setInterval(() => setState(calcRemaining()), 1000);
     return () => clearInterval(id);
-  }, [updatedAt]);
+  }, []);
 
   if (!state) return null;
 
@@ -82,7 +99,7 @@ export default function PremiumCountdown({ updatedAt }: Props) {
       `}</style>
 
       <span style={{ marginRight: "4px" }}>
-        {isLocked ? "Returns in" : "Gone in"}
+        {isLocked ? "Returns Monday" : "Gone in"}
       </span>
 
       {/* HRS segment */}
