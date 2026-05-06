@@ -67,6 +67,17 @@ interface ImageItem {
   isAdult: boolean;
 }
 
+interface RawImageRow {
+  id: string;
+  slug: string;
+  title: string;
+  r2Key: string;
+  viewCount: number;
+  tags: string[];
+  isAdult: boolean;
+  updatedAt: Date;
+}
+
 export default async function IphonePage({ searchParams }: PageProps) {
   const { tag, page: rawPage } = await searchParams;
   const page = Math.max(1, parseInt(rawPage ?? "1", 10) || 1);
@@ -96,7 +107,7 @@ export default async function IphonePage({ searchParams }: PageProps) {
             select: { id: true, slug: true, title: true, r2Key: true, viewCount: true, tags: true, isAdult: true, updatedAt: true },
             take: 3,
           })
-        : Promise.resolve([] as Array<{ id: string; slug: string; title: string; r2Key: string; viewCount: true; tags: string[]; isAdult: boolean; updatedAt: Date }>),
+        : Promise.resolve([] as RawImageRow[]),
       db.image.findMany({
         where,
         orderBy: { createdAt: "desc" },
@@ -113,7 +124,7 @@ export default async function IphonePage({ searchParams }: PageProps) {
             take: 10,
             select: { id: true, slug: true, title: true, r2Key: true, viewCount: true, tags: true, isAdult: true, updatedAt: true },
           })
-        : Promise.resolve([] as Array<{ id: string; slug: string; title: string; r2Key: string; viewCount: true; tags: string[]; isAdult: boolean; updatedAt: Date }>),
+        : Promise.resolve([] as RawImageRow[]),
     ]);
 
     pinnedImages = pinnedRaw.map((img) => ({
