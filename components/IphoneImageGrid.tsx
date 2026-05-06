@@ -41,6 +41,12 @@ interface IphoneImageGridProps {
    * Used for the ad / interstitial slot in the main grid.
    */
   insertAfter?: number;
+  /**
+   * When true, ALL premium images are treated as locked regardless of their
+   * individual updatedAt timestamp. Useful for pages where the lock state is
+   * determined server-side and passed down as a single boolean.
+   */
+  isLockedGlobal?: boolean;
 }
 
 export default function IphoneImageGrid({
@@ -54,35 +60,41 @@ export default function IphoneImageGrid({
   aspectRatio = "9/16",
   sizes,
   insertAfter,
+  isLockedGlobal,
 }: IphoneImageGridProps) {
   return (
     <div className={gridClassName} style={gridStyle}>
-      {images.map((img, idx) => (
-        <React.Fragment key={img.id}>
-          <DeviceImageCard
-            href={`${hrefPrefix}/${img.slug}`}
-            src={img.src}
-            alt={`${img.title} — ${altSuffix}`}
-            title={img.title}
-            tags={img.tags}
-            isAdult={img.isAdult}
-            isLocked={img.tags.includes("badge-premium") && isPremiumLocked(img.updatedAt)}
-            priority={priority || idx < priorityCount}
-            aspectRatio={aspectRatio}
-            sizes={sizes}
-          />
-          {insertAfter !== undefined && idx === insertAfter && (
-            <div
-              className={
-                gridClassName
-                  ? "col-span-2 sm:col-span-3 md:col-span-4 lg:col-span-5 my-2"
-                  : undefined
-              }
-              style={gridClassName ? undefined : { gridColumn: "1 / -1", margin: "8px 0" }}
+      {images.map((img, idx) => {
+        const isPremium = img.tags.includes("badge-premium");
+        const isLocked = isPremium && (isLockedGlobal ?? isPremiumLocked(img.updatedAt));
+
+        return (
+          <React.Fragment key={img.id}>
+            <DeviceImageCard
+              href={`${hrefPrefix}/${img.slug}`}
+              src={img.src}
+              alt={`${img.title} — ${altSuffix}`}
+              title={img.title}
+              tags={img.tags}
+              isAdult={img.isAdult}
+              isLocked={isLocked}
+              priority={priority || idx < priorityCount}
+              aspectRatio={aspectRatio}
+              sizes={sizes}
             />
-          )}
-        </React.Fragment>
-      ))}
+            {insertAfter !== undefined && idx === insertAfter && (
+              <div
+                className={
+                  gridClassName
+                    ? "col-span-2 sm:col-span-3 md:col-span-4 lg:col-span-5 my-2"
+                    : undefined
+                }
+                style={gridClassName ? undefined : { gridColumn: "1 / -1", margin: "8px 0" }}
+              />
+            )}
+          </React.Fragment>
+        );
+      })}
     </div>
   );
 }
