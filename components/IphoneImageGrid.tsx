@@ -6,6 +6,10 @@
 // This component owns the client boundary so that DeviceImageCard's
 // onMouseEnter / onMouseLeave handlers never cross the Server → Client
 // serialisation boundary (which causes the Next.js build error).
+//
+// PREMIUM LOCK DISPLAY:
+//   isLocked = true  → image is LOCKED    → show "BACK IN THE VAULT" overlay
+//   isLocked = false → image is UNLOCKED  → show "GONE IN [countdown]" overlay (via DeviceImageCard)
 
 import React from "react";
 import DeviceImageCard from "@/components/DeviceImageCard";
@@ -66,7 +70,16 @@ export default function IphoneImageGrid({
     <div className={gridClassName} style={gridStyle}>
       {images.map((img, idx) => {
         const isPremium = img.tags.includes("badge-premium");
+
+        // Determine lock state:
+        //   isLockedGlobal overrides per-image logic when provided by the server.
+        //   Otherwise fall back to the per-image isPremiumLocked() check.
         const isLocked = isPremium && (isLockedGlobal ?? isPremiumLocked(img.updatedAt));
+
+        // Title display:
+        //   LOCKED   → hide the real title ("Sealed Away")
+        //   UNLOCKED → show real title (normal)
+        const displayTitle = isLocked ? "Sealed Away" : img.title;
 
         return (
           <React.Fragment key={img.id}>
@@ -74,7 +87,7 @@ export default function IphoneImageGrid({
               href={`${hrefPrefix}/${img.slug}`}
               src={img.src}
               alt={`${img.title} — ${altSuffix}`}
-              title={img.title}
+              title={displayTitle}
               tags={img.tags}
               isAdult={img.isAdult}
               isLocked={isLocked}

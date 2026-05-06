@@ -322,38 +322,48 @@ export default async function Home() {
         const _daysSince = (_day + 6) % 7;
         const _mon = new Date(); _mon.setUTCDate(new Date().getUTCDate() - _daysSince); _mon.setUTCHours(0,0,0,0);
         const hoursIntoWeek = (now - _mon.getTime()) / (1000 * 60 * 60);
+        // LOCKED = after 48 hours into the week, UNLOCKED = first 48 hours
         const isLockedGlobal = hoursIntoWeek >= 48;
+
         const premiumItems = premiumThisWeek.map((img) => {
-          const isLocked = isLockedGlobal;
           const devicePath = img.deviceType === "IPHONE" ? "iphone" : img.deviceType === "ANDROID" ? "android" : "pc";
           return {
             id: img.id,
             slug: img.slug,
-            title: isLocked ? "Sealed Away" : img.title,
+            // LOCKED → hide title ("Sealed Away"), UNLOCKED → show real title
+            title: isLockedGlobal ? "Sealed Away" : img.title,
             src: getPublicUrl(img.r2Key),
             devicePath,
-            isLocked,
+            isLocked: isLockedGlobal,
             updatedAt: img.updatedAt ? new Date(img.updatedAt).toISOString() : null,
           };
         });
 
-        const firstUnlocked = { updatedAt: new Date().toISOString() }; // countdown uses fixed weekly clock
+        // Section copy flips based on lock state
+        const sectionEyebrow = isLockedGlobal ? "Back In The Vault"       : "Hand-Picked Excellence";
+        const sectionTitle   = isLockedGlobal ? "Premium — Locked"         : "Premium This Week";
+        const sectionSub     = isLockedGlobal
+          ? "These pieces are sealed away. Check back when the vault reopens."
+          : "The finest pieces from the archive. Surfaces for 48 hours, then sealed away.";
+
+        const countdownDate = new Date().toISOString(); // PremiumCountdown uses fixed weekly clock
 
         return (
         <section style={{ padding: "clamp(32px,5vw,64px) clamp(16px,5vw,72px)", background: "#0a0810", position: "relative", overflow: "hidden" }}>
           <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse 60% 40% at 50% 0%, rgba(201,168,76,0.07) 0%, transparent 70%)", pointerEvents: "none" }} />
 
           <div className="dt-section-head dt-section-head--center" style={{ marginBottom: "clamp(24px,4vw,40px)" }}>
-            <span className="dt-eyebrow" style={{ color: "#c9a84c" }}>Hand-Picked Excellence</span>
-            <h2 className="dt-section-title">Premium This Week</h2>
+            <span className="dt-eyebrow" style={{ color: isLockedGlobal ? "#6b6b7a" : "#c9a84c" }}>
+              {sectionEyebrow}
+            </span>
+            <h2 className="dt-section-title">{sectionTitle}</h2>
             <p className="dt-section-sub" style={{ maxWidth: "480px", margin: "0 auto" }}>
-              The finest pieces from the archive. Surfaces for 48 hours, then sealed away.
+              {sectionSub}
             </p>
-            {firstUnlocked?.updatedAt && (
-              <div style={{ marginTop: "1rem", display: "flex", justifyContent: "center" }}>
-                <PremiumCountdown updatedAt={firstUnlocked.updatedAt} />
-              </div>
-            )}
+            {/* Countdown always shown — text inside switches automatically (GONE IN / BACK IN) */}
+            <div style={{ marginTop: "1rem", display: "flex", justifyContent: "center" }}>
+              <PremiumCountdown updatedAt={countdownDate} />
+            </div>
           </div>
 
           <WallpaperCardGrid

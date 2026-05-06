@@ -15,6 +15,8 @@ export const revalidate = 60;
 const PAGE_SIZE = 24;
 
 // ── Premium lock: same 24h alternating cycle as PremiumCountdown ──────────
+// UNLOCKED (first 24h of 48h cycle) → images visible, countdown shows "GONE IN"
+// LOCKED   (next  24h of 48h cycle) → images hidden,  countdown shows "BACK IN"
 const CYCLE_H   = 48;
 const VISIBLE_H = 24;
 
@@ -72,6 +74,8 @@ export default async function AndroidPage({ searchParams }: PageProps) {
   const page = Math.max(1, parseInt(rawPage ?? "1", 10) || 1);
   const skip = (page - 1) * PAGE_SIZE;
 
+  // true  = currently LOCKED   → premium images hidden, show "BACK IN [countdown]"
+  // false = currently UNLOCKED → premium images visible, show "GONE IN [countdown]"
   const isLockedGlobal = getServerLockState();
 
   const where = {
