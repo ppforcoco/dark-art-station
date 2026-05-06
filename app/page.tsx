@@ -971,7 +971,6 @@ export default async function Home() {
         <div className="dt-obs-grid">
           {obsessions.map((obs, i) => {
             const thumb = obs.thumbnail ? (obs.thumbnail.startsWith('http') ? obs.thumbnail : `${r2Base}/${obs.thumbnail}`) : null;
-            const hasImages = obs._count.images > 0;
             return (
               <Link
                 key={obs.id}
@@ -1001,9 +1000,7 @@ export default async function Home() {
                 <div className="dt-obs-card__drip" aria-hidden="true" />
                 <div className="dt-obs-card__body">
                   <h3 className="dt-obs-card__title">{obs.title}</h3>
-                  <span className="dt-obs-card__count">
-                    {hasImages ? `${obs._count.images} wallpapers` : "Coming soon"}
-                  </span>
+
                 </div>
                 <div className="dt-obs-card__glow" aria-hidden="true" />
                 <span className="dt-obs-card__corner dt-obs-card__corner--tl">†</span>

@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 // After that it's locked until next Monday.
 // This is FIXED — independent of any image's updatedAt. Never resets randomly.
 
-const VISIBLE_H = 48; // hours the premium section is open
+const VISIBLE_H = 1; // TEST: change back to 48 after testing // hours the premium section is open
 const CYCLE_H   = 168; // full weekly cycle (7 days)
 
 interface Remaining {
