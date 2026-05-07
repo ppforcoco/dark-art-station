@@ -72,7 +72,7 @@ export default function BirthdayComments({ imageId, imageTitle }: Props) {
       return;
     }
     if (!message.trim() || message.trim().length < 5) {
-      setError("Please write a longer wish (at least 5 characters).");
+      setError("Please write a longer comment (at least 5 characters).");
       return;
     }
     if (message.trim().length > 300) {
@@ -145,7 +145,7 @@ export default function BirthdayComments({ imageId, imageTitle }: Props) {
             textTransform: "uppercase",
             margin: 0,
           }}>
-            Birthday Wishes
+            Comments
           </h2>
           <span style={{ color: "#8b7355", fontSize: "1.2rem" }}>✦</span>
         </div>
@@ -156,7 +156,7 @@ export default function BirthdayComments({ imageId, imageTitle }: Props) {
           margin: 0,
           letterSpacing: "0.05em",
         }}>
-          Leave a wish for {imageTitle} — approved wishes appear below
+          What do you think of {imageTitle} — approved comments appear below
         </p>
         <div style={{
           width: "120px",
@@ -190,7 +190,7 @@ export default function BirthdayComments({ imageId, imageTitle }: Props) {
             textTransform: "uppercase",
             whiteSpace: "nowrap",
           }}>
-            👑 Best Wish
+            👑 Top Comment
           </div>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "1rem" }}>
             <div style={{ flex: 1 }}>
@@ -309,13 +309,13 @@ export default function BirthdayComments({ imageId, imageTitle }: Props) {
           fontSize: "0.9rem",
           padding: "1.5rem 0",
         }}>
-          No wishes yet. Be the first to leave one ✦
+          No comments yet. Be the first ✦ ✦
         </p>
       )}
 
       {loading && (
         <p style={{ textAlign: "center", color: "#5a4a3a", fontSize: "0.85rem", padding: "1rem 0" }}>
-          Loading wishes...
+          Loading comments...
         </p>
       )}
 
@@ -338,10 +338,10 @@ export default function BirthdayComments({ imageId, imageTitle }: Props) {
             borderRadius: "2px",
           }}>
             <p style={{ color: "#c9a84c", fontSize: "1rem", margin: "0 0 0.4rem", fontFamily: "var(--font-cinzel, serif)" }}>
-              ✦ Wish Received ✦
+              ✦ Comment Received ✦
             </p>
             <p style={{ color: "#7a6a5a", fontSize: "0.85rem", margin: 0, fontStyle: "italic" }}>
-              Your wish is awaiting approval and will appear soon.
+              Your comment is awaiting approval and will appear soon.
             </p>
             <button
               onClick={() => setSuccess(false)}
@@ -372,7 +372,7 @@ export default function BirthdayComments({ imageId, imageTitle }: Props) {
               textTransform: "uppercase",
               margin: "0 0 0.25rem",
             }}>
-              Leave a Wish
+              Leave a Comment
             </p>
             <input
               type="text"
@@ -394,7 +394,7 @@ export default function BirthdayComments({ imageId, imageTitle }: Props) {
               }}
             />
             <textarea
-              placeholder="Write your birthday wish..."
+              placeholder="What do you think of this wallpaper..."
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               maxLength={300}
@@ -419,7 +419,7 @@ export default function BirthdayComments({ imageId, imageTitle }: Props) {
                 {message.length}/300
               </span>
               <span style={{ color: "#4a3a2a", fontSize: "0.72rem", fontStyle: "italic" }}>
-                Max 3 wishes per day
+                Max 3 comments per day
               </span>
             </div>
             {error && (
@@ -452,7 +452,7 @@ export default function BirthdayComments({ imageId, imageTitle }: Props) {
                 width: "100%",
               }}
             >
-              {submitting ? "Sending..." : "✦ Send Wish ✦"}
+              {submitting ? "Sending..." : "✦ Post Comment ✦"}
             </button>
           </div>
         )}
