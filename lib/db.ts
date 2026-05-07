@@ -49,15 +49,18 @@ export async function getWallpaperOfTheDay(): Promise<WotdImage | null> {
 
   if (ids.length === 0) return null;
 
-  // Step 2 — seed = days since Unix epoch (UTC)
-  // This increments by exactly 1 at UTC midnight every day.
-  // Unlike char-code sum, every date produces a unique number.
-  const now        = new Date();
-  const msPerDay   = 86_400_000;
-  const daysSinceEpoch = Math.floor(now.getTime() / msPerDay);
+  // Step 2 — seed based on UTC date string (YYYY-MM-DD)
+  // Stable for the entire day regardless of how many images exist.
+  // Hash the date string so adding images doesn't shift the index.
+  const now     = new Date();
+  const dateStr = now.toISOString().slice(0, 10); // "2026-05-07"
+  let hash = 0;
+  for (let i = 0; i < dateStr.length; i++) {
+    hash = (hash * 31 + dateStr.charCodeAt(i)) >>> 0;
+  }
 
-  // Step 3 — deterministic index, changes daily
-  const index = daysSinceEpoch % ids.length;
+  // Step 3 — deterministic index, changes only at UTC midnight
+  const index = hash % ids.length;
 
   // Step 4 — fetch full record
   return db.image.findUnique({
