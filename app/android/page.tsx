@@ -226,7 +226,7 @@ export default async function AndroidPage({ searchParams }: PageProps) {
             <div className="hw-coming-soon__sigil">✦ ☽ ✦</div>
             <div className="hw-coming-soon__bar" />
             <h2 className="hw-coming-soon__title">Something went wrong</h2>
-            <p className="hw-coming-soon__sub">Could not load wallpapers. Please try again shortly.</p>
+            <p className="hw-coming-soon__title">Could not load wallpapers. Please try again shortly.</p>
           </div>
         ) : images.length === 0 ? (
           <div className="hw-coming-soon">

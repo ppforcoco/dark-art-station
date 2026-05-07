@@ -41,7 +41,7 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
 
   const description = tag
     ? `Browse free HD dark fantasy iPhone wallpapers tagged #${tag}. Download instantly, no account required.`
-    : "Free HD dark fantasy wallpapers for iPhone. Portrait 9:16 optimised. New drops daily. No account required.";
+    : "Free HD dark fantasy wallpapers for iPhone. Portrait 9:16 optimised for the Super Retina XDR display. New drops daily. No account required.";
 
   const canonical = tag ? `${siteUrl}/iphone?tag=${tag}` : `${siteUrl}/iphone`;
 

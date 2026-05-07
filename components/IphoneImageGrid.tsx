@@ -1,104 +1,222 @@
 "use client";
 // components/IphoneImageGrid.tsx
 //
-// A thin "use client" wrapper that renders DeviceImageCard in a grid.
-// All props must be plain serialisable values — no functions, no class instances.
-//
-// PREMIUM LOCK DISPLAY:
-//   isLocked = true  → LOCKED    → DeviceImageCard shows "BACK IN THE VAULT" overlay
-//   isLocked = false → UNLOCKED  → DeviceImageCard shows normal image + "GONE IN" badge
-//
-// isLockedGlobal comes from the server (same Monday-clock formula as PremiumCountdown)
-// so the lock state is always consistent across page and countdown.
+// Renders a grid of wallpaper cards for iPhone / Android pages.
+// When isLockedGlobal=true, cards tagged "badge-premium" show a vault
+// placeholder with a LIVE countdown instead of the real image.
+// When isLockedGlobal=false, premium cards show normally with the badge + "GONE IN" countdown.
 
-import React from "react";
-import DeviceImageCard from "@/components/DeviceImageCard";
-import { isPremiumLocked } from "@/lib/premium-lock";
+import Link from "next/link";
+import Image from "next/image";
+import { CSSProperties, useEffect, useState } from "react";
 
-export interface ImageItem {
+// ─── Cycle constants — must match PremiumCountdown.tsx and page.tsx files ──
+const EPOCH_MS  = Date.UTC(2025, 0, 1, 0, 0, 0); // Jan 1 2025 00:00 UTC
+const CYCLE_MS  = 48 * 60 * 60 * 1000;            // 48 h full cycle
+const UNLOCK_MS = 24 * 60 * 60 * 1000;            // first 24 h = unlocked
+
+function getMsRemaining(isLocked: boolean): number {
+  const pos = (Date.now() - EPOCH_MS) % CYCLE_MS;
+  if (!isLocked) return Math.max(0, UNLOCK_MS - pos);
+  return Math.max(0, CYCLE_MS - pos);
+}
+
+function fmt(ms: number) {
+  const totalSec = Math.max(0, Math.floor(ms / 1000));
+  const h = Math.floor(totalSec / 3600);
+  const m = Math.floor((totalSec % 3600) / 60);
+  const s = totalSec % 60;
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${pad(h)}:${pad(m)}:${pad(s)}`;
+}
+
+/** Small inline countdown used inside vault/badge overlay */
+function MiniCountdown({ isLocked }: { isLocked: boolean }) {
+  const [display, setDisplay] = useState<string | null>(null);
+
+  useEffect(() => {
+    const update = () => setDisplay(fmt(getMsRemaining(isLocked)));
+    update();
+    const id = setInterval(update, 1000);
+    return () => clearInterval(id);
+  }, [isLocked]);
+
+  if (!display) return null;
+  return <>{display}</>;
+}
+
+interface ImageItem {
   id: string;
   slug: string;
   title: string;
-  src: string;        // pre-resolved public URL
-  viewCount: number;
+  src: string;
+  viewCount?: number;
   tags: string[];
-  isAdult: boolean;
-  updatedAt?: string | null;
+  isAdult?: boolean;
 }
 
 interface IphoneImageGridProps {
   images: ImageItem[];
-  hrefPrefix: string;           // e.g. "/iphone"
-  altSuffix: string;            // e.g. "free dark iPhone wallpaper HD"
-  /** Tailwind class string for the grid wrapper */
+  hrefPrefix: string;
+  altSuffix?: string;
   gridClassName?: string;
-  /** Inline style object for the grid wrapper (use when you need dynamic values) */
-  gridStyle?: React.CSSProperties;
-  /** How many images to mark priority={true}. Defaults to 0 (none). */
-  priorityCount?: number;
-  /** When true, ALL images get priority={true}. Overrides priorityCount. */
+  gridStyle?: CSSProperties;
   priority?: boolean;
-  aspectRatio?: "9/16" | "16/9";
+  priorityCount?: number;
+  aspectRatio?: string;
   sizes?: string;
-  /**
-   * Insert an empty spacer div after this 0-based index.
-   * Used for the ad / interstitial slot in the main grid.
-   */
   insertAfter?: number;
-  /**
-   * Server-computed lock state. When provided, ALL premium images use this
-   * value instead of the per-image isPremiumLocked() calculation.
-   * Always pass this from the server page so lock state is consistent.
-   */
+  /** When true, premium cards show vault placeholder + "BACK IN" countdown */
   isLockedGlobal?: boolean;
 }
 
 export default function IphoneImageGrid({
   images,
   hrefPrefix,
-  altSuffix,
+  altSuffix = "",
   gridClassName,
   gridStyle,
-  priorityCount = 0,
   priority = false,
+  priorityCount = 6,
   aspectRatio = "9/16",
-  sizes,
+  sizes = "(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 20vw",
   insertAfter,
-  isLockedGlobal,
+  isLockedGlobal = false,
 }: IphoneImageGridProps) {
+  const defaultGridClass = "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3";
+
   return (
-    <div className={gridClassName} style={gridStyle}>
+    <div className={gridClassName ?? defaultGridClass} style={gridStyle}>
       {images.map((img, idx) => {
         const isPremium = img.tags.includes("badge-premium");
-
-        // isLockedGlobal (server-computed) overrides per-image fallback
-        const isLocked = isPremium && (isLockedGlobal ?? isPremiumLocked(img.updatedAt));
+        const isNew     = img.tags.includes("badge-new");
+        const showVault = isPremium && isLockedGlobal;
 
         return (
-          <React.Fragment key={img.id}>
-            <DeviceImageCard
-              href={`${hrefPrefix}/${img.slug}`}
-              src={img.src}
-              alt={`${img.title} — ${altSuffix}`}
-              title={img.title}
-              tags={img.tags}
-              isAdult={img.isAdult}
-              isLocked={isLocked}
-              priority={priority || idx < priorityCount}
-              aspectRatio={aspectRatio}
-              sizes={sizes}
-            />
+          <>
             {insertAfter !== undefined && idx === insertAfter && (
-              <div
-                className={
-                  gridClassName
-                    ? "col-span-2 sm:col-span-3 md:col-span-4 lg:col-span-5 my-2"
-                    : undefined
-                }
-                style={gridClassName ? undefined : { gridColumn: "1 / -1", margin: "8px 0" }}
-              />
+              <div key={`ad-${idx}`} className="hw-ad-slot" aria-label="Advertisement" />
             )}
-          </React.Fragment>
+            <Link
+              key={img.id}
+              href={`${hrefPrefix}/${img.slug}`}
+              className="group relative block overflow-hidden rounded-lg bg-[#0e0d1a] border border-white/[0.06] hover:border-white/20 transition-all duration-300"
+              style={{ aspectRatio }}
+            >
+              {showVault ? (
+                /* ── LOCKED PREMIUM — vault placeholder with live countdown ── */
+                <div style={{
+                  position: "absolute", inset: 0,
+                  display: "flex", flexDirection: "column",
+                  alignItems: "center", justifyContent: "center",
+                  gap: "8px", padding: "12px",
+                  background: "linear-gradient(135deg, #0a0914 0%, #0e0d1a 100%)",
+                }}>
+                  {/* Lock icon */}
+                  <span style={{ fontSize: "20px", opacity: 0.6 }}>🔒</span>
+
+                  {/* BACK IN THE VAULT label */}
+                  <span style={{
+                    fontFamily: "var(--font-space, monospace)",
+                    fontSize: "0.52rem",
+                    letterSpacing: "0.14em",
+                    textTransform: "uppercase",
+                    color: "rgba(255,255,255,0.45)",
+                    textAlign: "center",
+                    fontWeight: 700,
+                  }}>
+                    BACK IN
+                  </span>
+
+                  {/* Live countdown */}
+                  <span style={{
+                    fontFamily: "var(--font-space, monospace)",
+                    fontSize: "0.62rem",
+                    fontWeight: 700,
+                    color: "#c9a84c",
+                    letterSpacing: "0.08em",
+                    textAlign: "center",
+                  }}>
+                    <MiniCountdown isLocked={true} />
+                  </span>
+                </div>
+              ) : (
+                /* ── NORMAL — show real image ── */
+                <Image
+                  src={img.src}
+                  alt={`${img.title}${altSuffix ? " — " + altSuffix : ""}`}
+                  fill
+                  unoptimized
+                  className="object-cover transition-transform duration-500 group-hover:scale-105"
+                  sizes={sizes}
+                  priority={priority || idx < priorityCount}
+                  loading={priority || idx < priorityCount ? "eager" : "lazy"}
+                />
+              )}
+
+              {/* ── PREMIUM badge + "GONE IN" on available premium cards ── */}
+              {!showVault && isPremium && (
+                <>
+                  <span style={{
+                    position: "absolute", top: 7, left: 7,
+                    fontFamily: "var(--font-space, monospace)",
+                    fontSize: "0.52rem", fontWeight: 700,
+                    letterSpacing: "0.12em", textTransform: "uppercase",
+                    color: "#0c0b14", background: "#c9a84c",
+                    padding: "2px 6px", borderRadius: "2px",
+                    zIndex: 10, pointerEvents: "none",
+                  }}>
+                    PREMIUM
+                  </span>
+
+                  {/* "GONE IN" countdown at bottom of premium card */}
+                  <div style={{
+                    position: "absolute", bottom: 0, left: 0, right: 0,
+                    padding: "20px 8px 6px",
+                    background: "linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 100%)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: "4px",
+                    zIndex: 9,
+                    pointerEvents: "none",
+                  }}>
+                    <span style={{
+                      fontFamily: "var(--font-space, monospace)",
+                      fontSize: "0.45rem",
+                      letterSpacing: "0.12em",
+                      color: "rgba(201,168,76,0.7)",
+                      textTransform: "uppercase",
+                    }}>GONE IN</span>
+                    <span style={{
+                      fontFamily: "var(--font-space, monospace)",
+                      fontSize: "0.52rem",
+                      fontWeight: 700,
+                      color: "#c9a84c",
+                      letterSpacing: "0.06em",
+                    }}>
+                      <MiniCountdown isLocked={false} />
+                    </span>
+                  </div>
+                </>
+              )}
+
+              {/* NEW badge */}
+              {isNew && (
+                <span style={{
+                  position: "absolute", top: 7, left: isPremium && !showVault ? 70 : 7,
+                  fontFamily: "var(--font-space, monospace)",
+                  fontSize: "0.55rem", fontWeight: 700,
+                  letterSpacing: "0.12em", textTransform: "uppercase",
+                  color: "#fff", background: "#4caf50",
+                  padding: "2px 6px", borderRadius: "2px",
+                  zIndex: 10, pointerEvents: "none",
+                }}>
+                  NEW
+                </span>
+              )}
+            </Link>
+          </>
         );
       })}
     </div>
