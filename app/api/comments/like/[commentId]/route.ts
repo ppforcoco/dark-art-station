@@ -1,19 +1,27 @@
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { db } from "@/lib/db";
 
 // POST /api/comments/like/[commentId]
 export async function POST(
   _req: NextRequest,
-  { params }: { params: { commentId: string } }
+  { params }: { params: Promise<{ commentId: string }> }
 ) {
-  try {
-    await prisma.comment.update({
-      where: { id: params.commentId },
-      data: { likes: { increment: 1 } },
-    });
-    return NextResponse.json({ success: true });
-  } catch (err) {
-    console.error("Like error:", err);
-    return NextResponse.json({ error: "Failed to like comment" }, { status: 500 });
+  const { commentId } = await params;
+
+  const comment = await db.comment.findUnique({
+    where: { id: commentId },
+    select: { id: true, status: true },
+  });
+
+  if (!comment || comment.status !== "approved") {
+    return NextResponse.json({ error: "Comment not found" }, { status: 404 });
   }
+
+  const updated = await db.comment.update({
+    where: { id: commentId },
+    data: { likes: { increment: 1 } },
+    select: { likes: true },
+  });
+
+  return NextResponse.json({ likes: updated.likes });
 }
