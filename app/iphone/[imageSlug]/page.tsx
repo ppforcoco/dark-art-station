@@ -262,6 +262,13 @@ export default async function IphoneImagePage({ params }: PageProps) {
             {/* Always rendered — real description or auto-generated fallback */}
             <div className="font-body text-[1rem] leading-relaxed description-html" style={{ color: "var(--text-muted)" }} dangerouslySetInnerHTML={{ __html: displayDescription }} />
 
+            {/* ── Birthday Wishes / Comments ── */}
+            {image.commentsEnabled && (
+              <div style={{ marginTop: "2rem" }}>
+                <BirthdayComments imageId={image.id} imageTitle={image.title} />
+              </div>
+            )}
+
             {/* Save to favorites */}
             <div className="detail-fav-row">
               <FavoriteButton
@@ -321,12 +328,7 @@ export default async function IphoneImagePage({ params }: PageProps) {
 
       <RelatedWallpapers images={related} heading="More Dark Art You'll Like" />
 
-      {/* ── Birthday Wishes / Comments ──────────────────────────────────── */}
-      {image.commentsEnabled && (
-        <div style={{ maxWidth: "680px", margin: "0 auto", padding: "0 24px" }}>
-          <BirthdayComments imageId={image.id} imageTitle={image.title} />
-        </div>
-      )}
+
 
       <PageTracker item={{
         slug: image.slug,
