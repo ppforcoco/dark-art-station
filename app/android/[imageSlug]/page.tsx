@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { db, getRelatedImages } from "@/lib/db";
@@ -16,14 +16,25 @@ import PreviewButton from "@/components/PreviewButton";
 import WallpaperTips from "@/components/WallpaperTips";
 import KeyboardNav from "@/components/KeyboardNav";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import PremiumCountdown from "@/components/PremiumCountdown";
 
 export const dynamicParams = true;
 export const revalidate = 3600;
 
+// ── Premium lock: 24h on / 24h off cycle anchored to Jan 1 2025 00:00 UTC ──
+// MUST match PremiumCountdown.tsx, iphone/page.tsx, android/page.tsx exactly.
+const EPOCH_MS  = Date.UTC(2025, 0, 1, 0, 0, 0);
+const CYCLE_MS  = 48 * 60 * 60 * 1000;
+const UNLOCK_MS = 24 * 60 * 60 * 1000;
+
+function isCurrentlyLocked(): boolean {
+  const pos = (Date.now() - EPOCH_MS) % CYCLE_MS;
+  return pos >= UNLOCK_MS;
+}
+
 interface PageProps {
   params: Promise<{ imageSlug: string }>;
 }
-
 
 // ── Fallback description generator ──────────────────────────────────────────
 function buildFallbackDescription(title: string, tags: string[]): string {
@@ -55,7 +66,6 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const ogImage = getPublicUrl(image.r2Key);
   const tagLine = image.tags.slice(0, 3).map((t) => `#${t}`).join(" ");
 
-  // Use dedicated metaDescription if set, otherwise fall back to description snippet
   const metaDesc = image.metaDescription
     ?? image.description
     ?? `${image.title} — free high-res dark fantasy Android wallpaper. ${tagLine}. Download instantly, no account required.`;
@@ -106,6 +116,18 @@ export default async function AndroidImagePage({ params }: PageProps) {
 
   if (!image || image.deviceType !== "ANDROID") notFound();
 
+  // ── PREMIUM LOCK GATE ────────────────────────────────────────────────────
+  // If this wallpaper is tagged premium AND the cycle is currently locked,
+  // show the vault gate instead of the full page. No redirect needed — render
+  // inline so the URL stays the same and users can bookmark/refresh when unlocked.
+  const isPremium = image.tags.includes("badge-premium");
+  const isLocked  = isCurrentlyLocked();
+
+  if (isPremium && isLocked) {
+    return <PremiumVaultGate devicePath="android" />;
+  }
+  // ── END LOCK GATE ────────────────────────────────────────────────────────
+
   if (await shouldCountPageView()) {
     db.image.update({
       where: { id: image.id },
@@ -115,7 +137,6 @@ export default async function AndroidImagePage({ params }: PageProps) {
 
   const thumbUrl = getPublicUrl(image.r2Key);
 
-  // Always show description — real or auto-generated
   const displayDescription = image.description ?? buildFallbackDescription(image.title, image.tags);
   const plainDescription = displayDescription.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
 
@@ -187,7 +208,6 @@ export default async function AndroidImagePage({ params }: PageProps) {
         </nav>
       )}
 
-      {/* ── Main layout: image centered on mobile, side-by-side on md+ ── */}
       <section style={{ maxWidth: "1280px", margin: "0 auto", padding: "24px 24px 40px" }}>
         <div className="android-detail-grid" style={{ display: "flex", flexDirection: "column", gap: "40px" }}>
 
@@ -211,7 +231,6 @@ export default async function AndroidImagePage({ params }: PageProps) {
               </div>
             </div>
           </div>
-
 
           <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
             <div>
@@ -245,12 +264,6 @@ export default async function AndroidImagePage({ params }: PageProps) {
             {/* Always rendered — real description or auto-generated fallback */}
             <div className="font-body text-[1rem] leading-relaxed description-html" style={{ color: "var(--text-muted)" }} dangerouslySetInnerHTML={{ __html: displayDescription }} />
 
-
-
-            {/* Label removed */}
-
-
-
             {/* Save to favorites */}
             <div className="detail-fav-row">
               <FavoriteButton
@@ -266,27 +279,24 @@ export default async function AndroidImagePage({ params }: PageProps) {
               />
               <span className="detail-fav-label">Save to Favorites</span>
             </div>
-
-            {/* Ad unit — below download button for higher viewability score */}
           </div>
         </div>
       </section>
 
       {/* Desktop two-column layout via CSS */}
       <style>{`
-                .android-detail-image-wrap {
+        .android-detail-image-wrap {
           display: flex;
           flex-direction: column;
           align-items: center;
         }
         @media (min-width: 768px) {
           .android-detail-grid { flex-direction: row !important; align-items: flex-start; gap: 56px !important; }
-          
-                  .android-detail-image-wrap { flex: 0 0 420px; justify-content: flex-start; }
+          .android-detail-image-wrap { flex: 0 0 420px; justify-content: flex-start; }
           .android-detail-grid > div:last-child { flex: 1; position: sticky; top: 100px; }
         }
         @media (min-width: 1024px) {
-                  .android-detail-image-wrap { flex: 0 0 480px; }
+          .android-detail-image-wrap { flex: 0 0 480px; }
         }
         .hw-glow-btn-wrap--download {
           animation: hwDlGlowPulse 2.8s ease-in-out infinite;
@@ -305,9 +315,6 @@ export default async function AndroidImagePage({ params }: PageProps) {
           box-shadow: 0 0 18px rgba(201,168,76,0.45), 0 0 38px rgba(201,168,76,0.2);
         }
       `}</style>
-
-
-
 
       <RelatedWallpapers images={related} heading="More Dark Art You'll Like" />
       <PageTracker item={{
@@ -358,6 +365,124 @@ export default async function AndroidImagePage({ params }: PageProps) {
           },
         })
       }} />
+    </main>
+  );
+}
+
+// ── Server-rendered vault gate — no client JS needed ─────────────────────────
+function PremiumVaultGate({ devicePath }: { devicePath: string }) {
+  return (
+    <main style={{
+      minHeight: "100vh",
+      backgroundColor: "var(--bg-primary, #07050f)",
+      color: "var(--text-primary, #e8e4f8)",
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      justifyContent: "center",
+      padding: "40px 24px",
+      textAlign: "center",
+      position: "relative",
+      overflow: "hidden",
+    }}>
+      {/* Background glow */}
+      <div style={{
+        position: "absolute", inset: 0, pointerEvents: "none",
+        background: "radial-gradient(ellipse 60% 50% at 50% 50%, rgba(201,168,76,0.06) 0%, transparent 70%)",
+      }} />
+
+      {/* Corner runes */}
+      {(["tl","tr","bl","br"] as const).map((pos) => (
+        <span key={pos} style={{
+          position: "absolute",
+          top: pos.startsWith("t") ? "20px" : undefined,
+          bottom: pos.startsWith("b") ? "20px" : undefined,
+          left: pos.endsWith("l") ? "20px" : undefined,
+          right: pos.endsWith("r") ? "20px" : undefined,
+          fontFamily: "var(--font-cinzel, serif)",
+          fontSize: "1.1rem",
+          color: "rgba(201,168,76,0.2)",
+        }}>†</span>
+      ))}
+
+      {/* Lock */}
+      <div style={{ fontSize: "56px", marginBottom: "24px" }}>🔒</div>
+
+      {/* Eyebrow */}
+      <span style={{
+        fontFamily: "var(--font-space, monospace)",
+        fontSize: "0.6rem",
+        letterSpacing: "0.28em",
+        textTransform: "uppercase",
+        color: "rgba(201,168,76,0.55)",
+        marginBottom: "12px",
+        display: "block",
+      }}>Back In The Vault</span>
+
+      {/* Heading */}
+      <h1 style={{
+        fontFamily: "var(--font-cinzel, serif)",
+        fontSize: "clamp(1.8rem, 4vw, 2.8rem)",
+        fontWeight: 700,
+        color: "#f0e8d8",
+        margin: "0 0 16px",
+        lineHeight: 1.1,
+        maxWidth: "560px",
+      }}>
+        This Wallpaper Is Sealed
+      </h1>
+
+      <p style={{
+        fontFamily: "var(--font-space, monospace)",
+        fontSize: "0.82rem",
+        color: "rgba(200,180,140,0.55)",
+        maxWidth: "400px",
+        lineHeight: 1.75,
+        margin: "0 0 32px",
+      }}>
+        Premium wallpapers are available for 24 hours, then sealed away for 24 hours.
+        Check back when the vault reopens.
+      </p>
+
+      {/* Live countdown — client component */}
+      <div style={{ marginBottom: "36px" }}>
+        <PremiumCountdown isLocked={true} />
+      </div>
+
+      {/* Divider */}
+      <div style={{
+        width: "100%", maxWidth: "320px", height: "1px",
+        background: "linear-gradient(to right, transparent, rgba(201,168,76,0.2), transparent)",
+        marginBottom: "32px",
+      }} />
+
+      {/* Back link */}
+      <Link
+        href={`/${devicePath}`}
+        style={{
+          fontFamily: "var(--font-space, monospace)",
+          fontSize: "0.72rem",
+          letterSpacing: "0.16em",
+          textTransform: "uppercase",
+          color: "#e8e4f8",
+          textDecoration: "none",
+          border: "1px solid rgba(192,0,26,0.4)",
+          padding: "13px 28px",
+          background: "rgba(192,0,26,0.06)",
+          display: "inline-flex",
+          alignItems: "center",
+          gap: "8px",
+        }}
+      >
+        ← Browse Free Wallpapers
+      </Link>
+
+      <style>{`
+        @keyframes premCountPulse {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.3; }
+        }
+      `}</style>
     </main>
   );
 }
