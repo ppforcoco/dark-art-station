@@ -238,13 +238,13 @@ function PageContentTab({password}:{password:string}){
 
 function ImageUploaderTab({password}:{password:string}){
   const[collections,setCollections]=useState<{id:string;title:string;slug:string}[]>([]);useEffect(()=>{fetch("/api/hw-admin/collections",{headers:{"x-admin-password":password}}).then(r=>r.json()).then(j=>setCollections(j.collections??[])).catch(()=>{});},[password]);
-  const[file,setFile]=useState<File|null>(null);const[highResFile,setHighResFile]=useState<File|null>(null);const[preview,setPreview]=useState("");const[dragging,setDragging]=useState(false);const[slug,setSlug]=useState("");const[title,setTitle]=useState("");const[altText,setAltText]=useState("");const[metaDescription,setMetaDescription]=useState("");const[description,setDescription]=useState("");const[deviceType,setDeviceType]=useState<"IPHONE"|"ANDROID"|"PC"|"">("");const[selectedTags,setSelectedTags]=useState<string[]>([]);const[customTags,setCustomTags]=useState<string[]>([]);const[newTagInput,setNewTagInput]=useState("");const[collectionId,setCollectionId]=useState("");const[isAdult,setIsAdult]=useState(false);const[descMode,setDescMode]=useState<"html"|"preview">("html");const[uploading,setUploading]=useState(false);const[generating,setGenerating]=useState(false);const[message,setMessage]=useState<{type:"ok"|"err";text:string}|null>(null);const[uploadedUrl,setUploadedUrl]=useState("");const dropRef=useRef<HTMLDivElement>(null);const fileInputRef=useRef<HTMLInputElement>(null);const highResInputRef=useRef<HTMLInputElement>(null);
+  const[file,setFile]=useState<File|null>(null);const[highResFile,setHighResFile]=useState<File|null>(null);const[preview,setPreview]=useState("");const[dragging,setDragging]=useState(false);const[slug,setSlug]=useState("");const[title,setTitle]=useState("");const[altText,setAltText]=useState("");const[metaDescription,setMetaDescription]=useState("");const[description,setDescription]=useState("");const[deviceType,setDeviceType]=useState<"IPHONE"|"ANDROID"|"PC"|"">("");const[selectedTags,setSelectedTags]=useState<string[]>([]);const[customTags,setCustomTags]=useState<string[]>([]);const[newTagInput,setNewTagInput]=useState("");const[collectionId,setCollectionId]=useState("");const[isAdult,setIsAdult]=useState(false);const[commentsEnabled,setCommentsEnabled]=useState(false);const[descMode,setDescMode]=useState<"html"|"preview">("html");const[uploading,setUploading]=useState(false);const[generating,setGenerating]=useState(false);const[message,setMessage]=useState<{type:"ok"|"err";text:string}|null>(null);const[uploadedUrl,setUploadedUrl]=useState("");const dropRef=useRef<HTMLDivElement>(null);const fileInputRef=useRef<HTMLInputElement>(null);const highResInputRef=useRef<HTMLInputElement>(null);
   function slugify(name:string){return name.toLowerCase().replace(/\.[^.]+$/,"").replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");}
   function handleFileSelect(f:File){setFile(f);setSlug(slugify(f.name));if(!title)setTitle(f.name.replace(/\.[^.]+$/,"").replace(/[-_]/g," ").replace(/\b\w/g,c=>c.toUpperCase()));setPreview(URL.createObjectURL(f));setMessage(null);setUploadedUrl("");}
   function onDrop(e:React.DragEvent){e.preventDefault();setDragging(false);const f=e.dataTransfer.files[0];if(f?.type.startsWith("image/"))handleFileSelect(f);}
   function toggleTag(tag:string){setSelectedTags(prev=>prev.includes(tag)?prev.filter(t=>t!==tag):[...prev,tag]);}
   async function handleGenerateAll(){if(!file)return;setGenerating(true);setMessage(null);try{const base64=await fileToBase64(file);const result=await analyzeImageWithClaude(base64,file.type);if(result.title){setTitle(result.title);setSlug(result.title.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,""));}if(result.description)setDescription(result.description);if(result.altText)setAltText(result.altText);if(result.tags?.length)setSelectedTags(result.tags.filter(t=>ALL_TAGS.includes(t)));setMessage({type:"ok",text:"✓ Claude AI generated title, description, alt text & tags!"});}catch(err){setMessage({type:"err",text:`⚠ AI generation failed: ${(err as Error).message}`});}setGenerating(false);}
-  async function handleUpload(){if(!file||!slug||!title){setMessage({type:"err",text:"File, slug, and title are required."});return;}setUploading(true);setMessage(null);try{const form=new FormData();form.append("file",file);if(highResFile)form.append("highResFile",highResFile);form.append("slug",slug);form.append("title",title);form.append("altText",altText);form.append("metaDescription",metaDescription);form.append("description",description);form.append("tags",JSON.stringify(selectedTags));form.append("isAdult",String(isAdult));if(deviceType)form.append("deviceType",deviceType);if(collectionId.trim())form.append("collectionId",collectionId.trim());const res=await fetch("/api/hw-admin/upload-image",{method:"POST",headers:{"x-admin-password":password},body:form});const json=await res.json();if(res.ok){setUploadedUrl(json.url);setMessage({type:"ok",text:`✓ Uploaded! Slug: ${json.slug}${json.hasHighRes?" | 4K upscaled stored":""}`});setFile(null);setHighResFile(null);setPreview("");setSlug("");setTitle("");setDescription("");setMetaDescription("");setAltText("");setDeviceType("");setSelectedTags([]);setCollectionId("");setIsAdult(false);if(fileInputRef.current)fileInputRef.current.value="";if(highResInputRef.current)highResInputRef.current.value="";}else setMessage({type:"err",text:json.error??"Upload failed."});}catch{setMessage({type:"err",text:"Network error."});}setUploading(false);}
+  async function handleUpload(){if(!file||!slug||!title){setMessage({type:"err",text:"File, slug, and title are required."});return;}setUploading(true);setMessage(null);try{const form=new FormData();form.append("file",file);if(highResFile)form.append("highResFile",highResFile);form.append("slug",slug);form.append("title",title);form.append("altText",altText);form.append("metaDescription",metaDescription);form.append("description",description);form.append("tags",JSON.stringify(selectedTags));form.append("isAdult",String(isAdult));form.append("commentsEnabled",String(commentsEnabled));if(deviceType)form.append("deviceType",deviceType);if(collectionId.trim())form.append("collectionId",collectionId.trim());const res=await fetch("/api/hw-admin/upload-image",{method:"POST",headers:{"x-admin-password":password},body:form});const json=await res.json();if(res.ok){setUploadedUrl(json.url);setMessage({type:"ok",text:`✓ Uploaded! Slug: ${json.slug}${json.hasHighRes?" | 4K upscaled stored":""}`});setFile(null);setHighResFile(null);setPreview("");setSlug("");setTitle("");setDescription("");setMetaDescription("");setAltText("");setDeviceType("");setSelectedTags([]);setCollectionId("");setIsAdult(false);setCommentsEnabled(false);if(fileInputRef.current)fileInputRef.current.value="";if(highResInputRef.current)highResInputRef.current.value="";}else setMessage({type:"err",text:json.error??"Upload failed."});}catch{setMessage({type:"err",text:"Network error."});}setUploading(false);}
   const altOk=altText.length>=130&&altText.length<=150;const descWords=description.replace(/<[^>]*>/g," ").split(/\s+/).filter(Boolean).length;const descOk=descWords>=180&&descWords<=220;
   return<div style={{display:"flex",flexDirection:"column",gap:"20px"}}>
     <Card style={{padding:"14px 18px",borderColor:C.red}}><strong style={{color:C.gold}}>📤 Image Uploader</strong><span style={{color:C.textSec,marginLeft:"8px",fontSize:"0.82rem"}}>Drop thumbnail → optionally add 4K file → fill in details → upload.</span></Card>
@@ -328,6 +328,15 @@ function ImageUploaderTab({password}:{password:string}){
         <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:"16px"}}>
           <div><p style={{color:C.textSec,fontSize:"0.72rem",marginBottom:"4px"}}>{isAdult&&<><AdultBadge/>{" "}</>}16+ Adult / Mature Content</p><p style={{color:C.textMut,fontSize:"0.68rem"}}>Shows 16+ badge and requires age confirmation.</p></div>
           <Btn onClick={()=>setIsAdult(!isAdult)} variant={isAdult?"danger":"ghost"} style={{flexShrink:0}}>{isAdult?"✓ 16+ ON":"Mark as 16+"}</Btn>
+        </div>
+      </Card>
+      <Card style={{padding:"14px 18px",borderColor:commentsEnabled?"rgba(201,168,76,0.5)":C.border,background:commentsEnabled?"rgba(201,168,76,0.06)":C.surface}}>
+        <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:"16px"}}>
+          <div>
+            <p style={{color:commentsEnabled?C.gold:C.textSec,fontSize:"0.72rem",marginBottom:"4px"}}>💬 Birthday Wishes / Comments Section</p>
+            <p style={{color:C.textMut,fontSize:"0.68rem",lineHeight:1.6}}>Allow visitors to leave birthday wishes on this wallpaper's page.<br/>Wishes require your approval before appearing publicly.</p>
+          </div>
+          <Btn onClick={()=>setCommentsEnabled(!commentsEnabled)} variant={commentsEnabled?"success":"ghost"} style={{flexShrink:0}}>{commentsEnabled?"✓ Comments ON":"Enable Comments"}</Btn>
         </div>
       </Card>
       <Card style={{padding:"16px"}}>
@@ -1258,8 +1267,75 @@ function NukeTab({password}:{password:string}){
   </div>;
 }
 
-type Tab="analytics"|"pages"|"collections"|"districts"|"upload"|"published"|"bulkai"|"highres"|"blog"|"manage18"|"backdate"|"preview"|"feedback"|"nuke"|"pin";
-const NAV_ITEMS:[Tab,string,string][]=[["analytics","📊","Analytics"],["pages","📝","Page Content"],["collections","🗂","Collections"],["districts","🏚️","Districts"],["upload","📤","Upload Image"],["published","📸","Published"],["bulkai","🤖","Bulk AI Update"],["highres","⬆️","Upload 4K"],["blog","✍️","Blog Posts"],["manage18","⚠","16+ Manage"],["backdate","📅","Backdate"],["preview","🌐","Live Preview"],["feedback","⚑","Reports"],["pin","📌","Pin Wallpapers"],["nuke","💣","Nuke Everything"]];
+// ── Comments / Birthday Wishes Tab ───────────────────────────────────────────
+function CommentsTab({password}:{password:string}){
+  const[comments,setComments]=useState<{id:string;name:string;message:string;status:string;likes:number;createdAt:string;ipHash:string|null;image:{slug:string;title:string}|null}[]>([]);
+  const[loading,setLoading]=useState(true);const[filter,setFilter]=useState<"pending"|"approved"|"all">("pending");const[msg,setMsg]=useState<{type:"ok"|"err";text:string}|null>(null);const[acting,setActing]=useState<string|null>(null);
+  const adminKey=process.env.NEXT_PUBLIC_ADMIN_COMMENTS_KEY??"";
+
+  const load=useCallback(async()=>{
+    setLoading(true);setMsg(null);
+    try{
+      const status=filter==="all"?"pending":filter;
+      const urls=filter==="all"?["/api/admin/comments?status=pending","/api/admin/comments?status=approved"]:[`/api/admin/comments?status=${filter}`];
+      const results=await Promise.all(urls.map(u=>fetch(u,{headers:{"x-admin-password":password}}).then(r=>r.json())));
+      setComments(results.flat());
+    }catch{setMsg({type:"err",text:"Failed to load comments."});}
+    setLoading(false);
+  },[filter,password]);
+
+  useEffect(()=>{load();},[load]);
+
+  async function act(id:string,action:"approve"|"delete"){
+    setActing(id);setMsg(null);
+    try{
+      const res=await fetch("/api/admin/comments",{method:"PATCH",headers:{"Content-Type":"application/json","x-admin-password":password},body:JSON.stringify({id,action})});
+      if(res.ok){setMsg({type:"ok",text:action==="approve"?"✓ Wish approved and is now public!":"✓ Wish deleted."});setComments(prev=>prev.filter(c=>c.id!==id));}
+      else setMsg({type:"err",text:"Action failed."});
+    }catch{setMsg({type:"err",text:"Network error."});}
+    setActing(null);
+  }
+
+  const pending=comments.filter(c=>c.status==="pending");
+  const approved=comments.filter(c=>c.status==="approved");
+  const shown=filter==="pending"?pending:filter==="approved"?approved:comments;
+
+  return<div style={{display:"flex",flexDirection:"column",gap:"20px"}}>
+    <Card style={{padding:"14px 18px",borderColor:"rgba(201,168,76,0.4)",background:"rgba(201,168,76,0.05)"}}>
+      <strong style={{color:C.gold}}>💬 Birthday Wishes Moderation</strong>
+      <span style={{color:C.textSec,marginLeft:"8px",fontSize:"0.82rem"}}>Approve or delete visitor wishes before they go public.</span>
+    </Card>
+    <Msg msg={msg}/>
+    {/* Filter tabs */}
+    <div style={{display:"flex",gap:"8px",flexWrap:"wrap"}}>
+      {(["pending","approved","all"] as const).map(f=><button key={f} onClick={()=>setFilter(f)} style={{background:filter===f?"rgba(192,0,26,0.15)":"transparent",border:`1px solid ${filter===f?C.red:C.border}`,color:filter===f?C.textPri:C.textSec,padding:"8px 18px",cursor:"pointer",fontSize:"0.72rem",fontFamily:"monospace",letterSpacing:"0.08em",textTransform:"uppercase"}}>{f==="pending"?`⏳ Pending (${pending.length})`:f==="approved"?`✓ Approved (${approved.length})`:"All"}</button>)}
+      <button onClick={load} style={{background:"transparent",border:`1px solid ${C.border}`,color:C.textSec,padding:"8px 14px",cursor:"pointer",fontSize:"0.72rem",fontFamily:"monospace",marginLeft:"auto"}}>↻ Refresh</button>
+    </div>
+    {loading&&<p style={{color:C.textSec,padding:"32px 0",textAlign:"center"}}>Loading wishes…</p>}
+    {!loading&&shown.length===0&&<Card style={{padding:"48px",textAlign:"center"}}><p style={{color:C.textMut,fontSize:"0.85rem"}}>No {filter} wishes found.</p></Card>}
+    {!loading&&shown.map(c=><Card key={c.id} style={{padding:"18px 20px",borderColor:c.status==="pending"?"rgba(201,168,76,0.3)":C.border,background:c.status==="pending"?"rgba(201,168,76,0.04)":C.surface}}>
+      <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",gap:"16px",flexWrap:"wrap"}}>
+        <div style={{flex:1,minWidth:0}}>
+          <div style={{display:"flex",alignItems:"center",gap:"8px",marginBottom:"8px",flexWrap:"wrap"}}>
+            <span style={{color:C.textPri,fontSize:"0.85rem",fontWeight:600}}>{c.name}</span>
+            <span style={{color:C.textMut,fontSize:"0.65rem",fontFamily:"monospace"}}>{new Date(c.createdAt).toLocaleString()}</span>
+            <span style={{background:c.status==="pending"?"rgba(201,168,76,0.15)":"rgba(76,175,80,0.15)",border:`1px solid ${c.status==="pending"?C.gold:C.green}`,color:c.status==="pending"?C.gold:C.green,fontSize:"0.6rem",padding:"2px 8px",fontFamily:"monospace",textTransform:"uppercase"}}>{c.status}</span>
+            <span style={{color:C.textMut,fontSize:"0.65rem"}}>♥ {c.likes}</span>
+          </div>
+          <p style={{color:C.textSec,fontSize:"0.88rem",lineHeight:1.65,fontStyle:"italic",margin:"0 0 8px"}}>"{c.message}"</p>
+          {c.image&&<p style={{color:C.textMut,fontSize:"0.65rem",fontFamily:"monospace"}}>On: <a href={`/iphone/${c.image.slug}`} target="_blank" rel="noopener noreferrer" style={{color:C.gold,textDecoration:"none"}}>{c.image.title}</a></p>}
+        </div>
+        <div style={{display:"flex",gap:"8px",flexShrink:0}}>
+          {c.status==="pending"&&<Btn onClick={()=>act(c.id,"approve")} disabled={acting===c.id} variant="success" style={{fontSize:"0.68rem",padding:"8px 14px"}}>{acting===c.id?"…":"✓ Approve"}</Btn>}
+          <Btn onClick={()=>act(c.id,"delete")} disabled={acting===c.id} variant="danger" style={{fontSize:"0.68rem",padding:"8px 14px"}}>{acting===c.id?"…":"✕ Delete"}</Btn>
+        </div>
+      </div>
+    </Card>)}
+  </div>;
+}
+
+type Tab="analytics"|"pages"|"collections"|"districts"|"upload"|"published"|"bulkai"|"highres"|"blog"|"manage18"|"backdate"|"preview"|"feedback"|"nuke"|"pin"|"comments";
+const NAV_ITEMS:[Tab,string,string][]=[["analytics","📊","Analytics"],["pages","📝","Page Content"],["collections","🗂","Collections"],["districts","🏚️","Districts"],["upload","📤","Upload Image"],["published","📸","Published"],["bulkai","🤖","Bulk AI Update"],["highres","⬆️","Upload 4K"],["blog","✍️","Blog Posts"],["manage18","⚠","16+ Manage"],["backdate","📅","Backdate"],["preview","🌐","Live Preview"],["feedback","⚑","Reports"],["comments","💬","Wishes"],["pin","📌","Pin Wallpapers"],["nuke","💣","Nuke Everything"]];
 
 export default function AdminClient(){
   const[authed,setAuthed]=useState(false);const[password,setPw]=useState("");const[tab,setTab]=useState<Tab>("analytics");const[sidebarOpen,setSidebarOpen]=useState(true);const[prefillTitle,setPrefillTitle]=useState("");const[prefillLabel,setPrefillLabel]=useState("");
@@ -1305,6 +1381,7 @@ export default function AdminClient(){
         {tab==="backdate"&&<BackdateTab password={password}/>}
         {tab==="preview"&&<LivePreviewTab/>}
         {tab==="feedback"&&<Card style={{padding:"48px",textAlign:"center"}}><p style={{color:C.textMut}}>Feedback reports will appear here when the feedback API route is connected.</p></Card>}
+        {tab==="comments"&&<CommentsTab password={password}/>}
         {tab==="pin"&&<PinTab password={password}/>}
         {tab==="nuke"&&<NukeTab password={password}/>}
       </div>

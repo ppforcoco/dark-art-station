@@ -17,6 +17,7 @@ import WallpaperTips from "@/components/WallpaperTips";
 import KeyboardNav from "@/components/KeyboardNav";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import PremiumLockedGateClient from "@/components/PremiumLockedGate";
+import BirthdayComments from "@/components/BirthdayComments";
 
 // ─── Premium cycle constants (server-side, no flash) ────────────────────────
 const EPOCH_MS  = Date.UTC(2025, 0, 1, 0, 0, 0); // Jan 1 2025 00:00 UTC
@@ -106,6 +107,7 @@ export default async function IphoneImagePage({ params }: PageProps) {
       id: true, slug: true, title: true, description: true,
       r2Key: true, highResKey: true, tags: true,
       viewCount: true, sortOrder: true, deviceType: true,
+      commentsEnabled: true,                              // ← NEW
     },
   });
 
@@ -318,6 +320,14 @@ export default async function IphoneImagePage({ params }: PageProps) {
       `}</style>
 
       <RelatedWallpapers images={related} heading="More Dark Art You'll Like" />
+
+      {/* ── Birthday Wishes / Comments ──────────────────────────────────── */}
+      {image.commentsEnabled && (
+        <div style={{ maxWidth: "680px", margin: "0 auto", padding: "0 24px" }}>
+          <BirthdayComments imageId={image.id} imageTitle={image.title} />
+        </div>
+      )}
+
       <PageTracker item={{
         slug: image.slug,
         title: image.title,

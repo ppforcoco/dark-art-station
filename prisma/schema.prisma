@@ -43,30 +43,34 @@ model Collection {
 }
 
 model Image {
-  id            String     @id @default(uuid())
-  slug          String     @unique
-  title         String
-  description   String?
-  altText       String?
+  id              String     @id @default(uuid())
+  slug            String     @unique
+  title           String
+  description     String?
+  altText         String?
   metaDescription String?
-  r2Key         String
-  highResKey    String
-  viewCount     Int        @default(0)
-  sortOrder     Int        @default(0)
+  r2Key           String
+  highResKey      String
+  viewCount       Int        @default(0)
+  sortOrder       Int        @default(0)
 
   collection    Collection? @relation(fields: [collectionId], references: [id], onDelete: Cascade)
   collectionId  String?
 
   deviceType    DeviceType?
-  tags          String[]            @default([])
+  tags          String[]    @default([])
 
   /// Set to true for individual images with mature/16+ content.
-  isAdult       Boolean    @default(false)
+  isAdult       Boolean     @default(false)
+
+  /// Set to true to enable birthday wishes / comments on this image.
+  commentsEnabled Boolean   @default(false)
 
   downloads     Download[]
+  comments      Comment[]
 
-  createdAt     DateTime   @default(now())
-  updatedAt     DateTime   @updatedAt
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
 
   @@index([collectionId])
   @@index([deviceType])
@@ -85,15 +89,15 @@ model Download {
 
 // ── Blog Posts ────────────────────────────────────────────────────────────────
 model BlogPost {
-  id             String   @id @default(uuid())
-  slug           String   @unique
-  title          String
-  label          String   @default("Guide")
-  content        String   // HTML content
-  featuredImage  String?
-  published      Boolean  @default(true)
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  id            String   @id @default(uuid())
+  slug          String   @unique
+  title         String
+  label         String   @default("Guide")
+  content       String   // HTML content
+  featuredImage String?
+  published     Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 }
 
 model FeedbackReport {
@@ -132,4 +136,20 @@ model CookieConsent {
   updatedAt DateTime @updatedAt
 
   @@index([anonId])
+}
+
+// ── Comments / Birthday Wishes ────────────────────────────────────────────────
+model Comment {
+  id        String   @id @default(uuid())
+  imageId   String
+  image     Image    @relation(fields: [imageId], references: [id], onDelete: Cascade)
+  name      String
+  message   String
+  status    String   @default("pending")  // "pending" | "approved" | "deleted"
+  likes     Int      @default(0)
+  ipHash    String?
+  createdAt DateTime @default(now())
+
+  @@index([imageId])
+  @@index([status])
 }
