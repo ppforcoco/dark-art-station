@@ -1,8 +1,39 @@
 "use client";
 // components/WallpaperCardGrid.tsx
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
+
+// ─── Cycle constants — must match all other files ────────────────────────────
+const EPOCH_MS = Date.UTC(2025, 0, 1, 0, 0, 0);
+const CYCLE_MS = 48 * 60 * 60 * 1000;
+
+function getMsUntilUnlock(): number {
+  const pos = (Date.now() - EPOCH_MS) % CYCLE_MS;
+  const UNLOCK_MS = 24 * 60 * 60 * 1000;
+  return Math.max(0, CYCLE_MS - pos);
+}
+
+function fmtMs(ms: number) {
+  const s = Math.max(0, Math.floor(ms / 1000));
+  const h = Math.floor(s / 3600);
+  const m = Math.floor((s % 3600) / 60);
+  const sec = s % 60;
+  const p = (n: number) => String(n).padStart(2, "0");
+  return `${p(h)}h ${p(m)}m ${p(sec)}s`;
+}
+
+function VaultCountdown() {
+  const [display, setDisplay] = useState<string | null>(null);
+  useEffect(() => {
+    const tick = () => setDisplay(fmtMs(getMsUntilUnlock()));
+    tick();
+    const id = setInterval(tick, 1000);
+    return () => clearInterval(id);
+  }, []);
+  if (!display) return null;
+  return <>{display}</>;
+}
 
 export interface WallpaperCardItem {
   id: string;
@@ -60,12 +91,12 @@ export default function WallpaperCardGrid({ items, accentRgb, badge, badgeColor 
                 <div style={{ position: "absolute", inset: 0, zIndex: 5, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "8px", padding: "1rem", textAlign: "center", background: "rgba(8,6,16,0.5)" }}>
                   <span style={{ fontSize: "1.8rem", lineHeight: 1, filter: `drop-shadow(0 0 8px rgba(${accentRgb},0.6))` }}>🔒</span>
                   <span style={{ fontSize: "0.52rem", letterSpacing: "0.2em", textTransform: "uppercase", color: accent, fontFamily: "monospace", fontWeight: 700 }}>Back in the Vault</span>
-                  <span style={{ fontSize: "0.46rem", color: `rgba(${accentRgb},0.55)`, fontFamily: "monospace", lineHeight: 1.5 }}>Returns in 24h</span>
+                  <span style={{ fontSize: "0.46rem", color: `rgba(${accentRgb},0.55)`, fontFamily: "monospace", lineHeight: 1.5 }}>BACK IN <VaultCountdown /></span>
                 </div>
                 <div style={{ position: "absolute", bottom: "6px", left: "50%", transform: "translateX(-50%)", width: "38px", height: "3px", background: "rgba(255,255,255,0.12)", borderRadius: "2px", zIndex: 6 }} />
               </div>
               <div style={{ padding: "10px 10px 12px", background: "#0d0b14", borderTop: `1px solid rgba(${accentRgb},0.08)` }}>
-                <p style={{ color: `rgba(${accentRgb},0.35)`, fontSize: "0.68rem", fontFamily: "monospace", margin: 0, lineHeight: 1.3 }}>🔒 Vault</p>
+                <p style={{ color: `rgba(${accentRgb},0.35)`, fontSize: "0.68rem", fontFamily: "monospace", margin: 0, lineHeight: 1.3 }}>&nbsp;</p>
               </div>
             </div>
           );
