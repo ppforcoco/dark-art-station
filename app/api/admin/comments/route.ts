@@ -1,13 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 
-// Simple admin auth check
 function isAuthorized(req: NextRequest) {
-  const key = req.nextUrl.searchParams.get("key");
-  return key === process.env.ADMIN_SECRET;
+  const pw = req.headers.get("x-admin-password");
+  const correct = process.env.ADMIN_PASSWORD ?? "haunted-admin-2025";
+  return pw === correct;
 }
 
-// GET /api/admin/comments?status=pending&key=SECRET
+// GET /api/admin/comments?status=pending
 export async function GET(req: NextRequest) {
   if (!isAuthorized(req)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -29,7 +29,7 @@ export async function GET(req: NextRequest) {
   return NextResponse.json(comments);
 }
 
-// PATCH /api/admin/comments?key=SECRET
+// PATCH /api/admin/comments
 // body: { id: string, action: "approve" | "delete" }
 export async function PATCH(req: NextRequest) {
   if (!isAuthorized(req)) {
