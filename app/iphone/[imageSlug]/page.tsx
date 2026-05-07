@@ -16,6 +16,16 @@ import PreviewButton from "@/components/PreviewButton";
 import WallpaperTips from "@/components/WallpaperTips";
 import KeyboardNav from "@/components/KeyboardNav";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import PremiumLockedGateClient from "@/components/PremiumLockedGate";
+
+// ─── Premium cycle constants (server-side, no flash) ────────────────────────
+const EPOCH_MS  = Date.UTC(2025, 0, 1, 0, 0, 0); // Jan 1 2025 00:00 UTC
+const CYCLE_MS  = 48 * 60 * 60 * 1000;            // 48h full cycle
+const UNLOCK_MS = 24 * 60 * 60 * 1000;            // first 24h = unlocked
+function isPremiumLocked(): boolean {
+  const pos = (Date.now() - EPOCH_MS) % CYCLE_MS;
+  return pos >= UNLOCK_MS;
+}
 
 export const dynamicParams = true;
 export const revalidate = 3600;
@@ -125,6 +135,15 @@ export default async function IphoneImagePage({ params }: PageProps) {
   const currentIdx = siblings.findIndex((s) => s.slug === imageSlug);
   const prevImage = currentIdx > 0 ? siblings[currentIdx - 1] : null;
   const nextImage = currentIdx < siblings.length - 1 ? siblings[currentIdx + 1] : null;
+
+  // ── Server-side premium lock check — full gate, zero flash ─────────────
+  if (image.tags.includes("badge-premium") && isPremiumLocked()) {
+    return (
+      <PremiumLockedGateClient tags={image.tags} devicePath="iphone">
+        <span />
+      </PremiumLockedGateClient>
+    );
+  }
 
   return (
     <main className="min-h-screen" style={{ backgroundColor: "var(--bg-primary)", color: "var(--text-primary)" }}>

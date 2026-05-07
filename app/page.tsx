@@ -316,14 +316,13 @@ export default async function Home() {
           SECTION — PREMIUM THIS WEEK
       ══════════════════════════════════════════════════════════ */}
       {premiumThisWeek.length > 0 && (() => {
-        const now = Date.now();
-        // Fixed Monday 00:00 UTC weekly cycle — matches PremiumCountdown.tsx
-        const _day = new Date().getUTCDay();
-        const _daysSince = (_day + 6) % 7;
-        const _mon = new Date(); _mon.setUTCDate(new Date().getUTCDate() - _daysSince); _mon.setUTCHours(0,0,0,0);
-        const hoursIntoWeek = (now - _mon.getTime()) / (1000 * 60 * 60);
-        // LOCKED = after 48 hours into the week, UNLOCKED = first 48 hours
-        const isLockedGlobal = hoursIntoWeek >= 48;
+        // EPOCH_MS clock — matches PremiumCountdown.tsx and IphoneImageGrid.tsx exactly
+        const EPOCH_MS  = Date.UTC(2025, 0, 1, 0, 0, 0); // Jan 1 2025 00:00 UTC
+        const CYCLE_MS  = 48 * 60 * 60 * 1000;            // 48-hour full cycle
+        const UNLOCK_MS = 24 * 60 * 60 * 1000;            // first 24h = unlocked
+        const pos = (Date.now() - EPOCH_MS) % CYCLE_MS;
+        // UNLOCKED = first 24h of each 48h cycle, LOCKED = second 24h
+        const isLockedGlobal = pos >= UNLOCK_MS;
 
         const premiumItems = premiumThisWeek.map((img) => {
           const devicePath = img.deviceType === "IPHONE" ? "iphone" : img.deviceType === "ANDROID" ? "android" : "pc";
@@ -335,6 +334,8 @@ export default async function Home() {
             src: getPublicUrl(img.r2Key),
             devicePath,
             isLocked: isLockedGlobal,
+            // LOCKED → href points to vault page so clicking goes nowhere useful
+            href: isLockedGlobal ? "#" : undefined,
             updatedAt: img.updatedAt ? new Date(img.updatedAt).toISOString() : null,
           };
         });
@@ -344,7 +345,7 @@ export default async function Home() {
         const sectionTitle   = isLockedGlobal ? "Premium — Locked"         : "Premium This Week";
         const sectionSub     = isLockedGlobal
           ? "These pieces are sealed away. Check back when the vault reopens."
-          : "The finest pieces from the archive. Surfaces for 48 hours, then sealed away.";
+          : "The finest pieces from the archive. Surfaces for 24 hours, then sealed away.";
 
         const countdownDate = new Date().toISOString(); // PremiumCountdown uses fixed weekly clock
 
