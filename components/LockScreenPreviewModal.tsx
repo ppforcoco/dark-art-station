@@ -5,9 +5,10 @@ import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
 
 interface Props {
-  src:   string;
-  title: string;
+  src:     string;
+  title:   string;
   onClose: () => void;
+  mode?:   "mobile" | "desktop";
 }
 
 type DeviceFrame = "iphone-di" | "iphone-notch" | "android-punch" | "android-full";
@@ -35,7 +36,7 @@ function getNow() {
   };
 }
 
-export default function LockScreenPreviewModal({ src, title, onClose }: Props) {
+export default function LockScreenPreviewModal({ src, title, onClose, mode: _mode = "mobile" }: Props) {
   const [frame,       setFrame]       = useState<DeviceFrame>("iphone-di");
   const [clockPos,    setClockPos]    = useState<ClockPos>("top");
   const [showClock,   setShowClock]   = useState(true);
