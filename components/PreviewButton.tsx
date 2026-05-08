@@ -10,11 +10,13 @@ const LockScreenPreviewModal = dynamic(
 );
 
 interface Props {
-  src:   string;
-  title: string;
+  src:    string;
+  title:  string;
+  label?: string;
+  showLive?: boolean;
 }
 
-export default function PreviewButton({ src, title }: Props) {
+export default function PreviewButton({ src, title, label = "Preview on Lock Screen", showLive = true }: Props) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -67,7 +69,8 @@ export default function PreviewButton({ src, title }: Props) {
         aria-label="Preview on lock screen"
       >
         <span style={{ fontSize: "1.1rem", filter: "drop-shadow(0 0 6px rgba(180,120,255,0.5))" }}>📱</span>
-        <span>Preview on Lock Screen</span>
+        <span>{label}</span>
+        {showLive && (
         <span style={{
           marginLeft: "auto",
           fontSize: "0.55rem",
@@ -77,6 +80,7 @@ export default function PreviewButton({ src, title }: Props) {
           borderRadius: "2px",
           letterSpacing: "0.1em",
         }}>LIVE</span>
+        )}
       </button>
     </>
   );
