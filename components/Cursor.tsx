@@ -71,45 +71,51 @@ export default function Cursor() {
     const dagger = daggerRef.current;
     if (!dagger) return;
 
-    // Inject cursor:none as early as possible so it covers dangerouslySetInnerHTML
-    // and any content rendered after hydration
+    // Inject cursor:none override
     const styleId = "hw-cursor-none-override";
     if (!document.getElementById(styleId)) {
       const s = document.createElement("style");
       s.id = styleId;
       s.textContent = "*, *::before, *::after { cursor: none !important; }";
-      // Prepend so it loads before any other styles that might fight it
       document.head.prepend(s);
     }
 
     dagger.style.display = "block";
 
+    // RAF loop moves the cursor — zero lag, no CSS transition on transform
+    let mouseX = 0;
+    let mouseY = 0;
     let initialised = false;
+    let isHover = false;
+    let rafId = 0;
+
+    const loop = () => {
+      const angle = isHover ? "-30deg" : "-45deg";
+      dagger.style.transform = `translate(${mouseX - 16}px, ${mouseY}px) rotate(${angle})`;
+      rafId = requestAnimationFrame(loop);
+    };
 
     const onMove = (e: MouseEvent) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
       if (!initialised) {
         initialised = true;
-        dagger.style.transition = "none";
-        dagger.style.transform = `translate(${e.clientX - 16}px, ${e.clientY}px) rotate(-45deg)`;
         dagger.style.opacity = "1";
-        requestAnimationFrame(() => {
-          dagger.style.transition = "";
-        });
-        return;
       }
-      dagger.style.transform = `translate(${e.clientX - 16}px, ${e.clientY}px) rotate(-45deg)`;
     };
 
     const onOver = (e: MouseEvent) => {
-      const isBtn = !!(e.target as Element)?.closest(
+      const wasHover = isHover;
+      isHover = !!(e.target as Element)?.closest(
         "a,button,[data-hover],input,select,textarea,.hw2-obs-card,.cat-card,.mosaic-card,.coll-card,.product-card,.download-btn"
       );
-      if (isBtn) {
+      if (isHover === wasHover) return; // skip DOM writes if state unchanged
+
+      if (isHover) {
         dagger.style.width  = "36px";
         dagger.style.height = "72px";
         dagger.innerHTML = DAGGER_SVG_HOVER;
         dagger.style.filter = "drop-shadow(0 0 6px rgba(255,34,51,0.9)) drop-shadow(0 0 14px rgba(192,0,26,0.5))";
-        dagger.style.transform = dagger.style.transform.replace("rotate(-45deg)", "rotate(-30deg)");
       } else {
         dagger.style.width  = "32px";
         dagger.style.height = "64px";
@@ -118,36 +124,28 @@ export default function Cursor() {
       }
     };
 
-    // Hide dagger when window loses focus (new tab, alt-tab, right-click menu opens)
-    // so the native cursor doesn't show alongside the dagger on return
-    const onBlur  = () => { dagger.style.opacity = "0"; initialised = false; };
-    const onFocus = () => { /* dagger reappears on next mousemove */ };
+    const onBlur        = () => { dagger.style.opacity = "0"; initialised = false; };
+    const onLeave       = () => { dagger.style.opacity = "0"; };
+    const onEnter       = () => { if (initialised) dagger.style.opacity = "1"; };
+    const onContextMenu = () => { dagger.style.opacity = "0"; initialised = false; };
 
-    const onLeave = () => { dagger.style.opacity = "0"; };
-    const onEnter = () => { dagger.style.opacity = "1"; };
+    rafId = requestAnimationFrame(loop);
 
-    // Context menu: hide dagger immediately, it reappears on next mousemove
-    const onContextMenu = () => {
-      dagger.style.opacity = "0";
-      initialised = false;
-    };
-
-    window.addEventListener("blur",  onBlur);
-    window.addEventListener("focus", onFocus);
-    document.addEventListener("mousemove",    onMove,        { passive: true });
-    document.addEventListener("mouseover",    onOver,        { passive: true });
-    document.addEventListener("mouseleave",   onLeave);
-    document.addEventListener("mouseenter",   onEnter);
-    document.addEventListener("contextmenu",  onContextMenu);
+    window.addEventListener("blur",          onBlur);
+    document.addEventListener("mousemove",   onMove,       { passive: true });
+    document.addEventListener("mouseover",   onOver,       { passive: true });
+    document.addEventListener("mouseleave",  onLeave);
+    document.addEventListener("mouseenter",  onEnter);
+    document.addEventListener("contextmenu", onContextMenu);
 
     return () => {
-      window.removeEventListener("blur",  onBlur);
-      window.removeEventListener("focus", onFocus);
-      document.removeEventListener("mousemove",    onMove);
-      document.removeEventListener("mouseover",    onOver);
-      document.removeEventListener("mouseleave",   onLeave);
-      document.removeEventListener("mouseenter",   onEnter);
-      document.removeEventListener("contextmenu",  onContextMenu);
+      cancelAnimationFrame(rafId);
+      window.removeEventListener("blur",         onBlur);
+      document.removeEventListener("mousemove",   onMove);
+      document.removeEventListener("mouseover",   onOver);
+      document.removeEventListener("mouseleave",  onLeave);
+      document.removeEventListener("mouseenter",  onEnter);
+      document.removeEventListener("contextmenu", onContextMenu);
     };
   }, []);
 
@@ -166,8 +164,8 @@ export default function Cursor() {
         opacity: 0,
         display: "none",
         filter: "drop-shadow(0 0 4px rgba(192,0,26,0.7))",
-        transition:
-          "width 0.15s ease, height 0.15s ease, filter 0.15s, opacity 0.2s",
+        // Only transition visual props — transform is handled by RAF (no lag)
+        transition: "width 0.15s ease, height 0.15s ease, filter 0.15s, opacity 0.2s",
         willChange: "transform",
         transformOrigin: "top left",
       }}
