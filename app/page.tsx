@@ -98,25 +98,25 @@ export default async function Home() {
   }
 
   try {
-    const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+    // Count ALL downloads per image (no IP filter, no date filter) — most downloaded ever
     const topDownloads = await db.download.groupBy({
       by: ["imageId"],
-      where: { imageId: { not: null }, createdAt: { gte: sevenDaysAgo } },
+      where: { imageId: { not: null } },
       _count: { imageId: true },
       orderBy: { _count: { imageId: "desc" } },
-      take: 6,
+      take: 20,
     });
     const topImageIds = topDownloads.map(d => d.imageId).filter(Boolean) as string[];
     if (topImageIds.length > 0) {
       const trendingImages = await db.image.findMany({
-        where: { id: { in: topImageIds }, isAdult: false },
+        where: { id: { in: topImageIds }, isAdult: false, deviceType: { in: ["IPHONE", "ANDROID"] } },
         select: { id: true, slug: true, title: true, r2Key: true, deviceType: true, tags: true,
           _count: { select: { downloads: true } } },
       });
-      // Sort by download count order
       trendingThisWeek = topImageIds
         .map(id => trendingImages.find(img => img.id === id))
-        .filter(Boolean) as typeof trendingThisWeek;
+        .filter(Boolean)
+        .slice(0, 6) as typeof trendingThisWeek;
     }
   } catch (err) {
     console.error("[home/page] DB error (trending):", err);
@@ -1004,9 +1004,9 @@ export default async function Home() {
 
           <div className="dt-section-head dt-section-head--center" style={{ marginBottom: "clamp(24px,4vw,40px)" }}>
             <span className="dt-eyebrow" style={{ color: "#c0453a" }}>🔥 Most Downloaded</span>
-            <h2 className="dt-section-title">Trending This Week</h2>
+            <h2 className="dt-section-title">Most Downloaded</h2>
             <p className="dt-section-sub" style={{ maxWidth: "480px", margin: "0 auto" }}>
-              The wallpapers everyone is grabbing right now.
+              The most downloaded wallpapers of all time.
             </p>
           </div>
 

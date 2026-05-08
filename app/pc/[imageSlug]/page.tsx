@@ -137,6 +137,8 @@ export default async function PcImagePage({ params }: PageProps) {
   const prevImage = currentIdx > 0 ? siblings[currentIdx - 1] : null;
   const nextImage = currentIdx < siblings.length - 1 ? siblings[currentIdx + 1] : null;
 
+  const nextImageSrc = nextImage ? getPublicUrl(nextImage.r2Key) : null;
+
   return (
     <main className="min-h-screen" style={{ backgroundColor: "var(--bg-primary)", color: "var(--text-primary)" }}>
       <WallpaperTips mode="banner" />
@@ -147,6 +149,10 @@ export default async function PcImagePage({ params }: PageProps) {
         { label: "PC Wallpapers", href: "/pc" },
         { label: image.title },
       ]} />
+
+      {nextImageSrc && (
+        <link rel="preload" as="image" href={nextImageSrc} />
+      )}
 
       {/* ── Prev / Next — TOP ── */}
       {(prevImage || nextImage) && (
@@ -366,6 +372,84 @@ export default async function PcImagePage({ params }: PageProps) {
           },
         })
       }} />
-    </main>
+      {/* ── GIANT NEXT WALLPAPER BUTTON ── */}
+      {nextImage && (
+        <div style={{
+          padding: "24px 16px 40px",
+          maxWidth: "600px",
+          margin: "0 auto",
+        }}>
+          <Link
+            href={`/pc/${nextImage.slug}`}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: "16px",
+              padding: "20px 24px",
+              background: "linear-gradient(135deg, rgba(139,0,0,0.3) 0%, rgba(80,0,0,0.45) 100%)",
+              border: "1px solid rgba(192,0,26,0.5)",
+              borderRadius: "6px",
+              textDecoration: "none",
+              boxShadow: "0 0 32px rgba(192,0,26,0.15), inset 0 1px 0 rgba(255,255,255,0.05)",
+              transition: "all 0.2s ease",
+              minHeight: "80px",
+              WebkitTapHighlightColor: "transparent",
+            }}
+            prefetch={true}
+          >
+            <div style={{ display: "flex", flexDirection: "column", gap: "4px", flex: 1, minWidth: 0 }}>
+              <span style={{
+                fontFamily: "var(--font-space), monospace",
+                fontSize: "0.55rem",
+                letterSpacing: "0.2em",
+                textTransform: "uppercase",
+                color: "rgba(192,80,80,0.8)",
+              }}>
+                Next Wallpaper
+              </span>
+              <span style={{
+                fontFamily: "var(--font-cinzel, serif)",
+                fontSize: "clamp(0.85rem, 2.5vw, 1rem)",
+                color: "#f0e8e8",
+                fontWeight: 600,
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
+              }}>
+                {nextImage.title}
+              </span>
+            </div>
+            <div style={{ display: "flex", alignItems: "center", gap: "12px", flexShrink: 0 }}>
+              <div style={{
+                position: "relative",
+                width: "44px",
+                height: "78px",
+                borderRadius: "4px",
+                overflow: "hidden",
+                border: "1px solid rgba(192,0,26,0.3)",
+                flexShrink: 0,
+              }}>
+                <Image
+                  src={getPublicUrl(nextImage.r2Key)}
+                  alt={nextImage.title}
+                  fill
+                  unoptimized
+                  className="object-cover"
+                  sizes="44px"
+                />
+              </div>
+              <span style={{
+                fontSize: "2rem",
+                color: "#c0001a",
+                lineHeight: 1,
+                filter: "drop-shadow(0 0 8px rgba(192,0,26,0.6))",
+              }}>→</span>
+            </div>
+          </Link>
+        </div>
+      )}
+
+          </main>
   );
 }
