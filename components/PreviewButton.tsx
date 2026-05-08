@@ -10,13 +10,14 @@ const LockScreenPreviewModal = dynamic(
 );
 
 interface Props {
-  src:    string;
-  title:  string;
-  label?: string;
+  src:      string;
+  title:    string;
+  label?:   string;
   showLive?: boolean;
+  mode?:    "mobile" | "desktop";
 }
 
-export default function PreviewButton({ src, title, label = "Preview on Lock Screen", showLive = true }: Props) {
+export default function PreviewButton({ src, title, label = "Preview on Lock Screen", showLive = true, mode = "mobile" }: Props) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -26,6 +27,7 @@ export default function PreviewButton({ src, title, label = "Preview on Lock Scr
           src={src}
           title={title}
           onClose={() => setOpen(false)}
+          mode={mode}
         />
       )}
       <button

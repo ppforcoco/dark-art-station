@@ -231,7 +231,7 @@ export default async function PcImagePage({ params }: PageProps) {
                 />
               </div>
               <div className="hw-glow-btn-wrap hw-glow-btn-wrap--preview">
-                <PreviewButton src={thumbUrl} title={image.title} label="Preview on Desktop" showLive={false} />
+                <PreviewButton src={thumbUrl} title={image.title} label="Preview on Desktop" showLive={false} mode="desktop" />
               </div>
             </div>
           </div>

@@ -71,7 +71,16 @@ export default function Cursor() {
     const dagger = daggerRef.current;
     if (!dagger) return;
 
-    // cursor:none is in globals.css — no dynamic injection needed
+    // Inject cursor:none as early as possible so it covers dangerouslySetInnerHTML
+    // and any content rendered after hydration
+    const styleId = "hw-cursor-none-override";
+    if (!document.getElementById(styleId)) {
+      const s = document.createElement("style");
+      s.id = styleId;
+      s.textContent = "*, *::before, *::after { cursor: none !important; }";
+      // Prepend so it loads before any other styles that might fight it
+      document.head.prepend(s);
+    }
 
     dagger.style.display = "block";
 
@@ -109,31 +118,31 @@ export default function Cursor() {
       }
     };
 
+    // Hide dagger when window loses focus (new tab, alt-tab, right-click menu opens)
+    // so the native cursor doesn't show alongside the dagger on return
+    const onBlur  = () => { dagger.style.opacity = "0"; initialised = false; };
+    const onFocus = () => { /* dagger reappears on next mousemove */ };
+
     const onLeave = () => { dagger.style.opacity = "0"; };
     const onEnter = () => { dagger.style.opacity = "1"; };
 
-    // Fix: suppress native cursor on right-click / context menu
+    // Context menu: hide dagger immediately, it reappears on next mousemove
     const onContextMenu = () => {
-      document.documentElement.style.setProperty("cursor", "none", "important");
+      dagger.style.opacity = "0";
+      initialised = false;
     };
 
-    // Fix: ensure cursor:none persists on ALL dynamic HTML (dangerouslySetInnerHTML, etc.)
-    // MutationObserver watches for new DOM nodes and force-applies cursor:none
-    const styleId = "hw-cursor-none-override";
-    if (!document.getElementById(styleId)) {
-      const s = document.createElement("style");
-      s.id = styleId;
-      s.textContent = "*, *::before, *::after { cursor: none !important; }";
-      document.head.appendChild(s);
-    }
-
+    window.addEventListener("blur",  onBlur);
+    window.addEventListener("focus", onFocus);
     document.addEventListener("mousemove",    onMove,        { passive: true });
     document.addEventListener("mouseover",    onOver,        { passive: true });
     document.addEventListener("mouseleave",   onLeave);
     document.addEventListener("mouseenter",   onEnter);
-    document.addEventListener("contextmenu",  onContextMenu, { passive: true });
+    document.addEventListener("contextmenu",  onContextMenu);
 
     return () => {
+      window.removeEventListener("blur",  onBlur);
+      window.removeEventListener("focus", onFocus);
       document.removeEventListener("mousemove",    onMove);
       document.removeEventListener("mouseover",    onOver);
       document.removeEventListener("mouseleave",   onLeave);
