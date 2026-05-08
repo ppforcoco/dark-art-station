@@ -8,7 +8,6 @@ import { getPublicUrl } from "@/lib/r2";
 import DeviceMockup from "@/components/DeviceMockup";
 import RelatedWallpapers from "@/components/RelatedWallpapers";
 import DownloadButton from "@/components/DownloadButton";
-import PreviewButton from "@/components/PreviewButton";
 import RecentlyViewed from "@/components/RecentlyViewed";
 import SocialShare from "@/components/SocialShare";
 import PageTracker from "@/components/PageTracker";
@@ -230,9 +229,7 @@ export default async function PcImagePage({ params }: PageProps) {
                   downloadCount={image._count.downloads}
                 />
               </div>
-              <div className="hw-glow-btn-wrap hw-glow-btn-wrap--preview">
-                <PreviewButton src={thumbUrl} title={image.title} label="Preview on Desktop" showLive={false} mode="desktop" />
-              </div>
+
             </div>
           </div>
 
@@ -311,14 +308,6 @@ export default async function PcImagePage({ params }: PageProps) {
         @keyframes hwDlGlowPulse {
           0%, 100% { box-shadow: 0 0 12px rgba(192,0,26,0.35), 0 0 28px rgba(192,0,26,0.15); }
           50%       { box-shadow: 0 0 22px rgba(192,0,26,0.65), 0 0 50px rgba(192,0,26,0.28); }
-        }
-        .hw-glow-btn-wrap--preview {
-          border-radius: 2px;
-          box-shadow: 0 0 10px rgba(201,168,76,0.2), 0 0 22px rgba(201,168,76,0.08);
-          transition: box-shadow 0.3s ease;
-        }
-        .hw-glow-btn-wrap--preview:hover {
-          box-shadow: 0 0 18px rgba(201,168,76,0.45), 0 0 38px rgba(201,168,76,0.2);
         }
       `}</style>
 
