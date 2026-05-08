@@ -112,17 +112,33 @@ export default function Cursor() {
     const onLeave = () => { dagger.style.opacity = "0"; };
     const onEnter = () => { dagger.style.opacity = "1"; };
 
-    document.addEventListener("mousemove",  onMove,  { passive: true });
-    document.addEventListener("mouseover",  onOver,  { passive: true });
-    document.addEventListener("mouseleave", onLeave);
-    document.addEventListener("mouseenter", onEnter);
+    // Fix: suppress native cursor on right-click / context menu
+    const onContextMenu = () => {
+      document.documentElement.style.setProperty("cursor", "none", "important");
+    };
+
+    // Fix: ensure cursor:none persists on ALL dynamic HTML (dangerouslySetInnerHTML, etc.)
+    // MutationObserver watches for new DOM nodes and force-applies cursor:none
+    const styleId = "hw-cursor-none-override";
+    if (!document.getElementById(styleId)) {
+      const s = document.createElement("style");
+      s.id = styleId;
+      s.textContent = "*, *::before, *::after { cursor: none !important; }";
+      document.head.appendChild(s);
+    }
+
+    document.addEventListener("mousemove",    onMove,        { passive: true });
+    document.addEventListener("mouseover",    onOver,        { passive: true });
+    document.addEventListener("mouseleave",   onLeave);
+    document.addEventListener("mouseenter",   onEnter);
+    document.addEventListener("contextmenu",  onContextMenu, { passive: true });
 
     return () => {
-      document.removeEventListener("mousemove",  onMove);
-      document.removeEventListener("mouseover",  onOver);
-      document.removeEventListener("mouseleave", onLeave);
-      document.removeEventListener("mouseenter", onEnter);
-
+      document.removeEventListener("mousemove",    onMove);
+      document.removeEventListener("mouseover",    onOver);
+      document.removeEventListener("mouseleave",   onLeave);
+      document.removeEventListener("mouseenter",   onEnter);
+      document.removeEventListener("contextmenu",  onContextMenu);
     };
   }, []);
 

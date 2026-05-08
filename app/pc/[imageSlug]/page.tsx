@@ -58,14 +58,16 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const ogImage = getPublicUrl(image.r2Key);
   const tagLine = image.tags.slice(0, 3).map((t) => `#${t}`).join(" ");
 
-  const metaDesc = image.metaDescription
-    ?? image.description
-    ?? `${image.title} — free dark fantasy PC wallpaper. ${tagLine}. Download instantly, no account required.`;
+  // Strip HTML from description for clean OG tags
+  const plainDesc = (image.metaDescription ?? image.description ?? "")
+    .replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim().slice(0, 200);
+  const metaDesc = plainDesc || `${image.title} — free dark fantasy PC wallpaper. ${tagLine}. Download instantly, no account required.`;
 
   // Strip HTML tags for meta description
   const plainMetaDesc = metaDesc.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
 
   return {
+    metadataBase: new URL(siteUrl),
     title: `${image.title} — Free PC Wallpaper | HAUNTED WALLPAPERS`,
     description: plainMetaDesc,
     keywords: ["pc wallpaper", "dark wallpaper pc", "hd pc wallpaper", image.title, ...image.tags],

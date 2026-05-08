@@ -66,17 +66,19 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const ogImage = getPublicUrl(image.r2Key);
   const tagLine = image.tags.slice(0, 3).map((t) => `#${t}`).join(" ");
 
-  const metaDesc = image.metaDescription
-    ?? image.description
-    ?? `${image.title} — free high-res dark fantasy Android wallpaper. ${tagLine}. Download instantly, no account required.`;
+  // Strip HTML from description for clean OG tags
+  const plainDesc = (image.metaDescription ?? image.description ?? "")
+    .replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim().slice(0, 200);
+  const metaDesc = plainDesc || `${image.title} — free high-res dark fantasy Android wallpaper. ${tagLine}. Download instantly, no account required.`;
 
   return {
+    metadataBase: new URL(siteUrl),
     title: `${image.title} — Free Android Wallpaper | HAUNTED WALLPAPERS`,
     description: metaDesc,
     keywords: ["android wallpaper", "dark wallpaper android", "hd android wallpaper", image.title, ...image.tags],
     openGraph: {
       title: `${image.title} | HAUNTED WALLPAPERS`,
-      description: image.metaDescription ?? image.description ?? `Free HD Android wallpaper: ${image.title}`,
+      description: metaDesc,
       url: `${siteUrl}/android/${imageSlug}`,
       siteName: "HAUNTED WALLPAPERS",
       images: [{ url: ogImage, width: 1080, height: 1920, alt: image.title }],
@@ -85,7 +87,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     twitter: {
       card: "summary_large_image",
       title: `${image.title} | HAUNTED WALLPAPERS`,
-      description: image.metaDescription ?? image.description ?? `Free HD Android wallpaper: ${image.title}`,
+      description: metaDesc,
       images: [ogImage],
     },
     alternates: { canonical: `${siteUrl}/android/${imageSlug}` },
@@ -457,8 +459,6 @@ export default async function AndroidImagePage({ params }: PageProps) {
 
 // ── Server-rendered vault gate — no client JS needed ─────────────────────────
 function PremiumVaultGate({ devicePath }: { devicePath: string }) {
-  const nextImageSrc = nextImage ? getPublicUrl(nextImage.r2Key) : null;
-
   return (
     <main style={{
       minHeight: "100vh",

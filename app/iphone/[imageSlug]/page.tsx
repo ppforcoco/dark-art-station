@@ -64,15 +64,27 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     select: { title: true, description: true, r2Key: true, tags: true, isAdult: true, deviceType: true },
   });
   if (!image || image.deviceType !== "IPHONE") return { title: "Not Found | HAUNTED WALLPAPERS" };
-  const ogImage = getPublicUrl(image.r2Key);
+
+  // Strip HTML tags from description so OG scrapers get clean plain text
+  const plainDesc = image.description
+    ? image.description.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim().slice(0, 200)
+    : null;
+
   const tagLine = image.tags.slice(0, 3).map((t) => `#${t}`).join(" ");
+  const fallbackDesc = `${image.title} — free high-res dark fantasy iPhone wallpaper. ${tagLine}. Download instantly, no account required.`;
+  const metaDesc = plainDesc ?? fallbackDesc;
+
+  // Use absolute URL — required for OG image scrapers (Discord, WhatsApp, Twitter)
+  const ogImage = getPublicUrl(image.r2Key);
+
   return {
+    metadataBase: new URL(siteUrl),
     title: `${image.title} — Free iPhone Wallpaper | HAUNTED WALLPAPERS`,
-    description: image.description ?? `${image.title} — free high-res dark fantasy iPhone wallpaper. ${tagLine}. Download instantly, no account required.`,
+    description: metaDesc,
     keywords: ["iphone wallpaper", "dark wallpaper iphone", "hd iphone wallpaper", image.title, ...image.tags],
     openGraph: {
       title: `${image.title} | HAUNTED WALLPAPERS`,
-      description: image.description ?? `Free HD iPhone wallpaper: ${image.title}`,
+      description: metaDesc,
       url: `${siteUrl}/iphone/${imageSlug}`,
       siteName: "HAUNTED WALLPAPERS",
       images: [{ url: ogImage, width: 1080, height: 1920, alt: image.title }],
@@ -81,7 +93,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     twitter: {
       card: "summary_large_image",
       title: `${image.title} | HAUNTED WALLPAPERS`,
-      description: image.description ?? `Free HD iPhone wallpaper: ${image.title}`,
+      description: metaDesc,
       images: [ogImage],
     },
     alternates: { canonical: `${siteUrl}/iphone/${imageSlug}` },
