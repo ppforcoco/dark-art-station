@@ -108,6 +108,7 @@ export default async function IphoneImagePage({ params }: PageProps) {
       r2Key: true, highResKey: true, tags: true,
       viewCount: true, sortOrder: true, deviceType: true,
       commentsEnabled: true,                              // ← NEW
+      _count: { select: { downloads: true } },
     },
   });
 
@@ -221,6 +222,7 @@ export default async function IphoneImagePage({ params }: PageProps) {
                 <DownloadButton
                   href={`/api/download/image/${image.id}`}
                   viewCount={image.viewCount}
+                  downloadCount={image._count.downloads}
                 />
               </div>
               <div className="hw-glow-btn-wrap hw-glow-btn-wrap--preview">
@@ -261,13 +263,6 @@ export default async function IphoneImagePage({ params }: PageProps) {
 
             {/* Always rendered — real description or auto-generated fallback */}
             <div className="font-body text-[1rem] leading-relaxed description-html" style={{ color: "var(--text-muted)" }} dangerouslySetInnerHTML={{ __html: displayDescription }} />
-
-            {/* ── Birthday Wishes / Comments ── */}
-            {image.commentsEnabled && (
-              <div style={{ marginTop: "2rem" }}>
-                <BirthdayComments imageId={image.id} imageTitle={image.title} />
-              </div>
-            )}
 
             {/* Save to favorites */}
             <div className="detail-fav-row">
@@ -328,7 +323,12 @@ export default async function IphoneImagePage({ params }: PageProps) {
 
       <RelatedWallpapers images={related} heading="More Dark Art You'll Like" />
 
-
+      {/* ── Birthday Wishes / Comments ──────────────────────────────────── */}
+      {image.commentsEnabled && (
+        <div style={{ maxWidth: "680px", margin: "0 auto", padding: "0 24px" }}>
+          <BirthdayComments imageId={image.id} imageTitle={image.title} />
+        </div>
+      )}
 
       <PageTracker item={{
         slug: image.slug,

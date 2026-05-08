@@ -5,6 +5,7 @@ import Link from "next/link";
 interface Props {
   href: string;
   viewCount?: number;
+  downloadCount?: number;
   label?: string;
   children?: ReactNode;
 }
@@ -126,7 +127,7 @@ function KeepExploringBar({ visible }: { visible: boolean }) {
 }
 
 // ── Main DownloadButton ───────────────────────────────────────────────────────
-export default function DownloadButton({ href, viewCount, label, children }: Props) {
+export default function DownloadButton({ href, viewCount, downloadCount, label, children }: Props) {
   const [state,    setState]    = useState<"idle" | "loading" | "done">("idle");
   const [isMobile, setIsMobile] = useState(false);
   const [canShare, setCanShare] = useState(false);
@@ -188,9 +189,16 @@ export default function DownloadButton({ href, viewCount, label, children }: Pro
   return (
     <>
       <div className="download-btn-wrap">
-        {viewCount !== undefined && (
+        {(viewCount !== undefined || downloadCount !== undefined) && (
           <div className="download-stats-row">
-            <span className="download-stat">👁 {viewCount.toLocaleString()} views</span>
+            <span style={{ display: "flex", gap: "12px", alignItems: "center" }}>
+              {viewCount !== undefined && (
+                <span className="download-stat">👁 {viewCount.toLocaleString()} views</span>
+              )}
+              {downloadCount !== undefined && downloadCount > 0 && (
+                <span className="download-stat" style={{ color: "#c0453a" }}>↓ {downloadCount.toLocaleString()} downloads</span>
+              )}
+            </span>
             <span
               className="download-saved-msg"
               style={{ opacity: state === "done" ? 1 : 0 }}

@@ -51,6 +51,7 @@ export default async function Home() {
   let obsessions:     Array<{ id: string; slug: string; title: string; thumbnail: string; tag: string | null; icon: string | null; bgClass: string | null; _count: { images: number } }> = [];
   let newThisWeek:    Array<{ id: string; slug: string; title: string; r2Key: string; deviceType: string | null; tags: string[] }> = [];
   let premiumThisWeek: Array<{ id: string; slug: string; title: string; r2Key: string; deviceType: string | null; tags: string[]; updatedAt: Date | null }> = [];
+  let trendingThisWeek: Array<{ id: string; slug: string; title: string; r2Key: string; deviceType: string | null; tags: string[]; _count: { downloads: number } }> = [];
 
   try {
     [wotd, totalImages] = await Promise.all([
@@ -94,6 +95,31 @@ export default async function Home() {
     ]);
   } catch (err) {
     console.error("[home/page] DB error (badges):", err);
+  }
+
+  try {
+    const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+    const topDownloads = await db.download.groupBy({
+      by: ["imageId"],
+      where: { imageId: { not: null }, createdAt: { gte: sevenDaysAgo } },
+      _count: { imageId: true },
+      orderBy: { _count: { imageId: "desc" } },
+      take: 6,
+    });
+    const topImageIds = topDownloads.map(d => d.imageId).filter(Boolean) as string[];
+    if (topImageIds.length > 0) {
+      const trendingImages = await db.image.findMany({
+        where: { id: { in: topImageIds }, isAdult: false },
+        select: { id: true, slug: true, title: true, r2Key: true, deviceType: true, tags: true,
+          _count: { select: { downloads: true } } },
+      });
+      // Sort by download count order
+      trendingThisWeek = topImageIds
+        .map(id => trendingImages.find(img => img.id === id))
+        .filter(Boolean) as typeof trendingThisWeek;
+    }
+  } catch (err) {
+    console.error("[home/page] DB error (trending):", err);
   }
 
   function fmt(n: number) {
@@ -968,6 +994,37 @@ export default async function Home() {
           <Link href="/pc" className="dt-btn dt-btn--enter">Browse PC Wallpapers →</Link>
         </div>
       </section>
+
+      {/* ══════════════════════════════════════════════════════════
+          SECTION — TRENDING THIS WEEK
+      ══════════════════════════════════════════════════════════ */}
+      {trendingThisWeek.length > 0 && (
+        <section style={{ padding: "clamp(32px,5vw,64px) clamp(16px,5vw,72px)", background: "#060410", position: "relative", overflow: "hidden" }}>
+          <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse 60% 40% at 50% 0%, rgba(192,0,26,0.07) 0%, transparent 70%)", pointerEvents: "none" }} />
+
+          <div className="dt-section-head dt-section-head--center" style={{ marginBottom: "clamp(24px,4vw,40px)" }}>
+            <span className="dt-eyebrow" style={{ color: "#c0453a" }}>🔥 Most Downloaded</span>
+            <h2 className="dt-section-title">Trending This Week</h2>
+            <p className="dt-section-sub" style={{ maxWidth: "480px", margin: "0 auto" }}>
+              The wallpapers everyone is grabbing right now.
+            </p>
+          </div>
+
+          <WallpaperCardGrid
+            accentRgb="192,0,26"
+            badge="🔥"
+            badgeColor="#c0453a"
+            items={trendingThisWeek.map((img) => ({
+              id: img.id,
+              slug: img.slug,
+              title: img.title,
+              src: getPublicUrl(img.r2Key),
+              devicePath: img.deviceType === "IPHONE" ? "iphone" : img.deviceType === "ANDROID" ? "android" : "pc",
+              downloadCount: img._count.downloads,
+            }))}
+          />
+        </section>
+      )}
 
       {/* ══════════════════════════════════════════════════════════
           SECTION 4 — COLLECTIONS
