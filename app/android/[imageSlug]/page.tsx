@@ -111,6 +111,7 @@ export default async function AndroidImagePage({ params }: PageProps) {
       id: true, slug: true, title: true, description: true,
       r2Key: true, highResKey: true, tags: true,
       viewCount: true, sortOrder: true, deviceType: true,
+      _count: { select: { downloads: true } },
     },
   });
 
@@ -224,6 +225,7 @@ export default async function AndroidImagePage({ params }: PageProps) {
                 <DownloadButton
                   href={`/api/download/image/${image.id}`}
                   viewCount={image.viewCount}
+                  downloadCount={image._count.downloads}
                 />
               </div>
               <div className="hw-glow-btn-wrap hw-glow-btn-wrap--preview">
