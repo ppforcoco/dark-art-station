@@ -290,6 +290,10 @@ function LockScreenModal({
           .lsp-clock-time { font-size: 1.8rem !important; }
           .lsp-controls { padding: 16px !important; border-radius: 0 !important; overflow-y: visible !important; }
         }
+
+        /* ── Restore cursor inside modal (overrides global cursor:none) ── */
+        .lsp-overlay, .lsp-overlay * { cursor: auto !important; }
+        .lsp-overlay button, .lsp-overlay label { cursor: pointer !important; }
       `}</style>
 
       <div className="lsp-overlay" onClick={onClose}>
