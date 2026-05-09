@@ -17,6 +17,7 @@ import WallpaperTips from "@/components/WallpaperTips";
 import KeyboardNav from "@/components/KeyboardNav";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import PremiumCountdown from "@/components/PremiumCountdown";
+import BirthdayComments from "@/components/BirthdayComments";
 
 export const dynamicParams = true;
 export const revalidate = 3600;
@@ -97,7 +98,6 @@ export async function generateStaticParams() {
   return images.map((img) => ({ imageSlug: img.slug }));
 }
 
-// ── Server-rendered vault gate — no client JS needed ─────────────────────────
 function PremiumVaultGate({ devicePath }: { devicePath: string }) {
   return (
     <main style={{
@@ -117,7 +117,6 @@ function PremiumVaultGate({ devicePath }: { devicePath: string }) {
         position: "absolute", inset: 0, pointerEvents: "none",
         background: "radial-gradient(ellipse 60% 50% at 50% 50%, rgba(201,168,76,0.06) 0%, transparent 70%)",
       }} />
-
       {(["tl", "tr", "bl", "br"] as const).map((pos) => (
         <span key={pos} style={{
           position: "absolute",
@@ -130,9 +129,7 @@ function PremiumVaultGate({ devicePath }: { devicePath: string }) {
           color: "rgba(201,168,76,0.2)",
         }}>†</span>
       ))}
-
       <div style={{ fontSize: "56px", marginBottom: "24px" }}>🔒</div>
-
       <span style={{
         fontFamily: "var(--font-space, monospace)",
         fontSize: "0.6rem",
@@ -142,7 +139,6 @@ function PremiumVaultGate({ devicePath }: { devicePath: string }) {
         marginBottom: "12px",
         display: "block",
       }}>Back In The Vault</span>
-
       <h1 style={{
         fontFamily: "var(--font-cinzel, serif)",
         fontSize: "clamp(1.8rem, 4vw, 2.8rem)",
@@ -151,10 +147,7 @@ function PremiumVaultGate({ devicePath }: { devicePath: string }) {
         margin: "0 0 16px",
         lineHeight: 1.1,
         maxWidth: "560px",
-      }}>
-        This Wallpaper Is Sealed
-      </h1>
-
+      }}>This Wallpaper Is Sealed</h1>
       <p style={{
         fontFamily: "var(--font-space, monospace)",
         fontSize: "0.82rem",
@@ -166,43 +159,29 @@ function PremiumVaultGate({ devicePath }: { devicePath: string }) {
         Premium wallpapers are available for 24 hours, then sealed away for 24 hours.
         Check back when the vault reopens.
       </p>
-
       <div style={{ marginBottom: "36px" }}>
         <PremiumCountdown isLocked={true} />
       </div>
-
       <div style={{
         width: "100%", maxWidth: "320px", height: "1px",
         background: "linear-gradient(to right, transparent, rgba(201,168,76,0.2), transparent)",
         marginBottom: "32px",
       }} />
-
-      <Link
-        href={`/${devicePath}`}
-        style={{
-          fontFamily: "var(--font-space, monospace)",
-          fontSize: "0.72rem",
-          letterSpacing: "0.16em",
-          textTransform: "uppercase",
-          color: "#e8e4f8",
-          textDecoration: "none",
-          border: "1px solid rgba(192,0,26,0.4)",
-          padding: "13px 28px",
-          background: "rgba(192,0,26,0.06)",
-          display: "inline-flex",
-          alignItems: "center",
-          gap: "8px",
-        }}
-      >
-        ← Browse Free Wallpapers
-      </Link>
-
-      <style>{`
-        @keyframes premCountPulse {
-          0%, 100% { opacity: 1; }
-          50% { opacity: 0.3; }
-        }
-      `}</style>
+      <Link href={`/${devicePath}`} style={{
+        fontFamily: "var(--font-space, monospace)",
+        fontSize: "0.72rem",
+        letterSpacing: "0.16em",
+        textTransform: "uppercase",
+        color: "#e8e4f8",
+        textDecoration: "none",
+        border: "1px solid rgba(192,0,26,0.4)",
+        padding: "13px 28px",
+        background: "rgba(192,0,26,0.06)",
+        display: "inline-flex",
+        alignItems: "center",
+        gap: "8px",
+      }}>← Browse Free Wallpapers</Link>
+      <style>{`@keyframes premCountPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }`}</style>
     </main>
   );
 }
@@ -217,6 +196,7 @@ export default async function AndroidImagePage({ params }: PageProps) {
       id: true, slug: true, title: true, description: true,
       r2Key: true, highResKey: true, tags: true,
       viewCount: true, sortOrder: true, deviceType: true,
+      commentsEnabled: true,
       _count: { select: { downloads: true } },
     },
   });
@@ -268,7 +248,6 @@ export default async function AndroidImagePage({ params }: PageProps) {
         <link rel="preload" as="image" href={nextImageSrc} />
       )}
 
-      {/* ── Prev / Next nav ── */}
       {(prevImage || nextImage) && (
         <nav style={{
           maxWidth: "1280px", margin: "0 auto",
@@ -371,6 +350,13 @@ export default async function AndroidImagePage({ params }: PageProps) {
 
             <div className="font-body text-[1rem] leading-relaxed description-html" style={{ color: "var(--text-muted)" }} dangerouslySetInnerHTML={{ __html: displayDescription }} />
 
+            {/* ── Comments — only when enabled in admin ── */}
+            {image.commentsEnabled && (
+              <div style={{ marginTop: "1rem" }}>
+                <BirthdayComments imageId={image.id} imageTitle={image.title} />
+              </div>
+            )}
+
             <div className="detail-fav-row">
               <FavoriteButton
                 size="md"
@@ -439,6 +425,45 @@ export default async function AndroidImagePage({ params }: PageProps) {
         prevHref={prevImage ? `/android/${prevImage.slug}` : null}
         nextHref={nextImage ? `/android/${nextImage.slug}` : null}
       />
+
+      {/* ── Giant Next Wallpaper Button ── */}
+      {nextImage && (
+        <div style={{ padding: "24px 16px 40px", maxWidth: "600px", margin: "0 auto" }}>
+          <Link
+            href={`/android/${nextImage.slug}`}
+            prefetch={true}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: "16px",
+              padding: "20px 24px",
+              background: "linear-gradient(135deg, rgba(139,0,0,0.3) 0%, rgba(80,0,0,0.45) 100%)",
+              border: "1px solid rgba(192,0,26,0.5)",
+              borderRadius: "6px",
+              textDecoration: "none",
+              boxShadow: "0 0 32px rgba(192,0,26,0.15), inset 0 1px 0 rgba(255,255,255,0.05)",
+              minHeight: "80px",
+              WebkitTapHighlightColor: "transparent",
+            }}
+          >
+            <div style={{ display: "flex", flexDirection: "column", gap: "4px", flex: 1, minWidth: 0 }}>
+              <span style={{ fontFamily: "var(--font-space, monospace)", fontSize: "0.55rem", letterSpacing: "0.2em", textTransform: "uppercase", color: "rgba(192,80,80,0.8)" }}>
+                Next Wallpaper
+              </span>
+              <span style={{ fontFamily: "var(--font-cinzel, serif)", fontSize: "clamp(0.85rem, 2.5vw, 1rem)", color: "#f0e8e8", fontWeight: 600, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                {nextImage.title}
+              </span>
+            </div>
+            <div style={{ display: "flex", alignItems: "center", gap: "12px", flexShrink: 0 }}>
+              <div style={{ position: "relative", width: "44px", height: "78px", borderRadius: "4px", overflow: "hidden", border: "1px solid rgba(192,0,26,0.3)" }}>
+                <Image src={getPublicUrl(nextImage.r2Key)} alt={nextImage.title} fill unoptimized className="object-cover" sizes="44px" />
+              </div>
+              <span style={{ fontSize: "2rem", color: "#c0001a", lineHeight: 1, filter: "drop-shadow(0 0 8px rgba(192,0,26,0.6))" }}>→</span>
+            </div>
+          </Link>
+        </div>
+      )}
 
       <script type="application/ld+json" dangerouslySetInnerHTML={{
         __html: JSON.stringify({

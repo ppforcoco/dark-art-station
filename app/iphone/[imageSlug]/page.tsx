@@ -284,8 +284,10 @@ export default async function IphoneImagePage({ params }: PageProps) {
             {/* Always rendered — real description or auto-generated fallback */}
             <div className="font-body text-[1rem] leading-relaxed description-html" style={{ color: "var(--text-muted)" }} dangerouslySetInnerHTML={{ __html: displayDescription }} />
 
-            {/* ── Comments — always shown after description ── */}
-            <BirthdayComments imageId={image.id} imageTitle={image.title} />
+            {/* ── Comments — only when enabled in admin ── */}
+            {image.commentsEnabled && (
+              <BirthdayComments imageId={image.id} imageTitle={image.title} />
+            )}
 
             {/* Save to favorites */}
             <div className="detail-fav-row">
