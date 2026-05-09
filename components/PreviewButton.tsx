@@ -65,7 +65,7 @@ function LockScreenModal({
 
   const isIphone = frame.startsWith("iphone");
 
-  const modal = (
+  return (
     <>
       <style>{`
         .lsp-overlay {
@@ -393,7 +393,7 @@ function LockScreenModal({
                 </div>
                 {clockPos === "top" && (
                   <p style={{ marginTop: "6px", fontSize: "0.5rem", fontFamily: "monospace", color: "#8888aa", letterSpacing: "0.08em" }}>
-                    Check the clock doesn't cover your wallpaper's focal point
+                    Check the clock doesn&apos;t cover your wallpaper&apos;s focal point
                   </p>
                 )}
               </div>
