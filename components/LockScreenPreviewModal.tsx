@@ -36,7 +36,7 @@ function getNow() {
   };
 }
 
-export default function LockScreenPreviewModal({ src, title, onClose, mode: _mode = "mobile" }: Props) {
+export default function LockScreenPreviewModal({ src, title, onClose, mode: _mode = "mobile" }: Props): JSX.Element {
   const [frame,       setFrame]       = useState<DeviceFrame>("iphone-di");
   const [clockPos,    setClockPos]    = useState<ClockPos>("top");
   const [showClock,   setShowClock]   = useState(true);
@@ -238,30 +238,33 @@ export default function LockScreenPreviewModal({ src, title, onClose, mode: _mod
           background: rgba(255,255,255,0.15);
         }
 
-        /* Android home indicator */
+        /* Android nav bar */
         .lsp-android-bar {
           position: absolute;
-          bottom: 8px; left: 50%; transform: translateX(-50%);
-          width: 60px; height: 4px;
-          background: rgba(255,255,255,0.35);
-          border-radius: 4px;
+          bottom: 0; left: 0; right: 0;
+          height: 28px;
+          background: rgba(0,0,0,0.5);
+          display: flex; align-items: center; justify-content: center;
+          gap: 20px;
           z-index: 6;
         }
 
         /* ── Right: controls ── */
         .lsp-controls {
           flex: 1;
-          overflow-y: auto;
-          padding: 28px 28px 28px 20px;
+          padding: 24px 20px 24px 20px;
           display: flex;
           flex-direction: column;
-          gap: 22px;
+          gap: 20px;
+          overflow-y: auto;
+          scrollbar-width: thin;
+          scrollbar-color: rgba(255,255,255,0.1) transparent;
         }
 
         .lsp-title {
           font-family: var(--font-space), monospace;
-          font-size: 0.58rem;
-          letter-spacing: 0.22em;
+          font-size: 0.55rem;
+          letter-spacing: 0.2em;
           text-transform: uppercase;
           color: var(--blood, #a01818);
           margin-bottom: 2px;
@@ -460,12 +463,12 @@ export default function LockScreenPreviewModal({ src, title, onClose, mode: _mod
                   ["Notification", showNotif,  setShowNotif],
                   ["App Dock (iPhone)", showDock, setShowDock],
                 ] as [string, boolean, (v: boolean) => void][]).map(([label, val, set]) => (
-                  <div key={label} className="lsp-toggle-row">
-                    <label className="lsp-toggle-label" onClick={() => set(!val)}>{label}</label>
+                  <div key={label as string} className="lsp-toggle-row">
+                    <label className="lsp-toggle-label" onClick={() => (set as (v: boolean) => void)(!(val as boolean))}>{label as string}</label>
                     <button
                       className={`lsp-toggle${val ? " lsp-toggle--on" : ""}`}
-                      onClick={() => set(!val)}
-                      aria-label={`Toggle ${label}`}
+                      onClick={() => (set as (v: boolean) => void)(!(val as boolean))}
+                      aria-label={`Toggle ${label as string}`}
                     />
                   </div>
                 ))}
@@ -488,7 +491,7 @@ export default function LockScreenPreviewModal({ src, title, onClose, mode: _mod
                 </div>
                 {clockPos === "top" && (
                   <p style={{marginTop:"6px",fontSize:"0.5rem",fontFamily:"monospace",color:"var(--text-muted,#8888aa)",letterSpacing:"0.08em"}}>
-                    Check if the clock covers your wallpaper's focal point
+                    Check if the clock covers your wallpaper&apos;s focal point
                   </p>
                 )}
               </div>
