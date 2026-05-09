@@ -126,8 +126,18 @@ export default async function AndroidImagePage({ params }: PageProps) {
   const isPremium = image.tags.includes("badge-premium");
   const isLocked  = isCurrentlyLocked();
 
+  // ── Fetch siblings early so nextImage is available for the vault gate too ──
+  const siblings = await db.image.findMany({
+    where: { collectionId: null, deviceType: "ANDROID" },
+    orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
+    select: { slug: true, title: true, r2Key: true, sortOrder: true },
+  });
+  const currentIdx = siblings.findIndex((s) => s.slug === imageSlug);
+  const prevImage = currentIdx > 0 ? siblings[currentIdx - 1] : null;
+  const nextImage = currentIdx < siblings.length - 1 ? siblings[currentIdx + 1] : null;
+
   if (isPremium && isLocked) {
-    return <PremiumVaultGate devicePath="android" />;
+    return <PremiumVaultGate devicePath="android" nextImage={nextImage} />;
   }
   // ── END LOCK GATE ────────────────────────────────────────────────────────
 
@@ -143,17 +153,7 @@ export default async function AndroidImagePage({ params }: PageProps) {
   const displayDescription = image.description ?? buildFallbackDescription(image.title, image.tags);
   const plainDescription = displayDescription.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
 
-  const [siblings, related] = await Promise.all([
-    db.image.findMany({
-      where: { collectionId: null, deviceType: "ANDROID" },
-      orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
-      select: { slug: true, title: true, r2Key: true, sortOrder: true },
-    }),
-    getRelatedImages(image.id, image.tags, 6, "ANDROID"),
-  ]);
-  const currentIdx = siblings.findIndex((s) => s.slug === imageSlug);
-  const prevImage = currentIdx > 0 ? siblings[currentIdx - 1] : null;
-  const nextImage = currentIdx < siblings.length - 1 ? siblings[currentIdx + 1] : null;
+  const related = await getRelatedImages(image.id, image.tags, 6, "ANDROID");
 
   const nextImageSrc = nextImage ? getPublicUrl(nextImage.r2Key) : null;
 
@@ -458,7 +458,8 @@ export default async function AndroidImagePage({ params }: PageProps) {
 }
 
 // ── Server-rendered vault gate — no client JS needed ─────────────────────────
-function PremiumVaultGate({ devicePath }: { devicePath: string }) {
+type SiblingImage = { slug: string; title: string; r2Key: string; sortOrder: number | null };
+function PremiumVaultGate({ devicePath, nextImage }: { devicePath: string; nextImage?: SiblingImage | null }) {
   return (
     <main style={{
       minHeight: "100vh",
