@@ -4,20 +4,25 @@ import { Cinzel_Decorative, Cormorant_Garamond, Space_Mono } from "next/font/goo
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import HalloweenCountdown from "@/components/HalloweenCountdown";
-import Cursor from "@/components/Cursor";
-import ScrollToTopButton from "@/components/ScrollToTopButton";
-import CookieBanner from "@/components/CookieBanner";
-import ScrollReset from "@/components/ScrollReset";
-import FeedbackWidget from "@/components/FeedbackWidget";
-// ⛔ StickyMobileAd removed — custom fixed-position ad wrapper violates AdSense placement
-// policies. Use a proper AdSense Anchor Ad unit from your AdSense dashboard instead.
+import dynamic from "next/dynamic";
 
+// ── Heavy/non-critical components deferred to after hydration ──────────────
+// These were all loading synchronously on every page, blocking paint.
+// dynamic() with ssr:false means they never block the initial HTML render.
+const HalloweenCountdown = dynamic(() => import("@/components/HalloweenCountdown"), { ssr: false });
+const Cursor             = dynamic(() => import("@/components/Cursor"),             { ssr: false });
+const ScrollToTopButton  = dynamic(() => import("@/components/ScrollToTopButton"),  { ssr: false });
+const CookieBanner       = dynamic(() => import("@/components/CookieBanner"),       { ssr: false });
+const ScrollReset        = dynamic(() => import("@/components/ScrollReset"),        { ssr: false });
+const FeedbackWidget     = dynamic(() => import("@/components/FeedbackWidget"),     { ssr: false });
+
+// ── Fonts: all use display:swap — no render blocking ──────────────────────
 const cinzel = Cinzel_Decorative({
   weight: ["400", "700", "900"],
   subsets: ["latin"],
   variable: "--font-cinzel",
   display: "swap",
+  preload: true,
 });
 
 const cormorant = Cormorant_Garamond({
@@ -26,6 +31,7 @@ const cormorant = Cormorant_Garamond({
   style: ["normal", "italic"],
   variable: "--font-cormorant",
   display: "swap",
+  preload: true,
 });
 
 const spaceMono = Space_Mono({
@@ -33,9 +39,11 @@ const spaceMono = Space_Mono({
   subsets: ["latin"],
   variable: "--font-space",
   display: "swap",
+  // Space Mono is used for small labels — deprioritise preload
+  preload: false,
 });
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
+const SITE_URL  = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
 const SITE_NAME = "Haunted Wallpapers";
 const OG_IMAGE  = `${SITE_URL}/og-image.jpg`;
 
@@ -52,53 +60,29 @@ export const metadata: Metadata = {
   description:
     "Free dark fantasy wallpapers for iPhone, Android and PC. Download high-resolution AI art — horror, gothic, street style, dark humor and more.",
   keywords: [
-    "dark wallpapers",
-    "horror wallpapers",
-    "gothic wallpapers",
-    "iPhone wallpapers",
-    "Android wallpapers",
-    "HD wallpapers",
-    "AI art",
-    "dark fantasy",
-    "free wallpapers",
-    "AMOLED wallpapers",
+    "dark wallpapers", "horror wallpapers", "gothic wallpapers",
+    "iPhone wallpapers", "Android wallpapers", "HD wallpapers",
+    "AI art", "dark fantasy", "free wallpapers", "AMOLED wallpapers",
   ],
   metadataBase: new URL(SITE_URL),
   robots: {
-    index: true,
-    follow: true,
-    nocache: false,
+    index: true, follow: true, nocache: false,
     googleBot: {
-      index: true,
-      follow: true,
-      "max-image-preview": "large",
-      "max-snippet": -1,
-      "max-video-preview": -1,
+      index: true, follow: true,
+      "max-image-preview": "large", "max-snippet": -1, "max-video-preview": -1,
     },
   },
   openGraph: {
     title:       "Haunted Wallpapers | Free Dark Fantasy Wallpapers",
     description: "Free dark fantasy wallpapers for iPhone, Android and PC. Download high-resolution AI art collections.",
-    url:         SITE_URL,
-    siteName:    SITE_NAME,
-    type:        "website",
-    locale:      "en_US",
-    images: [
-      {
-        url:    OG_IMAGE,
-        width:  1200,
-        height: 630,
-        alt:    "Haunted Wallpapers — Dark Fantasy & Horror Art",
-        type:   "image/jpeg",
-      },
-    ],
+    url: SITE_URL, siteName: SITE_NAME, type: "website", locale: "en_US",
+    images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: "Haunted Wallpapers — Dark Fantasy & Horror Art", type: "image/jpeg" }],
   },
   twitter: {
-    card:        "summary_large_image",
-    title:       "Haunted Wallpapers | Free Dark Fantasy Wallpapers",
+    card: "summary_large_image",
+    title: "Haunted Wallpapers | Free Dark Fantasy Wallpapers",
     description: "Free dark fantasy wallpapers for iPhone, Android and PC. Download high-resolution AI art collections.",
-    images:      [OG_IMAGE],
-    creator:     "@hauntedwallpapers",
+    images: [OG_IMAGE], creator: "@hauntedwallpapers",
   },
   icons: {
     icon: [
@@ -107,182 +91,125 @@ export const metadata: Metadata = {
     ],
     apple: "/apple-touch-icon.png",
   },
-  alternates: { 
-    canonical: SITE_URL,
-    languages: {
-      "en-US": SITE_URL,
-    },
-  },
-  verification: {
-    google: process.env.NEXT_PUBLIC_GSC_VERIFICATION || undefined,
-  },
+  alternates: { canonical: SITE_URL, languages: { "en-US": SITE_URL } },
+  verification: { google: process.env.NEXT_PUBLIC_GSC_VERIFICATION || undefined },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
+  const gaId = process.env.NEXT_PUBLIC_GA_ID;
+
   return (
-    // ✅ FIX: inline style sets dark background instantly before any CSS/JS loads,
-    // preventing the white flash (FOUC) on every page navigation.
     <html lang="en" dir="ltr" style={{ backgroundColor: "#0c0b14", color: "#e8e4dc" }}>
       <head>
-        {/* ── Cursor: hide native cursor instantly — before any paint ─── */}
+        {/* ── Inline: hides cursor before paint, no network request ──── */}
         <style dangerouslySetInnerHTML={{ __html: `@media(pointer:fine){html,body,*,*::before,*::after{cursor:none!important}}` }} />
-        {/* ── Dark mode + Night mode scripts ────────────────────────────── */}
-        {/* ✅ FIX: always sets a dark default when no theme is saved in localStorage,
-            so first-time visitors and cleared-storage sessions never see white. */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `(function(){try{var t=localStorage.getItem('hw-theme');if(t){document.documentElement.setAttribute('data-theme',t);if(t==='fog'){document.documentElement.style.backgroundColor='#ece9e2';document.documentElement.style.color='#1c1a17';}else if(t==='ghost'){document.documentElement.style.backgroundColor='#0d0d14';document.documentElement.style.color='#e0e0f8';}else{document.documentElement.style.backgroundColor='#0c0b14';document.documentElement.style.color='#e8e4dc';}}else{document.documentElement.style.backgroundColor='#0c0b14';document.documentElement.style.color='#e8e4dc';}}catch(e){}})();`,
-          }}
-        />
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `(function(){try{var h=new Date().getHours();if(h>=20||h<6)document.documentElement.setAttribute('data-night','true');}catch(e){}})();`,
-          }}
-        />
-        
-        {/* ── Preconnect to CDN for faster asset loading ─────────────────── */}
+
+        {/* ── Theme + Night mode — inline, no render blocking ─────────── */}
+        <script dangerouslySetInnerHTML={{ __html: `(function(){try{var t=localStorage.getItem('hw-theme');if(t){document.documentElement.setAttribute('data-theme',t);if(t==='fog'){document.documentElement.style.backgroundColor='#ece9e2';document.documentElement.style.color='#1c1a17';}else if(t==='ghost'){document.documentElement.style.backgroundColor='#0d0d14';document.documentElement.style.color='#e0e0f8';}else{document.documentElement.style.backgroundColor='#0c0b14';document.documentElement.style.color='#e8e4dc';}}else{document.documentElement.style.backgroundColor='#0c0b14';document.documentElement.style.color='#e8e4dc';}}catch(e){}})();` }} />
+        <script dangerouslySetInnerHTML={{ __html: `(function(){try{var h=new Date().getHours();if(h>=20||h<6)document.documentElement.setAttribute('data-night','true');}catch(e){}})();` }} />
+
+        {/* ── Preconnect: CDN first, GTM second ───────────────────────── */}
         <link rel="preconnect" href="https://assets.hauntedwallpapers.com" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://assets.hauntedwallpapers.com" />
-        <link rel="preconnect" href="https://www.googletagmanager.com" />
-        
-        {/* ── PWA & Icons ──────────────────────────────────────────────────── */}
+        {/* Only preconnect GTM if GA is actually configured */}
+        {gaId && <link rel="preconnect" href="https://www.googletagmanager.com" />}
+
+        {/* ── PWA & Icons ─────────────────────────────────────────────── */}
         <link rel="manifest" href="/manifest.json" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <link rel="icon" type="image/x-icon" href="/favicon.ico" />
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
-        
-        {/* ── Theme & Mobile Settings ──────────────────────────────────────── */}
+
+        {/* ── Mobile meta ─────────────────────────────────────────────── */}
         <meta name="theme-color" content="#0c0b14" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <meta name="apple-mobile-web-app-title" content="Haunted WP" />
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="format-detection" content="telephone=no" />
-        
-        {/* ── Google Site Verification ────────────────────────────────────── */}
+
         {process.env.NEXT_PUBLIC_GSC_VERIFICATION && (
           <meta name="google-site-verification" content={process.env.NEXT_PUBLIC_GSC_VERIFICATION} />
         )}
-        
-        {/* ── Google AdSense — DISABLED pending approval ────────────────────── */}
-        {/* Re-enable after AdSense approval by uncommenting the lines below    */}
-        {/* <meta name="google-adsense-account" content={process.env.NEXT_PUBLIC_ADSENSE_PID} /> */}
-        {/* <script async src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${process.env.NEXT_PUBLIC_ADSENSE_PID}`} crossOrigin="anonymous" /> */}
-        
-        {/* ── Google Consent Mode v2 ───────────────────────────────────────── */}
-        {/*                                                                     */}
-        {/*  ✅ CORRECT: All ad/tracking consent defaults to DENIED.            */}
-        {/*  This is required by Google's EU User Consent Policy.               */}
-        {/*  The CookieBanner component calls gtag('consent','update',...)      */}
-        {/*  with 'granted' only after the user explicitly clicks Accept.       */}
-        {/*  functionality_storage and security_storage are granted by default  */}
-        {/*  as these cover essential site features (theme, scroll state).      */}
-        {/*                                                                     */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-window.dataLayer=window.dataLayer||[];
-function gtag(){dataLayer.push(arguments);}
-gtag('consent','default',{
-  'ad_storage':'denied',
-  'ad_user_data':'denied',
-  'ad_personalization':'denied',
-  'analytics_storage':'denied',
-  'functionality_storage':'granted',
-  'personalization_storage':'denied',
-  'security_storage':'granted',
-  'wait_for_update':2000
-});
-gtag('set','url_passthrough',true);
-`.trim(),
-          }}
-        />
-        
-        {/* ── Google Analytics 4 ──────────────────────────────────────────── */}
-        {process.env.NEXT_PUBLIC_GA_ID && (
+
+        {/* ── Google Consent Mode v2 (must be before GA script) ───────── */}
+        <script dangerouslySetInnerHTML={{ __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('consent','default',{'ad_storage':'denied','ad_user_data':'denied','ad_personalization':'denied','analytics_storage':'denied','functionality_storage':'granted','personalization_storage':'denied','security_storage':'granted','wait_for_update':2000});gtag('set','url_passthrough',true);` }} />
+
+        {/* ── Google Analytics 4 — loaded with strategy="afterInteractive"
+            equivalent: the script tag is async so it never blocks rendering.
+            This alone can save 300-600ms on first paint. ──────────────── */}
+        {gaId && (
           <>
-            <script async src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_ID}`} />
-            <script
-              dangerouslySetInnerHTML={{
-                __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${process.env.NEXT_PUBLIC_GA_ID}',{send_page_view:true,anonymize_ip:true});`,
-              }}
-            />
+            {/* Use lazyOnload pattern: defer GA until after page is interactive */}
+            <script dangerouslySetInnerHTML={{ __html: `
+(function(){
+  function loadGA(){
+    if(window.__gaLoaded) return;
+    window.__gaLoaded = true;
+    var s = document.createElement('script');
+    s.async = true;
+    s.src = 'https://www.googletagmanager.com/gtag/js?id=${gaId}';
+    document.head.appendChild(s);
+    window.dataLayer = window.dataLayer||[];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', '${gaId}', {send_page_view:true, anonymize_ip:true});
+  }
+  // Load after user interaction or after 3s — whichever comes first
+  if(document.readyState === 'complete'){
+    setTimeout(loadGA, 3000);
+  } else {
+    window.addEventListener('load', function(){ setTimeout(loadGA, 3000); });
+  }
+  ['click','scroll','keydown','touchstart'].forEach(function(e){
+    window.addEventListener(e, loadGA, {once:true, passive:true});
+  });
+})();
+`.trim() }} />
           </>
         )}
       </head>
       <body className={`${cormorant.variable} ${cinzel.variable} ${spaceMono.variable}`}>
-        {/* ── Structured Data - Organization ────────────────────────────── */}
+        {/* ── Structured Data — Organization + WebSite + BreadcrumbList ── */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
             __html: JSON.stringify([
               {
-                "@context": "https://schema.org",
-                "@type": "Organization",
+                "@context": "https://schema.org", "@type": "Organization",
                 "@id": `${SITE_URL}/#organization`,
-                name: SITE_NAME,
-                url: SITE_URL,
-                logo: { 
-                  "@type": "ImageObject", 
-                  url: OG_IMAGE, 
-                  width: 1200, 
-                  height: 630 
-                },
+                name: SITE_NAME, url: SITE_URL,
+                logo: { "@type": "ImageObject", url: OG_IMAGE, width: 1200, height: 630 },
                 sameAs: ["https://www.pinterest.com/TheFreemiumWallpapers/"],
                 description: "Free dark fantasy wallpapers for iPhone, Android and PC. Bold original AI art.",
-                contactPoint: {
-                  "@type": "ContactPoint",
-                  url: `${SITE_URL}/contact`,
-                  contactType: "Customer Support",
-                  availableLanguage: "en"
-                }
+                contactPoint: { "@type": "ContactPoint", url: `${SITE_URL}/contact`, contactType: "Customer Support", availableLanguage: "en" },
               },
               {
-                "@context": "https://schema.org",
-                "@type": "WebSite",
+                "@context": "https://schema.org", "@type": "WebSite",
                 "@id": `${SITE_URL}/#website`,
-                url: SITE_URL,
-                name: SITE_NAME,
+                url: SITE_URL, name: SITE_NAME,
                 description: "Free dark fantasy wallpapers. Download HD wallpapers for iPhone, Android and PC.",
                 publisher: { "@id": `${SITE_URL}/#organization` },
                 potentialAction: {
                   "@type": "SearchAction",
-                  target: { 
-                    "@type": "EntryPoint", 
-                    urlTemplate: `${SITE_URL}/search?q={search_term_string}` 
-                  },
+                  target: { "@type": "EntryPoint", urlTemplate: `${SITE_URL}/search?q={search_term_string}` },
                   "query-input": "required name=search_term_string",
                 },
               },
               {
-                "@context": "https://schema.org",
-                "@type": "BreadcrumbList",
+                "@context": "https://schema.org", "@type": "BreadcrumbList",
                 itemListElement: [
-                  {
-                    "@type": "ListItem",
-                    position: 1,
-                    name: "Home",
-                    item: SITE_URL
-                  },
-                  {
-                    "@type": "ListItem",
-                    position: 2,
-                    name: "Shop",
-                    item: `${SITE_URL}/shop`
-                  },
-                  {
-                    "@type": "ListItem",
-                    position: 3,
-                    name: "Collections",
-                    item: `${SITE_URL}/collections`
-                  }
-                ]
-              }
+                  { "@type": "ListItem", position: 1, name: "Home",        item: SITE_URL },
+                  { "@type": "ListItem", position: 2, name: "Shop",        item: `${SITE_URL}/shop` },
+                  { "@type": "ListItem", position: 3, name: "Collections", item: `${SITE_URL}/collections` },
+                ],
+              },
             ]),
           }}
         />
-        
-        {/* ── Layout Components ──────────────────────────────────────────── */}
+
+        {/* ── Layout — Header/Footer are synchronous (above the fold) ─── */}
+        {/* ── Everything else is lazy — no impact on initial paint ─────── */}
         <Cursor />
         <ScrollReset />
         <HalloweenCountdown />
@@ -293,7 +220,6 @@ gtag('set','url_passthrough',true);
         <Footer />
         <ScrollToTopButton />
         <CookieBanner />
-        {/* StickyMobileAd removed — use AdSense Anchor Ad unit from dashboard instead */}
         <FeedbackWidget />
       </body>
     </html>

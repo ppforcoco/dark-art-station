@@ -36,7 +36,7 @@ function getNow() {
   };
 }
 
-export default function LockScreenPreviewModal({ src, title, onClose, mode: _mode = "mobile" }: Props): JSX.Element {
+export default function LockScreenPreviewModal({ src, title, onClose, mode: _mode = "mobile" }: Props) {
   const [frame,       setFrame]       = useState<DeviceFrame>("iphone-di");
   const [clockPos,    setClockPos]    = useState<ClockPos>("top");
   const [showClock,   setShowClock]   = useState(true);
@@ -233,41 +233,37 @@ export default function LockScreenPreviewModal({ src, title, onClose, mode: _mod
         .lsp-dock-icon {
           width: 32px; height: 32px;
           border-radius: 8px;
-          font-size: 1.1rem;
-          display: flex; align-items: center; justify-content: center;
           background: rgba(255,255,255,0.15);
+          display: flex; align-items: center; justify-content: center;
+          font-size: 1rem;
         }
 
         /* Android nav bar */
         .lsp-android-bar {
           position: absolute;
           bottom: 0; left: 0; right: 0;
-          height: 28px;
-          background: rgba(0,0,0,0.5);
-          display: flex; align-items: center; justify-content: center;
-          gap: 20px;
+          height: 24px;
+          background: rgba(0,0,0,0.4);
           z-index: 6;
         }
 
         /* ── Right: controls ── */
         .lsp-controls {
           flex: 1;
-          padding: 24px 20px 24px 20px;
+          overflow-y: auto;
+          padding: 28px 24px;
           display: flex;
           flex-direction: column;
-          gap: 20px;
-          overflow-y: auto;
-          scrollbar-width: thin;
-          scrollbar-color: rgba(255,255,255,0.1) transparent;
+          gap: 24px;
         }
 
         .lsp-title {
           font-family: var(--font-space), monospace;
           font-size: 0.55rem;
-          letter-spacing: 0.2em;
+          letter-spacing: 0.25em;
           text-transform: uppercase;
-          color: var(--blood, #a01818);
-          margin-bottom: 2px;
+          color: var(--text-muted, #8888aa);
+          margin-bottom: 4px;
         }
         .lsp-wallpaper-name {
           font-family: var(--font-cormorant), serif;
