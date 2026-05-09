@@ -104,6 +104,7 @@ function PremiumVaultGate({ devicePath }: { devicePath: string }) {
       minHeight: "100vh",
       backgroundColor: "var(--bg-primary, #07050f)",
       color: "var(--text-primary, #e8e4f8)",
+      colorScheme: "dark",
       display: "flex",
       flexDirection: "column",
       alignItems: "center",
@@ -235,7 +236,7 @@ export default async function AndroidImagePage({ params }: PageProps) {
   const nextImageSrc = nextImage ? getPublicUrl(nextImage.r2Key) : null;
 
   return (
-    <main className="min-h-screen" style={{ backgroundColor: "var(--bg-primary)", color: "var(--text-primary)" }}>
+    <main className="min-h-screen" style={{ backgroundColor: "var(--bg-primary)", color: "var(--text-primary)", colorScheme: "dark" }}>
       <WallpaperTips mode="banner" />
 
       <Breadcrumbs items={[
@@ -325,13 +326,13 @@ export default async function AndroidImagePage({ params }: PageProps) {
               <h1 className="font-display text-2xl md:text-3xl font-bold mt-3 leading-tight">
                 {image.title}
               </h1>
+              {/* FOMO Badges — badge-new removed */}
               {image.tags.filter((t: string) => t.startsWith("badge-")).length > 0 && (
                 <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", marginTop: "10px", marginBottom: "4px" }}>
                   {image.tags.filter((t: string) => t.startsWith("badge-")).map((tag: string) => {
                     const badgeMap: Record<string, { label: string; color: string; bg: string }> = {
                       "badge-premium":   { label: "⭐ Premium",   color: "#c9a84c", bg: "rgba(201,168,76,0.15)" },
                       "badge-trending":  { label: "🔥 Trending",  color: "#ff6b35", bg: "rgba(255,107,53,0.15)" },
-                      "badge-new":       { label: "✨ New",        color: "#4caf50", bg: "rgba(76,175,80,0.15)" },
                       "badge-hot":       { label: "💀 Hot",        color: "#e040fb", bg: "rgba(224,64,251,0.15)" },
                       "badge-exclusive": { label: "🌙 Exclusive",  color: "#42a5f5", bg: "rgba(66,165,245,0.15)" },
                       "badge-limited":   { label: "⏳ Limited",    color: "#ff5252", bg: "rgba(255,82,82,0.15)" },
@@ -348,7 +349,19 @@ export default async function AndroidImagePage({ params }: PageProps) {
               )}
             </div>
 
-            <div className="font-body text-[1rem] leading-relaxed description-html" style={{ color: "var(--text-muted)" }} dangerouslySetInnerHTML={{ __html: displayDescription }} />
+            {/* ── Share buttons — prominent, above description ── */}
+            <SocialShare
+              title={image.title}
+              imageUrl={thumbUrl}
+              pageUrl={`${siteUrl}/android/${imageSlug}`}
+            />
+
+            {/* Always rendered — real description or auto-generated fallback */}
+            <div
+              className="font-body text-[1rem] leading-relaxed description-html"
+              style={{ color: "var(--text-muted)", colorScheme: "dark" }}
+              dangerouslySetInnerHTML={{ __html: displayDescription }}
+            />
 
             {/* ── Comments — only when enabled in admin ── */}
             {image.commentsEnabled && (
@@ -389,6 +402,14 @@ export default async function AndroidImagePage({ params }: PageProps) {
         @media (min-width: 1024px) {
           .android-detail-image-wrap { flex: 0 0 480px; }
         }
+        .description-html { color-scheme: dark; }
+        .description-html p { margin-bottom: 0.75rem; }
+        .description-html p:last-child { margin-bottom: 0; }
+        .description-html a { color: #8b0000; text-decoration: underline; }
+        .description-html a:hover { color: #c0001a; }
+        .description-html strong, .description-html b { color: #f0ecff; }
+        .description-html ul, .description-html ol { padding-left: 1.25rem; margin-bottom: 0.75rem; }
+        .description-html li { margin-bottom: 0.25rem; }
         .hw-glow-btn-wrap--download {
           animation: hwDlGlowPulse 2.8s ease-in-out infinite;
           border-radius: 2px;
@@ -406,6 +427,50 @@ export default async function AndroidImagePage({ params }: PageProps) {
           box-shadow: 0 0 22px rgba(201,168,76,0.5), 0 0 50px rgba(201,168,76,0.22), inset 0 0 0 1px rgba(201,168,76,0.45);
           transform: translateY(-1px);
         }
+        /* Social share inline prominence */
+        .social-share {
+          border: 1px solid rgba(192,0,26,0.25);
+          border-radius: 6px;
+          padding: 12px 14px;
+          background: rgba(192,0,26,0.04);
+        }
+        .social-share-label {
+          font-family: var(--font-space, monospace);
+          font-size: 0.55rem;
+          letter-spacing: 0.18em;
+          text-transform: uppercase;
+          color: var(--text-muted);
+          margin-bottom: 8px;
+        }
+        .social-share-btns {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 8px;
+        }
+        .social-btn {
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          padding: 8px 14px;
+          border-radius: 4px;
+          font-size: 0.72rem;
+          font-family: var(--font-space, monospace);
+          letter-spacing: 0.06em;
+          text-decoration: none;
+          border: 1px solid var(--border-dim, rgba(255,255,255,0.1));
+          color: var(--text-primary);
+          background: transparent;
+          cursor: pointer;
+          transition: border-color 0.2s, background 0.2s;
+          white-space: nowrap;
+        }
+        .social-btn svg { width: 14px; height: 14px; fill: currentColor; flex-shrink: 0; }
+        .social-btn:hover { border-color: rgba(255,255,255,0.25); background: rgba(255,255,255,0.04); }
+        .social-btn--native { border-color: rgba(192,0,26,0.4); color: #f0e8e8; }
+        .social-btn--native:hover { background: rgba(192,0,26,0.1); }
+        .social-btn--pinterest { color: #e60023; border-color: rgba(230,0,35,0.3); }
+        .social-btn--x { color: var(--text-primary); }
+        .social-btn--whatsapp { color: #25d366; border-color: rgba(37,211,102,0.3); }
       `}</style>
 
       <RelatedWallpapers images={related} heading="More Dark Art You'll Like" />
@@ -415,11 +480,6 @@ export default async function AndroidImagePage({ params }: PageProps) {
         thumb: thumbUrl,
         href: `/android/${imageSlug}`,
       }} />
-      <SocialShare
-        title={image.title}
-        imageUrl={thumbUrl}
-        pageUrl={`${siteUrl}/android/${imageSlug}`}
-      />
       <RecentlyViewed currentSlug={image.slug} />
       <KeyboardNav
         prevHref={prevImage ? `/android/${prevImage.slug}` : null}

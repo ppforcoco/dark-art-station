@@ -24,7 +24,6 @@ interface PageProps {
   params: Promise<{ imageSlug: string }>;
 }
 
-// ── Fallback description generator ──────────────────────────────────────────
 function buildFallbackDescription(title: string, tags: string[]): string {
   const tagList = tags.length > 0
     ? tags.slice(0, 5).join(", ")
@@ -57,12 +56,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const ogImage = getPublicUrl(image.r2Key);
   const tagLine = image.tags.slice(0, 3).map((t) => `#${t}`).join(" ");
 
-  // Strip HTML from description for clean OG tags
   const plainDesc = (image.metaDescription ?? image.description ?? "")
     .replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim().slice(0, 200);
   const metaDesc = plainDesc || `${image.title} — free dark fantasy PC wallpaper. ${tagLine}. Download instantly, no account required.`;
-
-  // Strip HTML tags for meta description
   const plainMetaDesc = metaDesc.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
 
   return {
@@ -121,8 +117,6 @@ export default async function PcImagePage({ params }: PageProps) {
   }
 
   const thumbUrl = getPublicUrl(image.r2Key);
-
-  // Always show description — real or auto-generated. Supports HTML.
   const displayDescription = image.description ?? buildFallbackDescription(image.title, image.tags);
   const plainDescription = displayDescription.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
 
@@ -141,7 +135,7 @@ export default async function PcImagePage({ params }: PageProps) {
   const nextImageSrc = nextImage ? getPublicUrl(nextImage.r2Key) : null;
 
   return (
-    <main className="min-h-screen" style={{ backgroundColor: "var(--bg-primary)", color: "var(--text-primary)" }}>
+    <main className="min-h-screen" style={{ backgroundColor: "var(--bg-primary)", color: "var(--text-primary)", colorScheme: "dark" }}>
       <WallpaperTips mode="banner" />
 
       {/* ── Breadcrumb ── */}
@@ -200,7 +194,6 @@ export default async function PcImagePage({ params }: PageProps) {
         </nav>
       )}
 
-      {/* ── Main layout: image centered on mobile, side-by-side on md+ ── */}
       <section style={{ maxWidth: "1280px", margin: "0 auto", padding: "24px 24px 40px" }}>
         <div className="pc-detail-grid" style={{ display: "flex", flexDirection: "column", gap: "40px" }}>
 
@@ -220,7 +213,6 @@ export default async function PcImagePage({ params }: PageProps) {
                 />
               </div>
             </DeviceMockup>
-            {/* ↓ Download + Preview buttons — glowing CTA below device */}
             <div style={{ marginTop: "16px", width: "100%", display: "flex", flexDirection: "column", gap: "10px" }}>
               <div className="hw-glow-btn-wrap hw-glow-btn-wrap--download">
                 <DownloadButton
@@ -229,10 +221,8 @@ export default async function PcImagePage({ params }: PageProps) {
                   downloadCount={image._count.downloads}
                 />
               </div>
-
             </div>
           </div>
-
 
           <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
             <div>
@@ -247,15 +237,43 @@ export default async function PcImagePage({ params }: PageProps) {
               }}>
                 {image.title}
               </h1>
+
+              {/* FOMO Badges — badge-new removed */}
+              {image.tags.filter((t: string) => t.startsWith("badge-")).length > 0 && (
+                <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", marginTop: "10px", marginBottom: "4px" }}>
+                  {image.tags.filter((t: string) => t.startsWith("badge-")).map((tag: string) => {
+                    const badgeMap: Record<string, { label: string; color: string; bg: string }> = {
+                      "badge-premium":   { label: "⭐ Premium",   color: "#c9a84c", bg: "rgba(201,168,76,0.15)" },
+                      "badge-trending":  { label: "🔥 Trending",  color: "#ff6b35", bg: "rgba(255,107,53,0.15)" },
+                      "badge-hot":       { label: "💀 Hot",        color: "#e040fb", bg: "rgba(224,64,251,0.15)" },
+                      "badge-exclusive": { label: "🌙 Exclusive",  color: "#42a5f5", bg: "rgba(66,165,245,0.15)" },
+                      "badge-limited":   { label: "⏳ Limited",    color: "#ff5252", bg: "rgba(255,82,82,0.15)" },
+                    };
+                    const b = badgeMap[tag];
+                    if (!b) return null;
+                    return (
+                      <span key={tag} style={{ background: b.bg, border: `1px solid ${b.color}`, color: b.color, fontSize: "0.65rem", fontFamily: "monospace", padding: "3px 10px", letterSpacing: "0.08em" }}>
+                        {b.label}
+                      </span>
+                    );
+                  })}
+                </div>
+              )}
             </div>
+
+            {/* ── Share buttons — prominent, above description ── */}
+            <SocialShare
+              title={image.title}
+              imageUrl={thumbUrl}
+              pageUrl={`${siteUrl}/pc/${imageSlug}`}
+            />
 
             {/* Always rendered — real description or auto-generated fallback. Supports HTML. */}
             <div
-              className="font-body text-[1rem] leading-relaxed description-html" style={{ color: "var(--text-muted)" }}
+              className="font-body text-[1rem] leading-relaxed description-html"
+              style={{ color: "var(--text-muted)", colorScheme: "dark" }}
               dangerouslySetInnerHTML={{ __html: displayDescription }}
             />
-
-
 
             {/* Save to favorites */}
             <div className="detail-fav-row">
@@ -272,28 +290,25 @@ export default async function PcImagePage({ params }: PageProps) {
               />
               <span className="detail-fav-label">Save to Favorites</span>
             </div>
-
-            {/* Ad unit — below download button for higher viewability score */}
           </div>
         </div>
       </section>
 
-      {/* Desktop two-column layout via CSS */}
       <style>{`
-                .pc-detail-image-wrap {
+        .pc-detail-image-wrap {
           display: flex;
           flex-direction: column;
           align-items: center;
         }
         @media (min-width: 768px) {
           .pc-detail-grid { flex-direction: row !important; align-items: flex-start; gap: 56px !important; }
-          
-                  .pc-detail-image-wrap { flex: 0 0 560px; justify-content: flex-start; }
+          .pc-detail-image-wrap { flex: 0 0 560px; justify-content: flex-start; }
           .pc-detail-grid > div:last-child { flex: 1; position: sticky; top: 100px; }
         }
         @media (min-width: 1024px) {
-                  .pc-detail-image-wrap { flex: 0 0 640px; }
+          .pc-detail-image-wrap { flex: 0 0 640px; }
         }
+        .description-html { color-scheme: dark; }
         .description-html p { margin-bottom: 0.75rem; }
         .description-html p:last-child { margin-bottom: 0; }
         .description-html a { color: #8b0000; text-decoration: underline; }
@@ -309,10 +324,51 @@ export default async function PcImagePage({ params }: PageProps) {
           0%, 100% { box-shadow: 0 0 12px rgba(192,0,26,0.35), 0 0 28px rgba(192,0,26,0.15); }
           50%       { box-shadow: 0 0 22px rgba(192,0,26,0.65), 0 0 50px rgba(192,0,26,0.28); }
         }
+        /* Social share inline prominence */
+        .social-share {
+          border: 1px solid rgba(192,0,26,0.25);
+          border-radius: 6px;
+          padding: 12px 14px;
+          background: rgba(192,0,26,0.04);
+        }
+        .social-share-label {
+          font-family: var(--font-space, monospace);
+          font-size: 0.55rem;
+          letter-spacing: 0.18em;
+          text-transform: uppercase;
+          color: var(--text-muted);
+          margin-bottom: 8px;
+        }
+        .social-share-btns {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 8px;
+        }
+        .social-btn {
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          padding: 8px 14px;
+          border-radius: 4px;
+          font-size: 0.72rem;
+          font-family: var(--font-space, monospace);
+          letter-spacing: 0.06em;
+          text-decoration: none;
+          border: 1px solid var(--border-dim, rgba(255,255,255,0.1));
+          color: var(--text-primary);
+          background: transparent;
+          cursor: pointer;
+          transition: border-color 0.2s, background 0.2s;
+          white-space: nowrap;
+        }
+        .social-btn svg { width: 14px; height: 14px; fill: currentColor; flex-shrink: 0; }
+        .social-btn:hover { border-color: rgba(255,255,255,0.25); background: rgba(255,255,255,0.04); }
+        .social-btn--native { border-color: rgba(192,0,26,0.4); color: #f0e8e8; }
+        .social-btn--native:hover { background: rgba(192,0,26,0.1); }
+        .social-btn--pinterest { color: #e60023; border-color: rgba(230,0,35,0.3); }
+        .social-btn--x { color: var(--text-primary); }
+        .social-btn--whatsapp { color: #25d366; border-color: rgba(37,211,102,0.3); }
       `}</style>
-
-
-
 
       <RelatedWallpapers images={related} heading="More Dark Art You'll Like" landscape />
       <PageTracker item={{
@@ -321,11 +377,6 @@ export default async function PcImagePage({ params }: PageProps) {
         thumb: thumbUrl,
         href: `/pc/${imageSlug}`,
       }} />
-      <SocialShare
-        title={image.title}
-        imageUrl={thumbUrl}
-        pageUrl={`${siteUrl}/pc/${imageSlug}`}
-      />
       <RecentlyViewed currentSlug={image.slug} />
       <KeyboardNav
         prevHref={prevImage ? `/pc/${prevImage.slug}` : null}
@@ -363,7 +414,6 @@ export default async function PcImagePage({ params }: PageProps) {
           },
         })
       }} />
-
-          </main>
+    </main>
   );
 }

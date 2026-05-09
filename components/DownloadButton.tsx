@@ -246,9 +246,7 @@ export default function DownloadButton({ href, viewCount, downloadCount, label, 
           )}
         </div>
 
-        {isMobile && canShare && (
-          <p className="download-share-hint">Tap ↑ to set directly as wallpaper</p>
-        )}
+
 
         
       </div>

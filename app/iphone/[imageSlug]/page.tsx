@@ -20,9 +20,9 @@ import PremiumLockedGateClient from "@/components/PremiumLockedGate";
 import BirthdayComments from "@/components/BirthdayComments";
 
 // ─── Premium cycle constants (server-side, no flash) ────────────────────────
-const EPOCH_MS  = Date.UTC(2025, 0, 1, 0, 0, 0); // Jan 1 2025 00:00 UTC
-const CYCLE_MS  = 48 * 60 * 60 * 1000;            // 48h full cycle
-const UNLOCK_MS = 24 * 60 * 60 * 1000;            // first 24h = unlocked
+const EPOCH_MS  = Date.UTC(2025, 0, 1, 0, 0, 0);
+const CYCLE_MS  = 48 * 60 * 60 * 1000;
+const UNLOCK_MS = 24 * 60 * 60 * 1000;
 function isPremiumLocked(): boolean {
   const pos = (Date.now() - EPOCH_MS) % CYCLE_MS;
   return pos >= UNLOCK_MS;
@@ -35,8 +35,6 @@ interface PageProps {
   params: Promise<{ imageSlug: string }>;
 }
 
-
-// ── Fallback description generator ──────────────────────────────────────────
 function buildFallbackDescription(title: string, tags: string[]): string {
   const tagList = tags.length > 0 ? tags.slice(0, 5).join(", ") : "dark fantasy, atmospheric, gothic";
   const firstTag = tags[0] ?? "dark fantasy";
@@ -65,7 +63,6 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   });
   if (!image || image.deviceType !== "IPHONE") return { title: "Not Found | HAUNTED WALLPAPERS" };
 
-  // Strip HTML tags from description so OG scrapers get clean plain text
   const plainDesc = image.description
     ? image.description.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim().slice(0, 200)
     : null;
@@ -73,8 +70,6 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const tagLine = image.tags.slice(0, 3).map((t) => `#${t}`).join(" ");
   const fallbackDesc = `${image.title} — free high-res dark fantasy iPhone wallpaper. ${tagLine}. Download instantly, no account required.`;
   const metaDesc = plainDesc ?? fallbackDesc;
-
-  // Use absolute URL — required for OG image scrapers (Discord, WhatsApp, Twitter)
   const ogImage = getPublicUrl(image.r2Key);
 
   return {
@@ -119,7 +114,7 @@ export default async function IphoneImagePage({ params }: PageProps) {
       id: true, slug: true, title: true, description: true,
       r2Key: true, highResKey: true, tags: true,
       viewCount: true, sortOrder: true, deviceType: true,
-      commentsEnabled: true,                              // ← NEW
+      commentsEnabled: true,
       _count: { select: { downloads: true } },
     },
   });
@@ -134,8 +129,6 @@ export default async function IphoneImagePage({ params }: PageProps) {
   }
 
   const thumbUrl = getPublicUrl(image.r2Key);
-
-  // Always show description — real or auto-generated
   const displayDescription = image.description ?? buildFallbackDescription(image.title, image.tags);
   const plainDescription = displayDescription.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
 
@@ -151,7 +144,6 @@ export default async function IphoneImagePage({ params }: PageProps) {
   const prevImage = currentIdx > 0 ? siblings[currentIdx - 1] : null;
   const nextImage = currentIdx < siblings.length - 1 ? siblings[currentIdx + 1] : null;
 
-  // ── Server-side premium lock check — full gate, zero flash ─────────────
   if (image.tags.includes("badge-premium") && isPremiumLocked()) {
     return (
       <PremiumLockedGateClient tags={image.tags} devicePath="iphone">
@@ -163,23 +155,19 @@ export default async function IphoneImagePage({ params }: PageProps) {
   const nextImageSrc = nextImage ? getPublicUrl(nextImage.r2Key) : null;
 
   return (
-    <main className="min-h-screen" style={{ backgroundColor: "var(--bg-primary)", color: "var(--text-primary)" }}>
+    <main className="min-h-screen" style={{ backgroundColor: "var(--bg-primary)", color: "var(--text-primary)", colorScheme: "dark" }}>
       <WallpaperTips mode="banner" />
 
-      {/* ── Breadcrumb ── */}
       <Breadcrumbs items={[
         { label: "Home", href: "/" },
         { label: "iPhone Wallpapers", href: "/iphone" },
         { label: image.title },
       ]} />
 
-      {/* Preload next image for instant navigation */}
       {nextImageSrc && (
-        // eslint-disable-next-line @next/next/no-head-element
         <link rel="preload" as="image" href={nextImageSrc} />
       )}
 
-      {/* ── Prev / Next — TOP, visible immediately ── */}
       {(prevImage || nextImage) && (
         <nav style={{
           maxWidth: "1280px", margin: "0 auto",
@@ -225,18 +213,15 @@ export default async function IphoneImagePage({ params }: PageProps) {
         </nav>
       )}
 
-      {/* ── Main layout: image centered on mobile, side-by-side on md+ ── */}
       <section style={{ maxWidth: "1280px", margin: "0 auto", padding: "24px 24px 40px" }}>
         <div className="iphone-detail-grid" style={{ display: "flex", flexDirection: "column", gap: "40px" }}>
 
-          {/* Image — hero size */}
           <div className="iphone-detail-image-wrap">
             <DeviceMockup deviceType="IPHONE">
               <div className="relative w-full h-full">
                 <Image src={thumbUrl} alt={image.title} fill className="object-cover" priority quality={90} unoptimized sizes="(max-width: 768px) 100vw, 65vw" />
               </div>
             </DeviceMockup>
-            {/* ↓ Download + Preview buttons — glowing CTA below device */}
             <div style={{ marginTop: "16px", width: "100%", display: "flex", flexDirection: "column", gap: "10px" }}>
               <div className="hw-glow-btn-wrap hw-glow-btn-wrap--download">
                 <DownloadButton
@@ -251,20 +236,18 @@ export default async function IphoneImagePage({ params }: PageProps) {
             </div>
           </div>
 
-
           <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
             <div>
               <h1 className="font-display text-2xl md:text-3xl font-bold mt-3 leading-tight">
                 {image.title}
               </h1>
-              {/* FOMO Badges */}
+              {/* FOMO Badges — badge-new removed */}
               {image.tags.filter((t: string) => t.startsWith("badge-")).length > 0 && (
                 <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", marginTop: "10px", marginBottom: "4px" }}>
                   {image.tags.filter((t: string) => t.startsWith("badge-")).map((tag: string) => {
                     const badgeMap: Record<string, { label: string; color: string; bg: string }> = {
                       "badge-premium":   { label: "⭐ Premium",   color: "#c9a84c", bg: "rgba(201,168,76,0.15)" },
                       "badge-trending":  { label: "🔥 Trending",  color: "#ff6b35", bg: "rgba(255,107,53,0.15)" },
-                      "badge-new":       { label: "✨ New",        color: "#4caf50", bg: "rgba(76,175,80,0.15)" },
                       "badge-hot":       { label: "💀 Hot",        color: "#e040fb", bg: "rgba(224,64,251,0.15)" },
                       "badge-exclusive": { label: "🌙 Exclusive",  color: "#42a5f5", bg: "rgba(66,165,245,0.15)" },
                       "badge-limited":   { label: "⏳ Limited",    color: "#ff5252", bg: "rgba(255,82,82,0.15)" },
@@ -281,15 +264,25 @@ export default async function IphoneImagePage({ params }: PageProps) {
               )}
             </div>
 
+            {/* ── Share buttons — prominent, above description ── */}
+            <SocialShare
+              title={image.title}
+              imageUrl={thumbUrl}
+              pageUrl={`${siteUrl}/iphone/${imageSlug}`}
+            />
+
             {/* Always rendered — real description or auto-generated fallback */}
-            <div className="font-body text-[1rem] leading-relaxed description-html" style={{ color: "var(--text-muted)" }} dangerouslySetInnerHTML={{ __html: displayDescription }} />
+            <div
+              className="font-body text-[1rem] leading-relaxed description-html"
+              style={{ color: "var(--text-muted)", colorScheme: "dark" }}
+              dangerouslySetInnerHTML={{ __html: displayDescription }}
+            />
 
             {/* ── Comments — only when enabled in admin ── */}
             {image.commentsEnabled && (
               <BirthdayComments imageId={image.id} imageTitle={image.title} />
             )}
 
-            {/* Save to favorites */}
             <div className="detail-fav-row">
               <FavoriteButton
                 size="md"
@@ -304,29 +297,32 @@ export default async function IphoneImagePage({ params }: PageProps) {
               />
               <span className="detail-fav-label">Save to Favorites</span>
             </div>
-
-            {/* Ad unit — below download button for higher viewability score */}
           </div>
         </div>
       </section>
 
-      {/* Desktop two-column layout via CSS */}
       <style>{`
-                .iphone-detail-image-wrap {
+        .iphone-detail-image-wrap {
           display: flex;
           flex-direction: column;
           align-items: center;
         }
         @media (min-width: 768px) {
           .iphone-detail-grid { flex-direction: row !important; align-items: flex-start; gap: 56px !important; }
-          
-                  .iphone-detail-image-wrap { flex: 0 0 420px; justify-content: flex-start; }
+          .iphone-detail-image-wrap { flex: 0 0 420px; justify-content: flex-start; }
           .iphone-detail-grid > div:last-child { flex: 1; position: sticky; top: 100px; }
         }
         @media (min-width: 1024px) {
-                  .iphone-detail-image-wrap { flex: 0 0 480px; }
+          .iphone-detail-image-wrap { flex: 0 0 480px; }
         }
-        /* ── Glowing Download 4K button ── */
+        .description-html { color-scheme: dark; }
+        .description-html p { margin-bottom: 0.75rem; }
+        .description-html p:last-child { margin-bottom: 0; }
+        .description-html a { color: #8b0000; text-decoration: underline; }
+        .description-html a:hover { color: #c0001a; }
+        .description-html strong, .description-html b { color: #f0ecff; }
+        .description-html ul, .description-html ol { padding-left: 1.25rem; margin-bottom: 0.75rem; }
+        .description-html li { margin-bottom: 0.25rem; }
         .hw-glow-btn-wrap--download {
           animation: hwDlGlowPulse 2.8s ease-in-out infinite;
           border-radius: 2px;
@@ -335,7 +331,6 @@ export default async function IphoneImagePage({ params }: PageProps) {
           0%, 100% { box-shadow: 0 0 12px rgba(192,0,26,0.35), 0 0 28px rgba(192,0,26,0.15); }
           50%       { box-shadow: 0 0 22px rgba(192,0,26,0.65), 0 0 50px rgba(192,0,26,0.28); }
         }
-        /* ── Glowing Lock Screen Preview button ── */
         .hw-glow-btn-wrap--preview {
           border-radius: 2px;
           box-shadow: 0 0 10px rgba(201,168,76,0.2), 0 0 22px rgba(201,168,76,0.08);
@@ -344,6 +339,50 @@ export default async function IphoneImagePage({ params }: PageProps) {
         .hw-glow-btn-wrap--preview:hover {
           box-shadow: 0 0 18px rgba(201,168,76,0.45), 0 0 38px rgba(201,168,76,0.2);
         }
+        /* Social share inline prominence */
+        .social-share {
+          border: 1px solid rgba(192,0,26,0.25);
+          border-radius: 6px;
+          padding: 12px 14px;
+          background: rgba(192,0,26,0.04);
+        }
+        .social-share-label {
+          font-family: var(--font-space, monospace);
+          font-size: 0.55rem;
+          letter-spacing: 0.18em;
+          text-transform: uppercase;
+          color: var(--text-muted);
+          margin-bottom: 8px;
+        }
+        .social-share-btns {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 8px;
+        }
+        .social-btn {
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          padding: 8px 14px;
+          border-radius: 4px;
+          font-size: 0.72rem;
+          font-family: var(--font-space, monospace);
+          letter-spacing: 0.06em;
+          text-decoration: none;
+          border: 1px solid var(--border-dim, rgba(255,255,255,0.1));
+          color: var(--text-primary);
+          background: transparent;
+          cursor: pointer;
+          transition: border-color 0.2s, background 0.2s;
+          white-space: nowrap;
+        }
+        .social-btn svg { width: 14px; height: 14px; fill: currentColor; flex-shrink: 0; }
+        .social-btn:hover { border-color: rgba(255,255,255,0.25); background: rgba(255,255,255,0.04); }
+        .social-btn--native { border-color: rgba(192,0,26,0.4); color: #f0e8e8; }
+        .social-btn--native:hover { background: rgba(192,0,26,0.1); }
+        .social-btn--pinterest { color: #e60023; border-color: rgba(230,0,35,0.3); }
+        .social-btn--x { color: var(--text-primary); }
+        .social-btn--whatsapp { color: #25d366; border-color: rgba(37,211,102,0.3); }
       `}</style>
 
       <RelatedWallpapers images={related} heading="More Dark Art You'll Like" />
@@ -354,18 +393,11 @@ export default async function IphoneImagePage({ params }: PageProps) {
         thumb: thumbUrl,
         href: `/iphone/${imageSlug}`,
       }} />
-      <SocialShare
-        title={image.title}
-        imageUrl={thumbUrl}
-        pageUrl={`${siteUrl}/iphone/${imageSlug}`}
-      />
       <RecentlyViewed currentSlug={image.slug} />
       <KeyboardNav
         prevHref={prevImage ? `/iphone/${prevImage.slug}` : null}
         nextHref={nextImage ? `/iphone/${nextImage.slug}` : null}
       />
-
-
 
       <script type="application/ld+json" dangerouslySetInnerHTML={{
         __html: JSON.stringify({
