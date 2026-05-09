@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { db, getRelatedImages } from "@/lib/db";
@@ -21,8 +21,6 @@ import PremiumCountdown from "@/components/PremiumCountdown";
 export const dynamicParams = true;
 export const revalidate = 3600;
 
-// ── Premium lock: 24h on / 24h off cycle anchored to Jan 1 2025 00:00 UTC ──
-// MUST match PremiumCountdown.tsx, iphone/page.tsx, android/page.tsx exactly.
 const EPOCH_MS  = Date.UTC(2025, 0, 1, 0, 0, 0);
 const CYCLE_MS  = 48 * 60 * 60 * 1000;
 const UNLOCK_MS = 24 * 60 * 60 * 1000;
@@ -36,7 +34,6 @@ interface PageProps {
   params: Promise<{ imageSlug: string }>;
 }
 
-// ── Fallback description generator ──────────────────────────────────────────
 function buildFallbackDescription(title: string, tags: string[]): string {
   const tagList = tags.length > 0 ? tags.slice(0, 5).join(", ") : "dark fantasy, atmospheric, gothic";
   const firstTag = tags[0] ?? "dark fantasy";
@@ -65,12 +62,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   if (!image || image.deviceType !== "ANDROID") return { title: "Not Found | HAUNTED WALLPAPERS" };
   const ogImage = getPublicUrl(image.r2Key);
   const tagLine = image.tags.slice(0, 3).map((t) => `#${t}`).join(" ");
-
-  // Strip HTML from description for clean OG tags
   const plainDesc = (image.metaDescription ?? image.description ?? "")
     .replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim().slice(0, 200);
   const metaDesc = plainDesc || `${image.title} — free high-res dark fantasy Android wallpaper. ${tagLine}. Download instantly, no account required.`;
-
   return {
     metadataBase: new URL(siteUrl),
     title: `${image.title} — Free Android Wallpaper | HAUNTED WALLPAPERS`,
@@ -119,17 +113,12 @@ export default async function AndroidImagePage({ params }: PageProps) {
 
   if (!image || image.deviceType !== "ANDROID") notFound();
 
-  // ── PREMIUM LOCK GATE ────────────────────────────────────────────────────
-  // If this wallpaper is tagged premium AND the cycle is currently locked,
-  // show the vault gate instead of the full page. No redirect needed — render
-  // inline so the URL stays the same and users can bookmark/refresh when unlocked.
   const isPremium = image.tags.includes("badge-premium");
   const isLocked  = isCurrentlyLocked();
 
   if (isPremium && isLocked) {
     return <PremiumVaultGate devicePath="android" />;
   }
-  // ── END LOCK GATE ────────────────────────────────────────────────────────
 
   if (await shouldCountPageView()) {
     db.image.update({
@@ -139,7 +128,6 @@ export default async function AndroidImagePage({ params }: PageProps) {
   }
 
   const thumbUrl = getPublicUrl(image.r2Key);
-
   const displayDescription = image.description ?? buildFallbackDescription(image.title, image.tags);
   const plainDescription = displayDescription.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
 
@@ -154,14 +142,12 @@ export default async function AndroidImagePage({ params }: PageProps) {
   const currentIdx = siblings.findIndex((s) => s.slug === imageSlug);
   const prevImage = currentIdx > 0 ? siblings[currentIdx - 1] : null;
   const nextImage = currentIdx < siblings.length - 1 ? siblings[currentIdx + 1] : null;
-
   const nextImageSrc = nextImage ? getPublicUrl(nextImage.r2Key) : null;
 
   return (
     <main className="min-h-screen" style={{ backgroundColor: "var(--bg-primary)", color: "var(--text-primary)" }}>
       <WallpaperTips mode="banner" />
 
-      {/* ── Breadcrumb ── */}
       <Breadcrumbs items={[
         { label: "Home", href: "/" },
         { label: "Android Wallpapers", href: "/android" },
@@ -172,7 +158,7 @@ export default async function AndroidImagePage({ params }: PageProps) {
         <link rel="preload" as="image" href={nextImageSrc} />
       )}
 
-      {/* ── Prev / Next — TOP ── */}
+      {/* ── Prev / Next nav ── */}
       {(prevImage || nextImage) && (
         <nav style={{
           maxWidth: "1280px", margin: "0 auto",
@@ -220,14 +206,12 @@ export default async function AndroidImagePage({ params }: PageProps) {
       <section style={{ maxWidth: "1280px", margin: "0 auto", padding: "24px 24px 40px" }}>
         <div className="android-detail-grid" style={{ display: "flex", flexDirection: "column", gap: "40px" }}>
 
-          {/* Image — hero size */}
           <div className="android-detail-image-wrap">
             <DeviceMockup deviceType="ANDROID">
               <div className="relative w-full h-full">
                 <Image src={thumbUrl} alt={image.title} fill className="object-cover" priority quality={90} unoptimized sizes="(max-width: 768px) 100vw, 65vw" />
               </div>
             </DeviceMockup>
-            {/* ↓ Download + Preview buttons — glowing CTAs below device */}
             <div style={{ marginTop: "16px", width: "100%", display: "flex", flexDirection: "column", gap: "10px" }}>
               <div className="hw-glow-btn-wrap hw-glow-btn-wrap--download">
                 <DownloadButton
@@ -236,12 +220,7 @@ export default async function AndroidImagePage({ params }: PageProps) {
                   downloadCount={image._count.downloads}
                 />
               </div>
-              <div className="hw-glow-btn-wrap hw-glow-btn-wrap--preview" style={{
-                position: "relative",
-                borderRadius: "2px",
-                overflow: "hidden",
-              }}>
-                {/* Subtle shimmer line at top */}
+              <div className="hw-glow-btn-wrap hw-glow-btn-wrap--preview" style={{ position: "relative", borderRadius: "2px", overflow: "hidden" }}>
                 <div style={{
                   position: "absolute", top: 0, left: 0, right: 0, height: "1px",
                   background: "linear-gradient(to right, transparent, rgba(201,168,76,0.6), transparent)",
@@ -257,7 +236,6 @@ export default async function AndroidImagePage({ params }: PageProps) {
               <h1 className="font-display text-2xl md:text-3xl font-bold mt-3 leading-tight">
                 {image.title}
               </h1>
-              {/* FOMO Badges */}
               {image.tags.filter((t: string) => t.startsWith("badge-")).length > 0 && (
                 <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", marginTop: "10px", marginBottom: "4px" }}>
                   {image.tags.filter((t: string) => t.startsWith("badge-")).map((tag: string) => {
@@ -281,10 +259,8 @@ export default async function AndroidImagePage({ params }: PageProps) {
               )}
             </div>
 
-            {/* Always rendered — real description or auto-generated fallback */}
             <div className="font-body text-[1rem] leading-relaxed description-html" style={{ color: "var(--text-muted)" }} dangerouslySetInnerHTML={{ __html: displayDescription }} />
 
-            {/* Save to favorites */}
             <div className="detail-fav-row">
               <FavoriteButton
                 size="md"
@@ -303,7 +279,6 @@ export default async function AndroidImagePage({ params }: PageProps) {
         </div>
       </section>
 
-      {/* Desktop two-column layout via CSS */}
       <style>{`
         .android-detail-image-wrap {
           display: flex;
@@ -386,7 +361,6 @@ export default async function AndroidImagePage({ params }: PageProps) {
           },
         })
       }} />
-
     </main>
   );
 }
@@ -407,13 +381,11 @@ function PremiumVaultGate({ devicePath }: { devicePath: string }) {
       position: "relative",
       overflow: "hidden",
     }}>
-      {/* Background glow */}
       <div style={{
         position: "absolute", inset: 0, pointerEvents: "none",
         background: "radial-gradient(ellipse 60% 50% at 50% 50%, rgba(201,168,76,0.06) 0%, transparent 70%)",
       }} />
 
-      {/* Corner runes */}
       {(["tl","tr","bl","br"] as const).map((pos) => (
         <span key={pos} style={{
           position: "absolute",
@@ -427,10 +399,8 @@ function PremiumVaultGate({ devicePath }: { devicePath: string }) {
         }}>†</span>
       ))}
 
-      {/* Lock */}
       <div style={{ fontSize: "56px", marginBottom: "24px" }}>🔒</div>
 
-      {/* Eyebrow */}
       <span style={{
         fontFamily: "var(--font-space, monospace)",
         fontSize: "0.6rem",
@@ -441,7 +411,6 @@ function PremiumVaultGate({ devicePath }: { devicePath: string }) {
         display: "block",
       }}>Back In The Vault</span>
 
-      {/* Heading */}
       <h1 style={{
         fontFamily: "var(--font-cinzel, serif)",
         fontSize: "clamp(1.8rem, 4vw, 2.8rem)",
@@ -466,19 +435,16 @@ function PremiumVaultGate({ devicePath }: { devicePath: string }) {
         Check back when the vault reopens.
       </p>
 
-      {/* Live countdown — client component */}
       <div style={{ marginBottom: "36px" }}>
         <PremiumCountdown isLocked={true} />
       </div>
 
-      {/* Divider */}
       <div style={{
         width: "100%", maxWidth: "320px", height: "1px",
         background: "linear-gradient(to right, transparent, rgba(201,168,76,0.2), transparent)",
         marginBottom: "32px",
       }} />
 
-      {/* Back link */}
       <Link
         href={`/${devicePath}`}
         style={{
@@ -505,84 +471,6 @@ function PremiumVaultGate({ devicePath }: { devicePath: string }) {
           50% { opacity: 0.3; }
         }
       `}</style>
-      {/* ── GIANT NEXT WALLPAPER BUTTON ── */}
-      {nextImage && (
-        <div style={{
-          padding: "24px 16px 40px",
-          maxWidth: "600px",
-          margin: "0 auto",
-        }}>
-          <Link
-            href={`/android/${nextImage.slug}`}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              gap: "16px",
-              padding: "20px 24px",
-              background: "linear-gradient(135deg, rgba(139,0,0,0.3) 0%, rgba(80,0,0,0.45) 100%)",
-              border: "1px solid rgba(192,0,26,0.5)",
-              borderRadius: "6px",
-              textDecoration: "none",
-              boxShadow: "0 0 32px rgba(192,0,26,0.15), inset 0 1px 0 rgba(255,255,255,0.05)",
-              transition: "all 0.2s ease",
-              minHeight: "80px",
-              WebkitTapHighlightColor: "transparent",
-            }}
-            prefetch={true}
-          >
-            <div style={{ display: "flex", flexDirection: "column", gap: "4px", flex: 1, minWidth: 0 }}>
-              <span style={{
-                fontFamily: "var(--font-space), monospace",
-                fontSize: "0.55rem",
-                letterSpacing: "0.2em",
-                textTransform: "uppercase",
-                color: "rgba(192,80,80,0.8)",
-              }}>
-                Next Wallpaper
-              </span>
-              <span style={{
-                fontFamily: "var(--font-cinzel, serif)",
-                fontSize: "clamp(0.85rem, 2.5vw, 1rem)",
-                color: "#f0e8e8",
-                fontWeight: 600,
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-                whiteSpace: "nowrap",
-              }}>
-                {nextImage.title}
-              </span>
-            </div>
-            <div style={{ display: "flex", alignItems: "center", gap: "12px", flexShrink: 0 }}>
-              <div style={{
-                position: "relative",
-                width: "44px",
-                height: "78px",
-                borderRadius: "4px",
-                overflow: "hidden",
-                border: "1px solid rgba(192,0,26,0.3)",
-                flexShrink: 0,
-              }}>
-                <Image
-                  src={getPublicUrl(nextImage.r2Key)}
-                  alt={nextImage.title}
-                  fill
-                  unoptimized
-                  className="object-cover"
-                  sizes="44px"
-                />
-              </div>
-              <span style={{
-                fontSize: "2rem",
-                color: "#c0001a",
-                lineHeight: 1,
-                filter: "drop-shadow(0 0 8px rgba(192,0,26,0.6))",
-              }}>→</span>
-            </div>
-          </Link>
-        </div>
-      )}
-
-          </main>
+    </main>
   );
 }
