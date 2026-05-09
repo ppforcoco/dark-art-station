@@ -4,17 +4,7 @@ import { Cinzel_Decorative, Cormorant_Garamond, Space_Mono } from "next/font/goo
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import dynamic from "next/dynamic";
-
-// ── Heavy/non-critical components deferred to after hydration ──────────────
-// These were all loading synchronously on every page, blocking paint.
-// dynamic() with ssr:false means they never block the initial HTML render.
-const HalloweenCountdown = dynamic(() => import("@/components/HalloweenCountdown"), { ssr: false });
-const Cursor             = dynamic(() => import("@/components/Cursor"),             { ssr: false });
-const ScrollToTopButton  = dynamic(() => import("@/components/ScrollToTopButton"),  { ssr: false });
-const CookieBanner       = dynamic(() => import("@/components/CookieBanner"),       { ssr: false });
-const ScrollReset        = dynamic(() => import("@/components/ScrollReset"),        { ssr: false });
-const FeedbackWidget     = dynamic(() => import("@/components/FeedbackWidget"),     { ssr: false });
+import ClientComponents from "@/components/ClientComponents";
 
 // ── Fonts: all use display:swap — no render blocking ──────────────────────
 const cinzel = Cinzel_Decorative({
@@ -135,13 +125,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {/* ── Google Consent Mode v2 (must be before GA script) ───────── */}
         <script dangerouslySetInnerHTML={{ __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('consent','default',{'ad_storage':'denied','ad_user_data':'denied','ad_personalization':'denied','analytics_storage':'denied','functionality_storage':'granted','personalization_storage':'denied','security_storage':'granted','wait_for_update':2000});gtag('set','url_passthrough',true);` }} />
 
-        {/* ── Google Analytics 4 — loaded with strategy="afterInteractive"
-            equivalent: the script tag is async so it never blocks rendering.
-            This alone can save 300-600ms on first paint. ──────────────── */}
+        {/* ── Google Analytics 4 ──────────────────────────────────────── */}
         {gaId && (
-          <>
-            {/* Use lazyOnload pattern: defer GA until after page is interactive */}
-            <script dangerouslySetInnerHTML={{ __html: `
+          <script dangerouslySetInnerHTML={{ __html: `
 (function(){
   function loadGA(){
     if(window.__gaLoaded) return;
@@ -155,7 +141,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     gtag('js', new Date());
     gtag('config', '${gaId}', {send_page_view:true, anonymize_ip:true});
   }
-  // Load after user interaction or after 3s — whichever comes first
   if(document.readyState === 'complete'){
     setTimeout(loadGA, 3000);
   } else {
@@ -166,7 +151,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   });
 })();
 `.trim() }} />
-          </>
         )}
       </head>
       <body className={`${cormorant.variable} ${cinzel.variable} ${spaceMono.variable}`}>
@@ -208,19 +192,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           }}
         />
 
-        {/* ── Layout — Header/Footer are synchronous (above the fold) ─── */}
-        {/* ── Everything else is lazy — no impact on initial paint ─────── */}
-        <Cursor />
-        <ScrollReset />
-        <HalloweenCountdown />
         <Header />
         <div className="content-wrapper">
           {children}
         </div>
         <Footer />
-        <ScrollToTopButton />
-        <CookieBanner />
-        <FeedbackWidget />
+
+        {/* ── All client-only components in one deferred wrapper ───────── */}
+        <ClientComponents />
       </body>
     </html>
   );
