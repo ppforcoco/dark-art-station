@@ -126,18 +126,8 @@ export default async function AndroidImagePage({ params }: PageProps) {
   const isPremium = image.tags.includes("badge-premium");
   const isLocked  = isCurrentlyLocked();
 
-  // ── Fetch siblings early so nextImage is available for the vault gate too ──
-  const siblings = await db.image.findMany({
-    where: { collectionId: null, deviceType: "ANDROID" },
-    orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
-    select: { slug: true, title: true, r2Key: true, sortOrder: true },
-  });
-  const currentIdx = siblings.findIndex((s) => s.slug === imageSlug);
-  const prevImage = currentIdx > 0 ? siblings[currentIdx - 1] : null;
-  const nextImage = currentIdx < siblings.length - 1 ? siblings[currentIdx + 1] : null;
-
   if (isPremium && isLocked) {
-    return <PremiumVaultGate devicePath="android" nextImage={nextImage} />;
+    return <PremiumVaultGate devicePath="android" />;
   }
   // ── END LOCK GATE ────────────────────────────────────────────────────────
 
@@ -153,7 +143,17 @@ export default async function AndroidImagePage({ params }: PageProps) {
   const displayDescription = image.description ?? buildFallbackDescription(image.title, image.tags);
   const plainDescription = displayDescription.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
 
-  const related = await getRelatedImages(image.id, image.tags, 6, "ANDROID");
+  const [siblings, related] = await Promise.all([
+    db.image.findMany({
+      where: { collectionId: null, deviceType: "ANDROID" },
+      orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
+      select: { slug: true, title: true, r2Key: true, sortOrder: true },
+    }),
+    getRelatedImages(image.id, image.tags, 6, "ANDROID"),
+  ]);
+  const currentIdx = siblings.findIndex((s) => s.slug === imageSlug);
+  const prevImage = currentIdx > 0 ? siblings[currentIdx - 1] : null;
+  const nextImage = currentIdx < siblings.length - 1 ? siblings[currentIdx + 1] : null;
 
   const nextImageSrc = nextImage ? getPublicUrl(nextImage.r2Key) : null;
 
@@ -177,8 +177,8 @@ export default async function AndroidImagePage({ params }: PageProps) {
         <nav style={{
           maxWidth: "1280px", margin: "0 auto",
           padding: "16px 24px",
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr",
+          display: "flex",
+          justifyContent: "space-between",
           gap: "12px",
           borderBottom: "1px solid var(--border-dim)",
         }}>
@@ -197,7 +197,7 @@ export default async function AndroidImagePage({ params }: PageProps) {
                 </span>
               </div>
             </Link>
-          ) : <div />}
+          ) : <span />}
           {nextImage ? (
             <Link href={`/android/${nextImage.slug}`}
               style={{ display: "flex", flexDirection: "row-reverse", alignItems: "center", gap: "12px", padding: "10px", border: "1px solid var(--border-dim)", textDecoration: "none" }}
@@ -213,7 +213,7 @@ export default async function AndroidImagePage({ params }: PageProps) {
                 </span>
               </div>
             </Link>
-          ) : <div />}
+          ) : <span />}
         </nav>
       )}
 
@@ -227,7 +227,7 @@ export default async function AndroidImagePage({ params }: PageProps) {
                 <Image src={thumbUrl} alt={image.title} fill className="object-cover" priority quality={90} unoptimized sizes="(max-width: 768px) 100vw, 65vw" />
               </div>
             </DeviceMockup>
-            {/* ↓ Download + Preview buttons — glowing CTA below device */}
+            {/* ↓ Download + Preview buttons — glowing CTAs below device */}
             <div style={{ marginTop: "16px", width: "100%", display: "flex", flexDirection: "column", gap: "10px" }}>
               <div className="hw-glow-btn-wrap hw-glow-btn-wrap--download">
                 <DownloadButton
@@ -236,7 +236,17 @@ export default async function AndroidImagePage({ params }: PageProps) {
                   downloadCount={image._count.downloads}
                 />
               </div>
-              <div className="hw-glow-btn-wrap hw-glow-btn-wrap--preview">
+              <div className="hw-glow-btn-wrap hw-glow-btn-wrap--preview" style={{
+                position: "relative",
+                borderRadius: "2px",
+                overflow: "hidden",
+              }}>
+                {/* Subtle shimmer line at top */}
+                <div style={{
+                  position: "absolute", top: 0, left: 0, right: 0, height: "1px",
+                  background: "linear-gradient(to right, transparent, rgba(201,168,76,0.6), transparent)",
+                  pointerEvents: "none", zIndex: 1,
+                }} />
                 <PreviewButton src={thumbUrl} title={image.title} />
               </div>
             </div>
@@ -318,11 +328,12 @@ export default async function AndroidImagePage({ params }: PageProps) {
         }
         .hw-glow-btn-wrap--preview {
           border-radius: 2px;
-          box-shadow: 0 0 10px rgba(201,168,76,0.2), 0 0 22px rgba(201,168,76,0.08);
-          transition: box-shadow 0.3s ease;
+          box-shadow: 0 0 14px rgba(201,168,76,0.25), 0 0 30px rgba(201,168,76,0.1), inset 0 0 0 1px rgba(201,168,76,0.2);
+          transition: box-shadow 0.3s ease, transform 0.2s ease;
         }
         .hw-glow-btn-wrap--preview:hover {
-          box-shadow: 0 0 18px rgba(201,168,76,0.45), 0 0 38px rgba(201,168,76,0.2);
+          box-shadow: 0 0 22px rgba(201,168,76,0.5), 0 0 50px rgba(201,168,76,0.22), inset 0 0 0 1px rgba(201,168,76,0.45);
+          transform: translateY(-1px);
         }
       `}</style>
 
@@ -375,91 +386,13 @@ export default async function AndroidImagePage({ params }: PageProps) {
           },
         })
       }} />
-      {/* ── GIANT NEXT WALLPAPER BUTTON ── */}
-      {nextImage && (
-        <div style={{
-          padding: "24px 16px 40px",
-          maxWidth: "600px",
-          margin: "0 auto",
-        }}>
-          <Link
-            href={`/android/${nextImage.slug}`}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              gap: "16px",
-              padding: "20px 24px",
-              background: "linear-gradient(135deg, rgba(139,0,0,0.3) 0%, rgba(80,0,0,0.45) 100%)",
-              border: "1px solid rgba(192,0,26,0.5)",
-              borderRadius: "6px",
-              textDecoration: "none",
-              boxShadow: "0 0 32px rgba(192,0,26,0.15), inset 0 1px 0 rgba(255,255,255,0.05)",
-              transition: "all 0.2s ease",
-              minHeight: "80px",
-              WebkitTapHighlightColor: "transparent",
-            }}
-            prefetch={true}
-          >
-            <div style={{ display: "flex", flexDirection: "column", gap: "4px", flex: 1, minWidth: 0 }}>
-              <span style={{
-                fontFamily: "var(--font-space), monospace",
-                fontSize: "0.55rem",
-                letterSpacing: "0.2em",
-                textTransform: "uppercase",
-                color: "rgba(192,80,80,0.8)",
-              }}>
-                Next Wallpaper
-              </span>
-              <span style={{
-                fontFamily: "var(--font-cinzel, serif)",
-                fontSize: "clamp(0.85rem, 2.5vw, 1rem)",
-                color: "#f0e8e8",
-                fontWeight: 600,
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-                whiteSpace: "nowrap",
-              }}>
-                {nextImage.title}
-              </span>
-            </div>
-            <div style={{ display: "flex", alignItems: "center", gap: "12px", flexShrink: 0 }}>
-              <div style={{
-                position: "relative",
-                width: "44px",
-                height: "78px",
-                borderRadius: "4px",
-                overflow: "hidden",
-                border: "1px solid rgba(192,0,26,0.3)",
-                flexShrink: 0,
-              }}>
-                <Image
-                  src={getPublicUrl(nextImage.r2Key)}
-                  alt={nextImage.title}
-                  fill
-                  unoptimized
-                  className="object-cover"
-                  sizes="44px"
-                />
-              </div>
-              <span style={{
-                fontSize: "2rem",
-                color: "#c0001a",
-                lineHeight: 1,
-                filter: "drop-shadow(0 0 8px rgba(192,0,26,0.6))",
-              }}>→</span>
-            </div>
-          </Link>
-        </div>
-      )}
 
-          </main>
+    </main>
   );
 }
 
 // ── Server-rendered vault gate — no client JS needed ─────────────────────────
-type SiblingImage = { slug: string; title: string; r2Key: string; sortOrder: number | null };
-function PremiumVaultGate({ devicePath, nextImage }: { devicePath: string; nextImage?: SiblingImage | null }) {
+function PremiumVaultGate({ devicePath }: { devicePath: string }) {
   return (
     <main style={{
       minHeight: "100vh",
