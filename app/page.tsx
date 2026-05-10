@@ -41,7 +41,7 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export const revalidate = 0; // always fresh — premium/new badges update instantly
+export const revalidate = 86400; // rebuild once every 24 hours — WOTD stays stable all day
 
 export default async function Home() {
   // ── Wrap ALL db calls in try/catch so a DB hiccup never produces a 500 ──
