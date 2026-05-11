@@ -297,6 +297,8 @@ export default async function IphoneImagePage({ params }: PageProps) {
               />
               <span className="detail-fav-label">Save to Favorites</span>
             </div>
+
+            <RelatedWallpapers images={related} heading="More Dark Art You'll Like" />
           </div>
         </div>
       </section>
@@ -384,8 +386,6 @@ export default async function IphoneImagePage({ params }: PageProps) {
         .social-btn--x { color: var(--text-primary); }
         .social-btn--whatsapp { color: #25d366; border-color: rgba(37,211,102,0.3); }
       `}</style>
-
-      <RelatedWallpapers images={related} heading="More Dark Art You'll Like" />
 
       <PageTracker item={{
         slug: image.slug,
