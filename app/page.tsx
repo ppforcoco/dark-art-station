@@ -16,17 +16,17 @@ import PremiumCountdown from "@/components/PremiumCountdown";
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
 const OG_IMAGE = `${SITE_URL}/og-image.jpg`;
 
-// ── WOTD cached by date string — stable all day, changes at UTC midnight ─────
-// Key includes today's date so cache busts automatically each new day.
-// Even if the page redeploys 10 times today, WOTD stays the same image.
-function getTodayKey() {
-  return new Date().toISOString().slice(0, 10); // "2026-05-11"
-}
-const getCachedWotd = unstable_cache(
-  () => getWallpaperOfTheDay(),
-  ["wotd"],
-  { revalidate: 3600, tags: [`wotd-${getTodayKey()}`] },
-);
+// ── WOTD cached by date — one image per day, never changes on redeploy ───────
+// The cache key includes today's UTC date so it auto-busts at midnight.
+// revalidate = 86400 means Next.js won't even try to rebuild this for 24h.
+const getCachedWotd = () => {
+  const todayKey = new Date().toISOString().slice(0, 10); // "2026-05-11"
+  return unstable_cache(
+    () => getWallpaperOfTheDay(),
+    [`wotd-${todayKey}`],
+    { revalidate: 86400 },
+  )();
+};
 
 // ── Trending cached 1 hour — groupBy is expensive ────────────────────────────
 const getCachedTrending = unstable_cache(
