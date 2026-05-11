@@ -41,7 +41,7 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export const revalidate = 86400; // rebuild once every 24 hours — WOTD stays stable all day
+export const revalidate = 3600; // rebuild hourly — lock state stays accurate, WOTD stable enough
 
 export default async function Home() {
   // ── Wrap ALL db calls in try/catch so a DB hiccup never produces a 500 ──
