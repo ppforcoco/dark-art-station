@@ -4,25 +4,39 @@ import { getSignedDownloadUrl } from "@/lib/r2";
 import { createHash } from "crypto";
 import { shouldCountRequest } from "@/lib/analytics-filter";
 
-// ─── Rate limiter ─────────────────────────────────────────────────────────────
-const RATE_LIMIT_MAX       = 30;
-const RATE_LIMIT_WINDOW_MS = 60 * 60 * 1000;
+// ─── Rate limiter config ───────────────────────────────────────────────────────
+const HOURLY_LIMIT        = 5;                  // max downloads per IP per hour (was 30)
+const HOURLY_WINDOW_MS    = 60 * 60 * 1000;
+const BURST_LIMIT         = 3;                  // max downloads per IP per minute
+const BURST_WINDOW_MS     = 60 * 1000;
+const DAILY_LIMIT         = 15;                 // max downloads per IP per 24 hours (DB-backed)
+const SAME_IMAGE_COOLDOWN = 24 * 60 * 60 * 1000; // same IP can't re-download same image within 24h
+const MIN_DELAY_MS        = 10_000;             // minimum 10s between any two downloads from same IP
 
-const rateLimitStore = new Map<string, number[]>();
+// ─── In-memory stores ──────────────────────────────────────────────────────────
+const hourlyStore   = new Map<string, number[]>(); // ipHash → timestamps[]
+const burstStore    = new Map<string, number[]>(); // ipHash → timestamps[]
+const lastDownload  = new Map<string, number>();   // ipHash → last download timestamp
 
-function isRateLimited(ipHash: string): boolean {
-  const now        = Date.now();
-  const cutoff     = now - RATE_LIMIT_WINDOW_MS;
-  const timestamps = (rateLimitStore.get(ipHash) ?? []).filter((t) => t > cutoff);
+function checkAndRecord(
+  store: Map<string, number[]>,
+  key: string,
+  windowMs: number,
+  max: number
+): boolean {
+  const now       = Date.now();
+  const cutoff    = now - windowMs;
+  const times     = (store.get(key) ?? []).filter((t) => t > cutoff);
 
-  if (timestamps.length >= RATE_LIMIT_MAX) return true;
+  if (times.length >= max) return true; // rate limited
 
-  timestamps.push(now);
-  rateLimitStore.set(ipHash, timestamps);
+  times.push(now);
+  store.set(key, times);
 
+  // Probabilistic cleanup to avoid memory growth
   if (Math.random() < 0.01) {
-    for (const [key, times] of rateLimitStore.entries()) {
-      if (times.every((t) => t <= cutoff)) rateLimitStore.delete(key);
+    for (const [k, ts] of store.entries()) {
+      if (ts.every((t) => t <= cutoff)) store.delete(k);
     }
   }
 
@@ -47,26 +61,94 @@ export async function GET(
       return NextResponse.json({ error: "Missing image ID" }, { status: 400 });
     }
 
-    // ── Rate limit ────────────────────────────────────────────────────────────
+    // ── Get IP + hash ─────────────────────────────────────────────────────────
     const rawIp =
       req.headers.get("x-forwarded-for")?.split(",")[0].trim() ??
       req.headers.get("x-real-ip") ??
       "unknown";
     const ipHash = hashIp(rawIp);
 
-    if (isRateLimited(ipHash)) {
+    // ── 1. Minimum delay between downloads (blocks rapid-fire bots) ───────────
+    const last = lastDownload.get(ipHash);
+    if (last && Date.now() - last < MIN_DELAY_MS) {
+      return NextResponse.json(
+        { error: "Please wait a moment before downloading again." },
+        {
+          status: 429,
+          headers: { "Retry-After": "10" },
+        }
+      );
+    }
+
+    // ── 2. Per-minute burst limit ─────────────────────────────────────────────
+    if (checkAndRecord(burstStore, ipHash, BURST_WINDOW_MS, BURST_LIMIT)) {
+      return NextResponse.json(
+        { error: "Too many downloads too quickly. Please slow down." },
+        {
+          status: 429,
+          headers: {
+            "Retry-After":       "60",
+            "X-RateLimit-Limit": String(BURST_LIMIT),
+          },
+        }
+      );
+    }
+
+    // ── 3. Hourly limit ───────────────────────────────────────────────────────
+    if (checkAndRecord(hourlyStore, ipHash, HOURLY_WINDOW_MS, HOURLY_LIMIT)) {
       return NextResponse.json(
         { error: "Too many downloads. Please wait before trying again." },
         {
           status: 429,
           headers: {
             "Retry-After":       "3600",
-            "X-RateLimit-Limit": String(RATE_LIMIT_MAX),
+            "X-RateLimit-Limit": String(HOURLY_LIMIT),
           },
         }
       );
     }
 
+    // ── 4. DB-backed daily cap (survives restarts) ────────────────────────────
+    const todayDownloads = await db.download.count({
+      where: {
+        ipHash,
+        createdAt: { gte: new Date(Date.now() - 24 * 60 * 60 * 1000) },
+      },
+    });
+
+    if (todayDownloads >= DAILY_LIMIT) {
+      return NextResponse.json(
+        { error: "Daily download limit reached. Come back tomorrow!" },
+        {
+          status: 429,
+          headers: {
+            "Retry-After":       "86400",
+            "X-RateLimit-Limit": String(DAILY_LIMIT),
+          },
+        }
+      );
+    }
+
+    // ── 5. Same-image cooldown (blocks bots re-downloading the same file) ─────
+    const recentSameImage = await db.download.findFirst({
+      where: {
+        ipHash,
+        imageId: id,
+        createdAt: { gte: new Date(Date.now() - SAME_IMAGE_COOLDOWN) },
+      },
+    });
+
+    if (recentSameImage) {
+      return NextResponse.json(
+        { error: "You already downloaded this wallpaper recently." },
+        {
+          status: 429,
+          headers: { "Retry-After": "86400" },
+        }
+      );
+    }
+
+    // ── Fetch image ───────────────────────────────────────────────────────────
     const image = await db.image.findUnique({
       where: { id },
       select: { id: true, title: true, highResKey: true },
@@ -79,6 +161,9 @@ export async function GET(
     if (!image.highResKey) {
       return NextResponse.json({ error: "No download available" }, { status: 404 });
     }
+
+    // Record last download time (for min-delay check)
+    lastDownload.set(ipHash, Date.now());
 
     // Build a safe filename
     const safeTitle = image.title
@@ -102,8 +187,6 @@ export async function GET(
     }
 
     // ── Fetch from R2 and stream back with correct headers ────────────────────
-    // This bypasses the R2 ResponseContentDisposition limitation on signed URLs.
-    // We fetch the file server-side and set Content-Disposition ourselves.
     const r2Response = await fetch(signedUrl);
 
     if (!r2Response.ok) {
