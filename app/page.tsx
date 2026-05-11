@@ -1,6 +1,7 @@
 // app/page.tsx — HAUNTED TOWN REDESIGN (AdSense-safe, split-hero edition)
 
 import type { Metadata } from "next";
+import { unstable_cache } from "next/cache";
 import Link from "next/link";
 import Image from "next/image";
 import { db, getWallpaperOfTheDay, getPageContent } from "@/lib/db";
@@ -14,6 +15,32 @@ import PremiumCountdown from "@/components/PremiumCountdown";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
 const OG_IMAGE = `${SITE_URL}/og-image.jpg`;
+
+// ── Cached trending — groupBy is expensive, rankings don't need to be live ──
+const getCachedTrending = unstable_cache(
+  async () => {
+    const topDownloads = await db.download.groupBy({
+      by: ["imageId"],
+      where: { imageId: { not: null } },
+      _count: { imageId: true },
+      orderBy: { _count: { imageId: "desc" } },
+      take: 20,
+    });
+    const topImageIds = topDownloads.map(d => d.imageId).filter(Boolean) as string[];
+    if (topImageIds.length === 0) return [];
+    const trendingImages = await db.image.findMany({
+      where: { id: { in: topImageIds }, isAdult: false, deviceType: { in: ["IPHONE", "ANDROID"] } },
+      select: { id: true, slug: true, title: true, r2Key: true, deviceType: true, tags: true,
+        _count: { select: { downloads: true } } },
+    });
+    return topImageIds
+      .map(id => trendingImages.find(img => img.id === id))
+      .filter(Boolean)
+      .slice(0, 6) as Array<{ id: string; slug: string; title: string; r2Key: string; deviceType: string | null; tags: string[]; _count: { downloads: number } }>;
+  },
+  ["trending-wallpapers"],
+  { revalidate: 3600 },
+);
 
 export async function generateMetadata(): Promise<Metadata> {
   const pageContent = await getPageContent("home");
@@ -41,7 +68,7 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export const revalidate = 3600; // rebuild hourly
+export const revalidate = 3600; // rebuild hourly — new badges appear within 1 hour
 
 export default async function Home() {
   // ── Wrap ALL db calls in try/catch so a DB hiccup never produces a 500 ──
@@ -98,26 +125,8 @@ export default async function Home() {
   }
 
   try {
-    // Count ALL downloads per image (no IP filter, no date filter) — most downloaded ever
-    const topDownloads = await db.download.groupBy({
-      by: ["imageId"],
-      where: { imageId: { not: null } },
-      _count: { imageId: true },
-      orderBy: { _count: { imageId: "desc" } },
-      take: 20,
-    });
-    const topImageIds = topDownloads.map(d => d.imageId).filter(Boolean) as string[];
-    if (topImageIds.length > 0) {
-      const trendingImages = await db.image.findMany({
-        where: { id: { in: topImageIds }, isAdult: false, deviceType: { in: ["IPHONE", "ANDROID"] } },
-        select: { id: true, slug: true, title: true, r2Key: true, deviceType: true, tags: true,
-          _count: { select: { downloads: true } } },
-      });
-      trendingThisWeek = topImageIds
-        .map(id => trendingImages.find(img => img.id === id))
-        .filter(Boolean)
-        .slice(0, 6) as typeof trendingThisWeek;
-    }
+    // Cached trending — runs at most once per hour
+    trendingThisWeek = await getCachedTrending();
   } catch (err) {
     console.error("[home/page] DB error (trending):", err);
   }
@@ -349,6 +358,7 @@ export default async function Home() {
         const pos = (Date.now() - EPOCH_MS) % CYCLE_MS;
         // UNLOCKED = first 24h of each 48h cycle, LOCKED = second 24h
         const isLockedGlobal = pos >= UNLOCK_MS;
+
         const premiumItems = premiumThisWeek.map((img) => {
           const devicePath = img.deviceType === "IPHONE" ? "iphone" : img.deviceType === "ANDROID" ? "android" : "pc";
           return {
