@@ -342,12 +342,12 @@ export default async function Home() {
           SECTION — PREMIUM THIS WEEK
       ══════════════════════════════════════════════════════════ */}
       {premiumThisWeek.length > 0 && (() => {
-        // EPOCH_MS clock — matches PremiumCountdown.tsx and IphoneImageGrid.tsx exactly
+        // Must match premium-lock.ts exactly — 72h cycle, unlocked first 48h, locked last 24h
         const EPOCH_MS  = Date.UTC(2025, 0, 1, 0, 0, 0); // Jan 1 2025 00:00 UTC
-        const CYCLE_MS  = 48 * 60 * 60 * 1000;            // 48-hour full cycle
-        const UNLOCK_MS = 24 * 60 * 60 * 1000;            // first 24h = unlocked
+        const CYCLE_MS  = 72 * 60 * 60 * 1000;            // 72-hour full cycle
+        const UNLOCK_MS = 48 * 60 * 60 * 1000;            // first 48h = unlocked
         const pos = (Date.now() - EPOCH_MS) % CYCLE_MS;
-        // UNLOCKED = first 24h of each 48h cycle, LOCKED = second 24h
+        // UNLOCKED = first 48h of each 72h cycle, LOCKED = last 24h
         const isLockedGlobal = pos >= UNLOCK_MS;
 
         const premiumItems = premiumThisWeek.map((img) => {
