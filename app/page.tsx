@@ -16,7 +16,19 @@ import PremiumCountdown from "@/components/PremiumCountdown";
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
 const OG_IMAGE = `${SITE_URL}/og-image.jpg`;
 
-// ── Cached trending — groupBy is expensive, rankings don't need to be live ──
+// ── WOTD cached by date string — stable all day, changes at UTC midnight ─────
+// Key includes today's date so cache busts automatically each new day.
+// Even if the page redeploys 10 times today, WOTD stays the same image.
+function getTodayKey() {
+  return new Date().toISOString().slice(0, 10); // "2026-05-11"
+}
+const getCachedWotd = unstable_cache(
+  () => getWallpaperOfTheDay(),
+  ["wotd"],
+  { revalidate: 3600, tags: [`wotd-${getTodayKey()}`] },
+);
+
+// ── Trending cached 1 hour — groupBy is expensive ────────────────────────────
 const getCachedTrending = unstable_cache(
   async () => {
     const topDownloads = await db.download.groupBy({
@@ -68,7 +80,7 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export const revalidate = 3600; // rebuild hourly — new badges appear within 1 hour
+export const revalidate = 3600; // page rebuilds hourly — new badges appear within 1 hour
 
 export default async function Home() {
   // ── Wrap ALL db calls in try/catch so a DB hiccup never produces a 500 ──
@@ -82,7 +94,7 @@ export default async function Home() {
 
   try {
     [wotd, totalImages] = await Promise.all([
-      getWallpaperOfTheDay(),
+      getCachedWotd(),  // stable all day — won't change on redeploy
       db.image.count(),
     ]);
   } catch (err) {
@@ -125,7 +137,6 @@ export default async function Home() {
   }
 
   try {
-    // Cached trending — runs at most once per hour
     trendingThisWeek = await getCachedTrending();
   } catch (err) {
     console.error("[home/page] DB error (trending):", err);
