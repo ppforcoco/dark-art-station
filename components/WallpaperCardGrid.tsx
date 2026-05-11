@@ -5,13 +5,20 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 
 // ─── Cycle constants — must match all other files ────────────────────────────
-const EPOCH_MS = Date.UTC(2025, 0, 1, 0, 0, 0);
-const CYCLE_MS = 48 * 60 * 60 * 1000;
+const EPOCH_MS  = Date.UTC(2025, 0, 1, 0, 0, 0);
+const CYCLE_MS  = 48 * 60 * 60 * 1000;
+const UNLOCK_MS = 24 * 60 * 60 * 1000;
+
+/** Always derived from client clock — never trusts stale server prop */
+function getClientIsLocked(): boolean {
+  const pos = (Date.now() - EPOCH_MS) % CYCLE_MS;
+  return pos >= UNLOCK_MS;
+}
 
 function getMsUntilUnlock(): number {
   const pos = (Date.now() - EPOCH_MS) % CYCLE_MS;
-  const UNLOCK_MS = 24 * 60 * 60 * 1000;
-  return Math.max(0, CYCLE_MS - pos);
+  if (pos >= UNLOCK_MS) return Math.max(0, CYCLE_MS - pos);
+  return 0;
 }
 
 function fmtMs(ms: number) {
@@ -65,8 +72,8 @@ export default function WallpaperCardGrid({ items, accentRgb, badge, badgeColor 
       margin: "0 auto",
     }}>
       {items.map((img) => {
-        /* LOCKED CARD */
-        if (img.isLocked) {
+        /* LOCKED CARD — always derived from client clock, never from stale server prop */
+        if (img.isLocked && getClientIsLocked()) {
           return (
             <div
               key={img.id}
