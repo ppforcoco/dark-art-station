@@ -19,7 +19,7 @@ const WALLPAPERS = [
     filename: "whispering-woods-desktop-4k.jpg",
     phase: "Phase 1 — The Invitation",
     phaseColor: "#6a8a6a",
-    seoAlt: "Dark foggy horror forest 4K desktop wallpaper — Whispering Woods matching set for PC",
+    seoAlt: "Whispering woods foggy horror forest 4K desktop background for gaming setup",
   },
   {
     id: "mobile-lockscreen",
@@ -31,7 +31,7 @@ const WALLPAPERS = [
     filename: "whispering-woods-lockscreen-4k.jpg",
     phase: "Phase 1 — The Invitation",
     phaseColor: "#6a8a6a",
-    seoAlt: "Dark forest cabin horror aesthetic iPhone lockscreen wallpaper 9:16 OLED optimized",
+    seoAlt: "Dark forest aesthetic wallpaper with cabin light for iPhone 15 Pro Max",
   },
   {
     id: "mobile-homescreen",
@@ -43,7 +43,7 @@ const WALLPAPERS = [
     filename: "whispering-woods-homescreen-4k.jpg",
     phase: "Phase 2 — The Reach",
     phaseColor: "#8a6a2a",
-    seoAlt: "Scary tree hand horror nature mobile background wallpaper 9:16 for iPhone and Android",
+    seoAlt: "Scary gnarled tree hand reaching out horror nature wallpaper for mobile",
   },
   {
     id: "avatar",
@@ -55,7 +55,7 @@ const WALLPAPERS = [
     filename: "whispering-woods-avatar-4k.jpg",
     phase: "Phase 3 — The Watcher in the Mist",
     phaseColor: "#c0001a",
-    seoAlt: "Red eyes monster forest horror profile picture square 1:1 for Discord and social media",
+    seoAlt: "Red glowing eyes monster in dark forest square PFP for horror fans",
   },
   {
     id: "smartwatch",
@@ -67,7 +67,7 @@ const WALLPAPERS = [
     filename: "whispering-woods-smartwatch-4k.jpg",
     phase: "Phase 3 — The Watcher in the Mist",
     phaseColor: "#c0001a",
-    seoAlt: "Yellow glowing eyes mist horror smartwatch wallpaper Apple Watch Galaxy Watch 1:1",
+    seoAlt: "Yellow glowing eyes in the mist horror smartwatch wallpaper for Apple Watch",
   },
 ];
 
@@ -260,7 +260,7 @@ export default function WhisperingWoodsPage() {
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={WALLPAPERS[0].preview}
-                alt="Whispering Woods foggy horror forest 4K desktop background"
+                alt="Whispering woods foggy horror forest 4K desktop background for gaming setup"
                 className="cs-collage__img"
                 loading="eager"
               />
@@ -276,7 +276,7 @@ export default function WhisperingWoodsPage() {
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={WALLPAPERS[1].preview}
-                    alt="Dark forest cabin horror aesthetic iPhone lockscreen wallpaper"
+                    alt="Dark forest aesthetic wallpaper with cabin light for iPhone 15 Pro Max"
                     className="cs-collage__phone-img"
                     loading="eager"
                   />
@@ -292,7 +292,7 @@ export default function WhisperingWoodsPage() {
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={WALLPAPERS[4].preview}
-                    alt="Yellow glowing eyes mist horror smartwatch wallpaper"
+                    alt="Yellow glowing eyes in the mist horror smartwatch wallpaper for Apple Watch"
                     className="cs-collage__watch-img"
                     loading="eager"
                   />

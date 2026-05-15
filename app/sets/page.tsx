@@ -56,6 +56,18 @@ const SETS = [
     count: 5,
     devices: ["Desktop", "Mobile", "Smartwatch", "Avatar"],
   },
+  {
+    slug: "whispering-woods",
+    title: "The Whispering Woods",
+    subtitle: "A Matching Dark Nature Horror Kit",
+    description:
+      "A terrifying three-phase story of a forest that never sleeps — and the predator that watches from within it. Deep blacks and high-contrast fog designed specifically to save battery on OLED screens. Covers PC, phone, smartwatch, and avatar.",
+    thumbnail:
+      "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/sets/The%20Whispering%20Woods%3A%20A%20Matching%20Dark%20Nature%20Setup%20Kit/whispering-woods-foggy-horror-forest-4k-deskto.webp",
+    tags: ["dark nature", "forest horror", "gothic aesthetic", "matching set"],
+    count: 5,
+    devices: ["Desktop", "Mobile", "Smartwatch", "Avatar"],
+  },
 ];
 
 export default function SetsPage() {
@@ -125,11 +137,11 @@ export default function SetsPage() {
           padding: "0 clamp(20px,5vw,60px) clamp(64px,10vw,120px)",
         }}
       >
-        {SETS.map((set) => (
+        {SETS.map((set, idx) => (
           <Link
             key={set.slug}
             href={`/sets/${set.slug}`}
-            style={{ textDecoration: "none", display: "block" }}
+            style={{ textDecoration: "none", display: "block", marginBottom: idx < SETS.length - 1 ? "clamp(24px,4vw,48px)" : 0 }}
           >
             <article className="set-card">
               {/* Thumbnail */}
@@ -144,7 +156,7 @@ export default function SetsPage() {
 
               {/* Info */}
               <div className="set-card__body">
-                <span className="set-card__eyebrow">Set No. 01</span>
+                <span className="set-card__eyebrow">Set No. {String(idx + 1).padStart(2, "0")}</span>
                 <h2 className="set-card__title">{set.title}</h2>
                 <p className="set-card__sub">{set.subtitle}</p>
                 <p className="set-card__desc">{set.description}</p>
