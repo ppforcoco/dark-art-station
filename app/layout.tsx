@@ -110,6 +110,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="icon" type="image/x-icon" href="/favicon.ico" />
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
 
+        {/* ── Pinterest Domain Verification ───────────────────────────── */}
+        <meta name="p:domain_verify" content="6f1c92d3b0307e9bf30220a5068ce8af" />
+
         {/* ── Mobile meta ─────────────────────────────────────────────── */}
         <meta name="theme-color" content="#0c0b14" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
