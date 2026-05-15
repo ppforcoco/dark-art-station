@@ -373,7 +373,7 @@ export default function CursedStudentPage() {
           </div>
         </section>
 
-        {/* ── WALLPAPERS ── */}
+        {/* ── WALLPAPERS GRID ── */}
         <section
           style={{
             maxWidth: "1100px",
@@ -386,63 +386,138 @@ export default function CursedStudentPage() {
             <h2 className="cs-section-title">5 Wallpapers. Every Screen Covered.</h2>
           </div>
 
-          <div className="cs-grid">
-            {WALLPAPERS.map((w, i) => (
-              <article key={w.id} className="cs-card">
-                {/* Phase badge */}
-                <span
-                  className="cs-card__phase"
-                  style={{ color: w.phaseColor, borderColor: `${w.phaseColor}44` }}
-                >
-                  {w.phase}
-                </span>
+          {/*
+            Layout strategy:
+            - Row 1: Desktop (16:9) spans full width
+            - Row 2: Two mobile (9:16) + two square (1:1) side by side
+            We use a CSS grid with named areas for clean control.
+          */}
+          <div className="cs-wall-layout">
 
-                {/* Image */}
-                <div className={`cs-card__frame ${w.ratioClass}`}>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={w.preview}
-                    alt={w.seoAlt}
-                    className="cs-card__img"
-                    loading={i < 2 ? "eager" : "lazy"}
-                  />
-                  <div className="cs-card__corners" aria-hidden="true">
-                    <span /><span /><span /><span />
-                  </div>
-                  <span className="cs-card__ratio-badge">{w.ratio}</span>
+            {/* ── ROW 1: Desktop 16:9 (full width) ── */}
+            <div className="cs-wall-item cs-wall-item--desktop">
+              <div className="cs-wall-item__frame cs-wall-item__frame--16-9">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={WALLPAPERS[0].preview}
+                  alt={WALLPAPERS[0].seoAlt}
+                  className="cs-wall-item__img"
+                  loading="eager"
+                />
+                <div className="cs-wall-item__corners" aria-hidden="true">
+                  <span /><span /><span /><span />
                 </div>
-
-                {/* Info */}
-                <div className="cs-card__body">
-                  <h3 className="cs-card__label">{w.label}</h3>
-                  <p className="cs-card__desc">{w.description}</p>
-                  <p className="cs-card__best">
-                    <span style={{ color: "#60608a" }}>Best for: </span>
-                    {w.best}
-                  </p>
-
-                  {/* Pinterest Pin button */}
+                <span className="cs-wall-item__ratio-badge">{WALLPAPERS[0].ratio}</span>
+                <div className="cs-wall-item__overlay">
                   <a
-                    href={`https://pinterest.com/pin/create/button/?url=https://hauntedwallpapers.com/sets/haunted-anime-student&media=${encodeURIComponent(w.preview)}&description=${encodeURIComponent(w.seoAlt)}`}
+                    href={`https://pinterest.com/pin/create/button/?url=https://hauntedwallpapers.com/sets/haunted-anime-student&media=${encodeURIComponent(WALLPAPERS[0].preview)}&description=${encodeURIComponent(WALLPAPERS[0].seoAlt)}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="cs-pin-btn"
                     aria-label="Pin to Pinterest"
+                    onClick={(e) => e.stopPropagation()}
                   >
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12c0 5.084 3.163 9.426 7.627 11.174-.105-.949-.2-2.405.042-3.441.218-.937 1.407-5.965 1.407-5.965s-.359-.719-.359-1.782c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.69 0 1.029-.655 2.568-.994 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 1.031.397 2.138.893 2.738a.36.36 0 0 1 .083.345l-.333 1.36c-.053.22-.174.267-.402.161-1.499-.698-2.436-2.889-2.436-4.649 0-3.785 2.75-7.262 7.929-7.262 4.163 0 7.398 2.967 7.398 6.931 0 4.136-2.607 7.464-6.227 7.464-1.216 0-2.359-.632-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0z"/></svg>
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12c0 5.084 3.163 9.426 7.627 11.174-.105-.949-.2-2.405.042-3.441.218-.937 1.407-5.965 1.407-5.965s-.359-.719-.359-1.782c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.69 0 1.029-.655 2.568-.994 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 1.031.397 2.138.893 2.738a.36.36 0 0 1 .083.345l-.333 1.36c-.053.22-.174.267-.402.161-1.499-.698-2.436-2.889-2.436-4.649 0-3.785 2.75-7.262 7.929-7.262 4.163 0 7.398 2.967 7.398 6.931 0 4.136-2.607 7.464-6.227 7.464-1.216 0-2.359-.632-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0z"/></svg>
                     Save
                   </a>
-                  <a
-                    href={w.download}
-                    download={w.filename}
-                    className="cs-btn cs-btn--full"
-                  >
-                    ↓ Download 4K Free
-                  </a>
                 </div>
-              </article>
-            ))}
-          </div>
+              </div>
+              <div className="cs-wall-item__footer">
+                <span className="cs-wall-item__phase" style={{ color: WALLPAPERS[0].phaseColor, borderColor: `${WALLPAPERS[0].phaseColor}44` }}>{WALLPAPERS[0].phase}</span>
+                <span className="cs-wall-item__label">{WALLPAPERS[0].label}</span>
+              </div>
+            </div>
+
+            {/* ── ROW 2: Two 9:16 mobile + two 1:1 square ── */}
+            <div className="cs-wall-row2">
+
+              {/* Mobile 1 — 9:16 */}
+              <div className="cs-wall-item">
+                <div className="cs-wall-item__frame cs-wall-item__frame--9-16">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={WALLPAPERS[1].preview} alt={WALLPAPERS[1].seoAlt} className="cs-wall-item__img" loading="lazy" />
+                  <div className="cs-wall-item__corners" aria-hidden="true"><span /><span /><span /><span /></div>
+                  <span className="cs-wall-item__ratio-badge">{WALLPAPERS[1].ratio}</span>
+                  <div className="cs-wall-item__overlay">
+                    <a href={`https://pinterest.com/pin/create/button/?url=https://hauntedwallpapers.com/sets/haunted-anime-student&media=${encodeURIComponent(WALLPAPERS[1].preview)}&description=${encodeURIComponent(WALLPAPERS[1].seoAlt)}`} target="_blank" rel="noopener noreferrer" className="cs-pin-btn" onClick={(e) => e.stopPropagation()}>
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12c0 5.084 3.163 9.426 7.627 11.174-.105-.949-.2-2.405.042-3.441.218-.937 1.407-5.965 1.407-5.965s-.359-.719-.359-1.782c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.69 0 1.029-.655 2.568-.994 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 1.031.397 2.138.893 2.738a.36.36 0 0 1 .083.345l-.333 1.36c-.053.22-.174.267-.402.161-1.499-.698-2.436-2.889-2.436-4.649 0-3.785 2.75-7.262 7.929-7.262 4.163 0 7.398 2.967 7.398 6.931 0 4.136-2.607 7.464-6.227 7.464-1.216 0-2.359-.632-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0z"/></svg>
+                      Save
+                    </a>
+                  </div>
+                </div>
+                <div className="cs-wall-item__footer">
+                  <span className="cs-wall-item__phase" style={{ color: WALLPAPERS[1].phaseColor, borderColor: `${WALLPAPERS[1].phaseColor}44` }}>{WALLPAPERS[1].phase}</span>
+                  <span className="cs-wall-item__label">{WALLPAPERS[1].label}</span>
+                </div>
+              </div>
+
+              {/* Mobile 2 (Home Screen) — 9:16 */}
+              <div className="cs-wall-item">
+                <div className="cs-wall-item__frame cs-wall-item__frame--9-16">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={WALLPAPERS[4].preview} alt={WALLPAPERS[4].seoAlt} className="cs-wall-item__img" loading="lazy" />
+                  <div className="cs-wall-item__corners" aria-hidden="true"><span /><span /><span /><span /></div>
+                  <span className="cs-wall-item__ratio-badge">{WALLPAPERS[4].ratio}</span>
+                  <div className="cs-wall-item__overlay">
+                    <a href={`https://pinterest.com/pin/create/button/?url=https://hauntedwallpapers.com/sets/haunted-anime-student&media=${encodeURIComponent(WALLPAPERS[4].preview)}&description=${encodeURIComponent(WALLPAPERS[4].seoAlt)}`} target="_blank" rel="noopener noreferrer" className="cs-pin-btn" onClick={(e) => e.stopPropagation()}>
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12c0 5.084 3.163 9.426 7.627 11.174-.105-.949-.2-2.405.042-3.441.218-.937 1.407-5.965 1.407-5.965s-.359-.719-.359-1.782c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.69 0 1.029-.655 2.568-.994 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 1.031.397 2.138.893 2.738a.36.36 0 0 1 .083.345l-.333 1.36c-.053.22-.174.267-.402.161-1.499-.698-2.436-2.889-2.436-4.649 0-3.785 2.75-7.262 7.929-7.262 4.163 0 7.398 2.967 7.398 6.931 0 4.136-2.607 7.464-6.227 7.464-1.216 0-2.359-.632-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0z"/></svg>
+                      Save
+                    </a>
+                  </div>
+                </div>
+                <div className="cs-wall-item__footer">
+                  <span className="cs-wall-item__phase" style={{ color: WALLPAPERS[4].phaseColor, borderColor: `${WALLPAPERS[4].phaseColor}44` }}>{WALLPAPERS[4].phase}</span>
+                  <span className="cs-wall-item__label">{WALLPAPERS[4].label}</span>
+                </div>
+              </div>
+
+              {/* Square column: Avatar + Watch stacked */}
+              <div className="cs-wall-squares">
+
+                {/* Avatar — 1:1 */}
+                <div className="cs-wall-item">
+                  <div className="cs-wall-item__frame cs-wall-item__frame--1-1">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={WALLPAPERS[2].preview} alt={WALLPAPERS[2].seoAlt} className="cs-wall-item__img" loading="lazy" />
+                    <div className="cs-wall-item__corners" aria-hidden="true"><span /><span /><span /><span /></div>
+                    <span className="cs-wall-item__ratio-badge">{WALLPAPERS[2].ratio}</span>
+                    <div className="cs-wall-item__overlay">
+                      <a href={`https://pinterest.com/pin/create/button/?url=https://hauntedwallpapers.com/sets/haunted-anime-student&media=${encodeURIComponent(WALLPAPERS[2].preview)}&description=${encodeURIComponent(WALLPAPERS[2].seoAlt)}`} target="_blank" rel="noopener noreferrer" className="cs-pin-btn" onClick={(e) => e.stopPropagation()}>
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12c0 5.084 3.163 9.426 7.627 11.174-.105-.949-.2-2.405.042-3.441.218-.937 1.407-5.965 1.407-5.965s-.359-.719-.359-1.782c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.69 0 1.029-.655 2.568-.994 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 1.031.397 2.138.893 2.738a.36.36 0 0 1 .083.345l-.333 1.36c-.053.22-.174.267-.402.161-1.499-.698-2.436-2.889-2.436-4.649 0-3.785 2.75-7.262 7.929-7.262 4.163 0 7.398 2.967 7.398 6.931 0 4.136-2.607 7.464-6.227 7.464-1.216 0-2.359-.632-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0z"/></svg>
+                        Save
+                      </a>
+                    </div>
+                  </div>
+                  <div className="cs-wall-item__footer">
+                    <span className="cs-wall-item__phase" style={{ color: WALLPAPERS[2].phaseColor, borderColor: `${WALLPAPERS[2].phaseColor}44` }}>{WALLPAPERS[2].phase}</span>
+                    <span className="cs-wall-item__label">{WALLPAPERS[2].label}</span>
+                  </div>
+                </div>
+
+                {/* Watch — 1:1 */}
+                <div className="cs-wall-item">
+                  <div className="cs-wall-item__frame cs-wall-item__frame--1-1">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={WALLPAPERS[3].preview} alt={WALLPAPERS[3].seoAlt} className="cs-wall-item__img" loading="lazy" />
+                    <div className="cs-wall-item__corners" aria-hidden="true"><span /><span /><span /><span /></div>
+                    <span className="cs-wall-item__ratio-badge">{WALLPAPERS[3].ratio}</span>
+                    <div className="cs-wall-item__overlay">
+                      <a href={`https://pinterest.com/pin/create/button/?url=https://hauntedwallpapers.com/sets/haunted-anime-student&media=${encodeURIComponent(WALLPAPERS[3].preview)}&description=${encodeURIComponent(WALLPAPERS[3].seoAlt)}`} target="_blank" rel="noopener noreferrer" className="cs-pin-btn" onClick={(e) => e.stopPropagation()}>
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12c0 5.084 3.163 9.426 7.627 11.174-.105-.949-.2-2.405.042-3.441.218-.937 1.407-5.965 1.407-5.965s-.359-.719-.359-1.782c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.69 0 1.029-.655 2.568-.994 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 1.031.397 2.138.893 2.738a.36.36 0 0 1 .083.345l-.333 1.36c-.053.22-.174.267-.402.161-1.499-.698-2.436-2.889-2.436-4.649 0-3.785 2.75-7.262 7.929-7.262 4.163 0 7.398 2.967 7.398 6.931 0 4.136-2.607 7.464-6.227 7.464-1.216 0-2.359-.632-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0z"/></svg>
+                        Save
+                      </a>
+                    </div>
+                  </div>
+                  <div className="cs-wall-item__footer">
+                    <span className="cs-wall-item__phase" style={{ color: WALLPAPERS[3].phaseColor, borderColor: `${WALLPAPERS[3].phaseColor}44` }}>{WALLPAPERS[3].phase}</span>
+                    <span className="cs-wall-item__label">{WALLPAPERS[3].label}</span>
+                  </div>
+                </div>
+
+              </div>{/* end squares column */}
+            </div>{/* end row2 */}
+
+          </div>{/* end wall-layout */}
         </section>
 
         {/* ── THREE PHASES ── */}
@@ -632,6 +707,183 @@ export default function CursedStudentPage() {
 
       {/* ── STYLES ── */}
       <style>{`
+        /* ── WALLPAPER LAYOUT ───────────────────────────────────────── */
+
+        .cs-wall-layout {
+          display: flex;
+          flex-direction: column;
+          gap: 12px;
+        }
+
+        /* Row 2: two portrait columns + one square-stack column */
+        .cs-wall-row2 {
+          display: grid;
+          grid-template-columns: 1fr 1fr 1fr;
+          gap: 12px;
+          align-items: start;
+        }
+
+        /* Square stack: avatar + watch side-by-side on desktop,
+           stacked within the third column */
+        .cs-wall-squares {
+          display: flex;
+          flex-direction: column;
+          gap: 12px;
+        }
+
+        /* ── Individual wall item ── */
+        .cs-wall-item {
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+        }
+
+        .cs-wall-item__frame {
+          position: relative;
+          overflow: hidden;
+          border: 1px solid rgba(192,0,26,0.2);
+          background: #080810;
+          transition: border-color 0.3s ease, box-shadow 0.3s ease;
+          cursor: pointer;
+        }
+        .cs-wall-item__frame:hover {
+          border-color: rgba(192,0,26,0.5);
+          box-shadow: 0 0 32px rgba(192,0,26,0.1);
+        }
+
+        /* Correct aspect ratios — no distortion */
+        .cs-wall-item__frame--16-9 { aspect-ratio: 16 / 9; width: 100%; }
+        .cs-wall-item__frame--9-16 { aspect-ratio: 9 / 16; width: 100%; }
+        .cs-wall-item__frame--1-1  { aspect-ratio: 1 / 1;  width: 100%; }
+
+        .cs-wall-item__img {
+          position: absolute;
+          inset: 0;
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          display: block;
+          transition: transform 0.5s ease;
+        }
+        .cs-wall-item__frame:hover .cs-wall-item__img { transform: scale(1.03); }
+
+        /* Corner brackets */
+        .cs-wall-item__corners {
+          position: absolute;
+          inset: 0;
+          pointer-events: none;
+        }
+        .cs-wall-item__corners span {
+          position: absolute;
+          width: 12px; height: 12px;
+          border-color: rgba(192,0,26,0.55);
+          border-style: solid;
+        }
+        .cs-wall-item__corners span:nth-child(1) { top: 6px; left: 6px; border-width: 1.5px 0 0 1.5px; }
+        .cs-wall-item__corners span:nth-child(2) { top: 6px; right: 6px; border-width: 1.5px 1.5px 0 0; }
+        .cs-wall-item__corners span:nth-child(3) { bottom: 6px; left: 6px; border-width: 0 0 1.5px 1.5px; }
+        .cs-wall-item__corners span:nth-child(4) { bottom: 6px; right: 6px; border-width: 0 1.5px 1.5px 0; }
+
+        /* Ratio badge (bottom-right) */
+        .cs-wall-item__ratio-badge {
+          position: absolute;
+          bottom: 7px; right: 8px;
+          font-family: var(--font-space, monospace);
+          font-size: 0.48rem;
+          letter-spacing: 0.14em;
+          color: rgba(255,255,255,0.5);
+          background: rgba(0,0,0,0.65);
+          padding: 2px 6px;
+          border-radius: 2px;
+          pointer-events: none;
+        }
+
+        /* Hover overlay — shows Pinterest save button */
+        .cs-wall-item__overlay {
+          position: absolute;
+          inset: 0;
+          display: flex;
+          align-items: flex-start;
+          justify-content: flex-end;
+          padding: 10px;
+          opacity: 0;
+          transition: opacity 0.2s ease;
+          pointer-events: none;
+        }
+        .cs-wall-item__frame:hover .cs-wall-item__overlay {
+          opacity: 1;
+          pointer-events: auto;
+        }
+
+        /* Footer: phase badge + label */
+        .cs-wall-item__footer {
+          display: flex;
+          flex-direction: column;
+          gap: 3px;
+          padding: 0 2px;
+        }
+        .cs-wall-item__phase {
+          font-family: var(--font-space, monospace);
+          font-size: 0.46rem;
+          letter-spacing: 0.18em;
+          text-transform: uppercase;
+          border: 1px solid;
+          padding: 2px 7px;
+          display: inline-block;
+          width: fit-content;
+          background: rgba(0,0,0,0.2);
+        }
+        .cs-wall-item__label {
+          font-family: var(--font-cinzel, serif);
+          font-size: clamp(0.7rem, 1.1vw, 0.85rem);
+          color: #e8ddd0;
+          letter-spacing: 0.03em;
+        }
+
+        /* ── Pinterest Save button ── */
+        .cs-pin-btn {
+          display: inline-flex;
+          align-items: center;
+          gap: 5px;
+          padding: 5px 10px;
+          background: #e60023;
+          color: #fff;
+          border: none;
+          border-radius: 2px;
+          font-family: var(--font-space, monospace);
+          font-size: 0.52rem;
+          letter-spacing: 0.12em;
+          text-transform: uppercase;
+          text-decoration: none;
+          transition: background 0.2s, transform 0.15s;
+          cursor: pointer;
+        }
+        .cs-pin-btn:hover { background: #c0001b; transform: translateY(-1px); }
+
+        /* ── Responsive ── */
+        @media (max-width: 700px) {
+          .cs-wall-row2 {
+            grid-template-columns: 1fr 1fr;
+          }
+          /* On mobile: squares go in their own row below */
+          .cs-wall-squares {
+            grid-column: 1 / -1;
+            flex-direction: row;
+            gap: 12px;
+          }
+          .cs-wall-squares .cs-wall-item {
+            flex: 1;
+          }
+        }
+        @media (max-width: 440px) {
+          .cs-wall-row2 {
+            grid-template-columns: 1fr;
+          }
+          .cs-wall-squares {
+            flex-direction: row;
+          }
+        }
+
         /* ── Eyebrow ── */
         .cs-eyebrow {
           display: block;
@@ -707,24 +959,10 @@ export default function CursedStudentPage() {
           );
           pointer-events: none;
         }
-        .cs-collage__phones {
-          display: flex;
-          flex-direction: row;
-          gap: 12px;
-          align-items: flex-start;
-        }
         .cs-collage__phone-wrap {
           position: relative;
           width: clamp(90px, 15%, 160px);
           flex-shrink: 0;
-        }
-        .cs-collage__phone-wrap .cs-collage__device-label {
-          position: relative;
-          top: auto; left: auto;
-          display: block;
-          margin-bottom: 8px;
-          background: none;
-          padding: 0;
         }
         .cs-collage__phone-shell {
           position: relative;
@@ -779,14 +1017,6 @@ export default function CursedStudentPage() {
           flex-shrink: 0;
           position: relative;
           align-self: flex-end;
-        }
-        .cs-collage__watch-wrap .cs-collage__device-label {
-          position: relative;
-          top: auto; left: auto;
-          display: block;
-          margin-bottom: 8px;
-          background: none;
-          padding: 0;
         }
         .cs-collage__watch-shell {
           position: relative;
@@ -888,149 +1118,6 @@ export default function CursedStudentPage() {
           color: #f0e8d8;
           margin: 0;
           letter-spacing: 0.04em;
-        }
-
-        /* ── Cards grid ── */
-        .cs-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-          gap: clamp(20px,3vw,32px);
-        }
-
-        /* ── Card ── */
-        .cs-card {
-          background: rgba(255,255,255,0.02);
-          border: 1px solid rgba(192,0,26,0.15);
-          padding: clamp(16px,2.5vw,24px);
-          display: flex;
-          flex-direction: column;
-          gap: 16px;
-          transition: border-color 0.3s, box-shadow 0.3s;
-        }
-        .cs-card:hover {
-          border-color: rgba(192,0,26,0.4);
-          box-shadow: 0 0 40px rgba(192,0,26,0.06);
-        }
-        .cs-card__phase {
-          font-family: var(--font-space, monospace);
-          font-size: 0.52rem;
-          letter-spacing: 0.2em;
-          text-transform: uppercase;
-          border: 1px solid;
-          padding: 4px 10px;
-          display: inline-block;
-          width: fit-content;
-          background: rgba(0,0,0,0.3);
-        }
-
-        /* ── Ratio frames ── */
-        .cs-card__frame {
-          position: relative;
-          overflow: hidden;
-          border-radius: 2px;
-          width: 100%;
-          background: #080810;
-        }
-        .ratio-16-9 { aspect-ratio: 16/9; }
-        .ratio-9-16 { aspect-ratio: 9/16; }
-        .ratio-1-1  { aspect-ratio: 1/1; }
-
-        .cs-card__img {
-          position: absolute;
-          inset: 0;
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
-          display: block;
-          transition: transform 0.5s ease;
-        }
-        .cs-card:hover .cs-card__img { transform: scale(1.03); }
-
-        .cs-card__corners {
-          position: absolute;
-          inset: 0;
-          pointer-events: none;
-        }
-        .cs-card__corners span {
-          position: absolute;
-          width: 14px; height: 14px;
-          border-color: rgba(192,0,26,0.6);
-          border-style: solid;
-        }
-        .cs-card__corners span:nth-child(1) { top: 7px; left: 7px; border-width: 1.5px 0 0 1.5px; }
-        .cs-card__corners span:nth-child(2) { top: 7px; right: 7px; border-width: 1.5px 1.5px 0 0; }
-        .cs-card__corners span:nth-child(3) { bottom: 7px; left: 7px; border-width: 0 0 1.5px 1.5px; }
-        .cs-card__corners span:nth-child(4) { bottom: 7px; right: 7px; border-width: 0 1.5px 1.5px 0; }
-
-        .cs-card__ratio-badge {
-          position: absolute;
-          bottom: 9px; right: 10px;
-          font-family: var(--font-space, monospace);
-          font-size: 0.52rem;
-          letter-spacing: 0.14em;
-          color: rgba(255,255,255,0.55);
-          background: rgba(0,0,0,0.7);
-          padding: 3px 7px;
-          border-radius: 2px;
-        }
-
-        .cs-card__body { display: flex; flex-direction: column; gap: 10px; }
-        .cs-card__label {
-          font-family: var(--font-cinzel, serif);
-          font-size: 0.95rem;
-          font-weight: 700;
-          color: #f0e8d8;
-          margin: 0;
-          letter-spacing: 0.04em;
-        }
-        .cs-card__desc {
-          font-family: var(--font-cormorant, serif);
-          font-size: 0.95rem;
-          line-height: 1.7;
-          color: rgba(224,224,248,0.6);
-          margin: 0;
-        }
-        .cs-card__best {
-          font-family: var(--font-space, monospace);
-          font-size: 0.56rem;
-          letter-spacing: 0.12em;
-          margin: 0;
-          color: rgba(224,224,248,0.55);
-        }
-
-        /* ── Download button ── */
-        .cs-btn {
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          padding: 11px 20px;
-          background: #c0001a;
-          color: #fff;
-          border: 1px solid #c0001a;
-          border-radius: 2px;
-          font-family: var(--font-space, monospace);
-          font-size: 0.65rem;
-          letter-spacing: 0.16em;
-          text-transform: uppercase;
-          text-decoration: none;
-          transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
-          position: relative;
-          overflow: hidden;
-          cursor: pointer;
-        }
-        .cs-btn::before {
-          content: '';
-          position: absolute;
-          inset: 0;
-          background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
-          transform: translateX(-100%);
-          transition: transform 0.4s ease;
-        }
-        .cs-btn:hover::before { transform: translateX(100%); }
-        .cs-btn:hover {
-          background: #a0001a;
-          box-shadow: 0 0 24px rgba(192,0,26,0.45);
-          transform: translateY(-1px);
         }
 
         /* ── Phases ── */
@@ -1180,11 +1267,73 @@ export default function CursedStudentPage() {
           box-shadow: 0 0 20px rgba(192,0,26,0.18);
         }
 
-        @media (max-width: 600px) {
-          .cs-grid { grid-template-columns: 1fr; }
-          .ratio-9-16 { max-height: none; }
-          .ratio-1-1  { max-height: none; }
-          .cs-phase { grid-template-columns: 32px 2px 1fr; gap: 12px; }
+        /* ── Explore More Grid ── */
+        .cs-explore-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+          gap: clamp(16px,2.5vw,24px);
+        }
+        .cs-explore-card {
+          background: rgba(255,255,255,0.02);
+          border: 1px solid rgba(192,0,26,0.12);
+          overflow: hidden;
+          transition: border-color 0.3s, box-shadow 0.3s;
+          text-decoration: none;
+          display: block;
+        }
+        .cs-explore-card:hover {
+          border-color: rgba(192,0,26,0.35);
+          box-shadow: 0 0 30px rgba(192,0,26,0.05);
+        }
+        .cs-explore-card__thumb {
+          aspect-ratio: 16/9;
+          background: #08060e;
+          position: relative;
+          overflow: hidden;
+        }
+        .cs-explore-card__img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          display: block;
+          transition: transform 0.4s ease;
+        }
+        .cs-explore-card:hover .cs-explore-card__img { transform: scale(1.04); }
+        .cs-explore-card__badge {
+          position: absolute;
+          top: 8px; left: 10px;
+          font-family: var(--font-space, monospace);
+          font-size: 0.48rem;
+          letter-spacing: 0.18em;
+          text-transform: uppercase;
+          color: #c0001a;
+          background: rgba(0,0,0,0.75);
+          border: 1px solid rgba(192,0,26,0.35);
+          padding: 2px 7px;
+          border-radius: 2px;
+        }
+        .cs-explore-card__body { padding: clamp(14px,2vw,20px); }
+        .cs-explore-card__title {
+          font-family: var(--font-cinzel, serif);
+          font-size: 0.95rem;
+          font-weight: 700;
+          color: #f0e8d8;
+          margin: 0 0 8px;
+          letter-spacing: 0.04em;
+        }
+        .cs-explore-card__desc {
+          font-family: var(--font-cormorant, serif);
+          font-size: 0.9rem;
+          line-height: 1.65;
+          color: rgba(224,224,248,0.5);
+          margin: 0 0 10px;
+        }
+        .cs-explore-card__cta {
+          font-family: var(--font-space, monospace);
+          font-size: 0.56rem;
+          letter-spacing: 0.16em;
+          text-transform: uppercase;
+          color: #c0001a;
         }
 
         /* ── Set No Badge ── */
@@ -1220,95 +1369,9 @@ export default function CursedStudentPage() {
           font-weight: 700;
         }
 
-        /* ── Pinterest Pin button ── */
-        .cs-pin-btn {
-          display: inline-flex;
-          align-items: center;
-          gap: 6px;
-          padding: 7px 14px;
-          background: #e60023;
-          color: #fff;
-          border: none;
-          border-radius: 2px;
-          font-family: var(--font-space, monospace);
-          font-size: 0.58rem;
-          letter-spacing: 0.14em;
-          text-transform: uppercase;
-          text-decoration: none;
-          transition: background 0.2s, transform 0.15s;
-          align-self: flex-start;
-          margin-bottom: 4px;
-        }
-        .cs-pin-btn:hover { background: #c0001b; transform: translateY(-1px); }
-
-        /* ── Full-width Red Download button ── */
-        .cs-btn--full {
-          width: 100%;
-          padding: 14px 20px;
-          font-size: 0.72rem;
-          letter-spacing: 0.18em;
-          font-weight: 700;
-          box-shadow: 0 0 28px rgba(192,0,26,0.4), 0 4px 16px rgba(0,0,0,0.5);
-        }
-        .cs-btn--full:hover {
-          box-shadow: 0 0 40px rgba(192,0,26,0.65), 0 4px 20px rgba(0,0,0,0.6);
-        }
-
-        /* ── Explore More Grid ── */
-        .cs-explore-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-          gap: clamp(16px,2.5vw,24px);
-        }
-        .cs-explore-card {
-          background: rgba(255,255,255,0.02);
-          border: 1px solid rgba(192,0,26,0.12);
-          overflow: hidden;
-          transition: border-color 0.3s, box-shadow 0.3s;
-        }
-        .cs-explore-card:hover {
-          border-color: rgba(192,0,26,0.35);
-          box-shadow: 0 0 30px rgba(192,0,26,0.05);
-        }
-        .cs-explore-card__thumb {
-          aspect-ratio: 16/9;
-          background: #08060e;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          gap: 8px;
-          position: relative;
-        }
-        .cs-explore-card__emoji { font-size: 2.5rem; }
-        .cs-explore-card__coming {
-          font-family: var(--font-space, monospace);
-          font-size: 0.52rem;
-          letter-spacing: 0.2em;
-          text-transform: uppercase;
-          color: rgba(192,0,26,0.6);
-          border: 1px solid rgba(192,0,26,0.25);
-          padding: 3px 8px;
-        }
-        .cs-explore-card__body { padding: clamp(14px,2vw,20px); }
-        .cs-explore-card__title {
-          font-family: var(--font-cinzel, serif);
-          font-size: 0.95rem;
-          font-weight: 700;
-          color: #f0e8d8;
-          margin: 0 0 8px;
-          letter-spacing: 0.04em;
-        }
-        .cs-explore-card__desc {
-          font-family: var(--font-cormorant, serif);
-          font-size: 0.9rem;
-          line-height: 1.65;
-          color: rgba(224,224,248,0.5);
-          margin: 0;
-        }
-
         @media (max-width: 500px) {
           .cs-set-badge { flex-direction: column; align-items: flex-start; gap: 8px; }
+          .cs-phase { grid-template-columns: 32px 2px 1fr; gap: 12px; }
         }
       `}</style>
 

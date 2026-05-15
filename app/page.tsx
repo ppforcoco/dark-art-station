@@ -1012,10 +1012,10 @@ export default async function Home() {
 
 
       {/* ══════════════════════════════════════════════════════════
-          SECTION — MATCHING SETS
+          SECTION — MATCHING SETS (compact one-row strip)
       ══════════════════════════════════════════════════════════ */}
       <section style={{
-        padding: "clamp(32px,5vw,64px) clamp(16px,5vw,72px)",
+        padding: "clamp(28px,4vw,52px) clamp(16px,5vw,72px)",
         background: "#08060f",
         position: "relative",
         overflow: "hidden",
@@ -1026,353 +1026,158 @@ export default async function Home() {
           pointerEvents: "none",
         }} />
 
-        <div className="dt-section-head dt-section-head--center" style={{ marginBottom: "clamp(28px,4vw,44px)", position: "relative" }}>
+        <div className="dt-section-head dt-section-head--center" style={{ marginBottom: "clamp(20px,3vw,32px)", position: "relative" }}>
           <span className="dt-eyebrow" style={{ color: "#c0001a" }}>Full Digital Identity</span>
-          <h2 className="dt-section-title">Premium Matching Horror Setup Kits</h2>
-          <p className="dt-section-sub" style={{ maxWidth: "620px", margin: "0 auto" }}>
-            Own the aesthetic across every device. Download professional 4K horror wallpaper kits curated for iPhone, Android, and PC. One dark vision, perfectly optimized for every screen you carry.
-          </p>
+          <h2 className="dt-section-title">Matching Horror Setup Kits</h2>
         </div>
 
-        <div style={{ maxWidth: "1000px", margin: "0 auto", position: "relative" }}>
-          <Link href="/sets/haunted-anime-student" style={{ textDecoration: "none", display: "block" }}>
-            <div className="hw-sets-card hw-sets-card--stacked">
-              {/* Left: PC top, then mobile+watch below */}
-              <div className="hw-sets-media-col">
-                {/* Desktop 16:9 — top */}
-                <div className="hw-sets-desktop hw-sets-desktop--full">
-                  <span className="hw-sets-device-label">Desktop · 16:9</span>
+        {/* ── Compact one-row strip of set cards ── */}
+        <div style={{
+          display: "flex",
+          gap: "clamp(12px,2vw,20px)",
+          maxWidth: "1000px",
+          margin: "0 auto",
+          position: "relative",
+          overflowX: "auto",
+          paddingBottom: "4px",
+        }}>
+          {[
+            {
+              href: "/sets/haunted-anime-student",
+              num: "01",
+              title: "The Cursed Student",
+              src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/sets/The%20Cursed%20Student%3A%20A%20Matching%20Dark%20Anime%20Horror%20Kit/cursed-student-dark-anime-4k-desktop-background.webp",
+              alt: "Cursed Student dark anime 4K desktop",
+            },
+            {
+              href: "/sets/whispering-woods",
+              num: "02",
+              title: "The Whispering Woods",
+              src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/sets/The%20Whispering%20Woods%3A%20A%20Matching%20Dark%20Nature%20Setup%20Kit/whispering-woods-foggy-horror-forest-4k-deskto.webp",
+              alt: "Whispering Woods foggy horror forest 4K desktop",
+            },
+          ].map((set) => (
+            <Link
+              key={set.num}
+              href={set.href}
+              style={{ textDecoration: "none", flex: "1 1 0", minWidth: "220px", maxWidth: "480px" }}
+            >
+              <div className="hw-set-strip-card">
+                <div className="hw-set-strip-card__img-wrap">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
-                    src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/sets/The%20Cursed%20Student%3A%20A%20Matching%20Dark%20Anime%20Horror%20Kit/cursed-student-dark-anime-4k-desktop-background.webp"
-                    alt="Cursed Student dark anime 4K desktop background"
-                    className="hw-sets-desktop__img"
+                    src={set.src}
+                    alt={set.alt}
+                    className="hw-set-strip-card__img"
                     loading="lazy"
                   />
-                  <div className="hw-sets-scanlines" aria-hidden="true" />
-                </div>
-                {/* Mobile + Watch row — below */}
-                <div className="hw-sets-bottom-row">
-                  <div className="hw-sets-phone hw-sets-phone--row">
-                    <span className="hw-sets-device-label">Mobile · 9:16</span>
-                    <div className="hw-sets-phone__shell">
-                      <div className="hw-sets-phone__island" aria-hidden="true" />
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/sets/The%20Cursed%20Student%3A%20A%20Matching%20Dark%20Anime%20Horror%20Kit/cursed-student-dark-anime-horror-wallpaper-mobile.webp"
-                        alt="Cursed Student mobile lockscreen wallpaper"
-                        className="hw-sets-phone__img"
-                        loading="lazy"
-                      />
-                      <div className="hw-sets-phone__gloss" aria-hidden="true" />
-                      <div className="hw-sets-phone__bar" aria-hidden="true" />
-                    </div>
-                  </div>
-                  <div className="hw-sets-watch hw-sets-watch--row">
-                    <span className="hw-sets-device-label">Watch · 1:1</span>
-                    <div className="hw-sets-watch__shell">
-                      <div className="hw-sets-watch__crown" aria-hidden="true" />
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/sets/The%20Cursed%20Student%3A%20A%20Matching%20Dark%20Anime%20Horror%20Kit/haunted-anime-boy-red-eyes-smartwatch-wallpaper.webp"
-                        alt="Haunted anime boy red eyes smartwatch wallpaper"
-                        className="hw-sets-watch__img"
-                        loading="lazy"
-                      />
-                      <div className="hw-sets-watch__gloss" aria-hidden="true" />
-                    </div>
+                  <div className="hw-set-strip-card__scanlines" aria-hidden="true" />
+                  <div className="hw-set-strip-card__hover" aria-hidden="true">
+                    <span>View Set →</span>
                   </div>
                 </div>
-              </div>
-
-              {/* Right: Text info */}
-              <div className="hw-sets-info">
-                <span className="hw-sets-info__tag">Set No. 01</span>
-                <h3 className="hw-sets-info__title">The Cursed Student</h3>
-                <p className="hw-sets-info__desc">
-                  A psychological horror anime aesthetic for every screen you own. Three phases of possession unified across your phone lock screen, home screen, smartwatch face, desktop background, and profile picture.
-                </p>
-                <div className="hw-sets-info__devices">
-                  {["Phone Lockscreen", "Home Screen", "Smartwatch", "Desktop", "Avatar"].map(d => (
-                    <span key={d} className="hw-sets-info__chip">{d}</span>
-                  ))}
-                </div>
-                <span className="hw-sets-info__cta">View Full Set →</span>
-              </div>
-            </div>
-          </Link>
-
-          {/* ── Set No. 02 — The Whispering Woods ── */}
-          <Link href="/sets/whispering-woods" style={{ textDecoration: "none", display: "block", marginTop: "clamp(24px,3vw,40px)" }}>
-            <div className="hw-sets-card hw-sets-card--stacked">
-              {/* Left: PC top, then mobile+watch below */}
-              <div className="hw-sets-media-col">
-                {/* Desktop 16:9 — top */}
-                <div className="hw-sets-desktop hw-sets-desktop--full">
-                  <span className="hw-sets-device-label">Desktop · 16:9</span>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/sets/The%20Whispering%20Woods%3A%20A%20Matching%20Dark%20Nature%20Setup%20Kit/whispering-woods-foggy-horror-forest-4k-deskto.webp"
-                    alt="Whispering Woods foggy horror forest 4K desktop background"
-                    className="hw-sets-desktop__img"
-                    loading="lazy"
-                  />
-                  <div className="hw-sets-scanlines" aria-hidden="true" />
-                </div>
-                {/* Mobile + Watch row — below */}
-                <div className="hw-sets-bottom-row">
-                  <div className="hw-sets-phone hw-sets-phone--row">
-                    <span className="hw-sets-device-label">Mobile · 9:16</span>
-                    <div className="hw-sets-phone__shell">
-                      <div className="hw-sets-phone__island" aria-hidden="true" />
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/sets/The%20Whispering%20Woods%3A%20A%20Matching%20Dark%20Nature%20Setup%20Kit/dark-forest-cabin-horror-aesthetic-iphone-wallpaper.webp"
-                        alt="Dark forest cabin horror iPhone lockscreen wallpaper"
-                        className="hw-sets-phone__img"
-                        loading="lazy"
-                      />
-                      <div className="hw-sets-phone__gloss" aria-hidden="true" />
-                      <div className="hw-sets-phone__bar" aria-hidden="true" />
-                    </div>
-                  </div>
-                  <div className="hw-sets-watch hw-sets-watch--row">
-                    <span className="hw-sets-device-label">Watch · 1:1</span>
-                    <div className="hw-sets-watch__shell">
-                      <div className="hw-sets-watch__crown" aria-hidden="true" />
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/sets/The%20Whispering%20Woods%3A%20A%20Matching%20Dark%20Nature%20Setup%20Kit/yellow-glowing-eyes-mist-smartwatch-wallpaper.webp"
-                        alt="Yellow glowing eyes mist horror smartwatch wallpaper"
-                        className="hw-sets-watch__img"
-                        loading="lazy"
-                      />
-                      <div className="hw-sets-watch__gloss" aria-hidden="true" />
-                    </div>
-                  </div>
+                <div className="hw-set-strip-card__footer">
+                  <span className="hw-set-strip-card__num">Set {set.num}</span>
+                  <span className="hw-set-strip-card__title">{set.title}</span>
                 </div>
               </div>
-
-              {/* Right: Text info */}
-              <div className="hw-sets-info">
-                <span className="hw-sets-info__tag">Set No. 02</span>
-                <h3 className="hw-sets-info__title">The Whispering Woods</h3>
-                <p className="hw-sets-info__desc">
-                  A dark forest horror aesthetic for every screen you own. Three phases of a forest that never sleeps — unified across your phone lockscreen, home screen, smartwatch face, and desktop.
-                </p>
-                <div className="hw-sets-info__devices">
-                  {["Phone Lockscreen", "Home Screen", "Smartwatch", "Desktop", "Avatar"].map(d => (
-                    <span key={d} className="hw-sets-info__chip">{d}</span>
-                  ))}
-                </div>
-                <span className="hw-sets-info__cta">View Full Set →</span>
-              </div>
-            </div>
-          </Link>
-
-          <div style={{ textAlign: "center", marginTop: "24px", position: "relative" }}>
-            <Link href="/sets" style={{
-              fontFamily: "var(--font-space, monospace)",
-              fontSize: "0.62rem",
-              letterSpacing: "0.18em",
-              textTransform: "uppercase",
-              color: "#60608a",
-              textDecoration: "none",
-            }}>
-              Browse All Matching Sets →
             </Link>
-          </div>
+          ))}
+        </div>
+
+        <div style={{ textAlign: "center", marginTop: "20px", position: "relative" }}>
+          <Link href="/sets" style={{
+            fontFamily: "var(--font-space, monospace)",
+            fontSize: "0.62rem",
+            letterSpacing: "0.18em",
+            textTransform: "uppercase",
+            color: "#60608a",
+            textDecoration: "none",
+          }}>
+            Browse All Matching Sets →
+          </Link>
         </div>
 
         <style>{`
-          .hw-sets-card {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: clamp(20px,3vw,48px);
-            background: rgba(255,255,255,0.02);
-            border: 1px solid rgba(192,0,26,0.22);
-            padding: clamp(20px,3vw,36px);
-            position: relative;
-            overflow: hidden;
-            transition: border-color 0.3s ease, box-shadow 0.3s ease;
-            cursor: pointer;
-          }
-          .hw-sets-card:hover {
-            border-color: rgba(192,0,26,0.48);
-            box-shadow: 0 0 60px rgba(192,0,26,0.07);
-          }
-          .hw-sets-card::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: radial-gradient(ellipse 50% 60% at 0% 100%, rgba(192,0,26,0.04), transparent);
-            pointer-events: none;
-          }
-          /* Media column: PC on top, mobile+watch below */
-          .hw-sets-media-col {
+          /* ── COMPACT SET STRIP CARD ── */
+          .hw-set-strip-card {
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 0;
+            border: 1px solid rgba(192,0,26,0.22);
+            overflow: hidden;
+            cursor: pointer;
+            transition: border-color 0.25s ease, box-shadow 0.25s ease;
           }
-          .hw-sets-desktop--full { position: relative; }
-          .hw-sets-bottom-row {
-            display: flex;
-            gap: 10px;
-            align-items: flex-start;
+          .hw-set-strip-card:hover {
+            border-color: rgba(192,0,26,0.5);
+            box-shadow: 0 0 40px rgba(192,0,26,0.08);
           }
-          .hw-sets-phone--row { flex: 0 0 auto; width: clamp(70px,13%,110px); }
-          .hw-sets-watch--row { flex: 0 0 auto; width: clamp(56px,10%,88px); align-self: flex-end; }
-          .hw-sets-device-label {
-            display: block;
-            font-family: var(--font-space, monospace);
-            font-size: 0.48rem;
-            letter-spacing: 0.18em;
-            text-transform: uppercase;
-            color: rgba(255,255,255,0.35);
-            margin-bottom: 6px;
-          }
-          .hw-sets-desktop__img {
+          .hw-set-strip-card__img-wrap {
+            position: relative;
             width: 100%;
-            aspect-ratio: 16/9;
+            aspect-ratio: 16 / 9;
+            overflow: hidden;
+            background: #0a0810;
+          }
+          .hw-set-strip-card__img {
+            width: 100%;
+            height: 100%;
             object-fit: cover;
             display: block;
-            border-radius: 3px;
-            border: 1.5px solid rgba(192,0,26,0.3);
-            box-shadow: 0 8px 32px rgba(0,0,0,0.7);
             transition: transform 0.5s ease;
           }
-          .hw-sets-card:hover .hw-sets-desktop__img { transform: scale(1.02); }
-          .hw-sets-scanlines {
+          .hw-set-strip-card:hover .hw-set-strip-card__img {
+            transform: scale(1.04);
+          }
+          .hw-set-strip-card__scanlines {
             position: absolute; inset: 0;
-            background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.04) 3px, rgba(0,0,0,0.04) 4px);
-            pointer-events: none;
-            border-radius: 3px;
-          }
-          .hw-sets-phone { }
-          .hw-sets-phone__shell {
-            position: relative;
-            width: 100%;
-            aspect-ratio: 9/16;
-            border-radius: 14px;
-            overflow: hidden;
-            border: 1.5px solid rgba(192,0,26,0.35);
-            background: #080810;
-            box-shadow: 0 0 28px rgba(192,0,26,0.12), 0 8px 32px rgba(0,0,0,0.75);
-          }
-          .hw-sets-phone__island {
-            position: absolute;
-            top: 5px; left: 50%;
-            transform: translateX(-50%);
-            width: 36%; height: 7px;
-            background: #000;
-            border-radius: 4px;
-            z-index: 3;
-          }
-          .hw-sets-phone__img { width: 100%; height: 100%; object-fit: cover; display: block; }
-          .hw-sets-phone__gloss {
-            position: absolute; inset: 0;
-            background: linear-gradient(135deg, rgba(255,255,255,0.07) 0%, transparent 40%);
+            background: repeating-linear-gradient(
+              0deg, transparent, transparent 3px,
+              rgba(0,0,0,0.04) 3px, rgba(0,0,0,0.04) 4px
+            );
             pointer-events: none;
           }
-          .hw-sets-phone__bar {
-            position: absolute;
-            bottom: 5px; left: 50%;
-            transform: translateX(-50%);
-            width: 33%; height: 2px;
-            background: rgba(255,255,255,0.22);
-            border-radius: 2px;
-          }
-          .hw-sets-watch { }
-          .hw-sets-watch__shell {
-            position: relative;
-            width: 100%;
-            aspect-ratio: 1/1;
-            border-radius: 30% / 26%;
-            overflow: hidden;
-            border: 1.5px solid rgba(192,0,26,0.28);
-            background: #080810;
-            box-shadow: 0 0 20px rgba(192,0,26,0.1), 0 5px 20px rgba(0,0,0,0.7);
-          }
-          .hw-sets-watch__crown {
-            position: absolute;
-            right: -5px; top: 42%;
-            width: 5px; height: 14px;
-            background: #181828;
-            border-radius: 0 2px 2px 0;
-          }
-          .hw-sets-watch__img { width: 100%; height: 100%; object-fit: cover; display: block; }
-          .hw-sets-watch__gloss {
+          .hw-set-strip-card__hover {
             position: absolute; inset: 0;
-            background: linear-gradient(135deg, rgba(255,255,255,0.06) 0%, transparent 45%);
-            pointer-events: none;
-          }
-          .hw-sets-info {
+            background: rgba(192,0,26,0.12);
             display: flex;
-            flex-direction: column;
-            gap: 12px;
+            align-items: center;
             justify-content: center;
-          }
-          .hw-sets-info__tag {
-            font-family: var(--font-space, monospace);
-            font-size: 0.54rem;
-            letter-spacing: 0.26em;
-            text-transform: uppercase;
-            color: #c0001a;
-          }
-          .hw-sets-info__title {
-            font-family: var(--font-cinzel, serif);
-            font-size: clamp(1.3rem,2.5vw,1.9rem);
-            font-weight: 700;
-            color: #f0e8d8;
-            margin: 0;
-            letter-spacing: 0.04em;
-            line-height: 1.1;
-          }
-          .hw-sets-info__sub {
-            font-family: var(--font-space, monospace);
-            font-size: 0.58rem;
-            letter-spacing: 0.16em;
-            text-transform: uppercase;
-            color: rgba(192,0,26,0.75);
-            margin: 0;
-          }
-          .hw-sets-info__desc {
-            font-family: var(--font-cormorant, serif);
-            font-size: clamp(0.95rem,1.4vw,1.05rem);
-            line-height: 1.7;
-            color: rgba(224,224,248,0.6);
-            margin: 0;
-          }
-          .hw-sets-info__devices { display: flex; flex-wrap: wrap; gap: 7px; }
-          .hw-sets-info__chip {
-            font-family: var(--font-space, monospace);
-            font-size: 0.52rem;
-            letter-spacing: 0.14em;
-            text-transform: uppercase;
-            color: rgba(192,0,26,0.85);
-            border: 1px solid rgba(192,0,26,0.3);
-            padding: 3px 9px;
-            background: rgba(192,0,26,0.05);
-            border-radius: 2px;
-          }
-          .hw-sets-info__cta {
-            display: inline-block;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            backdrop-filter: blur(1px);
             font-family: var(--font-space, monospace);
             font-size: 0.68rem;
-            letter-spacing: 0.14em;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: #fff;
+          }
+          .hw-set-strip-card:hover .hw-set-strip-card__hover { opacity: 1; }
+          .hw-set-strip-card__footer {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 12px;
+            background: rgba(255,255,255,0.02);
+            border-top: 1px solid rgba(192,0,26,0.15);
+          }
+          .hw-set-strip-card__num {
+            font-family: var(--font-space, monospace);
+            font-size: 0.5rem;
+            letter-spacing: 0.22em;
             text-transform: uppercase;
             color: #c0001a;
-            margin-top: 4px;
-            transition: letter-spacing 0.2s ease;
+            flex-shrink: 0;
           }
-          .hw-sets-card:hover .hw-sets-info__cta { letter-spacing: 0.22em; }
-
-          @media (max-width: 680px) {
-            .hw-sets-card { grid-template-columns: 1fr; }
-            .hw-sets-bottom-row { justify-content: flex-start; }
-          }
-          @media (max-width: 400px) {
-            .hw-sets-watch--row { display: none; }
+          .hw-set-strip-card__title {
+            font-family: var(--font-cinzel, serif);
+            font-size: clamp(0.75rem, 1.2vw, 0.9rem);
+            color: #e8ddd0;
+            letter-spacing: 0.03em;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
           }
         `}</style>
       </section>
