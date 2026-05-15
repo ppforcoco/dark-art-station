@@ -242,7 +242,11 @@ export default function CursedStudentPage() {
             padding: "clamp(32px,5vw,56px) clamp(20px,5vw,60px) 0",
           }}
         >
-          <span className="cs-eyebrow">Set No. 01 — Matching Dark Anime Horror Kit</span>
+          <div className="cs-set-badge">
+            <span className="cs-set-badge__num">Set No. 01</span>
+            <span className="cs-set-badge__div">—</span>
+            <span className="cs-set-badge__sub">Matching Dark Anime Horror Kit</span>
+          </div>
 
           {/* Collage thumbnail */}
           <div className="cs-collage" aria-label="Preview of all wallpapers in this set">
@@ -309,7 +313,7 @@ export default function CursedStudentPage() {
                 textShadow: "0 4px 40px rgba(192,0,26,0.2)",
               }}
             >
-              The Cursed Student
+              The Cursed Student: A Matching Dark Anime Horror Kit
             </h1>
             <p
               style={{
@@ -418,12 +422,23 @@ export default function CursedStudentPage() {
                     {w.best}
                   </p>
 
+                  {/* Pinterest Pin button */}
+                  <a
+                    href={`https://pinterest.com/pin/create/button/?url=https://hauntedwallpapers.com/sets/haunted-anime-student&media=${encodeURIComponent(w.preview)}&description=${encodeURIComponent(w.seoAlt)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="cs-pin-btn"
+                    aria-label="Pin to Pinterest"
+                  >
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12c0 5.084 3.163 9.426 7.627 11.174-.105-.949-.2-2.405.042-3.441.218-.937 1.407-5.965 1.407-5.965s-.359-.719-.359-1.782c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.69 0 1.029-.655 2.568-.994 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 1.031.397 2.138.893 2.738a.36.36 0 0 1 .083.345l-.333 1.36c-.053.22-.174.267-.402.161-1.499-.698-2.436-2.889-2.436-4.649 0-3.785 2.75-7.262 7.929-7.262 4.163 0 7.398 2.967 7.398 6.931 0 4.136-2.607 7.464-6.227 7.464-1.216 0-2.359-.632-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0z"/></svg>
+                    Save
+                  </a>
                   <a
                     href={w.download}
                     download={w.filename}
-                    className="cs-btn"
+                    className="cs-btn cs-btn--full"
                   >
-                    Download 4K Free
+                    ↓ Download 4K Free
                   </a>
                 </div>
               </article>
@@ -448,21 +463,21 @@ export default function CursedStudentPage() {
             {[
               {
                 num: "01",
-                title: "The Hollow Stare",
+                title: "Phase 1: The Hollow Stare",
                 color: "#8888aa",
                 body: "In his first form he is almost human. His eyes are empty, reflecting the void of a soul long forgotten. This version represents the Quiet Horror — the feeling that you are being watched by something that is not quite there.",
                 best: "Clean, minimal desktop setups and phone lock screens.",
               },
               {
                 num: "02",
-                title: "The Crimson Awakening",
+                title: "Phase 2: The Crimson Awakening",
                 color: "#c0001a",
                 body: "Stare into his eyes long enough and the Hollow begins to fill. A deep blood-red glow ignites within his pupils — the moment the curse activates. The air grows cold. The silence is replaced by a low, vibrating hum. He is no longer just a memory; he is a hunter.",
                 best: "Smartwatch faces and high-contrast OLED phone screens.",
               },
               {
                 num: "03",
-                title: "The Breaking Point",
+                title: "Phase 3: The Breaking Point",
                 color: "#ff2200",
                 body: "The final stage of the curse is the Possession. The student's humanity vanishes completely. His face contorts with a primal, demonic rage — rows of sharpened teeth that were never meant for a human mouth. This is the last thing his victims see before the lights in Classroom 404 go out forever.",
                 best: "Aggressive gaming setups and dark mode enthusiasts.",
@@ -561,6 +576,32 @@ export default function CursedStudentPage() {
           </div>
         </section>
 
+        {/* ── EXPLORE MORE ── */}
+        <section style={{ maxWidth: "1100px", margin: "clamp(48px,7vw,80px) auto 0", padding: "0 clamp(20px,5vw,60px)" }}>
+          <div className="cs-section-head">
+            <span className="cs-section-eyebrow">Keep Exploring</span>
+            <h2 className="cs-section-title">Explore More Matching Sets</h2>
+          </div>
+          <div className="cs-explore-grid">
+            {[
+              { title: "Dark Forest", desc: "Coming Soon — Primeval horror for the nature-obsessed.", emoji: "🌲" },
+              { title: "Goth Witch", desc: "Coming Soon — A moonlit coven aesthetic across every screen.", emoji: "🕯️" },
+              { title: "Void Entity", desc: "Coming Soon — Cosmic horror. The darkness between the stars.", emoji: "🌌" },
+            ].map((set, i) => (
+              <div key={i} className="cs-explore-card">
+                <div className="cs-explore-card__thumb">
+                  <span className="cs-explore-card__emoji">{set.emoji}</span>
+                  <div className="cs-explore-card__coming">Coming Soon</div>
+                </div>
+                <div className="cs-explore-card__body">
+                  <h3 className="cs-explore-card__title">{set.title}</h3>
+                  <p className="cs-explore-card__desc">{set.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
         {/* ── BACK LINK ── */}
         <div
           style={{
@@ -569,6 +610,7 @@ export default function CursedStudentPage() {
             padding: "0 clamp(20px,5vw,60px) 48px",
             borderTop: "1px solid rgba(192,0,26,0.15)",
             paddingTop: "32px",
+            marginTop: "clamp(48px,7vw,80px)",
           }}
         >
           <Link
@@ -604,8 +646,8 @@ export default function CursedStudentPage() {
         /* ── COLLAGE ── */
         .cs-collage {
           display: grid;
-          grid-template-columns: 1fr 280px;
-          gap: 16px;
+          grid-template-columns: 1fr 300px;
+          gap: 20px;
           margin-top: clamp(24px,4vw,40px);
           align-items: start;
         }
@@ -613,10 +655,15 @@ export default function CursedStudentPage() {
           position: relative;
           border-radius: 4px;
           overflow: hidden;
-          border: 1.5px solid rgba(192,0,26,0.3);
-          box-shadow: 0 0 60px rgba(192,0,26,0.1), 0 20px 80px rgba(0,0,0,0.7);
+          border: 2px solid #0f0f1e;
+          box-shadow: 0 0 0 4px #0a0a14, 0 0 0 6px rgba(20,20,40,0.9), 0 0 80px rgba(0,0,0,0.7);
+          animation: cs-glow-desk 4s ease-in-out infinite;
           aspect-ratio: 16/9;
           background: #080810;
+        }
+        @keyframes cs-glow-desk {
+          0%,100% { box-shadow: 0 0 0 4px #0a0a14, 0 0 0 6px rgba(20,20,40,0.9), 0 0 80px rgba(0,0,0,0.7); }
+          50%      { box-shadow: 0 0 0 4px #0a0a14, 0 0 0 6px rgba(20,20,40,0.9), 0 0 80px rgba(0,0,0,0.7), 0 0 100px rgba(10,0,40,0.2); }
         }
         .cs-collage__device-label {
           position: absolute;
@@ -672,9 +719,14 @@ export default function CursedStudentPage() {
           aspect-ratio: 9/16;
           border-radius: 28px;
           overflow: hidden;
-          border: 1.5px solid rgba(192,0,26,0.4);
+          border: 2px solid #0f0f1e;
           background: #080810;
-          box-shadow: 0 0 40px rgba(192,0,26,0.15), 0 12px 48px rgba(0,0,0,0.8);
+          animation: cs-glow-phone 4s ease-in-out infinite 1s;
+          box-shadow: 0 0 0 3px #0a0a14, 0 0 0 5px rgba(20,20,40,0.9), 0 12px 48px rgba(0,0,0,0.8);
+        }
+        @keyframes cs-glow-phone {
+          0%,100% { box-shadow: 0 0 0 3px #0a0a14, 0 0 0 5px rgba(20,20,40,0.9), 0 12px 48px rgba(0,0,0,0.8); }
+          50%      { box-shadow: 0 0 0 3px #0a0a14, 0 0 0 5px rgba(20,20,40,0.9), 0 12px 48px rgba(0,0,0,0.8), 0 0 50px rgba(10,0,40,0.2); }
         }
         .cs-collage__island {
           position: absolute;
@@ -728,9 +780,14 @@ export default function CursedStudentPage() {
           aspect-ratio: 1/1;
           border-radius: 32% / 28%;
           overflow: hidden;
-          border: 1.5px solid rgba(192,0,26,0.3);
+          border: 2px solid #0f0f1e;
           background: #080810;
-          box-shadow: 0 0 30px rgba(192,0,26,0.12), 0 8px 32px rgba(0,0,0,0.75);
+          animation: cs-glow-watch 4s ease-in-out infinite 2s;
+          box-shadow: 0 0 0 3px #0a0a14, 0 0 0 5px rgba(20,20,40,0.9), 0 8px 32px rgba(0,0,0,0.75);
+        }
+        @keyframes cs-glow-watch {
+          0%,100% { box-shadow: 0 0 0 3px #0a0a14, 0 0 0 5px rgba(20,20,40,0.9), 0 8px 32px rgba(0,0,0,0.75); }
+          50%      { box-shadow: 0 0 0 3px #0a0a14, 0 0 0 5px rgba(20,20,40,0.9), 0 8px 32px rgba(0,0,0,0.75), 0 0 40px rgba(10,0,40,0.18); }
         }
         .cs-collage__watch-crown {
           position: absolute;
@@ -869,8 +926,8 @@ export default function CursedStudentPage() {
           background: #080810;
         }
         .ratio-16-9 { aspect-ratio: 16/9; }
-        .ratio-9-16 { aspect-ratio: 9/16; max-height: 360px; }
-        .ratio-1-1  { aspect-ratio: 1/1; max-height: 280px; }
+        .ratio-9-16 { aspect-ratio: 9/16; }
+        .ratio-1-1  { aspect-ratio: 1/1; }
 
         .cs-card__img {
           position: absolute;
@@ -1122,6 +1179,130 @@ export default function CursedStudentPage() {
           .ratio-9-16 { max-height: none; }
           .ratio-1-1  { max-height: none; }
           .cs-phase { grid-template-columns: 32px 2px 1fr; gap: 12px; }
+        }
+
+        /* ── Set No Badge ── */
+        .cs-set-badge {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          margin-bottom: 24px;
+          flex-wrap: wrap;
+        }
+        .cs-set-badge__num {
+          font-family: var(--font-space, monospace);
+          font-size: clamp(0.75rem, 1.5vw, 0.9rem);
+          letter-spacing: 0.28em;
+          text-transform: uppercase;
+          color: #c0001a;
+          background: rgba(192,0,26,0.08);
+          border: 1px solid rgba(192,0,26,0.35);
+          padding: 6px 16px;
+          border-radius: 2px;
+          font-weight: 700;
+        }
+        .cs-set-badge__div {
+          color: rgba(192,0,26,0.4);
+          font-size: 1.2rem;
+        }
+        .cs-set-badge__sub {
+          font-family: var(--font-cinzel, serif);
+          font-size: clamp(0.9rem, 2vw, 1.2rem);
+          letter-spacing: 0.12em;
+          text-transform: uppercase;
+          color: #f0e8d8;
+          font-weight: 700;
+        }
+
+        /* ── Pinterest Pin button ── */
+        .cs-pin-btn {
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          padding: 7px 14px;
+          background: #e60023;
+          color: #fff;
+          border: none;
+          border-radius: 2px;
+          font-family: var(--font-space, monospace);
+          font-size: 0.58rem;
+          letter-spacing: 0.14em;
+          text-transform: uppercase;
+          text-decoration: none;
+          transition: background 0.2s, transform 0.15s;
+          align-self: flex-start;
+          margin-bottom: 4px;
+        }
+        .cs-pin-btn:hover { background: #c0001b; transform: translateY(-1px); }
+
+        /* ── Full-width Red Download button ── */
+        .cs-btn--full {
+          width: 100%;
+          padding: 14px 20px;
+          font-size: 0.72rem;
+          letter-spacing: 0.18em;
+          font-weight: 700;
+          box-shadow: 0 0 28px rgba(192,0,26,0.4), 0 4px 16px rgba(0,0,0,0.5);
+        }
+        .cs-btn--full:hover {
+          box-shadow: 0 0 40px rgba(192,0,26,0.65), 0 4px 20px rgba(0,0,0,0.6);
+        }
+
+        /* ── Explore More Grid ── */
+        .cs-explore-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+          gap: clamp(16px,2.5vw,24px);
+        }
+        .cs-explore-card {
+          background: rgba(255,255,255,0.02);
+          border: 1px solid rgba(192,0,26,0.12);
+          overflow: hidden;
+          transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        .cs-explore-card:hover {
+          border-color: rgba(192,0,26,0.35);
+          box-shadow: 0 0 30px rgba(192,0,26,0.05);
+        }
+        .cs-explore-card__thumb {
+          aspect-ratio: 16/9;
+          background: #08060e;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          gap: 8px;
+          position: relative;
+        }
+        .cs-explore-card__emoji { font-size: 2.5rem; }
+        .cs-explore-card__coming {
+          font-family: var(--font-space, monospace);
+          font-size: 0.52rem;
+          letter-spacing: 0.2em;
+          text-transform: uppercase;
+          color: rgba(192,0,26,0.6);
+          border: 1px solid rgba(192,0,26,0.25);
+          padding: 3px 8px;
+        }
+        .cs-explore-card__body { padding: clamp(14px,2vw,20px); }
+        .cs-explore-card__title {
+          font-family: var(--font-cinzel, serif);
+          font-size: 0.95rem;
+          font-weight: 700;
+          color: #f0e8d8;
+          margin: 0 0 8px;
+          letter-spacing: 0.04em;
+        }
+        .cs-explore-card__desc {
+          font-family: var(--font-cormorant, serif);
+          font-size: 0.9rem;
+          line-height: 1.65;
+          color: rgba(224,224,248,0.5);
+          margin: 0;
+        }
+
+        @media (max-width: 500px) {
+          .cs-set-badge { flex-direction: column; align-items: flex-start; gap: 8px; }
         }
       `}</style>
 
