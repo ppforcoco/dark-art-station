@@ -14,14 +14,11 @@ const WALLPAPERS = [
     label: "Ultra HD Desktop",
     ratio: "16:9",
     ratioClass: "ratio-16-9",
-    description:
-      "Deep blacks and high-contrast fog swallow the horizon. The cabin light in the distance is the only warmth — and it is a lure. Negative space keeps your desktop icons clear while the atmosphere bleeds to every edge.",
     preview: `${BASE}/whispering-woods-foggy-horror-forest-4k-deskto.webp`,
     download: `${BASE_4K}/whispering-woods-foggy-horror-forest-4k-deskto.jpg`,
     filename: "whispering-woods-desktop-4k.jpg",
     phase: "Phase 1 — The Invitation",
     phaseColor: "#6a8a6a",
-    best: "Clean atmospheric desktop backgrounds, dual-monitor setups",
     seoAlt: "Dark foggy horror forest 4K desktop wallpaper — Whispering Woods matching set for PC",
   },
   {
@@ -29,14 +26,11 @@ const WALLPAPERS = [
     label: "iPhone Lockscreen",
     ratio: "9:16",
     ratioClass: "ratio-9-16",
-    description:
-      "A dark forest cabin glows faintly through the fog — every time you wake your phone, you are standing at the tree line. Optimised for iPhone 15 and Pro Max OLED displays with deep blacks that save battery.",
     preview: `${BASE}/dark-forest-cabin-horror-aesthetic-iphone-wallpaper.webp`,
     download: `${BASE_4K}/dark-forest-cabin-horror-aesthetic-iphone-wallpaper.jpg`,
     filename: "whispering-woods-lockscreen-4k.jpg",
     phase: "Phase 1 — The Invitation",
     phaseColor: "#6a8a6a",
-    best: "iPhone lockscreen, Android lockscreen, AMOLED",
     seoAlt: "Dark forest cabin horror aesthetic iPhone lockscreen wallpaper 9:16 OLED optimized",
   },
   {
@@ -44,14 +38,11 @@ const WALLPAPERS = [
     label: "Dark Home Screen",
     ratio: "9:16",
     ratioClass: "ratio-9-16",
-    description:
-      "The trees no longer look like oak or pine. Twisted limbs reach from the earth itself — the Hand of the Forest, realizing you are there. Maximum psychological impact behind your apps on any Android or iPhone.",
     preview: `${BASE}/scary-tree-hand-horror-nature-mobile-background.webp`,
     download: `${BASE_4K}/scary-tree-hand-horror-nature-mobile-background.jpg`,
     filename: "whispering-woods-homescreen-4k.jpg",
     phase: "Phase 2 — The Reach",
     phaseColor: "#8a6a2a",
-    best: "iPhone home screen, Android home screen, gaming setups",
     seoAlt: "Scary tree hand horror nature mobile background wallpaper 9:16 for iPhone and Android",
   },
   {
@@ -59,14 +50,11 @@ const WALLPAPERS = [
     label: "Profile Picture",
     ratio: "1:1",
     ratioClass: "ratio-1-1",
-    description:
-      "Two red eyes ignite in the forest mist. A tight square crop of the Watcher — the predator that has been observing since you entered. Works across Discord, Twitter, and Instagram without losing its menace.",
     preview: `${BASE}/red-eyes-monster-forest-profile-picture-squar.webp`,
     download: `${BASE_4K}/red-eyes-monster-forest-profile-picture-squar.jpg`,
     filename: "whispering-woods-avatar-4k.jpg",
     phase: "Phase 3 — The Watcher in the Mist",
     phaseColor: "#c0001a",
-    best: "Discord avatar, Twitter PFP, Instagram, home screen icon",
     seoAlt: "Red eyes monster forest horror profile picture square 1:1 for Discord and social media",
   },
   {
@@ -74,14 +62,11 @@ const WALLPAPERS = [
     label: "Smartwatch Face",
     ratio: "1:1",
     ratioClass: "ratio-1-1",
-    description:
-      "Yellow glowing eyes pierce the mist — engineered for the small canvas of Apple Watch and Galaxy Watch. The high-contrast glow is visible even at a glance, and the deep black background saves OLED battery on every wrist check.",
     preview: `${BASE}/yellow-glowing-eyes-mist-smartwatch-wallpaper.webp`,
     download: `${BASE_4K}/yellow-glowing-eyes-mist-smartwatch-wallpaper.jpg`,
     filename: "whispering-woods-smartwatch-4k.jpg",
     phase: "Phase 3 — The Watcher in the Mist",
     phaseColor: "#c0001a",
-    best: "Apple Watch, Galaxy Watch, OLED watch faces",
     seoAlt: "Yellow glowing eyes mist horror smartwatch wallpaper Apple Watch Galaxy Watch 1:1",
   },
 ];
@@ -137,6 +122,28 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export const revalidate = 86400;
+
+const PinIcon = () => (
+  <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M12 0C5.373 0 0 5.373 0 12c0 5.084 3.163 9.426 7.627 11.174-.105-.949-.2-2.405.042-3.441.218-.937 1.407-5.965 1.407-5.965s-.359-.719-.359-1.782c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.69 0 1.029-.655 2.568-.994 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 1.031.397 2.138.893 2.738a.36.36 0 0 1 .083.345l-.333 1.36c-.053.22-.174.267-.402.161-1.499-.698-2.436-2.889-2.436-4.649 0-3.785 2.75-7.262 7.929-7.262 4.163 0 7.398 2.967 7.398 6.931 0 4.136-2.607 7.464-6.227 7.464-1.216 0-2.359-.632-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0z" />
+  </svg>
+);
+
+function PinButton({ preview, seoAlt }: { preview: string; seoAlt: string }) {
+  const url = `https://pinterest.com/pin/create/button/?url=https://hauntedwallpapers.com/sets/whispering-woods&media=${encodeURIComponent(preview)}&description=${encodeURIComponent(seoAlt)}`;
+  return (
+    <a
+      href={url}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="cs-pin-btn"
+      aria-label="Pin to Pinterest"
+    >
+      <PinIcon />
+      Save
+    </a>
+  );
+}
 
 export default function WhisperingWoodsPage() {
   const jsonLd = JSON.stringify({
@@ -349,7 +356,7 @@ export default function WhisperingWoodsPage() {
           }}
         >
           <div className="cs-lore">
-            <div className="cs-lore__bar" style={{ background: "linear-gradient(to bottom, transparent, #3a7a2a, transparent)" }} />
+            <div className="cs-lore__bar" aria-hidden="true" />
             <div className="cs-lore__content">
               <h2 className="cs-lore__title">The Woods That Watch Back</h2>
               <p className="cs-lore__body">
@@ -378,58 +385,110 @@ export default function WhisperingWoodsPage() {
             <h2 className="cs-section-title">5 Wallpapers. Every Screen Covered.</h2>
           </div>
 
-          <div className="cs-grid">
-            {WALLPAPERS.map((w, i) => (
-              <article key={w.id} className="cs-card">
-                <span
-                  className="cs-card__phase"
-                  style={{ color: w.phaseColor, borderColor: `${w.phaseColor}44` }}
-                >
-                  {w.phase}
-                </span>
+          <div className="cs-wall-layout">
 
-                {/* Image with correct ratio */}
-                <div className={`cs-card__frame ${w.ratioClass}`}>
+            {/* ── ROW 1: Desktop 16:9 (full width) ── */}
+            <div className="cs-wall-item cs-wall-item--desktop">
+              <div className="cs-wall-item__frame cs-wall-item__frame--16-9">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={WALLPAPERS[0].preview}
+                  alt={WALLPAPERS[0].seoAlt}
+                  className="cs-wall-item__img"
+                  loading="eager"
+                />
+                <div className="cs-wall-item__corners" aria-hidden="true">
+                  <span /><span /><span /><span />
+                </div>
+                <span className="cs-wall-item__ratio-badge">{WALLPAPERS[0].ratio}</span>
+                <div className="cs-wall-item__overlay">
+                  <PinButton preview={WALLPAPERS[0].preview} seoAlt={WALLPAPERS[0].seoAlt} />
+                </div>
+              </div>
+              <div className="cs-wall-item__footer">
+                <span className="cs-wall-item__phase" style={{ color: WALLPAPERS[0].phaseColor, borderColor: `${WALLPAPERS[0].phaseColor}44` }}>{WALLPAPERS[0].phase}</span>
+                <span className="cs-wall-item__label">{WALLPAPERS[0].label}</span>
+              </div>
+            </div>
+
+            {/* ── ROW 2: Two 9:16 mobile + one square-stack column ── */}
+            <div className="cs-wall-row2">
+
+              {/* Mobile Lockscreen — 9:16 */}
+              <div className="cs-wall-item">
+                <div className="cs-wall-item__frame cs-wall-item__frame--9-16">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={w.preview}
-                    alt={w.seoAlt}
-                    className="cs-card__img"
-                    loading={i < 2 ? "eager" : "lazy"}
-                  />
-                  <div className="cs-card__corners" aria-hidden="true">
-                    <span /><span /><span /><span />
+                  <img src={WALLPAPERS[1].preview} alt={WALLPAPERS[1].seoAlt} className="cs-wall-item__img" loading="lazy" />
+                  <div className="cs-wall-item__corners" aria-hidden="true"><span /><span /><span /><span /></div>
+                  <span className="cs-wall-item__ratio-badge">{WALLPAPERS[1].ratio}</span>
+                  <div className="cs-wall-item__overlay">
+                    <PinButton preview={WALLPAPERS[1].preview} seoAlt={WALLPAPERS[1].seoAlt} />
                   </div>
-                  <span className="cs-card__ratio-badge">{w.ratio}</span>
+                </div>
+                <div className="cs-wall-item__footer">
+                  <span className="cs-wall-item__phase" style={{ color: WALLPAPERS[1].phaseColor, borderColor: `${WALLPAPERS[1].phaseColor}44` }}>{WALLPAPERS[1].phase}</span>
+                  <span className="cs-wall-item__label">{WALLPAPERS[1].label}</span>
+                </div>
+              </div>
+
+              {/* Mobile Home Screen — 9:16 */}
+              <div className="cs-wall-item">
+                <div className="cs-wall-item__frame cs-wall-item__frame--9-16">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={WALLPAPERS[2].preview} alt={WALLPAPERS[2].seoAlt} className="cs-wall-item__img" loading="lazy" />
+                  <div className="cs-wall-item__corners" aria-hidden="true"><span /><span /><span /><span /></div>
+                  <span className="cs-wall-item__ratio-badge">{WALLPAPERS[2].ratio}</span>
+                  <div className="cs-wall-item__overlay">
+                    <PinButton preview={WALLPAPERS[2].preview} seoAlt={WALLPAPERS[2].seoAlt} />
+                  </div>
+                </div>
+                <div className="cs-wall-item__footer">
+                  <span className="cs-wall-item__phase" style={{ color: WALLPAPERS[2].phaseColor, borderColor: `${WALLPAPERS[2].phaseColor}44` }}>{WALLPAPERS[2].phase}</span>
+                  <span className="cs-wall-item__label">{WALLPAPERS[2].label}</span>
+                </div>
+              </div>
+
+              {/* Square column: Avatar + Watch stacked */}
+              <div className="cs-wall-squares">
+
+                {/* Avatar — 1:1 */}
+                <div className="cs-wall-item">
+                  <div className="cs-wall-item__frame cs-wall-item__frame--1-1">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={WALLPAPERS[3].preview} alt={WALLPAPERS[3].seoAlt} className="cs-wall-item__img" loading="lazy" />
+                    <div className="cs-wall-item__corners" aria-hidden="true"><span /><span /><span /><span /></div>
+                    <span className="cs-wall-item__ratio-badge">{WALLPAPERS[3].ratio}</span>
+                    <div className="cs-wall-item__overlay">
+                      <PinButton preview={WALLPAPERS[3].preview} seoAlt={WALLPAPERS[3].seoAlt} />
+                    </div>
+                  </div>
+                  <div className="cs-wall-item__footer">
+                    <span className="cs-wall-item__phase" style={{ color: WALLPAPERS[3].phaseColor, borderColor: `${WALLPAPERS[3].phaseColor}44` }}>{WALLPAPERS[3].phase}</span>
+                    <span className="cs-wall-item__label">{WALLPAPERS[3].label}</span>
+                  </div>
                 </div>
 
-                <div className="cs-card__body">
-                  <h3 className="cs-card__label">{w.label}</h3>
-                  <p className="cs-card__desc">{w.description}</p>
-                  <p className="cs-card__best">
-                    <span style={{ color: "#60608a" }}>Best for: </span>
-                    {w.best}
-                  </p>
-
-                  {/* Pinterest Pin */}
-                  <a
-                    href={`https://pinterest.com/pin/create/button/?url=https://hauntedwallpapers.com/sets/whispering-woods&media=${encodeURIComponent(w.preview)}&description=${encodeURIComponent(w.seoAlt)}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="cs-pin-btn"
-                    aria-label="Pin to Pinterest"
-                  >
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12c0 5.084 3.163 9.426 7.627 11.174-.105-.949-.2-2.405.042-3.441.218-.937 1.407-5.965 1.407-5.965s-.359-.719-.359-1.782c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.69 0 1.029-.655 2.568-.994 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 1.031.397 2.138.893 2.738a.36.36 0 0 1 .083.345l-.333 1.36c-.053.22-.174.267-.402.161-1.499-.698-2.436-2.889-2.436-4.649 0-3.785 2.75-7.262 7.929-7.262 4.163 0 7.398 2.967 7.398 6.931 0 4.136-2.607 7.464-6.227 7.464-1.216 0-2.359-.632-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0z"/></svg>
-                    Save
-                  </a>
-
-                  <a href={w.download} download={w.filename} className="cs-btn cs-btn--full">
-                    ↓ Download 4K Free
-                  </a>
+                {/* Smartwatch — 1:1 */}
+                <div className="cs-wall-item">
+                  <div className="cs-wall-item__frame cs-wall-item__frame--1-1">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={WALLPAPERS[4].preview} alt={WALLPAPERS[4].seoAlt} className="cs-wall-item__img" loading="lazy" />
+                    <div className="cs-wall-item__corners" aria-hidden="true"><span /><span /><span /><span /></div>
+                    <span className="cs-wall-item__ratio-badge">{WALLPAPERS[4].ratio}</span>
+                    <div className="cs-wall-item__overlay">
+                      <PinButton preview={WALLPAPERS[4].preview} seoAlt={WALLPAPERS[4].seoAlt} />
+                    </div>
+                  </div>
+                  <div className="cs-wall-item__footer">
+                    <span className="cs-wall-item__phase" style={{ color: WALLPAPERS[4].phaseColor, borderColor: `${WALLPAPERS[4].phaseColor}44` }}>{WALLPAPERS[4].phase}</span>
+                    <span className="cs-wall-item__label">{WALLPAPERS[4].label}</span>
+                  </div>
                 </div>
-              </article>
-            ))}
-          </div>
+
+              </div>{/* end squares column */}
+            </div>{/* end row2 */}
+
+          </div>{/* end wall-layout */}
         </section>
 
         {/* ── THREE PHASES ── */}
@@ -516,7 +575,7 @@ export default function WhisperingWoodsPage() {
         <section
           style={{
             maxWidth: "1100px",
-            margin: "clamp(48px,7vw,80px) auto 0",
+            margin: "clamp(48px,7vw,80px) auto clamp(64px,10vw,120px)",
             padding: "0 clamp(20px,5vw,60px)",
           }}
         >
@@ -566,10 +625,11 @@ export default function WhisperingWoodsPage() {
         <div
           style={{
             maxWidth: "1100px",
-            margin: "clamp(48px,7vw,80px) auto 0",
+            margin: "0 auto",
             padding: "0 clamp(20px,5vw,60px) 48px",
             borderTop: "1px solid rgba(30,80,20,0.2)",
             paddingTop: "32px",
+            marginTop: "clamp(48px,7vw,80px)",
           }}
         >
           <Link
@@ -591,6 +651,181 @@ export default function WhisperingWoodsPage() {
 
       {/* ── STYLES ── */}
       <style>{`
+        /* ── WALLPAPER LAYOUT ───────────────────────────────────────── */
+
+        .cs-wall-layout {
+          display: flex;
+          flex-direction: column;
+          gap: 12px;
+        }
+
+        /* Row 2: two portrait columns + one square-stack column */
+        .cs-wall-row2 {
+          display: grid;
+          grid-template-columns: 1fr 1fr 1fr;
+          gap: 12px;
+          align-items: start;
+        }
+
+        /* Square stack: avatar + watch stacked within the third column */
+        .cs-wall-squares {
+          display: flex;
+          flex-direction: column;
+          gap: 12px;
+        }
+
+        /* ── Individual wall item ── */
+        .cs-wall-item {
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+        }
+
+        .cs-wall-item__frame {
+          position: relative;
+          overflow: hidden;
+          border: 1px solid rgba(74,138,58,0.2);
+          background: #080810;
+          transition: border-color 0.3s ease, box-shadow 0.3s ease;
+          cursor: pointer;
+        }
+        .cs-wall-item__frame:hover {
+          border-color: rgba(74,138,58,0.5);
+          box-shadow: 0 0 32px rgba(30,60,20,0.12);
+        }
+
+        /* Correct aspect ratios */
+        .cs-wall-item__frame--16-9 { aspect-ratio: 16 / 9; width: 100%; }
+        .cs-wall-item__frame--9-16 { aspect-ratio: 9 / 16; width: 100%; }
+        .cs-wall-item__frame--1-1  { aspect-ratio: 1 / 1;  width: 100%; }
+
+        .cs-wall-item__img {
+          position: absolute;
+          inset: 0;
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          display: block;
+          transition: transform 0.5s ease;
+        }
+        .cs-wall-item__frame:hover .cs-wall-item__img { transform: scale(1.03); }
+
+        /* Corner brackets */
+        .cs-wall-item__corners {
+          position: absolute;
+          inset: 0;
+          pointer-events: none;
+        }
+        .cs-wall-item__corners span {
+          position: absolute;
+          width: 12px; height: 12px;
+          border-color: rgba(74,138,58,0.6);
+          border-style: solid;
+        }
+        .cs-wall-item__corners span:nth-child(1) { top: 6px; left: 6px; border-width: 1.5px 0 0 1.5px; }
+        .cs-wall-item__corners span:nth-child(2) { top: 6px; right: 6px; border-width: 1.5px 1.5px 0 0; }
+        .cs-wall-item__corners span:nth-child(3) { bottom: 6px; left: 6px; border-width: 0 0 1.5px 1.5px; }
+        .cs-wall-item__corners span:nth-child(4) { bottom: 6px; right: 6px; border-width: 0 1.5px 1.5px 0; }
+
+        /* Ratio badge (bottom-right) */
+        .cs-wall-item__ratio-badge {
+          position: absolute;
+          bottom: 7px; right: 8px;
+          font-family: var(--font-space, monospace);
+          font-size: 0.48rem;
+          letter-spacing: 0.14em;
+          color: rgba(255,255,255,0.5);
+          background: rgba(0,0,0,0.65);
+          padding: 2px 6px;
+          border-radius: 2px;
+          pointer-events: none;
+        }
+
+        /* Hover overlay — shows Pinterest save button */
+        .cs-wall-item__overlay {
+          position: absolute;
+          inset: 0;
+          display: flex;
+          align-items: flex-start;
+          justify-content: flex-end;
+          padding: 10px;
+          opacity: 0;
+          transition: opacity 0.2s ease;
+          pointer-events: none;
+        }
+        .cs-wall-item__frame:hover .cs-wall-item__overlay {
+          opacity: 1;
+          pointer-events: auto;
+        }
+
+        /* Footer: phase badge + label */
+        .cs-wall-item__footer {
+          display: flex;
+          flex-direction: column;
+          gap: 3px;
+          padding: 0 2px;
+        }
+        .cs-wall-item__phase {
+          font-family: var(--font-space, monospace);
+          font-size: 0.46rem;
+          letter-spacing: 0.18em;
+          text-transform: uppercase;
+          border: 1px solid;
+          padding: 2px 7px;
+          display: inline-block;
+          width: fit-content;
+          background: rgba(0,0,0,0.2);
+        }
+        .cs-wall-item__label {
+          font-family: var(--font-cinzel, serif);
+          font-size: clamp(0.7rem, 1.1vw, 0.85rem);
+          color: #e8ddd0;
+          letter-spacing: 0.03em;
+        }
+
+        /* ── Responsive ── */
+        @media (max-width: 700px) {
+          .cs-wall-row2 {
+            grid-template-columns: 1fr 1fr;
+          }
+          .cs-wall-squares {
+            grid-column: 1 / -1;
+            flex-direction: row;
+            gap: 12px;
+          }
+          .cs-wall-squares .cs-wall-item {
+            flex: 1;
+          }
+        }
+        @media (max-width: 440px) {
+          .cs-wall-row2 {
+            grid-template-columns: 1fr;
+          }
+          .cs-wall-squares {
+            flex-direction: row;
+          }
+        }
+
+        /* ── Pinterest Save button ── */
+        .cs-pin-btn {
+          display: inline-flex;
+          align-items: center;
+          gap: 5px;
+          padding: 5px 10px;
+          background: #e60023;
+          color: #fff;
+          border: none;
+          border-radius: 2px;
+          font-family: var(--font-space, monospace);
+          font-size: 0.52rem;
+          letter-spacing: 0.12em;
+          text-transform: uppercase;
+          text-decoration: none;
+          transition: background 0.2s, transform 0.15s;
+          cursor: pointer;
+        }
+        .cs-pin-btn:hover { background: #c0001b; transform: translateY(-1px); }
+
         /* ── Set Badge ── */
         .cs-set-badge { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; flex-wrap: wrap; }
         .cs-set-badge__num {
@@ -607,13 +842,6 @@ export default function WhisperingWoodsPage() {
           font-size: clamp(0.9rem,2vw,1.2rem);
           letter-spacing: 0.12em; text-transform: uppercase;
           color: #f0e8d8; font-weight: 700;
-        }
-
-        /* ── Eyebrow ── */
-        .cs-eyebrow {
-          display: block; font-family: var(--font-space, monospace);
-          font-size: 0.58rem; letter-spacing: 0.26em; text-transform: uppercase;
-          color: #4a8a3a; margin-bottom: 20px;
         }
 
         /* ── COLLAGE ── */
@@ -653,12 +881,7 @@ export default function WhisperingWoodsPage() {
           background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.04) 3px, rgba(0,0,0,0.04) 4px);
           pointer-events: none;
         }
-        .cs-collage__phones { display: flex; flex-direction: row; gap: 12px; align-items: flex-start; }
         .cs-collage__phone-wrap { position: relative; width: clamp(90px, 15%, 160px); flex-shrink: 0; }
-        .cs-collage__phone-wrap .cs-collage__device-label {
-          position: relative; top: auto; left: auto;
-          display: block; margin-bottom: 8px; background: none; padding: 0;
-        }
         .cs-collage__phone-shell {
           position: relative; width: 100%; aspect-ratio: 9/16;
           border-radius: 28px; overflow: hidden;
@@ -685,10 +908,6 @@ export default function WhisperingWoodsPage() {
           width: 33%; height: 3px; background: rgba(255,255,255,0.22); border-radius: 2px;
         }
         .cs-collage__watch-wrap { width: clamp(72px, 11%, 124px); flex-shrink: 0; position: relative; align-self: flex-end; }
-        .cs-collage__watch-wrap .cs-collage__device-label {
-          position: relative; top: auto; left: auto;
-          display: block; margin-bottom: 8px; background: none; padding: 0;
-        }
         .cs-collage__watch-shell {
           position: relative; width: 100%; aspect-ratio: 1/1;
           border-radius: 32% / 28%; overflow: hidden;
@@ -749,104 +968,6 @@ export default function WhisperingWoodsPage() {
           font-family: var(--font-cinzel, serif); font-size: clamp(1.4rem,3vw,2.2rem);
           font-weight: 700; color: #f0e8d8; margin: 0; letter-spacing: 0.04em;
         }
-
-        /* ── Cards grid ── */
-        .cs-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-          gap: clamp(20px,3vw,32px);
-        }
-
-        /* ── Card ── */
-        .cs-card {
-          background: rgba(255,255,255,0.02); border: 1px solid rgba(74,138,58,0.15);
-          padding: clamp(16px,2.5vw,24px); display: flex; flex-direction: column; gap: 16px;
-          transition: border-color 0.3s, box-shadow 0.3s;
-        }
-        .cs-card:hover { border-color: rgba(74,138,58,0.4); box-shadow: 0 0 40px rgba(30,60,20,0.08); }
-        .cs-card__phase {
-          font-family: var(--font-space, monospace); font-size: 0.52rem;
-          letter-spacing: 0.2em; text-transform: uppercase; border: 1px solid;
-          padding: 4px 10px; display: inline-block; width: fit-content; background: rgba(0,0,0,0.3);
-        }
-
-        /* ── Ratio frames — FULL ratio, no cuts ── */
-        .cs-card__frame {
-          position: relative; overflow: hidden; border-radius: 2px;
-          width: 100%; background: #080810;
-        }
-        .ratio-16-9 { aspect-ratio: 16/9; }
-        .ratio-9-16 { aspect-ratio: 9/16; }
-        .ratio-1-1  { aspect-ratio: 1/1; }
-
-        .cs-card__img {
-          position: absolute; inset: 0; width: 100%; height: 100%;
-          object-fit: cover; display: block; transition: transform 0.5s ease;
-        }
-        .cs-card:hover .cs-card__img { transform: scale(1.03); }
-
-        .cs-card__corners { position: absolute; inset: 0; pointer-events: none; }
-        .cs-card__corners span { position: absolute; width: 14px; height: 14px; border-color: rgba(74,138,58,0.6); border-style: solid; }
-        .cs-card__corners span:nth-child(1) { top: 7px; left: 7px; border-width: 1.5px 0 0 1.5px; }
-        .cs-card__corners span:nth-child(2) { top: 7px; right: 7px; border-width: 1.5px 1.5px 0 0; }
-        .cs-card__corners span:nth-child(3) { bottom: 7px; left: 7px; border-width: 0 0 1.5px 1.5px; }
-        .cs-card__corners span:nth-child(4) { bottom: 7px; right: 7px; border-width: 0 1.5px 1.5px 0; }
-
-        .cs-card__ratio-badge {
-          position: absolute; bottom: 9px; right: 10px;
-          font-family: var(--font-space, monospace); font-size: 0.52rem;
-          letter-spacing: 0.14em; color: rgba(255,255,255,0.55);
-          background: rgba(0,0,0,0.7); padding: 3px 7px; border-radius: 2px;
-        }
-
-        .cs-card__body { display: flex; flex-direction: column; gap: 10px; }
-        .cs-card__label {
-          font-family: var(--font-cinzel, serif); font-size: 0.95rem;
-          font-weight: 700; color: #f0e8d8; margin: 0; letter-spacing: 0.04em;
-        }
-        .cs-card__desc {
-          font-family: var(--font-cormorant, serif); font-size: 0.95rem;
-          line-height: 1.7; color: rgba(224,224,248,0.6); margin: 0;
-        }
-        .cs-card__best {
-          font-family: var(--font-space, monospace); font-size: 0.56rem;
-          letter-spacing: 0.12em; margin: 0; color: rgba(224,224,248,0.55);
-        }
-
-        /* ── Pinterest button ── */
-        .cs-pin-btn {
-          display: inline-flex; align-items: center; gap: 6px;
-          padding: 7px 14px; background: #e60023; color: #fff;
-          border: none; border-radius: 2px;
-          font-family: var(--font-space, monospace); font-size: 0.58rem;
-          letter-spacing: 0.14em; text-transform: uppercase; text-decoration: none;
-          transition: background 0.2s, transform 0.15s; align-self: flex-start; margin-bottom: 4px;
-        }
-        .cs-pin-btn:hover { background: #c0001b; transform: translateY(-1px); }
-
-        /* ── Download button ── */
-        .cs-btn {
-          display: inline-flex; align-items: center; justify-content: center;
-          padding: 11px 20px; background: #c0001a; color: #fff;
-          border: 1px solid #c0001a; border-radius: 2px;
-          font-family: var(--font-space, monospace); font-size: 0.65rem;
-          letter-spacing: 0.16em; text-transform: uppercase; text-decoration: none;
-          transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
-          position: relative; overflow: hidden; cursor: pointer;
-        }
-        .cs-btn::before {
-          content: ''; position: absolute; inset: 0;
-          background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
-          transform: translateX(-100%); transition: transform 0.4s ease;
-        }
-        .cs-btn:hover::before { transform: translateX(100%); }
-        .cs-btn:hover { background: #a0001a; box-shadow: 0 0 24px rgba(192,0,26,0.45); transform: translateY(-1px); }
-        .cs-btn--full {
-          width: 100%; padding: 14px 20px; font-size: 0.72rem;
-          letter-spacing: 0.18em; font-weight: 700;
-          box-shadow: 0 0 28px rgba(192,0,26,0.4), 0 4px 16px rgba(0,0,0,0.5);
-        }
-        .cs-btn--full:hover { box-shadow: 0 0 40px rgba(192,0,26,0.65), 0 4px 20px rgba(0,0,0,0.6); }
 
         /* ── Phases ── */
         .cs-phases { display: flex; flex-direction: column; gap: 32px; }
@@ -936,7 +1057,7 @@ export default function WhisperingWoodsPage() {
 
         /* ── Explore grid ── */
         .cs-explore-grid {
-          display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+          display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
           gap: clamp(16px,2.5vw,24px);
         }
         .cs-explore-card {
@@ -948,20 +1069,12 @@ export default function WhisperingWoodsPage() {
         .cs-explore-card__thumb { position: relative; aspect-ratio: 16/9; overflow: hidden; background: #08060e; }
         .cs-explore-card__img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.5s ease; }
         .cs-explore-card--link:hover .cs-explore-card__img { transform: scale(1.03); }
-        .cs-explore-card__thumb--placeholder {
-          display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
-        }
         .cs-explore-card__badge {
-          position: absolute; top: 10px; left: 12px;
-          font-family: var(--font-space, monospace); font-size: 0.5rem;
+          position: absolute; top: 8px; left: 10px;
+          font-family: var(--font-space, monospace); font-size: 0.48rem;
           letter-spacing: 0.18em; text-transform: uppercase;
-          color: #f0e8d8; background: rgba(192,0,26,0.7); padding: 3px 8px;
-        }
-        .cs-explore-card__emoji { font-size: 2.5rem; }
-        .cs-explore-card__coming {
-          font-family: var(--font-space, monospace); font-size: 0.52rem;
-          letter-spacing: 0.2em; text-transform: uppercase;
-          color: rgba(74,138,58,0.6); border: 1px solid rgba(74,138,58,0.25); padding: 3px 8px;
+          color: #f0e8d8; background: rgba(0,0,0,0.75);
+          border: 1px solid rgba(74,138,58,0.35); padding: 2px 7px; border-radius: 2px;
         }
         .cs-explore-card__body { padding: clamp(14px,2vw,20px); }
         .cs-explore-card__title {
@@ -973,14 +1086,13 @@ export default function WhisperingWoodsPage() {
           line-height: 1.65; color: rgba(224,224,248,0.5); margin: 0 0 10px;
         }
         .cs-explore-card__cta {
-          font-family: var(--font-space, monospace); font-size: 0.6rem;
-          letter-spacing: 0.14em; text-transform: uppercase; color: #c0001a;
+          font-family: var(--font-space, monospace); font-size: 0.56rem;
+          letter-spacing: 0.16em; text-transform: uppercase; color: #4a8a3a;
         }
 
-        @media (max-width: 600px) {
-          .cs-grid { grid-template-columns: 1fr; }
-          .cs-phase { grid-template-columns: 32px 2px 1fr; gap: 12px; }
+        @media (max-width: 500px) {
           .cs-set-badge { flex-direction: column; align-items: flex-start; gap: 8px; }
+          .cs-phase { grid-template-columns: 32px 2px 1fr; gap: 12px; }
         }
       `}</style>
 
