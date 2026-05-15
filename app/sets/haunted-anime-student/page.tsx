@@ -583,22 +583,34 @@ export default function CursedStudentPage() {
             <h2 className="cs-section-title">Explore More Matching Sets</h2>
           </div>
           <div className="cs-explore-grid">
-            {[
-              { title: "Dark Forest", desc: "Coming Soon — Primeval horror for the nature-obsessed.", emoji: "🌲" },
-              { title: "Goth Witch", desc: "Coming Soon — A moonlit coven aesthetic across every screen.", emoji: "🕯️" },
-              { title: "Void Entity", desc: "Coming Soon — Cosmic horror. The darkness between the stars.", emoji: "🌌" },
-            ].map((set, i) => (
-              <div key={i} className="cs-explore-card">
-                <div className="cs-explore-card__thumb">
-                  <span className="cs-explore-card__emoji">{set.emoji}</span>
-                  <div className="cs-explore-card__coming">Coming Soon</div>
-                </div>
-                <div className="cs-explore-card__body">
-                  <h3 className="cs-explore-card__title">{set.title}</h3>
-                  <p className="cs-explore-card__desc">{set.desc}</p>
-                </div>
+            <Link href="/sets/whispering-woods" className="cs-explore-card cs-explore-card--link">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <div className="cs-explore-card__thumb">
+                <img
+                  src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/sets/The%20Whispering%20Woods%3A%20A%20Matching%20Dark%20Nature%20Setup%20Kit/whispering-woods-foggy-horror-forest-4k-deskto.webp"
+                  alt="The Whispering Woods matching dark nature horror wallpaper set"
+                  className="cs-explore-card__img"
+                  loading="lazy"
+                />
+                <span className="cs-explore-card__badge">Set No. 02</span>
               </div>
-            ))}
+              <div className="cs-explore-card__body">
+                <h3 className="cs-explore-card__title">The Whispering Woods</h3>
+                <p className="cs-explore-card__desc">A dark nature horror aesthetic. The forest watches. Five 4K wallpapers for PC, phone, and smartwatch.</p>
+                <span className="cs-explore-card__cta">View Set →</span>
+              </div>
+            </Link>
+
+            <div className="cs-explore-card">
+              <div className="cs-explore-card__thumb cs-explore-card__thumb--placeholder">
+                <span className="cs-explore-card__emoji">🕯️</span>
+                <div className="cs-explore-card__coming">Coming Soon</div>
+              </div>
+              <div className="cs-explore-card__body">
+                <h3 className="cs-explore-card__title">More Sets Coming</h3>
+                <p className="cs-explore-card__desc">New matching horror kits drop regularly. Check back soon.</p>
+              </div>
+            </div>
           </div>
         </section>
 

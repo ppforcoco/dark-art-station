@@ -1179,6 +1179,76 @@ export default async function Home() {
             </div>
           </div>
 
+          {/* ── Set No. 02 — The Whispering Woods ── */}
+          <Link href="/sets/whispering-woods" style={{ textDecoration: "none", display: "block", marginTop: "clamp(24px,3vw,40px)" }}>
+            <div className="hw-sets-card">
+              {/* Collage: PC + Phone + Watch */}
+              <div className="hw-sets-collage">
+                {/* Desktop 16:9 */}
+                <div className="hw-sets-desktop">
+                  <span className="hw-sets-device-label">Desktop 16:9</span>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/sets/The%20Whispering%20Woods%3A%20A%20Matching%20Dark%20Nature%20Setup%20Kit/whispering-woods-foggy-horror-forest-4k-deskto.webp"
+                    alt="Whispering Woods foggy horror forest 4K desktop background"
+                    className="hw-sets-desktop__img"
+                    loading="lazy"
+                  />
+                  <div className="hw-sets-scanlines" aria-hidden="true" />
+                </div>
+                {/* Phone 9:16 */}
+                <div className="hw-sets-phone">
+                  <span className="hw-sets-device-label">Lockscreen 9:16</span>
+                  <div className="hw-sets-phone__shell">
+                    <div className="hw-sets-phone__island" aria-hidden="true" />
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/sets/The%20Whispering%20Woods%3A%20A%20Matching%20Dark%20Nature%20Setup%20Kit/dark-forest-cabin-horror-aesthetic-iphone-wallpaper.webp"
+                      alt="Dark forest cabin horror aesthetic iPhone lockscreen wallpaper"
+                      className="hw-sets-phone__img"
+                      loading="lazy"
+                    />
+                    <div className="hw-sets-phone__gloss" aria-hidden="true" />
+                    <div className="hw-sets-phone__bar" aria-hidden="true" />
+                  </div>
+                </div>
+                {/* Watch 1:1 */}
+                <div className="hw-sets-watch">
+                  <span className="hw-sets-device-label">Watch 1:1</span>
+                  <div className="hw-sets-watch__shell">
+                    <div className="hw-sets-watch__crown" aria-hidden="true" />
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/sets/The%20Whispering%20Woods%3A%20A%20Matching%20Dark%20Nature%20Setup%20Kit/yellow-glowing-eyes-mist-smartwatch-wallpaper.webp"
+                      alt="Yellow glowing eyes mist horror smartwatch wallpaper Apple Watch"
+                      className="hw-sets-watch__img"
+                      loading="lazy"
+                    />
+                    <div className="hw-sets-watch__gloss" aria-hidden="true" />
+                  </div>
+                </div>
+              </div>
+              {/* Text */}
+              <div className="hw-sets-info">
+                <span className="hw-sets-info__tag">Set No. 02</span>
+                <h3 className="hw-sets-info__title">The Whispering Woods</h3>
+                <p className="hw-sets-info__sub">A Matching Dark Nature Horror Kit</p>
+                <p className="hw-sets-info__desc">
+                  A dark forest horror aesthetic for every screen you own. Three phases of a forest that never sleeps — unified across your phone lockscreen, home screen, smartwatch face, and desktop.
+                </p>
+                <div className="hw-sets-info__devices">
+                  {["Phone Lockscreen", "Home Screen", "Smartwatch", "Desktop", "Avatar"].map(d => (
+                    <span key={d} className="hw-sets-info__chip">{d}</span>
+                  ))}
+                </div>
+                <a href="/sets/whispering-woods" className="hw-sets-cta-btn">
+                  ↓ Download Free 4K Kit
+                </a>
+                <p className="hw-sets-info__oled-note">Includes 5 matching 4K files optimized for OLED and Retina displays.</p>
+              </div>
+            </div>
+          </Link>
+
           <div style={{ textAlign: "center", marginTop: "24px", position: "relative" }}>
             <Link href="/sets" style={{
               fontFamily: "var(--font-space, monospace)",
