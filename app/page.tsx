@@ -1015,6 +1015,301 @@ export default async function Home() {
         </div>
       </section>
 
+
+      {/* ══════════════════════════════════════════════════════════
+          SECTION — MATCHING SETS
+      ══════════════════════════════════════════════════════════ */}
+      <section style={{
+        padding: "clamp(32px,5vw,64px) clamp(16px,5vw,72px)",
+        background: "#08060f",
+        position: "relative",
+        overflow: "hidden",
+      }}>
+        <div style={{
+          position: "absolute", inset: 0,
+          background: "radial-gradient(ellipse 70% 50% at 50% 0%, rgba(192,0,26,0.07) 0%, transparent 65%)",
+          pointerEvents: "none",
+        }} />
+
+        <div className="dt-section-head dt-section-head--center" style={{ marginBottom: "clamp(28px,4vw,44px)", position: "relative" }}>
+          <span className="dt-eyebrow" style={{ color: "#c0001a" }}>Full Digital Identity</span>
+          <h2 className="dt-section-title">Matching Sets</h2>
+          <p className="dt-section-sub" style={{ maxWidth: "520px", margin: "0 auto" }}>
+            One dark aesthetic across every screen. Phone lock screen, home screen, smartwatch face, desktop background and profile picture — all matching.
+          </p>
+        </div>
+
+        <div style={{ maxWidth: "1000px", margin: "0 auto", position: "relative" }}>
+          <Link href="/sets/haunted-anime-student" style={{ textDecoration: "none", display: "block" }}>
+            <div className="hw-sets-card">
+              {/* Collage: PC + Phone + Watch */}
+              <div className="hw-sets-collage">
+                {/* Desktop 16:9 */}
+                <div className="hw-sets-desktop">
+                  <span className="hw-sets-device-label">Desktop 16:9</span>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/sets/The%20Cursed%20Student%3A%20A%20Matching%20Dark%20Anime%20Horror%20Kit/cursed-student-dark-anime-4k-desktop-background.webp"
+                    alt="Cursed Student dark anime 4K desktop background psychological horror"
+                    className="hw-sets-desktop__img"
+                    loading="lazy"
+                  />
+                  <div className="hw-sets-scanlines" aria-hidden="true" />
+                </div>
+
+                {/* Phone 9:16 */}
+                <div className="hw-sets-phone">
+                  <span className="hw-sets-device-label">Lockscreen 9:16</span>
+                  <div className="hw-sets-phone__shell">
+                    <div className="hw-sets-phone__island" aria-hidden="true" />
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/sets/The%20Cursed%20Student%3A%20A%20Matching%20Dark%20Anime%20Horror%20Kit/cursed-student-dark-anime-horror-wallpaper-mobile.webp"
+                      alt="Cursed Student dark anime horror mobile lockscreen wallpaper"
+                      className="hw-sets-phone__img"
+                      loading="lazy"
+                    />
+                    <div className="hw-sets-phone__gloss" aria-hidden="true" />
+                    <div className="hw-sets-phone__bar" aria-hidden="true" />
+                  </div>
+                </div>
+
+                {/* Watch 1:1 */}
+                <div className="hw-sets-watch">
+                  <span className="hw-sets-device-label">Watch 1:1</span>
+                  <div className="hw-sets-watch__shell">
+                    <div className="hw-sets-watch__crown" aria-hidden="true" />
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/sets/The%20Cursed%20Student%3A%20A%20Matching%20Dark%20Anime%20Horror%20Kit/haunted-anime-boy-red-eyes-smartwatch-wallpaper.webp"
+                      alt="Haunted anime boy red eyes smartwatch wallpaper Apple Watch"
+                      className="hw-sets-watch__img"
+                      loading="lazy"
+                    />
+                    <div className="hw-sets-watch__gloss" aria-hidden="true" />
+                  </div>
+                </div>
+              </div>
+
+              {/* Text */}
+              <div className="hw-sets-info">
+                <span className="hw-sets-info__tag">Set No. 01</span>
+                <h3 className="hw-sets-info__title">The Cursed Student</h3>
+                <p className="hw-sets-info__sub">A Matching Dark Anime Horror Kit</p>
+                <p className="hw-sets-info__desc">
+                  A psychological horror anime aesthetic for every screen you own. Three phases of possession unified across your phone lock screen, home screen, smartwatch face, desktop background, and profile picture.
+                </p>
+                <div className="hw-sets-info__devices">
+                  {["Phone Lockscreen", "Home Screen", "Smartwatch", "Desktop", "Avatar"].map(d => (
+                    <span key={d} className="hw-sets-info__chip">{d}</span>
+                  ))}
+                </div>
+                <span className="hw-sets-info__cta">Download Free 4K Kit →</span>
+              </div>
+            </div>
+          </Link>
+
+          <div style={{ textAlign: "center", marginTop: "24px", position: "relative" }}>
+            <Link href="/sets" style={{
+              fontFamily: "var(--font-space, monospace)",
+              fontSize: "0.62rem",
+              letterSpacing: "0.18em",
+              textTransform: "uppercase",
+              color: "#60608a",
+              textDecoration: "none",
+            }}>
+              Browse All Matching Sets →
+            </Link>
+          </div>
+        </div>
+
+        <style>{`
+          .hw-sets-card {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: clamp(20px,3vw,48px);
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(192,0,26,0.22);
+            padding: clamp(20px,3vw,36px);
+            position: relative;
+            overflow: hidden;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+          }
+          .hw-sets-card:hover {
+            border-color: rgba(192,0,26,0.48);
+            box-shadow: 0 0 60px rgba(192,0,26,0.07);
+          }
+          .hw-sets-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse 50% 60% at 0% 100%, rgba(192,0,26,0.04), transparent);
+            pointer-events: none;
+          }
+          .hw-sets-collage {
+            display: grid;
+            grid-template-columns: 1fr 88px 68px;
+            gap: 10px;
+            align-items: end;
+          }
+          .hw-sets-device-label {
+            display: block;
+            font-family: var(--font-space, monospace);
+            font-size: 0.48rem;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.35);
+            margin-bottom: 6px;
+          }
+          .hw-sets-desktop { grid-column: 1; grid-row: 1 / 3; position: relative; }
+          .hw-sets-desktop__img {
+            width: 100%;
+            aspect-ratio: 16/9;
+            object-fit: cover;
+            display: block;
+            border-radius: 3px;
+            border: 1.5px solid rgba(192,0,26,0.3);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.7);
+            transition: transform 0.5s ease;
+          }
+          .hw-sets-card:hover .hw-sets-desktop__img { transform: scale(1.02); }
+          .hw-sets-scanlines {
+            position: absolute; inset: 0;
+            background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.04) 3px, rgba(0,0,0,0.04) 4px);
+            pointer-events: none;
+            border-radius: 3px;
+          }
+          .hw-sets-phone { grid-column: 2; grid-row: 1 / 3; }
+          .hw-sets-phone__shell {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 9/16;
+            border-radius: 14px;
+            overflow: hidden;
+            border: 1.5px solid rgba(192,0,26,0.35);
+            background: #080810;
+            box-shadow: 0 0 28px rgba(192,0,26,0.12), 0 8px 32px rgba(0,0,0,0.75);
+          }
+          .hw-sets-phone__island {
+            position: absolute;
+            top: 5px; left: 50%;
+            transform: translateX(-50%);
+            width: 36%; height: 7px;
+            background: #000;
+            border-radius: 4px;
+            z-index: 3;
+          }
+          .hw-sets-phone__img { width: 100%; height: 100%; object-fit: cover; display: block; }
+          .hw-sets-phone__gloss {
+            position: absolute; inset: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.07) 0%, transparent 40%);
+            pointer-events: none;
+          }
+          .hw-sets-phone__bar {
+            position: absolute;
+            bottom: 5px; left: 50%;
+            transform: translateX(-50%);
+            width: 33%; height: 2px;
+            background: rgba(255,255,255,0.22);
+            border-radius: 2px;
+          }
+          .hw-sets-watch { grid-column: 3; grid-row: 2; align-self: end; }
+          .hw-sets-watch__shell {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 1/1;
+            border-radius: 30% / 26%;
+            overflow: hidden;
+            border: 1.5px solid rgba(192,0,26,0.28);
+            background: #080810;
+            box-shadow: 0 0 20px rgba(192,0,26,0.1), 0 5px 20px rgba(0,0,0,0.7);
+          }
+          .hw-sets-watch__crown {
+            position: absolute;
+            right: -5px; top: 42%;
+            width: 5px; height: 14px;
+            background: #181828;
+            border-radius: 0 2px 2px 0;
+          }
+          .hw-sets-watch__img { width: 100%; height: 100%; object-fit: cover; display: block; }
+          .hw-sets-watch__gloss {
+            position: absolute; inset: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.06) 0%, transparent 45%);
+            pointer-events: none;
+          }
+          .hw-sets-info {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            justify-content: center;
+          }
+          .hw-sets-info__tag {
+            font-family: var(--font-space, monospace);
+            font-size: 0.54rem;
+            letter-spacing: 0.26em;
+            text-transform: uppercase;
+            color: #c0001a;
+          }
+          .hw-sets-info__title {
+            font-family: var(--font-cinzel, serif);
+            font-size: clamp(1.3rem,2.5vw,1.9rem);
+            font-weight: 700;
+            color: #f0e8d8;
+            margin: 0;
+            letter-spacing: 0.04em;
+            line-height: 1.1;
+          }
+          .hw-sets-info__sub {
+            font-family: var(--font-space, monospace);
+            font-size: 0.58rem;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: rgba(192,0,26,0.75);
+            margin: 0;
+          }
+          .hw-sets-info__desc {
+            font-family: var(--font-cormorant, serif);
+            font-size: clamp(0.95rem,1.4vw,1.05rem);
+            line-height: 1.7;
+            color: rgba(224,224,248,0.6);
+            margin: 0;
+          }
+          .hw-sets-info__devices { display: flex; flex-wrap: wrap; gap: 7px; }
+          .hw-sets-info__chip {
+            font-family: var(--font-space, monospace);
+            font-size: 0.52rem;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: rgba(192,0,26,0.85);
+            border: 1px solid rgba(192,0,26,0.3);
+            padding: 3px 9px;
+            background: rgba(192,0,26,0.05);
+            border-radius: 2px;
+          }
+          .hw-sets-info__cta {
+            display: inline-block;
+            font-family: var(--font-space, monospace);
+            font-size: 0.68rem;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: #c0001a;
+            margin-top: 4px;
+            transition: letter-spacing 0.2s ease;
+          }
+          .hw-sets-card:hover .hw-sets-info__cta { letter-spacing: 0.22em; }
+
+          @media (max-width: 680px) {
+            .hw-sets-card { grid-template-columns: 1fr; }
+            .hw-sets-collage { grid-template-columns: 1fr 90px 70px; }
+          }
+          @media (max-width: 400px) {
+            .hw-sets-collage { grid-template-columns: 1fr 70px; }
+            .hw-sets-watch { display: none; }
+          }
+        `}</style>
+      </section>
+
       {/* ══════════════════════════════════════════════════════════
           SECTION — TRENDING THIS WEEK
       ══════════════════════════════════════════════════════════ */}

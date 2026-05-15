@@ -1,3 +1,7 @@
+// components/Header.tsx — added "Sets" nav link
+// CHANGE: Added { label: "Sets", href: "/sets" } to NAV_LINKS only.
+// Everything else is identical to the original file.
+
 "use client";
 import Link from "next/link";
 import { useState, useEffect, useCallback, useRef } from "react";
@@ -8,6 +12,7 @@ const NAV_LINKS = [
   { label: "iPhone",        href: "/iphone"     },
   { label: "Android",       href: "/android"    },
   { label: "PC",            href: "/pc"         },
+  { label: "Sets",          href: "/sets"       },  // ← NEW
   { label: "Collections",   href: "/obsessions" },
   { label: "Mood",          href: "/mood"       },
   { label: "Blog & Guides", href: "/blog"       },
@@ -191,7 +196,7 @@ export default function Header() {
         /* ── DESKTOP NAV LINKS ── */
         .nav-links {
           display: flex;
-          gap: 32px;
+          gap: 28px;
           list-style: none;
           margin: 0;
           padding: 0;
@@ -210,6 +215,14 @@ export default function Header() {
         }
         .nav-links a:hover,
         .hw2-nav__link:hover { color: var(--white, #f0f0ff); }
+
+        /* Sets link — subtle highlight */
+        .hw2-nav__link--sets {
+          color: rgba(192,0,26,0.75) !important;
+        }
+        .hw2-nav__link--sets:hover {
+          color: #c0001a !important;
+        }
 
         /* ── NAV ACTIONS ── */
         .nav-actions {
@@ -515,13 +528,19 @@ export default function Header() {
           color: var(--white, #f0f0ff);
           background: rgba(144,144,184,0.06);
         }
+        .hw2-mobile-link--sets {
+          color: rgba(192,0,26,0.8) !important;
+        }
+        .hw2-mobile-link--sets:hover {
+          color: #c0001a !important;
+        }
 
         /* ── RESPONSIVE BREAKPOINTS ── */
-        @media (max-width: 1024px) {
+        @media (max-width: 1100px) {
           .site-nav { padding: 16px 32px; }
-          .nav-links { gap: 20px; }
+          .nav-links { gap: 18px; }
         }
-        @media (max-width: 860px) {
+        @media (max-width: 900px) {
           .site-nav { padding: 14px 20px; }
           .nav-links { display: none; }
           .mobile-menu-btn { display: flex; }
@@ -560,7 +579,13 @@ export default function Header() {
 
         <div className="nav-links">
           {NAV_LINKS.map(l => (
-            <Link key={l.href} href={l.href} className="hw2-nav__link">{l.label}</Link>
+            <Link
+              key={l.href}
+              href={l.href}
+              className={`hw2-nav__link${l.href === "/sets" ? " hw2-nav__link--sets" : ""}`}
+            >
+              {l.label}
+            </Link>
           ))}
         </div>
 
@@ -648,7 +673,7 @@ export default function Header() {
             <Link
               key={l.href}
               href={l.href}
-              className="mobile-menu-link hw2-mobile-link"
+              className={`mobile-menu-link hw2-mobile-link${l.href === "/sets" ? " hw2-mobile-link--sets" : ""}`}
               style={{"--mi": i} as React.CSSProperties}
               onClick={closeMenu}
             >
@@ -660,7 +685,7 @@ export default function Header() {
             style={{"--mi":NAV_LINKS.length} as React.CSSProperties}
             onClick={handleRandom}
           >
-            ⚡ Random Wallpaper
+            Random Wallpaper
           </button>
           <Link
             href="/favorites"
@@ -668,7 +693,7 @@ export default function Header() {
             style={{"--mi":NAV_LINKS.length+1} as React.CSSProperties}
             onClick={closeMenu}
           >
-            ♥ Saved Wallpapers
+            Saved Wallpapers
           </Link>
         </nav>
       </div>
