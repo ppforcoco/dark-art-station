@@ -248,11 +248,11 @@ export default function CursedStudentPage() {
             <span className="cs-set-badge__sub">Matching Dark Anime Horror Kit</span>
           </div>
 
-          {/* Collage thumbnail */}
+          {/* Hero collage: PC on top, Mobile + Watch below */}
           <div className="cs-collage" aria-label="Preview of all wallpapers in this set">
-            {/* Desktop — 16:9 */}
+            {/* Desktop — 16:9 full width */}
             <div className="cs-collage__desktop">
-              <div className="cs-collage__device-label">Desktop 16:9</div>
+              <div className="cs-collage__device-label">Desktop · 16:9</div>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={WALLPAPERS[0].preview}
@@ -263,10 +263,10 @@ export default function CursedStudentPage() {
               <div className="cs-collage__scanlines" aria-hidden="true" />
             </div>
 
-            {/* Phone column */}
-            <div className="cs-collage__phones">
+            {/* Mobile + Watch row — below desktop */}
+            <div className="cs-collage__bottom-row">
               <div className="cs-collage__phone-wrap">
-                <div className="cs-collage__device-label">Mobile 9:16</div>
+                <div className="cs-collage__device-label">Mobile · 9:16</div>
                 <div className="cs-collage__phone-shell">
                   <div className="cs-collage__island" aria-hidden="true" />
                   {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -281,9 +281,8 @@ export default function CursedStudentPage() {
                 </div>
               </div>
 
-              {/* Watch */}
               <div className="cs-collage__watch-wrap">
-                <div className="cs-collage__device-label">Watch 1:1</div>
+                <div className="cs-collage__device-label">Watch · 1:1</div>
                 <div className="cs-collage__watch-shell">
                   <div className="cs-collage__watch-crown" aria-hidden="true" />
                   {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -313,7 +312,7 @@ export default function CursedStudentPage() {
                 textShadow: "0 4px 40px rgba(192,0,26,0.2)",
               }}
             >
-              The Cursed Student: A Matching Dark Anime Horror Kit
+              The Cursed Student
             </h1>
             <p
               style={{
@@ -600,17 +599,6 @@ export default function CursedStudentPage() {
                 <span className="cs-explore-card__cta">View Set →</span>
               </div>
             </Link>
-
-            <div className="cs-explore-card">
-              <div className="cs-explore-card__thumb cs-explore-card__thumb--placeholder">
-                <span className="cs-explore-card__emoji">🕯️</span>
-                <div className="cs-explore-card__coming">Coming Soon</div>
-              </div>
-              <div className="cs-explore-card__body">
-                <h3 className="cs-explore-card__title">More Sets Coming</h3>
-                <p className="cs-explore-card__desc">New matching horror kits drop regularly. Check back soon.</p>
-              </div>
-            </div>
           </div>
         </section>
 
@@ -657,11 +645,10 @@ export default function CursedStudentPage() {
 
         /* ── COLLAGE ── */
         .cs-collage {
-          display: grid;
-          grid-template-columns: 1fr 300px;
-          gap: 20px;
+          display: flex;
+          flex-direction: column;
+          gap: 12px;
           margin-top: clamp(24px,4vw,40px);
-          align-items: start;
         }
         .cs-collage__desktop {
           position: relative;
@@ -672,24 +659,38 @@ export default function CursedStudentPage() {
           animation: cs-glow-desk 4s ease-in-out infinite;
           aspect-ratio: 16/9;
           background: #080810;
+          width: 100%;
         }
         @keyframes cs-glow-desk {
           0%,100% { box-shadow: 0 0 0 4px #0a0a14, 0 0 0 6px rgba(20,20,40,0.9), 0 0 80px rgba(0,0,0,0.7); }
           50%      { box-shadow: 0 0 0 4px #0a0a14, 0 0 0 6px rgba(20,20,40,0.9), 0 0 80px rgba(0,0,0,0.7), 0 0 100px rgba(10,0,40,0.2); }
         }
+        .cs-collage__bottom-row {
+          display: flex;
+          gap: 12px;
+          align-items: flex-start;
+        }
         .cs-collage__device-label {
-          position: absolute;
-          top: 10px;
-          left: 12px;
+          position: relative;
+          top: auto; left: auto;
+          display: block;
+          margin-bottom: 8px;
+          background: none;
+          padding: 0;
           font-family: var(--font-space, monospace);
           font-size: 0.52rem;
           letter-spacing: 0.18em;
           text-transform: uppercase;
-          color: rgba(255,255,255,0.55);
+          color: rgba(255,255,255,0.45);
+        }
+        .cs-collage__desktop .cs-collage__device-label {
+          position: absolute;
+          top: 10px; left: 12px;
           background: rgba(0,0,0,0.65);
           padding: 3px 8px;
           border-radius: 2px;
           z-index: 2;
+          margin-bottom: 0;
         }
         .cs-collage__img {
           width: 100%;
@@ -708,14 +709,14 @@ export default function CursedStudentPage() {
         }
         .cs-collage__phones {
           display: flex;
-          flex-direction: column;
-          gap: 16px;
-          align-items: center;
+          flex-direction: row;
+          gap: 12px;
+          align-items: flex-start;
         }
         .cs-collage__phone-wrap {
           position: relative;
-          width: 100%;
-          max-width: 220px;
+          width: clamp(90px, 15%, 160px);
+          flex-shrink: 0;
         }
         .cs-collage__phone-wrap .cs-collage__device-label {
           position: relative;
@@ -774,9 +775,10 @@ export default function CursedStudentPage() {
           border-radius: 2px;
         }
         .cs-collage__watch-wrap {
-          width: 100%;
-          max-width: 160px;
+          width: clamp(72px, 11%, 124px);
+          flex-shrink: 0;
           position: relative;
+          align-self: flex-end;
         }
         .cs-collage__watch-wrap .cs-collage__device-label {
           position: relative;
@@ -823,17 +825,9 @@ export default function CursedStudentPage() {
           pointer-events: none;
         }
 
-        @media (max-width: 700px) {
-          .cs-collage {
-            grid-template-columns: 1fr;
-          }
-          .cs-collage__phones {
-            flex-direction: row;
-            justify-content: center;
-            align-items: flex-start;
-          }
-          .cs-collage__phone-wrap { max-width: 48%; }
-          .cs-collage__watch-wrap { max-width: 40%; }
+        @media (max-width: 480px) {
+          .cs-collage__watch-wrap { display: none; }
+          .cs-collage__phone-wrap { width: clamp(80px, 20%, 130px); }
         }
 
         /* ── Lore ── */

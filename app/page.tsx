@@ -321,11 +321,6 @@ export default async function Home() {
         }
       `}</style>
 
-
-      <div className="hw-ad-row">
-      </div>
-
-
       {/* ══════════════════════════════════════════════════════════
           SECTION — NEW THIS WEEK
       ══════════════════════════════════════════════════════════ */}
@@ -1041,61 +1036,59 @@ export default async function Home() {
 
         <div style={{ maxWidth: "1000px", margin: "0 auto", position: "relative" }}>
           <Link href="/sets/haunted-anime-student" style={{ textDecoration: "none", display: "block" }}>
-            <div className="hw-sets-card">
-              {/* Collage: PC + Phone + Watch */}
-              <div className="hw-sets-collage">
-                {/* Desktop 16:9 */}
-                <div className="hw-sets-desktop">
-                  <span className="hw-sets-device-label">Desktop 16:9</span>
+            <div className="hw-sets-card hw-sets-card--stacked">
+              {/* Left: PC top, then mobile+watch below */}
+              <div className="hw-sets-media-col">
+                {/* Desktop 16:9 — top */}
+                <div className="hw-sets-desktop hw-sets-desktop--full">
+                  <span className="hw-sets-device-label">Desktop · 16:9</span>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/sets/The%20Cursed%20Student%3A%20A%20Matching%20Dark%20Anime%20Horror%20Kit/cursed-student-dark-anime-4k-desktop-background.webp"
-                    alt="Cursed Student dark anime 4K desktop background psychological horror"
+                    alt="Cursed Student dark anime 4K desktop background"
                     className="hw-sets-desktop__img"
                     loading="lazy"
                   />
                   <div className="hw-sets-scanlines" aria-hidden="true" />
                 </div>
-
-                {/* Phone 9:16 */}
-                <div className="hw-sets-phone">
-                  <span className="hw-sets-device-label">Lockscreen 9:16</span>
-                  <div className="hw-sets-phone__shell">
-                    <div className="hw-sets-phone__island" aria-hidden="true" />
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/sets/The%20Cursed%20Student%3A%20A%20Matching%20Dark%20Anime%20Horror%20Kit/cursed-student-dark-anime-horror-wallpaper-mobile.webp"
-                      alt="Cursed Student dark anime horror mobile lockscreen wallpaper"
-                      className="hw-sets-phone__img"
-                      loading="lazy"
-                    />
-                    <div className="hw-sets-phone__gloss" aria-hidden="true" />
-                    <div className="hw-sets-phone__bar" aria-hidden="true" />
+                {/* Mobile + Watch row — below */}
+                <div className="hw-sets-bottom-row">
+                  <div className="hw-sets-phone hw-sets-phone--row">
+                    <span className="hw-sets-device-label">Mobile · 9:16</span>
+                    <div className="hw-sets-phone__shell">
+                      <div className="hw-sets-phone__island" aria-hidden="true" />
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/sets/The%20Cursed%20Student%3A%20A%20Matching%20Dark%20Anime%20Horror%20Kit/cursed-student-dark-anime-horror-wallpaper-mobile.webp"
+                        alt="Cursed Student mobile lockscreen wallpaper"
+                        className="hw-sets-phone__img"
+                        loading="lazy"
+                      />
+                      <div className="hw-sets-phone__gloss" aria-hidden="true" />
+                      <div className="hw-sets-phone__bar" aria-hidden="true" />
+                    </div>
                   </div>
-                </div>
-
-                {/* Watch 1:1 */}
-                <div className="hw-sets-watch">
-                  <span className="hw-sets-device-label">Watch 1:1</span>
-                  <div className="hw-sets-watch__shell">
-                    <div className="hw-sets-watch__crown" aria-hidden="true" />
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/sets/The%20Cursed%20Student%3A%20A%20Matching%20Dark%20Anime%20Horror%20Kit/haunted-anime-boy-red-eyes-smartwatch-wallpaper.webp"
-                      alt="Haunted anime boy red eyes smartwatch wallpaper Apple Watch"
-                      className="hw-sets-watch__img"
-                      loading="lazy"
-                    />
-                    <div className="hw-sets-watch__gloss" aria-hidden="true" />
+                  <div className="hw-sets-watch hw-sets-watch--row">
+                    <span className="hw-sets-device-label">Watch · 1:1</span>
+                    <div className="hw-sets-watch__shell">
+                      <div className="hw-sets-watch__crown" aria-hidden="true" />
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/sets/The%20Cursed%20Student%3A%20A%20Matching%20Dark%20Anime%20Horror%20Kit/haunted-anime-boy-red-eyes-smartwatch-wallpaper.webp"
+                        alt="Haunted anime boy red eyes smartwatch wallpaper"
+                        className="hw-sets-watch__img"
+                        loading="lazy"
+                      />
+                      <div className="hw-sets-watch__gloss" aria-hidden="true" />
+                    </div>
                   </div>
                 </div>
               </div>
 
-              {/* Text */}
+              {/* Right: Text info */}
               <div className="hw-sets-info">
                 <span className="hw-sets-info__tag">Set No. 01</span>
                 <h3 className="hw-sets-info__title">The Cursed Student</h3>
-                <p className="hw-sets-info__sub">A Matching Dark Anime Horror Kit</p>
                 <p className="hw-sets-info__desc">
                   A psychological horror anime aesthetic for every screen you own. Three phases of possession unified across your phone lock screen, home screen, smartwatch face, desktop background, and profile picture.
                 </p>
@@ -1104,89 +1097,19 @@ export default async function Home() {
                     <span key={d} className="hw-sets-info__chip">{d}</span>
                   ))}
                 </div>
-                <a href="/sets/haunted-anime-student" className="hw-sets-cta-btn">
-                  ↓ Download Free 4K Kit
-                </a>
-                <p className="hw-sets-info__oled-note">Includes 5 matching 4K files optimized for OLED and Retina displays.</p>
+                <span className="hw-sets-info__cta">View Full Set →</span>
               </div>
             </div>
           </Link>
 
-          {/* ── Beautiful Animated Device Mockups ── */}
-          <div className="hw-sets-mockups-row" aria-label="Device mockup preview">
-            {/* Desktop mockup */}
-            <div className="hw-sets-mockup hw-sets-mockup--desktop">
-              <div className="hw-sets-mockup__label">Desktop · 16:9</div>
-              <div className="hw-sets-mockup__shell hw-sets-mockup__shell--desktop">
-                <div className="hw-sets-mockup__desktop-bar">
-                  <span className="hw-sets-mockup__dot" style={{ background: "#ff5f57" }} />
-                  <span className="hw-sets-mockup__dot" style={{ background: "#febc2e" }} />
-                  <span className="hw-sets-mockup__dot" style={{ background: "#28c840" }} />
-                </div>
-                <div className="hw-sets-mockup__screen">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/sets/The%20Cursed%20Student%3A%20A%20Matching%20Dark%20Anime%20Horror%20Kit/cursed-student-dark-anime-4k-desktop-background.webp"
-                    alt="Cursed Student dark anime 4K desktop wallpaper"
-                    className="hw-sets-mockup__img"
-                    loading="lazy"
-                  />
-                  <div className="hw-sets-mockup__scanlines" aria-hidden="true" />
-                  <div className="hw-sets-mockup__glow-overlay" aria-hidden="true" />
-                </div>
-                <div className="hw-sets-mockup__desktop-stand" aria-hidden="true" />
-                <div className="hw-sets-mockup__desktop-base" aria-hidden="true" />
-              </div>
-            </div>
-
-            {/* iPhone mockup */}
-            <div className="hw-sets-mockup hw-sets-mockup--phone">
-              <div className="hw-sets-mockup__label">iPhone · 9:16</div>
-              <div className="hw-sets-mockup__shell hw-sets-mockup__shell--phone">
-                <div className="hw-sets-mockup__phone-btn hw-sets-mockup__phone-btn--vol1" aria-hidden="true" />
-                <div className="hw-sets-mockup__phone-btn hw-sets-mockup__phone-btn--vol2" aria-hidden="true" />
-                <div className="hw-sets-mockup__phone-btn hw-sets-mockup__phone-btn--pwr" aria-hidden="true" />
-                <div className="hw-sets-mockup__island" aria-hidden="true" />
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/sets/The%20Cursed%20Student%3A%20A%20Matching%20Dark%20Anime%20Horror%20Kit/cursed-student-dark-anime-horror-wallpaper-mobile.webp"
-                  alt="Cursed Student dark anime iPhone lockscreen wallpaper 9:16"
-                  className="hw-sets-mockup__img hw-sets-mockup__img--full"
-                  loading="lazy"
-                />
-                <div className="hw-sets-mockup__gloss" aria-hidden="true" />
-                <div className="hw-sets-mockup__home-bar" aria-hidden="true" />
-              </div>
-            </div>
-
-            {/* Apple Watch mockup */}
-            <div className="hw-sets-mockup hw-sets-mockup--watch">
-              <div className="hw-sets-mockup__label">Watch · 1:1</div>
-              <div className="hw-sets-mockup__shell hw-sets-mockup__shell--watch">
-                <div className="hw-sets-mockup__watch-crown" aria-hidden="true" />
-                <div className="hw-sets-mockup__watch-btn" aria-hidden="true" />
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/sets/The%20Cursed%20Student%3A%20A%20Matching%20Dark%20Anime%20Horror%20Kit/haunted-anime-boy-red-eyes-smartwatch-wallpaper.webp"
-                  alt="Haunted anime boy red eyes Apple Watch wallpaper 1:1"
-                  className="hw-sets-mockup__img hw-sets-mockup__img--full"
-                  loading="lazy"
-                />
-                <div className="hw-sets-mockup__gloss" aria-hidden="true" />
-                <div className="hw-sets-mockup__watch-strap-top" aria-hidden="true" />
-                <div className="hw-sets-mockup__watch-strap-bot" aria-hidden="true" />
-              </div>
-            </div>
-          </div>
-
           {/* ── Set No. 02 — The Whispering Woods ── */}
           <Link href="/sets/whispering-woods" style={{ textDecoration: "none", display: "block", marginTop: "clamp(24px,3vw,40px)" }}>
-            <div className="hw-sets-card">
-              {/* Collage: PC + Phone + Watch */}
-              <div className="hw-sets-collage">
-                {/* Desktop 16:9 */}
-                <div className="hw-sets-desktop">
-                  <span className="hw-sets-device-label">Desktop 16:9</span>
+            <div className="hw-sets-card hw-sets-card--stacked">
+              {/* Left: PC top, then mobile+watch below */}
+              <div className="hw-sets-media-col">
+                {/* Desktop 16:9 — top */}
+                <div className="hw-sets-desktop hw-sets-desktop--full">
+                  <span className="hw-sets-device-label">Desktop · 16:9</span>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/sets/The%20Whispering%20Woods%3A%20A%20Matching%20Dark%20Nature%20Setup%20Kit/whispering-woods-foggy-horror-forest-4k-deskto.webp"
@@ -1196,43 +1119,44 @@ export default async function Home() {
                   />
                   <div className="hw-sets-scanlines" aria-hidden="true" />
                 </div>
-                {/* Phone 9:16 */}
-                <div className="hw-sets-phone">
-                  <span className="hw-sets-device-label">Lockscreen 9:16</span>
-                  <div className="hw-sets-phone__shell">
-                    <div className="hw-sets-phone__island" aria-hidden="true" />
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/sets/The%20Whispering%20Woods%3A%20A%20Matching%20Dark%20Nature%20Setup%20Kit/dark-forest-cabin-horror-aesthetic-iphone-wallpaper.webp"
-                      alt="Dark forest cabin horror aesthetic iPhone lockscreen wallpaper"
-                      className="hw-sets-phone__img"
-                      loading="lazy"
-                    />
-                    <div className="hw-sets-phone__gloss" aria-hidden="true" />
-                    <div className="hw-sets-phone__bar" aria-hidden="true" />
+                {/* Mobile + Watch row — below */}
+                <div className="hw-sets-bottom-row">
+                  <div className="hw-sets-phone hw-sets-phone--row">
+                    <span className="hw-sets-device-label">Mobile · 9:16</span>
+                    <div className="hw-sets-phone__shell">
+                      <div className="hw-sets-phone__island" aria-hidden="true" />
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/sets/The%20Whispering%20Woods%3A%20A%20Matching%20Dark%20Nature%20Setup%20Kit/dark-forest-cabin-horror-aesthetic-iphone-wallpaper.webp"
+                        alt="Dark forest cabin horror iPhone lockscreen wallpaper"
+                        className="hw-sets-phone__img"
+                        loading="lazy"
+                      />
+                      <div className="hw-sets-phone__gloss" aria-hidden="true" />
+                      <div className="hw-sets-phone__bar" aria-hidden="true" />
+                    </div>
                   </div>
-                </div>
-                {/* Watch 1:1 */}
-                <div className="hw-sets-watch">
-                  <span className="hw-sets-device-label">Watch 1:1</span>
-                  <div className="hw-sets-watch__shell">
-                    <div className="hw-sets-watch__crown" aria-hidden="true" />
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/sets/The%20Whispering%20Woods%3A%20A%20Matching%20Dark%20Nature%20Setup%20Kit/yellow-glowing-eyes-mist-smartwatch-wallpaper.webp"
-                      alt="Yellow glowing eyes mist horror smartwatch wallpaper Apple Watch"
-                      className="hw-sets-watch__img"
-                      loading="lazy"
-                    />
-                    <div className="hw-sets-watch__gloss" aria-hidden="true" />
+                  <div className="hw-sets-watch hw-sets-watch--row">
+                    <span className="hw-sets-device-label">Watch · 1:1</span>
+                    <div className="hw-sets-watch__shell">
+                      <div className="hw-sets-watch__crown" aria-hidden="true" />
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/sets/The%20Whispering%20Woods%3A%20A%20Matching%20Dark%20Nature%20Setup%20Kit/yellow-glowing-eyes-mist-smartwatch-wallpaper.webp"
+                        alt="Yellow glowing eyes mist horror smartwatch wallpaper"
+                        className="hw-sets-watch__img"
+                        loading="lazy"
+                      />
+                      <div className="hw-sets-watch__gloss" aria-hidden="true" />
+                    </div>
                   </div>
                 </div>
               </div>
-              {/* Text */}
+
+              {/* Right: Text info */}
               <div className="hw-sets-info">
                 <span className="hw-sets-info__tag">Set No. 02</span>
                 <h3 className="hw-sets-info__title">The Whispering Woods</h3>
-                <p className="hw-sets-info__sub">A Matching Dark Nature Horror Kit</p>
                 <p className="hw-sets-info__desc">
                   A dark forest horror aesthetic for every screen you own. Three phases of a forest that never sleeps — unified across your phone lockscreen, home screen, smartwatch face, and desktop.
                 </p>
@@ -1241,10 +1165,7 @@ export default async function Home() {
                     <span key={d} className="hw-sets-info__chip">{d}</span>
                   ))}
                 </div>
-                <a href="/sets/whispering-woods" className="hw-sets-cta-btn">
-                  ↓ Download Free 4K Kit
-                </a>
-                <p className="hw-sets-info__oled-note">Includes 5 matching 4K files optimized for OLED and Retina displays.</p>
+                <span className="hw-sets-info__cta">View Full Set →</span>
               </div>
             </div>
           </Link>
@@ -1287,12 +1208,20 @@ export default async function Home() {
             background: radial-gradient(ellipse 50% 60% at 0% 100%, rgba(192,0,26,0.04), transparent);
             pointer-events: none;
           }
-          .hw-sets-collage {
-            display: grid;
-            grid-template-columns: 1fr 88px 68px;
+          /* Media column: PC on top, mobile+watch below */
+          .hw-sets-media-col {
+            display: flex;
+            flex-direction: column;
             gap: 10px;
-            align-items: end;
           }
+          .hw-sets-desktop--full { position: relative; }
+          .hw-sets-bottom-row {
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+          }
+          .hw-sets-phone--row { flex: 0 0 auto; width: clamp(70px,13%,110px); }
+          .hw-sets-watch--row { flex: 0 0 auto; width: clamp(56px,10%,88px); align-self: flex-end; }
           .hw-sets-device-label {
             display: block;
             font-family: var(--font-space, monospace);
@@ -1302,7 +1231,6 @@ export default async function Home() {
             color: rgba(255,255,255,0.35);
             margin-bottom: 6px;
           }
-          .hw-sets-desktop { grid-column: 1; grid-row: 1 / 3; position: relative; }
           .hw-sets-desktop__img {
             width: 100%;
             aspect-ratio: 16/9;
@@ -1320,7 +1248,7 @@ export default async function Home() {
             pointer-events: none;
             border-radius: 3px;
           }
-          .hw-sets-phone { grid-column: 2; grid-row: 1 / 3; }
+          .hw-sets-phone { }
           .hw-sets-phone__shell {
             position: relative;
             width: 100%;
@@ -1354,7 +1282,7 @@ export default async function Home() {
             background: rgba(255,255,255,0.22);
             border-radius: 2px;
           }
-          .hw-sets-watch { grid-column: 3; grid-row: 2; align-self: end; }
+          .hw-sets-watch { }
           .hw-sets-watch__shell {
             position: relative;
             width: 100%;
@@ -1441,151 +1369,12 @@ export default async function Home() {
 
           @media (max-width: 680px) {
             .hw-sets-card { grid-template-columns: 1fr; }
-            .hw-sets-collage { grid-template-columns: 1fr 90px 70px; }
+            .hw-sets-bottom-row { justify-content: flex-start; }
           }
           @media (max-width: 400px) {
-            .hw-sets-collage { grid-template-columns: 1fr 70px; }
-            .hw-sets-watch { display: none; }
-          }
-
-          /* ── Red CTA Button ── */
-          .hw-sets-cta-btn {
-            display: inline-flex; align-items: center; justify-content: center;
-            padding: 14px 28px; background: #c0001a; color: #fff !important;
-            border: none; border-radius: 3px; font-family: var(--font-space, monospace);
-            font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase;
-            text-decoration: none !important; font-weight: 700;
-            box-shadow: 0 0 28px rgba(192,0,26,0.45), 0 4px 16px rgba(0,0,0,0.5);
-            transition: background 0.2s, box-shadow 0.2s, transform 0.15s;
-            cursor: pointer; margin-top: 4px; position: relative; overflow: hidden;
-          }
-          .hw-sets-cta-btn::before {
-            content: ''; position: absolute; inset: 0;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent);
-            transform: translateX(-100%); transition: transform 0.4s ease;
-          }
-          .hw-sets-cta-btn:hover::before { transform: translateX(100%); }
-          .hw-sets-cta-btn:hover {
-            background: #a0001a;
-            box-shadow: 0 0 40px rgba(192,0,26,0.65), 0 4px 20px rgba(0,0,0,0.6);
-            transform: translateY(-2px);
-          }
-          .hw-sets-info__oled-note {
-            font-family: var(--font-space, monospace); font-size: 0.54rem;
-            letter-spacing: 0.12em; color: rgba(192,0,26,0.65);
-            margin: 4px 0 0; line-height: 1.5;
-          }
-          /* ══ DEVICE MOCKUPS ROW ══ */
-          .hw-sets-mockups-row {
-            display: flex; gap: clamp(20px,3vw,40px); align-items: flex-end;
-            justify-content: center; margin-top: clamp(36px,5vw,56px);
-            padding: clamp(20px,3vw,32px); background: rgba(0,0,0,0.25);
-            border: 1px solid rgba(20,20,35,0.8); border-radius: 8px;
-          }
-          .hw-sets-mockup { display: flex; flex-direction: column; align-items: center; gap: 12px; }
-          .hw-sets-mockup__label {
-            font-family: var(--font-space, monospace); font-size: 0.52rem;
-            letter-spacing: 0.22em; text-transform: uppercase; color: rgba(255,255,255,0.4);
-          }
-          .hw-sets-mockup--desktop { flex: 1; max-width: 520px; min-width: 220px; }
-          .hw-sets-mockup__shell--desktop {
-            width: 100%; border-radius: 10px 10px 4px 4px; background: #0a0a14;
-            border: 2px solid #0f0f1e;
-            animation: hw-glow-desktop 4s ease-in-out infinite;
-            box-shadow: 0 0 0 3px #0a0a14, 0 0 0 5px rgba(20,20,40,0.9), 0 0 60px rgba(0,0,0,0.5);
-          }
-          @keyframes hw-glow-desktop {
-            0%,100% { box-shadow: 0 0 0 3px #0a0a14, 0 0 0 5px rgba(20,20,40,0.9), 0 0 60px rgba(0,0,0,0.5); }
-            50%      { box-shadow: 0 0 0 3px #0a0a14, 0 0 0 5px rgba(20,20,40,0.9), 0 0 60px rgba(0,0,0,0.5), 0 0 80px rgba(10,0,40,0.18); }
-          }
-          .hw-sets-mockup__desktop-bar {
-            height: 22px; background: #111120; border-radius: 8px 8px 0 0;
-            display: flex; align-items: center; padding: 0 10px; gap: 5px;
-          }
-          .hw-sets-mockup__dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; }
-          .hw-sets-mockup__screen { position: relative; width: 100%; aspect-ratio: 16/9; overflow: hidden; background: #080810; }
-          .hw-sets-mockup__img { width: 100%; height: 100%; object-fit: cover; display: block; }
-          .hw-sets-mockup__img--full { position: absolute; inset: 0; }
-          .hw-sets-mockup__scanlines {
-            position: absolute; inset: 0;
-            background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.06) 3px, rgba(0,0,0,0.06) 4px);
-            pointer-events: none;
-          }
-          .hw-sets-mockup__glow-overlay {
-            position: absolute; inset: 0;
-            background: linear-gradient(135deg, rgba(255,255,255,0.04) 0%, transparent 40%);
-            pointer-events: none;
-          }
-          .hw-sets-mockup__desktop-stand { width: 18%; height: 14px; margin: 0 auto; background: #111120; border-radius: 0 0 3px 3px; }
-          .hw-sets-mockup__desktop-base { width: 35%; height: 6px; margin: 0 auto; background: #111120; border-radius: 3px; }
-          .hw-sets-mockup--phone { width: clamp(90px,12vw,140px); flex-shrink: 0; }
-          .hw-sets-mockup__shell--phone {
-            position: relative; width: 100%; aspect-ratio: 9/16;
-            border-radius: clamp(18px,3vw,28px); overflow: hidden; background: #080810;
-            border: 2px solid #0f0f1e;
-            animation: hw-glow-phone 4s ease-in-out infinite 1s;
-            box-shadow: 0 0 0 3px #0a0a14, 0 0 0 5px rgba(20,20,40,0.9), 0 16px 60px rgba(0,0,0,0.65);
-          }
-          @keyframes hw-glow-phone {
-            0%,100% { box-shadow: 0 0 0 3px #0a0a14, 0 0 0 5px rgba(20,20,40,0.9), 0 16px 60px rgba(0,0,0,0.65); }
-            50%      { box-shadow: 0 0 0 3px #0a0a14, 0 0 0 5px rgba(20,20,40,0.9), 0 16px 60px rgba(0,0,0,0.65), 0 0 50px rgba(10,0,40,0.2); }
-          }
-          .hw-sets-mockup__phone-btn { position: absolute; background: #111120; border-radius: 2px; }
-          .hw-sets-mockup__phone-btn--vol1 { left: -3px; top: 22%; width: 3px; height: 14%; }
-          .hw-sets-mockup__phone-btn--vol2 { left: -3px; top: 38%; width: 3px; height: 14%; }
-          .hw-sets-mockup__phone-btn--pwr  { right: -3px; top: 30%; width: 3px; height: 18%; }
-          .hw-sets-mockup__island { position: absolute; top: 6px; left: 50%; transform: translateX(-50%); width: 35%; height: 8px; background: #000; border-radius: 5px; z-index: 4; }
-          .hw-sets-mockup__gloss { position: absolute; inset: 0; background: linear-gradient(135deg, rgba(255,255,255,0.06) 0%, transparent 40%); pointer-events: none; z-index: 3; }
-          .hw-sets-mockup__home-bar { position: absolute; bottom: 5px; left: 50%; transform: translateX(-50%); width: 33%; height: 3px; background: rgba(255,255,255,0.2); border-radius: 2px; z-index: 3; }
-          .hw-sets-mockup--watch { width: clamp(70px,9vw,110px); flex-shrink: 0; }
-          .hw-sets-mockup__shell--watch {
-            position: relative; width: 100%; aspect-ratio: 1/1;
-            border-radius: 32% / 28%; overflow: hidden; background: #080810;
-            border: 2px solid #0f0f1e;
-            animation: hw-glow-watch 4s ease-in-out infinite 2s;
-            box-shadow: 0 0 0 3px #0a0a14, 0 0 0 5px rgba(20,20,40,0.9), 0 8px 32px rgba(0,0,0,0.7);
-          }
-          @keyframes hw-glow-watch {
-            0%,100% { box-shadow: 0 0 0 3px #0a0a14, 0 0 0 5px rgba(20,20,40,0.9), 0 8px 32px rgba(0,0,0,0.7); }
-            50%      { box-shadow: 0 0 0 3px #0a0a14, 0 0 0 5px rgba(20,20,40,0.9), 0 8px 32px rgba(0,0,0,0.7), 0 0 40px rgba(10,0,40,0.18); }
-          }
-          .hw-sets-mockup__watch-crown { position: absolute; right: -5px; top: 38%; width: 5px; height: 22%; background: #111120; border-radius: 0 3px 3px 0; z-index: 5; }
-          .hw-sets-mockup__watch-btn { position: absolute; right: -5px; top: 62%; width: 5px; height: 12%; background: #111120; border-radius: 0 2px 2px 0; z-index: 5; }
-          .hw-sets-mockup__watch-strap-top { position: absolute; top: -22px; left: 10%; right: 10%; height: 24px; background: #0d0d1a; border-radius: 4px 4px 0 0; z-index: -1; }
-          .hw-sets-mockup__watch-strap-bot { position: absolute; bottom: -22px; left: 10%; right: 10%; height: 24px; background: #0d0d1a; border-radius: 0 0 4px 4px; z-index: -1; }
-          @media (max-width: 680px) {
-            .hw-sets-mockups-row { flex-direction: column; align-items: center; gap: 28px; }
-            .hw-sets-mockup--desktop { width: 100%; max-width: 380px; }
-            .hw-sets-mockup--phone { width: 120px; }
-            .hw-sets-mockup--watch { width: 90px; }
+            .hw-sets-watch--row { display: none; }
           }
         `}</style>
-      </section>
-
-      {/* ══════════════════════════════════════════════════════════
-          SECTION — THE HAUNTED WALLPAPERS MISSION
-      ══════════════════════════════════════════════════════════ */}
-      <section style={{
-        padding: "clamp(48px,7vw,96px) clamp(16px,5vw,72px)",
-        background: "linear-gradient(180deg, #07050d 0%, #0a0612 100%)",
-        position: "relative", overflow: "hidden",
-      }}>
-        <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse 60% 40% at 50% 50%, rgba(192,0,26,0.05) 0%, transparent 70%)", pointerEvents: "none" }} />
-        <div style={{ maxWidth: "800px", margin: "0 auto", position: "relative" }}>
-          <div className="dt-section-head dt-section-head--center" style={{ marginBottom: "clamp(24px,4vw,40px)" }}>
-            <span className="dt-eyebrow" style={{ color: "#c0001a" }}>Our Purpose</span>
-            <h2 className="dt-section-title">The Haunted Wallpapers Mission</h2>
-          </div>
-          <div style={{ background: "rgba(255,255,255,0.015)", border: "1px solid rgba(192,0,26,0.2)", padding: "clamp(28px,4vw,56px)", position: "relative" }}>
-            <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: "2px", background: "linear-gradient(90deg, transparent, rgba(192,0,26,0.6), transparent)" }} />
-            <p style={{ fontFamily: "var(--font-cormorant, serif)", fontSize: "clamp(1.05rem,1.8vw,1.2rem)", lineHeight: 1.85, color: "rgba(224,224,248,0.72)", margin: 0 }}>
-              At Haunted Wallpapers, we believe your digital setup should be an extension of your soul.
-              We don&apos;t just &ldquo;dump&rdquo; images. Every wallpaper is manually curated and tested on real devices
-              to ensure perfect crops for iPhone, Samsung, and Desktop. Our unique &ldquo;Matching Set&rdquo; philosophy
-              ensures your watch, phone, and PC tell one cohesive story. Built for horror fans, by horror fans.
-            </p>
-          </div>
-        </div>
       </section>
 
       {/* ══════════════════════════════════════════════════════════
@@ -1678,9 +1467,6 @@ export default async function Home() {
 
       <HorrorFact />
 
-      <div className="hw-ad-row">
-      </div>
-
       {/* ══════════════════════════════════════════════════════════
           SECTION 5 — ABOUT / STORY
       ══════════════════════════════════════════════════════════ */}
@@ -1720,6 +1506,32 @@ export default async function Home() {
       </section>
 
       <RecentlyViewed />
+
+      {/* ══════════════════════════════════════════════════════════
+          SECTION — THE HAUNTED WALLPAPERS MISSION
+      ══════════════════════════════════════════════════════════ */}
+      <section style={{
+        padding: "clamp(48px,7vw,80px) clamp(16px,5vw,72px)",
+        background: "linear-gradient(180deg, #07050d 0%, #0a0612 100%)",
+        position: "relative", overflow: "hidden",
+      }}>
+        <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse 60% 40% at 50% 50%, rgba(192,0,26,0.05) 0%, transparent 70%)", pointerEvents: "none" }} />
+        <div style={{ maxWidth: "800px", margin: "0 auto", position: "relative" }}>
+          <div className="dt-section-head dt-section-head--center" style={{ marginBottom: "clamp(20px,3vw,32px)" }}>
+            <span className="dt-eyebrow" style={{ color: "#c0001a" }}>Our Purpose</span>
+            <h2 className="dt-section-title">The Haunted Wallpapers Mission</h2>
+          </div>
+          <div style={{ background: "rgba(255,255,255,0.015)", border: "1px solid rgba(192,0,26,0.2)", padding: "clamp(24px,3.5vw,48px)", position: "relative" }}>
+            <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: "2px", background: "linear-gradient(90deg, transparent, rgba(192,0,26,0.6), transparent)" }} />
+            <p style={{ fontFamily: "var(--font-cormorant, serif)", fontSize: "clamp(1.05rem,1.8vw,1.2rem)", lineHeight: 1.85, color: "rgba(224,224,248,0.72)", margin: 0 }}>
+              At Haunted Wallpapers, we believe your digital setup should be an extension of your soul.
+              We don&apos;t just &ldquo;dump&rdquo; images. Every wallpaper is manually curated and tested on real devices
+              to ensure perfect crops for iPhone, Samsung, and Desktop. Our unique &ldquo;Matching Set&rdquo; philosophy
+              ensures your watch, phone, and PC tell one cohesive story. Built for horror fans, by horror fans.
+            </p>
+          </div>
+        </div>
+      </section>
 
 
 

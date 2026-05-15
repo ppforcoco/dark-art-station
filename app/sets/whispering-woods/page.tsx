@@ -245,11 +245,11 @@ export default function WhisperingWoodsPage() {
             <span className="cs-set-badge__sub">Matching Dark Nature Setup Kit</span>
           </div>
 
-          {/* Collage */}
+          {/* Hero collage: PC on top, Mobile + Watch below */}
           <div className="cs-collage" aria-label="Preview of all wallpapers in this set">
-            {/* Desktop 16:9 */}
+            {/* Desktop 16:9 — full width on top */}
             <div className="cs-collage__desktop">
-              <div className="cs-collage__device-label">Desktop 16:9</div>
+              <div className="cs-collage__device-label">Desktop · 16:9</div>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={WALLPAPERS[0].preview}
@@ -260,10 +260,10 @@ export default function WhisperingWoodsPage() {
               <div className="cs-collage__scanlines" aria-hidden="true" />
             </div>
 
-            {/* Phone column */}
-            <div className="cs-collage__phones">
+            {/* Mobile + Watch — row below */}
+            <div className="cs-collage__bottom-row">
               <div className="cs-collage__phone-wrap">
-                <div className="cs-collage__device-label">Mobile 9:16</div>
+                <div className="cs-collage__device-label">Mobile · 9:16</div>
                 <div className="cs-collage__phone-shell">
                   <div className="cs-collage__island" aria-hidden="true" />
                   {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -278,9 +278,8 @@ export default function WhisperingWoodsPage() {
                 </div>
               </div>
 
-              {/* Watch */}
               <div className="cs-collage__watch-wrap">
-                <div className="cs-collage__device-label">Watch 1:1</div>
+                <div className="cs-collage__device-label">Watch · 1:1</div>
                 <div className="cs-collage__watch-shell">
                   <div className="cs-collage__watch-crown" aria-hidden="true" />
                   {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -310,7 +309,7 @@ export default function WhisperingWoodsPage() {
                 textShadow: "0 4px 40px rgba(30,80,20,0.25)",
               }}
             >
-              The Whispering Woods: A Matching Dark Nature Setup Kit
+              The Whispering Woods
             </h1>
             <p
               style={{
@@ -560,35 +559,6 @@ export default function WhisperingWoodsPage() {
                 <span className="cs-explore-card__cta">View Set →</span>
               </div>
             </Link>
-
-            <div className="cs-explore-card">
-              <div className="cs-explore-card__thumb cs-explore-card__thumb--placeholder">
-                <span className="cs-explore-card__emoji">🕯️</span>
-                <div className="cs-explore-card__coming">Coming Soon</div>
-              </div>
-              <div className="cs-explore-card__body">
-                <h3 className="cs-explore-card__title">Dark Forest Vol. II</h3>
-                <p className="cs-explore-card__desc">A deeper, darker chapter of the Whispering Woods. The predator gets closer.</p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* ── MISSION SECTION ── */}
-        <section style={{
-          maxWidth: "1100px",
-          margin: "clamp(64px,8vw,96px) auto 0",
-          padding: "0 clamp(20px,5vw,60px)",
-        }}>
-          <div className="cs-why">
-            <h2 className="cs-why__title">The Haunted Wallpapers Mission</h2>
-            <p className="cs-why__body">
-              At Haunted Wallpapers, we believe your digital setup should be an extension of your soul.
-              We don&apos;t just &ldquo;dump&rdquo; images. Every wallpaper is manually curated and tested on real
-              devices to ensure perfect crops for iPhone, Samsung, and Desktop. Our unique
-              &ldquo;Matching Set&rdquo; philosophy ensures your watch, phone, and PC tell one cohesive story.
-              Built for horror fans, by horror fans.
-            </p>
           </div>
         </section>
 
@@ -648,26 +618,34 @@ export default function WhisperingWoodsPage() {
 
         /* ── COLLAGE ── */
         .cs-collage {
-          display: grid; grid-template-columns: 1fr 300px;
-          gap: 20px; margin-top: clamp(24px,4vw,40px); align-items: start;
+          display: flex; flex-direction: column;
+          gap: 12px; margin-top: clamp(24px,4vw,40px);
         }
         .cs-collage__desktop {
           position: relative; border-radius: 4px; overflow: hidden;
           border: 2px solid #0f0f1e;
           box-shadow: 0 0 0 4px #0a0a14, 0 0 0 6px rgba(20,20,40,0.9), 0 0 80px rgba(0,0,0,0.7);
           animation: cs-glow-desk 4s ease-in-out infinite;
-          aspect-ratio: 16/9; background: #080810;
+          aspect-ratio: 16/9; background: #080810; width: 100%;
         }
         @keyframes cs-glow-desk {
           0%,100% { box-shadow: 0 0 0 4px #0a0a14, 0 0 0 6px rgba(20,20,40,0.9), 0 0 80px rgba(0,0,0,0.7); }
           50%      { box-shadow: 0 0 0 4px #0a0a14, 0 0 0 6px rgba(20,20,40,0.9), 0 0 80px rgba(0,0,0,0.7), 0 0 100px rgba(0,30,0,0.2); }
         }
+        .cs-collage__bottom-row {
+          display: flex; gap: 12px; align-items: flex-start;
+        }
         .cs-collage__device-label {
-          position: absolute; top: 10px; left: 12px;
+          position: relative; top: auto; left: auto;
+          display: block; margin-bottom: 8px; background: none; padding: 0;
           font-family: var(--font-space, monospace); font-size: 0.52rem;
-          letter-spacing: 0.18em; text-transform: uppercase;
-          color: rgba(255,255,255,0.55); background: rgba(0,0,0,0.65);
-          padding: 3px 8px; border-radius: 2px; z-index: 2;
+          letter-spacing: 0.18em; text-transform: uppercase; color: rgba(255,255,255,0.45);
+        }
+        .cs-collage__desktop .cs-collage__device-label {
+          position: absolute; top: 10px; left: 12px;
+          background: rgba(0,0,0,0.65); padding: 3px 8px;
+          border-radius: 2px; z-index: 2; margin-bottom: 0;
+          color: rgba(255,255,255,0.55);
         }
         .cs-collage__img { width: 100%; height: 100%; object-fit: cover; display: block; }
         .cs-collage__scanlines {
@@ -675,8 +653,8 @@ export default function WhisperingWoodsPage() {
           background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.04) 3px, rgba(0,0,0,0.04) 4px);
           pointer-events: none;
         }
-        .cs-collage__phones { display: flex; flex-direction: column; gap: 16px; align-items: center; }
-        .cs-collage__phone-wrap { position: relative; width: 100%; max-width: 220px; }
+        .cs-collage__phones { display: flex; flex-direction: row; gap: 12px; align-items: flex-start; }
+        .cs-collage__phone-wrap { position: relative; width: clamp(90px, 15%, 160px); flex-shrink: 0; }
         .cs-collage__phone-wrap .cs-collage__device-label {
           position: relative; top: auto; left: auto;
           display: block; margin-bottom: 8px; background: none; padding: 0;
@@ -706,7 +684,7 @@ export default function WhisperingWoodsPage() {
           position: absolute; bottom: 6px; left: 50%; transform: translateX(-50%);
           width: 33%; height: 3px; background: rgba(255,255,255,0.22); border-radius: 2px;
         }
-        .cs-collage__watch-wrap { width: 100%; max-width: 160px; position: relative; }
+        .cs-collage__watch-wrap { width: clamp(72px, 11%, 124px); flex-shrink: 0; position: relative; align-self: flex-end; }
         .cs-collage__watch-wrap .cs-collage__device-label {
           position: relative; top: auto; left: auto;
           display: block; margin-bottom: 8px; background: none; padding: 0;
@@ -733,11 +711,9 @@ export default function WhisperingWoodsPage() {
           pointer-events: none;
         }
 
-        @media (max-width: 700px) {
-          .cs-collage { grid-template-columns: 1fr; }
-          .cs-collage__phones { flex-direction: row; justify-content: center; align-items: flex-start; }
-          .cs-collage__phone-wrap { max-width: 48%; }
-          .cs-collage__watch-wrap { max-width: 40%; }
+        @media (max-width: 480px) {
+          .cs-collage__watch-wrap { display: none; }
+          .cs-collage__phone-wrap { width: clamp(80px, 20%, 130px); }
         }
 
         /* ── Lore ── */
