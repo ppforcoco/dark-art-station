@@ -12,7 +12,7 @@ const NAV_LINKS = [
   { label: "iPhone",        href: "/iphone"     },
   { label: "Android",       href: "/android"    },
   { label: "PC",            href: "/pc"         },
-  { label: "Sets",          href: "/sets"       },  // ← NEW
+  { label: "Kits",          href: "/sets"       },  // ← NEW
   { label: "Collections",   href: "/obsessions" },
   { label: "Mood",          href: "/mood"       },
   { label: "Blog & Guides", href: "/blog"       },
