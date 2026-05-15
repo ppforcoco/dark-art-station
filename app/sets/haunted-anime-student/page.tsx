@@ -22,7 +22,7 @@ const WALLPAPERS = [
     phase: "Phase 1 — The Hollow Stare",
     phaseColor: "#8888aa",
     best: "Clean minimal desktop setups",
-    seoAlt: "cursed student dark anime 4K desktop background wallpaper psychological horror",
+    seoAlt: "Dark anime cursed student 4K desktop wallpaper for gaming PC background haunted school aesthetic",
   },
   {
     id: "mobile",
@@ -37,7 +37,7 @@ const WALLPAPERS = [
     phase: "Phase 2 — The Crimson Awakening",
     phaseColor: "#c0001a",
     best: "iPhone lockscreen, Android lockscreen, AMOLED",
-    seoAlt: "cursed student dark anime horror mobile lockscreen wallpaper crimson red eyes",
+    seoAlt: "Haunted anime boy with hollow grey eyes aesthetic phone wallpaper for iPhone and Android 4K",
   },
   {
     id: "avatar",
@@ -52,7 +52,7 @@ const WALLPAPERS = [
     phase: "Phase 1 — The Hollow Stare",
     phaseColor: "#8888aa",
     best: "Profile picture, Discord, home screen icon",
-    seoAlt: "dark horror anime boy profile picture square avatar dark aesthetic",
+    seoAlt: "Gothic anime boy horror aesthetic square PFP for Discord and social media haunted wallpaper collection",
   },
   {
     id: "smartwatch",
@@ -67,7 +67,7 @@ const WALLPAPERS = [
     phase: "Phase 2 — The Crimson Awakening",
     phaseColor: "#c0001a",
     best: "Apple Watch, Galaxy Watch, OLED watch faces",
-    seoAlt: "haunted anime boy red eyes smartwatch wallpaper Apple Watch Galaxy Watch dark",
+    seoAlt: "Creepy anime boy glowing red eyes smartwatch wallpaper and 4K horror aesthetic profile picture",
   },
   {
     id: "homescreen",
@@ -82,7 +82,7 @@ const WALLPAPERS = [
     phase: "Phase 3 — The Breaking Point",
     phaseColor: "#ff2200",
     best: "iPhone home screen, gaming setup, dark mode",
-    seoAlt: "scary anime demon boy teeth iPhone wallpaper dark horror psychological horror",
+    seoAlt: "Scary horror anime demon boy with sharp teeth iPhone lock screen wallpaper 4K dark aesthetic",
   },
 ];
 
