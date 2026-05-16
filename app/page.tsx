@@ -1189,12 +1189,45 @@ export default async function Home() {
       )}
 
       {/* ══════════════════════════════════════════════════════════
-          SECTION 4 — COLLECTIONS
+          SECTION 4 — COLLECTIONS ("What Haunts You?")
+          ─ UPDATED: exclusive-access messaging added to header
       ══════════════════════════════════════════════════════════ */}
       <section className="dt-obsessions">
         <div className="dt-section-head">
-          <span className="dt-eyebrow">Choose Your Obsession</span>
+
+          {/* Top label row: eyebrow + "Feed Excluded" pill side by side */}
+          <div style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "0.75rem",
+            flexWrap: "wrap",
+            marginBottom: "0.5rem",
+          }}>
+            <span className="dt-eyebrow" style={{ margin: 0 }}>The Ones We Hid From The Feed</span>
+            <span style={{
+              fontFamily: "var(--font-space, monospace)",
+              fontSize: "0.5rem",
+              letterSpacing: "0.18em",
+              textTransform: "uppercase",
+              color: "#c0001a",
+              border: "1px solid rgba(192,0,26,0.4)",
+              padding: "2px 8px",
+              borderRadius: "2px",
+              whiteSpace: "nowrap",
+              background: "rgba(192,0,26,0.06)",
+            }}>
+              Not in New · Not in Trending · Not in Premium
+            </span>
+          </div>
+
           <h2 className="dt-section-title">What Haunts You?</h2>
+
+          {/* Exclusive-access subtitle */}
+          <p className="dt-section-sub" style={{ maxWidth: "560px", marginTop: "0.5rem" }}>
+            These collections never surface in New, Trending, or Premium.
+            The only way in is through here — choose your obsession.
+          </p>
+
         </div>
 
         {/* Always show the grid — use placeholders for empty collections */}
@@ -1230,7 +1263,6 @@ export default async function Home() {
                 <div className="dt-obs-card__drip" aria-hidden="true" />
                 <div className="dt-obs-card__body">
                   <h3 className="dt-obs-card__title">{obs.title}</h3>
-
                 </div>
                 <div className="dt-obs-card__glow" aria-hidden="true" />
                 <span className="dt-obs-card__corner dt-obs-card__corner--tl">†</span>
