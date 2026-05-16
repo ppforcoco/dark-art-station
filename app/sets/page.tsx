@@ -55,6 +55,7 @@ const SETS = [
     tags: ["dark anime", "psychological horror", "academia", "matching set"],
     count: 5,
     devices: ["Desktop", "Mobile", "Smartwatch", "Avatar"],
+    accentColor: "192,0,26",
   },
   {
     slug: "whispering-woods",
@@ -67,6 +68,20 @@ const SETS = [
     tags: ["dark nature", "forest horror", "gothic aesthetic", "matching set"],
     count: 5,
     devices: ["Desktop", "Mobile", "Smartwatch", "Avatar"],
+    accentColor: "74,138,58",
+  },
+  {
+    slug: "ghost-pitch",
+    title: "The Ghost Pitch",
+    subtitle: "A Matching Dark Soccer Setup Kit",
+    description:
+      "Legend says the floodlights flicker on at 3:00 AM in the abandoned stadiums of the old world. No crowd. No referee. Just the Ghost Pitch — a game played by those who refused to leave the field, even after death.",
+    thumbnail:
+      "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/sets/The%20Ghost%20Pitch%3A%20A%20Matching%20Dark%20Soccer%20Setup%20Kit/haunted-soccer-stadium-midnight-4k-desktop.webp",
+    tags: ["dark sports", "horror football", "haunted stadium", "matching set"],
+    count: 5,
+    devices: ["Desktop", "Mobile", "Smartwatch", "Avatar"],
+    accentColor: "232,124,30",
   },
 ];
 
@@ -129,85 +144,99 @@ export default function SetsPage() {
         </p>
       </section>
 
-      {/* Grid */}
+      {/* Grid — 3 columns on desktop, stacks on mobile */}
       <section
         style={{
-          maxWidth: "1100px",
+          maxWidth: "1200px",
           margin: "0 auto",
           padding: "0 clamp(20px,5vw,60px) clamp(64px,10vw,120px)",
         }}
       >
-        {SETS.map((set, idx) => (
-          <Link
-            key={set.slug}
-            href={`/sets/${set.slug}`}
-            style={{ textDecoration: "none", display: "block", marginBottom: idx < SETS.length - 1 ? "clamp(24px,4vw,48px)" : 0 }}
-          >
-            <article className="set-card">
-              {/* Thumbnail */}
-              <div className="set-card__thumb">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={set.thumbnail} alt={set.title} className="set-card__img" />
-                <div className="set-card__overlay" />
-                <div className="set-card__corner set-card__corner--tl" />
-                <div className="set-card__corner set-card__corner--br" />
-                <span className="set-card__count">{set.count} wallpapers</span>
-              </div>
-
-              {/* Info */}
-              <div className="set-card__body">
-                <span className="set-card__eyebrow">Set No. {String(idx + 1).padStart(2, "0")}</span>
-                <h2 className="set-card__title">{set.title}</h2>
-                <p className="set-card__sub">{set.subtitle}</p>
-                <p className="set-card__desc">{set.description}</p>
-
-                {/* Device badges */}
-                <div className="set-card__devices">
-                  {set.devices.map((d) => (
-                    <span key={d} className="set-card__device-badge">
-                      {d}
-                    </span>
-                  ))}
+        <div className="sets-grid">
+          {SETS.map((set, idx) => (
+            <Link
+              key={set.slug}
+              href={`/sets/${set.slug}`}
+              style={{ textDecoration: "none", display: "block" }}
+            >
+              <article className="set-card" style={{ "--accent": set.accentColor } as React.CSSProperties}>
+                {/* Thumbnail */}
+                <div className="set-card__thumb">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={set.thumbnail} alt={set.title} className="set-card__img" />
+                  <div className="set-card__overlay" />
+                  <div className="set-card__corner set-card__corner--tl" />
+                  <div className="set-card__corner set-card__corner--br" />
+                  <span className="set-card__count">{set.count} wallpapers</span>
                 </div>
 
-                {/* Tags */}
-                <div className="set-card__tags">
-                  {set.tags.map((t) => (
-                    <span key={t} className="set-card__tag">
-                      #{t}
-                    </span>
-                  ))}
-                </div>
+                {/* Info */}
+                <div className="set-card__body">
+                  <span className="set-card__eyebrow">Set No. {String(idx + 1).padStart(2, "0")}</span>
+                  <h2 className="set-card__title">{set.title}</h2>
+                  <p className="set-card__sub">{set.subtitle}</p>
+                  <p className="set-card__desc">{set.description}</p>
 
-                <span className="set-card__cta">View Full Set →</span>
-              </div>
-            </article>
-          </Link>
-        ))}
+                  {/* Device badges */}
+                  <div className="set-card__devices">
+                    {set.devices.map((d) => (
+                      <span key={d} className="set-card__device-badge">{d}</span>
+                    ))}
+                  </div>
+
+                  {/* Tags */}
+                  <div className="set-card__tags">
+                    {set.tags.map((t) => (
+                      <span key={t} className="set-card__tag">#{t}</span>
+                    ))}
+                  </div>
+
+                  <span className="set-card__cta">View Full Kit →</span>
+                </div>
+              </article>
+            </Link>
+          ))}
+        </div>
       </section>
 
       <style>{`
-        .set-card {
+        /* ── 3-column grid ── */
+        .sets-grid {
           display: grid;
-          grid-template-columns: 1fr 1fr;
-          gap: clamp(24px,4vw,56px);
-          background: linear-gradient(135deg, rgba(255,255,255,0.03) 0%, transparent 60%);
-          border: 1px solid rgba(192,0,26,0.2);
-          padding: clamp(20px,3vw,40px);
-          position: relative;
+          grid-template-columns: repeat(3, 1fr);
+          gap: clamp(16px, 2.5vw, 28px);
+        }
+        @media (max-width: 900px) {
+          .sets-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 540px) {
+          .sets-grid { grid-template-columns: 1fr; }
+        }
+
+        /* ── Card ── */
+        .set-card {
+          display: flex;
+          flex-direction: column;
+          background: linear-gradient(160deg, rgba(255,255,255,0.03) 0%, transparent 60%);
+          border: 1px solid rgba(var(--accent, 192,0,26), 0.2);
           overflow: hidden;
-          transition: border-color 0.3s ease, box-shadow 0.3s ease;
+          position: relative;
+          transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
           cursor: pointer;
+          height: 100%;
         }
         .set-card:hover {
-          border-color: rgba(192,0,26,0.5);
-          box-shadow: 0 0 60px rgba(192,0,26,0.08);
+          border-color: rgba(var(--accent, 192,0,26), 0.55);
+          box-shadow: 0 0 48px rgba(var(--accent, 192,0,26), 0.1);
+          transform: translateY(-3px);
         }
+
+        /* Thumbnail */
         .set-card__thumb {
           position: relative;
           aspect-ratio: 16/9;
           overflow: hidden;
-          border-radius: 2px;
+          flex-shrink: 0;
         }
         .set-card__img {
           width: 100%;
@@ -216,115 +245,108 @@ export default function SetsPage() {
           display: block;
           transition: transform 0.6s ease;
         }
-        .set-card:hover .set-card__img { transform: scale(1.03); }
+        .set-card:hover .set-card__img { transform: scale(1.04); }
         .set-card__overlay {
           position: absolute;
           inset: 0;
-          background: linear-gradient(135deg, rgba(192,0,26,0.15) 0%, transparent 60%);
+          background: linear-gradient(135deg, rgba(var(--accent, 192,0,26), 0.15) 0%, transparent 60%);
           pointer-events: none;
         }
         .set-card__corner {
           position: absolute;
-          width: 16px;
-          height: 16px;
-          border-color: rgba(192,0,26,0.6);
+          width: 14px; height: 14px;
+          border-color: rgba(var(--accent, 192,0,26), 0.6);
           border-style: solid;
         }
         .set-card__corner--tl { top: 8px; left: 8px; border-width: 1.5px 0 0 1.5px; }
         .set-card__corner--br { bottom: 8px; right: 8px; border-width: 0 1.5px 1.5px 0; }
         .set-card__count {
           position: absolute;
-          bottom: 10px;
-          left: 12px;
+          bottom: 10px; left: 12px;
           font-family: var(--font-space, monospace);
-          font-size: 0.55rem;
+          font-size: 0.52rem;
           letter-spacing: 0.18em;
           text-transform: uppercase;
-          color: rgba(255,255,255,0.7);
-          background: rgba(0,0,0,0.6);
-          padding: 4px 8px;
+          color: rgba(255,255,255,0.75);
+          background: rgba(0,0,0,0.65);
+          padding: 3px 8px;
           border-radius: 2px;
         }
+
+        /* Body */
         .set-card__body {
           display: flex;
           flex-direction: column;
-          gap: 12px;
-          justify-content: center;
+          gap: 10px;
+          padding: clamp(16px,2.5vw,24px);
+          flex: 1;
         }
         .set-card__eyebrow {
           font-family: var(--font-space, monospace);
-          font-size: 0.56rem;
+          font-size: 0.52rem;
           letter-spacing: 0.26em;
           text-transform: uppercase;
-          color: #c0001a;
+          color: rgb(var(--accent, 192,0,26));
         }
         .set-card__title {
           font-family: var(--font-cinzel, serif);
-          font-size: clamp(1.4rem, 2.5vw, 2rem);
+          font-size: clamp(1.05rem, 1.8vw, 1.35rem);
           font-weight: 700;
           color: #f0e8d8;
           margin: 0;
-          line-height: 1.1;
+          line-height: 1.15;
           letter-spacing: 0.04em;
         }
         .set-card__sub {
           font-family: var(--font-space, monospace);
-          font-size: 0.65rem;
-          letter-spacing: 0.16em;
+          font-size: 0.58rem;
+          letter-spacing: 0.14em;
           text-transform: uppercase;
-          color: rgba(192,0,26,0.8);
+          color: rgba(var(--accent, 192,0,26), 0.85);
           margin: 0;
         }
         .set-card__desc {
           font-family: var(--font-cormorant, serif);
-          font-size: 1rem;
+          font-size: 0.95rem;
           line-height: 1.65;
-          color: rgba(224,224,248,0.65);
+          color: rgba(224,224,248,0.62);
           margin: 0;
+          flex: 1;
         }
         .set-card__devices {
-          display: flex;
-          flex-wrap: wrap;
-          gap: 8px;
+          display: flex; flex-wrap: wrap; gap: 6px;
         }
         .set-card__device-badge {
           font-family: var(--font-space, monospace);
-          font-size: 0.55rem;
-          letter-spacing: 0.16em;
+          font-size: 0.5rem;
+          letter-spacing: 0.14em;
           text-transform: uppercase;
-          color: rgba(192,0,26,0.9);
-          border: 1px solid rgba(192,0,26,0.35);
-          padding: 4px 10px;
-          background: rgba(192,0,26,0.06);
+          color: rgba(var(--accent, 192,0,26), 0.9);
+          border: 1px solid rgba(var(--accent, 192,0,26), 0.3);
+          padding: 3px 8px;
+          background: rgba(var(--accent, 192,0,26), 0.06);
           border-radius: 2px;
         }
         .set-card__tags {
-          display: flex;
-          flex-wrap: wrap;
-          gap: 6px;
+          display: flex; flex-wrap: wrap; gap: 5px;
         }
         .set-card__tag {
           font-family: var(--font-space, monospace);
-          font-size: 0.55rem;
+          font-size: 0.5rem;
           letter-spacing: 0.1em;
-          color: rgba(224,224,248,0.35);
+          color: rgba(224,224,248,0.3);
         }
         .set-card__cta {
           display: inline-block;
           font-family: var(--font-space, monospace);
-          font-size: 0.72rem;
+          font-size: 0.65rem;
           letter-spacing: 0.14em;
           text-transform: uppercase;
-          color: #c0001a;
+          color: rgb(var(--accent, 192,0,26));
           margin-top: 4px;
           transition: letter-spacing 0.2s ease;
         }
         .set-card:hover .set-card__cta { letter-spacing: 0.22em; }
-
-        @media (max-width: 680px) {
-          .set-card { grid-template-columns: 1fr; }
-          .set-card__thumb { aspect-ratio: 16/7; }
-        }
       `}</style>
     </main>
   );

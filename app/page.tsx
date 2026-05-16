@@ -322,6 +322,153 @@ export default async function Home() {
       `}</style>
 
       {/* ══════════════════════════════════════════════════════════
+          SECTION — MATCHING KITS
+      ══════════════════════════════════════════════════════════ */}
+      <section style={{ padding: "clamp(40px,6vw,72px) clamp(16px,5vw,72px)", background: "#07050f", position: "relative", overflow: "hidden" }}>
+        <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse 70% 40% at 50% 0%, rgba(192,0,26,0.06) 0%, transparent 70%)", pointerEvents: "none" }} />
+        <div style={{ maxWidth: "1200px", margin: "0 auto", position: "relative" }}>
+
+          {/* Section header */}
+          <div style={{ marginBottom: "clamp(24px,4vw,40px)" }}>
+            <span style={{ display: "block", fontFamily: "var(--font-space, monospace)", fontSize: "0.58rem", letterSpacing: "0.28em", textTransform: "uppercase", color: "#c0001a", marginBottom: "10px" }}>
+              Full Digital Identity
+            </span>
+            <h2 style={{ fontFamily: "var(--font-cinzel, serif)", fontSize: "clamp(1.4rem,3vw,2.2rem)", fontWeight: 700, color: "#f0e8d8", margin: "0 0 10px", letterSpacing: "0.04em" }}>
+              Matching Setup Kits
+            </h2>
+            <p style={{ fontFamily: "var(--font-cormorant, serif)", fontSize: "clamp(0.95rem,1.5vw,1.1rem)", lineHeight: 1.65, color: "rgba(224,224,248,0.6)", margin: 0, maxWidth: "520px" }}>
+              One dark aesthetic across every screen. Phone, watch, desktop, and avatar — unified.
+            </p>
+          </div>
+
+          {/* 3-column kit grid */}
+          <div className="hw-kits-grid">
+            {[
+              {
+                href: "/sets/haunted-anime-student",
+                num: "01",
+                title: "The Cursed Student",
+                sub: "Dark Anime Horror Kit",
+                img: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/sets/The%20Cursed%20Student%3A%20A%20Matching%20Dark%20Anime%20Horror%20Kit/cursed-student-dark-anime-4k-desktop-background.webp",
+                alt: "Cursed Student dark anime horror matching wallpaper set",
+                accent: "192,0,26",
+              },
+              {
+                href: "/sets/whispering-woods",
+                num: "02",
+                title: "The Whispering Woods",
+                sub: "Dark Nature Horror Kit",
+                img: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/sets/The%20Whispering%20Woods%3A%20A%20Matching%20Dark%20Nature%20Setup%20Kit/whispering-woods-foggy-horror-forest-4k-deskto.webp",
+                alt: "Whispering Woods dark nature horror matching wallpaper set",
+                accent: "74,138,58",
+              },
+              {
+                href: "/sets/ghost-pitch",
+                num: "03",
+                title: "The Ghost Pitch",
+                sub: "Dark Soccer Setup Kit",
+                img: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/sets/The%20Ghost%20Pitch%3A%20A%20Matching%20Dark%20Soccer%20Setup%20Kit/Haunted_soccer_stadium_midnight_soccer-kit.jpeg",
+                alt: "Ghost Pitch haunted soccer stadium dark horror matching wallpaper set",
+                accent: "232,124,30",
+              },
+            ].map((kit) => (
+              <a key={kit.href} href={kit.href} className="hw-kit-card" style={{ "--kit-accent": kit.accent } as React.CSSProperties}>
+                <div className="hw-kit-card__thumb">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={kit.img} alt={kit.alt} className="hw-kit-card__img" loading="lazy" />
+                  <div className="hw-kit-card__overlay" />
+                  <span className="hw-kit-card__num">Kit {kit.num}</span>
+                </div>
+                <div className="hw-kit-card__body">
+                  <p className="hw-kit-card__sub">{kit.sub}</p>
+                  <h3 className="hw-kit-card__title">{kit.title}</h3>
+                  <span className="hw-kit-card__cta">View Kit →</span>
+                </div>
+              </a>
+            ))}
+          </div>
+
+          {/* View All link */}
+          <div style={{ marginTop: "clamp(20px,3vw,32px)", textAlign: "center" }}>
+            <a href="/sets" style={{ fontFamily: "var(--font-space, monospace)", fontSize: "0.62rem", letterSpacing: "0.2em", textTransform: "uppercase", color: "rgba(224,224,248,0.45)", textDecoration: "none", transition: "color 0.2s" }}>
+              Browse All Kits →
+            </a>
+          </div>
+        </div>
+
+        <style>{`
+          .hw-kits-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: clamp(12px, 2vw, 20px);
+          }
+          @media (max-width: 700px) { .hw-kits-grid { grid-template-columns: 1fr; } }
+
+          .hw-kit-card {
+            display: flex;
+            flex-direction: column;
+            text-decoration: none;
+            color: inherit;
+            border: 1px solid rgba(var(--kit-accent, 192,0,26), 0.18);
+            background: rgba(255,255,255,0.02);
+            overflow: hidden;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+            cursor: pointer;
+          }
+          .hw-kit-card:hover {
+            border-color: rgba(var(--kit-accent, 192,0,26), 0.5);
+            box-shadow: 0 0 40px rgba(var(--kit-accent, 192,0,26), 0.1);
+            transform: translateY(-4px);
+          }
+          .hw-kit-card__thumb {
+            position: relative;
+            aspect-ratio: 16/9;
+            overflow: hidden;
+            background: #08060e;
+          }
+          .hw-kit-card__img {
+            width: 100%; height: 100%; object-fit: cover; display: block;
+            transition: transform 0.55s ease;
+          }
+          .hw-kit-card:hover .hw-kit-card__img { transform: scale(1.05); }
+          .hw-kit-card__overlay {
+            position: absolute; inset: 0;
+            background: linear-gradient(to top, rgba(7,5,15,0.85) 0%, transparent 55%);
+            pointer-events: none;
+          }
+          .hw-kit-card__num {
+            position: absolute; top: 10px; left: 12px;
+            font-family: var(--font-space, monospace); font-size: 0.5rem;
+            letter-spacing: 0.2em; text-transform: uppercase;
+            color: rgb(var(--kit-accent, 192,0,26));
+            background: rgba(0,0,0,0.7);
+            border: 1px solid rgba(var(--kit-accent, 192,0,26), 0.4);
+            padding: 2px 8px; border-radius: 2px;
+          }
+          .hw-kit-card__body {
+            padding: clamp(14px,2vw,20px);
+            display: flex; flex-direction: column; gap: 6px;
+          }
+          .hw-kit-card__sub {
+            font-family: var(--font-space, monospace); font-size: 0.52rem;
+            letter-spacing: 0.18em; text-transform: uppercase;
+            color: rgba(var(--kit-accent, 192,0,26), 0.85); margin: 0;
+          }
+          .hw-kit-card__title {
+            font-family: var(--font-cinzel, serif); font-size: clamp(1rem,1.5vw,1.2rem);
+            font-weight: 700; color: #f0e8d8; margin: 0; letter-spacing: 0.04em;
+          }
+          .hw-kit-card__cta {
+            font-family: var(--font-space, monospace); font-size: 0.58rem;
+            letter-spacing: 0.14em; text-transform: uppercase;
+            color: rgb(var(--kit-accent, 192,0,26));
+            transition: letter-spacing 0.2s ease;
+          }
+          .hw-kit-card:hover .hw-kit-card__cta { letter-spacing: 0.22em; }
+        `}</style>
+      </section>
+
+      {/* ══════════════════════════════════════════════════════════
           SECTION — NEW THIS WEEK
       ══════════════════════════════════════════════════════════ */}
       {newThisWeek.length > 0 && (
