@@ -53,13 +53,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     select: { title: true, description: true, metaDescription: true, r2Key: true, tags: true, isAdult: true, deviceType: true },
   });
   if (!image || image.deviceType !== "PC") return { title: "Not Found | HAUNTED WALLPAPERS" };
-  const ogImage = getPublicUrl(image.r2Key);
   const tagLine = image.tags.slice(0, 3).map((t) => `#${t}`).join(" ");
-
   const plainDesc = (image.metaDescription ?? image.description ?? "")
     .replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim().slice(0, 200);
   const metaDesc = plainDesc || `${image.title} — free dark fantasy PC wallpaper. ${tagLine}. Download instantly, no account required.`;
   const plainMetaDesc = metaDesc.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
+
+  const ogImage = "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/og/og-image-for-desktop-and%3Dpc-wallpaper.webp";
 
   return {
     metadataBase: new URL(siteUrl),
@@ -71,7 +71,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       description: plainMetaDesc,
       url: `${siteUrl}/pc/${imageSlug}`,
       siteName: "HAUNTED WALLPAPERS",
-      images: [{ url: ogImage, width: 1920, height: 1080, alt: image.title }],
+      images: [{ url: ogImage, width: 1200, height: 630, alt: image.title }],
       type: "website",
     },
     twitter: {

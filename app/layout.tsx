@@ -35,7 +35,7 @@ const spaceMono = Space_Mono({
 
 const SITE_URL  = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
 const SITE_NAME = "Haunted Wallpapers";
-const OG_IMAGE  = `${SITE_URL}/og-image.jpg`;
+const OG_IMAGE  = `${SITE_URL}/og-image.webp`;
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -66,7 +66,7 @@ export const metadata: Metadata = {
     title:       "Haunted Wallpapers | Free Dark Fantasy Wallpapers",
     description: "Free dark fantasy wallpapers for iPhone, Android and PC. Download high-resolution AI art collections.",
     url: SITE_URL, siteName: SITE_NAME, type: "website", locale: "en_US",
-    images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: "Haunted Wallpapers — Dark Fantasy & Horror Art", type: "image/jpeg" }],
+    images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: "Haunted Wallpapers — Dark Fantasy & Horror Art", type: "image/webp" }],
   },
   twitter: {
     card: "summary_large_image",
