@@ -47,7 +47,7 @@ const WALLPAPERS = [
   {
     id: "homescreen",
     label: "Blurred Home Screen",
-    download: `${BASE_4K}/gaming-character-dark-fantasy-mobile-wallpaper-oled.jpg`,
+    download: `${BASE_4K}/blurred-dark-fantasy-gaming-character-iphone-homescreen-background.jpg`,
     filename: "crimson-sovereign-homescreen-4k.jpg",
     preview: `${BASE}/blurred-dark-fantasy-gaming-character-iphone-homescreen-background.webp`,
     seoAlt: "Blurred dark fantasy gaming character background for mobile home screen wallpaper",
@@ -73,7 +73,7 @@ const WALLPAPERS = [
     label: "Smartwatch Face",
     download: `${BASE_4K}/dark-fantasy-gaming-character-red-eyes-horror-watch.jpg`,
     filename: "crimson-sovereign-watch-4k.jpg",
-    preview: `${BASE}/dark-fantasy-gaming-character-red-eyes-horror-avatar-square.webp`,
+    preview: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/sets/The%20Crimson%20Sovereign%20%7C%20Dark%20Fantasy%20Gaming%20Character%20Matching%20Setup%20Kit/4k/dark-fantasy-crimson-watch.webp",
     seoAlt: "Complete matching dark fantasy gaming character setup kit for PC phone and watch free",
   },
 ];
@@ -297,7 +297,7 @@ export default function CrimsonSovereignPage() {
                   <div className="cs-collage__watch-crown" aria-hidden="true" />
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
-                    src={WALLPAPERS[5].preview}
+                    src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/sets/The%20Crimson%20Sovereign%20%7C%20Dark%20Fantasy%20Gaming%20Character%20Matching%20Setup%20Kit/4k/dark-fantasy-crimson-watch.webp"
                     alt="Crimson Sovereign smartwatch face dark fantasy"
                     className="cs-collage__watch-img"
                     loading="eager"
@@ -324,18 +324,6 @@ export default function CrimsonSovereignPage() {
             >
               The Crimson Sovereign
             </h1>
-            <p
-              style={{
-                fontFamily: "var(--font-space, monospace)",
-                fontSize: "0.72rem",
-                letterSpacing: "0.22em",
-                textTransform: "uppercase",
-                color: "#c0001a",
-                margin: "0 0 20px",
-              }}
-            >
-              Dark Fantasy Gaming Character Matching Setup Kit
-            </p>
             <p
               style={{
                 fontFamily: "var(--font-cormorant, serif)",
