@@ -61,6 +61,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     select: { title: true, description: true, metaDescription: true, r2Key: true, tags: true, isAdult: true, deviceType: true },
   });
   if (!image || image.deviceType !== "ANDROID") return { title: "Not Found | HAUNTED WALLPAPERS" };
+  const tagLine = image.tags.slice(0, 3).map((t) => `#${t}`).join(" ");
+  const plainDesc = (image.metaDescription ?? image.description ?? "")
+    .replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim().slice(0, 200);
+  const metaDesc = plainDesc || `${image.title} — free high-res dark fantasy Android wallpaper. ${tagLine}. Download instantly, no account required.`;
   const ogImage = "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/og/collection-collage-4k-hd-dark-wallpapers-for-phone.webp";
   return {
     metadataBase: new URL(siteUrl),
