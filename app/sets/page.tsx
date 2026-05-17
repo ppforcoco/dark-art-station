@@ -82,6 +82,21 @@ const SETS = [
     count: 5,
     devices: ["Desktop", "Mobile", "Smartwatch", "Avatar"],
     accentColor: "232,124,30",
+    premium: false,
+  },
+  {
+    slug: "crimson-sovereign",
+    title: "The Crimson Sovereign",
+    subtitle: "Dark Fantasy Gaming Character Matching Setup Kit",
+    description:
+      "In the highest peaks of our digital town stands the Crimson Fortress — a structure built from obsidian that hums with dark energy. The Sovereign orchestrates the movements of the night. Eight premium 4K wallpapers manually optimised for OLED displays and high-end gaming setups.",
+    thumbnail:
+      "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/sets/The%20Crimson%20Sovereign%20%7C%20Dark%20Fantasy%20Gaming%20Character%20Matching%20Setup%20Kit/4k/Complete%20matching%20dark%20fantasy%20gaming%20character%20setup%20kit%20for%20PC%20phone%20and%20watch%20free.png",
+    tags: ["dark fantasy", "gaming character", "gothic aesthetic", "OLED optimised"],
+    count: 8,
+    devices: ["Desktop", "Mobile", "Smartwatch", "Avatar", "PFP"],
+    accentColor: "192,0,26",
+    premium: true,
   },
 ];
 
@@ -168,6 +183,9 @@ export default function SetsPage() {
                   <div className="set-card__corner set-card__corner--tl" />
                   <div className="set-card__corner set-card__corner--br" />
                   <span className="set-card__count">{set.count} wallpapers</span>
+                  {(set as { premium?: boolean }).premium && (
+                    <span className="set-card__premium">⚡ Premium</span>
+                  )}
                 </div>
 
                 {/* Info */}
@@ -271,6 +289,26 @@ export default function SetsPage() {
           background: rgba(0,0,0,0.65);
           padding: 3px 8px;
           border-radius: 2px;
+        }
+        .set-card__premium {
+          position: absolute;
+          top: 10px; right: 10px;
+          font-family: var(--font-space, monospace);
+          font-size: 0.5rem;
+          letter-spacing: 0.16em;
+          text-transform: uppercase;
+          color: #ff6a00;
+          background: linear-gradient(135deg, rgba(255,106,0,0.15) 0%, rgba(192,0,26,0.15) 100%);
+          border: 1px solid rgba(255,106,0,0.45);
+          padding: 3px 9px;
+          border-radius: 2px;
+          font-weight: 700;
+          box-shadow: 0 0 14px rgba(255,106,0,0.18);
+          animation: sets-premium-glow 3s ease-in-out infinite;
+        }
+        @keyframes sets-premium-glow {
+          0%,100% { box-shadow: 0 0 14px rgba(255,106,0,0.18); }
+          50% { box-shadow: 0 0 24px rgba(255,106,0,0.36), 0 0 40px rgba(192,0,26,0.14); }
         }
 
         /* Body */

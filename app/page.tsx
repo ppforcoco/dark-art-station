@@ -370,6 +370,17 @@ export default async function Home() {
                 img: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/sets/The%20Ghost%20Pitch%3A%20A%20Matching%20Dark%20Soccer%20Setup%20Kit/Haunted_soccer_stadium_midnight_soccer-kit.jpeg",
                 alt: "Ghost Pitch haunted soccer stadium dark horror matching wallpaper set",
                 accent: "232,124,30",
+                premium: false,
+              },
+              {
+                href: "/sets/crimson-sovereign",
+                num: "04",
+                title: "The Crimson Sovereign",
+                sub: "Dark Fantasy Gaming Kit",
+                img: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/sets/The%20Crimson%20Sovereign%20%7C%20Dark%20Fantasy%20Gaming%20Character%20Matching%20Setup%20Kit/4k/Complete%20matching%20dark%20fantasy%20gaming%20character%20setup%20kit%20for%20PC%20phone%20and%20watch%20free.png",
+                alt: "Complete matching dark fantasy gaming character setup kit for PC phone and watch free",
+                accent: "192,0,26",
+                premium: true,
               },
             ].map((kit) => (
               <a key={kit.href} href={kit.href} className="hw-kit-card" style={{ "--kit-accent": kit.accent } as React.CSSProperties}>
@@ -378,6 +389,9 @@ export default async function Home() {
                   <img src={kit.img} alt={kit.alt} className="hw-kit-card__img" loading="lazy" />
                   <div className="hw-kit-card__overlay" />
                   <span className="hw-kit-card__num">Kit {kit.num}</span>
+                  {(kit as { premium?: boolean }).premium && (
+                    <span className="hw-kit-card__premium">⚡ Premium</span>
+                  )}
                 </div>
                 <div className="hw-kit-card__body">
                   <p className="hw-kit-card__sub">{kit.sub}</p>
@@ -399,10 +413,11 @@ export default async function Home() {
         <style>{`
           .hw-kits-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(4, 1fr);
             gap: clamp(12px, 2vw, 20px);
           }
-          @media (max-width: 700px) { .hw-kits-grid { grid-template-columns: 1fr; } }
+          @media (max-width: 900px) { .hw-kits-grid { grid-template-columns: repeat(2, 1fr); } }
+          @media (max-width: 540px) { .hw-kits-grid { grid-template-columns: 1fr; } }
 
           .hw-kit-card {
             display: flex;
@@ -444,6 +459,20 @@ export default async function Home() {
             background: rgba(0,0,0,0.7);
             border: 1px solid rgba(var(--kit-accent, 192,0,26), 0.4);
             padding: 2px 8px; border-radius: 2px;
+          }
+          .hw-kit-card__premium {
+            position: absolute; top: 10px; right: 10px;
+            font-family: var(--font-space, monospace); font-size: 0.46rem;
+            letter-spacing: 0.16em; text-transform: uppercase;
+            color: #ff6a00;
+            background: linear-gradient(135deg, rgba(255,106,0,0.14) 0%, rgba(192,0,26,0.14) 100%);
+            border: 1px solid rgba(255,106,0,0.42);
+            padding: 2px 7px; border-radius: 2px; font-weight: 700;
+            animation: hw-kit-premium-glow 3s ease-in-out infinite;
+          }
+          @keyframes hw-kit-premium-glow {
+            0%,100% { box-shadow: 0 0 10px rgba(255,106,0,0.15); }
+            50% { box-shadow: 0 0 20px rgba(255,106,0,0.3), 0 0 36px rgba(192,0,26,0.12); }
           }
           .hw-kit-card__body {
             padding: clamp(14px,2vw,20px);
