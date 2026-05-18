@@ -62,9 +62,10 @@ export default async function PcPage({ searchParams }: PageProps) {
   let total = 0;
   let pageContent = null;
   let dbError = false;
+  let topTags: string[] = [];
 
   try {
-    const [imagesRaw, totalCount, content] = await Promise.all([
+    const [imagesRaw, totalCount, content, allTagImages] = await Promise.all([
       db.image.findMany({
         where,
         orderBy: { createdAt: "desc" },
@@ -74,11 +75,29 @@ export default async function PcPage({ searchParams }: PageProps) {
       }),
       db.image.count({ where }),
       getPageContent("pc"),
+      db.image.findMany({
+        where: { deviceType: "PC" as const },
+        select: { tags: true },
+        take: 500,
+      }),
     ]);
 
     total = totalCount;
     pageContent = content;
     images = imagesRaw;
+
+    // Count tag frequency and pick top 6
+    const tagCount: Record<string, number> = {};
+    for (const img of allTagImages) {
+      for (const t of img.tags) {
+        tagCount[t] = (tagCount[t] ?? 0) + 1;
+      }
+    }
+    topTags = Object.entries(tagCount)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 6)
+      .map(([t]) => t);
+
   } catch (err) {
     console.error("[pc/page] DB error:", err);
     dbError = true;
@@ -101,6 +120,27 @@ export default async function PcPage({ searchParams }: PageProps) {
           )}
           {page > 1 && <span className="text-[#4a445a] text-2xl"> — Page {page}</span>}
         </h1>
+
+        {/* ── Tag filter pills ── */}
+        {topTags.length > 0 && (
+          <div className="pc-tag-pills">
+            <Link
+              href="/pc"
+              className={`pc-tag-pill ${!tag ? "pc-tag-pill--active" : ""}`}
+            >
+              All
+            </Link>
+            {topTags.map((t) => (
+              <Link
+                key={t}
+                href={`/pc?tag=${encodeURIComponent(t)}`}
+                className={`pc-tag-pill ${tag === t ? "pc-tag-pill--active" : ""}`}
+              >
+                #{t}
+              </Link>
+            ))}
+          </div>
+        )}
 
         {!tag && !pageContent?.body && !dbError && (
           <div className="device-page-intro">
@@ -204,6 +244,36 @@ export default async function PcPage({ searchParams }: PageProps) {
         .hw-crosslink-btn:hover {
           border-color: rgba(192,0,26,0.8); background: rgba(192,0,26,0.13);
           color: #ffffff; box-shadow: 0 0 22px rgba(192,0,26,0.22);
+        }
+        .pc-tag-pills {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 8px;
+          margin-bottom: 28px;
+        }
+        .pc-tag-pill {
+          font-family: var(--font-space, monospace);
+          font-size: 0.58rem;
+          letter-spacing: 0.16em;
+          text-transform: uppercase;
+          text-decoration: none;
+          color: rgba(224,224,248,0.65);
+          border: 1px solid rgba(255,255,255,0.1);
+          background: rgba(255,255,255,0.03);
+          padding: 7px 16px;
+          border-radius: 2px;
+          transition: all 0.2s ease;
+        }
+        .pc-tag-pill:hover {
+          border-color: rgba(192,0,26,0.6);
+          color: #fff;
+          background: rgba(192,0,26,0.08);
+        }
+        .pc-tag-pill--active {
+          border-color: rgba(192,0,26,0.7);
+          color: #fff;
+          background: rgba(192,0,26,0.12);
+          box-shadow: 0 0 14px rgba(192,0,26,0.15);
         }
       `}</style>
 
