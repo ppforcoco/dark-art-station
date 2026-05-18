@@ -45,19 +45,19 @@ export default async function AllPage() {
   // ── Fetch first batch server-side for fast paint + SEO ──
   const [mobileRaw, desktopRaw, totalMobile, totalDesktop] = await Promise.all([
     db.image.findMany({
-      where: { isAdult: false, deviceType: { in: ["IPHONE", "ANDROID"] } },
+      where: { isAdult: false, deviceType: { in: ["IPHONE", "ANDROID"] }, NOT: { tags: { has: "badge-premium" } } },
       orderBy: { createdAt: "desc" },
       take: INITIAL_TAKE,
       select: { id: true, slug: true, title: true, r2Key: true, deviceType: true, tags: true },
     }),
     db.image.findMany({
-      where: { isAdult: false, deviceType: "PC" },
+      where: { isAdult: false, deviceType: "PC", NOT: { tags: { has: "badge-premium" } } },
       orderBy: { createdAt: "desc" },
       take: INITIAL_TAKE,
       select: { id: true, slug: true, title: true, r2Key: true, deviceType: true, tags: true },
     }),
-    db.image.count({ where: { isAdult: false, deviceType: { in: ["IPHONE", "ANDROID"] } } }),
-    db.image.count({ where: { isAdult: false, deviceType: "PC" } }),
+    db.image.count({ where: { isAdult: false, deviceType: { in: ["IPHONE", "ANDROID"] }, NOT: { tags: { has: "badge-premium" } } } }),
+    db.image.count({ where: { isAdult: false, deviceType: "PC", NOT: { tags: { has: "badge-premium" } } } }),
   ]);
 
   const toItem = (img: { id: string; slug: string; title: string; r2Key: string; deviceType: string | null; tags: string[] }): WallpaperItem => ({
