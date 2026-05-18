@@ -123,6 +123,8 @@ export default async function Home() {
         where: {
           isAdult: false,
           createdAt: { gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) },
+          // ── FIX: exclude premium-tagged images so they don't bleed into New ──
+          NOT: { tags: { has: "badge-premium" } },
         },
         orderBy: { createdAt: "desc" },
         take: 6,
