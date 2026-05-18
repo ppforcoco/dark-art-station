@@ -225,6 +225,22 @@ export default async function Home() {
               New drops added every day
             </p>
 
+            <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+              <Link href="/all" className="dt-btn dt-btn--enter" style={{ alignSelf: "flex-start" }}>
+                <span>Browse All Wallpapers →</span>
+              </Link>
+              <span style={{
+                fontFamily: "var(--font-space, monospace)",
+                fontSize: "0.52rem",
+                letterSpacing: "0.18em",
+                textTransform: "uppercase",
+                color: "rgba(224,224,248,0.3)",
+                paddingLeft: "2px",
+              }}>
+                Start Scrolling — If You Dare
+              </span>
+            </div>
+
             <div className="dt-coffin-row dt-coffin-row--compact">
               <div className="dt-coffin">
                 <span className="dt-coffin__num">{fmt(totalImages)}</span>
