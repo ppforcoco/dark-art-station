@@ -5,8 +5,8 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import dynamic from "next/dynamic";
-import type { MoodId, MoodImage } from "./page";
-import { MOODS } from "./page";
+import type { MoodId, MoodImage } from "./moods";
+import { MOODS } from "./moods";
 
 const LockScreenPreviewModal = dynamic(
   () => import("@/components/LockScreenPreviewModal"),

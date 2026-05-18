@@ -17,10 +17,8 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.
 const OG_IMAGE = `${SITE_URL}/og-image.jpg`;
 
 // ── WOTD cached by date — one image per day, never changes on redeploy ───────
-// The cache key includes today's UTC date so it auto-busts at midnight.
-// revalidate = 86400 means Next.js won't even try to rebuild this for 24h.
 const getCachedWotd = () => {
-  const todayKey = new Date().toISOString().slice(0, 10); // "2026-05-11"
+  const todayKey = new Date().toISOString().slice(0, 10);
   return unstable_cache(
     () => getWallpaperOfTheDay(),
     [`wotd-${todayKey}`],
@@ -80,11 +78,9 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export const revalidate = 3600; // page rebuilds hourly — new badges appear within 1 hour
+export const revalidate = 3600;
 
 export default async function Home() {
-  // ── Wrap ALL db calls in try/catch so a DB hiccup never produces a 500 ──
-  // Each section gracefully degrades to empty/null instead of crashing the page.
   let wotd:           Awaited<ReturnType<typeof getWallpaperOfTheDay>> = null;
   let totalImages     = 0;
   let obsessions:     Array<{ id: string; slug: string; title: string; thumbnail: string; tag: string | null; icon: string | null; bgClass: string | null; _count: { images: number } }> = [];
@@ -94,7 +90,7 @@ export default async function Home() {
 
   try {
     [wotd, totalImages] = await Promise.all([
-      getCachedWotd(),  // stable all day — won't change on redeploy
+      getCachedWotd(),
       db.image.count(),
     ]);
   } catch (err) {
@@ -117,13 +113,14 @@ export default async function Home() {
   }
 
   try {
-    // Badge sections — New This Week + Premium This Week
     [newThisWeek, premiumThisWeek] = await Promise.all([
       db.image.findMany({
         where: {
           isAdult: false,
+          // ── Must have badge-new tag AND be created within the last 7 days ──
+          tags: { has: "badge-new" },
           createdAt: { gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) },
-          // ── FIX: exclude premium-tagged images so they don't bleed into New ──
+          // ── Never bleed premium images into New ──
           NOT: { tags: { has: "badge-premium" } },
         },
         orderBy: { createdAt: "desc" },
@@ -170,7 +167,6 @@ export default async function Home() {
 
         <div className="dt-gate__crack" aria-hidden="true" />
 
-        {/* ── Responsive split: stacked on mobile/foldable, side-by-side on desktop ── */}
         <div className="hw-hero-split" style={{
           display: "grid",
           gridTemplateColumns: "1fr",
@@ -193,7 +189,6 @@ export default async function Home() {
               Where every wallpaper has a secret.
             </p>
 
-            {/* Daily vault copy */}
             <p className="hw-hero-vault-text" style={{
               fontSize: "1.05rem",
               lineHeight: "1.75",
@@ -206,7 +201,6 @@ export default async function Home() {
               Every 24 hours, a single vision is pulled from the deepest level of the vault. A unique horror wallpaper surfaced just for tonight. Download this 4K pick before the clock resets and a new nightmare takes its place.
             </p>
 
-            {/* Browse All CTA */}
             <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap" }}>
               <Link href="/iphone" className="dt-btn dt-btn--enter">
                 <span>Browse All Wallpapers →</span>
@@ -216,7 +210,6 @@ export default async function Home() {
               </Link>
             </div>
 
-            {/* Stat cards */}
             <div className="dt-coffin-row dt-coffin-row--compact">
               <div className="dt-coffin">
                 <span className="dt-coffin__num">{fmt(totalImages)}</span>
@@ -265,19 +258,14 @@ export default async function Home() {
                       position: "relative", overflow: "hidden",
                       boxShadow: phone.featured ? "0 24px 64px rgba(0,0,0,0.85), 0 0 0 3px rgba(139,0,0,0.25)" : "0 10px 36px rgba(0,0,0,0.65)",
                     }}>
-                      {/* side buttons */}
                       <div style={{ position: "absolute", right: "-3px", top: "22%", width: "3px", height: "26px", background: "#1a1a2e", borderRadius: "0 2px 2px 0" }} />
                       <div style={{ position: "absolute", left: "-3px", top: "19%", width: "3px", height: "16px", background: "#1a1a2e", borderRadius: "2px 0 0 2px" }} />
                       <div style={{ position: "absolute", left: "-3px", top: "30%", width: "3px", height: "16px", background: "#1a1a2e", borderRadius: "2px 0 0 2px" }} />
-                      {/* dynamic island */}
                       <div style={{ position: "absolute", top: "7px", left: "50%", transform: "translateX(-50%)", width: "32%", height: "9px", background: "#000", borderRadius: "6px", zIndex: 4 }} />
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <ProtectedImg src={phone.src} alt={phone.alt} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} loading={i < 3 ? "eager" : "lazy"} />
-                      {/* Protection overlay */}
                       <ProtectionOverlay />
-                      {/* gloss */}
                       <div style={{ position: "absolute", inset: 0, background: "linear-gradient(135deg, rgba(255,255,255,0.07) 0%, transparent 42%)", pointerEvents: "none" }} />
-                      {/* home bar */}
                       <div style={{ position: "absolute", bottom: "6px", left: "50%", transform: "translateX(-50%)", width: "33%", height: "3px", background: "rgba(255,255,255,0.22)", borderRadius: "2px" }} />
                     </div>
                   </div>
@@ -331,7 +319,6 @@ export default async function Home() {
       ══════════════════════════════════════════════════════════ */}
       {newThisWeek.length > 0 && (
         <section style={{ padding: "clamp(32px,5vw,64px) clamp(16px,5vw,72px)", background: "#07050f", position: "relative", overflow: "hidden" }}>
-          {/* Background glow */}
           <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse 60% 40% at 50% 0%, rgba(76,175,80,0.06) 0%, transparent 70%)", pointerEvents: "none" }} />
 
           <div className="dt-section-head dt-section-head--center" style={{ marginBottom: "clamp(24px,4vw,40px)" }}>
@@ -362,12 +349,10 @@ export default async function Home() {
           SECTION — PREMIUM THIS WEEK
       ══════════════════════════════════════════════════════════ */}
       {premiumThisWeek.length > 0 && (() => {
-        // EPOCH_MS clock — matches PremiumCountdown.tsx and IphoneImageGrid.tsx exactly
-        const EPOCH_MS  = Date.UTC(2025, 0, 1, 0, 0, 0); // Jan 1 2025 00:00 UTC
-        const CYCLE_MS  = 48 * 60 * 60 * 1000;            // 48-hour full cycle
-        const UNLOCK_MS = 24 * 60 * 60 * 1000;            // first 24h = unlocked
+        const EPOCH_MS  = Date.UTC(2025, 0, 1, 0, 0, 0);
+        const CYCLE_MS  = 48 * 60 * 60 * 1000;
+        const UNLOCK_MS = 24 * 60 * 60 * 1000;
         const pos = (Date.now() - EPOCH_MS) % CYCLE_MS;
-        // UNLOCKED = first 24h of each 48h cycle, LOCKED = second 24h
         const isLockedGlobal = pos >= UNLOCK_MS;
 
         const premiumItems = premiumThisWeek.map((img) => {
@@ -375,25 +360,22 @@ export default async function Home() {
           return {
             id: img.id,
             slug: img.slug,
-            // LOCKED → hide title ("Sealed Away"), UNLOCKED → show real title
             title: isLockedGlobal ? "Sealed Away" : img.title,
             src: getPublicUrl(img.r2Key),
             devicePath,
             isLocked: isLockedGlobal,
-            // LOCKED → href points to vault page so clicking goes nowhere useful
             href: isLockedGlobal ? "#" : undefined,
             updatedAt: img.updatedAt ? new Date(img.updatedAt).toISOString() : null,
           };
         });
 
-        // Section copy flips based on lock state
         const sectionEyebrow = isLockedGlobal ? "Back In The Vault"       : "Hand-Picked Excellence";
         const sectionTitle   = isLockedGlobal ? "Premium — Locked"         : "Premium This Week";
         const sectionSub     = isLockedGlobal
           ? "These pieces are sealed away. Check back when the vault reopens."
           : "The finest pieces from the archive. Surfaces for 24 hours, then sealed away.";
 
-        const countdownDate = new Date().toISOString(); // PremiumCountdown uses fixed weekly clock
+        const countdownDate = new Date().toISOString();
 
         return (
         <section style={{ padding: "clamp(32px,5vw,64px) clamp(16px,5vw,72px)", background: "#0a0810", position: "relative", overflow: "hidden" }}>
@@ -407,7 +389,6 @@ export default async function Home() {
             <p className="dt-section-sub" style={{ maxWidth: "480px", margin: "0 auto" }}>
               {sectionSub}
             </p>
-            {/* Countdown always shown — text inside switches automatically (GONE IN / BACK IN) */}
             <div style={{ marginTop: "1rem", display: "flex", justifyContent: "center" }}>
               <PremiumCountdown updatedAt={countdownDate} />
             </div>
@@ -435,14 +416,12 @@ export default async function Home() {
         return (
           <section className="wotd-section">
 
-            {/* ── Atmospheric particles (CSS only, no emoji) ── */}
             <div className="wotd-particles" aria-hidden="true">
               {Array.from({ length: 18 }).map((_, i) => (
                 <span key={i} className="wotd-particle" style={{ "--pi": i } as React.CSSProperties} />
               ))}
             </div>
 
-            {/* ── Section header ── */}
             <div className="wotd-header">
               <span className="wotd-header__rule" aria-hidden="true" />
               <div className="wotd-header__center">
@@ -455,16 +434,13 @@ export default async function Home() {
               <span className="wotd-header__rule" aria-hidden="true" />
             </div>
 
-            {/* ── Phone mockup — top, centered ── */}
             <div className="wotd-top-frame">
               <Link href={wotdHref} className="wotd-img-frame" aria-label={wotd.title}>
                 <div className="wotd-img-frame__wrap">
                   <Image src={wotdUrl} alt={wotd.title} fill priority unoptimized className="object-cover"
                     sizes="(max-width:768px) 80vw, 320px" style={{ objectPosition: "center top" }} />
                 </div>
-                {/* scan line overlay */}
                 <div className="wotd-img-frame__scanlines" aria-hidden="true" />
-                {/* corner brackets */}
                 <div className="wotd-img-frame__corners" aria-hidden="true">
                   <span /><span /><span /><span />
                 </div>
@@ -474,12 +450,10 @@ export default async function Home() {
                 <div className="wotd-img-frame__hover" aria-hidden="true">
                   <span className="wotd-img-frame__hover-text">View Wallpaper</span>
                 </div>
-                {/* pulsing red eye at bottom */}
                 <div className="wotd-img-frame__eye" aria-hidden="true" />
               </Link>
             </div>
 
-            {/* ── Title + actions below ── */}
             <div className="wotd-below">
               <h2 className="wotd-title">{wotd.title}</h2>
               <div className="wotd-actions">
@@ -490,15 +464,12 @@ export default async function Home() {
             </div>
 
             <style>{`
-              /* ── WOTD SECTION SHELL ─────────────────────────────────── */
               .wotd-section {
                 position: relative;
                 padding: clamp(24px,4vw,48px) clamp(16px,5vw,72px);
                 background: #080508;
                 overflow: hidden;
               }
-
-              /* Subtle radial red glow in background */
               .wotd-section::before {
                 content: '';
                 position: absolute;
@@ -508,8 +479,6 @@ export default async function Home() {
                   radial-gradient(ellipse 40% 30% at 20% 30%, rgba(80,0,10,0.15) 0%, transparent 60%);
                 pointer-events: none;
               }
-
-              /* ── PARTICLES (small floating ash specks, CSS only) ──── */
               .wotd-particles {
                 position: absolute;
                 inset: 0;
@@ -539,8 +508,6 @@ export default async function Home() {
                 80%  { opacity: 0.3; }
                 100% { transform: translateY(-100vh) translateX(calc(sin(var(--pi, 0)) * 40px)); opacity: 0; }
               }
-
-              /* ── SECTION HEADER ─────────────────────────────────────── */
               .wotd-header {
                 display: flex;
                 align-items: center;
@@ -577,8 +544,6 @@ export default async function Home() {
                 0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(192,0,26,0.6); }
                 50%       { opacity: 0.6; box-shadow: 0 0 0 5px rgba(192,0,26,0); }
               }
-
-              /* ── CENTERED LAYOUT ─────────────────────────────────────── */
               .wotd-top-frame {
                 display: flex;
                 justify-content: center;
@@ -594,119 +559,6 @@ export default async function Home() {
                 gap: 1rem;
                 text-align: center;
               }
-
-              /* ── THE HORROR BOX (kept for reference, unused) ─────────── */
-              .wotd-box {
-                position: relative;
-                max-width: 1100px;
-                margin: 0 auto;
-                background: linear-gradient(135deg, #0e0608 0%, #110709 50%, #0a0406 100%);
-                border: 1px solid rgba(192,0,26,0.3);
-                border-radius: 4px;
-                overflow: hidden;
-                box-shadow:
-                  0 0 0 1px rgba(192,0,26,0.08),
-                  0 0 40px rgba(192,0,26,0.08),
-                  0 20px 80px rgba(0,0,0,0.8),
-                  inset 0 0 80px rgba(192,0,26,0.03);
-              }
-
-              /* Animated border glow — sweeps around the box */
-              .wotd-box__border-glow {
-                position: absolute;
-                inset: -1px;
-                border-radius: 4px;
-                background: transparent;
-                border: 1px solid transparent;
-                background-clip: padding-box;
-                pointer-events: none;
-                z-index: 0;
-              }
-              .wotd-box::after {
-                content: '';
-                position: absolute;
-                inset: 0;
-                border-radius: 4px;
-                padding: 1px;
-                background: linear-gradient(
-                  var(--wotd-angle, 0deg),
-                  transparent 30%,
-                  rgba(192,0,26,0.6) 50%,
-                  transparent 70%
-                );
-                -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-                -webkit-mask-composite: xor;
-                mask-composite: exclude;
-                animation: wotdBorderSpin 6s linear infinite;
-                pointer-events: none;
-              }
-              @keyframes wotdBorderSpin {
-                0%   { --wotd-angle: 0deg; }
-                100% { --wotd-angle: 360deg; }
-              }
-
-              /* Corner runes */
-              .wotd-box__rune {
-                position: absolute;
-                font-size: 0.9rem;
-                color: rgba(192,0,26,0.5);
-                line-height: 1;
-                animation: wotdRuneFlicker 4s ease-in-out infinite;
-                z-index: 2;
-              }
-              .wotd-box__rune--tl { top: 10px; left: 14px; animation-delay: 0s; }
-              .wotd-box__rune--tr { top: 10px; right: 14px; animation-delay: 1.1s; }
-              .wotd-box__rune--bl { bottom: 10px; left: 14px; animation-delay: 2.2s; }
-              .wotd-box__rune--br { bottom: 10px; right: 14px; animation-delay: 0.6s; }
-              @keyframes wotdRuneFlicker {
-                0%, 90%, 100% { opacity: 0.5; }
-                92%           { opacity: 0.1; }
-                94%           { opacity: 0.5; }
-                96%           { opacity: 0.15; }
-                98%           { opacity: 0.5; }
-              }
-
-              /* Blood drip from top */
-              .wotd-box__drip {
-                position: absolute;
-                top: 0; left: 0; right: 0;
-                height: 40px;
-                pointer-events: none;
-                z-index: 1;
-                display: flex;
-                justify-content: space-around;
-                align-items: flex-start;
-                padding: 0 10%;
-              }
-              .wotd-box__drip-drop {
-                display: block;
-                width: clamp(2px, 0.3vw, 4px);
-                background: linear-gradient(to bottom, #c0001a, rgba(100,0,10,0.2));
-                border-radius: 0 0 50% 50%;
-                animation: wotdDrip calc(3s + var(--di, 0) * 0.8s) ease-in infinite;
-                animation-delay: calc(var(--di, 0) * 0.5s);
-                transform-origin: top center;
-                height: 0;
-              }
-              @keyframes wotdDrip {
-                0%   { height: 0; opacity: 0; }
-                15%  { height: clamp(8px,2vw,24px); opacity: 0.9; }
-                60%  { height: clamp(8px,2vw,24px); opacity: 0.6; }
-                100% { height: clamp(4px,1vw,14px); opacity: 0; }
-              }
-
-              /* ── BOX INNER GRID ──────────────────────────────────────── */
-              .wotd-box__inner {
-                position: relative;
-                z-index: 1;
-                display: grid;
-                grid-template-columns: clamp(120px, 14vw, 200px) 1fr;
-                gap: clamp(16px, 3vw, 40px);
-                align-items: center;
-                padding: clamp(20px, 3vw, 40px) clamp(20px, 4vw, 48px);
-              }
-
-              /* ── IMAGE FRAME ─────────────────────────────────────────── */
               .wotd-img-frame {
                 position: relative;
                 display: block;
@@ -793,7 +645,6 @@ export default async function Home() {
                 border: 1px solid rgba(255,255,255,0.3);
                 border-radius: 2px;
               }
-              /* pulsing red eye glow at bottom of frame */
               .wotd-img-frame__eye {
                 position: absolute;
                 bottom: 0; left: 50%;
@@ -808,8 +659,6 @@ export default async function Home() {
                 0%, 100% { opacity: 0.5; width: 40%; }
                 50%       { opacity: 1;   width: 70%; box-shadow: 0 0 28px 10px rgba(192,0,26,0.5); }
               }
-
-              /* ── TITLE ──────────────────────────────────────────────── */
               .wotd-title {
                 font-size: clamp(1.2rem, 2.2vw, 1.9rem);
                 line-height: 1.12;
@@ -819,9 +668,6 @@ export default async function Home() {
                 text-shadow: 0 2px 20px rgba(192,0,26,0.2);
                 letter-spacing: 0.02em;
               }
-              /* Creep bar removed */
-
-              /* ── BUTTONS ─────────────────────────────────────────────── */
               .wotd-actions {
                 display: flex;
                 gap: 0.75rem;
@@ -860,28 +706,6 @@ export default async function Home() {
                 box-shadow: 0 0 24px rgba(192,0,26,0.5);
                 transform: translateY(-1px);
               }
-              .wotd-btn-ghost {
-                display: inline-flex;
-                align-items: center;
-                padding: 0.75rem 1.25rem;
-                background: transparent;
-                color: rgba(200,180,140,0.8);
-                border: 1px solid rgba(200,170,110,0.25);
-                border-radius: 2px;
-                font-size: 0.8rem;
-                letter-spacing: 0.1em;
-                text-transform: uppercase;
-                text-decoration: none;
-                font-family: var(--font-space, monospace);
-                transition: color 0.2s, border-color 0.2s, background 0.2s;
-              }
-              .wotd-btn-ghost:hover {
-                color: #f0e8d8;
-                border-color: rgba(200,170,110,0.5);
-                background: rgba(200,170,110,0.05);
-              }
-
-              /* ── RESPONSIVE ──────────────────────────────────────────── */
               @media (max-width: 680px) {
                 .wotd-top-frame .wotd-img-frame {
                   width: clamp(140px, 50vw, 200px);
@@ -905,7 +729,6 @@ export default async function Home() {
           </p>
         </div>
 
-        {/* Beautiful phone mockup row */}
         <div className="dt-phone-showcase">
           {[
             { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/always-watching-wallpaper.webp", alt: "Always Watching", label: "Always Watching" },
@@ -919,45 +742,26 @@ export default async function Home() {
               className={`dt-phone-card${i === 2 ? " dt-phone-card--hero" : ""}`}
               style={{ "--card-i": i } as React.CSSProperties}
             >
-              {/* Ambient glow behind phone */}
               <div className="dt-phone-card__aura" aria-hidden="true" />
-
-              {/* Phone shell */}
               <div className="dt-phone-card__shell">
-                {/* Left buttons */}
                 <div className="dt-phone-card__btn dt-phone-card__btn--vol1" aria-hidden="true" />
                 <div className="dt-phone-card__btn dt-phone-card__btn--vol2" aria-hidden="true" />
-                {/* Right button */}
                 <div className="dt-phone-card__btn dt-phone-card__btn--power" aria-hidden="true" />
-
-                {/* Screen area */}
                 <div className="dt-phone-card__screen">
-                  {/* Dynamic Island / notch */}
                   <div className="dt-phone-card__island" aria-hidden="true">
                     <span className="dt-phone-card__cam" />
                   </div>
-
-                  {/* Wallpaper image */}
                   <ProtectedImg
                     src={phone.src}
                     alt={phone.alt}
                     className="dt-phone-card__img"
                     loading="lazy"
                   />
-                  {/* Protection overlay */}
                   <ProtectionOverlay />
-
-                  {/* Glass gloss */}
                   <div className="dt-phone-card__gloss" aria-hidden="true" />
-
-
                 </div>
-
-                {/* Home indicator */}
                 <div className="dt-phone-card__indicator" aria-hidden="true" />
               </div>
-
-
             </div>
           ))}
         </div>
@@ -991,7 +795,6 @@ export default async function Home() {
                   alt="Monster Flower Offering — PC wallpaper 16:9"
                   className="dt-monitor__img"
                 />
-                {/* Protection overlay */}
                 <ProtectionOverlay />
                 <div className="dt-monitor__scanlines" aria-hidden="true" />
                 <div className="dt-monitor__glitch" aria-hidden="true" />
@@ -1022,7 +825,6 @@ export default async function Home() {
         <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse 70% 40% at 50% 0%, rgba(192,0,26,0.06) 0%, transparent 70%)", pointerEvents: "none" }} />
         <div style={{ maxWidth: "1200px", margin: "0 auto", position: "relative" }}>
 
-          {/* Section header */}
           <div style={{ marginBottom: "clamp(24px,4vw,40px)" }}>
             <span style={{ display: "block", fontFamily: "var(--font-space, monospace)", fontSize: "0.58rem", letterSpacing: "0.28em", textTransform: "uppercase", color: "#c0001a", marginBottom: "10px" }}>
               Full Digital Identity
@@ -1035,7 +837,6 @@ export default async function Home() {
             </p>
           </div>
 
-          {/* 3-column kit grid */}
           <div className="hw-kits-grid">
             {[
               {
@@ -1096,7 +897,6 @@ export default async function Home() {
             ))}
           </div>
 
-          {/* View All link */}
           <div style={{ marginTop: "clamp(20px,3vw,32px)", textAlign: "center" }}>
             <a href="/sets" style={{ fontFamily: "var(--font-space, monospace)", fontSize: "0.62rem", letterSpacing: "0.2em", textTransform: "uppercase", color: "rgba(224,224,248,0.45)", textDecoration: "none", transition: "color 0.2s" }}>
               Browse All Kits →
@@ -1224,12 +1024,10 @@ export default async function Home() {
 
       {/* ══════════════════════════════════════════════════════════
           SECTION 4 — COLLECTIONS ("What Haunts You?")
-          ─ UPDATED: exclusive-access messaging added to header
       ══════════════════════════════════════════════════════════ */}
       <section className="dt-obsessions">
         <div className="dt-section-head">
 
-          {/* Top label row: eyebrow + "Feed Excluded" pill side by side */}
           <div style={{
             display: "flex",
             alignItems: "center",
@@ -1256,7 +1054,6 @@ export default async function Home() {
 
           <h2 className="dt-section-title">What Haunts You?</h2>
 
-          {/* Exclusive-access subtitle */}
           <p className="dt-section-sub" style={{ maxWidth: "560px", marginTop: "0.5rem" }}>
             These collections never surface in New, Trending, or Premium.
             The only way in is through here — choose your obsession.
@@ -1264,7 +1061,6 @@ export default async function Home() {
 
         </div>
 
-        {/* Always show the grid — use placeholders for empty collections */}
         <div className="dt-obs-grid">
           {obsessions.map((obs, i) => {
             const thumb = obs.thumbnail ? (obs.thumbnail.startsWith('http') ? obs.thumbnail : `${r2Base}/${obs.thumbnail}`) : null;
