@@ -217,6 +217,31 @@ export default async function IphonePage({ searchParams }: PageProps) {
         </div>
       )}
 
+      {/* ── Category filter pills ── */}
+      {(() => {
+        const ALL_CATS = [
+          "anime","dark-fantasy","cyberpunk","neon","gothic","horror","minimal",
+          "cars","space","nature","skulls","demons","samurai","aesthetic",
+          "lofi","vaporwave","glitch","occult","witch","dragon",
+        ];
+        // Rotate: pick 10 starting from current hour index, wraps around
+        const offset = Math.floor(Date.now() / (1000 * 60 * 60)) % ALL_CATS.length;
+        const visible = [...ALL_CATS, ...ALL_CATS].slice(offset, offset + 10);
+        return (
+          <div className="hw-tag-pills-wrap">
+            <div className="hw-tag-pills">
+              <Link href="/iphone" className={`hw-tag-pill ${!tag ? "hw-tag-pill--active" : ""}`}>All</Link>
+              {visible.map((t) => (
+                <Link key={t} href={`/iphone?tag=${encodeURIComponent(t)}`}
+                  className={`hw-tag-pill ${tag === t ? "hw-tag-pill--active" : ""}`}>
+                  {t.charAt(0).toUpperCase() + t.slice(1).replace(/-/g, " ")}
+                </Link>
+              ))}
+            </div>
+          </div>
+        );
+      })()}
+
       {pinnedImages.length > 0 && (
         <section className="max-w-7xl mx-auto px-6 md:px-[60px] pb-10">
           <div style={{ display: "flex", alignItems: "center", gap: "14px", marginBottom: "20px" }}>
@@ -350,6 +375,41 @@ export default async function IphonePage({ searchParams }: PageProps) {
       </section>
 
       <style>{`
+        .hw-tag-pills-wrap {
+          background-color: var(--bg-primary, #0c0b14);
+          padding: 0 clamp(24px, 5vw, 60px) 28px;
+          max-width: 1280px;
+          margin: 0 auto;
+        }
+        .hw-tag-pills {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 8px;
+        }
+        .hw-tag-pill {
+          font-family: var(--font-space, monospace);
+          font-size: 0.58rem;
+          letter-spacing: 0.16em;
+          text-transform: uppercase;
+          text-decoration: none;
+          color: rgba(224,224,248,0.65);
+          border: 1px solid rgba(255,255,255,0.1);
+          background: rgba(255,255,255,0.03);
+          padding: 8px 18px;
+          border-radius: 2px;
+          transition: all 0.2s ease;
+        }
+        .hw-tag-pill:hover {
+          border-color: rgba(192,0,26,0.6);
+          color: #fff;
+          background: rgba(192,0,26,0.08);
+        }
+        .hw-tag-pill--active {
+          border-color: rgba(192,0,26,0.7);
+          color: #fff;
+          background: rgba(192,0,26,0.12);
+          box-shadow: 0 0 14px rgba(192,0,26,0.15);
+        }
         .hw-crosslink-btn {
           font-family: var(--font-space, monospace);
           font-size: 0.72rem;

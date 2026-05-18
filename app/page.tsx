@@ -120,8 +120,11 @@ export default async function Home() {
     // Badge sections — New This Week + Premium This Week
     [newThisWeek, premiumThisWeek] = await Promise.all([
       db.image.findMany({
-        where: { tags: { has: "badge-new" }, isAdult: false },
-        orderBy: { updatedAt: "desc" },
+        where: {
+          isAdult: false,
+          createdAt: { gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) },
+        },
+        orderBy: { createdAt: "desc" },
         take: 6,
         select: { id: true, slug: true, title: true, r2Key: true, deviceType: true, tags: true },
       }),
