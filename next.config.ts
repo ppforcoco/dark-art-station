@@ -1,4 +1,3 @@
-import { withSentryConfig } from "@sentry/nextjs";
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
@@ -36,7 +35,6 @@ const nextConfig: NextConfig = {
     // 1280 covers desktop, 1920 covers large monitors.
     deviceSizes: [390, 640, 828, 1280, 1920],
     imageSizes:  [64, 128, 256, 384],
-    // ── Limit concurrent image optimisations to avoid CPU spikes
     dangerouslyAllowSVG: false,
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
@@ -98,17 +96,4 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default withSentryConfig(nextConfig, {
-  org:     "haunted-wallpapers",
-  project: "javascript-nextjs",
-
-  silent: !process.env.CI,
-  sourcemaps: { disable: !process.env.CI },
-
-  widenClientFileUpload: true,
-
-  webpack: {
-    automaticVercelMonitors: true,
-    treeshake: { removeDebugLogging: true },
-  },
-});
+export default nextConfig;

@@ -10,7 +10,6 @@ interface ErrorProps {
 
 export default function ErrorPage({ error, reset }: ErrorProps) {
   useEffect(() => {
-    // This sets the title dynamically for crawlers/users
     document.title = "Error | Haunted Wallpapers";
     console.error("[APP ERROR]", error);
   }, [error]);
