@@ -101,6 +101,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {/* ── Preconnect: CDN first, GTM second ───────────────────────── */}
         <link rel="preconnect" href="https://assets.hauntedwallpapers.com" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://assets.hauntedwallpapers.com" />
+        <link rel="preconnect" href="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev" />
         {/* Only preconnect GTM if GA is actually configured */}
         {gaId && <link rel="preconnect" href="https://www.googletagmanager.com" />}
 

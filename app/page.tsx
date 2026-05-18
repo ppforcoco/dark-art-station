@@ -4,14 +4,16 @@ import type { Metadata } from "next";
 import { unstable_cache } from "next/cache";
 import Link from "next/link";
 import Image from "next/image";
+import dynamic from "next/dynamic";
 import { db, getWallpaperOfTheDay, getPageContent } from "@/lib/db";
 import { getPublicUrl } from "@/lib/r2";
-import RecentlyViewed from "@/components/RecentlyViewed";
-import HorrorFact from "@/components/HorrorFact";
 import WallpaperCardGrid from "@/components/WallpaperCardGrid";
 import ProtectedImg from "@/components/ProtectedImg";
 import ProtectionOverlay from "@/components/ProtectionOverlay";
 import PremiumCountdown from "@/components/PremiumCountdown";
+
+const RecentlyViewed = dynamic(() => import("@/components/RecentlyViewed"), { ssr: false });
+const HorrorFact     = dynamic(() => import("@/components/HorrorFact"),     { ssr: false });
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
 const OG_IMAGE = `${SITE_URL}/og-image.jpg`;
@@ -130,7 +132,7 @@ export default async function Home() {
       }),
       db.image.findMany({
         where: { tags: { has: "badge-premium" }, isAdult: false },
-        orderBy: { updatedAt: "desc" },
+        orderBy: { createdAt: "desc" },
         take: 6,
         select: { id: true, slug: true, title: true, r2Key: true, deviceType: true, tags: true, updatedAt: true },
       }),
