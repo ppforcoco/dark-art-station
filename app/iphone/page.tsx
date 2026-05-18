@@ -220,9 +220,7 @@ export default async function IphonePage({ searchParams }: PageProps) {
       {/* ── Category filter pills ── */}
       {(() => {
         const ALL_CATS = [
-          "anime","dark-fantasy","cyberpunk","neon","gothic","horror","minimal",
-          "cars","space","nature","skulls","demons","samurai","aesthetic",
-          "lofi","vaporwave","glitch","occult","witch","dragon",
+          "skeletons","minimal","dark-humor","gaming","cyberpunk","lofi","anime","dark-fantasy","gothic",
         ];
         // Rotate: pick 10 starting from current hour index, wraps around
         const offset = Math.floor(Date.now() / (1000 * 60 * 60)) % ALL_CATS.length;

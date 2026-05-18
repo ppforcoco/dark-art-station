@@ -82,7 +82,7 @@ export default async function PcPage({ searchParams }: PageProps) {
     images = imagesRaw;
 
     // Count tag frequency and pick top 6 - replaced with hardcoded categories below
-    topTags = ["anime", "dark-fantasy", "cyberpunk", "neon", "cars", "gothic", "horror", "minimal"];
+    topTags = ["skeletons","minimal","dark-humor","gaming","cyberpunk","lofi","anime","dark-fantasy","gothic"];
 
   } catch (err) {
     console.error("[pc/page] DB error:", err);
@@ -152,15 +152,16 @@ export default async function PcPage({ searchParams }: PageProps) {
       <div className="pc-tag-pills-wrap">
         <div className="pc-tag-pills">
           <Link href="/pc" className={`pc-tag-pill ${!tag ? "pc-tag-pill--active" : ""}`}>All</Link>
-          {topTags.map((t) => (
-            <Link
-              key={t}
-              href={`/pc?tag=${encodeURIComponent(t)}`}
-              className={`pc-tag-pill ${tag === t ? "pc-tag-pill--active" : ""}`}
-            >
-              {t.charAt(0).toUpperCase() + t.slice(1).replace(/-/g, " ")}
-            </Link>
-          ))}
+          {(() => {
+            const offset = Math.floor(Date.now() / (1000 * 60 * 60)) % topTags.length;
+            const visible = [...topTags, ...topTags].slice(offset, offset + 10);
+            return visible.map((t) => (
+              <Link key={t} href={`/pc?tag=${encodeURIComponent(t)}`}
+                className={`pc-tag-pill ${tag === t ? "pc-tag-pill--active" : ""}`}>
+                {t.charAt(0).toUpperCase() + t.slice(1).replace(/-/g, " ")}
+              </Link>
+            ));
+          })()}
         </div>
       </div>
 
