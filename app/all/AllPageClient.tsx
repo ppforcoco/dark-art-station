@@ -54,9 +54,12 @@ export default function AllPageClient({
   const [tab, setTab] = useState<DeviceTab>("mobile");
 
   const [mobileItems, setMobileItems] = useState<WallpaperItem[]>(initialMobile);
-  const [mobilePage, setMobilePage] = useState(2);
+  const [iphonePage, setIphonePage] = useState(2);
+  const [androidPage, setAndroidPage] = useState(2);
+  const [iphoneDone, setIphoneDone] = useState(false);
+  const [androidDone, setAndroidDone] = useState(false);
   const [mobileLoading, setMobileLoading] = useState(false);
-  const mobileExhausted = mobileItems.length >= totalMobile;
+  const mobileExhausted = iphoneDone && androidDone;
 
   const [desktopItems, setDesktopItems] = useState<WallpaperItem[]>(initialDesktop);
   const [desktopPage, setDesktopPage] = useState(2);
@@ -71,19 +74,18 @@ export default function AllPageClient({
       setMobileLoading(true);
       try {
         const half = Math.ceil(BATCH / 2);
-        const [resA, resB] = await Promise.all([
-          fetch(`/api/wallpapers-public?device=IPHONE&page=${mobilePage}&limit=${half}`),
-          fetch(`/api/wallpapers-public?device=ANDROID&page=${mobilePage}&limit=${half}`),
-        ]);
-        const [dataA, dataB] = await Promise.all([resA.json(), resB.json()]);
-        const combined: ApiImage[] = [
-          ...(dataA.images ?? []),
-          ...(dataB.images ?? []),
-        ].filter((img) => !img.tags.includes("badge-premium"));
-        if (combined.length) {
-          setMobileItems((prev) => [...prev, ...combined.map(apiToItem)]);
-          setMobilePage((p) => p + 1);
-        }
+        const fetches: Promise<Response>[] = [];
+        if (!iphoneDone) fetches.push(fetch(`/api/wallpapers-public?device=IPHONE&page=${iphonePage}&limit=${half}`));
+        if (!androidDone) fetches.push(fetch(`/api/wallpapers-public?device=ANDROID&page=${androidPage}&limit=${half}`));
+        const responses = await Promise.all(fetches);
+        const jsons = await Promise.all(responses.map(r => r.json()));
+        let idx = 0;
+        let iphoneImgs: ApiImage[] = [];
+        let androidImgs: ApiImage[] = [];
+        if (!iphoneDone) { iphoneImgs = jsons[idx]?.images ?? []; if (iphoneImgs.length < half) setIphoneDone(true); else setIphonePage(p => p + 1); idx++; }
+        if (!androidDone) { androidImgs = jsons[idx]?.images ?? []; if (androidImgs.length < half) setAndroidDone(true); else setAndroidPage(p => p + 1); }
+        const combined: ApiImage[] = [...iphoneImgs, ...androidImgs].filter(img => !img.tags.includes("badge-premium"));
+        if (combined.length) setMobileItems((prev) => [...prev, ...combined.map(apiToItem)]);
       } catch (e) {
         console.error("Load more mobile failed", e);
       } finally {
@@ -108,7 +110,7 @@ export default function AllPageClient({
         setDesktopLoading(false);
       }
     }
-  }, [tab, mobileLoading, mobileExhausted, mobilePage, desktopLoading, desktopExhausted, desktopPage]);
+  }, [tab, mobileLoading, mobileExhausted, iphonePage, androidPage, iphoneDone, androidDone, desktopLoading, desktopExhausted, desktopPage]);
 
   useEffect(() => {
     const el = sentinelRef.current;
@@ -204,8 +206,6 @@ export default function AllPageClient({
           </div>
         )}
 
-        <div ref={sentinelRef} style={{ height: "1px", marginTop: "40px" }} />
-
         {loading && (
           <div style={{ display: "flex", justifyContent: "center", padding: "40px 0", gap: "8px" }}>
             {[0, 1, 2].map((i) => (
@@ -265,6 +265,9 @@ export default function AllPageClient({
           </div>
         </div>
       </section>
+
+      {/* Sentinel — fires only after user scrolls past description */}
+      <div ref={sentinelRef} style={{ height: "1px" }} />
 
       <style>{`
         @media (min-width: 640px)  { .hw-all-mobile-grid  { grid-template-columns: repeat(4, 1fr) !important; } }
