@@ -201,14 +201,29 @@ export default async function Home() {
               Every 24 hours, a single vision is pulled from the deepest level of the vault. A unique horror wallpaper surfaced just for tonight. Download this 4K pick before the clock resets and a new nightmare takes its place.
             </p>
 
-            <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap" }}>
-              <Link href="/iphone" className="dt-btn dt-btn--enter">
-                <span>Browse All Wallpapers →</span>
-              </Link>
-              <Link href="/pc" className="dt-btn dt-btn--ghost">
-                <span>PC Wallpapers</span>
-              </Link>
-            </div>
+            <p style={{
+              fontFamily: "var(--font-space, monospace)",
+              fontSize: "0.65rem",
+              letterSpacing: "0.22em",
+              textTransform: "uppercase",
+              color: "#c0001a",
+              margin: 0,
+              display: "flex",
+              alignItems: "center",
+              gap: "10px",
+            }}>
+              <span style={{
+                display: "inline-block",
+                width: "6px",
+                height: "6px",
+                borderRadius: "50%",
+                background: "#c0001a",
+                boxShadow: "0 0 8px rgba(192,0,26,0.8)",
+                animation: "hw-hero-pulse 2.4s ease-in-out infinite",
+                flexShrink: 0,
+              }} />
+              New drops added every day
+            </p>
 
             <div className="dt-coffin-row dt-coffin-row--compact">
               <div className="dt-coffin">
@@ -278,6 +293,10 @@ export default async function Home() {
       </section>
 
       <style>{`
+        @keyframes hw-hero-pulse {
+          0%, 100% { opacity: 1; box-shadow: 0 0 8px rgba(192,0,26,0.8); }
+          50%       { opacity: 0.5; box-shadow: 0 0 16px rgba(192,0,26,0.3); }
+        }
         .hw-hero-gate-override {
           padding-top: 8px !important;
           padding-bottom: 0 !important;
