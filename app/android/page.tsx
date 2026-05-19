@@ -10,7 +10,7 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 import IphoneImageGrid from "@/components/IphoneImageGrid";
 import AdminHtmlBlock from "@/components/AdminHtmlBlock";
 
-export const revalidate = 300;
+export const revalidate = 3600;
 
 const PAGE_SIZE = 24;
 

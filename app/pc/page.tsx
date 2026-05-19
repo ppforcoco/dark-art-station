@@ -10,7 +10,7 @@ import WallpaperTips from "@/components/WallpaperTips";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import AdminHtmlBlock from "@/components/AdminHtmlBlock";
 
-export const revalidate = 60;
+export const revalidate = 3600;
 
 const PAGE_SIZE = 24;
 

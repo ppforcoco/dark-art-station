@@ -25,12 +25,6 @@ const nextConfig: NextConfig = {
         port: "",
         pathname: "/**",
       },
-      {
-        protocol: "https",
-        hostname: "pub-ba82ea76f3604402b8760527cc87149c.r2.dev",
-        port: "",
-        pathname: "/**",
-      },
     ],
     formats: ["image/avif", "image/webp"],
     minimumCacheTTL: 31536000,
@@ -89,6 +83,12 @@ const nextConfig: NextConfig = {
         source: "/api/(.*)",
         headers: [
           { key: "Cache-Control", value: "no-store, max-age=0" },
+        ],
+      },
+      {
+        source: "/(iphone|android|pc|all)(.*)",
+        headers: [
+          { key: "Cache-Control", value: "public, s-maxage=3600, stale-while-revalidate=86400" },
         ],
       },
     ];
