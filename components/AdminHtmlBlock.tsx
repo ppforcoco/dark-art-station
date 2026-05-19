@@ -21,8 +21,9 @@ export default function AdminHtmlBlock({ html }: { html: string }) {
     const doc = iframe.contentDocument;
     if (!doc) return;
 
+    const darkBase = `<style>html,body{background:#0c0b14;color:#e8e4dc;margin:0;padding:0;}*{box-sizing:border-box;}</style>`;
     doc.open();
-    doc.write(html);
+    doc.write(darkBase + html);
     doc.close();
 
     // Auto-size iframe to content height
@@ -50,6 +51,8 @@ export default function AdminHtmlBlock({ html }: { html: string }) {
         border: "none",
         display: "block",
         marginBottom: "32px",
+        backgroundColor: "var(--bg-primary, #0c0b14)",
+        colorScheme: "dark",
       }}
       sandbox="allow-scripts allow-same-origin"
       title="Collection description"

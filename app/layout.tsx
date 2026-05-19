@@ -35,7 +35,7 @@ const spaceMono = Space_Mono({
 
 const SITE_URL  = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
 const SITE_NAME = "Haunted Wallpapers";
-const OG_IMAGE  = `${SITE_URL}/og-image.webp`;
+const OG_IMAGE  = "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/og-image.webp";
 
 export const viewport: Viewport = {
   width: "device-width",
