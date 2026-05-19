@@ -23,6 +23,7 @@ export default function Footer(): JSX.Element {
         <div className="footer-col">
           <h4 className="footer-col-title">Company</h4>
           <ul>
+            <li><Link href="/all">All Wallpapers</Link></li>
             <li><Link href="/obsessions">Collections</Link></li>
             <li><Link href="/mood">Mood Wallpapers</Link></li>
             <li><Link href="/favorites">♥ Saved Wallpapers</Link></li>
