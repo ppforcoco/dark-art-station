@@ -272,7 +272,7 @@ export default async function Home() {
             gap: "10px",
           }}>
               {[
-                { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/new/creepy-grinning-cat-haunted-house-illustration.webp", alt: "Creepy Cat", featured: false },
+                { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/haunted-cat-grin-dark-iphone-android.webp", alt: "Creepy Cat", featured: false },
                 { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/wallpapers/shadows-have-eyes-android.webp", alt: "Shadow Eyes", featured: false },
                 { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/new/dark-horror-man-cosplay-makeup-idea.webp", alt: "Horror Cosplay", featured: true },
                 { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/new/gothic-crimson-rose-dark-art-wallpaper.webp", alt: "Gothic Rose", featured: false },
