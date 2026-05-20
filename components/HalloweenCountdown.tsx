@@ -21,17 +21,15 @@ function isHalloween(): boolean {
 }
 
 interface Remaining {
-  days: number; hours: number; minutes: number; seconds: number;
+  days: number; hours: number;
 }
 
 function calcRemaining(): Remaining {
   const diff = Math.max(0, nextHalloween().getTime() - Date.now());
   const totalSecs = Math.floor(diff / 1000);
   return {
-    days:    Math.floor(totalSecs / 86400),
-    hours:   Math.floor((totalSecs % 86400) / 3600),
-    minutes: Math.floor((totalSecs % 3600) / 60),
-    seconds: totalSecs % 60,
+    days:  Math.floor(totalSecs / 86400),
+    hours: Math.floor((totalSecs % 86400) / 3600),
   };
 }
 
@@ -39,11 +37,8 @@ function pad(n: number): string {
   return String(n).padStart(2, "0");
 }
 
-// Returns a flavour label based on how many days remain
 function getPrefix(days: number): string {
-  if (days > 100) return "🕯 Halloween — countdown";
-  if (days > 30)  return "🕯 Halloween — countdown";
-  if (days > 14)  return "🦇 Halloween — coming";
+  if (days > 14)  return "🕯 Halloween — countdown";
   if (days > 7)   return "🎃 Halloween — coming";
   if (days > 1)   return "🩸 Almost Halloween";
   if (days === 1) return "☠️ Tomorrow — Halloween";
@@ -64,11 +59,11 @@ export default function HalloweenCountdown() {
     setRemaining(calcRemaining());
     setTopbarVar(BAR_HEIGHT);
 
-    // 10s interval — seconds digit removed, saves ~60 React re-renders/min
+    // 1 hour interval — only days/hours shown, no need to update more often
     let id = setInterval(() => {
       setHalloween(isHalloween());
       setRemaining(calcRemaining());
-    }, 10_000);
+    }, 3_600_000);
 
     const onVisibility = () => {
       if (document.visibilityState === "hidden") {
@@ -79,7 +74,7 @@ export default function HalloweenCountdown() {
         id = setInterval(() => {
           setHalloween(isHalloween());
           setRemaining(calcRemaining());
-        }, 10_000);
+        }, 3_600_000);
       }
     };
 
@@ -98,7 +93,7 @@ export default function HalloweenCountdown() {
     <div className="halloween-bar" aria-label="Halloween countdown">
       {halloween ? (
         <a href="/collections" className="hc-active">
-          🎃 It's Halloween! Browse the Collection →
+          🎃 It&apos;s Halloween! Browse the Collection →
         </a>
       ) : (
         <>
@@ -110,18 +105,11 @@ export default function HalloweenCountdown() {
           </div>
 
           <span className="hc-sep">·</span>
+
           <div className="hc-segment">
             <span className="hc-num">{pad(remaining.hours)}</span>
             <span className="hc-label">hrs</span>
           </div>
-
-          <span className="hc-sep">·</span>
-          <div className="hc-segment">
-            <span className="hc-num">{pad(remaining.minutes)}</span>
-            <span className="hc-label">min</span>
-          </div>
-
-
         </>
       )}
     </div>
