@@ -50,7 +50,6 @@ const nextConfig: NextConfig = {
       },
       { source: "/free",   destination: "/", permanent: true },
       { source: "/ritual", destination: "/", permanent: true },
-      // Fix: /terms 404 — page missing but referenced in sitemap & footer
       { source: "/terms",  destination: "/privacy", permanent: true },
     ];
   },
@@ -90,16 +89,37 @@ const nextConfig: NextConfig = {
           { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
         ],
       },
-      // ── noai header on every page — tells AI scrapers not to train on content ──
+      // ── Security + noai headers on every page ─────────────────────────────
       {
         source: "/(.*)",
         headers: [
-          { key: "X-Content-Type-Options", value: "nosniff" },
-          { key: "X-Frame-Options",        value: "SAMEORIGIN" },
-          { key: "X-XSS-Protection",       value: "1; mode=block" },
-          { key: "Referrer-Policy",        value: "strict-origin-when-cross-origin" },
-          { key: "Permissions-Policy",     value: "camera=(), microphone=(), geolocation=()" },
-          { key: "X-Robots-Tag",           value: "noai, noimageai" },
+          { key: "X-Content-Type-Options",    value: "nosniff" },
+          { key: "X-Frame-Options",           value: "SAMEORIGIN" },
+          { key: "X-XSS-Protection",          value: "1; mode=block" },
+          { key: "Referrer-Policy",           value: "strict-origin-when-cross-origin" },
+          { key: "Permissions-Policy",        value: "camera=(), microphone=(), geolocation=()" },
+          { key: "X-Robots-Tag",              value: "noai, noimageai" },
+          // ── HSTS: tell browsers to always use HTTPS ──────────────────────
+          { key: "Strict-Transport-Security", value: "max-age=31536000; includeSubDomains; preload" },
+          // ── COOP: required for Best Practices score ───────────────────────
+          { key: "Cross-Origin-Opener-Policy", value: "same-origin-allow-popups" },
+          // ── CSP: blocks XSS, allows GA/GTM/R2/AdSense ────────────────────
+          {
+            key: "Content-Security-Policy",
+            value: [
+              "default-src 'self'",
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://pagead2.googlesyndication.com https://partner.googleadservices.com https://tpc.googlesyndication.com https://fundingchoicesmessages.google.com",
+              "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+              "font-src 'self' https://fonts.gstatic.com",
+              "img-src 'self' data: blob: https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev https://assets.hauntedwallpapers.com https://www.google-analytics.com https://www.googletagmanager.com https://pagead2.googlesyndication.com",
+              "connect-src 'self' https://www.google-analytics.com https://analytics.google.com https://www.googletagmanager.com https://pagead2.googlesyndication.com",
+              "frame-src https://www.googletagmanager.com https://td.doubleclick.net https://fundingchoicesmessages.google.com",
+              "object-src 'none'",
+              "base-uri 'self'",
+              "form-action 'self'",
+              "upgrade-insecure-requests",
+            ].join("; "),
+          },
         ],
       },
       {
@@ -114,7 +134,6 @@ const nextConfig: NextConfig = {
           { key: "Cache-Control", value: "public, s-maxage=3600, stale-while-revalidate=604800" },
         ],
       },
-      // ── Homepage CDN cache — reduces TTFB from ~2.1 s ─────────────────
       {
         source: "/",
         headers: [
