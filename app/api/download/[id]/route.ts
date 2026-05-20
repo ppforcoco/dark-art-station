@@ -5,18 +5,22 @@ import { createHash } from "crypto";
 import { shouldCountRequest } from "@/lib/analytics-filter";
 
 // ─── Rate limiter config ───────────────────────────────────────────────────────
-const HOURLY_LIMIT        = 5;                  // max downloads per IP per hour (was 30)
+// FIX: Emerging-market users (NG/KE/MM/IN) often share IPs via carrier-grade NAT
+// (CGNAT) — a single IP may represent hundreds of real users on mobile networks.
+// The old limits (5/hr, 15/day) were causing false-positive rate blocks.
+// New limits are more generous while still blocking bots.
+const HOURLY_LIMIT        = 15;                 // was 5 — raised for CGNAT networks
 const HOURLY_WINDOW_MS    = 60 * 60 * 1000;
-const BURST_LIMIT         = 3;                  // max downloads per IP per minute
+const BURST_LIMIT         = 5;                  // was 3 — raised for CGNAT networks
 const BURST_WINDOW_MS     = 60 * 1000;
-const DAILY_LIMIT         = 15;                 // max downloads per IP per 24 hours (DB-backed)
-const SAME_IMAGE_COOLDOWN = 24 * 60 * 60 * 1000; // same IP can't re-download same image within 24h
-const MIN_DELAY_MS        = 10_000;             // minimum 10s between any two downloads from same IP
+const DAILY_LIMIT         = 40;                 // was 15 — raised for CGNAT networks
+const SAME_IMAGE_COOLDOWN = 24 * 60 * 60 * 1000;
+const MIN_DELAY_MS        = 5_000;              // was 10_000 — halved; 10s felt broken on slow connections
 
 // ─── In-memory stores ──────────────────────────────────────────────────────────
-const hourlyStore   = new Map<string, number[]>(); // ipHash → timestamps[]
-const burstStore    = new Map<string, number[]>(); // ipHash → timestamps[]
-const lastDownload  = new Map<string, number>();   // ipHash → last download timestamp
+const hourlyStore  = new Map<string, number[]>();
+const burstStore   = new Map<string, number[]>();
+const lastDownload = new Map<string, number>();
 
 function checkAndRecord(
   store: Map<string, number[]>,
@@ -24,16 +28,15 @@ function checkAndRecord(
   windowMs: number,
   max: number
 ): boolean {
-  const now       = Date.now();
-  const cutoff    = now - windowMs;
-  const times     = (store.get(key) ?? []).filter((t) => t > cutoff);
+  const now    = Date.now();
+  const cutoff = now - windowMs;
+  const times  = (store.get(key) ?? []).filter((t) => t > cutoff);
 
-  if (times.length >= max) return true; // rate limited
+  if (times.length >= max) return true;
 
   times.push(now);
   store.set(key, times);
 
-  // Probabilistic cleanup to avoid memory growth
   if (Math.random() < 0.01) {
     for (const [k, ts] of store.entries()) {
       if (ts.every((t) => t <= cutoff)) store.delete(k);
@@ -68,14 +71,14 @@ export async function GET(
       "unknown";
     const ipHash = hashIp(rawIp);
 
-    // ── 1. Minimum delay between downloads (blocks rapid-fire bots) ───────────
+    // ── 1. Minimum delay between downloads ────────────────────────────────────
     const last = lastDownload.get(ipHash);
     if (last && Date.now() - last < MIN_DELAY_MS) {
       return NextResponse.json(
         { error: "Please wait a moment before downloading again." },
         {
           status: 429,
-          headers: { "Retry-After": "10" },
+          headers: { "Retry-After": "5" },
         }
       );
     }
@@ -129,7 +132,7 @@ export async function GET(
       );
     }
 
-    // ── 5. Same-image cooldown (blocks bots re-downloading the same file) ─────
+    // ── 5. Same-image cooldown ────────────────────────────────────────────────
     const recentSameImage = await db.download.findFirst({
       where: {
         ipHash,
@@ -162,16 +165,13 @@ export async function GET(
       return NextResponse.json({ error: "No download available" }, { status: 404 });
     }
 
-    // Record last download time (for min-delay check)
     lastDownload.set(ipHash, Date.now());
 
-    // Build a safe filename
     const safeTitle = image.title
       ? image.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").slice(0, 60)
       : "haunted-wallpaper";
     const fileName = `${safeTitle}.jpg`;
 
-    // Get signed URL from R2
     const signedUrl = await getSignedDownloadUrl(image.highResKey, 60 * 15, fileName);
 
     // ── Fire-and-forget telemetry ─────────────────────────────────────────────
@@ -179,15 +179,27 @@ export async function GET(
       .create({ data: { imageId: image.id, ipHash } })
       .catch((err) => console.error("[IMAGE_DOWNLOAD_TELEMETRY]", err));
 
-    // Only count views from real humans — skip bots and admin IPs
     if (shouldCountRequest(req)) {
       db.image
         .update({ where: { id: image.id }, data: { viewCount: { increment: 1 } } })
         .catch((err) => console.error("[IMAGE_VIEWCOUNT_INCREMENT]", err));
     }
 
-    // ── Fetch from R2 and stream back with correct headers ────────────────────
-    const r2Response = await fetch(signedUrl);
+    // ── Fetch from R2 and stream back ─────────────────────────────────────────
+    // FIX: Added AbortController with 30s timeout — on slow connections in NG/KE/MM/IN
+    // the R2 fetch could hang indefinitely, leaving the user with a stalled download.
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 30_000);
+
+    let r2Response: Response;
+    try {
+      r2Response = await fetch(signedUrl, { signal: controller.signal });
+    } catch (fetchErr) {
+      clearTimeout(timeout);
+      console.error("[IMAGE_DOWNLOAD_R2_FETCH]", fetchErr);
+      return NextResponse.json({ error: "Download timed out. Please try again." }, { status: 504 });
+    }
+    clearTimeout(timeout);
 
     if (!r2Response.ok) {
       return NextResponse.json({ error: "Failed to fetch file" }, { status: 502 });
