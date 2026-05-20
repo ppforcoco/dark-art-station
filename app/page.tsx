@@ -76,8 +76,7 @@ export async function generateMetadata(): Promise<Metadata> {
     },
     alternates: { canonical: SITE_URL },
     other: {
-      // Preload the LCP hero image so it starts fetching before React hydrates
-      "link:preload:lcp": "<https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/pin/sinister-cat-shadow.webp>; rel=preload; as=image; fetchpriority=high",
+      "link:preload:lcp": "<https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/new/dark-horror-man-cosplay-makeup-idea.webp>; rel=preload; as=image; fetchpriority=high",
     },
   };
 }
@@ -121,10 +120,8 @@ export default async function Home() {
       db.image.findMany({
         where: {
           isAdult: false,
-          // ── Must have badge-new tag AND be created within the last 7 days ──
           tags: { has: "badge-new" },
           createdAt: { gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) },
-          // ── Never bleed premium images into New ──
           NOT: { tags: { has: "badge-premium" } },
         },
         orderBy: { createdAt: "desc" },
@@ -275,11 +272,11 @@ export default async function Home() {
             gap: "10px",
           }}>
               {[
-                { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/pin/gorilla-iphone-wallpaper.webp", alt: "Gorilla", featured: false },
+                { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/new/creepy-grinning-cat-haunted-house-illustration.webp", alt: "Creepy Cat", featured: false },
                 { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/wallpapers/shadows-have-eyes-android.webp", alt: "Shadow Eyes", featured: false },
-                { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/pin/sinister-cat-shadow.webp", alt: "Sinister Cat", featured: true },
-                { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/pin/girl-doll.webp", alt: "Girl Doll", featured: false },
-                { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/wallpapers/hero-2.webp", alt: "Dark Art", featured: false },
+                { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/new/dark-horror-man-cosplay-makeup-idea.webp", alt: "Horror Cosplay", featured: true },
+                { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/new/gothic-crimson-rose-dark-art-wallpaper.webp", alt: "Gothic Rose", featured: false },
+                { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/new/skeleton-drinking-haunted-energy-drink-art.webp", alt: "Skeleton Art", featured: false },
               ].map((phone, i) => {
                 const w = phone.featured ? "240px" : "170px";
                 const h = phone.featured ? "520px" : "368px";
@@ -297,7 +294,6 @@ export default async function Home() {
                       <div style={{ position: "absolute", left: "-3px", top: "19%", width: "3px", height: "16px", background: "#1a1a2e", borderRadius: "2px 0 0 2px" }} />
                       <div style={{ position: "absolute", left: "-3px", top: "30%", width: "3px", height: "16px", background: "#1a1a2e", borderRadius: "2px 0 0 2px" }} />
                       <div style={{ position: "absolute", top: "7px", left: "50%", transform: "translateX(-50%)", width: "32%", height: "9px", background: "#000", borderRadius: "6px", zIndex: 4 }} />
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
                       {phone.featured ? (
                         <Image src={phone.src} alt={phone.alt} fill priority fetchPriority="high" sizes="240px" style={{ objectFit: "cover" }} />
                       ) : (
@@ -833,7 +829,6 @@ export default async function Home() {
             <div className="dt-monitor__bezel">
               <span className="dt-monitor__cam" />
               <div className="dt-monitor__screen">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <ProtectedImg
                   src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/monster-flower-offering-pc.webp"
                   alt="Monster Flower Offering — PC wallpaper 16:9"
@@ -924,7 +919,6 @@ export default async function Home() {
             ].map((kit) => (
               <a key={kit.href} href={kit.href} className="hw-kit-card" style={{ "--kit-accent": kit.accent } as React.CSSProperties}>
                 <div className="hw-kit-card__thumb">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={kit.img} alt={kit.alt} className="hw-kit-card__img" loading="lazy" />
                   <div className="hw-kit-card__overlay" />
                   <span className="hw-kit-card__num">Kit {kit.num}</span>
