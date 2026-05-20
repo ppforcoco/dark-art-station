@@ -5,17 +5,13 @@ export default function robots(): MetadataRoute.Robots {
 
   return {
     rules: [
-      // ── Googlebot first — no delay, full access ──────────────────────
+      // ── Googlebot — no delay, full access ───────────────────────────
       {
         userAgent: "Googlebot",
         allow: "/",
-        disallow: [
-          "/api/",
-          "/admin/",
-          "/admin-secret-hw",
-        ],
+        disallow: ["/api/", "/admin/", "/admin-secret-hw"],
       },
-      // ── AdsBot — needs full access for AdSense approval ──────────────
+      // ── AdsBot — needs full access for AdSense approval ─────────────
       {
         userAgent: "AdsBot-Google",
         allow: "/",
@@ -24,30 +20,24 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: "/",
-        disallow: [
-          "/api/",
-          "/admin/",
-          "/admin-secret-hw",
-        ],
+        disallow: ["/api/", "/admin/", "/admin-secret-hw"],
         crawlDelay: 1,
       },
       // ── Block AI training bots ───────────────────────────────────────
-      {
-        userAgent: "GPTBot",
-        disallow: "/",
-      },
-      {
-        userAgent: "ClaudeBot",
-        disallow: "/",
-      },
-      {
-        userAgent: "CCBot",
-        disallow: "/",
-      },
-      {
-        userAgent: "anthropic-ai",
-        disallow: "/",
-      },
+      { userAgent: "GPTBot",           disallow: "/" },
+      { userAgent: "ClaudeBot",        disallow: "/" },
+      { userAgent: "CCBot",            disallow: "/" },
+      { userAgent: "anthropic-ai",     disallow: "/" },
+      { userAgent: "Google-Extended",  disallow: "/" },
+      { userAgent: "Applebot-Extended",disallow: "/" },
+      { userAgent: "Bytespider",       disallow: "/" },
+      { userAgent: "Diffbot",          disallow: "/" },
+      { userAgent: "FacebookBot",      disallow: "/" },
+      { userAgent: "ImagesiftBot",     disallow: "/" },
+      { userAgent: "Omgilibot",        disallow: "/" },
+      { userAgent: "PetalBot",         disallow: "/" },
+      { userAgent: "Timpibot",         disallow: "/" },
+      { userAgent: "YouBot",           disallow: "/" },
     ],
     sitemap: `${siteUrl}/sitemap.xml`,
   };

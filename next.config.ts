@@ -32,12 +32,8 @@ const nextConfig: NextConfig = {
         pathname: "/**",
       },
     ],
-    // FIX: avif first — 40–50% smaller than webp; massive win on slow mobile connections
-    // in NG/KE/MM/IN. Chrome Android 85+ (dominant in those markets) supports avif.
     formats: ["image/avif", "image/webp"],
     minimumCacheTTL: 31536000,
-    // FIX: added 320 breakpoint — very common viewport on budget Android phones
-    // in emerging markets. Without it Next.js serves 390px images to 320px screens.
     deviceSizes: [320, 390, 640, 828, 1280, 1920],
     imageSizes:  [64, 128, 256, 384],
     dangerouslyAllowSVG: false,
@@ -73,8 +69,6 @@ const nextConfig: NextConfig = {
           { key: "Cache-Control", value: "public, max-age=86400" },
         ],
       },
-      // FIX: manifest.json given long cache with must-revalidate so PWA installs
-      // are fast on repeat visits (critical for Chrome Android on slow connections)
       {
         source: "/manifest.json",
         headers: [
@@ -82,7 +76,6 @@ const nextConfig: NextConfig = {
           { key: "Cache-Control", value: "public, max-age=86400, must-revalidate" },
         ],
       },
-      // FIX: PWA icons cached aggressively — these never change, immutable is correct
       {
         source: "/:path*(icon-192|icon-512|apple-touch-icon).png",
         headers: [
@@ -95,6 +88,7 @@ const nextConfig: NextConfig = {
           { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
         ],
       },
+      // ── noai header on every page — tells AI scrapers not to train on content ──
       {
         source: "/(.*)",
         headers: [
@@ -103,6 +97,7 @@ const nextConfig: NextConfig = {
           { key: "X-XSS-Protection",       value: "1; mode=block" },
           { key: "Referrer-Policy",        value: "strict-origin-when-cross-origin" },
           { key: "Permissions-Policy",     value: "camera=(), microphone=(), geolocation=()" },
+          { key: "X-Robots-Tag",           value: "noai, noimageai" },
         ],
       },
       {
@@ -114,8 +109,6 @@ const nextConfig: NextConfig = {
       {
         source: "/(iphone|android|pc|all)(.*)",
         headers: [
-          // FIX: increased stale-while-revalidate from 86400 → 604800 (7 days).
-          // Users on slow connections get instant cached loads on return visits.
           { key: "Cache-Control", value: "public, s-maxage=3600, stale-while-revalidate=604800" },
         ],
       },

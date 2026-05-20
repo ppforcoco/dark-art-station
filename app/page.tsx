@@ -1107,7 +1107,7 @@ export default async function Home() {
             return (
               <Link
                 key={obs.id}
-                href={`/shop/${encodeURIComponent(obs.slug)}`}
+                href={`/obsessions/${encodeURIComponent(obs.slug)}`}
                 className="dt-obs-card"
                 style={{ "--delay": `${i * 0.07}s` } as React.CSSProperties}
               >
@@ -1222,7 +1222,7 @@ export default async function Home() {
           url: SITE_URL, numberOfItems: obsessions.length,
           itemListElement: obsessions.map((o, i) => ({
             "@type": "ListItem", position: i + 1,
-            url: `${SITE_URL}/shop/${o.slug}`, name: o.title,
+            url: `${SITE_URL}/obsessions/${o.slug}`, name: o.title,
           })),
         })
       }} />
