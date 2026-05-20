@@ -88,8 +88,22 @@ export default function Cursor() {
     let initialised = false;
     let isHover = false;
     let rafId = 0;
+    let rafRunning = false;
+    let idleTimer: ReturnType<typeof setTimeout> | null = null;
+
+    const startRaf = () => {
+      if (rafRunning) return;
+      rafRunning = true;
+      rafId = requestAnimationFrame(loop);
+    };
+
+    const stopRaf = () => {
+      rafRunning = false;
+      cancelAnimationFrame(rafId);
+    };
 
     const loop = () => {
+      if (!rafRunning) return;
       const angle = isHover ? "-30deg" : "-45deg";
       dagger.style.transform = `translate(${mouseX - 16}px, ${mouseY}px) rotate(${angle})`;
       rafId = requestAnimationFrame(loop);
@@ -102,6 +116,9 @@ export default function Cursor() {
         initialised = true;
         dagger.style.opacity = "1";
       }
+      startRaf();
+      if (idleTimer) clearTimeout(idleTimer);
+      idleTimer = setTimeout(stopRaf, 2000);
     };
 
     const onOver = (e: MouseEvent) => {
@@ -129,7 +146,7 @@ export default function Cursor() {
     const onEnter       = () => { if (initialised) dagger.style.opacity = "1"; };
     const onContextMenu = () => { dagger.style.opacity = "0"; initialised = false; };
 
-    rafId = requestAnimationFrame(loop);
+    startRaf();
 
     window.addEventListener("blur",          onBlur);
     document.addEventListener("mousemove",   onMove,       { passive: true });
@@ -139,7 +156,8 @@ export default function Cursor() {
     document.addEventListener("contextmenu", onContextMenu);
 
     return () => {
-      cancelAnimationFrame(rafId);
+      stopRaf();
+      if (idleTimer) clearTimeout(idleTimer);
       window.removeEventListener("blur",         onBlur);
       document.removeEventListener("mousemove",   onMove);
       document.removeEventListener("mouseover",   onOver);

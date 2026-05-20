@@ -116,9 +116,6 @@ export default function Header() {
   return (
     <>
       <style>{`
-        /* ── Google Fonts import ── */
-        @import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Space+Mono:wght@400;700&display=swap');
-
         /* ── GHOST THEME — charcoal blue-black, cool whites ── */
         [data-theme="ghost"] {
           --bg-primary:#0d0d14;
@@ -168,8 +165,6 @@ export default function Header() {
           justify-content: space-between;
           border-bottom: 1px solid rgba(139,0,0,0.2);
           background: var(--nav-bg);
-          backdrop-filter: blur(20px);
-          -webkit-backdrop-filter: blur(20px);
           transition: background 0.3s ease, padding 0.3s ease;
         }
         .hw2-nav-enhanced--scrolled {

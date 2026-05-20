@@ -65,13 +65,29 @@ export default function HalloweenCountdown() {
     setTopbarVar(BAR_HEIGHT);
 
     // 10s interval — seconds digit removed, saves ~60 React re-renders/min
-    const id = setInterval(() => {
+    let id = setInterval(() => {
       setHalloween(isHalloween());
       setRemaining(calcRemaining());
     }, 10_000);
 
+    const onVisibility = () => {
+      if (document.visibilityState === "hidden") {
+        clearInterval(id);
+      } else {
+        setHalloween(isHalloween());
+        setRemaining(calcRemaining());
+        id = setInterval(() => {
+          setHalloween(isHalloween());
+          setRemaining(calcRemaining());
+        }, 10_000);
+      }
+    };
+
+    document.addEventListener("visibilitychange", onVisibility);
+
     return () => {
       clearInterval(id);
+      document.removeEventListener("visibilitychange", onVisibility);
       setTopbarVar(0);
     };
   }, [setTopbarVar]);

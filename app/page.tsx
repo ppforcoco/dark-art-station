@@ -294,7 +294,11 @@ export default async function Home() {
                       <div style={{ position: "absolute", left: "-3px", top: "30%", width: "3px", height: "16px", background: "#1a1a2e", borderRadius: "2px 0 0 2px" }} />
                       <div style={{ position: "absolute", top: "7px", left: "50%", transform: "translateX(-50%)", width: "32%", height: "9px", background: "#000", borderRadius: "6px", zIndex: 4 }} />
                       {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <ProtectedImg src={phone.src} alt={phone.alt} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} loading={i < 3 ? "eager" : "lazy"} />
+                      {phone.featured ? (
+                        <Image src={phone.src} alt={phone.alt} fill priority sizes="240px" style={{ objectFit: "cover" }} />
+                      ) : (
+                        <ProtectedImg src={phone.src} alt={phone.alt} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} loading={i < 3 ? "eager" : "lazy"} />
+                      )}
                       <ProtectionOverlay />
                       <div style={{ position: "absolute", inset: 0, background: "linear-gradient(135deg, rgba(255,255,255,0.07) 0%, transparent 42%)", pointerEvents: "none" }} />
                       <div style={{ position: "absolute", bottom: "6px", left: "50%", transform: "translateX(-50%)", width: "33%", height: "3px", background: "rgba(255,255,255,0.22)", borderRadius: "2px" }} />
@@ -310,8 +314,8 @@ export default async function Home() {
 
       <style>{`
         @keyframes hw-hero-pulse {
-          0%, 100% { opacity: 1; box-shadow: 0 0 8px rgba(192,0,26,0.8); }
-          50%       { opacity: 0.5; box-shadow: 0 0 16px rgba(192,0,26,0.3); }
+          0%, 100% { opacity: 1; }
+          50%       { opacity: 0.5; }
         }
         .hw-hero-gate-override {
           padding-top: 8px !important;
@@ -472,7 +476,7 @@ export default async function Home() {
             <div className="wotd-top-frame">
               <Link href={wotdHref} className="wotd-img-frame" aria-label={wotd.title}>
                 <div className="wotd-img-frame__wrap">
-                  <Image src={wotdUrl} alt={wotd.title} fill priority unoptimized className="object-cover"
+                  <Image src={wotdUrl} alt={wotd.title} fill priority className="object-cover"
                     sizes="(max-width:768px) 80vw, 320px" style={{ objectPosition: "center top" }} />
                 </div>
                 <div className="wotd-img-frame__scanlines" aria-hidden="true" />
@@ -576,8 +580,8 @@ export default async function Home() {
                 animation: wotdPulse 2.4s ease-in-out infinite;
               }
               @keyframes wotdPulse {
-                0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(192,0,26,0.6); }
-                50%       { opacity: 0.6; box-shadow: 0 0 0 5px rgba(192,0,26,0); }
+                0%, 100% { opacity: 1; }
+                50%       { opacity: 0.6; }
               }
               .wotd-top-frame {
                 display: flex;
@@ -684,15 +688,16 @@ export default async function Home() {
                 position: absolute;
                 bottom: 0; left: 50%;
                 transform: translateX(-50%);
-                width: 60%; height: 2px;
+                width: 70%; height: 2px;
                 background: rgba(192,0,26,0.7);
                 box-shadow: 0 0 18px 6px rgba(192,0,26,0.4);
                 animation: wotdEyePulse 3s ease-in-out infinite;
                 border-radius: 50%;
+                transform-origin: center;
               }
               @keyframes wotdEyePulse {
-                0%, 100% { opacity: 0.5; width: 40%; }
-                50%       { opacity: 1;   width: 70%; box-shadow: 0 0 28px 10px rgba(192,0,26,0.5); }
+                0%, 100% { opacity: 0.5; transform: translateX(-50%) scaleX(0.57); }
+                50%       { opacity: 1;   transform: translateX(-50%) scaleX(1); }
               }
               .wotd-title {
                 font-size: clamp(1.2rem, 2.2vw, 1.9rem);

@@ -25,6 +25,12 @@ const nextConfig: NextConfig = {
         port: "",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "pub-ba82ea76f3604402b8760527cc87149c.r2.dev",
+        port: "",
+        pathname: "/**",
+      },
     ],
     formats: ["image/avif", "image/webp"],
     minimumCacheTTL: 31536000,
