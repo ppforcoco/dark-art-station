@@ -16,7 +16,7 @@ export async function GET(req: NextRequest) {
   }
   const posts = await prisma.blogPost.findMany({
     orderBy: { createdAt: "desc" },
-    select: { slug: true, title: true, label: true, featuredImage: true, content: true, createdAt: true },
+    select: { slug: true, title: true, label: true, featuredImage: true, content: true, createdAt: true, published: true },
   });
   return NextResponse.json({ posts });
 }
@@ -43,6 +43,7 @@ export async function POST(req: NextRequest) {
         slug, title,
         label: label ?? "Guide",
         content,
+        published: true,           // ← FIX: explicitly set, don't rely on DB default
         featuredImage: featuredImage ?? null,
         ...(createdAt ? { createdAt: new Date(createdAt) } : {}),
       },
