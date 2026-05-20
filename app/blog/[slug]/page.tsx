@@ -2,12 +2,10 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import AdSlot from "@/components/AdSlot";
-import { PrismaClient } from "@prisma/client";
+import { db } from "@/lib/db";
 import BlogPostClient from "./BlogPostClient";
 
 export const dynamic = "force-dynamic";
-
-const prisma = new PrismaClient();
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
 
 function extractFirstImageFromContent(html: string): string | null {
@@ -19,7 +17,7 @@ export async function generateMetadata(
   { params }: { params: Promise<{ slug: string }> }
 ): Promise<Metadata> {
   const { slug } = await params;
-  const post = await prisma.blogPost.findUnique({ where: { slug } });
+  const post = await db.blogPost.findUnique({ where: { slug } });
   if (!post) return { title: "Not Found" };
 
   const excerpt = post.content
@@ -61,8 +59,8 @@ export default async function BlogPostPage(
   const { slug } = await params;
 
   const [post, allPosts] = await Promise.all([
-    prisma.blogPost.findUnique({ where: { slug, published: true } }),
-    prisma.blogPost.findMany({
+    db.blogPost.findUnique({ where: { slug, published: true } }),
+    db.blogPost.findMany({
       where: { published: true },
       orderBy: { createdAt: "desc" },
       select: {

@@ -1,11 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { PrismaClient } from "@prisma/client";
+import { db } from "@/lib/db";
 import { getPageContent } from "@/lib/db";
 
 export const dynamic = "force-dynamic";
-
-const prisma = new PrismaClient();
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
 
 export const metadata: Metadata = {
@@ -55,7 +53,7 @@ function cleanExcerpt(html: string, len = 220): string {
 
 export default async function BlogPage() {
   const [posts, pageContent] = await Promise.all([
-    prisma.blogPost.findMany({
+    db.blogPost.findMany({
       where: { published: true },
       orderBy: { createdAt: "desc" },
       select: {
