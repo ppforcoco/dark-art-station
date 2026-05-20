@@ -1,13 +1,23 @@
 {
   "name": "Haunted Wallpapers",
   "short_name": "Haunted WP",
-  "description": "Free dark fantasy wallpapers for iPhone, Android and PC. Download HD art instantly.",
+  "description": "Free dark fantasy wallpapers for iPhone, Android and PC.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0c0b14",
   "theme_color": "#0c0b14",
-  "orientation": "portrait-primary",
+  "orientation": "portrait",
   "icons": [
+    {
+      "src": "/favicon-32x32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    },
     {
       "src": "/icon-192.png",
       "sizes": "192x192",
@@ -21,14 +31,7 @@
       "purpose": "any maskable"
     }
   ],
-  "screenshots": [
-    {
-      "src": "/og-image.jpg",
-      "sizes": "1200x630",
-      "type": "image/jpeg",
-      "label": "Haunted Wallpapers home page"
-    }
-  ],
   "categories": ["entertainment", "lifestyle"],
-  "lang": "en-US"
+  "lang": "en-US",
+  "dir": "ltr"
 }

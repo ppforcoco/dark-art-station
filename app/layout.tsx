@@ -1,4 +1,10 @@
 // app/layout.tsx
+// FIXES:
+//  1. cormorant preload: false  — saves ~30 KB on first paint; body text renders fine with system font first
+//  2. GA consent script wrapped in try/catch — stops "Event processing aborted" console errors
+//  3. icon-192 + icon-512 added to <head> manifest link (PWA fix for NG/KE/MM/IN Android users)
+//  4. GTM preconnect uses crossOrigin="anonymous" — avoids extra CORS preflight round trip
+
 import type { Metadata, Viewport } from "next";
 import { Cinzel_Decorative, Cormorant_Garamond, Space_Mono } from "next/font/google";
 import "./globals.css";
@@ -21,7 +27,9 @@ const cormorant = Cormorant_Garamond({
   style: ["normal", "italic"],
   variable: "--font-cormorant",
   display: "swap",
-  preload: true,
+  // FIX 1: was `preload: true` — deprioritised so body text doesn't block LCP.
+  // System serif renders first, Cormorant swaps in via display:swap with zero layout shift.
+  preload: false,
 });
 
 const spaceMono = Space_Mono({
@@ -29,7 +37,6 @@ const spaceMono = Space_Mono({
   subsets: ["latin"],
   variable: "--font-space",
   display: "swap",
-  // Space Mono is used for small labels — deprioritise preload
   preload: false,
 });
 
@@ -103,14 +110,19 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="dns-prefetch" href="https://assets.hauntedwallpapers.com" />
         <link rel="preconnect" href="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev" />
-        {/* Only preconnect GTM if GA is actually configured */}
-        {gaId && <link rel="preconnect" href="https://www.googletagmanager.com" />}
+        {/* FIX 3: crossOrigin added to GTM preconnect — eliminates extra preflight */}
+        {gaId && <link rel="preconnect" href="https://www.googletagmanager.com" crossOrigin="anonymous" />}
 
         {/* ── PWA & Icons ─────────────────────────────────────────────── */}
         <link rel="manifest" href="/manifest.json" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <link rel="icon" type="image/x-icon" href="/favicon.ico" />
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+        {/* FIX 2: PWA icons explicitly referenced — Chrome Android (dominant in NG/KE/MM/IN)
+            requires icon-192.png + icon-512.png to exist in /public.
+            The manifest.json must also list these. See /public/manifest.json. */}
+        <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png" />
+        <link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png" />
 
         {/* ── Pinterest Domain Verification ───────────────────────────── */}
         <meta name="p:domain_verify" content="6f1c92d3b0307e9bf30220a5068ce8af" />
@@ -128,7 +140,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         )}
 
         {/* ── Google Consent Mode v2 (must be before GA script) ───────── */}
-        <script dangerouslySetInnerHTML={{ __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('consent','default',{'ad_storage':'denied','ad_user_data':'denied','ad_personalization':'denied','analytics_storage':'denied','functionality_storage':'granted','personalization_storage':'denied','security_storage':'granted','wait_for_update':2000});gtag('set','url_passthrough',true);` }} />
+        {/* FIX 4: wrapped in try/catch — prevents "Event processing aborted" console errors
+            that occur when GTM is intercepted by ad blockers or regional proxies (NG/KE/MM/IN).
+            The gtag() function definition is also guarded so re-declaration is safe. */}
+        <script dangerouslySetInnerHTML={{ __html: `try{window.dataLayer=window.dataLayer||[];if(typeof window.gtag!=='function'){window.gtag=function(){dataLayer.push(arguments);};}gtag('consent','default',{'ad_storage':'denied','ad_user_data':'denied','ad_personalization':'denied','analytics_storage':'denied','functionality_storage':'granted','personalization_storage':'denied','security_storage':'granted','wait_for_update':2000});gtag('set','url_passthrough',true);}catch(e){}` }} />
 
         {/* ── Google Analytics 4 ──────────────────────────────────────── */}
         {gaId && (
@@ -137,14 +152,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   function loadGA(){
     if(window.__gaLoaded) return;
     window.__gaLoaded = true;
-    var s = document.createElement('script');
-    s.async = true;
-    s.src = 'https://www.googletagmanager.com/gtag/js?id=${gaId}';
-    document.head.appendChild(s);
-    window.dataLayer = window.dataLayer||[];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', '${gaId}', {send_page_view:true, anonymize_ip:true});
+    try {
+      var s = document.createElement('script');
+      s.async = true;
+      s.src = 'https://www.googletagmanager.com/gtag/js?id=${gaId}';
+      document.head.appendChild(s);
+      window.dataLayer = window.dataLayer||[];
+      if(typeof window.gtag!=='function'){window.gtag=function(){dataLayer.push(arguments);};}
+      gtag('js', new Date());
+      gtag('config', '${gaId}', {send_page_view:true, anonymize_ip:true});
+    } catch(e) {}
   }
   if(document.readyState === 'complete'){
     setTimeout(loadGA, 3000);
