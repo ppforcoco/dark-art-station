@@ -50,6 +50,8 @@ const nextConfig: NextConfig = {
       },
       { source: "/free",   destination: "/", permanent: true },
       { source: "/ritual", destination: "/", permanent: true },
+      // Fix: /terms 404 — page missing but referenced in sitemap & footer
+      { source: "/terms",  destination: "/privacy", permanent: true },
     ];
   },
 
@@ -108,6 +110,13 @@ const nextConfig: NextConfig = {
       },
       {
         source: "/(iphone|android|pc|all)(.*)",
+        headers: [
+          { key: "Cache-Control", value: "public, s-maxage=3600, stale-while-revalidate=604800" },
+        ],
+      },
+      // ── Homepage CDN cache — reduces TTFB from ~2.1 s ─────────────────
+      {
+        source: "/",
         headers: [
           { key: "Cache-Control", value: "public, s-maxage=3600, stale-while-revalidate=604800" },
         ],

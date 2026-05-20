@@ -75,6 +75,10 @@ export async function generateMetadata(): Promise<Metadata> {
       images: [OG_IMAGE],
     },
     alternates: { canonical: SITE_URL },
+    other: {
+      // Preload the LCP hero image so it starts fetching before React hydrates
+      "link:preload:lcp": "<https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/pin/sinister-cat-shadow.webp>; rel=preload; as=image; fetchpriority=high",
+    },
   };
 }
 
@@ -271,11 +275,11 @@ export default async function Home() {
             gap: "10px",
           }}>
               {[
-                { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/pin/gorilla-iphone-wallpaper.jpeg", alt: "Gorilla", featured: false },
+                { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/pin/gorilla-iphone-wallpaper.webp", alt: "Gorilla", featured: false },
                 { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/wallpapers/shadows-have-eyes-android.webp", alt: "Shadow Eyes", featured: false },
-                { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/pin/sinister-cat-shadow.jpeg", alt: "Sinister Cat", featured: true },
-                { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/pin/girl-doll.jpeg", alt: "Girl Doll", featured: false },
-                { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/wallpapers/hero-2.jpeg", alt: "Dark Art", featured: false },
+                { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/pin/sinister-cat-shadow.webp", alt: "Sinister Cat", featured: true },
+                { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/pin/girl-doll.webp", alt: "Girl Doll", featured: false },
+                { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/wallpapers/hero-2.webp", alt: "Dark Art", featured: false },
               ].map((phone, i) => {
                 const w = phone.featured ? "240px" : "170px";
                 const h = phone.featured ? "520px" : "368px";
@@ -295,7 +299,7 @@ export default async function Home() {
                       <div style={{ position: "absolute", top: "7px", left: "50%", transform: "translateX(-50%)", width: "32%", height: "9px", background: "#000", borderRadius: "6px", zIndex: 4 }} />
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       {phone.featured ? (
-                        <Image src={phone.src} alt={phone.alt} fill priority sizes="240px" style={{ objectFit: "cover" }} />
+                        <Image src={phone.src} alt={phone.alt} fill priority fetchPriority="high" sizes="240px" style={{ objectFit: "cover" }} />
                       ) : (
                         <ProtectedImg src={phone.src} alt={phone.alt} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} loading={i < 3 ? "eager" : "lazy"} />
                       )}
