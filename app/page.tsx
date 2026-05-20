@@ -1179,8 +1179,8 @@ export default async function Home() {
           </p>
 
           <div className="dt-manifesto__ctas">
-            <Link href="/shop" className="dt-btn dt-btn--enter">
-              <span>Enter the Collection →</span>
+            <Link href="/obsessions" className="dt-btn dt-btn--enter">
+              <span>Browse Freemium Packs →</span>
             </Link>
             <Link href="/about" className="dt-btn dt-btn--ghost dt-btn--sm">Our Story</Link>
           </div>
