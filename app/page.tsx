@@ -1131,7 +1131,7 @@ export default async function Home() {
                     style={{ objectFit: "cover", objectPosition: "center center", transition: "transform 0.6s ease" }}
                   />
                   {/* Dark veil */}
-                  <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.3) 50%, transparent 100%)", pointerEvents: "none" }} />
+                  <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.97) 0%, rgba(0,0,0,0.75) 40%, rgba(0,0,0,0.2) 70%, transparent 100%)", pointerEvents: "none" }} />
                   {/* LIMITED badge */}
                   <div style={{
                     position: "absolute", top: "16px", right: "16px",
