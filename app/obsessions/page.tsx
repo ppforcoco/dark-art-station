@@ -3,7 +3,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { db, getPageContent } from "@/lib/db";
-import AgeGateLink from "@/components/AgeGateLink";
 import AdminHtmlBlock from "@/components/AdminHtmlBlock";
 import Breadcrumbs from "@/components/Breadcrumbs";
 
@@ -182,9 +181,7 @@ export default async function ObsessionsPage() {
                       </div>
                     );
 
-                    return col.isAdult ? (
-                      <AgeGateLink key={col.id} slug={col.slug} style={{ textDecoration: "none", display: "block" }}>{card}</AgeGateLink>
-                    ) : (
+                    return (
                       <Link key={col.id} href={`/shop/${col.slug}`} style={{ textDecoration: "none", display: "block" }}>{card}</Link>
                     );
                   })}

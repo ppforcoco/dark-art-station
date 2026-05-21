@@ -151,6 +151,14 @@ export default function DownloadButton({ href, viewCount, downloadCount, label, 
     if (state === "loading" || state === "done") { e.preventDefault(); return; }
     setState("loading");
     setTimeout(() => setState("done"), 1400);
+
+    // Google Analytics event
+    if (typeof window !== "undefined" && typeof (window as any).gtag === "function") {
+      (window as any).gtag("event", "download_click", {
+        event_category: "engagement",
+        event_label: href,
+      });
+    }
   }
 
   function triggerDownloadState() {
