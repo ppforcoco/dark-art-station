@@ -1111,28 +1111,25 @@ export default async function Home() {
                 href={`/obsessions/${encodeURIComponent(defiant.slug)}`}
                 style={{ display: "block", position: "relative", textDecoration: "none", overflow: "hidden" }}
               >
-                {/* Container forces 9:16 on mobile, stays tall on desktop */}
+                {/* Container: 16:9 cinematic banner */}
                 <div style={{
                   position: "relative",
                   width: "100%",
-                  aspectRatio: "9/16",
-                  maxHeight: "clamp(420px, 70vw, 680px)",
+                  aspectRatio: "16/9",
                   overflow: "hidden",
                   border: "1px solid rgba(192,0,26,0.5)",
                   background: "#080510",
                 }}>
-                  {thumb && (
-                    <Image
-                      src={thumb}
-                      alt={defiant.title}
-                      fill
-                      unoptimized
-                      priority
-                      className="object-cover"
-                      sizes="100vw"
-                      style={{ objectFit: "cover", objectPosition: "center top", transition: "transform 0.6s ease" }}
-                    />
-                  )}
+                  <Image
+                    src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/extras/the-defiant-crew-team-members-collection.webp"
+                    alt="The Defiant Manifesto — Crew Collection"
+                    fill
+                    unoptimized
+                    priority
+                    className="object-cover"
+                    sizes="100vw"
+                    style={{ objectFit: "cover", objectPosition: "center center", transition: "transform 0.6s ease" }}
+                  />
                   {/* Dark veil */}
                   <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.3) 50%, transparent 100%)", pointerEvents: "none" }} />
                   {/* LIMITED badge */}
