@@ -1099,8 +1099,121 @@ export default async function Home() {
 
         </div>
 
+        {/* ── FEATURED: THE DEFIANT MANIFESTO ── */}
+        {obsessions.some(o => o.slug === "the-defiant-manifesto") && (() => {
+          const defiant = obsessions.find(o => o.slug === "the-defiant-manifesto")!;
+          const thumb = defiant.thumbnail
+            ? (defiant.thumbnail.startsWith("http") ? defiant.thumbnail : `${r2Base}/${defiant.thumbnail}`)
+            : null;
+          return (
+            <div style={{ marginBottom: "2px" }}>
+              <Link
+                href={`/obsessions/${encodeURIComponent(defiant.slug)}`}
+                style={{ display: "block", position: "relative", textDecoration: "none", overflow: "hidden" }}
+              >
+                {/* Container forces 9:16 on mobile, stays tall on desktop */}
+                <div style={{
+                  position: "relative",
+                  width: "100%",
+                  aspectRatio: "9/16",
+                  maxHeight: "clamp(420px, 70vw, 680px)",
+                  overflow: "hidden",
+                  border: "1px solid rgba(192,0,26,0.5)",
+                  background: "#080510",
+                }}>
+                  {thumb && (
+                    <Image
+                      src={thumb}
+                      alt={defiant.title}
+                      fill
+                      unoptimized
+                      priority
+                      className="object-cover"
+                      sizes="100vw"
+                      style={{ objectFit: "cover", objectPosition: "center top", transition: "transform 0.6s ease" }}
+                    />
+                  )}
+                  {/* Dark veil */}
+                  <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.3) 50%, transparent 100%)", pointerEvents: "none" }} />
+                  {/* LIMITED badge */}
+                  <div style={{
+                    position: "absolute", top: "16px", right: "16px",
+                    display: "flex", alignItems: "center", gap: "6px",
+                  }}>
+                    <span style={{
+                      fontFamily: "var(--font-space, monospace)",
+                      fontSize: "0.55rem",
+                      letterSpacing: "0.22em",
+                      textTransform: "uppercase",
+                      color: "#ff6a00",
+                      background: "linear-gradient(135deg, rgba(255,106,0,0.18), rgba(192,0,26,0.18))",
+                      border: "1px solid rgba(255,106,0,0.5)",
+                      padding: "4px 10px",
+                      borderRadius: "2px",
+                      fontWeight: 700,
+                    }}>
+                      ⚡ Limited
+                    </span>
+                  </div>
+                  {/* Bottom text */}
+                  <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "clamp(20px,4vw,40px)" }}>
+                    <span style={{
+                      display: "block",
+                      fontFamily: "var(--font-space, monospace)",
+                      fontSize: "0.58rem",
+                      letterSpacing: "0.28em",
+                      textTransform: "uppercase",
+                      color: "#c0001a",
+                      marginBottom: "10px",
+                    }}>
+                      Featured Collection
+                    </span>
+                    <h3 style={{
+                      fontFamily: "var(--font-cinzel, serif)",
+                      fontSize: "clamp(1.6rem, 4vw, 3rem)",
+                      fontWeight: 700,
+                      color: "#f0e8d8",
+                      margin: "0 0 10px",
+                      letterSpacing: "0.04em",
+                      lineHeight: 1.1,
+                      textShadow: "0 2px 30px rgba(192,0,26,0.4)",
+                    }}>
+                      {defiant.title}
+                    </h3>
+                    <p style={{
+                      fontFamily: "var(--font-cormorant, serif)",
+                      fontSize: "clamp(0.9rem, 1.5vw, 1.05rem)",
+                      color: "rgba(224,224,248,0.65)",
+                      margin: "0 0 18px",
+                      maxWidth: "520px",
+                      lineHeight: 1.6,
+                    }}>
+                      The art they tried to ban. The skeleton that went viral on every platform — then got rejected. Now it lives here.
+                    </p>
+                    <span style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: "6px",
+                      fontFamily: "var(--font-space, monospace)",
+                      fontSize: "0.62rem",
+                      letterSpacing: "0.16em",
+                      textTransform: "uppercase",
+                      color: "#fff",
+                      background: "#c0001a",
+                      padding: "10px 20px",
+                      borderRadius: "2px",
+                    }}>
+                      Enter The Vault →
+                    </span>
+                  </div>
+                </div>
+              </Link>
+            </div>
+          );
+        })()}
+
         <div className="dt-obs-grid">
-          {obsessions.map((obs, i) => {
+          {obsessions.filter(o => o.slug !== "the-defiant-manifesto").map((obs, i) => {
             const thumb = obs.thumbnail ? (obs.thumbnail.startsWith('http') ? obs.thumbnail : `${r2Base}/${obs.thumbnail}`) : null;
             return (
               <Link
