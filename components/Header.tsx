@@ -12,10 +12,10 @@ const NAV_LINKS = [
   { label: "iPhone",        href: "/iphone"     },
   { label: "Android",       href: "/android"    },
   { label: "PC",            href: "/pc"         },
-  { label: "Kits",          href: "/sets"       },  // ← NEW
-  { label: "Collections",   href: "/obsessions" },
+  { label: "Matching Sets", href: "/sets"       },
+  { label: "The Archive",   href: "/obsessions" },
   { label: "Mood",          href: "/mood"       },
-  { label: "Blog & Guides", href: "/blog"       },
+  { label: "The Secrets",   href: "/blog"       },
 ];
 
 export default function Header() {
@@ -556,6 +556,49 @@ export default function Header() {
             padding-right: max(16px, env(safe-area-inset-right));
           }
         }
+
+        /* ── MOBILE BOTTOM NAV BAR ── */
+        .hw-mobile-bottom-nav {
+          display: none;
+          position: fixed;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          z-index: 650;
+          background: rgba(10,10,18,0.97);
+          border-top: 1px solid rgba(120,120,216,0.18);
+          padding: 6px 0 env(safe-area-inset-bottom, 6px);
+          flex-direction: row;
+          align-items: stretch;
+          justify-content: space-around;
+        }
+        .hw-mobile-bottom-nav__item {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          gap: 3px;
+          flex: 1;
+          padding: 6px 2px;
+          text-decoration: none;
+          color: rgba(160,160,200,0.7);
+          font-family: var(--font-space, monospace);
+          font-size: 0.45rem;
+          letter-spacing: 0.1em;
+          text-transform: uppercase;
+          transition: color 0.2s;
+          background: none;
+          border: none;
+          cursor: pointer;
+        }
+        .hw-mobile-bottom-nav__item:hover,
+        .hw-mobile-bottom-nav__item:active { color: #fff; }
+        .hw-mobile-bottom-nav__icon { font-size: 1.2rem; line-height: 1; }
+        @media (max-width: 900px) {
+          .hw-mobile-bottom-nav { display: flex; }
+          /* push page content up so it's not hidden behind bottom nav */
+          body { padding-bottom: calc(60px + env(safe-area-inset-bottom, 0px)); }
+        }
       `}</style>
 
       {/* ── NAV ── */}
@@ -692,6 +735,25 @@ export default function Header() {
           </Link>
         </nav>
       </div>
+
+      {/* ── MOBILE BOTTOM NAV BAR ── */}
+      <nav className="hw-mobile-bottom-nav" aria-label="Mobile navigation">
+        <Link href="/iphone" className="hw-mobile-bottom-nav__item" onClick={closeMenu}>
+          <span className="hw-mobile-bottom-nav__icon">📱</span>iPhone
+        </Link>
+        <Link href="/android" className="hw-mobile-bottom-nav__item" onClick={closeMenu}>
+          <span className="hw-mobile-bottom-nav__icon">🤖</span>Android
+        </Link>
+        <Link href="/obsessions" className="hw-mobile-bottom-nav__item" onClick={closeMenu}>
+          <span className="hw-mobile-bottom-nav__icon">💀</span>Archive
+        </Link>
+        <Link href="/mood" className="hw-mobile-bottom-nav__item" onClick={closeMenu}>
+          <span className="hw-mobile-bottom-nav__icon">🌑</span>Mood
+        </Link>
+        <button className="hw-mobile-bottom-nav__item" onClick={openSearch}>
+          <span className="hw-mobile-bottom-nav__icon">🔍</span>Search
+        </button>
+      </nav>
     </>
   );
 }

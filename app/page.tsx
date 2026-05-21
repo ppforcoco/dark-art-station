@@ -495,11 +495,6 @@ export default async function Home() {
 
             <div className="wotd-below">
               <h2 className="wotd-title">{wotd.title}</h2>
-              <div className="wotd-actions">
-                <Link href={wotdHref} className="wotd-btn-primary">
-                  Download This Wallpaper →
-                </Link>
-              </div>
             </div>
 
             <style>{`

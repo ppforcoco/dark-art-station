@@ -301,12 +301,17 @@ export async function getRelatedImages(
   });
 
   const sourceSet = new Set(sourceTags.map(t => t.toLowerCase()));
-  const qualified = candidates.filter((img) => {
-    const overlap = img.tags.filter(t => sourceSet.has(t.toLowerCase())).length;
-    return overlap >= 2;
-  });
 
-  const pool = qualified.length >= 2 ? qualified : candidates;
+  // Score by tag overlap — sort highest overlap first, then viewCount
+  const scored = candidates.map((img) => ({
+    ...img,
+    overlap: img.tags.filter(t => sourceSet.has(t.toLowerCase())).length,
+  }));
+  scored.sort((a, b) => b.overlap - a.overlap || b.viewCount - a.viewCount);
+
+  // Use any with ≥1 tag match; fallback to full candidates
+  const qualified = scored.filter(img => img.overlap >= 1);
+  const pool = qualified.length >= 1 ? qualified : scored;
 
   return pool.slice(0, limit).map(img => ({
     id:             img.id,
