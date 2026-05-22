@@ -57,10 +57,10 @@ export default function Header() {
         const cats = ["iphone","android","pc"];
         return "/" + cats[Math.floor(Math.random() * cats.length)];
       })();
-      window.location.href = dest;                   // hard nav — never gets stuck
+      router.push(dest);                             // soft nav — uses Next.js cache
     } catch {
       const cats = ["iphone","android","pc"];
-      window.location.href = "/" + cats[Math.floor(Math.random() * cats.length)];
+      router.push("/" + cats[Math.floor(Math.random() * cats.length)]);
     } finally {
       clearTimeout(resetTimer);
       setTimeout(() => setRandomSpin(false), 400);
