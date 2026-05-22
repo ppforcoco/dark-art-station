@@ -149,6 +149,21 @@ export default async function Home() {
 
   return (
     <>
+      {/* ── LCP PRELOAD: Tell browser to fetch WOTD image before anything else ── */}
+      {wotd && (() => {
+        const wotdPreloadUrl = getPublicUrl(wotd.r2Key);
+        // Next.js /_next/image will serve AVIF; preload as image/avif for modern browsers
+        return (
+          <link
+            rel="preload"
+            as="image"
+            href={`/_next/image?url=${encodeURIComponent(wotdPreloadUrl)}&w=640&q=75`}
+            // @ts-expect-error — fetchpriority is valid HTML but not in React types yet
+            fetchpriority="high"
+          />
+        );
+      })()}
+
       {/* ── ATMOSPHERIC FOG OVERLAY ── */}
       <div className="dt-fog" aria-hidden="true">
         <div className="dt-fog__layer dt-fog__layer--1" />
@@ -305,7 +320,7 @@ export default async function Home() {
                       <div style={{ position: "absolute", left: "-3px", top: "30%", width: "3px", height: "16px", background: "#1a1a2e", borderRadius: "2px 0 0 2px" }} />
                       <div style={{ position: "absolute", top: "7px", left: "50%", transform: "translateX(-50%)", width: "32%", height: "9px", background: "#000", borderRadius: "6px", zIndex: 4 }} />
                       {phone.featured ? (
-                        <Image src={phone.src} alt={phone.alt} fill priority fetchPriority="high" sizes="(max-width: 640px) 200px, 240px" style={{ objectFit: "cover" }} />
+                        <Image src={phone.src} alt={phone.alt} fill priority={false} fetchPriority="low" sizes="(max-width: 640px) 200px, 240px" style={{ objectFit: "cover" }} />
                       ) : (
                         <ProtectedImg src={phone.src} alt={phone.alt} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} loading={i < 3 ? "eager" : "lazy"} />
                       )}
@@ -486,8 +501,8 @@ export default async function Home() {
             <div className="wotd-top-frame">
               <Link href={wotdHref} className="wotd-img-frame" aria-label={wotd.title}>
                 <div className="wotd-img-frame__wrap">
-                  <Image src={wotdUrl} alt={wotd.title} fill priority className="object-cover"
-                    sizes="(max-width:768px) 80vw, 320px" style={{ objectPosition: "center top" }} />
+                  <Image src={wotdUrl} alt={wotd.title} fill priority fetchPriority="high" className="object-cover"
+                    sizes="(max-width:480px) 90vw, (max-width:768px) 60vw, 320px" style={{ objectPosition: "center top" }} />
                 </div>
                 <div className="wotd-img-frame__scanlines" aria-hidden="true" />
                 <div className="wotd-img-frame__corners" aria-hidden="true">
@@ -1195,7 +1210,6 @@ export default async function Home() {
                     alt="The Defiant Manifesto — Crew Collection"
                     fill
                     unoptimized
-                    priority
                     className="object-cover"
                     sizes="100vw"
                     style={{ objectFit: "cover", objectPosition: "center center", transition: "transform 0.6s ease" }}

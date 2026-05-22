@@ -9,7 +9,6 @@ const EPOCH_MS  = Date.UTC(2025, 0, 1, 0, 0, 0);
 const CYCLE_MS  = 48 * 60 * 60 * 1000;
 const UNLOCK_MS = 24 * 60 * 60 * 1000;
 
-/** Always derived from client clock — never trusts stale server prop */
 function getClientIsLocked(): boolean {
   const pos = (Date.now() - EPOCH_MS) % CYCLE_MS;
   return pos >= UNLOCK_MS;
@@ -63,6 +62,19 @@ export default function WallpaperCardGrid({ items, accentRgb, badge, badgeColor 
   const shadowDefault = `0 0 0 1px rgba(${accentRgb},0.25), 0 8px 32px rgba(0,0,0,0.6)`;
   const shadowHover   = `0 0 0 1px rgba(${accentRgb},0.65), 0 20px 56px rgba(0,0,0,0.85), 0 0 32px rgba(${accentRgb},0.22)`;
 
+  // ── FIX: hydration-safe lock state ───────────────────────────────────────
+  // Start as false (matches server render — server never knows client time).
+  // After mount, immediately read the real client clock. No mismatch, no #418.
+  const [isLockedNow, setIsLockedNow] = useState(false);
+  useEffect(() => {
+    // Set correct value immediately after hydration
+    setIsLockedNow(getClientIsLocked());
+
+    // Re-check every minute so the lock state flips automatically
+    const id = setInterval(() => setIsLockedNow(getClientIsLocked()), 60_000);
+    return () => clearInterval(id);
+  }, []);
+
   return (
     <>
       <style>{`
@@ -95,8 +107,8 @@ export default function WallpaperCardGrid({ items, accentRgb, badge, badgeColor 
       `}</style>
       <div className="wcg-outer">
       {items.map((img) => {
-        /* LOCKED CARD — always derived from client clock, never from stale server prop */
-        if (img.isLocked && getClientIsLocked()) {
+        /* LOCKED CARD — uses isLockedNow (hydration-safe state, not raw Date.now()) */
+        if (img.isLocked && isLockedNow) {
           return (
             <div
               key={img.id}
