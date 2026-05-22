@@ -18,7 +18,7 @@ const WALLPAPERS = [
     download: `${BASE_4K}/terminal-paradox-neon-horror-gaming-station-setup-pc.jpg`,
     filename: "cyberpunk-hero-pc-setup-4k.jpg",
     preview: `${BASE}/thumb-terminal-paradox-neon-horror-gaming-station-setup-pc.webp`,
-    seoAlt: "Intense neon horror gaming station setup with a 4K cyberpunk hero on screen and glowing purple peripheral lights in a dark room.",
+    seoAlt: "Terminal Paradox 4K cyberpunk gaming PC setup wallpaper — OLED-optimized neon horror gaming station with glowing purple peripheral lights and cyberpunk hero on screen.",
     ratio: "16-9",
   },
   {
@@ -27,7 +27,7 @@ const WALLPAPERS = [
     download: `${BASE_4K}/terminal-paradox-full-body-cyberpunk-gaming-hero-mobile.jpg`,
     filename: "cyberpunk-hero-full-body-4k.jpg",
     preview: `${BASE}/terminal-paradox-full-body-cyberpunk-gaming-hero-mobile.webp`,
-    seoAlt: "Full body cyberpunk gaming hero techwear aesthetic wallpaper for mobile featuring neon purple glowing gear and haunted digital glitch spirits.",
+    seoAlt: "Terminal Paradox full body 4K cyberpunk gaming hero mobile wallpaper — OLED black background with neon purple techwear aesthetic and haunted digital glitch spirits.",
     ratio: "9-16",
   },
   {
@@ -36,7 +36,7 @@ const WALLPAPERS = [
     download: `${BASE_4K}/terminal-paradox-cyber-neon-phantom-pointing-homescreen-mobile.jpg`,
     filename: "cyberpunk-hero-homescreen-4k.jpg",
     preview: `${BASE}/terminal-paradox-cyber-neon-phantom-pointing-homescreen-mobile.webp`,
-    seoAlt: "Circular cyberpunk gaming hero avatar for social media featuring a glowing neon glitch phantom pointing at screen.",
+    seoAlt: "Terminal Paradox 4K cyberpunk neon phantom homescreen wallpaper — OLED mobile background featuring glowing glitch phantom pointing at screen with purple neon haze.",
     ratio: "9-16",
   },
   {
@@ -45,7 +45,7 @@ const WALLPAPERS = [
     download: `${BASE_4K}/terminal-paradox-cyberpunk-hero-hushing-lockscreen-mobile.jpg`,
     filename: "cyberpunk-hero-lockscreen-4k.jpg",
     preview: `${BASE}/terminal-paradox-cyberpunk-hero-hushing-lockscreen-mobile.webp`,
-    seoAlt: "OLED optimized dark cyberpunk mobile wallpaper for phone featuring a glitch hero with glowing purple neon eyes and hushing gesture on black background.",
+    seoAlt: "Terminal Paradox 4K OLED cyberpunk lockscreen wallpaper — pure black background with glitch hero glowing purple neon eyes and hushing gesture, perfect for AMOLED phones.",
     ratio: "9-16",
   },
   {
@@ -54,7 +54,7 @@ const WALLPAPERS = [
     download: `${BASE_4K}/terminal-paradox-digital-phantom-cyber-gaming-pfp-avatar.jpg`,
     filename: "cyberpunk-hero-avatar-4k.jpg",
     preview: `${BASE}/terminal-paradox-digital-phantom-cyber-gaming-pfp-avatar.webp`,
-    seoAlt: "Cyberpunk gaming hero profile picture avatar with neon purple glitch effect and glowing hooded mask for Discord.",
+    seoAlt: "Terminal Paradox 4K cyberpunk gaming hero Discord avatar PFP — neon purple glitch phantom profile picture with OLED-optimized dark background for gaming profiles.",
     ratio: "1-1",
   },
   {
@@ -63,7 +63,7 @@ const WALLPAPERS = [
     download: `${BASE_4K}/terminal-paradox-glitch-hero-neon-smartwatch-face.jpg`,
     filename: "cyberpunk-hero-watch-4k.jpg",
     preview: `${BASE}/terminal-paradox-glitch-hero-neon-smartwatch-face.webp`,
-    seoAlt: "Cyberpunk gaming hero smartwatch face design with high-contrast neon purple glitch phantom and glowing HUD elements.",
+    seoAlt: "Terminal Paradox 4K cyberpunk smartwatch face — OLED-optimized neon purple glitch phantom with high-contrast HUD elements for dark gaming smartwatch aesthetic.",
     ratio: "1-1",
   },
 ];
@@ -207,7 +207,7 @@ export default function CyberpunkGamingHeroPage() {
             <div className="cp-collage__desktop">
               <div className="cp-collage__device-label">Desktop · 16:9</div>
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={WALLPAPERS[0].preview} alt="Cyberpunk gaming setup 4K desktop wallpaper" className="cp-collage__img" loading="eager" />
+              <img src={WALLPAPERS[0].preview} alt="4K cyberpunk gaming setup wallpaper — OLED-optimized neon horror gaming station with purple peripheral lights" className="cp-collage__img" loading="eager" fetchPriority="high" />
               <div className="cp-collage__scanlines" aria-hidden="true" />
             </div>
             <div className="cp-collage__bottom-row">

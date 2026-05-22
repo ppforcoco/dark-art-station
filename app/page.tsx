@@ -305,7 +305,7 @@ export default async function Home() {
                       <div style={{ position: "absolute", left: "-3px", top: "30%", width: "3px", height: "16px", background: "#1a1a2e", borderRadius: "2px 0 0 2px" }} />
                       <div style={{ position: "absolute", top: "7px", left: "50%", transform: "translateX(-50%)", width: "32%", height: "9px", background: "#000", borderRadius: "6px", zIndex: 4 }} />
                       {phone.featured ? (
-                        <Image src={phone.src} alt={phone.alt} fill priority fetchPriority="high" sizes="240px" style={{ objectFit: "cover" }} />
+                        <Image src={phone.src} alt={phone.alt} fill priority fetchPriority="high" sizes="(max-width: 640px) 200px, 240px" style={{ objectFit: "cover" }} />
                       ) : (
                         <ProtectedImg src={phone.src} alt={phone.alt} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} loading={i < 3 ? "eager" : "lazy"} />
                       )}
@@ -900,7 +900,7 @@ export default async function Home() {
                 sub: "Neon Horror Gaming Kit",
                 tag: "Gaming",
                 img: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/sets/Cyberpunk%20Gaming%20Hero%20Matching%20Wallpaper%20Set/terminal-paradox-cyber-neon-phantom-pointing-homescreen-mobile-thumbnail-cover.webp",
-                alt: "Cyberpunk gaming hero neon horror matching wallpaper set",
+                alt: "Terminal Paradox 4K cyberpunk gaming hero — OLED neon horror matching wallpaper set for PC phone and smartwatch",
                 accent: "139,92,246",
                 premium: true,
               },

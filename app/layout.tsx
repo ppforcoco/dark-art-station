@@ -203,9 +203,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
 
         <Header />
-        <div className="content-wrapper">
+        <main className="content-wrapper">
           {children}
-        </div>
+        </main>
         <Footer />
 
         {/* ── All client-only components in one deferred wrapper ───────── */}
