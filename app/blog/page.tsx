@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
 
 export const metadata: Metadata = {
-  title: "Blog & Guides | Haunted Wallpapers",
+  title: "The Secrets | Haunted Wallpapers",
   description: "Dark wallpaper guides, gothic art deep-dives, how-to tutorials, and tips for your perfect screen — from Haunted Wallpapers.",
   alternates: { canonical: `${SITE_URL}/blog` },
 };
@@ -76,7 +76,7 @@ export default async function BlogPage() {
     "@context": "https://schema.org",
     "@type": "Blog",
     "@id": `${SITE_URL}/blog`,
-    name: "Haunted Wallpapers Blog & Guides",
+    name: "The Secrets | Haunted Wallpapers",
     description: "Dark wallpaper guides, gothic art deep-dives, how-to tutorials.",
     url: `${SITE_URL}/blog`,
     publisher: {
@@ -100,7 +100,7 @@ export default async function BlogPage() {
     "@type": "BreadcrumbList",
     itemListElement: [
       { "@type": "ListItem", position: 1, name: "Home", item: SITE_URL },
-      { "@type": "ListItem", position: 2, name: "Blog & Guides", item: `${SITE_URL}/blog` },
+      { "@type": "ListItem", position: 2, name: "The Secrets", item: `${SITE_URL}/blog` },
     ],
   };
 
@@ -115,7 +115,7 @@ export default async function BlogPage() {
             <span className="blog-topnav-logo-text">HAUNTED<span>WALLPAPERS</span></span>
           </Link>
           <div className="blog-topnav-links">
-            <Link href="/collections" className="blog-topnav-link">Collections</Link>
+            <Link href="/obsessions" className="blog-topnav-link">The Archive</Link>
             <Link href="/iphone"      className="blog-topnav-link">iPhone</Link>
             <Link href="/android"     className="blog-topnav-link">Android</Link>
             <Link href="/pc"          className="blog-topnav-link">PC</Link>
@@ -126,9 +126,9 @@ export default async function BlogPage() {
       <header className="blog-index-hero">
         <div className="blog-index-hero-inner">
           <p className="blog-index-eyebrow">Dark Knowledge</p>
-          <h1 className="blog-index-title">Blog <em>&amp; Guides</em></h1>
+          <h1 className="blog-index-title">The <em>Secrets</em></h1>
           <p className="blog-index-subtitle">
-            Wallpaper guides, dark art explainers, device tutorials and gothic deep-dives.
+            Witness reports and dark observations. Explore the stories behind the art, the science of shadows, and expert guides for the truly obsessed.
           </p>
           {pageContent?.body && (
             <div className="blog-index-subtitle" style={{ marginTop: "12px", opacity: 0.85 }}

@@ -24,10 +24,10 @@ export default function Footer(): JSX.Element {
           <h4 className="footer-col-title">Company</h4>
           <ul>
             <li><Link href="/all">All Wallpapers</Link></li>
-            <li><Link href="/obsessions">Collections</Link></li>
+            <li><Link href="/obsessions">The Archive</Link></li>
             <li><Link href="/mood">Mood Wallpapers</Link></li>
             <li><Link href="/favorites">♥ Saved Wallpapers</Link></li>
-            <li><Link href="/blog">Blog &amp; Guides</Link></li>
+            <li><Link href="/blog">The Secrets</Link></li>
             <li><Link href="/tools">Free Tools</Link></li>
           </ul>
         </div>

@@ -12,6 +12,7 @@ import RelatedWallpapers from "@/components/RelatedWallpapers";
 import SocialShare from "@/components/SocialShare";
 import FavoriteButton from "@/components/FavoriteButton";
 import PageTracker from "@/components/PageTracker";
+import WallpaperReactions from "@/components/WallpaperReactions";
 import RecentlyViewed from "@/components/RecentlyViewed";
 import { shouldCountPageView } from "@/lib/analytics-filter";
 
@@ -242,6 +243,9 @@ export default async function CollectionImagePage({ params }: PageProps) {
             )}
 
 
+
+            {/* ── REACTIONS ── */}
+            <WallpaperReactions imageId={image.id} />
 
             {/* ── DOWNLOAD SECTION ── */}
             <div className="download-section">

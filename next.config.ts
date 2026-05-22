@@ -48,9 +48,12 @@ const nextConfig: NextConfig = {
         destination: "https://hauntedwallpapers.com/:path*",
         permanent: true,
       },
-      { source: "/free",   destination: "/", permanent: true },
-      { source: "/ritual", destination: "/", permanent: true },
-      { source: "/terms",  destination: "/privacy", permanent: true },
+      { source: "/free",        destination: "/",           permanent: true },
+      { source: "/ritual",      destination: "/",           permanent: true },
+      { source: "/terms",       destination: "/privacy",    permanent: true },
+      { source: "/collections", destination: "/obsessions", permanent: true },
+      { source: "/collections/:path*", destination: "/obsessions/:path*", permanent: true },
+      { source: "/blog-and-guides", destination: "/blog",  permanent: true },
     ];
   },
 
@@ -108,7 +111,7 @@ const nextConfig: NextConfig = {
             key: "Content-Security-Policy",
             value: [
               "default-src 'self'",
-              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://pagead2.googlesyndication.com https://partner.googleadservices.com https://tpc.googlesyndication.com https://fundingchoicesmessages.google.com",
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://pagead2.googlesyndication.com https://partner.googleadservices.com https://tpc.googlesyndication.com https://fundingchoicesmessages.google.com https://static.cloudflareinsights.com",
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
               "font-src 'self' https://fonts.gstatic.com",
               "img-src 'self' data: blob: https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev https://assets.hauntedwallpapers.com https://www.google-analytics.com https://www.googletagmanager.com https://pagead2.googlesyndication.com",

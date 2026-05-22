@@ -7,6 +7,7 @@ import { getPublicUrl } from "@/lib/r2";
 import DeviceMockup from "@/components/DeviceMockup";
 import RelatedWallpapers from "@/components/RelatedWallpapers";
 import DownloadButton from "@/components/DownloadButton";
+import WallpaperReactions from "@/components/WallpaperReactions";
 import RecentlyViewed from "@/components/RecentlyViewed";
 import SocialShare from "@/components/SocialShare";
 import PageTracker from "@/components/PageTracker";
@@ -303,6 +304,7 @@ export default async function AndroidImagePage({ params }: PageProps) {
               </div>
             </DeviceMockup>
             <div style={{ marginTop: "16px", width: "100%", display: "flex", flexDirection: "column", gap: "10px" }}>
+              <WallpaperReactions imageId={image.id} />
               <div className="hw-glow-btn-wrap hw-glow-btn-wrap--download">
                 <DownloadButton
                   href={`/api/download/image/${image.id}`}
