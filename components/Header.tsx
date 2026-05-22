@@ -42,15 +42,25 @@ export default function Header() {
   }, []);
 
   const handleRandom = useCallback(async () => {
+    if (randomSpin) return;                          // block double-click
     setRandomSpin(true);
+    setMenuOpen(false);
     try {
       const res = await fetch("/api/random-wallpaper");
-      if (res.ok) { const d = await res.json(); if (d?.href) { router.push(d.href); } }
-      else { const cats = ["iphone","android","pc"]; router.push(`/${cats[Math.floor(Math.random()*cats.length)]}`); }
-    } catch { const cats = ["iphone","android","pc"]; router.push(`/${cats[Math.floor(Math.random()*cats.length)]}`); }
-    setTimeout(() => setRandomSpin(false), 700);
-    setMenuOpen(false);
-  }, [router]);
+      const d   = res.ok ? await res.json() : null;
+      const dest = d?.href ?? (() => {
+        const cats = ["iphone","android","pc"];
+        return "/" + cats[Math.floor(Math.random() * cats.length)];
+      })();
+      await router.push(dest);                       // spin until nav done
+    } catch {
+      const cats = ["iphone","android","pc"];
+      await router.push("/" + cats[Math.floor(Math.random() * cats.length)]);
+    } finally {
+      setTimeout(() => setRandomSpin(false), 300);   // brief settle delay
+    }
+  }, [router, randomSpin]);
+
 
   const toggleMenu  = useCallback(() => setMenuOpen(p => !p), []);
   const closeMenu   = useCallback(() => setMenuOpen(false), []);

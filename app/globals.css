@@ -7719,8 +7719,14 @@ button:active:not(:disabled) { transform: translateY(0px) scale(0.98) !important
   color: #f0ecff;
   transform: scale(1.1);
 }
+.hw-nav-icon.spinning {
+  pointer-events: none;
+  cursor: wait;
+}
 .hw-nav-icon.spinning svg {
-  animation: hw-spin 0.7s linear;
+  animation: hw-spin 0.6s linear infinite;
+  opacity: 0.7;
+  pointer-events: none;
 }
 @keyframes hw-spin {
   from { transform: rotate(0deg); }
