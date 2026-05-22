@@ -23,16 +23,16 @@ const WALLPAPERS = [
   },
   {
     id: "full-body",
-    label: "Full Body — PC / Ultrawide",
+    label: "Full Body — Phone Homescreen",
     download: `${BASE_4K}/terminal-paradox-full-body-cyberpunk-gaming-hero-mobile.jpg`,
     filename: "cyberpunk-hero-full-body-4k.jpg",
     preview: `${BASE}/terminal-paradox-full-body-cyberpunk-gaming-hero-mobile.webp`,
     seoAlt: "Full body cyberpunk gaming hero techwear aesthetic wallpaper for mobile featuring neon purple glowing gear and haunted digital glitch spirits.",
-    ratio: "16-9",
+    ratio: "9-16",
   },
   {
     id: "homescreen",
-    label: "iPhone Homescreen",
+    label: "Phone Homescreen — Phantom",
     download: `${BASE_4K}/terminal-paradox-cyber-neon-phantom-pointing-homescreen-mobile.jpg`,
     filename: "cyberpunk-hero-homescreen-4k.jpg",
     preview: `${BASE}/terminal-paradox-cyber-neon-phantom-pointing-homescreen-mobile.webp`,
@@ -41,11 +41,11 @@ const WALLPAPERS = [
   },
   {
     id: "lockscreen",
-    label: "iPhone Lockscreen — OLED",
+    label: "Phone Lockscreen — OLED",
     download: `${BASE_4K}/terminal-paradox-cyberpunk-hero-hushing-lockscreen-mobile.jpg`,
     filename: "cyberpunk-hero-lockscreen-4k.jpg",
     preview: `${BASE}/terminal-paradox-cyberpunk-hero-hushing-lockscreen-mobile.webp`,
-    seoAlt: "OLED optimized dark cyberpunk mobile wallpaper for iPhone featuring a glitch hero with glowing purple neon eyes and hushing gesture on black background.",
+    seoAlt: "OLED optimized dark cyberpunk mobile wallpaper for phone featuring a glitch hero with glowing purple neon eyes and hushing gesture on black background.",
     ratio: "9-16",
   },
   {
@@ -72,14 +72,14 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: "Cyberpunk Horror Gaming Hero Matching Wallpaper Set | Haunted Wallpapers",
     description:
-      "Download the Cyberpunk Horror Gaming Hero matching wallpaper set. Premium 4K neon phantom wallpapers for PC, iPhone, and Smartwatch. OLED-optimised. The Ghost in the Overclocked Machine.",
+      "Download the Cyberpunk Horror Gaming Hero matching wallpaper set. Premium 4K neon phantom wallpapers for PC, phone, and smartwatch. OLED-optimised. The Ghost in the Overclocked Machine.",
     keywords: [
       "cyberpunk gaming wallpaper",
       "neon horror gaming setup",
       "cyberpunk hero matching wallpaper set",
       "gaming PC wallpaper 4K",
       "neon phantom wallpaper",
-      "cyberpunk iPhone lockscreen",
+      "cyberpunk phone lockscreen",
       "glitch hero smartwatch face",
       "cyberpunk OLED wallpaper",
       "gaming character wallpaper set",
@@ -93,7 +93,7 @@ export async function generateMetadata(): Promise<Metadata> {
     openGraph: {
       title: "Cyberpunk Horror Gaming Hero Matching Wallpaper Set | Haunted Wallpapers",
       description:
-        "The Ghost in the Overclocked Machine. Premium 4K cyberpunk neon horror wallpapers for every screen — PC, iPhone, smartwatch, and avatar.",
+        "The Ghost in the Overclocked Machine. Premium 4K cyberpunk neon horror wallpapers for every screen — PC, phone, smartwatch, and avatar.",
       url: `${SITE_URL}/sets/cyberpunk-gaming-hero`,
       siteName: "Haunted Wallpapers",
       type: "website",
@@ -102,7 +102,7 @@ export async function generateMetadata(): Promise<Metadata> {
     twitter: {
       card: "summary_large_image",
       title: "Cyberpunk Horror Gaming Hero Matching Wallpaper Set",
-      description: "Premium 4K cyberpunk neon wallpapers. PC, iPhone, smartwatch. Every screen covered.",
+      description: "Premium 4K cyberpunk neon wallpapers. PC, phone, smartwatch. Every screen covered.",
       images: [THUMBNAIL],
     },
     alternates: { canonical: `${SITE_URL}/sets/cyberpunk-gaming-hero` },
@@ -132,7 +132,7 @@ export default function CyberpunkGamingHeroPage() {
     "@context": "https://schema.org",
     "@type": "ItemList",
     name: "Cyberpunk Horror Gaming Hero Matching Wallpaper Set",
-    description: "Premium 4K cyberpunk neon horror wallpapers for PC, iPhone, and Smartwatch. The Ghost in the Overclocked Machine.",
+    description: "Premium 4K cyberpunk neon horror wallpapers for PC, phone, and smartwatch. The Ghost in the Overclocked Machine.",
     url: `${SITE_URL}/sets/cyberpunk-gaming-hero`,
     numberOfItems: WALLPAPERS.length,
     itemListElement: WALLPAPERS.map((w, i) => ({
@@ -283,24 +283,20 @@ export default function CyberpunkGamingHeroPage() {
           </div>
 
           <div className="cp-wall-layout">
-            {/* Row 1: 2 landscape desktops */}
-            <div className="cp-wall-row-2col">
-              {[WALLPAPERS[0], WALLPAPERS[1]].map((w) => (
-                <div key={w.id} className="cp-wall-item">
-                  <div className="cp-wall-item__frame cp-wall-item__frame--16-9">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={w.preview} alt={w.seoAlt} className="cp-wall-item__img" loading="eager" />
-                    <div className="cp-wall-item__corners" aria-hidden="true"><span /><span /><span /><span /></div>
-                    <div className="cp-wall-item__overlay"><PinButton preview={w.preview} seoAlt={w.seoAlt} /></div>
-                  </div>
-                  <div className="cp-wall-item__footer"><span className="cp-wall-item__label">{w.label}</span></div>
-                </div>
-              ))}
+            {/* Row 1: gaming station desktop — full width */}
+            <div className="cp-wall-item">
+              <div className="cp-wall-item__frame cp-wall-item__frame--16-9">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={WALLPAPERS[0].preview} alt={WALLPAPERS[0].seoAlt} className="cp-wall-item__img" loading="eager" />
+                <div className="cp-wall-item__corners" aria-hidden="true"><span /><span /><span /><span /></div>
+                <div className="cp-wall-item__overlay"><PinButton preview={WALLPAPERS[0].preview} seoAlt={WALLPAPERS[0].seoAlt} /></div>
+              </div>
+              <div className="cp-wall-item__footer"><span className="cp-wall-item__label">{WALLPAPERS[0].label}</span></div>
             </div>
 
-            {/* Row 2: 2 portrait mobiles — centered, max-width constrained so they don't appear cut */}
+            {/* Row 2: 3 portrait phone wallpapers — full-body, homescreen, lockscreen */}
             <div className="cp-wall-row-portrait">
-              {[WALLPAPERS[2], WALLPAPERS[3]].map((w) => (
+              {[WALLPAPERS[1], WALLPAPERS[2], WALLPAPERS[3]].map((w) => (
                 <div key={w.id} className="cp-wall-item">
                   <div className="cp-wall-item__frame cp-wall-item__frame--9-16">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -350,7 +346,7 @@ export default function CyberpunkGamingHeroPage() {
                 title: "The Aggressive Sync — Mobile Lockscreen",
                 color: "#a78bfa",
                 body: "When the breach begins, the hero's eyes ignite with a violent, flickering purple pulse. This vertical crop is engineered for OLED displays, using deep black levels to save battery while the high-voltage neon pops with terrifying clarity every time you wake your phone.",
-                best: "iPhone and Android lockscreens, OLED display setups.",
+                best: "Phone lockscreens, OLED display setups.",
               },
               {
                 num: "03",
@@ -501,14 +497,15 @@ export default function CyberpunkGamingHeroPage() {
         /* Wallpaper layout */
         .cp-wall-layout { display: flex; flex-direction: column; gap: 12px; }
         .cp-wall-row-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; align-items: start; }
-        /* Portrait mobile row: two phones side by side, max-width so they look like phones not cut rectangles */
+        /* Portrait mobile row: phones side by side, max-width so they look like phones not cut rectangles */
         .cp-wall-row-portrait {
           display: flex;
           justify-content: center;
-          gap: 20px;
+          gap: 16px;
+          flex-wrap: wrap;
         }
         .cp-wall-row-portrait .cp-wall-item {
-          width: clamp(180px, 26%, 280px);
+          width: clamp(150px, 22%, 240px);
           flex-shrink: 0;
         }
         .cp-wall-item { display: flex; flex-direction: column; gap: 8px; }

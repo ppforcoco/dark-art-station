@@ -152,16 +152,6 @@ export default async function Home() {
 
   return (
     <>
-      {/* ── LCP preload: only on homepage, moved here from layout.tsx ── */}
-      {/* eslint-disable-next-line @next/next/no-head-element */}
-      <link
-        rel="preload"
-        as="image"
-        href="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/new/dark-horror-man-cosplay-makeup-idea.webp"
-        // @ts-ignore
-        fetchPriority="high"
-      />
-
       {/* ── ATMOSPHERIC FOG OVERLAY ── */}
       <div className="dt-fog" aria-hidden="true">
         <div className="dt-fog__layer dt-fog__layer--1" />
@@ -1007,14 +997,15 @@ export default async function Home() {
             position: absolute;
             bottom: 10px; right: 10px;
             font-family: var(--font-space, monospace);
-            font-size: 0.46rem;
+            font-size: 0.5rem;
             letter-spacing: 0.16em;
             text-transform: uppercase;
-            color: rgba(224,224,248,0.85);
-            background: rgba(0,0,0,0.65);
-            border: 1px solid rgba(255,255,255,0.15);
-            padding: 3px 8px;
+            color: #fff;
+            background: rgba(0,0,0,0.8);
+            border: 1px solid rgba(255,255,255,0.3);
+            padding: 4px 10px;
             border-radius: 2px;
+            font-weight: 700;
           }
 
           .hw-kits-grid {
@@ -1082,12 +1073,15 @@ export default async function Home() {
           }
           .hw-kit-card__body {
             padding: clamp(14px,2vw,20px);
-            display: flex; flex-direction: column; gap: 6px;
+            display: flex; flex-direction: column; gap: 8px;
+            background: rgba(0,0,0,0.6);
+            border-top: 1px solid rgba(var(--kit-accent, 224,0,31), 0.25);
           }
           .hw-kit-card__sub {
             font-family: var(--font-space, monospace); font-size: 0.52rem;
             letter-spacing: 0.18em; text-transform: uppercase;
-            color: rgba(var(--kit-accent, 224,0,31), 0.85); margin: 0;
+            color: rgb(var(--kit-accent, 224,0,31)); margin: 0;
+            opacity: 1;
           }
           .hw-kit-card__title {
             font-family: var(--font-cinzel, serif); font-size: clamp(1rem,1.5vw,1.2rem);
@@ -1098,6 +1092,8 @@ export default async function Home() {
             letter-spacing: 0.14em; text-transform: uppercase;
             color: rgb(var(--kit-accent, 224,0,31));
             transition: letter-spacing 0.2s ease;
+            display: flex; align-items: center; gap: 6px;
+            opacity: 1;
           }
           .hw-kit-card:hover .hw-kit-card__cta { letter-spacing: 0.22em; }
           @media (max-width: 540px) {

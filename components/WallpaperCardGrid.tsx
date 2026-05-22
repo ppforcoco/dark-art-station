@@ -64,13 +64,36 @@ export default function WallpaperCardGrid({ items, accentRgb, badge, badgeColor 
   const shadowHover   = `0 0 0 1px rgba(${accentRgb},0.65), 0 20px 56px rgba(0,0,0,0.85), 0 0 32px rgba(${accentRgb},0.22)`;
 
   return (
-    <div style={{
-      display: "grid",
-      gridTemplateColumns: "repeat(auto-fill, minmax(140px, 1fr))",
-      gap: "clamp(12px,2vw,24px)",
-      maxWidth: "1100px",
-      margin: "0 auto",
-    }}>
+    <>
+      <style>{`
+        .wcg-card:hover .wcg-hover-overlay { opacity: 1 !important; }
+        .wcg-outer {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+          gap: clamp(12px,2vw,24px);
+          max-width: 1100px;
+          margin: 0 auto;
+        }
+        @media (max-width: 640px) {
+          .wcg-outer {
+            display: flex;
+            flex-direction: row;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+            gap: 12px;
+            padding: 4px 4px 12px;
+            scrollbar-width: none;
+            max-width: 100%;
+          }
+          .wcg-outer::-webkit-scrollbar { display: none; }
+          .wcg-outer > * {
+            flex: 0 0 150px;
+            scroll-snap-align: start;
+          }
+        }
+      `}</style>
+      <div className="wcg-outer">
       {items.map((img) => {
         /* LOCKED CARD — always derived from client clock, never from stale server prop */
         if (img.isLocked && getClientIsLocked()) {
@@ -173,9 +196,7 @@ export default function WallpaperCardGrid({ items, accentRgb, badge, badgeColor 
           </Link>
         );
       })}
-      <style>{`
-        .wcg-card:hover .wcg-hover-overlay { opacity: 1 !important; }
-      `}</style>
-    </div>
+      </div>
+    </>
   );
 }
