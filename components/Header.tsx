@@ -45,19 +45,25 @@ export default function Header() {
     if (randomSpin) return;                          // block double-click
     setRandomSpin(true);
     setMenuOpen(false);
+    // Always reset after 1.5s max — never stay stuck
+    const resetTimer = setTimeout(() => setRandomSpin(false), 1500);
     try {
-      const res = await fetch("/api/random-wallpaper");
+      const controller = new AbortController();
+      const apiTimeout = setTimeout(() => controller.abort(), 3000);
+      const res = await fetch("/api/random-wallpaper", { signal: controller.signal });
+      clearTimeout(apiTimeout);
       const d   = res.ok ? await res.json() : null;
       const dest = d?.href ?? (() => {
         const cats = ["iphone","android","pc"];
         return "/" + cats[Math.floor(Math.random() * cats.length)];
       })();
-      await router.push(dest);                       // spin until nav done
+      router.push(dest);                             // don't await — prevents stuck state
     } catch {
       const cats = ["iphone","android","pc"];
-      await router.push("/" + cats[Math.floor(Math.random() * cats.length)]);
+      router.push("/" + cats[Math.floor(Math.random() * cats.length)]);
     } finally {
-      setTimeout(() => setRandomSpin(false), 300);   // brief settle delay
+      clearTimeout(resetTimer);
+      setTimeout(() => setRandomSpin(false), 400);
     }
   }, [router, randomSpin]);
 
