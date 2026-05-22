@@ -181,6 +181,21 @@ export default async function Home() {
           <div style={{ display: "flex", flexDirection: "column", gap: "0.6rem", padding: "20px 24px 20px" }}>
             <span className="dt-gate__eyebrow" style={{ fontSize: "0.75rem", letterSpacing: "0.25em" }}>You have arrived in</span>
 
+            {/* H1: SEO skeleton — visually hidden but present for Lighthouse/Google */}
+            <h1 style={{
+              position: "absolute",
+              width: "1px",
+              height: "1px",
+              padding: 0,
+              margin: "-1px",
+              overflow: "hidden",
+              clip: "rect(0,0,0,0)",
+              whiteSpace: "nowrap",
+              border: 0,
+            }}>
+              Haunted Wallpapers — Free Dark Fantasy &amp; Horror Wallpapers for iPhone, Android and PC
+            </h1>
+
             <div className="dt-gate__collection-badge" style={{ marginBottom: "0" }}>
               <span className="dt-gate__collection-num" style={{ fontSize: "clamp(2rem,5vw,3rem)" }}>{fmt(totalImages)}</span>
               <span className="dt-gate__collection-label">wallpapers &amp; growing</span>
@@ -207,7 +222,7 @@ export default async function Home() {
               fontSize: "0.65rem",
               letterSpacing: "0.22em",
               textTransform: "uppercase",
-              color: "#c0001a",
+              color: "#e0001f",
               margin: 0,
               display: "flex",
               alignItems: "center",
@@ -218,8 +233,8 @@ export default async function Home() {
                 width: "6px",
                 height: "6px",
                 borderRadius: "50%",
-                background: "#c0001a",
-                boxShadow: "0 0 8px rgba(192,0,26,0.8)",
+                background: "#e0001f",
+                boxShadow: "0 0 8px rgba(224,0,31,0.8)",
                 animation: "hw-hero-pulse 2.4s ease-in-out infinite",
                 flexShrink: 0,
               }} />
@@ -509,7 +524,7 @@ export default async function Home() {
                 position: absolute;
                 inset: 0;
                 background:
-                  radial-gradient(ellipse 70% 50% at 50% 100%, rgba(192,0,26,0.12) 0%, transparent 65%),
+                  radial-gradient(ellipse 70% 50% at 50% 100%, rgba(224,0,31,0.12) 0%, transparent 65%),
                   radial-gradient(ellipse 40% 30% at 20% 30%, rgba(80,0,10,0.15) 0%, transparent 60%);
                 pointer-events: none;
               }
@@ -525,7 +540,7 @@ export default async function Home() {
                 width: 2px;
                 height: 2px;
                 border-radius: 50%;
-                background: rgba(192,0,26,0.4);
+                background: rgba(224,0,31,0.4);
                 left: calc(var(--pi, 0) * 5.8% + 2%);
                 bottom: -10px;
                 animation: wotdFloat calc(6s + var(--pi, 0) * 0.7s) ease-in infinite;
@@ -554,7 +569,7 @@ export default async function Home() {
               .wotd-header__rule {
                 flex: 1;
                 height: 1px;
-                background: linear-gradient(90deg, transparent, rgba(192,0,26,0.5), transparent);
+                background: linear-gradient(90deg, transparent, rgba(224,0,31,0.5), transparent);
               }
               .wotd-header__center { flex-shrink: 0; }
               .wotd-eyebrow {
@@ -564,14 +579,14 @@ export default async function Home() {
                 font-size: 0.72rem;
                 letter-spacing: 0.22em;
                 text-transform: uppercase;
-                color: #c0001a;
+                color: #e0001f;
                 font-family: var(--font-space, monospace);
               }
               .wotd-eyebrow__dot {
                 display: inline-block;
                 width: 5px; height: 5px;
                 border-radius: 50%;
-                background: #c0001a;
+                background: #e0001f;
                 animation: wotdPulse 2.4s ease-in-out infinite;
               }
               @keyframes wotdPulse {
@@ -600,11 +615,11 @@ export default async function Home() {
                 width: 100%;
                 border-radius: 16px;
                 overflow: hidden;
-                border: 1.5px solid rgba(192,0,26,0.4);
+                border: 1.5px solid rgba(224,0,31,0.4);
                 box-shadow:
                   0 0 0 1px rgba(255,34,51,0.06),
                   0 8px 40px rgba(0,0,0,0.8),
-                  0 0 60px rgba(192,0,26,0.15);
+                  0 0 60px rgba(224,0,31,0.15);
                 text-decoration: none;
                 transition: transform 0.35s ease, box-shadow 0.35s ease;
                 flex-shrink: 0;
@@ -614,7 +629,7 @@ export default async function Home() {
                 box-shadow:
                   0 0 0 1px rgba(255,34,51,0.18),
                   0 20px 70px rgba(0,0,0,0.9),
-                  0 0 90px rgba(192,0,26,0.28);
+                  0 0 90px rgba(224,0,31,0.28);
               }
               .wotd-img-frame__wrap { position: absolute; inset: 0; }
               .wotd-img-frame__scanlines {
@@ -637,7 +652,7 @@ export default async function Home() {
               .wotd-img-frame__corners span {
                 position: absolute;
                 width: 16px; height: 16px;
-                border-color: rgba(192,0,26,0.7);
+                border-color: rgba(224,0,31,0.7);
                 border-style: solid;
               }
               .wotd-img-frame__corners span:nth-child(1) { top: 8px; left: 8px; border-width: 1.5px 0 0 1.5px; }
@@ -652,15 +667,15 @@ export default async function Home() {
                 text-transform: uppercase;
                 padding: 3px 8px;
                 background: rgba(0,0,0,0.75);
-                border: 1px solid rgba(192,0,26,0.4);
-                color: #c0001a;
+                border: 1px solid rgba(224,0,31,0.4);
+                color: #e0001f;
                 border-radius: 2px;
                 font-family: var(--font-space, monospace);
               }
               .wotd-img-frame__hover {
                 position: absolute;
                 inset: 0;
-                background: rgba(192,0,26,0.15);
+                background: rgba(224,0,31,0.15);
                 display: flex;
                 align-items: center;
                 justify-content: center;
@@ -684,8 +699,8 @@ export default async function Home() {
                 bottom: 0; left: 50%;
                 transform: translateX(-50%);
                 width: 70%; height: 2px;
-                background: rgba(192,0,26,0.7);
-                box-shadow: 0 0 18px 6px rgba(192,0,26,0.4);
+                background: rgba(224,0,31,0.7);
+                box-shadow: 0 0 18px 6px rgba(224,0,31,0.4);
                 animation: wotdEyePulse 3s ease-in-out infinite;
                 border-radius: 50%;
                 transform-origin: center;
@@ -700,7 +715,7 @@ export default async function Home() {
                 margin: 0;
                 color: #f0e8d8;
                 font-family: var(--font-cinzel, serif);
-                text-shadow: 0 2px 20px rgba(192,0,26,0.2);
+                text-shadow: 0 2px 20px rgba(224,0,31,0.2);
                 letter-spacing: 0.02em;
               }
               .wotd-actions {
@@ -714,9 +729,9 @@ export default async function Home() {
                 align-items: center;
                 gap: 0.5rem;
                 padding: 0.75rem 1.5rem;
-                background: #c0001a;
+                background: #e0001f;
                 color: #fff;
-                border: 1px solid #c0001a;
+                border: 1px solid #e0001f;
                 border-radius: 2px;
                 font-size: 0.8rem;
                 letter-spacing: 0.12em;
@@ -738,7 +753,7 @@ export default async function Home() {
               .wotd-btn-primary:hover::before { transform: translateX(100%); }
               .wotd-btn-primary:hover {
                 background: #a0001a;
-                box-shadow: 0 0 24px rgba(192,0,26,0.5);
+                box-shadow: 0 0 24px rgba(224,0,31,0.5);
                 transform: translateY(-1px);
               }
               @media (max-width: 680px) {
@@ -856,11 +871,11 @@ export default async function Home() {
           SECTION — MATCHING KITS
       ══════════════════════════════════════════════════════════ */}
       <section style={{ padding: "clamp(40px,6vw,72px) clamp(16px,5vw,72px)", background: "#07050f", position: "relative", overflow: "hidden" }}>
-        <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse 70% 40% at 50% 0%, rgba(192,0,26,0.06) 0%, transparent 70%)", pointerEvents: "none" }} />
+        <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse 70% 40% at 50% 0%, rgba(224,0,31,0.06) 0%, transparent 70%)", pointerEvents: "none" }} />
         <div style={{ maxWidth: "1200px", margin: "0 auto", position: "relative" }}>
 
           <div style={{ marginBottom: "clamp(24px,4vw,40px)" }}>
-            <span style={{ display: "block", fontFamily: "var(--font-space, monospace)", fontSize: "0.58rem", letterSpacing: "0.28em", textTransform: "uppercase", color: "#c0001a", marginBottom: "10px" }}>
+            <span style={{ display: "block", fontFamily: "var(--font-space, monospace)", fontSize: "0.58rem", letterSpacing: "0.28em", textTransform: "uppercase", color: "#e0001f", marginBottom: "10px" }}>
               Full Digital Identity
             </span>
             <h2 style={{ fontFamily: "var(--font-cinzel, serif)", fontSize: "clamp(1.4rem,3vw,2.2rem)", fontWeight: 700, color: "#f0e8d8", margin: "0 0 10px", letterSpacing: "0.04em" }}>
@@ -871,54 +886,51 @@ export default async function Home() {
             </p>
           </div>
 
-          <div className="hw-kits-grid">
+          <div className="hw-kits-row3">
             {[
-              {
-                href: "/sets/haunted-anime-student",
-                num: "01",
-                title: "The Cursed Student",
-                sub: "Dark Anime Horror Kit",
-                img: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/sets/The%20Cursed%20Student%3A%20A%20Matching%20Dark%20Anime%20Horror%20Kit/cursed-student-dark-anime-4k-desktop-background.webp",
-                alt: "Cursed Student dark anime horror matching wallpaper set",
-                accent: "192,0,26",
-              },
-              {
-                href: "/sets/whispering-woods",
-                num: "02",
-                title: "The Whispering Woods",
-                sub: "Dark Nature Horror Kit",
-                img: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/sets/The%20Whispering%20Woods%3A%20A%20Matching%20Dark%20Nature%20Setup%20Kit/whispering-woods-foggy-horror-forest-4k-deskto.webp",
-                alt: "Whispering Woods dark nature horror matching wallpaper set",
-                accent: "74,138,58",
-              },
               {
                 href: "/sets/ghost-pitch",
                 num: "03",
                 title: "The Ghost Pitch",
                 sub: "Dark Soccer Setup Kit",
+                tag: "Sports",
                 img: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/sets/The%20Ghost%20Pitch%3A%20A%20Matching%20Dark%20Soccer%20Setup%20Kit/Haunted_soccer_stadium_midnight_soccer-kit.jpeg",
                 alt: "Ghost Pitch haunted soccer stadium dark horror matching wallpaper set",
                 accent: "232,124,30",
-                premium: false,
+              },
+              {
+                href: "/sets/cyberpunk-gaming-hero",
+                num: "05",
+                title: "Cyberpunk Gaming Hero",
+                sub: "Neon Horror Gaming Kit",
+                tag: "Gaming",
+                img: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/sets/Cyberpunk%20Gaming%20Hero%20Matching%20Wallpaper%20Set/terminal-paradox-cyber-neon-phantom-pointing-homescreen-mobile-thumbnail-cover.webp",
+                alt: "Cyberpunk gaming hero neon horror matching wallpaper set",
+                accent: "139,92,246",
+                premium: true,
               },
               {
                 href: "/sets/crimson-sovereign",
                 num: "04",
                 title: "The Crimson Sovereign",
                 sub: "Dark Fantasy Gaming Kit",
+                tag: "Gaming",
                 img: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/sets/The%20Crimson%20Sovereign%20%7C%20Dark%20Fantasy%20Gaming%20Character%20Matching%20Setup%20Kit/4k/Complete%20matching%20dark%20fantasy%20gaming%20character%20setup%20kit%20for%20PC%20phone%20and%20watch%20free.png",
                 alt: "Complete matching dark fantasy gaming character setup kit for PC phone and watch free",
-                accent: "192,0,26",
+                accent: "224,0,31",
                 premium: true,
               },
             ].map((kit) => (
-              <a key={kit.href} href={kit.href} className="hw-kit-card" style={{ "--kit-accent": kit.accent } as React.CSSProperties}>
+              <a key={kit.href} href={kit.href} className="hw-kit-card hw-kit-card--sm" style={{ "--kit-accent": kit.accent } as React.CSSProperties}>
                 <div className="hw-kit-card__thumb">
                   <img src={kit.img} alt={kit.alt} className="hw-kit-card__img" loading="lazy" />
                   <div className="hw-kit-card__overlay" />
                   <span className="hw-kit-card__num">Kit {kit.num}</span>
                   {(kit as { premium?: boolean }).premium && (
-                    <span className="hw-kit-card__premium">⚡ Premium</span>
+                    <span className="hw-kit-card__premium">Premium</span>
+                  )}
+                  {(kit as { tag?: string }).tag && (
+                    <span className="hw-kit-card__tag">{(kit as { tag?: string }).tag}</span>
                   )}
                 </div>
                 <div className="hw-kit-card__body">
@@ -935,9 +947,68 @@ export default async function Home() {
               Browse All Kits →
             </a>
           </div>
+          {/* Swipe hint — only visible on mobile */}
+          <p style={{
+            display: "none",
+            fontFamily: "var(--font-space, monospace)",
+            fontSize: "0.52rem",
+            letterSpacing: "0.18em",
+            textTransform: "uppercase",
+            color: "rgba(224,224,248,0.3)",
+            textAlign: "center",
+            marginTop: "6px",
+            // shown via CSS below
+          }} className="hw-kits-swipe-hint">
+            ← Swipe to see all kits →
+          </p>
         </div>
 
         <style>{`
+          /* Kits: 3-column grid on desktop, horizontal swipe on mobile */
+          .hw-kits-row3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: clamp(10px,1.8vw,18px);
+          }
+          @media (max-width: 900px) and (min-width: 541px) {
+            .hw-kits-row3 { grid-template-columns: repeat(2, 1fr); }
+          }
+          @media (max-width: 540px) {
+            .hw-kits-row3 {
+              display: flex;
+              flex-direction: row;
+              overflow-x: auto;
+              scroll-snap-type: x mandatory;
+              -webkit-overflow-scrolling: touch;
+              gap: 12px;
+              padding-bottom: 12px;
+              /* hide scrollbar but keep scrollability */
+              scrollbar-width: none;
+            }
+            .hw-kits-row3::-webkit-scrollbar { display: none; }
+            .hw-kits-row3 .hw-kit-card {
+              flex: 0 0 78vw;
+              max-width: 300px;
+              scroll-snap-align: start;
+            }
+          }
+
+          .hw-kit-card--sm .hw-kit-card__title { font-size: clamp(0.85rem,1.5vw,1.05rem); }
+
+          .hw-kit-card__tag {
+            position: absolute;
+            bottom: 10px; right: 10px;
+            font-family: var(--font-space, monospace);
+            font-size: 0.46rem;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: rgba(224,224,248,0.85);
+            background: rgba(0,0,0,0.65);
+            border: 1px solid rgba(255,255,255,0.15);
+            padding: 3px 8px;
+            border-radius: 2px;
+          }
+
           .hw-kits-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -951,15 +1022,15 @@ export default async function Home() {
             flex-direction: column;
             text-decoration: none;
             color: inherit;
-            border: 1px solid rgba(var(--kit-accent, 192,0,26), 0.18);
+            border: 1px solid rgba(var(--kit-accent, 224,0,31), 0.18);
             background: rgba(255,255,255,0.02);
             overflow: hidden;
             transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
             cursor: pointer;
           }
           .hw-kit-card:hover {
-            border-color: rgba(var(--kit-accent, 192,0,26), 0.5);
-            box-shadow: 0 0 40px rgba(var(--kit-accent, 192,0,26), 0.1);
+            border-color: rgba(var(--kit-accent, 224,0,31), 0.5);
+            box-shadow: 0 0 40px rgba(var(--kit-accent, 224,0,31), 0.1);
             transform: translateY(-4px);
           }
           .hw-kit-card__thumb {
@@ -982,9 +1053,9 @@ export default async function Home() {
             position: absolute; top: 10px; left: 12px;
             font-family: var(--font-space, monospace); font-size: 0.5rem;
             letter-spacing: 0.2em; text-transform: uppercase;
-            color: rgb(var(--kit-accent, 192,0,26));
+            color: rgb(var(--kit-accent, 224,0,31));
             background: rgba(0,0,0,0.7);
-            border: 1px solid rgba(var(--kit-accent, 192,0,26), 0.4);
+            border: 1px solid rgba(var(--kit-accent, 224,0,31), 0.4);
             padding: 2px 8px; border-radius: 2px;
           }
           .hw-kit-card__premium {
@@ -992,14 +1063,14 @@ export default async function Home() {
             font-family: var(--font-space, monospace); font-size: 0.46rem;
             letter-spacing: 0.16em; text-transform: uppercase;
             color: #ff6a00;
-            background: linear-gradient(135deg, rgba(255,106,0,0.14) 0%, rgba(192,0,26,0.14) 100%);
+            background: linear-gradient(135deg, rgba(255,106,0,0.14) 0%, rgba(224,0,31,0.14) 100%);
             border: 1px solid rgba(255,106,0,0.42);
             padding: 2px 7px; border-radius: 2px; font-weight: 700;
             animation: hw-kit-premium-glow 3s ease-in-out infinite;
           }
           @keyframes hw-kit-premium-glow {
             0%,100% { box-shadow: 0 0 10px rgba(255,106,0,0.15); }
-            50% { box-shadow: 0 0 20px rgba(255,106,0,0.3), 0 0 36px rgba(192,0,26,0.12); }
+            50% { box-shadow: 0 0 20px rgba(255,106,0,0.3), 0 0 36px rgba(224,0,31,0.12); }
           }
           .hw-kit-card__body {
             padding: clamp(14px,2vw,20px);
@@ -1008,7 +1079,7 @@ export default async function Home() {
           .hw-kit-card__sub {
             font-family: var(--font-space, monospace); font-size: 0.52rem;
             letter-spacing: 0.18em; text-transform: uppercase;
-            color: rgba(var(--kit-accent, 192,0,26), 0.85); margin: 0;
+            color: rgba(var(--kit-accent, 224,0,31), 0.85); margin: 0;
           }
           .hw-kit-card__title {
             font-family: var(--font-cinzel, serif); font-size: clamp(1rem,1.5vw,1.2rem);
@@ -1017,10 +1088,13 @@ export default async function Home() {
           .hw-kit-card__cta {
             font-family: var(--font-space, monospace); font-size: 0.58rem;
             letter-spacing: 0.14em; text-transform: uppercase;
-            color: rgb(var(--kit-accent, 192,0,26));
+            color: rgb(var(--kit-accent, 224,0,31));
             transition: letter-spacing 0.2s ease;
           }
           .hw-kit-card:hover .hw-kit-card__cta { letter-spacing: 0.22em; }
+          @media (max-width: 540px) {
+            .hw-kits-swipe-hint { display: block !important; }
+          }
         `}</style>
       </section>
 
@@ -1029,7 +1103,7 @@ export default async function Home() {
       ══════════════════════════════════════════════════════════ */}
       {trendingThisWeek.length > 0 && (
         <section style={{ padding: "clamp(32px,5vw,64px) clamp(16px,5vw,72px)", background: "#060410", position: "relative", overflow: "hidden" }}>
-          <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse 60% 40% at 50% 0%, rgba(192,0,26,0.07) 0%, transparent 70%)", pointerEvents: "none" }} />
+          <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse 60% 40% at 50% 0%, rgba(224,0,31,0.07) 0%, transparent 70%)", pointerEvents: "none" }} />
 
           <div className="dt-section-head dt-section-head--center" style={{ marginBottom: "clamp(24px,4vw,40px)" }}>
             <span className="dt-eyebrow" style={{ color: "#c0453a" }}>🔥 Most Downloaded</span>
@@ -1040,7 +1114,7 @@ export default async function Home() {
           </div>
 
           <WallpaperCardGrid
-            accentRgb="192,0,26"
+            accentRgb="224,0,31"
             badge="🔥"
             badgeColor="#c0453a"
             items={trendingThisWeek.map((img) => ({
@@ -1074,12 +1148,12 @@ export default async function Home() {
               fontSize: "0.5rem",
               letterSpacing: "0.18em",
               textTransform: "uppercase",
-              color: "#c0001a",
-              border: "1px solid rgba(192,0,26,0.4)",
+              color: "#e0001f",
+              border: "1px solid rgba(224,0,31,0.4)",
               padding: "2px 8px",
               borderRadius: "2px",
               whiteSpace: "nowrap",
-              background: "rgba(192,0,26,0.06)",
+              background: "rgba(224,0,31,0.06)",
             }}>
               Not in New · Not in Trending · Not in Premium
             </span>
@@ -1112,7 +1186,7 @@ export default async function Home() {
                   width: "100%",
                   aspectRatio: "16/9",
                   overflow: "hidden",
-                  border: "1px solid rgba(192,0,26,0.5)",
+                  border: "1px solid rgba(224,0,31,0.5)",
                   background: "#080510",
                 }}>
                   <Image
@@ -1138,7 +1212,7 @@ export default async function Home() {
                       letterSpacing: "0.22em",
                       textTransform: "uppercase",
                       color: "#ff6a00",
-                      background: "linear-gradient(135deg, rgba(255,106,0,0.18), rgba(192,0,26,0.18))",
+                      background: "linear-gradient(135deg, rgba(255,106,0,0.18), rgba(224,0,31,0.18))",
                       border: "1px solid rgba(255,106,0,0.5)",
                       padding: "4px 10px",
                       borderRadius: "2px",
@@ -1155,7 +1229,7 @@ export default async function Home() {
                       fontSize: "0.58rem",
                       letterSpacing: "0.28em",
                       textTransform: "uppercase",
-                      color: "#c0001a",
+                      color: "#e0001f",
                       marginBottom: "10px",
                     }}>
                       Featured Collection
@@ -1168,7 +1242,7 @@ export default async function Home() {
                       margin: "0 0 10px",
                       letterSpacing: "0.04em",
                       lineHeight: 1.1,
-                      textShadow: "0 2px 30px rgba(192,0,26,0.4)",
+                      textShadow: "0 2px 30px rgba(224,0,31,0.4)",
                     }}>
                       {defiant.title}
                     </h3>
@@ -1191,7 +1265,7 @@ export default async function Home() {
                       letterSpacing: "0.16em",
                       textTransform: "uppercase",
                       color: "#fff",
-                      background: "#c0001a",
+                      background: "#e0001f",
                       padding: "10px 20px",
                       borderRadius: "2px",
                     }}>
@@ -1300,14 +1374,14 @@ export default async function Home() {
         background: "linear-gradient(180deg, #07050d 0%, #0a0612 100%)",
         position: "relative", overflow: "hidden",
       }}>
-        <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse 60% 40% at 50% 50%, rgba(192,0,26,0.05) 0%, transparent 70%)", pointerEvents: "none" }} />
+        <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse 60% 40% at 50% 50%, rgba(224,0,31,0.05) 0%, transparent 70%)", pointerEvents: "none" }} />
         <div style={{ maxWidth: "800px", margin: "0 auto", position: "relative" }}>
           <div className="dt-section-head dt-section-head--center" style={{ marginBottom: "clamp(20px,3vw,32px)" }}>
-            <span className="dt-eyebrow" style={{ color: "#c0001a" }}>Our Purpose</span>
+            <span className="dt-eyebrow" style={{ color: "#e0001f" }}>Our Purpose</span>
             <h2 className="dt-section-title">The Haunted Wallpapers Mission</h2>
           </div>
-          <div style={{ background: "rgba(255,255,255,0.015)", border: "1px solid rgba(192,0,26,0.2)", padding: "clamp(24px,3.5vw,48px)", position: "relative" }}>
-            <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: "2px", background: "linear-gradient(90deg, transparent, rgba(192,0,26,0.6), transparent)" }} />
+          <div style={{ background: "rgba(255,255,255,0.015)", border: "1px solid rgba(224,0,31,0.2)", padding: "clamp(24px,3.5vw,48px)", position: "relative" }}>
+            <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: "2px", background: "linear-gradient(90deg, transparent, rgba(224,0,31,0.6), transparent)" }} />
             <p style={{ fontFamily: "var(--font-cormorant, serif)", fontSize: "clamp(1.05rem,1.8vw,1.2rem)", lineHeight: 1.85, color: "rgba(224,224,248,0.72)", margin: 0 }}>
               At Haunted Wallpapers, we believe your digital setup should be an extension of your soul.
               We don&apos;t just &ldquo;dump&rdquo; images. Every wallpaper is manually curated and tested on real devices

@@ -141,12 +141,25 @@ const nextConfig: NextConfig = {
         source: "/",
         headers: [
           { key: "Cache-Control", value: "public, s-maxage=3600, stale-while-revalidate=604800" },
-          // LCP hint: preconnect to R2 CDN
           { key: "Link", value: "<https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev>; rel=preconnect" },
         ],
       },
       {
         source: "/shop/(.*)",
+        headers: [
+          { key: "Cache-Control", value: "public, s-maxage=3600, stale-while-revalidate=604800" },
+          { key: "Link", value: "<https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev>; rel=preconnect" },
+        ],
+      },
+      {
+        source: "/sets/(.*)",
+        headers: [
+          { key: "Cache-Control", value: "public, s-maxage=86400, stale-while-revalidate=604800" },
+          { key: "Link", value: "<https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev>; rel=preconnect" },
+        ],
+      },
+      {
+        source: "/blog(.*)",
         headers: [
           { key: "Cache-Control", value: "public, s-maxage=3600, stale-while-revalidate=604800" },
         ],

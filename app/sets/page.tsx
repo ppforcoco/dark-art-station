@@ -97,6 +97,22 @@ const SETS = [
     devices: ["Desktop", "Mobile", "Smartwatch", "Avatar", "PFP"],
     accentColor: "192,0,26",
     premium: true,
+    categoryTag: "Gaming",
+  },
+  {
+    slug: "cyberpunk-gaming-hero",
+    title: "Cyberpunk Horror Gaming Hero",
+    subtitle: "Neon Horror Gaming Matching Wallpaper Set",
+    description:
+      "They told him the human brain wasn't meant to sync with a 240Hz refresh rate. He didn't listen. The Ghost in the Overclocked Machine — a sentient glitch trapped in digital purgatory, screaming through your pixels. Premium 4K neon cyberpunk wallpapers for OLED displays and high-end gaming rigs.",
+    thumbnail:
+      "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/sets/Cyberpunk%20Gaming%20Hero%20Matching%20Wallpaper%20Set/terminal-paradox-cyber-neon-phantom-pointing-homescreen-mobile-thumbnail-cover.webp",
+    tags: ["cyberpunk", "neon gaming", "horror gaming", "OLED optimised"],
+    count: 6,
+    devices: ["Desktop", "Mobile", "Smartwatch", "Avatar"],
+    accentColor: "139,92,246",
+    premium: true,
+    categoryTag: "Gaming",
   },
 ];
 
@@ -184,7 +200,10 @@ export default function SetsPage() {
                   <div className="set-card__corner set-card__corner--br" />
                   <span className="set-card__count">{set.count} wallpapers</span>
                   {(set as { premium?: boolean }).premium && (
-                    <span className="set-card__premium">⚡ Premium</span>
+                    <span className="set-card__premium">Premium</span>
+                  )}
+                  {(set as { categoryTag?: string }).categoryTag && (
+                    <span className="set-card__category-tag">{(set as { categoryTag?: string }).categoryTag}</span>
                   )}
                 </div>
 
@@ -309,6 +328,19 @@ export default function SetsPage() {
         @keyframes sets-premium-glow {
           0%,100% { box-shadow: 0 0 14px rgba(255,106,0,0.18); }
           50% { box-shadow: 0 0 24px rgba(255,106,0,0.36), 0 0 40px rgba(192,0,26,0.14); }
+        }
+        .set-card__category-tag {
+          position: absolute;
+          bottom: 10px; right: 10px;
+          font-family: var(--font-space, monospace);
+          font-size: 0.48rem;
+          letter-spacing: 0.16em;
+          text-transform: uppercase;
+          color: rgba(224,224,248,0.8);
+          background: rgba(0,0,0,0.65);
+          border: 1px solid rgba(255,255,255,0.18);
+          padding: 3px 9px;
+          border-radius: 2px;
         }
 
         /* Body */
