@@ -137,14 +137,30 @@ export default function CookieBanner() {
   }, []);
 
   function fireGtag(decision: "accepted" | "declined") {
-    if (typeof (window as any).gtag !== "function") return;
     const granted = decision === "accepted" ? "granted" : "denied";
-    (window as any).gtag("consent", "update", {
+    const payload = {
       ad_storage: granted,
       ad_user_data: granted,
       ad_personalization: granted,
       analytics_storage: granted,
-    });
+    };
+    // Fire immediately if gtag is already loaded
+    if (typeof (window as any).gtag === "function") {
+      (window as any).gtag("consent", "update", payload);
+      return;
+    }
+    // Retry up to 10× over 1s — covers the race where fireGtag is called
+    // on page load before the async gtag/js script has finished executing
+    let attempts = 0;
+    const interval = setInterval(() => {
+      attempts++;
+      if (typeof (window as any).gtag === "function") {
+        (window as any).gtag("consent", "update", payload);
+        clearInterval(interval);
+      } else if (attempts >= 10) {
+        clearInterval(interval);
+      }
+    }, 100);
   }
 
   function accept() {

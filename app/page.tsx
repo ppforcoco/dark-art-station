@@ -89,58 +89,55 @@ export default async function Home() {
   let premiumThisWeek: Array<{ id: string; slug: string; title: string; r2Key: string; deviceType: string | null; tags: string[]; updatedAt: Date | null }> = [];
   let trendingThisWeek: Array<{ id: string; slug: string; title: string; r2Key: string; deviceType: string | null; tags: string[]; _count: { downloads: number } }> = [];
 
+  // ── All DB queries fired in parallel — single round-trip to the DB ──────────
   try {
-    [wotd, totalImages] = await Promise.all([
-      getCachedWotd(),
-      db.image.count(),
-    ]);
-  } catch (err) {
-    console.error("[home/page] DB error (wotd/count):", err);
-  }
-
-  try {
-    obsessions = await db.collection.findMany({
-      orderBy: [{ featured: "desc" }, { createdAt: "asc" }],
-      where: { isAdult: false },
-      take: 10,
-      select: {
-        id: true, slug: true, title: true, thumbnail: true,
-        tag: true, icon: true, bgClass: true,
-        _count: { select: { images: { where: { deviceType: "IPHONE" } } } },
-      },
-    });
-  } catch (err) {
-    console.error("[home/page] DB error (obsessions):", err);
-  }
-
-  try {
-    [newThisWeek, premiumThisWeek] = await Promise.all([
-      db.image.findMany({
-        where: {
-          isAdult: false,
-          tags: { has: "badge-new" },
-          createdAt: { gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) },
-          NOT: { tags: { has: "badge-premium" } },
+    [
+      [wotd, totalImages],
+      obsessions,
+      [newThisWeek, premiumThisWeek],
+      trendingThisWeek,
+    ] = await Promise.all([
+      // 1. WOTD + image count
+      Promise.all([
+        getCachedWotd(),
+        db.image.count(),
+      ]),
+      // 2. Collections / obsessions
+      db.collection.findMany({
+        orderBy: [{ featured: "desc" }, { createdAt: "asc" }],
+        where: { isAdult: false },
+        take: 10,
+        select: {
+          id: true, slug: true, title: true, thumbnail: true,
+          tag: true, icon: true, bgClass: true,
+          _count: { select: { images: { where: { deviceType: "IPHONE" } } } },
         },
-        orderBy: { createdAt: "desc" },
-        take: 6,
-        select: { id: true, slug: true, title: true, r2Key: true, deviceType: true, tags: true },
       }),
-      db.image.findMany({
-        where: { tags: { has: "badge-premium" }, isAdult: false },
-        orderBy: { createdAt: "desc" },
-        take: 6,
-        select: { id: true, slug: true, title: true, r2Key: true, deviceType: true, tags: true, updatedAt: true },
-      }),
+      // 3. New this week + premium
+      Promise.all([
+        db.image.findMany({
+          where: {
+            isAdult: false,
+            tags: { has: "badge-new" },
+            createdAt: { gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) },
+            NOT: { tags: { has: "badge-premium" } },
+          },
+          orderBy: { createdAt: "desc" },
+          take: 6,
+          select: { id: true, slug: true, title: true, r2Key: true, deviceType: true, tags: true },
+        }),
+        db.image.findMany({
+          where: { tags: { has: "badge-premium" }, isAdult: false },
+          orderBy: { createdAt: "desc" },
+          take: 6,
+          select: { id: true, slug: true, title: true, r2Key: true, deviceType: true, tags: true, updatedAt: true },
+        }),
+      ]),
+      // 4. Trending (cached, groupBy is expensive)
+      getCachedTrending(),
     ]);
   } catch (err) {
-    console.error("[home/page] DB error (badges):", err);
-  }
-
-  try {
-    trendingThisWeek = await getCachedTrending();
-  } catch (err) {
-    console.error("[home/page] DB error (trending):", err);
+    console.error("[home/page] DB error:", err);
   }
 
   function fmt(n: number) {

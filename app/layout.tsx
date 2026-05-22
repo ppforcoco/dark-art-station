@@ -148,7 +148,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {/* FIX 4: wrapped in try/catch — prevents "Event processing aborted" console errors
             that occur when GTM is intercepted by ad blockers or regional proxies (NG/KE/MM/IN).
             The gtag() function definition is also guarded so re-declaration is safe. */}
-        <script dangerouslySetInnerHTML={{ __html: `try{window.dataLayer=window.dataLayer||[];if(typeof window.gtag!=='function'){window.gtag=function(){dataLayer.push(arguments);};}gtag('consent','default',{'ad_storage':'denied','ad_user_data':'denied','ad_personalization':'denied','analytics_storage':'denied','functionality_storage':'granted','personalization_storage':'denied','security_storage':'granted','wait_for_update':2000});gtag('set','url_passthrough',true);}catch(e){}` }} />
+        <script dangerouslySetInnerHTML={{ __html: `try{window.dataLayer=window.dataLayer||[];if(typeof window.gtag!=='function'){window.gtag=function(){dataLayer.push(arguments);};}gtag('consent','default',{'ad_storage':'denied','ad_user_data':'denied','ad_personalization':'denied','analytics_storage':'denied','functionality_storage':'granted','personalization_storage':'denied','security_storage':'granted','wait_for_update':500});gtag('set','url_passthrough',true);}catch(e){}` }} />
 
         {/* ── Google Analytics 4 ─────────────────────────────────────────
             FIX: Load GA4 script immediately (async, non-blocking) so GTM tags
