@@ -1828,6 +1828,10 @@ body::before {
   color: #c8c0dc;
   gap: 0;
 }
+/* ── Heading hierarchy — H1 is the page title (static-page-title above content).
+   Inside blog content: H2 = section, H3 = subsection, H4 = label.
+   H1 inside content is hidden (duplicate). H3/H4 without a parent H2 would
+   cause a Lighthouse skip — CMS authors must use H2 before H3. ── */
 .blog-html-content h1,
 .blog-html-content h2,
 .blog-html-content h3,

@@ -6,6 +6,7 @@
 //  4. GTM preconnect uses crossOrigin="anonymous" — avoids extra CORS preflight round trip
 
 import type { Metadata, Viewport } from "next";
+import Script from "next/script";
 import { Cinzel_Decorative, Cormorant_Garamond, Space_Mono } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
@@ -158,8 +159,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             The script is async so it never blocks rendering or LCP.         */}
         {gaId && (
           <>
-            <script async src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`} />
-            <script dangerouslySetInnerHTML={{ __html: `try{window.dataLayer=window.dataLayer||[];if(typeof window.gtag!=="function"){window.gtag=function(){dataLayer.push(arguments);};}gtag("js",new Date());gtag("config","${gaId}",{send_page_view:true});}catch(e){}` }} />
+            {/* strategy="afterInteractive" defers until after first paint — eliminates render-blocking */}
+            <Script
+              src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}
+              strategy="afterInteractive"
+            />
+            <Script id="ga-init" strategy="afterInteractive">{`
+              try{window.dataLayer=window.dataLayer||[];if(typeof window.gtag!=="function"){window.gtag=function(){dataLayer.push(arguments);};}gtag("js",new Date());gtag("config","${gaId}",{send_page_view:true});}catch(e){}
+            `}</Script>
           </>
         )}
       </head>

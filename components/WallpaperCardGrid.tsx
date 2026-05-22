@@ -3,6 +3,7 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 
 // ─── Cycle constants — must match all other files ────────────────────────────
 const EPOCH_MS  = Date.UTC(2025, 0, 1, 0, 0, 0);
@@ -128,7 +129,7 @@ export default function WallpaperCardGrid({ items, accentRgb, badge, badgeColor 
                 {/* Dynamic island */}
                 <div style={{ position: "absolute", top: "7px", left: "50%", transform: "translateX(-50%)", width: "35%", height: "10px", background: "#000", borderRadius: "6px", zIndex: 4 }} />
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={img.src} alt="" aria-hidden="true" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", filter: "blur(12px) brightness(0.18)", transform: "scale(1.12)" }} loading="lazy" />
+                <Image src={img.src} alt="" aria-hidden="true" fill sizes="160px" style={{ objectFit: "cover", filter: "blur(12px) brightness(0.18)", transform: "scale(1.12)" }} />
                 {/* Vault overlay */}
                 <div style={{ position: "absolute", inset: 0, zIndex: 5, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "8px", padding: "1rem", textAlign: "center", background: "rgba(8,6,16,0.5)" }}>
                   <span style={{ fontSize: "1.8rem", lineHeight: 1, filter: `drop-shadow(0 0 8px rgba(${accentRgb},0.6))` }}>🔒</span>
@@ -175,11 +176,12 @@ export default function WallpaperCardGrid({ items, accentRgb, badge, badgeColor 
                 {/* Dynamic island */}
                 <div style={{ position: "absolute", top: "7px", left: "50%", transform: "translateX(-50%)", width: "35%", height: "10px", background: "#000", borderRadius: "6px", zIndex: 3 }} />
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
+                <Image
                   src={img.src}
                   alt={img.title}
-                  style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", transition: "transform 0.45s ease" }}
-                  loading="lazy"
+                  fill
+                  sizes="(max-width: 640px) 150px, (max-width: 1024px) 200px, 220px"
+                  style={{ objectFit: "cover", transition: "transform 0.45s ease" }}
                   onMouseEnter={e => (e.currentTarget as HTMLImageElement).style.transform = "scale(1.07)"}
                   onMouseLeave={e => (e.currentTarget as HTMLImageElement).style.transform = ""}
                 />

@@ -925,7 +925,7 @@ export default async function Home() {
                 title: "The Crimson Sovereign",
                 sub: "Dark Fantasy Gaming Kit",
                 tag: "Gaming",
-                img: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/sets/The%20Crimson%20Sovereign%20%7C%20Dark%20Fantasy%20Gaming%20Character%20Matching%20Setup%20Kit/4k/Complete%20matching%20dark%20fantasy%20gaming%20character%20setup%20kit%20for%20PC%20phone%20and%20watch%20free.png",
+                img: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/sets/The%20Crimson%20Sovereign%20%7C%20Dark%20Fantasy%20Gaming%20Character%20Matching%20Setup%20Kit/Complete%20matching%20dark%20fantasy%20gaming%20character%20setup%20kit%20for%20PC%20phone%20and%20watch%20free.webp",
                 alt: "Complete matching dark fantasy gaming character setup kit for PC phone and watch free",
                 accent: "224,0,31",
                 premium: true,
@@ -933,7 +933,7 @@ export default async function Home() {
             ].map((kit) => (
               <a key={kit.href} href={kit.href} className="hw-kit-card hw-kit-card--sm" style={{ "--kit-accent": kit.accent } as React.CSSProperties}>
                 <div className="hw-kit-card__thumb">
-                  <img src={kit.img} alt={kit.alt} className="hw-kit-card__img" loading="lazy" />
+                  <Image src={kit.img} alt={kit.alt} fill sizes="(max-width: 640px) 90vw, (max-width: 1024px) 45vw, 360px" style={{ objectFit: "cover" }} className="hw-kit-card__img" />
                   <div className="hw-kit-card__overlay" />
                   <span className="hw-kit-card__num">Kit {kit.num}</span>
                   {(kit as { premium?: boolean }).premium && (
