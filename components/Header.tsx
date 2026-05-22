@@ -57,10 +57,10 @@ export default function Header() {
         const cats = ["iphone","android","pc"];
         return "/" + cats[Math.floor(Math.random() * cats.length)];
       })();
-      router.push(dest);                             // don't await — prevents stuck state
+      window.location.href = dest;                   // hard nav — never gets stuck
     } catch {
       const cats = ["iphone","android","pc"];
-      router.push("/" + cats[Math.floor(Math.random() * cats.length)]);
+      window.location.href = "/" + cats[Math.floor(Math.random() * cats.length)];
     } finally {
       clearTimeout(resetTimer);
       setTimeout(() => setRandomSpin(false), 400);
