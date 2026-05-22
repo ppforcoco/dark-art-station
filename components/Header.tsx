@@ -50,7 +50,10 @@ export default function Header() {
     try {
       const controller = new AbortController();
       const apiTimeout = setTimeout(() => controller.abort(), 3000);
-      const res = await fetch("/api/random-wallpaper", { signal: controller.signal });
+      const res = await fetch(`/api/random-wallpaper?t=${Date.now()}`, { 
+        signal: controller.signal,
+        cache: "no-store"
+      });
       clearTimeout(apiTimeout);
       const d   = res.ok ? await res.json() : null;
       const dest = d?.href ?? (() => {
