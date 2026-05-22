@@ -8420,7 +8420,7 @@ button:active:not(:disabled) { transform: translateY(0px) scale(0.98) !important
 }
 .dt-btn--enter {
   background: var(--dt-crimson);
-  color: #f0ecff;
+  color: #ffffff;
   border-color: var(--dt-crimson);
 }
 .dt-btn--enter:hover {
@@ -8437,12 +8437,12 @@ button:active:not(:disabled) { transform: translateY(0px) scale(0.98) !important
 }
 .dt-btn--ghost {
   background: transparent;
-  color: #8a8099;
-  border-color: #2a2535;
+  color: #b0a8c4;
+  border-color: #3a3550;
 }
 .dt-btn--ghost:hover {
   border-color: rgba(192,0,26,0.4);
-  color: #d4cde8;
+  color: #e0d8f8;
 }
 .dt-btn--sm {
   padding: 12px 24px;

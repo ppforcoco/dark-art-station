@@ -207,7 +207,7 @@ export default function WallpaperCardGrid({ items, accentRgb, badge, badgeColor 
                   {img.title}
                 </p>
                 {img.downloadCount != null && (
-                  <p style={{ color: `rgba(${accentRgb},0.55)`, fontSize: "0.58rem", fontFamily: "monospace", margin: "4px 0 0", lineHeight: 1.2 }}>
+                  <p style={{ color: `rgba(${accentRgb},0.8)`, fontSize: "0.58rem", fontFamily: "monospace", margin: "4px 0 0", lineHeight: 1.2 }}>
                     ↓ {img.downloadCount.toLocaleString()} downloads
                   </p>
                 )}
