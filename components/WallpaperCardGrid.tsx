@@ -49,6 +49,7 @@ export interface WallpaperCardItem {
   src: string;
   devicePath: string;
   isLocked?: boolean;
+  downloadCount?: number;
 }
 
 interface WallpaperCardGridProps {
@@ -205,6 +206,11 @@ export default function WallpaperCardGrid({ items, accentRgb, badge, badgeColor 
                 <p style={{ color: accent, fontSize: "0.7rem", fontFamily: "monospace", margin: 0, lineHeight: 1.3, overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" as const }}>
                   {img.title}
                 </p>
+                {img.downloadCount != null && (
+                  <p style={{ color: `rgba(${accentRgb},0.55)`, fontSize: "0.58rem", fontFamily: "monospace", margin: "4px 0 0", lineHeight: 1.2 }}>
+                    ↓ {img.downloadCount.toLocaleString()} downloads
+                  </p>
+                )}
               </div>
             </div>
           </Link>
