@@ -17,7 +17,7 @@ const WALLPAPERS = [
     label: "Gaming PC Setup — 4K Desktop",
     download: `${BASE_4K}/terminal-paradox-neon-horror-gaming-station-setup-pc.jpg`,
     filename: "cyberpunk-hero-pc-setup-4k.jpg",
-    preview: `${BASE}/terminal-paradox-cyber-neon-phantom-pointing-homescreen-mobile.webp`,
+    preview: `${BASE}/thumb-terminal-paradox-neon-horror-gaming-station-setup-pc.webp`,
     seoAlt: "Intense neon horror gaming station setup with a 4K cyberpunk hero on screen and glowing purple peripheral lights in a dark room.",
     ratio: "16-9",
   },
@@ -298,8 +298,8 @@ export default function CyberpunkGamingHeroPage() {
               ))}
             </div>
 
-            {/* Row 2: 2 portrait mobiles */}
-            <div className="cp-wall-row-2col">
+            {/* Row 2: 2 portrait mobiles — centered, max-width constrained so they don't appear cut */}
+            <div className="cp-wall-row-portrait">
               {[WALLPAPERS[2], WALLPAPERS[3]].map((w) => (
                 <div key={w.id} className="cp-wall-item">
                   <div className="cp-wall-item__frame cp-wall-item__frame--9-16">
@@ -501,6 +501,16 @@ export default function CyberpunkGamingHeroPage() {
         /* Wallpaper layout */
         .cp-wall-layout { display: flex; flex-direction: column; gap: 12px; }
         .cp-wall-row-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; align-items: start; }
+        /* Portrait mobile row: two phones side by side, max-width so they look like phones not cut rectangles */
+        .cp-wall-row-portrait {
+          display: flex;
+          justify-content: center;
+          gap: 20px;
+        }
+        .cp-wall-row-portrait .cp-wall-item {
+          width: clamp(180px, 26%, 280px);
+          flex-shrink: 0;
+        }
         .cp-wall-item { display: flex; flex-direction: column; gap: 8px; }
         .cp-wall-item__frame {
           position: relative; overflow: hidden;
@@ -561,7 +571,7 @@ export default function CyberpunkGamingHeroPage() {
           position: absolute; top: 10px; left: 12px; background: rgba(0,0,0,0.65);
           padding: 3px 8px; border-radius: 2px; z-index: 2; margin-bottom: 0;
         }
-        .cp-collage__img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .cp-collage__img { width: 100%; height: 100%; object-fit: cover; object-position: center center; display: block; }
         .cp-collage__scanlines {
           position: absolute; inset: 0;
           background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.04) 3px, rgba(0,0,0,0.04) 4px);

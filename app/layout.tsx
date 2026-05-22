@@ -115,16 +115,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="dns-prefetch" href="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev" />
         {gaId && <link rel="preconnect" href="https://www.googletagmanager.com" crossOrigin="anonymous" />}
 
-        {/* ── LCP hint: preload hero image so browser fetches it immediately ── */}
-        {/* This is the homepage hero image — fetchpriority=high tells browser to */}
-        {/* start this fetch before any JS runs, shaving ~600ms off LCP           */}
-        <link
-          rel="preload"
-          as="image"
-          href="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/new/dark-horror-man-cosplay-makeup-idea.webp"
-          // @ts-ignore
-          fetchpriority="high"
-        />
+        {/* LCP preload moved to app/page.tsx — only needed on homepage.
+            Keeping it here caused browser warnings on every non-home page. */}
 
         {/* ── PWA & Icons ─────────────────────────────────────────────── */}
         <link rel="manifest" href="/manifest.json" />
@@ -158,34 +150,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             The gtag() function definition is also guarded so re-declaration is safe. */}
         <script dangerouslySetInnerHTML={{ __html: `try{window.dataLayer=window.dataLayer||[];if(typeof window.gtag!=='function'){window.gtag=function(){dataLayer.push(arguments);};}gtag('consent','default',{'ad_storage':'denied','ad_user_data':'denied','ad_personalization':'denied','analytics_storage':'denied','functionality_storage':'granted','personalization_storage':'denied','security_storage':'granted','wait_for_update':2000});gtag('set','url_passthrough',true);}catch(e){}` }} />
 
-        {/* ── Google Analytics 4 ──────────────────────────────────────── */}
+        {/* ── Google Analytics 4 ─────────────────────────────────────────
+            FIX: Load GA4 script immediately (async, non-blocking) so GTM tags
+            (scroll depth, click events) always have a live measurement context.
+            Deferring to interaction caused "Event processing aborted" because
+            GTM fired gtag() commands before the GA4 script was initialised.
+            The script is async so it never blocks rendering or LCP.         */}
         {gaId && (
-          <script dangerouslySetInnerHTML={{ __html: `
-(function(){
-  function loadGA(){
-    if(window.__gaLoaded) return;
-    window.__gaLoaded = true;
-    try {
-      var s = document.createElement('script');
-      s.async = true;
-      s.src = 'https://www.googletagmanager.com/gtag/js?id=${gaId}';
-      document.head.appendChild(s);
-      window.dataLayer = window.dataLayer||[];
-      if(typeof window.gtag!=='function'){window.gtag=function(){dataLayer.push(arguments);};}
-      gtag('js', new Date());
-      gtag('config', '${gaId}', {send_page_view:true});
-    } catch(e) {}
-  }
-  if(document.readyState === 'complete'){
-    setTimeout(loadGA, 3000);
-  } else {
-    window.addEventListener('load', function(){ setTimeout(loadGA, 3000); });
-  }
-  ['click','scroll','keydown','touchstart'].forEach(function(e){
-    window.addEventListener(e, loadGA, {once:true, passive:true});
-  });
-})();
-`.trim() }} />
+          <>
+            <script async src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`} />
+            <script dangerouslySetInnerHTML={{ __html: `try{window.dataLayer=window.dataLayer||[];if(typeof window.gtag!=="function"){window.gtag=function(){dataLayer.push(arguments);};}gtag("js",new Date());gtag("config","${gaId}",{send_page_view:true});}catch(e){}` }} />
+          </>
         )}
       </head>
       <body className={`${cormorant.variable} ${cinzel.variable} ${spaceMono.variable}`}>

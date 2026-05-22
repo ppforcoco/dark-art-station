@@ -75,9 +75,7 @@ export async function generateMetadata(): Promise<Metadata> {
       images: [OG_IMAGE],
     },
     alternates: { canonical: SITE_URL },
-    other: {
-      "link:preload:lcp": "<https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/new/dark-horror-man-cosplay-makeup-idea.webp>; rel=preload; as=image; fetchpriority=high",
-    },
+
   };
 }
 
@@ -154,6 +152,16 @@ export default async function Home() {
 
   return (
     <>
+      {/* ── LCP preload: only on homepage, moved here from layout.tsx ── */}
+      {/* eslint-disable-next-line @next/next/no-head-element */}
+      <link
+        rel="preload"
+        as="image"
+        href="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/new/dark-horror-man-cosplay-makeup-idea.webp"
+        // @ts-ignore
+        fetchPriority="high"
+      />
+
       {/* ── ATMOSPHERIC FOG OVERLAY ── */}
       <div className="dt-fog" aria-hidden="true">
         <div className="dt-fog__layer dt-fog__layer--1" />
