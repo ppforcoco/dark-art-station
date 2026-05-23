@@ -1161,15 +1161,16 @@ export default async function Home() {
             <span className="dt-eyebrow" style={{ margin: 0 }}>The Ones We Hid From The Feed</span>
             <span style={{
               fontFamily: "var(--font-space, monospace)",
-              fontSize: "0.5rem",
-              letterSpacing: "0.18em",
+              fontSize: "0.55rem",
+              letterSpacing: "0.12em",
               textTransform: "uppercase",
-              color: "#e0001f",
-              border: "1px solid rgba(224,0,31,0.4)",
+              color: "#7a0000",
+              border: "1px solid #7a0000",
               padding: "2px 8px",
               borderRadius: "2px",
               whiteSpace: "nowrap",
-              background: "rgba(224,0,31,0.06)",
+              background: "#ffffff",
+              fontWeight: 700,
             }}>
               Not in New · Not in Trending · Not in Premium
             </span>
