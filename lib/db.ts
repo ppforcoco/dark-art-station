@@ -129,91 +129,35 @@ export async function searchWallpapers(
 
   const skip = (page - 1) * limit;
 
-  // ── WHERE clauses ──────────────────────────────────────────
-  // description is nullable on Image — use { contains } only when
-  // the field is guaranteed non-null (Collection.description is required).
-  const collectionWhere = {
-    isAdult: false,
-    OR: [
-      { title:       { contains: q, mode: "insensitive" as const } },
-      { description: { contains: q, mode: "insensitive" as const } },
-      { category:    { contains: q, mode: "insensitive" as const } },
-      { tag:         { contains: q, mode: "insensitive" as const } },
-    ],
-  };
-
+  // ── WHERE clause — title + tags only (no description, no collections) ──────
   const imageWhere = {
     collectionId: null,
     isAdult: false,
     deviceType: { in: [DeviceType.IPHONE, DeviceType.ANDROID] },
     OR: [
       { title: { contains: q, mode: "insensitive" as const } },
-      // Only match description when it is not null
-      {
-        AND: [
-          { description: { not: null } },
-          { description: { contains: q, mode: "insensitive" as const } },
-        ],
-      },
-      // hasSome requires at least one token — guard the empty array case
       ...(tagTokens.length > 0 ? [{ tags: { hasSome: tagTokens } }] : []),
     ],
   };
 
-  const [collections, collectionCount, standalones, standaloneCount] =
-    await Promise.all([
-      db.collection.findMany({
-        where:   collectionWhere,
-        select: {
-          id:        true,
-          slug:      true,
-          title:     true,
-          thumbnail: true,
-          category:  true,
-          tag:       true,
-          icon:      true,
-          bgClass:   true,
-          isFree:    true,
-          badge:     true,
-        },
-        orderBy: { createdAt: "desc" },
-        take: limit,
-        skip,
-      }),
-      db.collection.count({ where: collectionWhere }),
-
-      db.image.findMany({
-        where:  imageWhere,
-        select: {
-          id:         true,
-          slug:       true,
-          title:      true,
-          r2Key:      true,
-          deviceType: true,
-          tags:       true,
-          // Include collection slug so search page can build correct href
-          collection: { select: { slug: true } },
-        },
-        orderBy: { createdAt: "desc" },
-        take: limit,
-        skip,
-      }),
-      db.image.count({ where: imageWhere }),
-    ]);
-
-  const collectionResults: SearchResultItem[] = collections.map(c => ({
-    id:        c.id,
-    slug:      c.slug,
-    title:     c.title,
-    thumbnail: c.thumbnail,
-    kind:      "collection",
-    category:  c.category,
-    tag:       c.tag,
-    icon:      c.icon,
-    bgClass:   c.bgClass,
-    isFree:    c.isFree,
-    badge:     c.badge,
-  }));
+  const [standalones, standaloneCount] = await Promise.all([
+    db.image.findMany({
+      where:   imageWhere,
+      select: {
+        id:         true,
+        slug:       true,
+        title:      true,
+        r2Key:      true,
+        deviceType: true,
+        tags:       true,
+        collection: { select: { slug: true } },
+      },
+      orderBy: { createdAt: "desc" },
+      take: limit,
+      skip,
+    }),
+    db.image.count({ where: imageWhere }),
+  ]);
 
   const standaloneResults: SearchResultItem[] = standalones.map(img => ({
     id:             img.id,
@@ -223,12 +167,11 @@ export async function searchWallpapers(
     kind:           "standalone",
     deviceType:     img.deviceType,
     tags:           img.tags,
-    // collectionSlug enables building /shop/[collectionSlug]/[imageSlug]
     collectionSlug: img.collection?.slug ?? null,
   }));
 
-  const all = [...collectionResults, ...standaloneResults];
-  const total = collectionCount + standaloneCount;
+  const all = [...standaloneResults];
+  const total = standaloneCount;
 
   // Sort: exact title match first → starts-with → rest
   const ql = q.toLowerCase();

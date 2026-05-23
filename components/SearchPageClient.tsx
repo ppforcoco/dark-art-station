@@ -6,7 +6,7 @@ import { Search, X } from "lucide-react";
 
 const SUGGESTIONS = [
   "dark art", "dark fantasy", "dark humor", "anime", "lofi",
-  "skeleton", "grim reaper", "skull", "cyberpunk", "witch",
+  "skeleton", "grim reaper", "skull", "cyberpunk",
   "moonlight", "crimson", "purple", "minimal", "gaming",
 ];
 
