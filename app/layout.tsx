@@ -145,28 +145,36 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <meta name="google-site-verification" content={process.env.NEXT_PUBLIC_GSC_VERIFICATION} />
         )}
 
-        {/* ── Google Consent Mode v2 (must be before GA script) ───────── */}
-        {/* FIX 4: wrapped in try/catch — prevents "Event processing aborted" console errors
-            that occur when GTM is intercepted by ad blockers or regional proxies (NG/KE/MM/IN).
-            The gtag() function definition is also guarded so re-declaration is safe. */}
-        <script dangerouslySetInnerHTML={{ __html: `try{window.dataLayer=window.dataLayer||[];if(typeof window.gtag!=='function'){window.gtag=function(){dataLayer.push(arguments);};}gtag('consent','default',{'ad_storage':'denied','ad_user_data':'denied','ad_personalization':'denied','analytics_storage':'denied','functionality_storage':'granted','personalization_storage':'denied','security_storage':'granted','wait_for_update':500});gtag('set','url_passthrough',true);}catch(e){}` }} />
-
-        {/* ── Google Analytics 4 ─────────────────────────────────────────
-            FIX: Load GA4 script immediately (async, non-blocking) so GTM tags
-            (scroll depth, click events) always have a live measurement context.
-            Deferring to interaction caused "Event processing aborted" because
-            GTM fired gtag() commands before the GA4 script was initialised.
-            The script is async so it never blocks rendering or LCP.         */}
+        {/* ── Google Consent Mode v2 + GA4 ───────────────────────────────
+            FIXES:
+            1. analytics_storage = granted — was 'denied', blocking ALL engagement events
+            2. Removed wait_for_update — caused "Event processing aborted" errors
+            3. gtag defined once here, not re-declared in ga-init script
+            4. engagement_time_msec ensures user_engagement fires correctly      */}
         {gaId && (
           <>
-            {/* strategy="afterInteractive" defers until after first paint — eliminates render-blocking */}
+            <script dangerouslySetInnerHTML={{ __html: `
+              window.dataLayer=window.dataLayer||[];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('consent','default',{
+                ad_storage:'denied',
+                ad_user_data:'denied',
+                ad_personalization:'denied',
+                analytics_storage:'granted',
+                functionality_storage:'granted',
+                personalization_storage:'denied',
+                security_storage:'granted'
+              });
+              gtag('set','url_passthrough',true);
+            `}} />
             <Script
-              src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}
+              src={\`https://www.googletagmanager.com/gtag/js?id=${gaId}\`}
               strategy="afterInteractive"
             />
-            <Script id="ga-init" strategy="afterInteractive">{`
-              try{window.dataLayer=window.dataLayer||[];if(typeof window.gtag!=="function"){window.gtag=function(){dataLayer.push(arguments);};}gtag("js",new Date());gtag("config","${gaId}",{send_page_view:true});}catch(e){}
-            `}</Script>
+            <Script id="ga-init" strategy="afterInteractive">{\`
+              gtag('js', new Date());
+              gtag('config', '${gaId}', { send_page_view: true, engagement_time_msec: 100 });
+            \`}</Script>
           </>
         )}
       </head>

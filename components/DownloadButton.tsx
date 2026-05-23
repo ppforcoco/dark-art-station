@@ -152,11 +152,13 @@ export default function DownloadButton({ href, viewCount, downloadCount, label, 
     setState("loading");
     setTimeout(() => setState("done"), 1400);
 
-    // Google Analytics event
+    // Fire GA4 file_download event — maps to Key Event in GA4 dashboard
     if (typeof window !== "undefined" && typeof (window as any).gtag === "function") {
-      (window as any).gtag("event", "download_click", {
+      (window as any).gtag("event", "file_download", {
+        file_name: href.split("/").pop() ?? href,
+        file_extension: "webp",
+        link_url: href,
         event_category: "engagement",
-        event_label: href,
       });
     }
   }
