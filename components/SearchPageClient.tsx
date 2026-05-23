@@ -5,9 +5,9 @@ import { useRouter } from "next/navigation";
 import { Search, X } from "lucide-react";
 
 const SUGGESTIONS = [
-  "dark art", "dark fantasy", "dark humor", "incognito", "tarot",
-  "gothic", "horror", "street style", "patterns", "hooded",
-  "grim reaper", "skull", "cyberpunk", "witch", "moonlight",
+  "dark art", "dark fantasy", "dark humor", "anime", "lofi",
+  "skeleton", "grim reaper", "skull", "cyberpunk", "witch",
+  "moonlight", "crimson", "purple", "minimal", "gaming",
 ];
 
 interface Props {

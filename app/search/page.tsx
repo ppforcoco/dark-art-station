@@ -95,11 +95,9 @@ function ResultCard({ item }: { item: SearchResultItem }) {
 
 // ── Empty State ───────────────────────────────────────────────
 const TRENDING = [
-  { label: "iPhone",      href: "/iphone"                  },
-  { label: "Android",     href: "/android"                 },
-  { label: "PC",          href: "/pc"                      },
-  { label: "Collections", href: "/collections"             },
-  { label: "Free",        href: "/collections?filter=free" },
+  { label: "iPhone",  href: "/iphone"  },
+  { label: "Android", href: "/android" },
+  { label: "PC",      href: "/pc"      },
 ];
 
 function EmptyState({ query }: { query: string }) {
@@ -123,11 +121,10 @@ function EmptyState({ query }: { query: string }) {
 
 // ── Category filter chips ─────────────────────────────────────
 const CATEGORY_FILTERS = [
-  { label: "All",            value: ""           },
-  { label: "📱 iPhone",      value: "iphone"     },
-  { label: "🤖 Android",     value: "android"    },
-  { label: "🖥 PC",          value: "pc"         },
-  { label: "🗂 Collections", value: "collection" },
+  { label: "All",       value: ""        },
+  { label: "📱 iPhone", value: "iphone"  },
+  { label: "🤖 Android", value: "android" },
+  { label: "🖥 PC",     value: "pc"      },
 ];
 
 // ── Page ──────────────────────────────────────────────────────
