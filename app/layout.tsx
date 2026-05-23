@@ -13,7 +13,6 @@ const cinzel = Cinzel_Decorative({
   display: "swap",
   preload: false,
 });
-
 const cormorant = Cormorant_Garamond({
   weight: ["300", "400", "600"],
   subsets: ["latin"],
@@ -22,7 +21,6 @@ const cormorant = Cormorant_Garamond({
   display: "swap",
   preload: false,
 });
-
 const spaceMono = Space_Mono({
   weight: ["400", "700"],
   subsets: ["latin"],
@@ -89,11 +87,70 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" dir="ltr" style={{ backgroundColor: "#0c0b14", color: "#e8e4dc" }}>
       <head>
-        <style dangerouslySetInnerHTML={{ __html: `@media(pointer:fine){html,body,*,*::before,*::after{cursor:none!important}}` }} />
-
+        <style dangerouslySetInnerHTML={{ __html: `
+          @media(pointer:fine){html,body,*,*::before,*::after{cursor:none!important}}
+          @keyframes hw-flicker {
+            0%,100%{opacity:1}
+            8%{opacity:.85}
+            15%{opacity:1}
+            42%{opacity:.9}
+            45%{opacity:1}
+            70%{opacity:.88}
+            72%{opacity:1}
+          }
+          .hw-announce-bar {
+            position: sticky;
+            top: 0;
+            z-index: 9999;
+            height: 36px;
+            background: #000000;
+            border-bottom: 1px solid #dc2626;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+          }
+          .hw-announce-bar a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            text-decoration: none;
+            color: #ffffff;
+            font-family: var(--font-space, monospace);
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            padding: 0 12px;
+            animation: hw-flicker 6s infinite;
+          }
+          .hw-announce-bar a:hover {
+            color: #dc2626;
+          }
+          .hw-announce-dot {
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #dc2626;
+            margin: 0 10px;
+            flex-shrink: 0;
+            box-shadow: 0 0 6px #dc2626;
+          }
+          @media (max-width: 480px) {
+            .hw-announce-bar a {
+              font-size: 0.62rem;
+              letter-spacing: 0.08em;
+            }
+          }
+        ` }} />
         <script dangerouslySetInnerHTML={{ __html: `(function(){try{var t=localStorage.getItem('hw-theme');if(t){document.documentElement.setAttribute('data-theme',t);if(t==='fog'){document.documentElement.style.backgroundColor='#ece9e2';document.documentElement.style.color='#1c1a17';}else if(t==='ghost'){document.documentElement.style.backgroundColor='#0d0d14';document.documentElement.style.color='#e0e0f8';}else{document.documentElement.style.backgroundColor='#0c0b14';document.documentElement.style.color='#e8e4dc';}}else{document.documentElement.style.backgroundColor='#0c0b14';document.documentElement.style.color='#e8e4dc';}}catch(e){}})();` }} />
         <script dangerouslySetInnerHTML={{ __html: `(function(){try{var h=new Date().getHours();if(h>=20||h<6)document.documentElement.setAttribute('data-night','true');}catch(e){}})();` }} />
-
         {gaId && (
           <Script id="consent-init" strategy="afterInteractive">{`
             window.dataLayer = window.dataLayer || [];
@@ -110,20 +167,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             gtag('set', 'url_passthrough', true);
           `}</Script>
         )}
-
         <link rel="preconnect" href="https://assets.hauntedwallpapers.com" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://assets.hauntedwallpapers.com" />
         <link rel="preconnect" href="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev" />
         {gaId && <link rel="preconnect" href="https://www.googletagmanager.com" crossOrigin="anonymous" />}
-
         <link rel="manifest" href="/manifest.json" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <link rel="icon" type="image/x-icon" href="/favicon.ico" />
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
         <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png" />
         <link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png" />
-
         <meta name="p:domain_verify" content="6f1c92d3b0307e9bf30220a5068ce8af" />
         <meta name="theme-color" content="#0c0b14" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -131,18 +185,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <meta name="apple-mobile-web-app-title" content="Haunted WP" />
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="format-detection" content="telephone=no" />
-
         {process.env.NEXT_PUBLIC_GSC_VERIFICATION && (
           <meta name="google-site-verification" content={process.env.NEXT_PUBLIC_GSC_VERIFICATION} />
         )}
-
-        {/* ── GA4 ──────────────────────────────────────────────────────────
-            FIX: gtag('config') removed entirely.
-            gtag('js', new Date()) alone initialises the library and fires
-            page_view automatically from the measurement ID in the src URL.
-            Adding a separate config call causes gtag's internal page_view
-            tag to collide with the config validation → abort → no GA4 data.
-            gtag() is already defined in consent-init above.               */}
         {gaId && (
           <>
             <Script
@@ -155,7 +200,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </>
         )}
       </head>
-
       <body className={`${cormorant.variable} ${cinzel.variable} ${spaceMono.variable}`}>
         <script
           type="application/ld+json"
@@ -193,6 +237,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             ]),
           }}
         />
+
+        {/* ── Announcement Bar ── */}
+        <div className="hw-announce-bar">
+          <a href="https://hauntedwallpapers.com/blog/the-skeleton-collection-4k-visions-for-the-obsessed">
+            <span className="hw-announce-dot" aria-hidden="true" />
+            THE TOWN HAS BEEN WATCHING YOUR OBSESSION WITH SKELETONS...
+            <span className="hw-announce-dot" aria-hidden="true" />
+            ENTER BONE STREET
+            <span className="hw-announce-dot" aria-hidden="true" />
+          </a>
+        </div>
 
         <Header />
         <main className="content-wrapper">
