@@ -11893,3 +11893,26 @@ h4 { font-size: clamp(0.9rem, 1.5vw, 1.2rem); }
 /* 3. No dynamically loading fonts that cause FOUT */
 
 /* ── END PAGESPEED CONTRAST FIX PATCH ──────────────────────────────── */
+
+/* ── CURSOR OVERRIDE: dagger cursor on all pointer:fine devices ─────────────
+   Appended last so it beats every cursor:pointer rule above.
+   The dagger SVG is the cursor — no system cursor should ever show.
+   On touch/coarse devices this block doesn't apply (they have no cursor).  */
+@media (pointer: fine) {
+  *,
+  *::before,
+  *::after,
+  a,
+  button,
+  [role="button"],
+  input,
+  select,
+  textarea,
+  label,
+  [tabindex],
+  summary,
+  [cursor],
+  .cursor-pointer {
+    cursor: none !important;
+  }
+}
