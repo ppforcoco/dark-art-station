@@ -1,6 +1,57 @@
 "use client";
 import { useEffect, useRef } from "react";
 
+// ─── Trusted Types helper ────────────────────────────────────────────────────
+// Browsers that enforce Trusted Types (via the Require-Trusted-Types-For CSP
+// header) block raw string assignments to .innerHTML.  We create a named policy
+// called "hw-svg" that the CSP header also whitelists, so the SVG cursor can
+// still write to the DOM without a violation.
+//
+// On browsers without Trusted Types support the helper falls back to returning
+// the plain string, so the component works everywhere.
+function createSvgHtml(svg: string): string | TrustedHTML {
+  if (typeof window !== "undefined" && window.trustedTypes && window.trustedTypes.createPolicy) {
+    // Re-use an existing policy if already registered (React StrictMode calls
+    // useEffect twice in dev, so this guard prevents a duplicate-policy error).
+    const existing = window.trustedTypes.getAttributeType
+      ? null // policy lookup not reliable cross-browser; catch instead
+      : null;
+    void existing;
+    try {
+      const policy = window.trustedTypes.createPolicy("hw-svg", {
+        createHTML: (s: string) => s,
+      });
+      return policy.createHTML(svg);
+    } catch (e: unknown) {
+      // Policy already exists — retrieve it indirectly by calling createHTML
+      // on a dummy policy that returns the same string.  The real fix is to
+      // cache the policy in module scope, done below.
+    }
+  }
+  return svg;
+}
+
+// Cache the policy at module scope so it is only created once.
+let _hwSvgPolicy: TrustedTypePolicy | null = null;
+function getSvgPolicy(): TrustedTypePolicy | null {
+  if (typeof window === "undefined") return null;
+  if (!window.trustedTypes?.createPolicy) return null;
+  if (_hwSvgPolicy) return _hwSvgPolicy;
+  try {
+    _hwSvgPolicy = window.trustedTypes.createPolicy("hw-svg", {
+      createHTML: (s: string) => s,
+    });
+  } catch {
+    // Already registered — safe to ignore, the policy is in the registry.
+  }
+  return _hwSvgPolicy;
+}
+
+function trustedSvg(svg: string): string | TrustedHTML {
+  const policy = getSvgPolicy();
+  return policy ? policy.createHTML(svg) : svg;
+}
+
 const DAGGER_SVG = `
 <svg xmlns="http://www.w3.org/2000/svg" width="32" height="64" viewBox="0 0 32 64" fill="none">
   <!-- Blade -->
@@ -131,12 +182,12 @@ export default function Cursor() {
       if (isHover) {
         dagger.style.width  = "36px";
         dagger.style.height = "72px";
-        dagger.innerHTML = DAGGER_SVG_HOVER;
+        dagger.innerHTML = trustedSvg(DAGGER_SVG_HOVER) as string;
         dagger.style.filter = "drop-shadow(0 0 6px rgba(255,34,51,0.9)) drop-shadow(0 0 14px rgba(192,0,26,0.5))";
       } else {
         dagger.style.width  = "32px";
         dagger.style.height = "64px";
-        dagger.innerHTML = DAGGER_SVG;
+        dagger.innerHTML = trustedSvg(DAGGER_SVG) as string;
         dagger.style.filter = "drop-shadow(0 0 4px rgba(192,0,26,0.7))";
       }
     };

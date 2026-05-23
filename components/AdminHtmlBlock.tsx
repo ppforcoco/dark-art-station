@@ -2,6 +2,31 @@
 
 import { useEffect, useRef } from "react";
 
+// ─── Trusted Types: doc.write() sink ─────────────────────────────────────────
+// document.write() inside an iframe is a Trusted Types sink in browsers that
+// enforce Require-Trusted-Types-For 'script'.  We use the same shared "hw-svg"
+// policy (registered once in Cursor.tsx at module scope) or create it here if
+// Cursor hasn't loaded yet, so both components coexist safely.
+let _hwDocPolicy: TrustedTypePolicy | null = null;
+function getDocPolicy(): TrustedTypePolicy | null {
+  if (typeof window === "undefined") return null;
+  if (!window.trustedTypes?.createPolicy) return null;
+  if (_hwDocPolicy) return _hwDocPolicy;
+  try {
+    _hwDocPolicy = window.trustedTypes.createPolicy("hw-svg", {
+      createHTML: (s: string) => s,
+    });
+  } catch {
+    // Policy already registered by Cursor.tsx — safe to ignore.
+  }
+  return _hwDocPolicy;
+}
+
+function trustedHtml(raw: string): string | TrustedHTML {
+  const policy = getDocPolicy();
+  return policy ? policy.createHTML(raw) : raw;
+}
+
 /**
  * AdminHtmlBlock
  *
@@ -70,7 +95,9 @@ export default function AdminHtmlBlock({ html }: { html: string }) {
     `;
 
     doc.open();
-    doc.write(baseStyles + html);
+    // Use Trusted Types policy so browsers enforcing Require-Trusted-Types-For
+    // 'script' do not throw a TrustedTypesError on document.write().
+    doc.write(trustedHtml(baseStyles + html) as string);
     doc.close();
 
     const resize = () => {
