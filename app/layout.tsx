@@ -1,27 +1,56 @@
 // app/layout.tsx
-// FIXES:
-//  1. cormorant preload: false  — saves ~30 KB on first paint; body text renders fine with system font first
-//  2. GA consent script wrapped in try/catch — stops "Event processing aborted" console errors
-//  3. icon-192 + icon-512 added to <head> manifest link (PWA fix for NG/KE/MM/IN Android users)
-//  4. GTM preconnect uses crossOrigin="anonymous" — avoids extra CORS preflight round trip
+//
+// ROOT CAUSE ANALYSIS — why GA4 data was not arriving:
+//
+// PROBLEM 1 — DUAL LOAD (critical):
+//   The console log "js?id=G-R70T1BS71S" appearing as the script source for ALL
+//   GTM messages ("Tag fired", "Processing commands", "Processing GTAG command")
+//   means the GTM container itself contains a GA4 tag for G-R70T1BS71S.
+//   The old layout.tsx ALSO loaded gtag/js?id=G-R70T1BS71S directly.
+//   Two gtag instances for the same Measurement ID = gtag config fires twice,
+//   the second one collides with the first mid-validation → "Event processing
+//   aborted during validation" → no hits reach GA4.
+//   FIX: Remove the direct gtag/js script entirely. Load ONLY GTM via
+//   @next/third-parties/google GoogleTagManager. GTM handles GA4 internally.
+//
+// PROBLEM 2 — MANUAL SCRIPT vs @next/third-parties (secondary):
+//   next/script + manual gtag snippets don't integrate with Next.js App Router's
+//   streaming/hydration lifecycle. @next/third-parties/google is the official
+//   Next.js abstraction — it handles script ordering, strategy, and afterInteractive
+//   injection correctly and is maintained alongside Next.js releases.
+//
+// PROBLEM 3 — CONSENT RACE CONDITION (secondary):
+//   The old code set consent default in an inline <script dangerouslySetInnerHTML>
+//   that runs synchronously, but the gtag function it calls isn't defined yet at
+//   that point (gtag/js loads afterInteractive). The consent push went into a
+//   dataLayer that GTM then reprocessed after load — causing a second consent
+//   update to collide with the config command mid-validation.
+//   FIX: Consent default is set in a single beforeInteractive inline script via
+//   <Script strategy="beforeInteractive"> — this is the only correct place that
+//   guarantees consent is registered BEFORE any GTM/gtag processing begins.
+//
+// PROBLEM 4 — CSS MIME TYPE:
+//   This is a server/CDN header issue, not fixable in layout.tsx.
+//   Fix lives in next.config.ts (provided separately) — adds:
+//     Content-Type: text/css for /_next/static/css/*
+//   If deploying on Vercel: also add headers in vercel.json (provided separately).
+//   If behind Nginx: set types { text/css css; } in mime.types block.
 
 import type { Metadata, Viewport } from "next";
 import Script from "next/script";
+import { GoogleTagManager } from "@next/third-parties/google";
 import { Cinzel_Decorative, Cormorant_Garamond, Space_Mono } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ClientComponents from "@/components/ClientComponents";
 
-// ── Fonts: all use display:swap — no render blocking ──────────────────────
+// ── Fonts ──────────────────────────────────────────────────────────────────
 const cinzel = Cinzel_Decorative({
   weight: ["400", "700", "900"],
   subsets: ["latin"],
   variable: "--font-cinzel",
   display: "swap",
-  // preload: false — Cinzel only appears in headings below the fold on mobile.
-  // Removing preload saves ~25 KB of render-blocking font fetch on first paint.
-  // display:swap means headings render in system font first, Cinzel swaps in.
   preload: false,
 });
 
@@ -31,8 +60,6 @@ const cormorant = Cormorant_Garamond({
   style: ["normal", "italic"],
   variable: "--font-cormorant",
   display: "swap",
-  // FIX 1: was `preload: true` — deprioritised so body text doesn't block LCP.
-  // System serif renders first, Cormorant swaps in via display:swap with zero layout shift.
   preload: false,
 });
 
@@ -97,40 +124,60 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  const gaId = process.env.NEXT_PUBLIC_GA_ID;
+  // IMPORTANT: This must be your GTM Container ID (format: GTM-XXXXXXX), NOT your
+  // GA4 Measurement ID (G-XXXXXXXXXX). GTM manages GA4 internally via its container.
+  // Set NEXT_PUBLIC_GTM_ID=GTM-XXXXXXX in your .env.local / Vercel env vars.
+  // Delete NEXT_PUBLIC_GA_ID from your env — it's no longer used here.
+  const gtmId = process.env.NEXT_PUBLIC_GTM_ID as string | undefined;
 
   return (
     <html lang="en" dir="ltr" style={{ backgroundColor: "#0c0b14", color: "#e8e4dc" }}>
       <head>
-        {/* ── Inline: hides cursor before paint, no network request ──── */}
+        {/* ── Inline cursor hide — no network request ──────────────────── */}
         <style dangerouslySetInnerHTML={{ __html: `@media(pointer:fine){html,body,*,*::before,*::after{cursor:none!important}}` }} />
 
-        {/* ── Theme + Night mode — inline, no render blocking ─────────── */}
+        {/* ── Theme + Night mode — must run before paint ───────────────── */}
         <script dangerouslySetInnerHTML={{ __html: `(function(){try{var t=localStorage.getItem('hw-theme');if(t){document.documentElement.setAttribute('data-theme',t);if(t==='fog'){document.documentElement.style.backgroundColor='#ece9e2';document.documentElement.style.color='#1c1a17';}else if(t==='ghost'){document.documentElement.style.backgroundColor='#0d0d14';document.documentElement.style.color='#e0e0f8';}else{document.documentElement.style.backgroundColor='#0c0b14';document.documentElement.style.color='#e8e4dc';}}else{document.documentElement.style.backgroundColor='#0c0b14';document.documentElement.style.color='#e8e4dc';}}catch(e){}})();` }} />
         <script dangerouslySetInnerHTML={{ __html: `(function(){try{var h=new Date().getHours();if(h>=20||h<6)document.documentElement.setAttribute('data-night','true');}catch(e){}})();` }} />
 
-        {/* ── Preconnect: CDN first, GTM second ───────────────────────── */}
+        {/* ── Google Consent Mode v2 — MUST be set before GTM loads ───────
+            Strategy: beforeInteractive ensures this inline script runs
+            synchronously in <head> before ANY other script (including GTM).
+            This is the ONLY pattern that prevents the consent race condition.
+            GTM reads these values on init — no update needed, no collision.  */}
+        {gtmId && (
+          <Script id="consent-init" strategy="beforeInteractive">{`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('consent', 'default', {
+              ad_storage:             'denied',
+              ad_user_data:           'denied',
+              ad_personalization:     'denied',
+              analytics_storage:      'granted',
+              functionality_storage:  'granted',
+              personalization_storage:'denied',
+              security_storage:       'granted'
+            });
+            gtag('set', 'url_passthrough', true);
+          `}</Script>
+        )}
+
+        {/* ── Preconnects ─────────────────────────────────────────────── */}
         <link rel="preconnect" href="https://assets.hauntedwallpapers.com" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://assets.hauntedwallpapers.com" />
         <link rel="preconnect" href="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev" />
-        {gaId && <link rel="preconnect" href="https://www.googletagmanager.com" crossOrigin="anonymous" />}
-
-        {/* LCP preload moved to app/page.tsx — only needed on homepage.
-            Keeping it here caused browser warnings on every non-home page. */}
+        {gtmId && <link rel="preconnect" href="https://www.googletagmanager.com" crossOrigin="anonymous" />}
 
         {/* ── PWA & Icons ─────────────────────────────────────────────── */}
         <link rel="manifest" href="/manifest.json" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <link rel="icon" type="image/x-icon" href="/favicon.ico" />
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
-        {/* FIX 2: PWA icons explicitly referenced — Chrome Android (dominant in NG/KE/MM/IN)
-            requires icon-192.png + icon-512.png to exist in /public.
-            The manifest.json must also list these. See /public/manifest.json. */}
         <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png" />
         <link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png" />
 
-        {/* ── Pinterest Domain Verification ───────────────────────────── */}
+        {/* ── Pinterest verification ───────────────────────────────────── */}
         <meta name="p:domain_verify" content="6f1c92d3b0307e9bf30220a5068ce8af" />
 
         {/* ── Mobile meta ─────────────────────────────────────────────── */}
@@ -144,42 +191,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {process.env.NEXT_PUBLIC_GSC_VERIFICATION && (
           <meta name="google-site-verification" content={process.env.NEXT_PUBLIC_GSC_VERIFICATION} />
         )}
-
-        {/* ── Google Consent Mode v2 + GA4 ───────────────────────────────
-            FIXES:
-            1. analytics_storage = granted — was 'denied', blocking ALL engagement events
-            2. Removed wait_for_update — caused "Event processing aborted" errors
-            3. gtag defined once here, not re-declared in ga-init script
-            4. engagement_time_msec ensures user_engagement fires correctly      */}
-        {gaId && (
-          <>
-            <script dangerouslySetInnerHTML={{ __html: `
-              window.dataLayer=window.dataLayer||[];
-              function gtag(){dataLayer.push(arguments);}
-              gtag('consent','default',{
-                ad_storage:'denied',
-                ad_user_data:'denied',
-                ad_personalization:'denied',
-                analytics_storage:'granted',
-                functionality_storage:'granted',
-                personalization_storage:'denied',
-                security_storage:'granted'
-              });
-              gtag('set','url_passthrough',true);
-            `}} />
-            <Script
-              src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}
-              strategy="afterInteractive"
-            />
-            <Script id="ga-init" strategy="afterInteractive">{`
-              gtag('js', new Date());
-              gtag('config', '${gaId}', { send_page_view: true, engagement_time_msec: 100 });
-            `}</Script>
-          </>
-        )}
       </head>
+
       <body className={`${cormorant.variable} ${cinzel.variable} ${spaceMono.variable}`}>
-        {/* ── Structured Data — Organization + WebSite + BreadcrumbList ── */}
+        {/* ── Structured Data ──────────────────────────────────────────── */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -222,9 +237,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           {children}
         </main>
         <Footer />
-
-        {/* ── All client-only components in one deferred wrapper ───────── */}
         <ClientComponents />
+
+        {/* ── GTM via official @next/third-parties — loads afterInteractive ─
+            This is the ONLY analytics script in the entire app.
+            GA4 fires through the GTM container — do NOT add a separate
+            GoogleAnalytics component or any manual gtag/js script.          */}
+        {gtmId && <GoogleTagManager gtmId={gtmId} />}
       </body>
     </html>
   );
