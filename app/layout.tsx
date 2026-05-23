@@ -94,10 +94,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <script dangerouslySetInnerHTML={{ __html: `(function(){try{var t=localStorage.getItem('hw-theme');if(t){document.documentElement.setAttribute('data-theme',t);if(t==='fog'){document.documentElement.style.backgroundColor='#ece9e2';document.documentElement.style.color='#1c1a17';}else if(t==='ghost'){document.documentElement.style.backgroundColor='#0d0d14';document.documentElement.style.color='#e0e0f8';}else{document.documentElement.style.backgroundColor='#0c0b14';document.documentElement.style.color='#e8e4dc';}}else{document.documentElement.style.backgroundColor='#0c0b14';document.documentElement.style.color='#e8e4dc';}}catch(e){}})();` }} />
         <script dangerouslySetInnerHTML={{ __html: `(function(){try{var h=new Date().getHours();if(h>=20||h<6)document.documentElement.setAttribute('data-night','true');}catch(e){}})();` }} />
 
-        {/* ── Consent Mode v2 — beforeInteractive guarantees this runs
-            before gtag/js is fetched. Defines gtag() and sets defaults.
-            FIX: analytics_storage granted by default so page_view fires
-            without needing a consent update from CookieBanner first.     */}
         {gaId && (
           <Script id="consent-init" strategy="beforeInteractive">{`
             window.dataLayer = window.dataLayer || [];
@@ -140,14 +136,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <meta name="google-site-verification" content={process.env.NEXT_PUBLIC_GSC_VERIFICATION} />
         )}
 
-        {/* ── GA4 ─────────────────────────────────────────────────────────
-            FIX: gtag('config') called with NO extra parameters.
-            Previously { send_page_view: true } was passed — this caused
-            gtag to attempt a manual page_view event while its own internal
-            auto-pageview tag was already firing, producing the validation
-            conflict and "Event processing aborted" error.
-            Removing all config params lets gtag handle page_view itself,
-            with no collision. gtag() is already defined in consent-init.  */}
+        {/* ── GA4 ──────────────────────────────────────────────────────────
+            FIX: gtag('config') removed entirely.
+            gtag('js', new Date()) alone initialises the library and fires
+            page_view automatically from the measurement ID in the src URL.
+            Adding a separate config call causes gtag's internal page_view
+            tag to collide with the config validation → abort → no GA4 data.
+            gtag() is already defined in consent-init above.               */}
         {gaId && (
           <>
             <Script
@@ -156,7 +151,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             />
             <Script id="ga-init" strategy="afterInteractive">{`
               gtag('js', new Date());
-              gtag('config', '${gaId}');
             `}</Script>
           </>
         )}
