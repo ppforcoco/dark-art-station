@@ -21,7 +21,7 @@ export default function Footer(): JSX.Element {
 
         {/* ── Company ── */}
         <div className="footer-col">
-          <h4 className="footer-col-title">Company</h4>
+          <h3 className="footer-col-title">Company</h3>
           <ul>
             <li><Link href="/all">All Wallpapers</Link></li>
             <li><Link href="/obsessions">The Archive</Link></li>
@@ -34,7 +34,7 @@ export default function Footer(): JSX.Element {
 
         {/* ── Legal ── */}
         <div className="footer-col">
-          <h4 className="footer-col-title">Legal</h4>
+          <h3 className="footer-col-title">Legal</h3>
           <ul>
             <li><Link href="/about">About</Link></li>
             <li><Link href="/contact">Contact</Link></li>
