@@ -168,13 +168,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               gtag('set','url_passthrough',true);
             `}} />
             <Script
-              src={\`https://www.googletagmanager.com/gtag/js?id=${gaId}\`}
+              src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}
               strategy="afterInteractive"
             />
-            <Script id="ga-init" strategy="afterInteractive">{\`
+            <Script id="ga-init" strategy="afterInteractive">{`
               gtag('js', new Date());
               gtag('config', '${gaId}', { send_page_view: true, engagement_time_msec: 100 });
-            \`}</Script>
+            `}</Script>
           </>
         )}
       </head>
