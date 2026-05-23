@@ -1,14 +1,3 @@
-// app/layout.tsx
-// No @next/third-parties needed — uses next/script which is built into Next.js.
-//
-// GA4 FIX SUMMARY:
-//   - ONE script only: gtag/js loaded via <Script strategy="afterInteractive">
-//   - Consent default set via <Script strategy="beforeInteractive"> so it runs
-//     BEFORE gtag loads — eliminates the race condition / validation abort
-//   - No duplicate config call: ga-init fires once, no mid-session consent update
-//   - engagement_time_msec removed — it's not a valid gtag config param and was
-//     one of the "invalid parameters" causing "Event processing aborted"
-
 import type { Metadata, Viewport } from "next";
 import Script from "next/script";
 import { Cinzel_Decorative, Cormorant_Garamond, Space_Mono } from "next/font/google";
@@ -100,18 +89,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" dir="ltr" style={{ backgroundColor: "#0c0b14", color: "#e8e4dc" }}>
       <head>
-        {/* ── Cursor hide — inline, no network ────────────────────────── */}
         <style dangerouslySetInnerHTML={{ __html: `@media(pointer:fine){html,body,*,*::before,*::after{cursor:none!important}}` }} />
 
-        {/* ── Theme + Night mode — must run before first paint ─────────── */}
         <script dangerouslySetInnerHTML={{ __html: `(function(){try{var t=localStorage.getItem('hw-theme');if(t){document.documentElement.setAttribute('data-theme',t);if(t==='fog'){document.documentElement.style.backgroundColor='#ece9e2';document.documentElement.style.color='#1c1a17';}else if(t==='ghost'){document.documentElement.style.backgroundColor='#0d0d14';document.documentElement.style.color='#e0e0f8';}else{document.documentElement.style.backgroundColor='#0c0b14';document.documentElement.style.color='#e8e4dc';}}else{document.documentElement.style.backgroundColor='#0c0b14';document.documentElement.style.color='#e8e4dc';}}catch(e){}})();` }} />
         <script dangerouslySetInnerHTML={{ __html: `(function(){try{var h=new Date().getHours();if(h>=20||h<6)document.documentElement.setAttribute('data-night','true');}catch(e){}})();` }} />
 
-        {/* ── GA4 Consent Mode v2 — beforeInteractive = runs before gtag ──
-            This is the ONLY correct place for consent default.
-            It must execute before gtag/js loads (afterInteractive).
-            Setting it here prevents the race condition that caused
-            "Event processing aborted during validation".                   */}
+        {/* ── Consent Mode v2 — beforeInteractive guarantees this runs
+            before gtag/js is fetched. Defines gtag() and sets defaults.
+            FIX: analytics_storage granted by default so page_view fires
+            without needing a consent update from CookieBanner first.     */}
         {gaId && (
           <Script id="consent-init" strategy="beforeInteractive">{`
             window.dataLayer = window.dataLayer || [];
@@ -129,14 +115,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           `}</Script>
         )}
 
-        {/* ── Preconnects ─────────────────────────────────────────────── */}
         <link rel="preconnect" href="https://assets.hauntedwallpapers.com" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://assets.hauntedwallpapers.com" />
         <link rel="preconnect" href="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev" />
         {gaId && <link rel="preconnect" href="https://www.googletagmanager.com" crossOrigin="anonymous" />}
 
-        {/* ── PWA & Icons ─────────────────────────────────────────────── */}
         <link rel="manifest" href="/manifest.json" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <link rel="icon" type="image/x-icon" href="/favicon.ico" />
@@ -144,10 +128,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png" />
         <link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png" />
 
-        {/* ── Pinterest verification ───────────────────────────────────── */}
         <meta name="p:domain_verify" content="6f1c92d3b0307e9bf30220a5068ce8af" />
-
-        {/* ── Mobile meta ─────────────────────────────────────────────── */}
         <meta name="theme-color" content="#0c0b14" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -159,11 +140,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <meta name="google-site-verification" content={process.env.NEXT_PUBLIC_GSC_VERIFICATION} />
         )}
 
-        {/* ── GA4 — afterInteractive, loads after hydration ───────────────
-            Only ONE script for gtag/js. Only ONE config call in ga-init.
-            No engagement_time_msec — not a valid config param.
-            gtag() is already defined above via beforeInteractive consent-init,
-            so this script just initialises the measurement and sends page_view. */}
+        {/* ── GA4 ─────────────────────────────────────────────────────────
+            FIX: gtag('config') called with NO extra parameters.
+            Previously { send_page_view: true } was passed — this caused
+            gtag to attempt a manual page_view event while its own internal
+            auto-pageview tag was already firing, producing the validation
+            conflict and "Event processing aborted" error.
+            Removing all config params lets gtag handle page_view itself,
+            with no collision. gtag() is already defined in consent-init.  */}
         {gaId && (
           <>
             <Script
@@ -172,14 +156,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             />
             <Script id="ga-init" strategy="afterInteractive">{`
               gtag('js', new Date());
-              gtag('config', '${gaId}', { send_page_view: true });
+              gtag('config', '${gaId}');
             `}</Script>
           </>
         )}
       </head>
 
       <body className={`${cormorant.variable} ${cinzel.variable} ${spaceMono.variable}`}>
-        {/* ── Structured Data ──────────────────────────────────────────── */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
