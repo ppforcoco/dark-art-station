@@ -9,27 +9,7 @@ import { useEffect, useRef } from "react";
 //
 // On browsers without Trusted Types support the helper falls back to returning
 // the plain string, so the component works everywhere.
-function createSvgHtml(svg: string): string | TrustedHTML {
-  if (typeof window !== "undefined" && window.trustedTypes && window.trustedTypes.createPolicy) {
-    // Re-use an existing policy if already registered (React StrictMode calls
-    // useEffect twice in dev, so this guard prevents a duplicate-policy error).
-    const existing = window.trustedTypes.getAttributeType
-      ? null // policy lookup not reliable cross-browser; catch instead
-      : null;
-    void existing;
-    try {
-      const policy = window.trustedTypes.createPolicy("hw-svg", {
-        createHTML: (s: string) => s,
-      });
-      return policy.createHTML(svg);
-    } catch (e: unknown) {
-      // Policy already exists — retrieve it indirectly by calling createHTML
-      // on a dummy policy that returns the same string.  The real fix is to
-      // cache the policy in module scope, done below.
-    }
-  }
-  return svg;
-}
+
 
 // Cache the policy at module scope so it is only created once.
 let _hwSvgPolicy: TrustedTypePolicy | null = null;
