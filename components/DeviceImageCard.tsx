@@ -113,7 +113,6 @@ export default function DeviceImageCard({
             alt=""
             fill
             loading="lazy"
-            unoptimized
             className="object-cover"
             style={{
               filter: "blur(20px) brightness(0.18)",
@@ -182,7 +181,6 @@ export default function DeviceImageCard({
           alt=""
           fill
           loading="lazy"
-          unoptimized
           className="object-cover"
           style={{ filter: "blur(12px) brightness(0.25)", transform: "scale(1.1)" }}
           sizes={sizes}
@@ -269,7 +267,6 @@ export default function DeviceImageCard({
           fill
           loading={priority ? "eager" : "lazy"}
           priority={priority}
-          unoptimized
           className="object-cover transition-transform duration-500 group-hover:scale-105"
           sizes={sizes}
         />
