@@ -3003,22 +3003,18 @@ body::before {
   width: 100%;
   /* 9:19.5 approx iPhone aspect */
   aspect-ratio: 9 / 19.5;
-  background: linear-gradient(145deg, #252535 0%, #111120 40%, #06060f 100%);
+  /* Pure black — OLED infinite contrast, no gradient bleed onto wallpaper */
+  background: #000000;
   border-radius: 44px;
-  border: 1.5px solid rgba(255,255,255,0.09);
-  box-shadow:
-    /* Outer rim highlight */
-    0 0 0 1px rgba(0,0,0,0.95),
-    /* Deep 3D drop shadow */
-    0 40px 100px rgba(0,0,0,0.85),
-    0 16px 40px rgba(0,0,0,0.6),
-    /* Crimson ambient glow */
-    0 0 60px rgba(192,0,26,0.08),
-    /* Inner bezel depth */
-    inset 0 1px 0 rgba(255,255,255,0.07),
-    inset 0 -1px 0 rgba(0,0,0,0.6),
-    inset 2px 0 6px rgba(0,0,0,0.4),
-    inset -2px 0 6px rgba(0,0,0,0.4);
+  /* Spectral white rim — rgba(224,224,224,0.10) = ghostly moonlight at 10% */
+  border: 1.5px solid rgba(224,224,224,0.10);
+  /* drop-shadow is GPU-composited on mobile (unlike box-shadow).
+     Layered: deep lift shadow + spectral white glow (the "moonlight" effect) */
+  filter:
+    drop-shadow(0 20px 60px rgba(0,0,0,0.90))
+    drop-shadow(0 8px 20px rgba(0,0,0,0.70))
+    drop-shadow(0 0 28px rgba(224,224,224,0.07))
+    drop-shadow(0 0 8px rgba(224,224,224,0.04));
   overflow: hidden;
   padding: 14px 6px;
 }
@@ -3077,7 +3073,8 @@ body::before {
   height: 100%;
   overflow: hidden;
   border-radius: 34px;
-  background: #050505;
+  /* Pure black — critical for OLED infinite contrast when wallpaper loads */
+  background: #000000;
 }
 
 /* ── Monitor frame (PC) ── */
@@ -11203,10 +11200,16 @@ html[data-theme="ghost"] body {
   aspect-ratio: 9 / 19.5;
   border-radius: 16px;
   overflow: hidden;
-  box-shadow: 0 0 0 1px rgba(180,30,60,0.35), 0 8px 24px rgba(0,0,0,0.7);
-  border: 1px solid #1e1014;
+  /* Spectral white border — rgba(224,224,224,0.10), moonlight at 10% opacity */
+  border: 1.5px solid rgba(224,224,224,0.10);
+  /* drop-shadow replaces box-shadow — GPU composited, better mobile perf */
+  filter:
+    drop-shadow(0 8px 28px rgba(0,0,0,0.85))
+    drop-shadow(0 0 18px rgba(224,224,224,0.07))
+    drop-shadow(0 0 6px rgba(224,224,224,0.04));
   position: relative;
   flex-shrink: 0;
+  background: #000000;
 }
 .hw-phone-frame img {
   width: 100%;

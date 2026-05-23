@@ -107,7 +107,7 @@ export default function Cursor() {
     if (!document.getElementById(styleId)) {
       const s = document.createElement("style");
       s.id = styleId;
-      s.textContent = "*, *::before, *::after { cursor: none !important; }";
+      s.textContent = ["*, *::before, *::after { cursor: none !important; }","a, button, [role=\"button\"], input, select, textarea, label, [tabindex], summary { cursor: pointer !important; }"].join(" ");
       document.head.prepend(s);
     }
 
@@ -172,12 +172,15 @@ export default function Cursor() {
       }
     };
 
-    const onBlur        = () => { dagger.style.opacity = "0"; initialised = false; };
-    const onLeave       = () => { dagger.style.opacity = "0"; };
+    const onBlur        = () => { dagger.style.opacity = "0"; initialised = false; stopRaf(); };
+    const onLeave       = () => { dagger.style.opacity = "0"; stopRaf(); };
     const onEnter       = () => { if (initialised) dagger.style.opacity = "1"; };
-    const onContextMenu = () => { dagger.style.opacity = "0"; initialised = false; };
+    const onContextMenu = () => { dagger.style.opacity = "0"; initialised = false; stopRaf(); };
 
-    startRaf();
+    // Do NOT call startRaf() here — start it only on first mousemove.
+    // Starting unconditionally on mount causes the RAF to run continuously
+    // during page load (Lighthouse audit, touch devices, SSR hydration),
+    // which blocks the main thread and destroys TBT/performance scores.
 
     window.addEventListener("blur",          onBlur);
     document.addEventListener("mousemove",   onMove,       { passive: true });
