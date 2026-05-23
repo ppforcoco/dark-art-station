@@ -27,16 +27,25 @@ function glowDelay(seed: string): string {
   return `-${seconds.toFixed(1)}s`;
 }
 
-/** Shared animation style — references cardGlowRotate defined in globals.css */
-function animatedGlow(seed: string, durationSeconds = 8): React.CSSProperties {
+/** Spectral white glow — moonlight hitting glass.
+ *  Replaces the cardGlowRotate rainbow animation which was overriding
+ *  the CSS border and producing an unwanted red ring on the mockup.
+ *  Uses drop-shadow (GPU composited) instead of box-shadow.
+ *  The seed is kept as a parameter for API compatibility but is unused now.
+ */
+function animatedGlow(_seed: string, _durationSeconds = 8): React.CSSProperties {
   return {
-    animationName: "cardGlowRotate",
-    animationDuration: `${durationSeconds}s`,
-    animationTimingFunction: "linear",
-    animationIterationCount: "infinite",
-    animationDelay: glowDelay(seed),
-    // border-color is driven by the keyframe, but set a sane fallback:
-    border: "1px solid #8b0000",
+    // Spectral white border: #e0e0e0 at 10% — "moonlight hitting the phone"
+    border: "1.5px solid rgba(224,224,224,0.10)",
+    // Pure black background for OLED infinite contrast
+    background: "#000000",
+    // GPU-composited drop-shadow: deep lift + faint spectral white halo
+    filter: [
+      "drop-shadow(0 20px 60px rgba(0,0,0,0.90))",
+      "drop-shadow(0 8px 20px rgba(0,0,0,0.70))",
+      "drop-shadow(0 0 28px rgba(224,224,224,0.07))",
+      "drop-shadow(0 0 8px rgba(224,224,224,0.04))",
+    ].join(" "),
   };
 }
 
@@ -67,7 +76,7 @@ export default function DeviceMockup({ deviceType, children, seed = "" }: Device
     // For the monitor we put the glow on the bezel; stand inherits border color
     // via a slightly-offset variant of the same animation.
     const standGlow: React.CSSProperties = {
-      ...animatedGlow(seed + "-stand"),
+      border: "1.5px solid rgba(224,224,224,0.06)",
       opacity: 0.55,
     };
 
