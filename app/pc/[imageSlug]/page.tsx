@@ -86,11 +86,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 export async function generateStaticParams() {
-  const images = await db.image.findMany({
-    where: { collectionId: null, deviceType: "PC" },
-    select: { slug: true },
-  });
-  return images.map((img) => ({ imageSlug: img.slug }));
+  return [];
 }
 
 export default async function PcImagePage({ params }: PageProps) {

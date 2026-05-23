@@ -80,12 +80,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 export async function generateStaticParams() {
-  const collections = await db.collection.findMany({
-    select: { slug: true, images: { select: { slug: true } } },
-  });
-  return collections.flatMap((c) =>
-    c.images.map((img) => ({ slug: c.slug, imageSlug: img.slug }))
-  );
+  return [];
 }
 
 export default async function CollectionImagePage({ params }: PageProps) {

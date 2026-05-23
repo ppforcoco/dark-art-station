@@ -93,11 +93,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 export async function generateStaticParams() {
-  const images = await db.image.findMany({
-    where: { collectionId: null, deviceType: "ANDROID" },
-    select: { slug: true },
-  });
-  return images.map((img) => ({ imageSlug: img.slug }));
+  return [];
 }
 
 function PremiumVaultGate({ devicePath }: { devicePath: string }) {
