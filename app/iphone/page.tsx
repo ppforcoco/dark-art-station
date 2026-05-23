@@ -88,7 +88,14 @@ export default async function IphonePage({ searchParams }: PageProps) {
   const where = {
     collectionId: null,
     deviceType: "IPHONE" as const,
-    ...(tag ? { tags: { has: tag } } : { NOT: { tags: { has: "badge-new" } } }),
+    ...(tag ? {
+      OR: [
+        { tags: { has: tag } },
+        { tags: { has: tag.toLowerCase() } },
+        { tags: { has: tag.charAt(0).toUpperCase() + tag.slice(1).toLowerCase() } },
+        { title: { contains: tag, mode: "insensitive" } },
+      ],
+    } : { NOT: { tags: { has: "badge-new" } } }),
   };
 
   let pinnedImages: ImageItem[] = [];

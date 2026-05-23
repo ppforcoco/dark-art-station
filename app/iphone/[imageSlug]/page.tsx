@@ -274,40 +274,9 @@ export default async function IphoneImagePage({ params }: PageProps) {
               pageUrl={`${siteUrl}/iphone/${imageSlug}`}
             />
 
-            {/* Always rendered — real description or auto-generated fallback */}
-            <div
-              className="font-body text-[1rem] leading-relaxed description-html"
-              style={{ color: "var(--text-muted)", colorScheme: "dark" }}
-              dangerouslySetInnerHTML={{ __html: displayDescription }}
-            />
-
-            {/* ── Comments — only when enabled in admin ── */}
-            {image.commentsEnabled && (
-              <BirthdayComments imageId={image.id} imageTitle={image.title} />
-            )}
-
-            <div className="detail-fav-row">
-              <FavoriteButton
-                size="md"
-                className="detail-fav-inline"
-                item={{
-                  slug:   image.slug,
-                  title:  image.title,
-                  thumb:  thumbUrl,
-                  href:   `/iphone/${imageSlug}`,
-                  device: "iphone",
-                }}
-              />
-              <span className="detail-fav-label">Save to Favorites</span>
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* ── Tag Strip: "Choose Your Next Obsession" ───────────────────── */}
-      {image.tags.filter((t: string) => !t.startsWith("badge-")).length > 0 && (() => {
-        const displayTags = image.tags.filter((t: string) => !t.startsWith("badge-"));
-        return (
+      {(() => { const displayTags = image.tags.filter((t: string) => !t.startsWith("badge-")); return displayTags.length > 0 ? (
           <section className="hw-tag-strip">
             <p className="hw-tag-strip__label">Choose Your Next Obsession</p>
             <div className="hw-tag-strip__pills">
@@ -324,10 +293,9 @@ export default async function IphoneImagePage({ params }: PageProps) {
             </div>
             <style>{`
               .hw-tag-strip {
-                padding: clamp(20px,3vw,36px) clamp(16px,5vw,72px);
-                background: #050308;
-                border-top: 1px solid rgba(255,255,255,0.04);
-                text-align: center;
+                padding: 14px 0 4px;
+                background: transparent;
+                text-align: left;
               }
               .hw-tag-strip__label {
                 font-family: var(--font-space, monospace);
@@ -375,8 +343,38 @@ export default async function IphoneImagePage({ params }: PageProps) {
               }
             `}</style>
           </section>
-        );
-      })()}
+        ) : null;
+      })()
+
+            {/* Always rendered — real description or auto-generated fallback */}
+            <div
+              className="font-body text-[1rem] leading-relaxed description-html"
+              style={{ color: "var(--text-muted)", colorScheme: "dark" }}
+              dangerouslySetInnerHTML={{ __html: displayDescription }}
+            />
+
+            {/* ── Comments — only when enabled in admin ── */}
+            {image.commentsEnabled && (
+              <BirthdayComments imageId={image.id} imageTitle={image.title} />
+            )}
+
+            <div className="detail-fav-row">
+              <FavoriteButton
+                size="md"
+                className="detail-fav-inline"
+                item={{
+                  slug:   image.slug,
+                  title:  image.title,
+                  thumb:  thumbUrl,
+                  href:   `/iphone/${imageSlug}`,
+                  device: "iphone",
+                }}
+              />
+              <span className="detail-fav-label">Save to Favorites</span>
+            </div>
+          </div>
+        </div>
+      </section>
 
       <style>{`
         .iphone-detail-image-wrap {

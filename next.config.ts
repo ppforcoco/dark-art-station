@@ -6,8 +6,10 @@ const ASSETS   = "https://assets.hauntedwallpapers.com";
 const GTM      = "https://www.googletagmanager.com";
 const GA       = "https://www.google-analytics.com";
 const GSTATIC  = "https://www.gstatic.com";
-const ADSENSE  = "https://pagead2.googlesyndication.com";
-const ADSBYGOOGLE = "https://adsbygoogle.js";
+const ADSENSE      = "https://pagead2.googlesyndication.com";
+const ADSBYGOOGLE  = "https://adsbygoogle.js";
+const CF_BEACON    = "https://static.cloudflareinsights.com";  // Cloudflare Web Analytics
+const CF_INSIGHTS  = "https://cloudflareinsights.com";         // Cloudflare beacon endpoint
 
 // ─── Content Security Policy ────────────────────────────────────────────────
 //
@@ -27,11 +29,13 @@ const ADSBYGOOGLE = "https://adsbygoogle.js";
 //
 const CSP = [
   `default-src 'self'`,
-  `script-src 'self' 'unsafe-inline' ${GTM} ${GA} ${ADSENSE}`,
+  `script-src 'self' 'unsafe-inline' ${GTM} ${GA} ${ADSENSE} ${CF_BEACON}`,
+  // Explicit script-src-elem so browsers don't fall back to script-src warning
+  `script-src-elem 'self' 'unsafe-inline' ${GTM} ${GA} ${ADSENSE} ${CF_BEACON}`,
   `style-src 'self' 'unsafe-inline' https://fonts.googleapis.com`,
   `font-src 'self' https://fonts.gstatic.com`,
   `img-src 'self' data: blob: ${R2_CDN} ${ASSETS} ${GA} https://www.google.com`,
-  `connect-src 'self' ${R2_CDN} ${ASSETS} ${GTM} ${GA} ${GSTATIC}`,
+  `connect-src 'self' ${R2_CDN} ${ASSETS} ${GTM} ${GA} ${GSTATIC} ${CF_BEACON} ${CF_INSIGHTS}`,
   `media-src 'self' ${R2_CDN} ${ASSETS}`,
   `frame-src 'self'`,
   `frame-ancestors 'none'`,

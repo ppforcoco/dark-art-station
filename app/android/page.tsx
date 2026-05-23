@@ -78,7 +78,14 @@ export default async function AndroidPage({ searchParams }: PageProps) {
     collectionId: null,
     isAdult: false,
     deviceType: "ANDROID" as const,
-    ...(tag ? { tags: { has: tag } } : {}),
+    ...(tag ? {
+      OR: [
+        { tags: { has: tag } },
+        { tags: { has: tag.toLowerCase() } },
+        { tags: { has: tag.charAt(0).toUpperCase() + tag.slice(1).toLowerCase() } },
+        { title: { contains: tag, mode: "insensitive" } },
+      ],
+    } : {}),
   };
 
   let pinnedImages: ImageItem[] = [];
