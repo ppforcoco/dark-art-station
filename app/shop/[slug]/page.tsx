@@ -73,8 +73,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 export async function generateStaticParams() {
-  const collections = await db.collection.findMany({ select: { slug: true } });
-  return collections.map((c) => ({ slug: c.slug }));
+  return [];
 }
 
 export default async function CollectionPage({ params }: PageProps) {
