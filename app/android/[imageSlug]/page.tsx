@@ -19,6 +19,7 @@ import KeyboardNav from "@/components/KeyboardNav";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import PremiumCountdown from "@/components/PremiumCountdown";
 import BirthdayComments from "@/components/BirthdayComments";
+import SummonRandomTag from "@/components/SummonRandomTag";
 
 export const dynamicParams = true;
 export const revalidate = 3600;
@@ -406,20 +407,7 @@ export default async function AndroidImagePage({ params }: PageProps) {
                   #{tag}
                 </a>
               ))}
-              {/* Electric Purple — Summon Random */}
-              {/* Pick a random tag from this image and navigate to it */}
-              <button
-                className="hw-tag-pill hw-tag-pill--random"
-                title="Summon a random tag"
-                onClick={() => {
-                  const pool = displayTags.filter((t: string) => t.length > 0);
-                  if (!pool.length) return;
-                  const picked = pool[Math.floor(Math.random() * pool.length)];
-                  window.location.href = `/android?tag=${encodeURIComponent(picked)}`;
-                }}
-              >
-                #Summon-Random
-              </button>
+              <SummonRandomTag tags={displayTags} device="android" />
             </div>
             <style>{`
               .hw-tag-strip {

@@ -19,6 +19,7 @@ import KeyboardNav from "@/components/KeyboardNav";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import PremiumLockedGateClient from "@/components/PremiumLockedGate";
 import BirthdayComments from "@/components/BirthdayComments";
+import SummonRandomTag from "@/components/SummonRandomTag";
 
 // ─── Premium cycle constants (server-side, no flash) ────────────────────────
 const EPOCH_MS  = Date.UTC(2025, 0, 1, 0, 0, 0);
@@ -319,19 +320,7 @@ export default async function IphoneImagePage({ params }: PageProps) {
                   #{tag}
                 </a>
               ))}
-              {/* Pick a random tag from this image and navigate to it */}
-              <button
-                className="hw-tag-pill hw-tag-pill--random"
-                title="Summon a random tag"
-                onClick={() => {
-                  const pool = displayTags.filter((t: string) => t.length > 0);
-                  if (!pool.length) return;
-                  const picked = pool[Math.floor(Math.random() * pool.length)];
-                  window.location.href = `/iphone?tag=${encodeURIComponent(picked)}`;
-                }}
-              >
-                #Summon-Random
-              </button>
+              <SummonRandomTag tags={displayTags} device="iphone" />
             </div>
             <style>{`
               .hw-tag-strip {
