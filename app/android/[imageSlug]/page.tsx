@@ -21,6 +21,8 @@ import PremiumCountdown from "@/components/PremiumCountdown";
 import BirthdayComments from "@/components/BirthdayComments";
 import SummonRandomTag from "@/components/SummonRandomTag";
 
+export const dynamic = "force-dynamic";
+
 export const dynamicParams = true;
 export const revalidate = 3600;
 

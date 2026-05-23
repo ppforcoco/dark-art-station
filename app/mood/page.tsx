@@ -6,6 +6,8 @@ import MoodClient from "./MoodClient";
 import { MOODS } from "./moods";
 import type { MoodId, MoodImage } from "./moods";
 
+export const dynamic = "force-dynamic";
+
 export const revalidate = 300;
 
 export const metadata: Metadata = {

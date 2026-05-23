@@ -1,6 +1,8 @@
 "use client";
 import React, { useState, useEffect, useCallback, useRef } from "react";
 
+export const dynamic = "force-dynamic";
+
 interface Analytics { totalDownloads:number;todayDownloads:number;weekDownloads:number;monthDownloads:number;imageDownloads:number;collectionDownloads:number;downloadsPerDay:{date:string;count:number}[];totalPageViews:number;topPageViews:{title:string;slug:string;device:string|null;views:number}[];topWallpapers:{title:string;slug:string;device:string|null;downloads:number}[];topCollections:{title:string;slug:string;downloads:number}[];totalBlogPosts:number;publishedBlogPosts:number;blogPosts:{title:string;slug:string;label:string;date:string;wordCount:number}[];deviceBreakdown:{IPHONE:number;ANDROID:number;PC:number;OTHER:number};recentActivity:{time:string;title:string;slug:string;device:string|null;type:string}[]; }
 interface Post { slug:string;title:string;label:string;content?:string;featuredImage?:string|null;createdAt:string; }
 interface ImageRecord { id:string;slug:string;title:string;r2Key:string;highResKey:string|null;description:string|null;altText:string|null;metaDescription:string|null;tags:string[];isAdult:boolean;deviceType:string|null;viewCount:number;sortOrder?:number|null;collection?:{title:string}|null; }

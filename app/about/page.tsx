@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 // AdSlot removed — disabled pending AdSense approval
 import { getPageContent } from "@/lib/db";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "About — HauntedWallpapers",
   description:

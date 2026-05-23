@@ -17,6 +17,8 @@ import WallpaperTips from "@/components/WallpaperTips";
 import KeyboardNav from "@/components/KeyboardNav";
 import Breadcrumbs from "@/components/Breadcrumbs";
 
+export const dynamic = "force-dynamic";
+
 export const dynamicParams = true;
 export const revalidate = 3600;
 

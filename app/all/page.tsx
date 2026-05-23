@@ -5,6 +5,8 @@ import { db } from "@/lib/db";
 import { getPublicUrl } from "@/lib/r2";
 import AllPageClient from "./AllPageClient";
 
+export const dynamic = "force-dynamic";
+
 export const revalidate = 300;
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";

@@ -5,6 +5,8 @@ import { searchWallpapers, type SearchResultItem } from "@/lib/db";
 import Pagination from "@/components/Pagination";
 import SearchPageClient from "@/components/SearchPageClient";
 
+export const dynamic = "force-dynamic";
+
 const PAGE_SIZE = 24;
 
 export async function generateMetadata(

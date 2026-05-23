@@ -21,6 +21,8 @@ import PremiumLockedGateClient from "@/components/PremiumLockedGate";
 import BirthdayComments from "@/components/BirthdayComments";
 import SummonRandomTag from "@/components/SummonRandomTag";
 
+export const dynamic = "force-dynamic";
+
 // ─── Premium cycle constants (server-side, no flash) ────────────────────────
 const EPOCH_MS  = Date.UTC(2025, 0, 1, 0, 0, 0);
 const CYCLE_MS  = 48 * 60 * 60 * 1000;

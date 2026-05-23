@@ -10,6 +10,8 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 import { sanitizeAdminHtml } from "@/lib/sanitize-html";
 import { isPremiumLocked } from "@/lib/premium-lock";
 
+export const dynamic = "force-dynamic";
+
 // District slug → tag mapping
 // When a collection slug matches a district, standalone images with the
 // district tag are merged in so they appear on the /shop/[slug] page.

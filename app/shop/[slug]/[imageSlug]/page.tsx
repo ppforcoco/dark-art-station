@@ -16,6 +16,8 @@ import WallpaperReactions from "@/components/WallpaperReactions";
 import RecentlyViewed from "@/components/RecentlyViewed";
 import { shouldCountPageView } from "@/lib/analytics-filter";
 
+export const dynamic = "force-dynamic";
+
 export const dynamicParams = true;
 export const revalidate = 0; // always fetch fresh from DB
 

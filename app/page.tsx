@@ -13,6 +13,8 @@ import ProtectedImg from "@/components/ProtectedImg";
 import ProtectionOverlay from "@/components/ProtectionOverlay";
 import PremiumCountdown from "@/components/PremiumCountdown";
 
+export const dynamic = "force-dynamic";
+
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
 const OG_IMAGE = `${SITE_URL}/og-image.jpg`;
 

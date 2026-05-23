@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useRef, useCallback, useEffect } from "react";
+
+export const dynamic = "force-dynamic";
 // AdSlot removed — disabled pending AdSense approval
 
 type ActiveTool = "resizer" | "darkener" | "upscaler" | "text" | "blur" | "split" | "oled" | "lockscreen";

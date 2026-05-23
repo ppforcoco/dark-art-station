@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import ContactForm from "@/components/ContactForm";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Contact — HauntedWallpapers",
   description:

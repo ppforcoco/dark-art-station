@@ -5,6 +5,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { getFavorites, toggleFavorite, type FavoriteItem } from "@/components/FavoriteButton";
 
+export const dynamic = "force-dynamic";
+
 export default function FavoritesPage() {
   const [items, setItems] = useState<FavoriteItem[]>([]);
   const [loaded, setLoaded] = useState(false);

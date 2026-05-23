@@ -6,6 +6,8 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 
+export const dynamic = "force-dynamic";
+
 // ── The 6 fixed districts — mirrors app/page.tsx ────────────────────────────
 const DISTRICTS = [
   {
