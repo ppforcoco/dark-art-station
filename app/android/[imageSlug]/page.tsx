@@ -359,78 +359,23 @@ export default async function AndroidImagePage({ params }: PageProps) {
               pageUrl={`${siteUrl}/android/${imageSlug}`}
             />
 
-
-      {/* ── Tag Strip: "Choose Your Next Obsession" ───────────────────── */}
-      {(() => { const displayTags = image.tags.filter((t: string) => !t.startsWith("badge-")); return displayTags.length > 0 ? (
-          <section className="hw-tag-strip">
-            <p className="hw-tag-strip__label">Choose Your Next Obsession</p>
-            <div className="hw-tag-strip__pills">
-              {displayTags.map((tag: string) => (
-                <a
-                  key={tag}
-                  href={`/android?tag=${encodeURIComponent(tag)}`}
-                  className="hw-tag-pill"
-                >
-                  #{tag}
-                </a>
-              ))}
-              <SummonRandomTag tags={displayTags} device="android" />
-            </div>
-            <style>{`
-              .hw-tag-strip {
-                padding: 14px 0 4px;
-                background: transparent;
-                text-align: left;
-              }
-              .hw-tag-strip__label {
-                font-family: var(--font-space, monospace);
-                font-size: 0.6rem;
-                letter-spacing: 0.28em;
-                text-transform: uppercase;
-                color: rgba(224,224,224,0.35);
-                margin: 0 0 14px;
-              }
-              .hw-tag-strip__pills {
-                display: flex;
-                flex-wrap: wrap;
-                gap: 8px;
-                justify-content: center;
-              }
-              .hw-tag-pill {
-                display: inline-block;
-                padding: 6px 14px;
-                border-radius: 2px;
-                font-family: var(--font-space, monospace);
-                font-size: 0.72rem;
-                letter-spacing: 0.1em;
-                text-transform: uppercase;
-                text-decoration: none;
-                color: rgba(224,224,224,0.7);
-                border: 1px solid rgba(224,224,224,0.12);
-                background: rgba(255,255,255,0.03);
-                transition: color 0.2s, border-color 0.2s, background 0.2s;
-              }
-              .hw-tag-pill:hover {
-                color: #fff;
-                border-color: rgba(192,0,26,0.6);
-                background: rgba(192,0,26,0.08);
-              }
-              /* Electric Purple — the random summoner pill */
-              .hw-tag-pill--random {
-                color: #c084fc;
-                border-color: rgba(168,85,247,0.35);
-                background: rgba(168,85,247,0.06);
-              }
-              .hw-tag-pill--random:hover {
-                color: #e0b4ff;
-                border-color: rgba(192,100,255,0.7);
-                background: rgba(168,85,247,0.15);
-                box-shadow: 0 0 18px rgba(168,85,247,0.25);
-              }
-            `}</style>
-          </section>
-        ) : null;
-      })()
+            {/* ── Tag Strip ── */}
+            {image.tags.filter((t: string) => !t.startsWith("badge-")).length > 0 && (
+              <div style={{ padding: "14px 0 4px" }}>
+                <p style={{ fontFamily: "var(--font-space, monospace)", fontSize: "0.55rem", letterSpacing: "0.28em", textTransform: "uppercase" as const, color: "rgba(224,224,224,0.3)", margin: "0 0 10px" }}>
+                  Choose Your Next Obsession
+                </p>
+                <div style={{ display: "flex", flexWrap: "wrap" as const, gap: "8px" }}>
+                  {image.tags.filter((t: string) => !t.startsWith("badge-")).map((tag: string) => (
+                    <a key={tag} href={`/android?tag=${encodeURIComponent(tag)}`}
+                      style={{ display: "inline-block", padding: "5px 12px", borderRadius: "2px", fontFamily: "var(--font-space, monospace)", fontSize: "0.68rem", letterSpacing: "0.1em", textTransform: "uppercase" as const, textDecoration: "none", color: "rgba(224,224,224,0.7)", border: "1px solid rgba(224,224,224,0.12)", background: "rgba(255,255,255,0.03)" }}>
+                      #{tag}
+                    </a>
+                  ))}
+                  <SummonRandomTag tags={image.tags.filter((t: string) => !t.startsWith("badge-"))} device="android" />
+                </div>
+              </div>
+            )}
 
             {/* Always rendered — real description or auto-generated fallback */}
             <div
