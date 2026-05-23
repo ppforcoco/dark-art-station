@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import AdSlot from "@/components/AdSlot";
 
 interface Post {
   id: string;
@@ -194,7 +193,6 @@ export default function BlogPostClient({ post, allPosts }: { post: Post; allPost
         </header>
 
         <div style={{ marginBottom: "32px" }}>
-          <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_MAIN} width={728} height={90} />
         </div>
 
         <div
@@ -224,7 +222,6 @@ export default function BlogPostClient({ post, allPosts }: { post: Post; allPost
 
         {/* ── Mid ad ── */}
         <div style={{ margin: "48px 0 40px" }}>
-          <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_SIDEBAR} width={728} height={90} />
         </div>
 
         {/* ── Related posts ── */}

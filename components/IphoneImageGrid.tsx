@@ -94,9 +94,6 @@ export default function IphoneImageGrid({
 
         return (
           <>
-            {insertAfter !== undefined && idx === insertAfter && (
-              <div key={`ad-${idx}`} className="hw-ad-slot" aria-label="Advertisement" />
-            )}
             <Link
               key={img.id}
               href={`${hrefPrefix}/${img.slug}`}

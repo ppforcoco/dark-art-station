@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import AdSlot from "@/components/AdSlot";
 import { db } from "@/lib/db";
 import BlogPostClient from "./BlogPostClient";
 

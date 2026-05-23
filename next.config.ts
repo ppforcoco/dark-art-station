@@ -6,8 +6,6 @@ const ASSETS   = "https://assets.hauntedwallpapers.com";
 const GTM      = "https://www.googletagmanager.com";
 const GA       = "https://www.google-analytics.com";
 const GSTATIC  = "https://www.gstatic.com";
-const ADSENSE      = "https://pagead2.googlesyndication.com";
-const ADSBYGOOGLE  = "https://adsbygoogle.js";
 const CF_BEACON    = "https://static.cloudflareinsights.com";  // Cloudflare Web Analytics
 const CF_INSIGHTS  = "https://cloudflareinsights.com";         // Cloudflare beacon endpoint
 
@@ -29,9 +27,9 @@ const CF_INSIGHTS  = "https://cloudflareinsights.com";         // Cloudflare bea
 //
 const CSP = [
   `default-src 'self'`,
-  `script-src 'self' 'unsafe-inline' ${GTM} ${GA} ${ADSENSE} ${CF_BEACON}`,
+  `script-src 'self' 'unsafe-inline' ${GTM} ${GA} ${CF_BEACON}`,
   // Explicit script-src-elem so browsers don't fall back to script-src warning
-  `script-src-elem 'self' 'unsafe-inline' ${GTM} ${GA} ${ADSENSE} ${CF_BEACON}`,
+  `script-src-elem 'self' 'unsafe-inline' ${GTM} ${GA} ${CF_BEACON}`,
   `style-src 'self' 'unsafe-inline' https://fonts.googleapis.com`,
   `font-src 'self' https://fonts.gstatic.com`,
   `img-src 'self' data: blob: ${R2_CDN} ${ASSETS} ${GA} https://www.google.com`,

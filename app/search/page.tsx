@@ -160,10 +160,6 @@ export default async function SearchPage({
   return (
     <main className="search-page">
 
-      {/* Top ad */}
-      <div className="search-ad-top">
-      </div>
-
       {/* Big live search bar */}
       <SearchPageClient initialQuery={query} />
 
@@ -239,19 +235,7 @@ export default async function SearchPage({
           )}
         </section>
 
-        {/* Sidebar ad */}
-        <aside className="search-sidebar">
-          <div className="search-sidebar-ad-sticky">
-            <p className="search-sidebar-label">Sponsored</p>
-          </div>
-        </aside>
       </div>
-
-      {/* Bottom ad */}
-      {(hasResults || query) && (
-        <div className="search-ad-bottom">
-        </div>
-      )}
 
     </main>
   );
