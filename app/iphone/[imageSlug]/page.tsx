@@ -303,6 +303,92 @@ export default async function IphoneImagePage({ params }: PageProps) {
         </div>
       </section>
 
+      {/* ── Tag Strip: "Choose Your Next Obsession" ───────────────────── */}
+      {image.tags.filter((t: string) => !t.startsWith("badge-")).length > 0 && (() => {
+        const displayTags = image.tags.filter((t: string) => !t.startsWith("badge-"));
+        return (
+          <section className="hw-tag-strip">
+            <p className="hw-tag-strip__label">Choose Your Next Obsession</p>
+            <div className="hw-tag-strip__pills">
+              {displayTags.map((tag: string) => (
+                <a
+                  key={tag}
+                  href={`/iphone?tag=${encodeURIComponent(tag)}`}
+                  className="hw-tag-pill"
+                >
+                  #{tag}
+                </a>
+              ))}
+              {/* Pick a random tag from this image and navigate to it */}
+              <button
+                className="hw-tag-pill hw-tag-pill--random"
+                title="Summon a random tag"
+                onClick={() => {
+                  const pool = displayTags.filter((t: string) => t.length > 0);
+                  if (!pool.length) return;
+                  const picked = pool[Math.floor(Math.random() * pool.length)];
+                  window.location.href = `/iphone?tag=${encodeURIComponent(picked)}`;
+                }}
+              >
+                #Summon-Random
+              </button>
+            </div>
+            <style>{`
+              .hw-tag-strip {
+                padding: clamp(20px,3vw,36px) clamp(16px,5vw,72px);
+                background: #050308;
+                border-top: 1px solid rgba(255,255,255,0.04);
+                text-align: center;
+              }
+              .hw-tag-strip__label {
+                font-family: var(--font-space, monospace);
+                font-size: 0.6rem;
+                letter-spacing: 0.28em;
+                text-transform: uppercase;
+                color: rgba(224,224,224,0.35);
+                margin: 0 0 14px;
+              }
+              .hw-tag-strip__pills {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 8px;
+                justify-content: center;
+              }
+              .hw-tag-pill {
+                display: inline-block;
+                padding: 6px 14px;
+                border-radius: 2px;
+                font-family: var(--font-space, monospace);
+                font-size: 0.72rem;
+                letter-spacing: 0.1em;
+                text-transform: uppercase;
+                text-decoration: none;
+                color: rgba(224,224,224,0.7);
+                border: 1px solid rgba(224,224,224,0.12);
+                background: rgba(255,255,255,0.03);
+                transition: color 0.2s, border-color 0.2s, background 0.2s;
+              }
+              .hw-tag-pill:hover {
+                color: #fff;
+                border-color: rgba(192,0,26,0.6);
+                background: rgba(192,0,26,0.08);
+              }
+              .hw-tag-pill--random {
+                color: #c084fc;
+                border-color: rgba(168,85,247,0.35);
+                background: rgba(168,85,247,0.06);
+              }
+              .hw-tag-pill--random:hover {
+                color: #e0b4ff;
+                border-color: rgba(192,100,255,0.7);
+                background: rgba(168,85,247,0.15);
+                box-shadow: 0 0 18px rgba(168,85,247,0.25);
+              }
+            `}</style>
+          </section>
+        );
+      })()}
+
       <style>{`
         .iphone-detail-image-wrap {
           display: flex;

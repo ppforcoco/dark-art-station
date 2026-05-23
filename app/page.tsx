@@ -522,6 +522,33 @@ export default async function Home() {
               <h2 className="wotd-title">{wotd.title}</h2>
             </div>
 
+            {/* ── Color Filter Dots ─────────────────────────────────────── */}
+            <div className="wotd-color-filter" aria-label="Filter by color">
+              <span className="wotd-color-filter__label">Filter by Color</span>
+              <div className="wotd-color-filter__dots">
+                {[
+                  { color: "#e0001f", tag: "red",    label: "Red",    glow: "rgba(224,0,31,0.6)"   },
+                  { color: "#9333ea", tag: "purple",  label: "Purple", glow: "rgba(147,51,234,0.6)" },
+                  { color: "#22c55e", tag: "green",   label: "Green",  glow: "rgba(34,197,94,0.6)"  },
+                  { color: "#111111", tag: "black",   label: "Black",  glow: "rgba(180,180,180,0.4)", border: "rgba(255,255,255,0.2)" },
+                ].map(({ color, tag, label, glow, border }) => (
+                  <a
+                    key={tag}
+                    href={`/android?tag=${encodeURIComponent(tag)}`}
+                    className="wotd-color-dot"
+                    aria-label={label}
+                    title={label}
+                    style={{
+                      "--dot-color": color,
+                      "--dot-glow":  glow,
+                      "--dot-border": border ?? color,
+                      background: color,
+                    } as React.CSSProperties}
+                  />
+                ))}
+              </div>
+            </div>
+
             <style>{`
               .wotd-section {
                 position: relative;
@@ -598,10 +625,50 @@ export default async function Home() {
                 border-radius: 50%;
                 background: #e0001f;
                 animation: wotdPulse 2.4s ease-in-out infinite;
+                transition: box-shadow 0.3s ease, transform 0.3s ease;
               }
               @keyframes wotdPulse {
                 0%, 100% { opacity: 1; }
                 50%       { opacity: 0.6; }
+              }
+              .wotd-eyebrow:hover .wotd-eyebrow__dot {
+                box-shadow: 0 0 12px 4px rgba(224,0,31,0.9), 0 0 24px rgba(224,0,31,0.4);
+                transform: scale(1.8);
+                animation: none;
+              }
+              /* ── Color Filter Dots ────────────────────────────── */
+              .wotd-color-filter {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 10px;
+                margin-top: 22px;
+              }
+              .wotd-color-filter__label {
+                font-family: var(--font-space, monospace);
+                font-size: 0.55rem;
+                letter-spacing: 0.28em;
+                text-transform: uppercase;
+                color: rgba(224,224,224,0.28);
+              }
+              .wotd-color-filter__dots {
+                display: flex;
+                gap: 16px;
+                align-items: center;
+              }
+              .wotd-color-dot {
+                display: block;
+                width: 15px;
+                height: 15px;
+                border-radius: 50%;
+                border: 1.5px solid var(--dot-border, var(--dot-color));
+                transition: box-shadow 0.22s ease, transform 0.22s ease;
+              }
+              .wotd-color-dot:hover {
+                transform: scale(1.5);
+                box-shadow:
+                  0 0 12px 4px var(--dot-glow),
+                  0 0 28px var(--dot-glow);
               }
               .wotd-top-frame {
                 display: flex;
