@@ -9401,13 +9401,13 @@ button:active:not(:disabled) { transform: translateY(0px) scale(0.98) !important
   animation: dtFlicker 10s ease-in-out 5s infinite;
 }
 .dt-manifesto__em {
-  color: var(--dt-crimson);
+  color: #ff6b6b;
   font-style: italic;
 }
 .dt-manifesto__body {
   font-family: var(--dt-font-body);
   font-size: 1.1rem;
-  color: #8a7fa0;
+  color: #b8adc8;
   line-height: 1.8;
   max-width: 600px;
 }
