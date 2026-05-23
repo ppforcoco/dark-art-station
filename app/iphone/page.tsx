@@ -3,6 +3,7 @@ import React from "react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { db, getPageContent } from "@/lib/db";
+import { Prisma } from "@prisma/client";
 import { getPublicUrl } from "@/lib/r2";
 import Pagination from "@/components/Pagination";
 import WallpaperTips from "@/components/WallpaperTips";
@@ -93,7 +94,7 @@ export default async function IphonePage({ searchParams }: PageProps) {
         { tags: { has: tag } },
         { tags: { has: tag.toLowerCase() } },
         { tags: { has: tag.charAt(0).toUpperCase() + tag.slice(1).toLowerCase() } },
-        { title: { contains: tag, mode: "insensitive" } },
+        { title: { contains: tag, mode: Prisma.QueryMode.insensitive } },
       ],
     } : { NOT: { tags: { has: "badge-new" } } }),
   };
