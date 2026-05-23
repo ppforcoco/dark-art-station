@@ -98,6 +98,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             70%{opacity:.88}
             72%{opacity:1}
           }
+
+          /* ── Announcement Bar ── */
           .hw-announce-bar {
             position: sticky;
             top: 0;
@@ -114,6 +116,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             display: flex;
             align-items: center;
             justify-content: center;
+            gap: 0;
             width: 100%;
             height: 100%;
             text-decoration: none;
@@ -123,6 +126,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             font-weight: 700;
             letter-spacing: 0.12em;
             text-transform: uppercase;
+            /* KEY FIX: allow wrapping on mobile so text auto-adjusts */
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -138,14 +142,34 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             height: 6px;
             border-radius: 50%;
             background: #dc2626;
-            margin: 0 10px;
+            margin: 0 8px;
             flex-shrink: 0;
             box-shadow: 0 0 6px #dc2626;
           }
-          @media (max-width: 480px) {
+
+          /* ── Mobile: hide the long text, show short version ── */
+          .hw-announce-full { display: inline; }
+          .hw-announce-short { display: none; }
+
+          @media (max-width: 600px) {
             .hw-announce-bar a {
-              font-size: 0.62rem;
-              letter-spacing: 0.08em;
+              font-size: 0.58rem;
+              letter-spacing: 0.06em;
+              padding: 0 8px;
+            }
+            .hw-announce-dot {
+              margin: 0 5px;
+            }
+            /* Hide the long text on mobile */
+            .hw-announce-full { display: none; }
+            /* Show the short version instead */
+            .hw-announce-short { display: inline; }
+          }
+
+          @media (max-width: 380px) {
+            .hw-announce-bar a {
+              font-size: 0.52rem;
+              letter-spacing: 0.04em;
             }
           }
         ` }} />
@@ -242,9 +266,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <div className="hw-announce-bar">
           <a href="https://hauntedwallpapers.com/blog/the-skeleton-collection-4k-visions-for-the-obsessed">
             <span className="hw-announce-dot" aria-hidden="true" />
-            THE TOWN HAS BEEN WATCHING YOUR OBSESSION WITH SKELETONS...
+            {/* Full text on desktop */}
+            <span className="hw-announce-full">
+              THE TOWN HAS BEEN WATCHING YOUR OBSESSION WITH SKELETONS...
+            </span>
+            {/* Short text on mobile */}
+            <span className="hw-announce-short">
+              ENTER BONE STREET
+            </span>
             <span className="hw-announce-dot" aria-hidden="true" />
-            ENTER BONE STREET
+            <span className="hw-announce-full">ENTER BONE STREET</span>
             <span className="hw-announce-dot" aria-hidden="true" />
           </a>
         </div>

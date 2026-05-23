@@ -70,7 +70,6 @@ function ScrollProgress() {
 
 // ── Related Posts ─────────────────────────────────────────────────────────────
 function RelatedPosts({ posts, currentSlug }: { posts: Post[]; currentSlug: string }) {
-  // Prefer same label first, then any other posts
   const sameLabel = posts.filter((p) => p.slug !== currentSlug && p.label === posts.find(x => x.slug === currentSlug)?.label);
   const others    = posts.filter((p) => p.slug !== currentSlug && !sameLabel.includes(p));
   const related   = [...sameLabel, ...others].slice(0, 3);
@@ -83,7 +82,7 @@ function RelatedPosts({ posts, currentSlug }: { posts: Post[]; currentSlug: stri
       </h2>
       <div className="related-posts-grid">
         {related.map((p) => {
-          const thumb  = p.featuredImage ?? extractFirstImage(p.content);
+          const thumb   = p.featuredImage ?? extractFirstImage(p.content);
           const excerpt = getExcerpt(p.content, 100);
           const dateStr = new Date(p.createdAt).toLocaleDateString("en-US", {
             month: "short", day: "numeric", year: "numeric",
@@ -125,7 +124,6 @@ function readTime(html: string): string {
 
 // ── Main export ───────────────────────────────────────────────────────────────
 export default function BlogPostClient({ post, allPosts }: { post: Post; allPosts: Post[] }) {
-  // Use UTC methods to avoid server/client timezone mismatch (React hydration error #418)
   const _d = new Date(post.createdAt);
   const dateStr = _d.toLocaleDateString("en-US", {
     year: "numeric", month: "long", day: "numeric",
@@ -177,7 +175,6 @@ export default function BlogPostClient({ post, allPosts }: { post: Post; allPost
         <header className="static-page-header">
           <p className="static-page-label">{post.label} · {dateStr} · {rt}</p>
           <h1 className="static-page-title">{post.title}</h1>
-          {/* Author byline — E-E-A-T signal Google quality raters check for */}
           <div className="blog-author-byline">
             <span className="blog-author-avatar" aria-hidden="true">✦</span>
             <div className="blog-author-info">
@@ -192,8 +189,7 @@ export default function BlogPostClient({ post, allPosts }: { post: Post; allPost
           </div>
         </header>
 
-        <div style={{ marginBottom: "32px" }}>
-        </div>
+        <div style={{ marginBottom: "32px" }} />
 
         <div
           className="static-page-body blog-html-content"
@@ -220,9 +216,7 @@ export default function BlogPostClient({ post, allPosts }: { post: Post; allPost
           </div>
         </div>
 
-        {/* ── Mid ad ── */}
-        <div style={{ margin: "48px 0 40px" }}>
-        </div>
+        <div style={{ margin: "48px 0 40px" }} />
 
         {/* ── Related posts ── */}
         <RelatedPosts posts={allPosts} currentSlug={post.slug} />
@@ -234,6 +228,7 @@ export default function BlogPostClient({ post, allPosts }: { post: Post; allPost
         body:has(.blog-post-page) header.site-header,
         body:has(.blog-post-page) .halloween-countdown { display: none !important; }
 
+        /* ── Top nav ── */
         .blog-topnav {
           position: sticky; top: 0; z-index: 900;
           background: rgba(7,5,14,0.92);
@@ -242,7 +237,6 @@ export default function BlogPostClient({ post, allPosts }: { post: Post; allPost
         }
         [data-theme="fog"] .blog-topnav { background: rgba(242,237,225,0.95); border-color: rgba(192,0,26,0.1); }
         [data-theme="ghost"] .blog-topnav { background: rgba(20,20,24,0.95); border-color: rgba(248,248,255,0.08); }
-        [data-theme="fog"] .blog-topnav { background: rgba(10,5,0,0.95); border-color: rgba(255,102,0,0.15); }
         .blog-topnav-inner {
           max-width: 1280px; margin: 0 auto; display: flex;
           align-items: center; justify-content: space-between; height: 52px; gap: 20px;
@@ -267,6 +261,7 @@ export default function BlogPostClient({ post, allPosts }: { post: Post; allPost
         [data-theme="fog"] .blog-topnav-link { color: #7a7468; }
         [data-theme="fog"] .blog-topnav-link:hover { color: #1a1814; }
 
+        /* ── Footer nav ── */
         .blog-post-footer-nav {
           max-width: 960px; margin: 48px auto 0; padding-top: 28px;
           border-top: 1px solid #2a2535; display: flex;
@@ -287,17 +282,12 @@ export default function BlogPostClient({ post, allPosts }: { post: Post; allPost
         [data-theme="fog"] .blog-post-footer-link { color: #8a8468; }
         [data-theme="fog"] .blog-post-footer-link:hover { color: #3a3450; }
 
+        /* ── Wallpaper CTA ── */
         .blog-wallpaper-cta {
           max-width: 960px; margin: 32px auto 0; padding: 20px 24px;
           border: 1px solid rgba(192,0,26,0.2); background: rgba(192,0,26,0.04);
         }
         [data-theme="fog"] .blog-wallpaper-cta { border-color: rgba(192,0,26,0.18); background: rgba(192,0,26,0.03); }
-        .blog-wallpaper-cta-text {
-          font-family: var(--font-space), monospace; font-size: 0.65rem;
-          letter-spacing: 0.12em; text-transform: uppercase;
-          color: #8a8099; margin: 0 0 12px; display: flex; align-items: center; gap: 8px;
-        }
-        [data-theme="fog"] .blog-wallpaper-cta-text { color: #5a5468; }
         .blog-wallpaper-cta-links { display: flex; flex-wrap: wrap; gap: 8px; }
         .blog-wallpaper-cta-btn {
           font-family: var(--font-space), monospace; font-size: 0.58rem;
@@ -307,8 +297,8 @@ export default function BlogPostClient({ post, allPosts }: { post: Post; allPost
           transition: background 0.2s, border-color 0.2s, color 0.2s;
         }
         .blog-wallpaper-cta-btn:hover { background: rgba(192,0,26,0.1); border-color: rgba(192,0,26,0.6); color: #ff2233; }
-        [data-theme="fog"] .blog-wallpaper-cta-btn { color: #c0001a; border-color: rgba(192,0,26,0.3); }
-        [data-theme="fog"] .blog-wallpaper-cta-btn:hover { background: rgba(192,0,26,0.07); }
+
+        /* ── Theme overrides ── */
         [data-theme="fog"] .blog-html-content h1,
         [data-theme="fog"] .blog-html-content h2,
         [data-theme="fog"] .blog-html-content h3,
@@ -319,18 +309,83 @@ export default function BlogPostClient({ post, allPosts }: { post: Post; allPost
         [data-theme="fog"] .blog-html-content li { color: #3a3028; }
         [data-theme="fog"] .blog-html-content strong { color: #1a1814; }
         [data-theme="fog"] .blog-html-content em { color: #8b4200; }
-        [data-theme="fog"] .blog-html-content a { color: #c0001a; border-color: rgba(192,0,26,0.3); }
-        [data-theme="fog"] .blog-html-content a:hover { color: #900015; border-color: rgba(192,0,26,0.6); }
-        /* Force readable colors on blog post page regardless of stored theme */
-        .blog-post-page .static-page-title { color: #1a1814 !important; }
-        .blog-post-page .static-page-title em { color: #8b4000 !important; }
-        .blog-post-page .static-page-label { color: #8a8468 !important; }
-        .blog-post-page .static-page-header { border-bottom-color: #cdc8bc !important; }
+        [data-theme="fog"] .blog-html-content a { color: #c0001a; }
         [data-theme="fog"] .static-page-title { color: #1a1814; }
         [data-theme="fog"] .static-page-label { color: #8a8468; }
 
+        /* ══════════════════════════════════════════════════════
+           MOBILE RESPONSIVE OVERRIDES FOR BLOG HTML CONTENT
+           These fix the skeleton blog (and any future blog)
+           that uses inline flex-row layouts.
+        ══════════════════════════════════════════════════════ */
+
+        /* The outer container — constrain width and add padding */
+        .blog-html-content > div {
+          max-width: 100% !important;
+          box-sizing: border-box !important;
+        }
+
+        /* All flex rows inside blog content → stack on mobile */
+        @media (max-width: 700px) {
+
+          /* Every inline-styled flex row becomes a column */
+          .blog-html-content div[style*="flex-direction: row"],
+          .blog-html-content div[style*="flex-direction:row"] {
+            flex-direction: column !important;
+            gap: 20px !important;
+          }
+
+          /* Images inside skeleton cards go full width */
+          .blog-html-content div[style*="flex: 1; max-width"],
+          .blog-html-content div[style*="flex:1;max-width"] {
+            max-width: 100% !important;
+            width: 100% !important;
+          }
+
+          /* Text blocks go full width too */
+          .blog-html-content div[style*="flex: 1"] {
+            width: 100% !important;
+            max-width: 100% !important;
+          }
+
+          /* Headings scale down on mobile */
+          .blog-html-content h2[style*="font-size: 3rem"],
+          .blog-html-content h2[style*="font-size:3rem"] {
+            font-size: 1.8rem !important;
+          }
+          .blog-html-content h3[style*="font-size: 1.5rem"],
+          .blog-html-content h3[style*="font-size:1.5rem"] {
+            font-size: 1.15rem !important;
+          }
+
+          /* Slideshow — already scrollable but fix height */
+          .blog-html-content div[style*="scroll-snap-type"] {
+            padding-bottom: 8px !important;
+          }
+          .blog-html-content div[style*="scroll-snap-align"] {
+            width: 160px !important;
+          }
+
+          /* Download buttons full width on mobile */
+          .blog-html-content a[style*="border: 2px solid #7c3aed"],
+          .blog-html-content a[style*="border:2px solid #7c3aed"] {
+            display: block !important;
+            text-align: center !important;
+            padding: 10px 16px !important;
+          }
+
+          /* DAX hero card padding */
+          .blog-html-content div[style*="border: 4px solid #7c3aed"] {
+            padding: 20px 16px !important;
+          }
+
+          /* General padding on blog content wrapper */
+          .blog-html-content > div[style*="padding: 20px"] {
+            padding: 16px 12px !important;
+          }
+        }
+
         /* ── Related posts ── */
-        /* ── Related posts — always light (blog pages always use cream bg) ── */
         .related-posts-section {
           max-width: 960px; margin: 0 auto 60px; padding-top: 8px;
         }
@@ -378,43 +433,23 @@ export default function BlogPostClient({ post, allPosts }: { post: Post; allPost
 
         /* ── Author byline ── */
         .blog-author-byline {
-          display: flex;
-          align-items: center;
-          gap: 12px;
-          margin-top: 20px;
-          padding-top: 16px;
-          border-top: 1px solid #cdc8bc;
+          display: flex; align-items: center; gap: 12px;
+          margin-top: 20px; padding-top: 16px; border-top: 1px solid #cdc8bc;
         }
         .blog-author-avatar {
-          width: 36px;
-          height: 36px;
-          border-radius: 50%;
-          background: rgba(192,0,26,0.12);
-          border: 1px solid rgba(192,0,26,0.3);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          color: #c0001a;
-          font-size: 0.9rem;
-          flex-shrink: 0;
+          width: 36px; height: 36px; border-radius: 50%;
+          background: rgba(192,0,26,0.12); border: 1px solid rgba(192,0,26,0.3);
+          display: flex; align-items: center; justify-content: center;
+          color: #c0001a; font-size: 0.9rem; flex-shrink: 0;
         }
-        .blog-author-info {
-          display: flex;
-          flex-direction: column;
-          gap: 2px;
-        }
+        .blog-author-info { display: flex; flex-direction: column; gap: 2px; }
         .blog-author-name {
-          font-family: var(--font-cinzel), cursive;
-          font-size: 0.72rem;
-          font-weight: 700;
-          letter-spacing: 0.08em;
-          color: #1a1814;
+          font-family: var(--font-cinzel), cursive; font-size: 0.72rem;
+          font-weight: 700; letter-spacing: 0.08em; color: #1a1814;
         }
         .blog-author-meta {
-          font-family: var(--font-space), monospace;
-          font-size: 0.55rem;
-          letter-spacing: 0.08em;
-          color: #8a8468;
+          font-family: var(--font-space), monospace; font-size: 0.55rem;
+          letter-spacing: 0.08em; color: #8a8468;
         }
       `}</style>
     </main>
