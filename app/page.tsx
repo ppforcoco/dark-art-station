@@ -534,7 +534,7 @@ export default async function Home() {
                 ].map(({ color, tag, label, glow, border }) => (
                   <a
                     key={tag}
-                    href={`/android?tag=${encodeURIComponent(tag)}`}
+                    href={`/search?q=${encodeURIComponent(tag)}`}
                     className="wotd-color-dot"
                     aria-label={label}
                     title={label}
