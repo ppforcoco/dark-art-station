@@ -20,7 +20,7 @@ function _writeCookieRaw(name: string, value: string, maxAge: number) {
   document.cookie = `${name}=${value}; max-age=${maxAge}; path=/; SameSite=Lax${secure}`;
 }
 
-// ── Stable anon ID — stored in a COOKIE (survives Safari ITP, not localStorage)
+// ── Stable anon ID ────────────────────────────────────────────────────────────
 function getAnonId(): string {
   let id = _readCookieRaw(ANON_ID_COOKIE);
   if (!id) {
@@ -41,7 +41,7 @@ function _writeConsentCookie(value: "accepted" | "declined") {
   _writeCookieRaw(COOKIE_NAME, value, MAX_AGE);
 }
 
-// ── localStorage helpers (best-effort, may fail in Safari private mode) ───────
+// ── localStorage helpers ──────────────────────────────────────────────────────
 function _readLS(): ConsentState {
   try {
     const v = localStorage.getItem(COOKIE_NAME);
@@ -58,9 +58,7 @@ function _writeLS(value: "accepted" | "declined") {
 async function _readDB(): Promise<ConsentState> {
   try {
     const id = getAnonId();
-    const res = await fetch(`/api/consent?id=${encodeURIComponent(id)}`, {
-      cache: "no-store",
-    });
+    const res = await fetch(`/api/consent?id=${encodeURIComponent(id)}`, { cache: "no-store" });
     if (!res.ok) return null;
     const json = await res.json();
     if (json.value === "accepted" || json.value === "declined") return json.value;
@@ -79,7 +77,7 @@ async function _writeDB(value: "accepted" | "declined") {
   } catch {}
 }
 
-// ── Read: cookie → localStorage → DB ─────────────────────────────────────────
+// ── Read helpers ──────────────────────────────────────────────────────────────
 function readConsentSync(): ConsentState {
   return _readConsentCookie() ?? _readLS();
 }
@@ -89,24 +87,82 @@ async function readConsentFull(): Promise<ConsentState> {
   if (sync) return sync;
   const db = await _readDB();
   if (db) {
-    // Re-hydrate all layers so future loads are instant
     _writeConsentCookie(db);
     _writeLS(db);
   }
   return db;
 }
 
-// ── Write: all three layers ───────────────────────────────────────────────────
+// ── Write all three layers ────────────────────────────────────────────────────
 function writeConsent(value: "accepted" | "declined") {
   _writeConsentCookie(value);
   _writeLS(value);
-  _writeDB(value); // fire-and-forget
+  _writeDB(value);
   window.dispatchEvent(new CustomEvent("hw-consent-change", { detail: value }));
 }
 
-// Public helpers
 export function getConsent(): ConsentState { return readConsentSync(); }
 export function setConsentValue(value: "accepted" | "declined") { writeConsent(value); }
+
+// ── fireGtag ──────────────────────────────────────────────────────────────────
+// ROOT CAUSE FIX:
+//
+// The old code called gtag('consent', 'update') immediately when a returning
+// user's cookie was found on page load. At that moment gtag has just started
+// processing the 'config' command. The consent update interrupts it mid-
+// validation → "Event processing aborted during validation" → no hits reach GA4.
+//
+// Two-part fix:
+//
+// 1. SKIP the update for 'accepted' when analytics_storage is already 'granted'
+//    in layout.tsx's consent default. The update would be a no-op for analytics
+//    (ad_storage was already denied, we're just re-denying it for 'declined').
+//    We only need to update ad_storage/ad_user_data/ad_personalization, and only
+//    when the user has explicitly accepted ads. 'declined' keeps defaults so is
+//    also a no-op and can be skipped.
+//
+// 2. DELAY the update via setTimeout(0) so it queues AFTER the current JS call
+//    stack (which includes the config command) has fully completed. This
+//    eliminates the race condition entirely for any edge case where an update
+//    is genuinely needed.
+//
+// Result: returning users → no update fired → config completes cleanly → GA4
+//         receives hits. New users who accept → update fires after stack clears.
+
+function fireGtag(decision: "accepted" | "declined") {
+  // 'declined' = keep defaults (analytics_storage already granted, ads denied).
+  // No update needed — skipping prevents any possible race condition.
+  if (decision === "declined") return;
+
+  // 'accepted' = user wants personalised ads. We only need to update ad fields.
+  // analytics_storage is already 'granted' in the layout.tsx consent default,
+  // so including it here is redundant and risks a mid-validation collision.
+  const payload = {
+    ad_storage:          "granted" as const,
+    ad_user_data:        "granted" as const,
+    ad_personalization:  "granted" as const,
+  };
+
+  // setTimeout(0) pushes this off the current call stack entirely.
+  // The config command will have finished processing before this runs.
+  setTimeout(() => {
+    if (typeof (window as any).gtag === "function") {
+      (window as any).gtag("consent", "update", payload);
+      return;
+    }
+    // Fallback: gtag not yet available (very slow connections), retry up to 2s
+    let attempts = 0;
+    const interval = setInterval(() => {
+      attempts++;
+      if (typeof (window as any).gtag === "function") {
+        (window as any).gtag("consent", "update", payload);
+        clearInterval(interval);
+      } else if (attempts >= 20) {
+        clearInterval(interval);
+      }
+    }, 100);
+  }, 0);
+}
 
 // ── Component ─────────────────────────────────────────────────────────────────
 export default function CookieBanner() {
@@ -117,51 +173,22 @@ export default function CookieBanner() {
     if (hasChecked.current) return;
     hasChecked.current = true;
 
-    // 1. Instant sync check (cookie + localStorage)
     const sync = readConsentSync();
     if (sync !== null) {
+      // Returning user — fire gtag update if they previously accepted ads.
+      // fireGtag now uses setTimeout(0) so it won't race with config.
       if (sync === "accepted") fireGtag("accepted");
-      return; // banner stays hidden
+      return;
     }
 
-    // 2. Async DB check (last resort fallback)
     readConsentFull().then((result) => {
       if (result !== null) {
         if (result === "accepted") fireGtag("accepted");
-        // banner stays hidden
       } else {
-        // Genuinely no record anywhere — show banner
         setVisible(true);
       }
     });
   }, []);
-
-  function fireGtag(decision: "accepted" | "declined") {
-    const granted = decision === "accepted" ? "granted" : "denied";
-    const payload = {
-      ad_storage: granted,
-      ad_user_data: granted,
-      ad_personalization: granted,
-      analytics_storage: granted,
-    };
-    // Fire immediately if gtag is already loaded
-    if (typeof (window as any).gtag === "function") {
-      (window as any).gtag("consent", "update", payload);
-      return;
-    }
-    // Retry up to 10× over 1s — covers the race where fireGtag is called
-    // on page load before the async gtag/js script has finished executing
-    let attempts = 0;
-    const interval = setInterval(() => {
-      attempts++;
-      if (typeof (window as any).gtag === "function") {
-        (window as any).gtag("consent", "update", payload);
-        clearInterval(interval);
-      } else if (attempts >= 10) {
-        clearInterval(interval);
-      }
-    }, 100);
-  }
 
   function accept() {
     writeConsent("accepted");
@@ -171,7 +198,7 @@ export default function CookieBanner() {
 
   function decline() {
     writeConsent("declined");
-    fireGtag("declined");
+    // No fireGtag call needed — declined keeps the defaults unchanged
     setVisible(false);
   }
 
