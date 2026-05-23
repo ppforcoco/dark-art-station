@@ -203,7 +203,7 @@ export default function WallpaperCardGrid({ items, accentRgb, badge, badgeColor 
               </div>
               {/* Title footer */}
               <div style={{ padding: "10px 10px 12px", background: "#0d0b14", borderTop: `1px solid rgba(${accentRgb},0.1)` }}>
-                <p style={{ color: accent, fontSize: "0.7rem", fontFamily: "monospace", margin: 0, lineHeight: 1.3, overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" as const }}>
+                <p style={{ color: "#e8e4dc", fontSize: "0.7rem", fontFamily: "monospace", margin: 0, lineHeight: 1.3, overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" as const }}>
                   {img.title}
                 </p>
                 {img.downloadCount != null && (

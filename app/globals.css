@@ -1416,7 +1416,7 @@ body::before {
 .footer-col-title {
   font-family: var(--font-space), 'Space Mono', monospace;
   font-size: 0.62rem; letter-spacing: 0.22em; text-transform: uppercase;
-  color: #8a8099; margin-bottom: 12px;
+  color: #c0b8d8; margin-bottom: 12px;
 }
 .footer-col ul { list-style: none; }
 .footer-col li { margin-bottom: 6px; }
@@ -8419,13 +8419,13 @@ button:active:not(:disabled) { transform: translateY(0px) scale(0.98) !important
   cursor: pointer;
 }
 .dt-btn--enter {
-  background: var(--dt-crimson);
-  color: #ffffff;
-  border-color: var(--dt-crimson);
+  background: #ffffff;
+  color: #8b0000;
+  border-color: #ffffff;
 }
 .dt-btn--enter:hover {
-  background: var(--dt-gore);
-  border-color: var(--dt-gore);
+  background: #f0e8e8;
+  border-color: #f0e8e8;
   box-shadow: 0 0 24px rgba(192,0,26,0.4);
 }
 .dt-btn__flicker {

@@ -791,11 +791,11 @@ export default async function Home() {
 
         <div className="dt-phone-showcase">
           {[
-            { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/always-watching-wallpaper.webp", alt: "Always Watching", label: "Always Watching" },
-            { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/funny-lockscreen-wallpaper.jpeg", alt: "Funny Lockscreen", label: "Funny Lockscreen" },
-            { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/the-watching-estate-nocturnal-hill-wallpaper.webp", alt: "The Watching Estate", label: "The Watching Estate" },
-            { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/paper-cut-witch-red-backdrop-staff.jpeg", alt: "Paper Cut Witch", label: "Paper Cut Witch" },
-            { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/skeleton-brick-wall-green.jpeg", alt: "Skeleton Brick Wall", label: "Skeleton Brick" },
+            { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/12/always-watching-wallpaper.webp", alt: "Always Watching", label: "Always Watching" },
+            { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/12/funny-lockscreen-wallpaper.webp", alt: "Funny Lockscreen", label: "Funny Lockscreen" },
+            { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/12/vampire-man-and-woman-couple-dance-under-the-moon-wallpaper.webp", alt: "Vampire Couple Dance", label: "Vampire Dance" },
+            { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/12/paper-cut-witch-red-backdrop-staff.webp", alt: "Paper Cut Witch", label: "Paper Cut Witch" },
+            { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/12/hip-hop-haunted-skeleton-phone-wallpaper.webp", alt: "Hip Hop Skeleton", label: "Hip Hop Skeleton" },
           ].map((phone, i) => (
             <div
               key={i}
@@ -904,7 +904,7 @@ export default async function Home() {
                 title: "The Ghost Pitch",
                 sub: "Dark Soccer Setup Kit",
                 tag: "Sports",
-                img: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/sets/The%20Ghost%20Pitch%3A%20A%20Matching%20Dark%20Soccer%20Setup%20Kit/Haunted_soccer_stadium_midnight_soccer-kit.jpeg",
+                img: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/12/sets_The%20Ghost%20Pitch_%20A%20Matching%20Dark%20Soccer%20Setup%20Kit_Haunted_soccer_stadium_midnight_soccer-kit.webp",
                 alt: "Ghost Pitch haunted soccer stadium dark horror matching wallpaper set",
                 accent: "232,124,30",
               },

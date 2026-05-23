@@ -77,7 +77,7 @@ export default function Footer(): JSX.Element {
           font-family: var(--font-space), monospace;
           font-size: 0.55rem;
           letter-spacing: 0.08em;
-          color: #4a445a;
+          color: #8a8099;
           line-height: 1.5;
         }
         [data-theme="fog"] .footer-ai-disclosure {
