@@ -126,7 +126,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             font-weight: 700;
             letter-spacing: 0.12em;
             text-transform: uppercase;
-            /* KEY FIX: allow wrapping on mobile so text auto-adjusts */
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -160,9 +159,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             .hw-announce-dot {
               margin: 0 5px;
             }
-            /* Hide the long text on mobile */
             .hw-announce-full { display: none; }
-            /* Show the short version instead */
             .hw-announce-short { display: inline; }
           }
 
@@ -218,10 +215,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}
               strategy="afterInteractive"
             />
-            <Script id="ga-init" strategy="afterInteractive">{`
-              gtag('js', new Date());
-              gtag('config', '${gaId}');
-            `}</Script>
+            {/* ✅ FIX: use dangerouslySetInnerHTML so gaId is baked in server-side, not interpolated in browser */}
+            <Script
+              id="ga-init"
+              strategy="afterInteractive"
+              dangerouslySetInnerHTML={{
+                __html: `gtag('js', new Date()); gtag('config', '${gaId}');`,
+              }}
+            />
           </>
         )}
       </head>
@@ -267,11 +268,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <div className="hw-announce-bar">
           <a href="https://hauntedwallpapers.com/blog/the-skeleton-collection-4k-visions-for-the-obsessed">
             <span className="hw-announce-dot" aria-hidden="true" />
-            {/* Full text on desktop */}
             <span className="hw-announce-full">
               THE TOWN HAS BEEN WATCHING YOUR OBSESSION WITH SKELETONS...
             </span>
-            {/* Short text on mobile */}
             <span className="hw-announce-short">
               ENTER BONE STREET
             </span>
