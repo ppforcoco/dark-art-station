@@ -153,3 +153,16 @@ model Comment {
   @@index([imageId])
   @@index([status])
 }
+
+// ── Vanity Redirects ──────────────────────────────────────────────────────────
+model VanityRedirect {
+  id          String   @id @default(uuid())
+  slug        String   @unique   // e.g. "skeletons" → /go/skeletons
+  destination String             // full URL with UTM params
+  label       String?            // friendly name e.g. "Instagram Skeletons Post"
+  clicks      Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([slug])
+}
