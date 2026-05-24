@@ -220,6 +220,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             />
             <Script id="ga-init" strategy="afterInteractive">{`
               gtag('js', new Date());
+              gtag('config', '${gaId}');
             `}</Script>
           </>
         )}
