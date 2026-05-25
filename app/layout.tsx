@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import Script from "next/script";
+import { GoogleAnalytics } from "@next/third-parties/google";
 import { Cinzel_Decorative, Cormorant_Garamond, Space_Mono } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
@@ -88,6 +89,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" dir="ltr" style={{ backgroundColor: "#0c0b14", color: "#e8e4dc" }}>
       <head>
+        {/*
+          ── Inline critical styles ──────────────────────────────────────────
+          Kept as a <style> block (not a preloaded external file) so it is
+          render-blocking only for its own tiny payload — no browser warning.
+        */}
         <style dangerouslySetInnerHTML={{ __html: `
           @media(pointer:fine){html,body,*,*::before,*::after{cursor:none!important}}
           @keyframes hw-flicker {
@@ -171,35 +177,97 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             }
           }
         ` }} />
+
+        {/*
+          ── Theme + night-mode init (must run synchronously before paint) ──
+          These are plain <script> tags, not Next.js <Script> components,
+          because they must block rendering to avoid a flash of wrong theme.
+          They are covered by 'unsafe-inline' in script-src.
+        */}
         <script dangerouslySetInnerHTML={{ __html: `(function(){try{var t=localStorage.getItem('hw-theme');if(t){document.documentElement.setAttribute('data-theme',t);if(t==='fog'){document.documentElement.style.backgroundColor='#ece9e2';document.documentElement.style.color='#1c1a17';}else if(t==='ghost'){document.documentElement.style.backgroundColor='#0d0d14';document.documentElement.style.color='#e0e0f8';}else{document.documentElement.style.backgroundColor='#0c0b14';document.documentElement.style.color='#e8e4dc';}}else{document.documentElement.style.backgroundColor='#0c0b14';document.documentElement.style.color='#e8e4dc';}}catch(e){}})();` }} />
         <script dangerouslySetInnerHTML={{ __html: `(function(){try{var h=new Date().getHours();if(h>=20||h<6)document.documentElement.setAttribute('data-night','true');}catch(e){}})();` }} />
+
+        {/*
+          ── GA4 Consent + Trusted-Types bootstrap ───────────────────────────
+          FIX 1 (sequence): strategy="beforeInteractive" ensures consent and
+          the goog#html Trusted-Types policy are registered BEFORE the GA
+          library is fetched and parsed. Previously "afterInteractive" meant
+          the library could arrive and try to execute before consent was set,
+          causing "Event processing aborted during validation".
+
+          FIX 2 (Trusted-Types): GTM/gtag inject <script> tags via innerHTML
+          and document.write. Both are blocked by Require-Trusted-Types-For:
+          'script' unless a policy named exactly "goog#html" exists. We create
+          it here. The policy name is hard-coded in the GTM source — it is not
+          configurable. The matching header change is in next.config.ts.
+        */}
         {gaId && (
-          <Script id="consent-init" strategy="afterInteractive">{`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('consent', 'default', {
-              ad_storage:              'denied',
-              ad_user_data:            'denied',
-              ad_personalization:      'denied',
-              analytics_storage:       'granted',
-              functionality_storage:   'granted',
-              personalization_storage: 'denied',
-              security_storage:        'granted'
-            });
-            gtag('set', 'url_passthrough', true);
+          <Script id="consent-and-tt-init" strategy="beforeInteractive">{`
+            (function() {
+              // ── Trusted-Types policy for GTM/gtag ──
+              // GTM looks for a policy named 'goog#html' specifically.
+              if (typeof trustedTypes !== 'undefined' && trustedTypes.createPolicy) {
+                try {
+                  trustedTypes.createPolicy('goog#html', {
+                    createHTML:      function(s) { return s; },
+                    createScript:    function(s) { return s; },
+                    createScriptURL: function(s) { return s; },
+                  });
+                } catch(e) {
+                  // Policy may already exist if the page is navigated to twice
+                  // in the same context — safe to ignore.
+                }
+              }
+
+              // ── GA4 consent defaults ──
+              // Must be set before gtag('config', ...) fires, which is why
+              // this whole block is beforeInteractive.
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              window.gtag = gtag;
+              gtag('consent', 'default', {
+                ad_storage:              'denied',
+                ad_user_data:            'denied',
+                ad_personalization:      'denied',
+                analytics_storage:       'granted',
+                functionality_storage:   'granted',
+                personalization_storage: 'denied',
+                security_storage:        'granted'
+              });
+              gtag('set', 'url_passthrough', true);
+            })();
           `}</Script>
         )}
+
+        {/*
+          ── Resource hints ──────────────────────────────────────────────────
+          Only origins actually needed on every page. GoogleAnalytics (below)
+          adds its own preconnect to googletagmanager.com, so we omit it here
+          to avoid duplicate hints.
+          No manual CSS <link rel="preload"> — Next.js handles chunked CSS
+          loading automatically; manual preloads for unused stylesheets trigger
+          a browser warning ("preload but not used within a few seconds").
+        */}
         <link rel="preconnect" href="https://assets.hauntedwallpapers.com" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://assets.hauntedwallpapers.com" />
         <link rel="preconnect" href="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev" />
-        {gaId && <link rel="preconnect" href="https://www.googletagmanager.com" crossOrigin="anonymous" />}
+
+        {/*
+          ── PWA manifest + icons ─────────────────────────────────────────────
+          /icons/icon-180.png was 404-ing. Removed. The apple-touch-icon
+          (<link rel="apple-touch-icon">) already points to /apple-touch-icon.png
+          which exists. Standard PWA icon sizes (192, 512) kept. The manifest
+          itself should also not reference icon-180.png — check public/manifest.json
+          and remove that entry there too if present.
+        */}
         <link rel="manifest" href="/manifest.json" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <link rel="icon" type="image/x-icon" href="/favicon.ico" />
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
         <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png" />
         <link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png" />
+
         <meta name="p:domain_verify" content="6f1c92d3b0307e9bf30220a5068ce8af" />
         <meta name="theme-color" content="#0c0b14" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -210,23 +278,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {process.env.NEXT_PUBLIC_GSC_VERIFICATION && (
           <meta name="google-site-verification" content={process.env.NEXT_PUBLIC_GSC_VERIFICATION} />
         )}
-        {gaId && (
-          <>
-            <Script
-              src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}
-              strategy="afterInteractive"
-            />
-            {/* ✅ FIX: use dangerouslySetInnerHTML so gaId is baked in server-side, not interpolated in browser */}
-            <Script
-              id="ga-init"
-              strategy="afterInteractive"
-              dangerouslySetInnerHTML={{
-                __html: `gtag('js', new Date()); gtag('config', '${gaId}');`,
-              }}
-            />
-          </>
-        )}
       </head>
+
       <body className={`${cormorant.variable} ${cinzel.variable} ${spaceMono.variable}`}>
         <script
           type="application/ld+json"
@@ -288,6 +341,31 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Footer />
         <ClientComponents />
         <PWARegister />
+
+        {/*
+          ── GA4 via @next/third-parties ──────────────────────────────────────
+          FIX 3 (GTM/gtag conflict): Previously the code loaded gtag/js manually
+          AND called gtag('config') in a second Script tag. This caused a race
+          where 'config' could fire before the library validated, producing
+          "Event processing aborted during validation".
+
+          GoogleAnalytics from @next/third-parties handles the script load and
+          the config call atomically — it will not call config until the library
+          is ready. It also adds its own preconnect hints and uses afterInteractive
+          by default, so it runs after hydration.
+
+          Consent is already set in the beforeInteractive block above, so by the
+          time this fires analytics_storage is 'granted' and the config command
+          passes validation.
+
+          Cloudflare note: the script is served from googletagmanager.com with
+          Content-Type: application/javascript. If Cloudflare rewrites it to
+          text/plain, go to Cloudflare → Speed → Optimization and disable
+          "Rocket Loader" — it is the most common cause of MIME-type mangling
+          for third-party scripts. Also confirm your Page Rule / Cache Rule for
+          gtag/js is set to "Bypass Cache".
+        */}
+        {gaId && <GoogleAnalytics gaId={gaId} />}
       </body>
     </html>
   );
