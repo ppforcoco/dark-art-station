@@ -20,7 +20,7 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 import PremiumLockedGateClient from "@/components/PremiumLockedGate";
 import BirthdayComments from "@/components/BirthdayComments";
 import SummonRandomTag from "@/components/SummonRandomTag";
-import LoreTeaser from "@/components/LoreTeaser";
+
 
 export const dynamic = "force-dynamic";
 
@@ -275,7 +275,7 @@ export default async function IphoneImagePage({ params }: PageProps) {
               <BirthdayComments imageId={image.id} imageTitle={image.title} />
             )}
 
-            <LoreTeaser />
+            
 
             <div className="detail-fav-row">
               <FavoriteButton
