@@ -169,6 +169,11 @@ export default async function PcImagePage({ params }: PageProps) {
           ))}
         </div>
       )}
+      <KeyboardNav
+        prevHref={prevImage ? `/pc/${prevImage.slug}` : null}
+        nextHref={nextImage ? `/pc/${nextImage.slug}` : null}
+        showHint
+      />
 
       <section style={{ maxWidth: "1280px", margin: "0 auto", padding: "24px 24px 40px" }}>
         <div className="pc-detail-grid" style={{ display: "flex", flexDirection: "column", gap: "40px" }}>
@@ -303,10 +308,6 @@ export default async function PcImagePage({ params }: PageProps) {
 
       <PageTracker item={{ slug: image.slug, title: image.title, thumb: thumbUrl, href: `/pc/${imageSlug}` }} />
       <RecentlyViewed currentSlug={image.slug} />
-      <KeyboardNav
-        prevHref={prevImage ? `/pc/${prevImage.slug}` : null}
-        nextHref={nextImage ? `/pc/${nextImage.slug}` : null}
-      />
 
       <script type="application/ld+json" dangerouslySetInnerHTML={{
         __html: JSON.stringify({

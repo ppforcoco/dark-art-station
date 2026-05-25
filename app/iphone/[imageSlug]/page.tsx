@@ -189,6 +189,11 @@ export default async function IphoneImagePage({ params }: PageProps) {
           ))}
         </div>
       )}
+      <KeyboardNav
+        prevHref={prevImage ? `/iphone/{prevImage.slug}` : null}
+        nextHref={nextImage ? `/iphone/{nextImage.slug}` : null}
+        showHint
+      />
 
       {nextImageSrc && (
         <link rel="preload" as="image" href={nextImageSrc} />
@@ -393,10 +398,6 @@ export default async function IphoneImagePage({ params }: PageProps) {
         href: `/iphone/${imageSlug}`,
       }} />
       <RecentlyViewed currentSlug={image.slug} />
-      <KeyboardNav
-        prevHref={prevImage ? `/iphone/${prevImage.slug}` : null}
-        nextHref={nextImage ? `/iphone/${nextImage.slug}` : null}
-      />
 
       <script type="application/ld+json" dangerouslySetInnerHTML={{
         __html: JSON.stringify({

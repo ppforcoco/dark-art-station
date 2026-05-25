@@ -5,6 +5,7 @@ import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ClientComponents from "@/components/ClientComponents";
+import PWARegister from "@/components/PWARegister";
 
 const cinzel = Cinzel_Decorative({
   weight: ["400", "700", "900"],
@@ -286,6 +287,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </main>
         <Footer />
         <ClientComponents />
+        <PWARegister />
       </body>
     </html>
   );

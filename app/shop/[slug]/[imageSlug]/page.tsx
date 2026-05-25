@@ -175,6 +175,11 @@ export default async function CollectionImagePage({ params }: PageProps) {
           ))}
         </div>
       )}
+      <KeyboardNav
+        prevHref={prevImage ? `/shop/${slug}/${prevImage.slug}` : null}
+        nextHref={nextImage ? `/shop/${slug}/${nextImage.slug}` : null}
+        showHint
+      />
 
       <Breadcrumbs
         items={[
@@ -518,10 +523,6 @@ export default async function CollectionImagePage({ params }: PageProps) {
       `}</style>
 
 
-      <KeyboardNav
-        prevHref={prevImage ? `/shop/${slug}/${prevImage.slug}` : null}
-        nextHref={nextImage ? `/shop/${slug}/${nextImage.slug}` : null}
-      />
 
       <PageTracker
         item={{

@@ -269,6 +269,11 @@ export default async function AndroidImagePage({ params }: PageProps) {
           ))}
         </div>
       )}
+      <KeyboardNav
+        prevHref={prevImage ? `/android/{prevImage.slug}` : null}
+        nextHref={nextImage ? `/android/{nextImage.slug}` : null}
+        showHint
+      />
 
       {nextImageSrc && (
         <link rel="preload" as="image" href={nextImageSrc} />
@@ -479,10 +484,6 @@ export default async function AndroidImagePage({ params }: PageProps) {
         href: `/android/${imageSlug}`,
       }} />
       <RecentlyViewed currentSlug={image.slug} />
-      <KeyboardNav
-        prevHref={prevImage ? `/android/${prevImage.slug}` : null}
-        nextHref={nextImage ? `/android/${nextImage.slug}` : null}
-      />
 
 
 
