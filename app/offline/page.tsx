@@ -1,5 +1,5 @@
+"use client";
 // app/offline/page.tsx
-// Shown when user is offline and page isn't cached
 
 export default function OfflinePage() {
   return (
@@ -17,7 +17,6 @@ export default function OfflinePage() {
         padding: "2rem",
       }}
     >
-      {/* Skull SVG */}
       <svg
         width="80"
         height="80"
@@ -74,15 +73,14 @@ export default function OfflinePage() {
           letterSpacing: "0.12em",
           textTransform: "uppercase",
           cursor: "pointer",
-          transition: "background 0.2s, color 0.2s",
         }}
         onMouseEnter={(e) => {
-          (e.target as HTMLButtonElement).style.background = "#c0001a";
-          (e.target as HTMLButtonElement).style.color = "#0a0a0a";
+          (e.currentTarget as HTMLButtonElement).style.background = "#c0001a";
+          (e.currentTarget as HTMLButtonElement).style.color = "#0a0a0a";
         }}
         onMouseLeave={(e) => {
-          (e.target as HTMLButtonElement).style.background = "transparent";
-          (e.target as HTMLButtonElement).style.color = "#c0001a";
+          (e.currentTarget as HTMLButtonElement).style.background = "transparent";
+          (e.currentTarget as HTMLButtonElement).style.color = "#c0001a";
         }}
       >
         Try Again
