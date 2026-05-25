@@ -137,13 +137,24 @@ export default async function IphoneImagePage({ params }: PageProps) {
     db.image.findMany({
       where: { collectionId: null, deviceType: "IPHONE" },
       orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
-      select: { slug: true, title: true, r2Key: true, sortOrder: true },
+      select: { slug: true, title: true, r2Key: true, sortOrder: true, tags: true },
     }),
     getRelatedImages(image.id, image.tags, 6, "IPHONE"),
   ]);
   const currentIdx = siblings.findIndex((s) => s.slug === imageSlug);
   const prevImage = currentIdx > 0 ? siblings[currentIdx - 1] : null;
   const nextImage = currentIdx < siblings.length - 1 ? siblings[currentIdx + 1] : null;
+
+  // Tag-sorted strip: siblings sharing most tags with current image appear first
+  const imageTags = new Set(image.tags);
+  const tagSortedStrip = siblings
+    .filter((s) => s.slug !== imageSlug)
+    .sort((a, b) => {
+      const aScore = (a.tags as string[]).filter((t) => imageTags.has(t)).length;
+      const bScore = (b.tags as string[]).filter((t) => imageTags.has(t)).length;
+      return bScore - aScore;
+    })
+    .slice(0, 4);
 
   if (image.tags.includes("badge-premium") && isPremiumLocked()) {
     return (
@@ -166,14 +177,10 @@ export default async function IphoneImagePage({ params }: PageProps) {
       ]} />
 
             {/* ── More Dark Art — small strip at top ── */}
-      {siblings.slice(Math.max(0, currentIdx - 2), currentIdx).concat(
-        siblings.slice(currentIdx + 1, currentIdx + 5)
-      ).slice(0, 4).length > 0 && (
+      {tagSortedStrip.length > 0 && (
         <div style={{ maxWidth: "1280px", margin: "0 auto", padding: "10px 24px", borderBottom: "1px solid rgba(255,255,255,0.06)", display: "flex", gap: "6px", alignItems: "center" }}>
           <span style={{ fontFamily: "var(--font-space, monospace)", fontSize: "0.45rem", letterSpacing: "0.2em", textTransform: "uppercase", color: "rgba(255,255,255,0.2)", whiteSpace: "nowrap", marginRight: "4px" }}>More ▸</span>
-          {siblings.slice(Math.max(0, currentIdx - 2), currentIdx).concat(
-            siblings.slice(currentIdx + 1, currentIdx + 5)
-          ).slice(0, 4).map((img) => (
+          {tagSortedStrip.map((img) => (
             <Link key={img.slug} href={`/iphone/${img.slug}`} style={{ textDecoration: "none", flexShrink: 0 }}>
               <div style={{ position: "relative", width: "44px", height: "78px", overflow: "hidden", borderRadius: "4px", border: "1px solid rgba(255,255,255,0.08)" }}>
                 <Image src={getPublicUrl(img.r2Key)} alt={img.title} fill className="object-cover" unoptimized sizes="44px" />

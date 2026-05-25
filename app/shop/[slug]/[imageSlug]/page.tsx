@@ -103,6 +103,7 @@ export default async function CollectionImagePage({ params }: PageProps) {
       viewCount: true,
       sortOrder: true,
       collectionId: true,
+      _count: { select: { downloads: true } },
     },
   });
 
@@ -116,7 +117,7 @@ export default async function CollectionImagePage({ params }: PageProps) {
       title: true,
       images: {
         orderBy: { sortOrder: "asc" },
-        select: { slug: true, title: true, altText: true, r2Key: true, sortOrder: true },
+        select: { slug: true, title: true, altText: true, r2Key: true, sortOrder: true, tags: true },
       },
     },
   });
@@ -139,6 +140,17 @@ export default async function CollectionImagePage({ params }: PageProps) {
   const nextImage =
     currentIdx < siblings.length - 1 ? siblings[currentIdx + 1] : null;
 
+  // Tag-sorted strip: siblings sharing most tags appear first
+  const imageTags = new Set(image.tags);
+  const tagSortedStrip = siblings
+    .filter((s) => s.slug !== imageSlug)
+    .sort((a, b) => {
+      const aScore = ((a as any).tags as string[] ?? []).filter((t) => imageTags.has(t)).length;
+      const bScore = ((b as any).tags as string[] ?? []).filter((t) => imageTags.has(t)).length;
+      return bScore - aScore;
+    })
+    .slice(0, 4);
+
   const related = await getRelatedImages(image.id, image.tags, 6);
 
   // Rich alt text for the main hero image
@@ -151,14 +163,10 @@ export default async function CollectionImagePage({ params }: PageProps) {
     >
 
       {/* ── More Dark Art — small strip at top ── */}
-      {siblings.slice(Math.max(0, currentIdx - 2), currentIdx).concat(
-        siblings.slice(currentIdx + 1, currentIdx + 5)
-      ).slice(0, 4).length > 0 && (
+      {tagSortedStrip.length > 0 && (
         <div style={{ maxWidth: "1280px", margin: "0 auto", padding: "10px 24px", borderBottom: "1px solid rgba(255,255,255,0.06)", display: "flex", gap: "6px", alignItems: "center" }}>
           <span style={{ fontFamily: "var(--font-space, monospace)", fontSize: "0.45rem", letterSpacing: "0.2em", textTransform: "uppercase", color: "rgba(255,255,255,0.2)", whiteSpace: "nowrap", marginRight: "4px" }}>More ▸</span>
-          {siblings.slice(Math.max(0, currentIdx - 2), currentIdx).concat(
-            siblings.slice(currentIdx + 1, currentIdx + 5)
-          ).slice(0, 4).map((img) => (
+          {tagSortedStrip.map((img) => (
             <Link key={img.slug} href={`/shop/${slug}/${img.slug}`} style={{ textDecoration: "none", flexShrink: 0 }}>
               <div style={{ position: "relative", width: "44px", height: "78px", overflow: "hidden", borderRadius: "4px", border: "1px solid rgba(255,255,255,0.08)" }}>
                 <Image src={getPublicUrl(img.r2Key)} alt={img.title} fill className="object-cover" unoptimized sizes="44px" />
@@ -205,9 +213,23 @@ export default async function CollectionImagePage({ params }: PageProps) {
                 style={{ objectFit: "cover", objectPosition: "center" }}
               />
             </div>
+
+            {/* ── Reactions + Download below image ── */}
+            <div style={{ marginTop: "16px", display: "flex", flexDirection: "column", gap: "10px" }}>
+              <WallpaperReactions imageId={image.id} />
+              <div className="hw-glow-btn-wrap hw-glow-btn-wrap--download">
+                <DownloadButton href={`/api/download/image/${image.id}`} downloadCount={image._count?.downloads ?? 0} />
+              </div>
+              <Link
+                href="/blog/the-dark-aesthetic-a-complete-guide-to-customizing-your-devices"
+                className="setup-guide-link"
+              >
+                How to set wallpaper on iPhone, Android & PC →
+              </Link>
+            </div>
           </div>
 
-          {/* ── Right: info + download ── */}
+          {/* ── Right: info ── */}
           <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
             <div>
               <h1 className="font-display text-2xl md:text-3xl font-bold mt-3 leading-tight">
@@ -260,23 +282,7 @@ export default async function CollectionImagePage({ params }: PageProps) {
 
 
 
-            {/* ── REACTIONS ── */}
-            <WallpaperReactions imageId={image.id} />
-
-            {/* ── DOWNLOAD SECTION ── */}
-            <div className="download-section">
-              <DownloadButton href={`/api/download/image/${image.id}`}>
-                ↓ Download Free
-              </DownloadButton>
-
-              <Link
-                href="/blog/the-dark-aesthetic-a-complete-guide-to-customizing-your-devices"
-                className="setup-guide-link"
-              >
-                How to set wallpaper on iPhone, Android & PC →
-              </Link>
-
-            </div>
+            {/* Reactions and download moved below image */}
 
             {/* Save to favorites */}
             <div className="detail-fav-row">
