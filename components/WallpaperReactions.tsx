@@ -84,6 +84,13 @@ export default function WallpaperReactions({ imageId }: Props) {
     setVoted(key);
     setAnimating(key);
     setTimeout(() => setAnimating(null), 700);
+    // GA4: reaction click = proof of engagement
+    if (typeof window !== "undefined" && typeof (window as any).gtag === "function") {
+      (window as any).gtag("event", "wallpaper_reaction", {
+        reaction_type: key,
+        event_category: "engagement",
+      });
+    }
   }, [voted, storageKey]);
 
   return (

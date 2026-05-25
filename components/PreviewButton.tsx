@@ -436,7 +436,16 @@ export default function PreviewButton({
       )}
 
       <button
-        onClick={() => setOpen(true)}
+        onClick={() => {
+          setOpen(true);
+          // GA4: preview = high engagement signal (user is seriously considering)
+          if (typeof window !== "undefined" && typeof (window as any).gtag === "function") {
+            (window as any).gtag("event", "wallpaper_preview", {
+              item_name: title,
+              event_category: "engagement",
+            });
+          }
+        }}
         style={{
           display: "flex",
           alignItems: "center",

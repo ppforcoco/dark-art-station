@@ -54,10 +54,22 @@ export default function SocialShare({ title, imageUrl, pageUrl }: SocialSharePro
     whatsapp:  `https://wa.me/?text=${encodeURIComponent(`${text} ${url}`)}`,
   };
 
+  function fireShareEvent(method: string) {
+    if (typeof window !== "undefined" && typeof (window as any).gtag === "function") {
+      (window as any).gtag("event", "share", {
+        method,
+        content_type: "wallpaper",
+        item_id: url,
+        event_category: "engagement",
+      });
+    }
+  }
+
   // Web Share API — fires native share sheet on mobile
   const handleNativeShare = async () => {
     if (typeof navigator !== "undefined" && navigator.share) {
       try {
+        fireShareEvent('native');
         await navigator.share({ title, text, url });
       } catch {
         // User cancelled or error — do nothing
@@ -90,7 +102,7 @@ export default function SocialShare({ title, imageUrl, pageUrl }: SocialSharePro
           href={links.pinterest}
           target="_blank"
           rel="noopener noreferrer"
-          className="social-btn social-btn--pinterest"
+          className="social-btn social-btn--pinterest" onClick={() => fireShareEvent('pinterest')}
           aria-label="Pin on Pinterest"
           style={{ touchAction: "manipulation" }}
         >
@@ -102,7 +114,7 @@ export default function SocialShare({ title, imageUrl, pageUrl }: SocialSharePro
           href={links.x}
           target="_blank"
           rel="noopener noreferrer"
-          className="social-btn social-btn--x"
+          className="social-btn social-btn--x" onClick={() => fireShareEvent('x')}
           aria-label="Share on X"
           style={{ touchAction: "manipulation" }}
         >
@@ -114,7 +126,7 @@ export default function SocialShare({ title, imageUrl, pageUrl }: SocialSharePro
           href={links.whatsapp}
           target="_blank"
           rel="noopener noreferrer"
-          className="social-btn social-btn--whatsapp"
+          className="social-btn social-btn--whatsapp" onClick={() => fireShareEvent('whatsapp')}
           aria-label="Share on WhatsApp"
           style={{ touchAction: "manipulation" }}
         >
