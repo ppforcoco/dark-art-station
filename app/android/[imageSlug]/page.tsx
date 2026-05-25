@@ -262,8 +262,8 @@ export default async function AndroidImagePage({ params }: PageProps) {
         <div style={{ maxWidth: "1280px", margin: "0 auto", padding: "10px 24px", borderBottom: "1px solid rgba(255,255,255,0.06)", display: "flex", gap: "6px", alignItems: "center" }}>
           <span style={{ fontFamily: "var(--font-space, monospace)", fontSize: "0.45rem", letterSpacing: "0.2em", textTransform: "uppercase", color: "rgba(255,255,255,0.2)", whiteSpace: "nowrap", marginRight: "4px" }}>More ▸</span>
           {tagSortedStrip.map((img) => (
-            <Link key={img.slug} href={`/android/${img.slug}`} style={{ textDecoration: "none", flexShrink: 0 }}>
-              <div style={{ position: "relative", width: "44px", height: "78px", overflow: "hidden", borderRadius: "4px", border: "1px solid rgba(255,255,255,0.08)" }}>
+            <Link key={img.slug} href={`/android/${img.slug}`} className="more-strip-link">
+              <div className="more-strip-thumb" style={{ position: "relative", width: "44px", height: "78px", overflow: "hidden", borderRadius: "4px", border: "1px solid rgba(255,255,255,0.08)" }}>
                 <Image src={getPublicUrl(img.r2Key)} alt={img.title} fill className="object-cover" unoptimized sizes="44px" />
               </div>
             </Link>

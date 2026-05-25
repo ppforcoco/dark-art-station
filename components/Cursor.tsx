@@ -14,12 +14,13 @@ function getSvgPolicy(): TrustedTypePolicy | null {
   } catch { /* already registered */ }
   return _hwSvgPolicy;
 }
-function trustedSvg(svg: string): string | TrustedHTML {
+function trustedHtml(html: string): string | TrustedHTML {
   const policy = getSvgPolicy();
-  return policy ? policy.createHTML(svg) : svg;
+  return policy ? policy.createHTML(html) : html;
 }
 
-// ─── Default: dagger SVG ──────────────────────────────────────────────────────
+// ─── Cursor images ────────────────────────────────────────────────────────────
+// Default: dagger SVG
 const DAGGER_SVG = `
 <svg xmlns="http://www.w3.org/2000/svg" width="32" height="64" viewBox="0 0 32 64" fill="none">
   <polygon points="16,0 20,44 16,50 12,44" fill="#c0001a" filter="url(#glow)"/>
@@ -38,27 +39,50 @@ const DAGGER_SVG = `
       <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
     </filter>
   </defs>
-</svg>
-`;
+</svg>`;
 
-// ─── Hover: red hand image via <img> tag ─────────────────────────────────────
-const HAND_URL = "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/extras/haunted-wallpapers-cursor-icon.webp";
-const HAND_IMG_HTML = `<img src="${HAND_URL}" width="48" height="48" alt="" style="display:block;pointer-events:none;" />`;
+// Scroll state: tilted dagger SVG
+const DAGGER_SCROLL_SVG = `
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="64" viewBox="0 0 32 64" fill="none">
+  <polygon points="16,0 20,44 16,50 12,44" fill="#8b0010" filter="url(#glowscroll)"/>
+  <polygon points="16,0 18,38 16,44" fill="#c0001a" opacity="0.5"/>
+  <rect x="4" y="44" width="24" height="5" rx="2" fill="#5a000a"/>
+  <rect x="12" y="49" width="8" height="12" rx="2" fill="#3d0007"/>
+  <line x1="12" y1="52" x2="20" y2="52" stroke="#5a000a" stroke-width="1"/>
+  <line x1="12" y1="55" x2="20" y2="55" stroke="#5a000a" stroke-width="1"/>
+  <line x1="12" y1="58" x2="20" y2="58" stroke="#5a000a" stroke-width="1"/>
+  <ellipse cx="16" cy="62" rx="5" ry="2.5" fill="#5a000a"/>
+  <defs>
+    <filter id="glowscroll" x="-40%" y="-10%" width="180%" height="120%">
+      <feGaussianBlur stdDeviation="1" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+</svg>`;
+
+// Hover: red horror hand
+const HAND_URL = "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/extras/Red_horror_mouse_hand_icon.webp";
+// Hotspot: fingertip is roughly at top-center of image (~50% x, ~10% y of a 64px image = offset -32px x, -6px y)
+const HAND_HTML = `<img src="${HAND_URL}" width="64" height="64" alt="" draggable="false" style="display:block;pointer-events:none;user-select:none;" />`;
+
+// ─── State machine ────────────────────────────────────────────────────────────
+type CursorState = "default" | "hover" | "scrolling";
 
 export default function Cursor() {
-  const cursorRef = useRef<HTMLDivElement>(null);
+  const elRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!window.matchMedia("(pointer: fine)").matches) return;
 
-    const el = cursorRef.current;
+    const el = elRef.current;
     if (!el) return;
 
-    // Preload the hand image so first hover is instant
-    const preload = new Image();
-    preload.src = HAND_URL;
+    // Preload hand image
+    const img = new window.Image();
+    img.src = HAND_URL;
 
-    const styleId = "hw-cursor-none-override";
+    // Hide native cursor everywhere
+    const styleId = "hw-cursor-none";
     if (!document.getElementById(styleId)) {
       const s = document.createElement("style");
       s.id = styleId;
@@ -69,80 +93,119 @@ export default function Cursor() {
     el.style.display = "block";
 
     let mouseX = 0, mouseY = 0;
-    let initialised = false;
-    let isHover = false;
+    let visible = false;
+    let state: CursorState = "default";
     let rafId = 0, rafRunning = false;
     let idleTimer: ReturnType<typeof setTimeout> | null = null;
+    let scrollTimer: ReturnType<typeof setTimeout> | null = null;
 
-    const startRaf = () => { if (rafRunning) return; rafRunning = true; rafId = requestAnimationFrame(loop); };
+    // ── RAF loop ──────────────────────────────────────────────────────────────
+    const startRaf = () => { if (rafRunning) return; rafRunning = true; rafId = requestAnimationFrame(tick); };
     const stopRaf  = () => { rafRunning = false; cancelAnimationFrame(rafId); };
 
-    const loop = () => {
+    const tick = () => {
       if (!rafRunning) return;
-      // Dagger: tip at pointer. Hand: offset so finger points at pointer
-      const offsetX = isHover ? -8 : -16;
-      const offsetY = isHover ? -4 : 0;
-      const angle = isHover ? "0deg" : "-45deg";
-      el.style.transform = `translate(${mouseX + offsetX}px, ${mouseY + offsetY}px) rotate(${angle})`;
-      rafId = requestAnimationFrame(loop);
-    };
+      let ox = 0, oy = 0, angle = "-45deg";
 
-    const onMove = (e: MouseEvent) => {
-      mouseX = e.clientX;
-      mouseY = e.clientY;
-      if (!initialised) { initialised = true; el.style.opacity = "1"; }
-      startRaf();
-      if (idleTimer) clearTimeout(idleTimer);
-      idleTimer = setTimeout(stopRaf, 2000);
-    };
-
-    const onOver = (e: MouseEvent) => {
-      const wasHover = isHover;
-      isHover = !!(e.target as Element)?.closest(
-        "a,button,[data-hover],input,select,textarea,.hw2-obs-card,.cat-card,.mosaic-card,.coll-card,.product-card,.download-btn"
-      );
-      if (isHover === wasHover) return;
-
-      if (isHover) {
-        el.style.width  = "48px";
-        el.style.height = "48px";
-        el.innerHTML = HAND_IMG_HTML;
-        el.style.filter = "drop-shadow(0 0 8px rgba(192,0,26,0.6))";
+      if (state === "hover") {
+        // Fingertip hotspot: offset so the pointing finger tip hits the cursor position
+        ox = -18; oy = -6; angle = "0deg";
+      } else if (state === "scrolling") {
+        ox = -16; oy = 0; angle = "-20deg";
       } else {
-        el.style.width  = "32px";
+        ox = -16; oy = 0; angle = "-45deg";
+      }
+
+      el.style.transform = `translate(${mouseX + ox}px, ${mouseY + oy}px) rotate(${angle})`;
+      rafId = requestAnimationFrame(tick);
+    };
+
+    // ── Apply visual state ────────────────────────────────────────────────────
+    const applyState = (next: CursorState) => {
+      if (next === state) return;
+      state = next;
+
+      if (next === "hover") {
+        el.style.width = "64px";
         el.style.height = "64px";
-        el.innerHTML = trustedSvg(DAGGER_SVG) as string;
+        el.innerHTML = trustedHtml(HAND_HTML) as string;
+        el.style.filter = "drop-shadow(0 0 10px rgba(192,0,26,0.8)) drop-shadow(0 0 20px rgba(192,0,26,0.4))";
+      } else if (next === "scrolling") {
+        el.style.width = "32px";
+        el.style.height = "64px";
+        el.innerHTML = trustedHtml(DAGGER_SCROLL_SVG) as string;
+        el.style.filter = "drop-shadow(0 0 3px rgba(139,0,16,0.5))";
+      } else {
+        el.style.width = "32px";
+        el.style.height = "64px";
+        el.innerHTML = trustedHtml(DAGGER_SVG) as string;
         el.style.filter = "drop-shadow(0 0 4px rgba(192,0,26,0.7))";
       }
     };
 
-    const onBlur        = () => { el.style.opacity = "0"; initialised = false; stopRaf(); };
-    const onLeave       = () => { el.style.opacity = "0"; stopRaf(); };
-    const onEnter       = () => { if (initialised) el.style.opacity = "1"; };
-    const onContextMenu = () => { el.style.opacity = "0"; initialised = false; stopRaf(); };
+    // ── Mouse move ────────────────────────────────────────────────────────────
+    const onMove = (e: MouseEvent) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+      if (!visible) {
+        visible = true;
+        el.style.opacity = "1";
+      }
+      startRaf();
+      if (idleTimer) clearTimeout(idleTimer);
+      idleTimer = setTimeout(stopRaf, 3000);
+    };
 
-    window.addEventListener("blur",          onBlur);
-    document.addEventListener("mousemove",   onMove,       { passive: true });
-    document.addEventListener("mouseover",   onOver,       { passive: true });
-    document.addEventListener("mouseleave",  onLeave);
-    document.addEventListener("mouseenter",  onEnter);
-    document.addEventListener("contextmenu", onContextMenu);
+    // ── Hover detection ───────────────────────────────────────────────────────
+    const HOVER_SELECTOR = "a, button, [data-hover], input, select, textarea, label, [role='button'], .hw2-obs-card, .cat-card, .mosaic-card, .coll-card, .product-card, .download-btn, .more-strip-link";
+
+    const onOver = (e: MouseEvent) => {
+      if (state === "scrolling") return; // scroll wins
+      const isLink = !!(e.target as Element)?.closest(HOVER_SELECTOR);
+      applyState(isLink ? "hover" : "default");
+    };
+
+    // ── Scroll detection ──────────────────────────────────────────────────────
+    const onScroll = () => {
+      applyState("scrolling");
+      if (scrollTimer) clearTimeout(scrollTimer);
+      scrollTimer = setTimeout(() => {
+        // After scroll stops, check if still hovering a link
+        const hovered = document.elementFromPoint(mouseX, mouseY);
+        const isLink = !!(hovered?.closest(HOVER_SELECTOR));
+        applyState(isLink ? "hover" : "default");
+      }, 180);
+    };
+
+    // ── Visibility ────────────────────────────────────────────────────────────
+    const hide = () => { el.style.opacity = "0"; visible = false; stopRaf(); };
+    const show = () => { if (visible) el.style.opacity = "1"; };
+
+    window.addEventListener("blur",          hide);
+    document.addEventListener("mousemove",   onMove,   { passive: true });
+    document.addEventListener("mouseover",   onOver,   { passive: true });
+    document.addEventListener("mouseleave",  hide);
+    document.addEventListener("mouseenter",  show);
+    document.addEventListener("scroll",      onScroll, { passive: true });
+    document.addEventListener("contextmenu", hide);
 
     return () => {
       stopRaf();
-      if (idleTimer) clearTimeout(idleTimer);
-      window.removeEventListener("blur",          onBlur);
+      if (idleTimer)  clearTimeout(idleTimer);
+      if (scrollTimer) clearTimeout(scrollTimer);
+      window.removeEventListener("blur",          hide);
       document.removeEventListener("mousemove",   onMove);
       document.removeEventListener("mouseover",   onOver);
-      document.removeEventListener("mouseleave",  onLeave);
-      document.removeEventListener("mouseenter",  onEnter);
-      document.removeEventListener("contextmenu", onContextMenu);
+      document.removeEventListener("mouseleave",  hide);
+      document.removeEventListener("mouseenter",  show);
+      document.removeEventListener("scroll",      onScroll);
+      document.removeEventListener("contextmenu", hide);
     };
   }, []);
 
   return (
     <div
-      ref={cursorRef}
+      ref={elRef}
       dangerouslySetInnerHTML={{ __html: DAGGER_SVG }}
       style={{
         position: "fixed",
@@ -155,7 +218,7 @@ export default function Cursor() {
         opacity: 0,
         display: "none",
         filter: "drop-shadow(0 0 4px rgba(192,0,26,0.7))",
-        transition: "width 0.12s ease, height 0.12s ease, filter 0.12s, opacity 0.2s",
+        transition: "width 0.1s ease, height 0.1s ease, filter 0.15s, opacity 0.15s",
         willChange: "transform",
         transformOrigin: "top left",
       }}

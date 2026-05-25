@@ -150,8 +150,8 @@ export default async function PcImagePage({ params }: PageProps) {
             color: "rgba(255,255,255,0.2)", whiteSpace: "nowrap", marginRight: "4px",
           }}>More ▸</span>
           {stripImages.map((img) => (
-            <Link key={img.slug} href={`/pc/${img.slug}`} style={{ textDecoration: "none", flexShrink: 0 }}>
-              <div style={{
+            <Link key={img.slug} href={`/pc/${img.slug}`} className="more-strip-link">
+              <div className="more-strip-thumb" style={{
                 position: "relative", width: "78px", height: "50px",
                 overflow: "hidden", borderRadius: "4px",
                 border: "1px solid rgba(255,255,255,0.08)",
