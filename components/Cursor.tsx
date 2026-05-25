@@ -2,25 +2,23 @@
 import { useEffect, useRef } from "react";
 
 // ─── Trusted Types helper ────────────────────────────────────────────────────
-let _hwSvgPolicy: TrustedTypePolicy | null = null;
-function getSvgPolicy(): TrustedTypePolicy | null {
-  if (typeof window === "undefined") return null;
-  if (!window.trustedTypes?.createPolicy) return null;
-  if (_hwSvgPolicy) return _hwSvgPolicy;
-  try {
-    _hwSvgPolicy = window.trustedTypes.createPolicy("hw-svg", {
-      createHTML: (s: string) => s,
-    });
-  } catch { /* already registered */ }
-  return _hwSvgPolicy;
-}
+let _hwPolicy: TrustedTypePolicy | null = null;
 function trustedHtml(html: string): string | TrustedHTML {
-  const policy = getSvgPolicy();
-  return policy ? policy.createHTML(html) : html;
+  if (typeof window === "undefined") return html;
+  if (!window.trustedTypes?.createPolicy) return html;
+  if (!_hwPolicy) {
+    try {
+      _hwPolicy = window.trustedTypes.createPolicy("hw-cur", { createHTML: (s: string) => s });
+    } catch { /* already registered */ }
+  }
+  return _hwPolicy ? _hwPolicy.createHTML(html) : html;
 }
 
-// ─── Cursor images ────────────────────────────────────────────────────────────
-// Default: dagger SVG
+// ─── Assets ───────────────────────────────────────────────────────────────────
+const HAND_URL   = "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/extras/Red_horror_mouse_hand_icon.webp";
+const CURSOR_URL = "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/extras/haunted-wallpapers-cursor-icon.webp";
+
+// ─── Default dagger SVG ───────────────────────────────────────────────────────
 const DAGGER_SVG = `
 <svg xmlns="http://www.w3.org/2000/svg" width="32" height="64" viewBox="0 0 32 64" fill="none">
   <polygon points="16,0 20,44 16,50 12,44" fill="#c0001a" filter="url(#glow)"/>
@@ -41,7 +39,7 @@ const DAGGER_SVG = `
   </defs>
 </svg>`;
 
-// Scroll state: tilted dagger SVG
+// ─── Scrolling dagger (dimmed) ────────────────────────────────────────────────
 const DAGGER_SCROLL_SVG = `
 <svg xmlns="http://www.w3.org/2000/svg" width="32" height="64" viewBox="0 0 32 64" fill="none">
   <polygon points="16,0 20,44 16,50 12,44" fill="#8b0010" filter="url(#glowscroll)"/>
@@ -60,28 +58,54 @@ const DAGGER_SCROLL_SVG = `
   </defs>
 </svg>`;
 
-// Hover: red horror hand
-const HAND_URL = "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/extras/Red_horror_mouse_hand_icon.webp";
-// Hotspot: fingertip is roughly at top-center of image (~50% x, ~10% y of a 64px image = offset -32px x, -6px y)
-const HAND_HTML = `<img src="${HAND_URL}" width="64" height="64" alt="" draggable="false" style="display:block;pointer-events:none;user-select:none;" />`;
+const HAND_HTML   = `<img src="${HAND_URL}"   width="64" height="64" alt="" draggable="false" style="display:block;pointer-events:none;user-select:none;">`;
+const CURSOR_HTML = `<img src="${CURSOR_URL}" width="48" height="48" alt="" draggable="false" style="display:block;pointer-events:none;user-select:none;">`;
 
-// ─── State machine ────────────────────────────────────────────────────────────
-type CursorState = "default" | "hover" | "scrolling";
+// ─── State types ──────────────────────────────────────────────────────────────
+// "default"    → dagger (normal movement, scrolling)
+// "hand"       → red horror hand (hovering a link / <a>)
+// "cursor-btn" → haunted cursor webp (hovering a button / interactive control)
+type CursorState = "default" | "hand" | "cursor-btn";
+
+// Selectors — order matters: button check runs first inside onOver
+const LINK_SEL = "a, [role='link']";
+const BTN_SEL  = [
+  "button",
+  "input",
+  "select",
+  "textarea",
+  "label",
+  "[role='button']",
+  "[role='checkbox']",
+  "[role='switch']",
+  ".download-btn",
+  ".hw-glow-btn-wrap",
+  ".social-btn",
+  ".reaction-btn",
+  ".more-strip-link",
+  ".hw2-obs-card",
+  ".cat-card",
+  ".mosaic-card",
+  ".coll-card",
+  ".product-card",
+].join(", ");
 
 export default function Cursor() {
   const elRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    // Desktop pointer only
     if (!window.matchMedia("(pointer: fine)").matches) return;
-
     const el = elRef.current;
     if (!el) return;
 
-    // Preload hand image
-    const img = new window.Image();
-    img.src = HAND_URL;
+    // Preload both raster images so first hover is instant
+    [HAND_URL, CURSOR_URL].forEach(url => {
+      const img = new window.Image();
+      img.src = url;
+    });
 
-    // Hide native cursor everywhere
+    // Suppress native cursor globally
     const styleId = "hw-cursor-none";
     if (!document.getElementById(styleId)) {
       const s = document.createElement("style");
@@ -92,88 +116,101 @@ export default function Cursor() {
 
     el.style.display = "block";
 
-    let mouseX = 0, mouseY = 0;
+    let mx = 0, my = 0;
     let visible = false;
     let state: CursorState = "default";
+    let isScrolling = false;
     let rafId = 0, rafRunning = false;
     let idleTimer: ReturnType<typeof setTimeout> | null = null;
     let scrollTimer: ReturnType<typeof setTimeout> | null = null;
 
-    // ── RAF loop ──────────────────────────────────────────────────────────────
+    // ── RAF position loop ─────────────────────────────────────────────────────
     const startRaf = () => { if (rafRunning) return; rafRunning = true; rafId = requestAnimationFrame(tick); };
     const stopRaf  = () => { rafRunning = false; cancelAnimationFrame(rafId); };
 
     const tick = () => {
       if (!rafRunning) return;
-      let ox = 0, oy = 0, angle = "-45deg";
+      let ox = 0, oy = 0, rot = "-45deg";
 
-      if (state === "hover") {
-        // Fingertip hotspot: offset so the pointing finger tip hits the cursor position
-        ox = -18; oy = -6; angle = "0deg";
-      } else if (state === "scrolling") {
-        ox = -16; oy = 0; angle = "-20deg";
+      if (state === "hand") {
+        // Fingertip of the red hand at pointer position
+        ox = -18; oy = -6; rot = "0deg";
+      } else if (state === "cursor-btn") {
+        // Center of haunted cursor at pointer
+        ox = -24; oy = -24; rot = "0deg";
+      } else if (isScrolling) {
+        // Tilted dimmed dagger while scrolling
+        ox = -16; oy = 0; rot = "-20deg";
       } else {
-        ox = -16; oy = 0; angle = "-45deg";
+        // Normal dagger
+        ox = -16; oy = 0; rot = "-45deg";
       }
 
-      el.style.transform = `translate(${mouseX + ox}px, ${mouseY + oy}px) rotate(${angle})`;
+      el.style.transform = `translate(${mx + ox}px, ${my + oy}px) rotate(${rot})`;
       rafId = requestAnimationFrame(tick);
     };
 
-    // ── Apply visual state ────────────────────────────────────────────────────
+    // ── Visual state application ──────────────────────────────────────────────
     const applyState = (next: CursorState) => {
-      if (next === state) return;
+      if (next === state && !isScrolling) return;
       state = next;
 
-      if (next === "hover") {
-        el.style.width = "64px";
-        el.style.height = "64px";
+      if (next === "hand") {
+        el.style.width = "64px"; el.style.height = "64px";
         el.innerHTML = trustedHtml(HAND_HTML) as string;
-        el.style.filter = "drop-shadow(0 0 10px rgba(192,0,26,0.8)) drop-shadow(0 0 20px rgba(192,0,26,0.4))";
-      } else if (next === "scrolling") {
-        el.style.width = "32px";
-        el.style.height = "64px";
-        el.innerHTML = trustedHtml(DAGGER_SCROLL_SVG) as string;
-        el.style.filter = "drop-shadow(0 0 3px rgba(139,0,16,0.5))";
+        el.style.filter = "drop-shadow(0 0 10px rgba(192,0,26,0.85)) drop-shadow(0 0 22px rgba(192,0,26,0.4))";
+      } else if (next === "cursor-btn") {
+        el.style.width = "48px"; el.style.height = "48px";
+        el.innerHTML = trustedHtml(CURSOR_HTML) as string;
+        el.style.filter = "drop-shadow(0 0 8px rgba(192,0,26,0.7)) drop-shadow(0 0 18px rgba(192,0,26,0.35))";
       } else {
-        el.style.width = "32px";
-        el.style.height = "64px";
-        el.innerHTML = trustedHtml(DAGGER_SVG) as string;
-        el.style.filter = "drop-shadow(0 0 4px rgba(192,0,26,0.7))";
+        // default — show scroll variant if currently scrolling
+        el.style.width = "32px"; el.style.height = "64px";
+        el.innerHTML = trustedHtml(isScrolling ? DAGGER_SCROLL_SVG : DAGGER_SVG) as string;
+        el.style.filter = isScrolling
+          ? "drop-shadow(0 0 3px rgba(139,0,16,0.5))"
+          : "drop-shadow(0 0 4px rgba(192,0,26,0.7))";
       }
     };
 
     // ── Mouse move ────────────────────────────────────────────────────────────
     const onMove = (e: MouseEvent) => {
-      mouseX = e.clientX;
-      mouseY = e.clientY;
-      if (!visible) {
-        visible = true;
-        el.style.opacity = "1";
-      }
+      mx = e.clientX; my = e.clientY;
+      if (!visible) { visible = true; el.style.opacity = "1"; }
       startRaf();
       if (idleTimer) clearTimeout(idleTimer);
       idleTimer = setTimeout(stopRaf, 3000);
     };
 
     // ── Hover detection ───────────────────────────────────────────────────────
-    const HOVER_SELECTOR = "a, button, [data-hover], input, select, textarea, label, [role='button'], .hw2-obs-card, .cat-card, .mosaic-card, .coll-card, .product-card, .download-btn, .more-strip-link";
-
     const onOver = (e: MouseEvent) => {
-      if (state === "scrolling") return; // scroll wins
-      const isLink = !!(e.target as Element)?.closest(HOVER_SELECTOR);
-      applyState(isLink ? "hover" : "default");
+      if (isScrolling) return; // scroll state wins
+      const t = e.target as Element;
+      if (t?.closest(BTN_SEL)) {
+        applyState("cursor-btn");
+      } else if (t?.closest(LINK_SEL)) {
+        applyState("hand");
+      } else {
+        applyState("default");
+      }
     };
 
     // ── Scroll detection ──────────────────────────────────────────────────────
     const onScroll = () => {
-      applyState("scrolling");
+      isScrolling = true;
+      applyState("default"); // re-renders with scroll dagger
       if (scrollTimer) clearTimeout(scrollTimer);
       scrollTimer = setTimeout(() => {
-        // After scroll stops, check if still hovering a link
-        const hovered = document.elementFromPoint(mouseX, mouseY);
-        const isLink = !!(hovered?.closest(HOVER_SELECTOR));
-        applyState(isLink ? "hover" : "default");
+        isScrolling = false;
+        // Re-check what's under the cursor after scroll settles
+        const hovered = document.elementFromPoint(mx, my);
+        if (hovered?.closest(BTN_SEL)) {
+          applyState("cursor-btn");
+        } else if (hovered?.closest(LINK_SEL)) {
+          applyState("hand");
+        } else {
+          applyState("default");
+        }
       }, 180);
     };
 
@@ -181,25 +218,25 @@ export default function Cursor() {
     const hide = () => { el.style.opacity = "0"; visible = false; stopRaf(); };
     const show = () => { if (visible) el.style.opacity = "1"; };
 
-    window.addEventListener("blur",          hide);
     document.addEventListener("mousemove",   onMove,   { passive: true });
     document.addEventListener("mouseover",   onOver,   { passive: true });
     document.addEventListener("mouseleave",  hide);
     document.addEventListener("mouseenter",  show);
     document.addEventListener("scroll",      onScroll, { passive: true });
     document.addEventListener("contextmenu", hide);
+    window.addEventListener("blur",          hide);
 
     return () => {
       stopRaf();
-      if (idleTimer)  clearTimeout(idleTimer);
+      if (idleTimer)   clearTimeout(idleTimer);
       if (scrollTimer) clearTimeout(scrollTimer);
-      window.removeEventListener("blur",          hide);
       document.removeEventListener("mousemove",   onMove);
       document.removeEventListener("mouseover",   onOver);
       document.removeEventListener("mouseleave",  hide);
       document.removeEventListener("mouseenter",  show);
       document.removeEventListener("scroll",      onScroll);
       document.removeEventListener("contextmenu", hide);
+      window.removeEventListener("blur",          hide);
     };
   }, []);
 
@@ -218,7 +255,7 @@ export default function Cursor() {
         opacity: 0,
         display: "none",
         filter: "drop-shadow(0 0 4px rgba(192,0,26,0.7))",
-        transition: "width 0.1s ease, height 0.1s ease, filter 0.15s, opacity 0.15s",
+        transition: "width 0.08s ease, height 0.08s ease, filter 0.12s, opacity 0.15s",
         willChange: "transform",
         transformOrigin: "top left",
       }}
