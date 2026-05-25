@@ -20,7 +20,7 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 import PremiumCountdown from "@/components/PremiumCountdown";
 import BirthdayComments from "@/components/BirthdayComments";
 import SummonRandomTag from "@/components/SummonRandomTag";
-import StoryTeaser from "@/components/StoryTeaser";
+
 
 export const dynamic = "force-dynamic";
 
@@ -390,7 +390,7 @@ export default async function AndroidImagePage({ params }: PageProps) {
               </div>
             )}
 
-            <StoryTeaser />
+            
 
             <div className="detail-fav-row">
               <FavoriteButton
