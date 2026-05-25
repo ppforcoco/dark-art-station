@@ -95,6 +95,16 @@ export default function WallpaperReactions({ imageId }: Props) {
 
   return (
     <>
+      <p style={{
+        fontFamily: "var(--font-space, monospace)",
+        fontSize: "0.55rem",
+        letterSpacing: "0.22em",
+        textTransform: "uppercase",
+        color: "rgba(224,224,224,0.35)",
+        margin: "18px 0 8px",
+      }}>
+        ▸ Tap to react
+      </p>
       <div className="hw-reactions">
         {REACTIONS.map(({ key, label, src }) => {
           const isVoted = voted === key;
@@ -111,8 +121,9 @@ export default function WallpaperReactions({ imageId }: Props) {
               aria-pressed={isVoted}
             >
               <span className={`hw-reaction-img-wrap${isSkull && glowing ? " hw-skull-glow" : ""}`}>
-                <Image src={src} alt={label} width={32} height={32} unoptimized className="hw-reaction-img" />
+                <Image src={src} alt={label} width={44} height={44} unoptimized className="hw-reaction-img" />
               </span>
+              <span className="hw-reaction-label">{label}</span>
               <span className="hw-reaction-count">{fmtCount(counts[key])}</span>
             </button>
           );
@@ -135,11 +146,13 @@ export default function WallpaperReactions({ imageId }: Props) {
           background: rgba(255,255,255,0.04);
           border: 1px solid rgba(255,255,255,0.08);
           border-radius: 12px;
-          padding: 10px 14px;
+          padding: 14px 16px;
           cursor: pointer;
           transition: background 0.2s, border-color 0.2s, transform 0.15s;
           color: #d0d0e8;
-          min-width: 62px;
+          min-width: 72px;
+          -webkit-tap-highlight-color: transparent;
+          touch-action: manipulation;
         }
         .hw-reaction-btn:hover {
           background: rgba(255,255,255,0.08);
@@ -154,16 +167,26 @@ export default function WallpaperReactions({ imageId }: Props) {
           display: flex;
           align-items: center;
           justify-content: center;
-          width: 32px;
-          height: 32px;
+          width: 44px;
+          height: 44px;
           transition: filter 0.2s;
         }
         .hw-reaction-img {
-          width: 32px;
-          height: 32px;
+          width: 44px;
+          height: 44px;
           object-fit: contain;
           display: block;
         }
+        .hw-reaction-label {
+          font-family: var(--font-space, monospace);
+          font-size: 0.5rem;
+          letter-spacing: 0.12em;
+          text-transform: uppercase;
+          color: rgba(200,200,220,0.5);
+          line-height: 1;
+          margin-top: 2px;
+        }
+        .hw-reaction-btn--voted .hw-reaction-label { color: rgba(255,255,255,0.7); }
         .hw-skull-glow .hw-reaction-img {
           filter: drop-shadow(0 0 8px rgba(220,0,0,0.9)) drop-shadow(0 0 16px rgba(220,0,0,0.6)) brightness(1.2);
         }
@@ -211,9 +234,9 @@ export default function WallpaperReactions({ imageId }: Props) {
 
         @media (max-width: 480px) {
           .hw-reactions { gap: 8px; }
-          .hw-reaction-btn { padding: 8px 10px; min-width: 54px; }
-          .hw-reaction-img, .hw-reaction-img-wrap { width: 26px; height: 26px; }
-          .hw-reaction-img { width: 26px; height: 26px; }
+          .hw-reaction-btn { padding: 12px 12px; min-width: 64px; }
+          .hw-reaction-img-wrap { width: 40px; height: 40px; }
+          .hw-reaction-img { width: 40px; height: 40px; }
         }
       `}</style>
     </>
