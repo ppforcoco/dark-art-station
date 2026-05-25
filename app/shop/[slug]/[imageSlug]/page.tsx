@@ -149,6 +149,25 @@ export default async function CollectionImagePage({ params }: PageProps) {
       className="min-h-screen"
       style={{ backgroundColor: "var(--bg-primary)", color: "var(--text-primary)" }}
     >
+
+      {/* ── More Dark Art — small strip at top ── */}
+      {siblings.slice(Math.max(0, currentIdx - 2), currentIdx).concat(
+        siblings.slice(currentIdx + 1, currentIdx + 5)
+      ).slice(0, 4).length > 0 && (
+        <div style={{ maxWidth: "1280px", margin: "0 auto", padding: "10px 24px", borderBottom: "1px solid rgba(255,255,255,0.06)", display: "flex", gap: "6px", alignItems: "center" }}>
+          <span style={{ fontFamily: "var(--font-space, monospace)", fontSize: "0.45rem", letterSpacing: "0.2em", textTransform: "uppercase", color: "rgba(255,255,255,0.2)", whiteSpace: "nowrap", marginRight: "4px" }}>More ▸</span>
+          {siblings.slice(Math.max(0, currentIdx - 2), currentIdx).concat(
+            siblings.slice(currentIdx + 1, currentIdx + 5)
+          ).slice(0, 4).map((img) => (
+            <Link key={img.slug} href={`/shop/${slug}/${img.slug}`} style={{ textDecoration: "none", flexShrink: 0 }}>
+              <div style={{ position: "relative", width: "44px", height: "78px", overflow: "hidden", borderRadius: "4px", border: "1px solid rgba(255,255,255,0.08)" }}>
+                <Image src={getPublicUrl(img.r2Key)} alt={img.title} fill className="object-cover" unoptimized sizes="44px" />
+              </div>
+            </Link>
+          ))}
+        </div>
+      )}
+
       <Breadcrumbs
         items={[
           { label: "Home", href: "/" },
@@ -466,63 +485,11 @@ export default async function CollectionImagePage({ params }: PageProps) {
         }
       `}</style>
 
-      {/* ── Prev / Next within collection ── */}
-      {(prevImage || nextImage) && (
-        <nav className="prev-next-nav">
-          {prevImage ? (
-            <Link href={`/shop/${slug}/${prevImage.slug}`} className="prev-next-link">
-              <div className="prev-next-thumb-wrap">
-                <Image
-                  src={getPublicUrl(prevImage.r2Key)}
-                  alt={prevImage.altText ?? `${prevImage.title} — dark wallpaper`}
-                  fill
-                  className="object-cover"
-                  unoptimized
-                  sizes="60px"
-                />
-              </div>
-              <div className="prev-next-text">
-                <span className="prev-next-label">← Previous</span>
-                <span className="prev-next-title">{prevImage.title}</span>
-              </div>
-            </Link>
-          ) : (
-            <div />
-          )}
-
-          {nextImage ? (
-            <Link
-              href={`/shop/${slug}/${nextImage.slug}`}
-              className="prev-next-link prev-next-link--next"
-            >
-              <div className="prev-next-thumb-wrap">
-                <Image
-                  src={getPublicUrl(nextImage.r2Key)}
-                  alt={nextImage.altText ?? `${nextImage.title} — dark wallpaper`}
-                  fill
-                  className="object-cover"
-                  unoptimized
-                  sizes="60px"
-                />
-              </div>
-              <div className="prev-next-text">
-                <span className="prev-next-label">Next →</span>
-                <span className="prev-next-title">{nextImage.title}</span>
-              </div>
-            </Link>
-          ) : (
-            <div />
-          )}
-        </nav>
-      )}
-
 
       <KeyboardNav
         prevHref={prevImage ? `/shop/${slug}/${prevImage.slug}` : null}
         nextHref={nextImage ? `/shop/${slug}/${nextImage.slug}` : null}
       />
-
-      <RelatedWallpapers images={related} heading="More Dark Art You'll Like" />
 
       <PageTracker
         item={{

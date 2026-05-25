@@ -20,7 +20,7 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 import PremiumCountdown from "@/components/PremiumCountdown";
 import BirthdayComments from "@/components/BirthdayComments";
 import SummonRandomTag from "@/components/SummonRandomTag";
-
+import StoryTeaser from "@/components/StoryTeaser";
 
 export const dynamic = "force-dynamic";
 
@@ -246,52 +246,26 @@ export default async function AndroidImagePage({ params }: PageProps) {
         { label: image.title },
       ]} />
 
-      {nextImageSrc && (
-        <link rel="preload" as="image" href={nextImageSrc} />
+            {/* ── More Dark Art — small strip at top ── */}
+      {siblings.slice(Math.max(0, currentIdx - 2), currentIdx).concat(
+        siblings.slice(currentIdx + 1, currentIdx + 5)
+      ).slice(0, 4).length > 0 && (
+        <div style={{ maxWidth: "1280px", margin: "0 auto", padding: "10px 24px", borderBottom: "1px solid rgba(255,255,255,0.06)", display: "flex", gap: "6px", alignItems: "center" }}>
+          <span style={{ fontFamily: "var(--font-space, monospace)", fontSize: "0.45rem", letterSpacing: "0.2em", textTransform: "uppercase", color: "rgba(255,255,255,0.2)", whiteSpace: "nowrap", marginRight: "4px" }}>More ▸</span>
+          {siblings.slice(Math.max(0, currentIdx - 2), currentIdx).concat(
+            siblings.slice(currentIdx + 1, currentIdx + 5)
+          ).slice(0, 4).map((img) => (
+            <Link key={img.slug} href={`/android/${img.slug}`} style={{ textDecoration: "none", flexShrink: 0 }}>
+              <div style={{ position: "relative", width: "44px", height: "78px", overflow: "hidden", borderRadius: "4px", border: "1px solid rgba(255,255,255,0.08)" }}>
+                <Image src={getPublicUrl(img.r2Key)} alt={img.title} fill className="object-cover" unoptimized sizes="44px" />
+              </div>
+            </Link>
+          ))}
+        </div>
       )}
 
-      {(prevImage || nextImage) && (
-        <nav style={{
-          maxWidth: "1280px", margin: "0 auto",
-          padding: "16px 24px",
-          display: "flex",
-          justifyContent: "space-between",
-          gap: "12px",
-          borderBottom: "1px solid var(--border-dim)",
-        }}>
-          {prevImage ? (
-            <Link href={`/android/${prevImage.slug}`}
-              style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: "12px", padding: "10px", border: "1px solid var(--border-dim)", textDecoration: "none" }}
-              className="hover:border-[rgba(139,0,0,0.5)] transition-colors">
-              <div style={{ position: "relative", flexShrink: 0, width: "48px", height: "86px", overflow: "hidden", borderRadius: "4px" }}>
-                <Image src={getPublicUrl(prevImage.r2Key)} alt={prevImage.title} fill className="object-cover" unoptimized sizes="48px" />
-              </div>
-              <div style={{ display: "flex", flexDirection: "column", gap: "4px", minWidth: 0 }}>
-                <span className="font-mono text-[0.5rem] tracking-[0.2em] uppercase" style={{ color: "var(--text-muted)" }}>← Previous</span>
-                <span className="font-body italic text-[0.75rem]"
-                  style={{ color: "var(--text-primary)", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" as const, overflow: "hidden" }}>
-                  {prevImage.title}
-                </span>
-              </div>
-            </Link>
-          ) : <span />}
-          {nextImage ? (
-            <Link href={`/android/${nextImage.slug}`}
-              style={{ display: "flex", flexDirection: "row-reverse", alignItems: "center", gap: "12px", padding: "10px", border: "1px solid var(--border-dim)", textDecoration: "none" }}
-              className="hover:border-[rgba(139,0,0,0.5)] transition-colors">
-              <div style={{ position: "relative", flexShrink: 0, width: "48px", height: "86px", overflow: "hidden", borderRadius: "4px" }}>
-                <Image src={getPublicUrl(nextImage.r2Key)} alt={nextImage.title} fill className="object-cover" unoptimized sizes="48px" />
-              </div>
-              <div style={{ display: "flex", flexDirection: "column", gap: "4px", minWidth: 0, textAlign: "right" }}>
-                <span className="font-mono text-[0.5rem] tracking-[0.2em] uppercase" style={{ color: "var(--text-muted)" }}>Next →</span>
-                <span className="font-body italic text-[0.75rem]"
-                  style={{ color: "var(--text-primary)", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" as const, overflow: "hidden" }}>
-                  {nextImage.title}
-                </span>
-              </div>
-            </Link>
-          ) : <span />}
-        </nav>
+      {nextImageSrc && (
+        <link rel="preload" as="image" href={nextImageSrc} />
       )}
 
       <section style={{ maxWidth: "1280px", margin: "0 auto", padding: "24px 24px 40px" }}>
@@ -308,7 +282,6 @@ export default async function AndroidImagePage({ params }: PageProps) {
               <div className="hw-glow-btn-wrap hw-glow-btn-wrap--download">
                 <DownloadButton
                   href={`/api/download/image/${image.id}`}
-                  viewCount={image.viewCount}
                   downloadCount={image._count.downloads}
                 />
               </div>
@@ -390,7 +363,7 @@ export default async function AndroidImagePage({ params }: PageProps) {
               </div>
             )}
 
-            
+            <StoryTeaser />
 
             <div className="detail-fav-row">
               <FavoriteButton
@@ -494,8 +467,6 @@ export default async function AndroidImagePage({ params }: PageProps) {
         .social-btn--x { color: var(--text-primary); }
         .social-btn--whatsapp { color: #25d366; border-color: rgba(37,211,102,0.3); }
       `}</style>
-
-      <RelatedWallpapers images={related} heading="More Dark Art You'll Like" />
       <PageTracker item={{
         slug: image.slug,
         title: image.title,

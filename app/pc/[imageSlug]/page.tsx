@@ -3,23 +3,20 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { db, getRelatedImages } from "@/lib/db";
+import { db } from "@/lib/db";
 import { getPublicUrl } from "@/lib/r2";
 import DeviceMockup from "@/components/DeviceMockup";
-import RelatedWallpapers from "@/components/RelatedWallpapers";
 import DownloadButton from "@/components/DownloadButton";
 import RecentlyViewed from "@/components/RecentlyViewed";
 import SocialShare from "@/components/SocialShare";
 import PageTracker from "@/components/PageTracker";
 import FavoriteButton from "@/components/FavoriteButton";
-
 import { shouldCountPageView } from "@/lib/analytics-filter";
 import WallpaperTips from "@/components/WallpaperTips";
 import KeyboardNav from "@/components/KeyboardNav";
 import Breadcrumbs from "@/components/Breadcrumbs";
 
 export const dynamic = "force-dynamic";
-
 export const dynamicParams = true;
 export const revalidate = 3600;
 
@@ -28,13 +25,9 @@ interface PageProps {
 }
 
 function buildFallbackDescription(title: string, tags: string[]): string {
-  const tagList = tags.length > 0
-    ? tags.slice(0, 5).join(", ")
-    : "dark fantasy, atmospheric, gothic";
-
+  const tagList = tags.length > 0 ? tags.slice(0, 5).join(", ") : "dark fantasy, atmospheric, gothic";
   const firstTag = tags[0] ?? "dark fantasy";
   const secondTag = tags[1] ?? "atmospheric";
-
   return (
     title + " is a free high-resolution PC wallpaper from the Haunted Wallpapers dark art collection. " +
     "Crafted for desktop and widescreen monitors, this piece immerses your screen in themes of " + tagList + ". " +
@@ -43,8 +36,7 @@ function buildFallbackDescription(title: string, tags: string[]): string {
     "this wallpaper delivers moody, original artwork at no cost. " +
     "No account or sign-up is required — click download and the full-resolution file is yours instantly. " +
     "Every image in our PC collection is produced exclusively for Haunted Wallpapers, " +
-    "so you will not find this artwork duplicated across generic wallpaper repositories. " +
-    "Browse the related wallpapers below to discover more pieces that share a similar dark atmosphere and artistic style."
+    "so you will not find this artwork duplicated across generic wallpaper repositories."
   );
 }
 
@@ -61,9 +53,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     .replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim().slice(0, 200);
   const metaDesc = plainDesc || `${image.title} — free dark fantasy PC wallpaper. ${tagLine}. Download instantly, no account required.`;
   const plainMetaDesc = metaDesc.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
-
   const ogImage = "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/og/og-image-for-desktop-and%3Dpc-wallpaper.webp";
-
   return {
     metadataBase: new URL(siteUrl),
     title: `${image.title} — Free PC Wallpaper | HAUNTED WALLPAPERS`,
@@ -119,84 +109,71 @@ export default async function PcImagePage({ params }: PageProps) {
   const displayDescription = image.description ?? buildFallbackDescription(image.title, image.tags);
   const plainDescription = displayDescription.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
 
-  const [siblings, related] = await Promise.all([
-    db.image.findMany({
-      where: { collectionId: null, deviceType: "PC" },
-      orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
-      select: { slug: true, title: true, r2Key: true, sortOrder: true },
-    }),
-    getRelatedImages(image.id, image.tags, 6, "PC"),
-  ]);
+  const siblings = await db.image.findMany({
+    where: { collectionId: null, deviceType: "PC" },
+    orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
+    select: { slug: true, title: true, r2Key: true, sortOrder: true },
+  });
+
   const currentIdx = siblings.findIndex((s) => s.slug === imageSlug);
   const prevImage = currentIdx > 0 ? siblings[currentIdx - 1] : null;
   const nextImage = currentIdx < siblings.length - 1 ? siblings[currentIdx + 1] : null;
-
   const nextImageSrc = nextImage ? getPublicUrl(nextImage.r2Key) : null;
+
+  const stripImages = siblings
+    .slice(Math.max(0, currentIdx - 2), currentIdx)
+    .concat(siblings.slice(currentIdx + 1, currentIdx + 5))
+    .slice(0, 4);
 
   return (
     <main className="min-h-screen" style={{ backgroundColor: "var(--bg-primary)", color: "var(--text-primary)", colorScheme: "dark" }}>
       <WallpaperTips mode="banner" />
 
-      {/* ── Breadcrumb ── */}
       <Breadcrumbs items={[
         { label: "Home", href: "/" },
         { label: "PC Wallpapers", href: "/pc" },
         { label: image.title },
       ]} />
 
-      {nextImageSrc && (
-        <link rel="preload" as="image" href={nextImageSrc} />
-      )}
+      {nextImageSrc && <link rel="preload" as="image" href={nextImageSrc} />}
 
-      {/* ── Prev / Next — TOP ── */}
-      {(prevImage || nextImage) && (
-        <nav style={{
-          maxWidth: "1280px", margin: "0 auto",
-          padding: "16px 24px",
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr",
-          gap: "12px",
-          borderBottom: "1px solid var(--border-dim)",
+      {/* ── More Dark Art — small thumbnail strip ── */}
+      {stripImages.length > 0 && (
+        <div style={{
+          maxWidth: "1280px", margin: "0 auto", padding: "10px 24px",
+          borderBottom: "1px solid rgba(255,255,255,0.06)",
+          display: "flex", gap: "6px", alignItems: "center",
         }}>
-          {prevImage ? (
-            <Link href={`/pc/${prevImage.slug}`}
-              style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: "12px", padding: "10px", border: "1px solid var(--border-dim)", textDecoration: "none" }}
-              className="hover:border-[rgba(139,0,0,0.5)] transition-colors">
-              <div style={{ position: "relative", flexShrink: 0, width: "86px", height: "54px", overflow: "hidden", borderRadius: "4px" }}>
-                <Image src={getPublicUrl(prevImage.r2Key)} alt={prevImage.title} fill className="object-cover" unoptimized sizes="86px" />
-              </div>
-              <div style={{ display: "flex", flexDirection: "column", gap: "4px", minWidth: 0 }}>
-                <span className="font-mono text-[0.5rem] tracking-[0.2em] uppercase" style={{ color: "var(--text-muted)" }}>← Previous</span>
-                <span className="font-body italic text-[0.75rem]"
-                  style={{ color: "var(--text-primary)", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" as const, overflow: "hidden" }}>
-                  {prevImage.title}
-                </span>
-              </div>
-            </Link>
-          ) : <div />}
-          {nextImage ? (
-            <Link href={`/pc/${nextImage.slug}`}
-              style={{ display: "flex", flexDirection: "row-reverse", alignItems: "center", gap: "12px", padding: "10px", border: "1px solid var(--border-dim)", textDecoration: "none" }}
-              className="hover:border-[rgba(139,0,0,0.5)] transition-colors">
-              <div style={{ position: "relative", flexShrink: 0, width: "86px", height: "54px", overflow: "hidden", borderRadius: "4px" }}>
-                <Image src={getPublicUrl(nextImage.r2Key)} alt={nextImage.title} fill className="object-cover" unoptimized sizes="86px" />
-              </div>
-              <div style={{ display: "flex", flexDirection: "column", gap: "4px", minWidth: 0, textAlign: "right" }}>
-                <span className="font-mono text-[0.5rem] tracking-[0.2em] uppercase" style={{ color: "var(--text-muted)" }}>Next →</span>
-                <span className="font-body italic text-[0.75rem]"
-                  style={{ color: "var(--text-primary)", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" as const, overflow: "hidden" }}>
-                  {nextImage.title}
-                </span>
+          <span style={{
+            fontFamily: "var(--font-space, monospace)", fontSize: "0.45rem",
+            letterSpacing: "0.2em", textTransform: "uppercase",
+            color: "rgba(255,255,255,0.2)", whiteSpace: "nowrap", marginRight: "4px",
+          }}>More ▸</span>
+          {stripImages.map((img) => (
+            <Link key={img.slug} href={`/pc/${img.slug}`} style={{ textDecoration: "none", flexShrink: 0 }}>
+              <div style={{
+                position: "relative", width: "78px", height: "50px",
+                overflow: "hidden", borderRadius: "4px",
+                border: "1px solid rgba(255,255,255,0.08)",
+              }}>
+                <Image
+                  src={getPublicUrl(img.r2Key)}
+                  alt={img.title}
+                  fill
+                  className="object-cover"
+                  unoptimized
+                  sizes="78px"
+                />
               </div>
             </Link>
-          ) : <div />}
-        </nav>
+          ))}
+        </div>
       )}
 
       <section style={{ maxWidth: "1280px", margin: "0 auto", padding: "24px 24px 40px" }}>
         <div className="pc-detail-grid" style={{ display: "flex", flexDirection: "column", gap: "40px" }}>
 
-          {/* Image — hero size */}
+          {/* ── Image column ── */}
           <div className="pc-detail-image-wrap">
             <DeviceMockup deviceType="PC">
               <div className="relative w-full h-full">
@@ -212,17 +189,18 @@ export default async function PcImagePage({ params }: PageProps) {
                 />
               </div>
             </DeviceMockup>
+
             <div style={{ marginTop: "16px", width: "100%", display: "flex", flexDirection: "column", gap: "10px" }}>
               <div className="hw-glow-btn-wrap hw-glow-btn-wrap--download">
                 <DownloadButton
                   href={`/api/download/image/${image.id}`}
-                  viewCount={image.viewCount}
                   downloadCount={image._count.downloads}
                 />
               </div>
             </div>
           </div>
 
+          {/* ── Info column ── */}
           <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
             <div>
               <h1 style={{
@@ -237,7 +215,6 @@ export default async function PcImagePage({ params }: PageProps) {
                 {image.title}
               </h1>
 
-              {/* FOMO Badges — badge-new removed */}
               {image.tags.filter((t: string) => t.startsWith("badge-")).length > 0 && (
                 <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", marginTop: "10px", marginBottom: "4px" }}>
                   {image.tags.filter((t: string) => t.startsWith("badge-")).map((tag: string) => {
@@ -251,7 +228,10 @@ export default async function PcImagePage({ params }: PageProps) {
                     const b = badgeMap[tag];
                     if (!b) return null;
                     return (
-                      <span key={tag} style={{ background: b.bg, border: `1px solid ${b.color}`, color: b.color, fontSize: "0.65rem", fontFamily: "monospace", padding: "3px 10px", letterSpacing: "0.08em" }}>
+                      <span key={tag} style={{
+                        background: b.bg, border: `1px solid ${b.color}`, color: b.color,
+                        fontSize: "0.65rem", fontFamily: "monospace", padding: "3px 10px", letterSpacing: "0.08em",
+                      }}>
                         {b.label}
                       </span>
                     );
@@ -260,22 +240,13 @@ export default async function PcImagePage({ params }: PageProps) {
               )}
             </div>
 
-            {/* ── Share buttons — prominent, above description ── */}
-            <SocialShare
-              title={image.title}
-              imageUrl={thumbUrl}
-              pageUrl={`${siteUrl}/pc/${imageSlug}`}
-            />
+            <SocialShare title={image.title} imageUrl={thumbUrl} pageUrl={`${siteUrl}/pc/${imageSlug}`} />
 
-            {/* Always rendered — real description or auto-generated fallback. Supports HTML. */}
             <div
               className="font-body text-[1rem] leading-relaxed description-html"
               style={{ color: "var(--text-muted)", colorScheme: "dark" }}
               dangerouslySetInnerHTML={{ __html: displayDescription }}
             />
-
-            {/* Save to favorites */}
-            
 
             <div className="detail-fav-row">
               <FavoriteButton
@@ -292,23 +263,18 @@ export default async function PcImagePage({ params }: PageProps) {
               <span className="detail-fav-label">Save to Favorites</span>
             </div>
           </div>
+
         </div>
       </section>
 
       <style>{`
-        .pc-detail-image-wrap {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-        }
+        .pc-detail-image-wrap { display: flex; flex-direction: column; align-items: center; }
         @media (min-width: 768px) {
           .pc-detail-grid { flex-direction: row !important; align-items: flex-start; gap: 56px !important; }
           .pc-detail-image-wrap { flex: 0 0 560px; justify-content: flex-start; }
           .pc-detail-grid > div:last-child { flex: 1; position: sticky; top: 100px; }
         }
-        @media (min-width: 1024px) {
-          .pc-detail-image-wrap { flex: 0 0 640px; }
-        }
+        @media (min-width: 1024px) { .pc-detail-image-wrap { flex: 0 0 640px; } }
         .description-html { color-scheme: dark; }
         .description-html p { margin-bottom: 0.75rem; }
         .description-html p:last-child { margin-bottom: 0; }
@@ -317,51 +283,15 @@ export default async function PcImagePage({ params }: PageProps) {
         .description-html strong, .description-html b { color: #f0ecff; }
         .description-html ul, .description-html ol { padding-left: 1.25rem; margin-bottom: 0.75rem; }
         .description-html li { margin-bottom: 0.25rem; }
-        .hw-glow-btn-wrap--download {
-          animation: hwDlGlowPulse 2.8s ease-in-out infinite;
-          border-radius: 2px;
-        }
+        .hw-glow-btn-wrap--download { animation: hwDlGlowPulse 2.8s ease-in-out infinite; border-radius: 2px; }
         @keyframes hwDlGlowPulse {
           0%, 100% { box-shadow: 0 0 12px rgba(192,0,26,0.35), 0 0 28px rgba(192,0,26,0.15); }
           50%       { box-shadow: 0 0 22px rgba(192,0,26,0.65), 0 0 50px rgba(192,0,26,0.28); }
         }
-        /* Social share inline prominence */
-        .social-share {
-          border: 1px solid rgba(192,0,26,0.25);
-          border-radius: 6px;
-          padding: 12px 14px;
-          background: rgba(192,0,26,0.04);
-        }
-        .social-share-label {
-          font-family: var(--font-space, monospace);
-          font-size: 0.55rem;
-          letter-spacing: 0.18em;
-          text-transform: uppercase;
-          color: var(--text-muted);
-          margin-bottom: 8px;
-        }
-        .social-share-btns {
-          display: flex;
-          flex-wrap: wrap;
-          gap: 8px;
-        }
-        .social-btn {
-          display: inline-flex;
-          align-items: center;
-          gap: 6px;
-          padding: 8px 14px;
-          border-radius: 4px;
-          font-size: 0.72rem;
-          font-family: var(--font-space, monospace);
-          letter-spacing: 0.06em;
-          text-decoration: none;
-          border: 1px solid var(--border-dim, rgba(255,255,255,0.1));
-          color: var(--text-primary);
-          background: transparent;
-          cursor: pointer;
-          transition: border-color 0.2s, background 0.2s;
-          white-space: nowrap;
-        }
+        .social-share { border: 1px solid rgba(192,0,26,0.25); border-radius: 6px; padding: 12px 14px; background: rgba(192,0,26,0.04); }
+        .social-share-label { font-family: var(--font-space, monospace); font-size: 0.55rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px; }
+        .social-share-btns { display: flex; flex-wrap: wrap; gap: 8px; }
+        .social-btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: 4px; font-size: 0.72rem; font-family: var(--font-space, monospace); letter-spacing: 0.06em; text-decoration: none; border: 1px solid var(--border-dim, rgba(255,255,255,0.1)); color: var(--text-primary); background: transparent; cursor: pointer; transition: border-color 0.2s, background 0.2s; white-space: nowrap; }
         .social-btn svg { width: 14px; height: 14px; fill: currentColor; flex-shrink: 0; }
         .social-btn:hover { border-color: rgba(255,255,255,0.25); background: rgba(255,255,255,0.04); }
         .social-btn--native { border-color: rgba(192,0,26,0.4); color: #f0e8e8; }
@@ -371,13 +301,7 @@ export default async function PcImagePage({ params }: PageProps) {
         .social-btn--whatsapp { color: #25d366; border-color: rgba(37,211,102,0.3); }
       `}</style>
 
-      <RelatedWallpapers images={related} heading="More Dark Art You'll Like" landscape />
-      <PageTracker item={{
-        slug: image.slug,
-        title: image.title,
-        thumb: thumbUrl,
-        href: `/pc/${imageSlug}`,
-      }} />
+      <PageTracker item={{ slug: image.slug, title: image.title, thumb: thumbUrl, href: `/pc/${imageSlug}` }} />
       <RecentlyViewed currentSlug={image.slug} />
       <KeyboardNav
         prevHref={prevImage ? `/pc/${prevImage.slug}` : null}
