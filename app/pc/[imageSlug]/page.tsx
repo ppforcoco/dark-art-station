@@ -12,6 +12,7 @@ import RecentlyViewed from "@/components/RecentlyViewed";
 import SocialShare from "@/components/SocialShare";
 import PageTracker from "@/components/PageTracker";
 import FavoriteButton from "@/components/FavoriteButton";
+import StoryTeaser from "@/components/StoryTeaser";
 import { shouldCountPageView } from "@/lib/analytics-filter";
 import WallpaperTips from "@/components/WallpaperTips";
 import KeyboardNav from "@/components/KeyboardNav";
@@ -274,6 +275,8 @@ export default async function PcImagePage({ params }: PageProps) {
             />
 
             {/* Save to favorites */}
+            <StoryTeaser />
+
             <div className="detail-fav-row">
               <FavoriteButton
                 size="md"
