@@ -377,6 +377,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               strategy="lazyOnload"
               dangerouslySetInnerHTML={{
                 __html:
+                  'gtag(\'js\',new Date());'
+                  + ('gtag(\'config\',\'' + gaId + '\',{send_page_view:true});'),
               }}
             />
             {/*
