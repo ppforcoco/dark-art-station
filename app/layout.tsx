@@ -260,7 +260,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           itself should also not reference icon-180.png — check public/manifest.json
           and remove that entry there too if present.
         */}
-        <link rel="manifest" href="/manifest.json" />
+        <link rel="manifest" href="/manifest.webmanifest" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <link rel="icon" type="image/x-icon" href="/favicon.ico" />
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />

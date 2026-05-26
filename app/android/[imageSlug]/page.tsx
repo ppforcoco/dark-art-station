@@ -270,9 +270,11 @@ export default async function AndroidImagePage({ params }: PageProps) {
         </div>
       )}
       <KeyboardNav
-        prevHref={prevImage ? `/android/{prevImage.slug}` : null}
-        nextHref={nextImage ? `/android/{nextImage.slug}` : null}
+        prevHref={prevImage ? `/android/${prevImage.slug}` : null}
+        nextHref={nextImage ? `/android/${nextImage.slug}` : null}
         showHint
+        prevImage={prevImage ? { href: `/android/${prevImage.slug}`, title: prevImage.title, thumb: getPublicUrl(prevImage.r2Key) } : null}
+        nextImage={nextImage ? { href: `/android/${nextImage.slug}`, title: nextImage.title, thumb: getPublicUrl(nextImage.r2Key) } : null}
       />
 
       {nextImageSrc && (

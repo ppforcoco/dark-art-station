@@ -190,9 +190,11 @@ export default async function IphoneImagePage({ params }: PageProps) {
         </div>
       )}
       <KeyboardNav
-        prevHref={prevImage ? `/iphone/{prevImage.slug}` : null}
-        nextHref={nextImage ? `/iphone/{nextImage.slug}` : null}
+        prevHref={prevImage ? `/iphone/${prevImage.slug}` : null}
+        nextHref={nextImage ? `/iphone/${nextImage.slug}` : null}
         showHint
+        prevImage={prevImage ? { href: `/iphone/${prevImage.slug}`, title: prevImage.title, thumb: getPublicUrl(prevImage.r2Key) } : null}
+        nextImage={nextImage ? { href: `/iphone/${nextImage.slug}`, title: nextImage.title, thumb: getPublicUrl(nextImage.r2Key) } : null}
       />
 
       {nextImageSrc && (

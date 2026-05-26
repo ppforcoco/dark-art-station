@@ -173,6 +173,8 @@ export default async function PcImagePage({ params }: PageProps) {
         prevHref={prevImage ? `/pc/${prevImage.slug}` : null}
         nextHref={nextImage ? `/pc/${nextImage.slug}` : null}
         showHint
+        prevImage={prevImage ? { href: `/pc/${prevImage.slug}`, title: prevImage.title, thumb: getPublicUrl(prevImage.r2Key) } : null}
+        nextImage={nextImage ? { href: `/pc/${nextImage.slug}`, title: nextImage.title, thumb: getPublicUrl(nextImage.r2Key) } : null}
       />
 
       <section style={{ maxWidth: "1280px", margin: "0 auto", padding: "24px 24px 40px" }}>
