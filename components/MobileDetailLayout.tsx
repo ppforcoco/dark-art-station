@@ -82,6 +82,14 @@ function LazyImg({ src, alt, style, priority = false }: LazyImgProps) {
       return;
     }
 
+    // Check if already in viewport at mount time
+    const rect = img.getBoundingClientRect();
+    const inViewport = rect.top < window.innerHeight + 150;
+    if (inViewport) {
+      img.src = src;
+      return;
+    }
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
@@ -89,7 +97,7 @@ function LazyImg({ src, alt, style, priority = false }: LazyImgProps) {
           observer.disconnect();
         }
       },
-      { rootMargin: "150px 0px" }
+      { rootMargin: "150px 0px", threshold: 0 }
     );
 
     observer.observe(img);
@@ -107,7 +115,7 @@ function LazyImg({ src, alt, style, priority = false }: LazyImgProps) {
         height: "100%",
         objectFit: "cover",
         opacity: loaded ? 1 : 0,
-        // No transition — just snaps in when ready
+        transition: "opacity 0.2s ease",
         ...style,
       }}
     />
@@ -129,9 +137,9 @@ const S = {
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
-    padding: "8px 10px",
+    padding: "6px 8px",
     borderBottom: "1px solid rgba(255,255,255,0.06)",
-    gap: 8,
+    gap: 6,
     background: "#0a0a0a",
     position: "sticky",
     top: 0,
@@ -151,15 +159,15 @@ const S = {
     justifyContent: align === "right" ? "flex-end" : "flex-start",
   }),
 
-  /* Prev/Next thumbnail — real card size now */
+  /* Prev/Next thumbnail — compact */
   prevNextThumbWrap: {
     position: "relative",
-    width: 48,
-    height: 86,
+    width: 32,
+    height: 57,
     flexShrink: 0,
     overflow: "hidden",
-    borderRadius: 6,
-    border: "1px solid rgba(255,255,255,0.12)",
+    borderRadius: 5,
+    border: "1px solid rgba(255,255,255,0.10)",
     background: "#111",
   } as React.CSSProperties,
 
@@ -167,9 +175,9 @@ const S = {
     whiteSpace: "nowrap",
     overflow: "hidden",
     textOverflow: "ellipsis",
-    maxWidth: 60,
-    fontSize: "0.55rem",
-    color: "rgba(255,255,255,0.35)",
+    maxWidth: 52,
+    fontSize: "0.52rem",
+    color: "rgba(255,255,255,0.3)",
   } as React.CSSProperties,
 
   gridBtn: {
@@ -275,14 +283,14 @@ const S = {
     paddingBottom: 2,
   } as React.CSSProperties,
 
-  /* 72×128px — proper card size, readable wallpaper */
+  /* 52×92px — small card, still legible */
   moreThumb: {
     position: "relative",
-    width: 72,
-    height: 128,
+    width: 52,
+    height: 92,
     flexShrink: 0,
     overflow: "hidden",
-    borderRadius: 6,
+    borderRadius: 5,
     border: "1px solid rgba(255,255,255,0.08)",
     background: "#111",
   } as React.CSSProperties,
@@ -395,12 +403,12 @@ const S = {
 
   rvThumb: {
     position: "relative",
-    width: 60,
-    height: 107,
+    width: 40,
+    height: 71,
     flexShrink: 0,
     overflow: "hidden",
-    borderRadius: 6,
-    border: "1px solid rgba(255,255,255,0.08)",
+    borderRadius: 5,
+    border: "1px solid rgba(255,255,255,0.07)",
     background: "#111",
   } as React.CSSProperties,
 };

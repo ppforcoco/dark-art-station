@@ -313,12 +313,19 @@ export default async function Home() {
             </div>
           </div>
 
-          {/* RIGHT — Phone mockups
-              FIX: All 5 phones now visible on mobile via horizontal scroll.
-              edgePhone phones are hidden ONLY on very small screens (<400px).
-              On 400px+ all 5 phones scroll horizontally with scroll-snap.
-              Desktop still shows all 5 inline without scroll.
-          */}
+          {/* RIGHT — Phone mockups (desktop) / Single hero thumbnail (mobile) */}
+
+          {/* MOBILE ONLY: single hero thumbnail — zero extra image requests */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/extras/the-haunted-wallpapers-hero-thumbnail.webp"
+            alt="Haunted Wallpapers Hero"
+            className="hw-hero-mobile-thumb"
+            loading="eager"
+            fetchPriority="high"
+          />
+
+          {/* DESKTOP ONLY phone mockup strip */}
           <div className="hw-hero-phones-wrap" style={{
             display: "flex",
             alignItems: "center",
@@ -396,7 +403,30 @@ export default async function Home() {
           padding-bottom: 0 !important;
           overflow: visible !important;
         }
+        /* Mobile hero thumbnail — shows instead of phone strip */
+        .hw-hero-mobile-thumb {
+          display: none;
+        }
+
+        @media (max-width: 859px) {
+          /* Show mobile thumbnail, hide phone strip */
+          .hw-hero-mobile-thumb {
+            display: block;
+            width: 100%;
+            max-height: 260px;
+            object-fit: cover;
+            object-position: center top;
+          }
+          .hw-hero-phones-wrap {
+            display: none !important;
+          }
+        }
+
         @media (min-width: 860px) {
+          /* Desktop: hide thumbnail, show phone strip */
+          .hw-hero-mobile-thumb {
+            display: none !important;
+          }
           .hw-hero-split {
             grid-template-columns: 380px 1fr !important;
             align-items: center !important;
@@ -407,60 +437,6 @@ export default async function Home() {
             overflow: visible !important;
             align-items: center !important;
             justify-content: center !important;
-          }
-        }
-        @media (min-width: 540px) and (max-width: 859px) {
-          .hw-hero-split { grid-template-columns: 1fr !important; }
-          .hw-hero-phones-wrap {
-            padding: 16px clamp(12px,3vw,32px) 16px !important;
-            overflow-x: auto !important;
-            justify-content: flex-start !important;
-            scroll-snap-type: x mandatory !important;
-            -webkit-overflow-scrolling: touch !important;
-            scrollbar-width: none !important;
-          }
-          .hw-hero-phones-wrap::-webkit-scrollbar { display: none; }
-          .hw-hero-phones-wrap > div { scroll-snap-align: center; }
-        }
-
-        /* MOBILE: All 5 phones visible in horizontal scroll row */
-        @media (max-width: 539px) {
-          .hw-hero-split { grid-template-columns: 1fr !important; }
-          .hw-hero-phones-wrap {
-            padding: 8px 12px 12px !important;
-            overflow-x: auto !important;
-            justify-content: flex-start !important;
-            gap: 6px !important;
-            scroll-snap-type: x mandatory !important;
-            -webkit-overflow-scrolling: touch !important;
-            scrollbar-width: none !important;
-          }
-          .hw-hero-phones-wrap::-webkit-scrollbar { display: none; }
-          .hw-hero-phones-wrap > div { scroll-snap-align: center; }
-
-          /* All phones show on mobile — NO hide for edgePhone on 400px+ */
-          .hw-hero-phone-edge {
-            display: flex !important;
-          }
-
-          /* Non-featured phones: compact */
-          .hw-hero-phone-shell {
-            width: 90px !important;
-            height: 195px !important;
-            border-radius: 14px !important;
-          }
-          /* Featured (middle) phone slightly bigger */
-          .hw-hero-phones-wrap > div:nth-child(3) .hw-hero-phone-shell {
-            width: 116px !important;
-            height: 252px !important;
-            border-radius: 18px !important;
-          }
-        }
-
-        /* Very tiny screens (<360px): hide edge phones to avoid overflow */
-        @media (max-width: 359px) {
-          .hw-hero-phone-edge {
-            display: none !important;
           }
         }
       `}</style>
@@ -581,7 +557,7 @@ export default async function Home() {
                     {/* No priority here — this is inside LazySection so it only mounts on scroll.
                         Marking it priority would be contradictory and waste bandwidth. */}
                     <Image src={wotdUrl} alt={wotd.title} fill loading="lazy" className="object-cover"
-                      sizes="(max-width:480px) 90vw, (max-width:768px) 60vw, 320px" style={{ objectPosition: "center top" }} />
+                      sizes="(max-width:480px) 38vw, (max-width:768px) 40vw, 320px" style={{ objectPosition: "center top" }} />
                   </div>
                   <div className="wotd-img-frame__scanlines" aria-hidden="true" />
                   <div className="wotd-img-frame__corners" aria-hidden="true">
@@ -878,9 +854,9 @@ export default async function Home() {
                 }
                 @media (max-width: 680px) {
                   .wotd-top-frame .wotd-img-frame {
-                    width: clamp(140px, 50vw, 200px);
+                    width: clamp(100px, 38vw, 150px);
                   }
-                  .wotd-title { font-size: clamp(1.1rem, 4vw, 1.5rem); }
+                  .wotd-title { font-size: clamp(0.95rem, 3.5vw, 1.3rem); }
                 }
               `}</style>
             </section>
@@ -1007,6 +983,17 @@ export default async function Home() {
           .hw-desktop-section-mobile-hidden {
             display: none !important;
           }
+          /* Mobile section phone mockups — compact on mobile */
+          .dt-phone-showcase {
+            gap: 4px !important;
+            padding: 0 8px !important;
+          }
+          .dt-phone-card__shell {
+            width: 64px !important;
+          }
+          .dt-phone-card--hero .dt-phone-card__shell {
+            width: 88px !important;
+          }
         }
       `}</style>
 
@@ -1071,7 +1058,7 @@ export default async function Home() {
               ].map((kit) => (
                 <a key={kit.href} href={kit.href} className="hw-kit-card hw-kit-card--sm" style={{ "--kit-accent": kit.accent } as React.CSSProperties}>
                   <div className="hw-kit-card__thumb">
-                    <Image src={kit.img} alt={kit.alt} fill sizes="(max-width: 640px) 90vw, (max-width: 1024px) 45vw, 360px" style={{ objectFit: "cover" }} className="hw-kit-card__img" />
+                    <Image src={kit.img} alt={kit.alt} fill sizes="(max-width: 540px) 54vw, (max-width: 1024px) 45vw, 360px" style={{ objectFit: "cover" }} className="hw-kit-card__img" />
                     <div className="hw-kit-card__overlay" />
                     <span className="hw-kit-card__num">Kit {kit.num}</span>
                     {(kit as { premium?: boolean }).premium && (
@@ -1125,15 +1112,25 @@ export default async function Home() {
                 overflow-x: auto;
                 scroll-snap-type: x mandatory;
                 -webkit-overflow-scrolling: touch;
-                gap: 12px;
-                padding-bottom: 12px;
+                gap: 10px;
+                padding-bottom: 10px;
                 scrollbar-width: none;
               }
               .hw-kits-row3::-webkit-scrollbar { display: none; }
               .hw-kits-row3 .hw-kit-card {
-                flex: 0 0 78vw;
-                max-width: 300px;
+                flex: 0 0 54vw;
+                max-width: 220px;
                 scroll-snap-align: start;
+              }
+              .hw-kit-card__body {
+                padding: 10px 10px 12px !important;
+                gap: 4px !important;
+              }
+              .hw-kit-card__title {
+                font-size: 0.8rem !important;
+              }
+              .hw-kit-card__sub, .hw-kit-card__cta {
+                font-size: 0.46rem !important;
               }
             }
             .hw-kit-card--sm .hw-kit-card__title { font-size: clamp(0.85rem,1.5vw,1.05rem); }
@@ -1438,7 +1435,7 @@ export default async function Home() {
                         fill
                         loading="lazy"
                         className="object-cover"
-                        sizes="(max-width:600px) 50vw, (max-width:1024px) 33vw, 25vw"
+                        sizes="(max-width:600px) 44vw, (max-width:1024px) 33vw, 25vw"
                       />
                     ) : (
                       <div className="dt-obs-card__placeholder" style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", height: "100%", gap: "0.5rem" }}>
