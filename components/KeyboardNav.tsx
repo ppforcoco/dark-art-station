@@ -49,7 +49,7 @@ export default function KeyboardNav({ prevHref, nextHref, showHint, prevImage, n
           <Link href={prevHref!} className="hw-prevnext-link hw-prevnext-link--prev" prefetch={false}>
             {prevImage?.thumb && (
               <div className="hw-prevnext-thumb">
-                <Image src={prevImage.thumb} alt={prevImage.title} fill className="object-cover" unoptimized sizes="48px" />
+                <Image src={prevImage.thumb} alt={prevImage.title} fill className="object-cover" sizes="48px" />
               </div>
             )}
             <div className="hw-prevnext-text">
@@ -78,7 +78,7 @@ export default function KeyboardNav({ prevHref, nextHref, showHint, prevImage, n
             </div>
             {nextImage?.thumb && (
               <div className="hw-prevnext-thumb">
-                <Image src={nextImage.thumb} alt={nextImage.title} fill className="object-cover" unoptimized sizes="48px" />
+                <Image src={nextImage.thumb} alt={nextImage.title} fill className="object-cover" sizes="48px" />
               </div>
             )}
           </Link>

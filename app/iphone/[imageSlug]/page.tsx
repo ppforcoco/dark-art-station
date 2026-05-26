@@ -191,7 +191,16 @@ export default async function IphoneImagePage({ params }: PageProps) {
 
   return (
     <main className="min-h-screen" style={{ backgroundColor: "var(--bg-primary)", color: "var(--text-primary)", colorScheme: "dark" }}>
+      {/* ── PERF FIX: Preload the LCP image (hero wallpaper) explicitly ── */}
+      <link
+        rel="preload"
+        as="image"
+        href={thumbUrl}
+        // @ts-expect-error — fetchpriority is valid HTML but not yet in React types
+        fetchpriority="high"
+      />
       {/* Preload next image for instant navigation */}
+      {nextImageSrc && <link rel="preload" as="image" href={nextImageSrc} />}
 
       <WallpaperTips mode="banner" />
 
@@ -208,7 +217,7 @@ export default async function IphoneImagePage({ params }: PageProps) {
           {tagSortedStrip.map((img) => (
             <Link key={img.slug} href={`/iphone/${img.slug}`} className="more-strip-link">
               <div className="more-strip-thumb" style={{ position: "relative", width: "44px", height: "78px", overflow: "hidden", borderRadius: "4px", border: "1px solid rgba(255,255,255,0.08)" }}>
-                <Image src={getPublicUrl(img.r2Key)} alt={img.title} fill className="object-cover" unoptimized sizes="44px" />
+                <Image src={getPublicUrl(img.r2Key)} alt={img.title} fill className="object-cover" sizes="44px" />
               </div>
             </Link>
           ))}

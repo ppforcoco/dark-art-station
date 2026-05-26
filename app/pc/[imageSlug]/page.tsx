@@ -149,6 +149,15 @@ export default async function PcImagePage({ params }: PageProps) {
 
   return (
     <main className="min-h-screen" style={{ backgroundColor: "var(--bg-primary)", color: "var(--text-primary)", colorScheme: "dark" }}>
+      {/* ── PERF FIX: Preload LCP hero image ── */}
+      <link
+        rel="preload"
+        as="image"
+        href={thumbUrl}
+        // @ts-expect-error — fetchpriority is valid HTML but not yet in React types
+        fetchpriority="high"
+      />
+      {nextImageSrc && <link rel="preload" as="image" href={nextImageSrc} />}
 
       <WallpaperTips mode="banner" />
 
@@ -177,7 +186,7 @@ export default async function PcImagePage({ params }: PageProps) {
                 overflow: "hidden", borderRadius: "4px",
                 border: "1px solid rgba(255,255,255,0.08)",
               }}>
-                <Image src={getPublicUrl(img.r2Key)} alt={img.title} fill className="object-cover" unoptimized sizes="78px" />
+                <Image src={getPublicUrl(img.r2Key)} alt={img.title} fill className="object-cover" sizes="78px" />
               </div>
             </Link>
           ))}
@@ -192,7 +201,7 @@ export default async function PcImagePage({ params }: PageProps) {
         {prevImage ? (
           <Link href={`/pc/${prevImage.slug}`} className="pc-prevnext-card">
             <div className="pc-prevnext-thumb">
-              <Image src={getPublicUrl(prevImage.r2Key)} alt={prevImage.title} fill className="object-cover" unoptimized sizes="(max-width: 768px) 45vw, 300px" />
+              <Image src={getPublicUrl(prevImage.r2Key)} alt={prevImage.title} fill className="object-cover" sizes="(max-width: 768px) 45vw, 300px" />
               <div className="pc-prevnext-overlay" />
             </div>
             <div className="pc-prevnext-label">
@@ -205,7 +214,7 @@ export default async function PcImagePage({ params }: PageProps) {
         {nextImage ? (
           <Link href={`/pc/${nextImage.slug}`} className="pc-prevnext-card">
             <div className="pc-prevnext-thumb">
-              <Image src={getPublicUrl(nextImage.r2Key)} alt={nextImage.title} fill className="object-cover" unoptimized sizes="(max-width: 768px) 45vw, 300px" />
+              <Image src={getPublicUrl(nextImage.r2Key)} alt={nextImage.title} fill className="object-cover" sizes="(max-width: 768px) 45vw, 300px" />
               <div className="pc-prevnext-overlay" />
             </div>
             <div className="pc-prevnext-label pc-prevnext-label--next">
