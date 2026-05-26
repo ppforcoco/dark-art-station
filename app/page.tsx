@@ -1,26 +1,3 @@
-// app/page.tsx — HAUNTED TOWN REDESIGN (AdSense-safe, split-hero edition)
-// PERF FIXES (May 2026):
-//   1. Removed force-dynamic — use ISR (revalidate: 3600) so static shell ships from CDN
-//   2. Hero phones: outermost 2 hidden on mobile via CSS; all non-featured phones lazy + fetchPriority="low"
-//   3. wotdFloat rewritten to translate3d (compositor-only, no layout cost)
-//   4. will-change: transform, opacity added to all animated particles
-//   5. Removed calc(sin()) — not supported on all mobile Chrome versions
-// MOBILE-PERF FIXES (May 2026 v2):
-//   6. Desktop wallpaper section hidden on mobile via CSS (saves ~200KB image + render cost)
-//   7. Hero phone images reduced to 100px wide on mobile (was 170-240px) — cuts bandwidth ~60%
-//   8. Featured hero phone also tiny on mobile — not competing with WOTD LCP image
-//   9. Mobile section hidden class added to dt-desktop section
-// PROGRESSIVE LOADING (May 2026 v3):
-//  10. Every below-the-fold section wrapped in <LazySection> with IntersectionObserver.
-//      Only the Hero renders on first paint. All other sections are skeleton placeholders
-//      until the user scrolls near them (rootMargin: "200px"). This directly cuts LCP
-//      because the browser doesn't parse/paint ~1500 lines of DOM it cannot see yet.
-//  11. WOTD image <link rel="preload"> stays in <head> so the browser still fetches it
-//      eagerly — but the section DOM itself is deferred until scroll.
-//  12. DB queries still run in parallel at the top (no data waterfall). Data is fetched
-//      server-side and passed as props into LazySection children; the observer just
-//      controls *when the browser paints* the already-fetched HTML.
-
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { unstable_cache } from "next/cache";
@@ -170,7 +147,7 @@ export default async function Home() {
 
   const r2Base = process.env.NEXT_PUBLIC_R2_PUBLIC_URL ?? "";
 
-  // Hero phone data — kept here so the CSS class names align with the hide logic below
+  // Hero phone data
   const heroPhones = [
     { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/haunted-cat-grin-dark-iphone-android.webp",              alt: "Creepy Cat",     featured: false, edgePhone: true  },
     { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/wallpapers/shadows-have-eyes-android.webp",             alt: "Shadow Eyes",    featured: false, edgePhone: false },
@@ -203,23 +180,14 @@ export default async function Home() {
 
   return (
     <>
-      {/* ── LCP PRELOAD: Tell browser to fetch WOTD image before anything else ── */}
-      {/* NOTE: We keep this preload even though the WOTD section is lazy-loaded.  */}
-      {/* The preload just queues the image fetch — the DOM render is still        */}
-      {/* deferred by LazySection. This means the image is in cache when the       */}
-      {/* section becomes visible, giving an instant paint. */}
-      {wotd && (() => {
-        const wotdPreloadUrl = getPublicUrl(wotd.r2Key);
-        return (
-          <link
-            rel="preload"
-            as="image"
-            href={`/_next/image?url=${encodeURIComponent(wotdPreloadUrl)}&w=640&q=75`}
-            // @ts-expect-error — fetchpriority is valid HTML but not in React types yet
-            fetchpriority="high"
-          />
-        );
-      })()}
+      {/*
+        WOTD PRELOAD REMOVED — was causing "preloaded but not used within a few seconds"
+        browser warning because Next.js Image generates its own srcset and the preload
+        href (/_next/image?url=...&w=640) never matched the actual src the browser picked.
+        The WOTD Image tag below already has priority + fetchPriority="high" which is
+        sufficient. Removing the mismatched preload eliminates the console warning and
+        prevents wasted bandwidth on the wrong size.
+      */}
 
       {/* ── ATMOSPHERIC FOG OVERLAY ── */}
       <div className="dt-fog" aria-hidden="true">
@@ -346,10 +314,10 @@ export default async function Home() {
           </div>
 
           {/* RIGHT — Phone mockups
-              PERF: outermost 2 phones (edgePhone: true) are hidden on mobile via CSS.
-              MOBILE-PERF: on mobile all phones are rendered at ~80px wide (tiny) so they
-              use minimal bandwidth. Only desktop gets full-size phones.
-              All non-featured phones use loading="lazy" + fetchPriority="low".
+              FIX: All 5 phones now visible on mobile via horizontal scroll.
+              edgePhone phones are hidden ONLY on very small screens (<400px).
+              On 400px+ all 5 phones scroll horizontally with scroll-snap.
+              Desktop still shows all 5 inline without scroll.
           */}
           <div className="hw-hero-phones-wrap" style={{
             display: "flex",
@@ -392,7 +360,7 @@ export default async function Home() {
                         fill
                         priority={false}
                         fetchPriority="low"
-                        sizes="(max-width: 539px) 80px, (max-width: 640px) 120px, 240px"
+                        sizes="(max-width: 539px) 70px, (max-width: 640px) 120px, 240px"
                         style={{ objectFit: "cover" }}
                       />
                     ) : (
@@ -447,8 +415,15 @@ export default async function Home() {
             padding: 16px clamp(12px,3vw,32px) 16px !important;
             overflow-x: auto !important;
             justify-content: flex-start !important;
+            scroll-snap-type: x mandatory !important;
+            -webkit-overflow-scrolling: touch !important;
+            scrollbar-width: none !important;
           }
+          .hw-hero-phones-wrap::-webkit-scrollbar { display: none; }
+          .hw-hero-phones-wrap > div { scroll-snap-align: center; }
         }
+
+        /* MOBILE: All 5 phones visible in horizontal scroll row */
         @media (max-width: 539px) {
           .hw-hero-split { grid-template-columns: 1fr !important; }
           .hw-hero-phones-wrap {
@@ -456,27 +431,42 @@ export default async function Home() {
             overflow-x: auto !important;
             justify-content: flex-start !important;
             gap: 6px !important;
+            scroll-snap-type: x mandatory !important;
+            -webkit-overflow-scrolling: touch !important;
+            scrollbar-width: none !important;
           }
+          .hw-hero-phones-wrap::-webkit-scrollbar { display: none; }
+          .hw-hero-phones-wrap > div { scroll-snap-align: center; }
+
+          /* All phones show on mobile — NO hide for edgePhone on 400px+ */
           .hw-hero-phone-edge {
-            display: none !important;
+            display: flex !important;
           }
+
+          /* Non-featured phones: compact */
           .hw-hero-phone-shell {
-            width: 60px !important;
-            height: 130px !important;
+            width: 62px !important;
+            height: 135px !important;
             border-radius: 14px !important;
           }
-          .hw-hero-phones-wrap > div:nth-child(2) .hw-hero-phone-shell {
+          /* Featured (middle) phone slightly bigger */
+          .hw-hero-phones-wrap > div:nth-child(3) .hw-hero-phone-shell {
             width: 80px !important;
             height: 174px !important;
             border-radius: 18px !important;
+          }
+        }
+
+        /* Very tiny screens (<360px): hide edge phones to avoid overflow */
+        @media (max-width: 359px) {
+          .hw-hero-phone-edge {
+            display: none !important;
           }
         }
       `}</style>
 
       {/* ══════════════════════════════════════════════════════════
           SECTION — NEW THIS WEEK
-          Lazy: loads when user scrolls within 200px of this section.
-          minHeight matches ~2 card rows + header so page doesn't jump.
       ══════════════════════════════════════════════════════════ */}
       {newThisWeek.length > 0 && (
         <LazySection
@@ -550,8 +540,9 @@ export default async function Home() {
 
       {/* ══════════════════════════════════════════════════════════
           SECTION 2 — DAILY PICK (WOTD)
-          Lazy: deferred until scroll. Image is already preloaded in <head>
-          so it paints instantly the moment this section becomes visible.
+          FIX: Removed mismatched <link rel="preload"> from <head>.
+          The Image tag below has priority + fetchPriority="high" which
+          is the correct way to prioritize Next.js optimized images.
       ══════════════════════════════════════════════════════════ */}
       {wotd && (() => {
         const devicePath = wotd.deviceType === "IPHONE" ? "iphone" : wotd.deviceType === "ANDROID" ? "android" : "pc";
@@ -587,6 +578,8 @@ export default async function Home() {
               <div className="wotd-top-frame">
                 <Link href={wotdHref} className="wotd-img-frame" aria-label={wotd.title}>
                   <div className="wotd-img-frame__wrap">
+                    {/* priority + fetchPriority="high" is the correct Next.js way to
+                        signal this is an important image. No separate <link preload> needed. */}
                     <Image src={wotdUrl} alt={wotd.title} fill priority fetchPriority="high" className="object-cover"
                       sizes="(max-width:480px) 90vw, (max-width:768px) 60vw, 320px" style={{ objectPosition: "center top" }} />
                   </div>
