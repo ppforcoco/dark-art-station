@@ -25,6 +25,7 @@ export default function Header() {
   const [liveResults, setLiveResults] = useState<{id:string;title:string;slug:string;r2Key:string;deviceType:string|null;collectionSlug:string|null}[]>([]);
   const [liveLoading, setLiveLoading] = useState(false);
   const debounceRef = useRef<ReturnType<typeof setTimeout>|null>(null);
+  const scrollYRef = useRef(0);
 
   /* Always ghost theme */
   useEffect(() => {
@@ -100,27 +101,18 @@ export default function Header() {
     router.push(`/search?q=${encodeURIComponent(q)}`);
   }, [query, router, closeSearch, closeMenu]);
 
-  /* Lock body scroll when menu is open — restore scroll position on close */
+  /* Lock body scroll when menu open — no layout shift technique */
   useEffect(() => {
     if (menuOpen) {
-      const y = window.scrollY;
-      document.body.style.overflow = "hidden";
-      document.body.style.position = "fixed";
-      document.body.style.top = `-${y}px`;
-      document.body.style.width = "100%";
+      scrollYRef.current = window.scrollY;
+      document.body.style.setProperty("--scroll-y", `-${scrollYRef.current}px`);
+      document.body.classList.add("hw-scroll-locked");
     } else {
-      const y = document.body.style.top;
-      document.body.style.overflow = "";
-      document.body.style.position = "";
-      document.body.style.top = "";
-      document.body.style.width = "";
-      if (y) window.scrollTo(0, parseInt(y || "0", 10) * -1);
+      document.body.classList.remove("hw-scroll-locked");
+      window.scrollTo(0, scrollYRef.current);
     }
     return () => {
-      document.body.style.overflow = "";
-      document.body.style.position = "";
-      document.body.style.top = "";
-      document.body.style.width = "";
+      document.body.classList.remove("hw-scroll-locked");
     };
   }, [menuOpen]);
 
@@ -135,6 +127,15 @@ export default function Header() {
   return (
     <>
       <style>{`
+        /* ── SCROLL LOCK (no layout shift) ── */
+        body.hw-scroll-locked {
+          position: fixed;
+          top: var(--scroll-y, 0);
+          left: 0;
+          right: 0;
+          overflow-y: scroll;
+        }
+
         /* ── GHOST THEME ── */
         [data-theme="ghost"] {
           --bg-primary:#0d0d14;
@@ -176,10 +177,9 @@ export default function Header() {
         .site-nav {
           position: fixed;
           top: var(--topbar-total, 0px);
+          left: 0;
+          right: 0;
           width: 100%;
-          /* FIX: z-index 600 was fighting mobile bottom nav (z:650) and page overlays.
-             Nav stays at 600. Mobile menu panel is 699. Search overlay is 900.
-             Bottom nav is 650. Heart/fav buttons on page are z:1–10, all clear. */
           z-index: 600;
           padding: 18px 60px;
           display: flex;
@@ -188,6 +188,7 @@ export default function Header() {
           border-bottom: 1px solid rgba(139,0,0,0.2);
           background: var(--nav-bg);
           transition: background 0.3s ease, padding 0.3s ease;
+          box-sizing: border-box;
         }
         .hw2-nav-enhanced--scrolled {
           padding-top: 12px;
@@ -272,9 +273,12 @@ export default function Header() {
           padding: 6px;
           border-radius: 6px;
           transition: color 0.2s;
-          /* FIX: ensure tappable on mobile */
           -webkit-tap-highlight-color: transparent;
           touch-action: manipulation;
+          min-width: 44px;
+          min-height: 44px;
+          align-items: center;
+          justify-content: center;
         }
         .mobile-menu-btn:active { color: var(--white, #f0f0ff); }
 
@@ -480,11 +484,12 @@ export default function Header() {
         .mobile-menu-backdrop {
           position: fixed;
           inset: 0;
-          /* FIX: z-index 698 — above bottom nav (650), below panel (699) */
           z-index: 698;
-          background: rgba(0,0,0,0.6);
-          backdrop-filter: blur(4px);
-          -webkit-backdrop-filter: blur(4px);
+          background: rgba(0,0,0,0.7);
+          backdrop-filter: blur(2px);
+          -webkit-backdrop-filter: blur(2px);
+          /* Prevent any clicks passing through */
+          touch-action: none;
         }
 
         /* ── MOBILE MENU PANEL ── */
@@ -492,23 +497,26 @@ export default function Header() {
           position: fixed;
           top: 0;
           left: 0;
-          width: min(320px, 85vw);
-          /* FIX: full dvh so panel reaches bottom safely above bottom nav */
+          width: min(300px, 82vw);
+          height: 100%;
           height: 100dvh;
           z-index: 699;
-          background: rgba(13,13,20,0.99);
-          border-right: 1px solid rgba(120,120,216,0.15);
+          background: #0d0d14;
+          border-right: 1px solid rgba(120,120,216,0.2);
+          /* Always in DOM — visibility toggled via transform + visibility */
           transform: translateX(-100%);
-          /* FIX: was missing visibility:hidden when closed — screen readers + no click-through */
           visibility: hidden;
           transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1),
                       visibility 0s linear 0.28s;
           display: flex;
           flex-direction: column;
           overflow-y: auto;
+          overflow-x: hidden;
           -webkit-overflow-scrolling: touch;
           overscroll-behavior: contain;
+          /* Safe area on notched devices */
           padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 80px);
+          box-sizing: border-box;
         }
         .mobile-menu-panel--open {
           transform: translateX(0);
@@ -517,11 +525,23 @@ export default function Header() {
                       visibility 0s linear 0s;
         }
 
+        /* Spacer so links start below the fixed nav bar */
         .mobile-menu-topbar {
-          /* Match nav height so links start below the nav bar */
-          height: 60px;
+          height: 64px;
           flex-shrink: 0;
+          border-bottom: 1px solid rgba(120,120,216,0.1);
+          display: flex;
+          align-items: center;
+          padding: 0 20px;
         }
+        .mobile-menu-topbar-logo {
+          font-family: var(--font-cinzel), 'Cinzel Decorative', cursive;
+          font-size: 1rem;
+          font-weight: 700;
+          color: #e0e0f8;
+          letter-spacing: 0.08em;
+        }
+        .mobile-menu-topbar-logo span { color: #9090f0; text-shadow: 0 0 10px rgba(144,144,240,0.5); }
 
         /* ── MOBILE NAV LINKS ── */
         .mobile-menu-nav {
@@ -534,13 +554,14 @@ export default function Header() {
         .hw2-mobile-link {
           display: flex;
           align-items: center;
-          padding: 16px 28px;
+          padding: 0 24px;
+          height: 52px;
           font-family: var(--font-cinzel), 'Cinzel Decorative', cursive;
-          font-size: 0.78rem;
+          font-size: 0.75rem;
           font-weight: 400;
-          letter-spacing: 0.14em;
+          letter-spacing: 0.12em;
           text-transform: uppercase;
-          color: var(--pale, #d8d8f0);
+          color: #d8d8f0;
           text-decoration: none;
           background: none;
           border: none;
@@ -548,21 +569,23 @@ export default function Header() {
           cursor: pointer;
           width: 100%;
           text-align: left;
-          /* FIX: no animation on mobile — instant, zero jank */
-          transition: color 0.15s, background 0.15s;
+          transition: color 0.12s, background 0.12s;
           -webkit-tap-highlight-color: transparent;
           touch-action: manipulation;
-          /* min tap target */
-          min-height: 48px;
+          box-sizing: border-box;
+          /* Prevent text overflow */
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
         }
         .mobile-menu-link:active,
         .hw2-mobile-link:active {
-          color: var(--white, #f0f0ff);
-          background: rgba(144,144,184,0.08);
+          color: #f0f0ff;
+          background: rgba(144,144,184,0.1);
         }
         .mobile-menu-link:hover,
         .hw2-mobile-link:hover {
-          color: var(--white, #f0f0ff);
+          color: #f0f0ff;
           background: rgba(144,144,184,0.06);
         }
         .hw2-mobile-link--sets {
@@ -586,7 +609,7 @@ export default function Header() {
         }
         @media (max-width: 480px) {
           .site-nav { padding: 12px 16px; }
-          .logo-compact { display: inline; font-size: 1.25rem; }
+          .logo-compact { display: inline; font-size: 1.1rem; }
           .logo-full    { display: none; }
           .nav-logo { font-size: 1rem; }
           .breadcrumb-link { max-width: 110px; }
@@ -607,7 +630,6 @@ export default function Header() {
           bottom: 0;
           left: 0;
           right: 0;
-          /* FIX: z-index 650 — above page content but below menu panel (699) */
           z-index: 650;
           background: rgba(10,10,18,0.97);
           border-top: 1px solid rgba(120,120,216,0.18);
@@ -630,7 +652,6 @@ export default function Header() {
           font-size: 0.45rem;
           letter-spacing: 0.1em;
           text-transform: uppercase;
-          /* FIX: no transition on bottom nav — instant tap response */
           transition: color 0.1s;
           background: none;
           border: none;
@@ -638,13 +659,13 @@ export default function Header() {
           -webkit-tap-highlight-color: transparent;
           touch-action: manipulation;
           min-height: 44px;
+          box-sizing: border-box;
         }
         .hw-mobile-bottom-nav__item:active { color: #fff; }
         .hw-mobile-bottom-nav__icon { display: flex; align-items: center; justify-content: center; }
 
         @media (max-width: 900px) {
           .hw-mobile-bottom-nav { display: flex; }
-          /* FIX: push page content up so bottom nav never covers heart/save buttons */
           body { padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px)) !important; }
         }
 
@@ -656,16 +677,12 @@ export default function Header() {
           from { transform: rotate(0deg); }
           to   { transform: rotate(360deg); }
         }
-        @keyframes spin {
-          from { transform: rotate(0deg); }
-          to   { transform: rotate(360deg); }
-        }
       `}</style>
 
       {/* ── NAV ── */}
       <nav
         className={`site-nav hw2-nav-enhanced${scrolled ? " hw2-nav-enhanced--scrolled" : ""}`}
-        style={{ position: "relative" }}
+        style={{ position: "fixed" }}
         role="navigation"
         aria-label="Main navigation"
       >
@@ -786,11 +803,7 @@ export default function Header() {
         />
       )}
 
-      {/* ── MOBILE MENU PANEL ── */}
-      {/*
-        FIX: Panel always rendered in DOM (not conditional) so CSS transition works.
-        visibility:hidden when closed prevents interaction, transform slides it out.
-      */}
+      {/* ── MOBILE MENU PANEL ── always in DOM so CSS transition works ── */}
       <div
         id="mobile-menu-panel"
         className={`mobile-menu-panel${menuOpen ? " mobile-menu-panel--open" : ""}`}
@@ -799,11 +812,15 @@ export default function Header() {
         aria-label="Site navigation"
         aria-modal="true"
       >
-        {/* Spacer matching nav height */}
-        <div className="mobile-menu-topbar" />
+        {/* Top bar inside panel */}
+        <div className="mobile-menu-topbar">
+          <span className="mobile-menu-topbar-logo">
+            HAUNTED<span>WALLPAPERS</span>
+          </span>
+        </div>
 
         <nav className="mobile-menu-nav" aria-label="Mobile links">
-          {NAV_LINKS.map((l, i) => (
+          {NAV_LINKS.map((l) => (
             <Link
               key={l.href}
               href={l.href}
