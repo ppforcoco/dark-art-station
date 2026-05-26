@@ -90,9 +90,28 @@ export default function LazySection({
   className,
 }: LazySectionProps) {
   const ref = useRef<HTMLDivElement>(null);
+  // ── KEY FIX ───────────────────────────────────────────────────────────────
+  // Start as false on BOTH server and client so the initial HTML never contains
+  // children — it only ever contains the skeleton placeholder.  This means:
+  //   1. SSR/ISR HTML payload has NO <img> tags for below-fold sections.
+  //   2. The browser pre-parser cannot find those images and won't fetch them.
+  //   3. After hydration, IntersectionObserver fires when the section scrolls
+  //      into view and only THEN mounts the real children + their images.
+  // Without this, even though React swaps to skeleton after hydration, the SSR
+  // HTML already contained <img> tags that the browser's preload scanner had
+  // already queued — defeating lazy loading entirely.
+  // ─────────────────────────────────────────────────────────────────────────
+  const [mounted, setMounted] = useState(false);
   const [visible, setVisible] = useState(false);
 
+  // Step 1: after hydration, mark as mounted so the observer can attach.
   useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Step 2: once mounted, watch for intersection.
+  useEffect(() => {
+    if (!mounted) return;
     const el = ref.current;
     if (!el) return;
 
@@ -108,7 +127,7 @@ export default function LazySection({
 
     observer.observe(el);
     return () => observer.disconnect();
-  }, [rootMargin]);
+  }, [mounted, rootMargin]);
 
   return (
     <>

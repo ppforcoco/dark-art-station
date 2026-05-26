@@ -578,9 +578,9 @@ export default async function Home() {
               <div className="wotd-top-frame">
                 <Link href={wotdHref} className="wotd-img-frame" aria-label={wotd.title}>
                   <div className="wotd-img-frame__wrap">
-                    {/* priority + fetchPriority="high" is the correct Next.js way to
-                        signal this is an important image. No separate <link preload> needed. */}
-                    <Image src={wotdUrl} alt={wotd.title} fill priority fetchPriority="high" className="object-cover"
+                    {/* No priority here — this is inside LazySection so it only mounts on scroll.
+                        Marking it priority would be contradictory and waste bandwidth. */}
+                    <Image src={wotdUrl} alt={wotd.title} fill loading="lazy" className="object-cover"
                       sizes="(max-width:480px) 90vw, (max-width:768px) 60vw, 320px" style={{ objectPosition: "center top" }} />
                   </div>
                   <div className="wotd-img-frame__scanlines" aria-hidden="true" />
@@ -1339,9 +1339,9 @@ export default async function Home() {
                       src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/extras/the-defiant-crew-team-members-collection.webp"
                       alt="The Defiant Manifesto — Crew Collection"
                       fill
-                      unoptimized
+                      loading="lazy"
                       className="object-cover"
-                      sizes="100vw"
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 1200px"
                       style={{ objectFit: "cover", objectPosition: "center center", transition: "transform 0.6s ease" }}
                     />
                     <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.97) 0%, rgba(0,0,0,0.75) 40%, rgba(0,0,0,0.2) 70%, transparent 100%)", pointerEvents: "none" }} />
@@ -1436,7 +1436,7 @@ export default async function Home() {
                         src={thumb}
                         alt={obs.title}
                         fill
-                        unoptimized
+                        loading="lazy"
                         className="object-cover"
                         sizes="(max-width:600px) 50vw, (max-width:1024px) 33vw, 25vw"
                       />
