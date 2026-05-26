@@ -149,15 +149,6 @@ export default async function PcImagePage({ params }: PageProps) {
 
   return (
     <main className="min-h-screen" style={{ backgroundColor: "var(--bg-primary)", color: "var(--text-primary)", colorScheme: "dark" }}>
-      {/* ── PERF FIX: Preload LCP hero image ── */}
-      <link
-        rel="preload"
-        as="image"
-        href={thumbUrl}
-        // @ts-expect-error — fetchpriority is valid HTML but not yet in React types
-        fetchpriority="high"
-      />
-      {nextImageSrc && <link rel="preload" as="image" href={nextImageSrc} />}
 
       <WallpaperTips mode="banner" />
 
