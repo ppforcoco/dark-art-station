@@ -244,7 +244,7 @@ export default function Cursor() {
     <div
       ref={elRef}
       suppressHydrationWarning
-      dangerouslySetInnerHTML={{ __html: DAGGER_SVG }}
+      dangerouslySetInnerHTML={{ __html: "" }}
       style={{
         position: "fixed",
         top: 0,
