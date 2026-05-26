@@ -173,7 +173,7 @@ export default async function Home() {
       </div>
 
       {/* ══════════════════════════════════════════════════════════
-          HERO — no LazySection, renders immediately (LCP target)
+          HERO
       ══════════════════════════════════════════════════════════ */}
       <section className="dt-gate dt-gate--collage hw-hero-gate-override" style={{ padding: "0", minHeight: "unset" }}>
         <div className="dt-gate__crack" aria-hidden="true" />
@@ -321,9 +321,8 @@ export default async function Home() {
         }
 
         /* ── DEFIANT MANIFESTO ──
-           FIX: was aspect-ratio:16/9 which on mobile was ~200px tall and clipped the title.
-           Now: small fixed height on mobile (200px) with object-fit:cover — tiny image,
-           instant load, title always visible in the gradient overlay.
+           Desktop: 16:9 aspect-ratio — unchanged.
+           Mobile (≤640px): fixed small height, no aspect-ratio, image cropped by overflow:hidden.
         */
         .hw-defiant-wrap {
           position: relative;
@@ -331,40 +330,42 @@ export default async function Home() {
           overflow: hidden;
           border: 1px solid rgba(224,0,31,0.5);
           background: #080510;
-          /* Desktop: 16:9 */
           aspect-ratio: 16/9;
         }
         @media (max-width: 640px) {
           .hw-defiant-wrap {
             aspect-ratio: unset;
-            /* FIX: small fixed height on mobile — tiny image, loads fast */
-            height: 220px;
+            height: 160px;
           }
-          /* FIX: shrink the massive title on mobile */
           .hw-defiant-title {
-            font-size: clamp(1rem, 6vw, 1.5rem) !important;
+            font-size: clamp(0.9rem, 5.5vw, 1.3rem) !important;
           }
           .hw-defiant-body { display: none !important; }
         }
 
         /* ── OBSESSION GRID ──
-           FIX: smaller images, less height — load fast on both mobile and desktop.
-           Thumbnails constrained to low bandwidth sizes.
+           Card boxes are now capped at a small max-height on all breakpoints.
+           The 9:16 thumbnail image inside is cropped by overflow:hidden — ratio preserved in the image, just the visible box is smaller.
         */
         @media (max-width:767px) {
           .hw-desktop-section-mobile-hidden { display:none !important; }
           .dt-phone-showcase  { gap:4px !important; padding:0 8px !important; }
           .dt-phone-card__shell { width:64px !important; }
           .dt-phone-card--hero .dt-phone-card__shell { width:88px !important; }
-          /* FIX: 3-col on mobile for obsession cards — smaller = faster */
+          /* 3-col unchanged */
           .dt-obs-grid { grid-template-columns:repeat(3,1fr) !important; gap:6px !important; }
-          /* FIX: much shorter cards on mobile */
-          .dt-obs-card { min-height:100px !important; }
-          .dt-obs-card__title { font-size:0.6rem !important; padding:6px 8px !important; }
+          /* Compact card height — no huge empty boxes while loading */
+          .dt-obs-card { min-height:unset !important; max-height:130px !important; overflow:hidden !important; }
+          .dt-obs-card__title { font-size:0.52rem !important; padding:5px 6px !important; letter-spacing:0.05em !important; }
         }
-        /* FIX: desktop obsession cards also smaller */
-        @media (min-width:768px) {
-          .dt-obs-card { min-height:140px !important; }
+        /* Tablet */
+        @media (min-width:768px) and (max-width:1199px) {
+          .dt-obs-card { min-height:unset !important; max-height:210px !important; overflow:hidden !important; }
+          .dt-obs-card__title { font-size:0.68rem !important; }
+        }
+        /* Desktop */
+        @media (min-width:1200px) {
+          .dt-obs-card { min-height:unset !important; max-height:270px !important; overflow:hidden !important; }
         }
       `}</style>
 
@@ -707,11 +708,7 @@ export default async function Home() {
             </p>
           </div>
 
-          {/* ── DEFIANT MANIFESTO ──
-              FIX: tiny image with fixed small height on mobile.
-              Desktop: aspect-ratio 16/9. Mobile (≤640px): 220px tall, no clipping.
-              sizes attr set small so browser fetches tiny version.
-          */}
+          {/* ── DEFIANT MANIFESTO ── */}
           {obsessions.some(o => o.slug === "the-defiant-manifesto") && (() => {
             const defiant = obsessions.find(o => o.slug === "the-defiant-manifesto")!;
             return (
@@ -725,10 +722,9 @@ export default async function Home() {
                       fill
                       loading="lazy"
                       className="object-cover"
-                      /* FIX: tiny sizes on mobile — browser fetches a tiny version */
-                      sizes="(max-width:640px) 280px,(max-width:1024px) 90vw,1200px"
+                      sizes="(max-width:640px) 200px,(max-width:1024px) 90vw,1200px"
                       style={{ objectFit: "cover", objectPosition: "center center" }}
-                      quality={60}
+                      quality={55}
                     />
                     <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top,rgba(0,0,0,0.97) 0%,rgba(0,0,0,0.75) 40%,rgba(0,0,0,0.2) 70%,transparent 100%)", pointerEvents: "none" }} />
                     <div style={{ position: "absolute", top: "12px", right: "12px" }}>
@@ -758,10 +754,7 @@ export default async function Home() {
             );
           })()}
 
-          {/* ── OBSESSION GRID ──
-              FIX: images use tiny sizes — (max-width:640px) 33vw means browser fetches
-              ~120px wide images. Previously was fetching 44vw+ which is massive on mobile.
-          */}
+          {/* ── OBSESSION GRID ── */}
           <div className="dt-obs-grid">
             {obsessions.filter(o => o.slug !== "the-defiant-manifesto").map((obs, i) => {
               const thumb = obs.thumbnail ? (obs.thumbnail.startsWith("http") ? obs.thumbnail : `${r2Base}/${obs.thumbnail}`) : null;
@@ -776,9 +769,8 @@ export default async function Home() {
                         fill
                         loading="lazy"
                         className="object-cover"
-                        /* FIX: tiny sizes — 33vw on mobile means ~120px, not 400px */
-                        sizes="(max-width:640px) 33vw,(max-width:1024px) 25vw,20vw"
-                        quality={50}
+                        sizes="(max-width:640px) 30vw,(max-width:1024px) 22vw,18vw"
+                        quality={45}
                       />
                     ) : (
                       <div className="dt-obs-card__placeholder" style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", height: "100%", gap: "0.5rem" }}>
