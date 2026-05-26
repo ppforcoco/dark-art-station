@@ -77,45 +77,56 @@ function LazyImg({ src, alt, style, priority = false }: LazyImgProps) {
     const img = ref.current;
     if (!img) return;
 
-    if (priority) {
+    const doLoad = () => {
       img.src = src;
+    };
+
+    if (priority) {
+      doLoad();
       return;
     }
 
-    // Check if already in viewport at mount time
+    // If already in/near viewport at mount, load immediately
     const rect = img.getBoundingClientRect();
-    const inViewport = rect.top < window.innerHeight + 150;
-    if (inViewport) {
-      img.src = src;
+    if (rect.top < window.innerHeight + 200) {
+      doLoad();
       return;
     }
 
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          img.src = src;
+          doLoad();
           observer.disconnect();
         }
       },
-      { rootMargin: "150px 0px", threshold: 0 }
+      { rootMargin: "200px 0px", threshold: 0 }
     );
 
     observer.observe(img);
     return () => observer.disconnect();
   }, [src, priority]);
 
+  // Fallback: if image was cached and onLoad never fires, show it anyway after mount
+  useEffect(() => {
+    const img = ref.current;
+    if (!img) return;
+    if (img.complete && img.naturalWidth > 0) setLoaded(true);
+  });
+
   return (
     <img
       ref={ref}
       alt={alt}
       onLoad={() => setLoaded(true)}
+      onError={() => setLoaded(true)} // show placeholder slot even on error
       style={{
         display: "block",
         width: "100%",
         height: "100%",
         objectFit: "cover",
-        opacity: loaded ? 1 : 0,
-        transition: "opacity 0.2s ease",
+        opacity: loaded ? 1 : 0.01,
+        transition: "opacity 0.15s ease",
         ...style,
       }}
     />

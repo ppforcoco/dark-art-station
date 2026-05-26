@@ -398,6 +398,12 @@ export default async function Home() {
           0%, 100% { opacity: 1; }
           50%       { opacity: 0.5; }
         }
+        /* Hide heavy vault paragraph on mobile — reduces LCP text layout */
+        @media (max-width: 859px) {
+          .hw-hero-vault-text {
+            display: none !important;
+          }
+        }
         .hw-hero-gate-override {
           padding-top: 8px !important;
           padding-bottom: 0 !important;
@@ -448,7 +454,7 @@ export default async function Home() {
         <LazySection
           skeletonVariant="cards"
           minHeight="480px"
-          rootMargin="200px 0px"
+          rootMargin="100px 0px"
         >
           <section style={{ padding: "clamp(32px,5vw,64px) clamp(16px,5vw,72px)", background: "#07050f", position: "relative", overflow: "hidden" }}>
             <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse 60% 40% at 50% 0%, rgba(76,175,80,0.06) 0%, transparent 70%)", pointerEvents: "none" }} />
@@ -484,7 +490,7 @@ export default async function Home() {
         <LazySection
           skeletonVariant="cards"
           minHeight="480px"
-          rootMargin="200px 0px"
+          rootMargin="100px 0px"
         >
           <section style={{ padding: "clamp(32px,5vw,64px) clamp(16px,5vw,72px)", background: "#0a0810", position: "relative", overflow: "hidden" }}>
             <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse 60% 40% at 50% 0%, rgba(201,168,76,0.07) 0%, transparent 70%)", pointerEvents: "none" }} />
@@ -529,7 +535,7 @@ export default async function Home() {
           <LazySection
             skeletonVariant="wotd"
             minHeight="560px"
-            rootMargin="200px 0px"
+            rootMargin="100px 0px"
           >
             <section className="wotd-section">
 
@@ -866,11 +872,13 @@ export default async function Home() {
 
       {/* ══════════════════════════════════════════════════════════
           SECTION 3 — MOBILE WALLPAPERS
+          Hidden on mobile — too heavy, not needed on small screens.
       ══════════════════════════════════════════════════════════ */}
       <LazySection
         skeletonVariant="default"
         minHeight="520px"
-        rootMargin="200px 0px"
+        rootMargin="100px 0px"
+        className="hw-desktop-section-mobile-hidden"
       >
         <section className="dt-mobile">
           <div className="dt-section-head dt-section-head--center">
@@ -932,7 +940,7 @@ export default async function Home() {
       <LazySection
         skeletonVariant="default"
         minHeight="440px"
-        rootMargin="200px 0px"
+        rootMargin="100px 0px"
         className="hw-desktop-section-mobile-hidden"
       >
         <section className="dt-desktop">
@@ -994,6 +1002,18 @@ export default async function Home() {
           .dt-phone-card--hero .dt-phone-card__shell {
             width: 88px !important;
           }
+          /* Obsessions grid — prevent cards from being cut off */
+          .dt-obs-grid {
+            grid-template-columns: repeat(2, 1fr) !important;
+            gap: 8px !important;
+          }
+          .dt-obs-card {
+            min-height: 160px !important;
+          }
+          .dt-obs-card__title {
+            font-size: 0.72rem !important;
+            padding: 8px 10px !important;
+          }
         }
       `}</style>
 
@@ -1003,7 +1023,7 @@ export default async function Home() {
       <LazySection
         skeletonVariant="kits"
         minHeight="440px"
-        rootMargin="200px 0px"
+        rootMargin="100px 0px"
       >
         <section style={{ padding: "clamp(40px,6vw,72px) clamp(16px,5vw,72px)", background: "#07050f", position: "relative", overflow: "hidden" }}>
           <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse 70% 40% at 50% 0%, rgba(224,0,31,0.06) 0%, transparent 70%)", pointerEvents: "none" }} />
@@ -1240,7 +1260,7 @@ export default async function Home() {
         <LazySection
           skeletonVariant="cards"
           minHeight="480px"
-          rootMargin="200px 0px"
+          rootMargin="100px 0px"
         >
           <section style={{ padding: "clamp(32px,5vw,64px) clamp(16px,5vw,72px)", background: "#060410", position: "relative", overflow: "hidden" }}>
             <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse 60% 40% at 50% 0%, rgba(224,0,31,0.07) 0%, transparent 70%)", pointerEvents: "none" }} />
@@ -1276,7 +1296,7 @@ export default async function Home() {
       <LazySection
         skeletonVariant="tall"
         minHeight="600px"
-        rootMargin="200px 0px"
+        rootMargin="100px 0px"
       >
         <section className="dt-obsessions">
           <div className="dt-section-head">
@@ -1340,6 +1360,7 @@ export default async function Home() {
                       className="object-cover"
                       sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 1200px"
                       style={{ objectFit: "cover", objectPosition: "center center", transition: "transform 0.6s ease" }}
+                      quality={75}
                     />
                     <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.97) 0%, rgba(0,0,0,0.75) 40%, rgba(0,0,0,0.2) 70%, transparent 100%)", pointerEvents: "none" }} />
                     <div style={{
@@ -1472,7 +1493,7 @@ export default async function Home() {
       <LazySection
         skeletonVariant="default"
         minHeight="320px"
-        rootMargin="200px 0px"
+        rootMargin="100px 0px"
       >
         <section className="dt-manifesto">
           <div className="dt-manifesto__gutter" aria-hidden="true">
@@ -1518,7 +1539,7 @@ export default async function Home() {
       <LazySection
         skeletonVariant="default"
         minHeight="280px"
-        rootMargin="200px 0px"
+        rootMargin="100px 0px"
       >
         <section style={{
           padding: "clamp(48px,7vw,80px) clamp(16px,5vw,72px)",

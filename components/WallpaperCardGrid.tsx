@@ -95,14 +95,14 @@ export default function WallpaperCardGrid({ items, accentRgb, badge, badgeColor 
             overflow-x: auto;
             scroll-snap-type: x mandatory;
             -webkit-overflow-scrolling: touch;
-            gap: 12px;
+            gap: 8px;
             padding: 4px 4px 12px;
             scrollbar-width: none;
             max-width: 100%;
           }
           .wcg-outer::-webkit-scrollbar { display: none; }
           .wcg-outer > * {
-            flex: 0 0 150px;
+            flex: 0 0 100px;
             scroll-snap-align: start;
           }
         }
@@ -181,7 +181,7 @@ export default function WallpaperCardGrid({ items, accentRgb, badge, badgeColor 
                   src={img.src}
                   alt={img.title}
                   fill
-                  sizes="(max-width: 640px) 150px, (max-width: 1024px) 200px, 220px"
+                  sizes="(max-width: 640px) 100px, (max-width: 1024px) 180px, 220px"
                   style={{ objectFit: "cover", transition: "transform 0.45s ease" }}
                   onMouseEnter={e => (e.currentTarget as HTMLImageElement).style.transform = "scale(1.07)"}
                   onMouseLeave={e => (e.currentTarget as HTMLImageElement).style.transform = ""}
