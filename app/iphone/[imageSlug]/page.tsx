@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { db, getRelatedImages } from "@/lib/db";
+import { db } from "@/lib/db";
 import { getPublicUrl } from "@/lib/r2";
 import DeviceMockup from "@/components/DeviceMockup";
 import DownloadButton from "@/components/DownloadButton";
@@ -39,17 +39,17 @@ function buildFallbackDescription(title: string, tags: string[]): string {
   const firstTag = tags[0] ?? "dark fantasy";
   const secondTag = tags[1] ?? "atmospheric";
   return (
-    title + " is a free high-resolution desktop wallpaper from the Haunted Wallpapers dark art collection. " +
-    "Optimised for PC screens in a native 16:9 landscape aspect ratio, this piece fills your monitor " +
+    title + " is a free high-resolution iPhone wallpaper from the Haunted Wallpapers dark art collection. " +
+    "Optimised for iPhone screens in a native 9:16 portrait aspect ratio, this piece fills your lock screen and home screen " +
     "with immersive artwork rooted in themes of " + tagList + ". " +
-    "The image renders crisply on all modern displays including 4K, 1440p, and 1080p monitors, " +
+    "The image renders crisply on all modern iPhone models including the iPhone 15, 14, and 13 series, " +
     "with deep blacks that look especially striking on OLED displays. " +
     "Whether you are drawn to " + firstTag + " aesthetics or simply want a " + secondTag + " backdrop that reflects your taste, " +
     "this wallpaper delivers bold, original dark art at no cost. " +
     "No account or sign-up is required — tap download and the full-resolution file is yours instantly. " +
-    "Every image in our desktop collection is produced exclusively for Haunted Wallpapers, " +
+    "Every image in our iPhone collection is produced exclusively for Haunted Wallpapers, " +
     "so you will not find this artwork duplicated across generic wallpaper repositories. " +
-    "Scroll down to explore more wallpapers with a similar dark atmosphere and artistic style."
+    "Scroll down to explore related wallpapers with a similar dark atmosphere and artistic style."
   );
 }
 
@@ -60,26 +60,26 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     where: { slug: imageSlug },
     select: { title: true, description: true, r2Key: true, tags: true, isAdult: true, deviceType: true },
   });
-  if (!image || image.deviceType !== "DESKTOP") return { title: "Not Found | HAUNTED WALLPAPERS" };
+  if (!image || image.deviceType !== "IPHONE") return { title: "Not Found | HAUNTED WALLPAPERS" };
 
   const plainDesc = image.description
     ? image.description.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim().slice(0, 200)
     : null;
 
   const tagLine = image.tags.slice(0, 3).map((t) => `#${t}`).join(" ");
-  const fallbackDesc = `${image.title} — free high-res dark fantasy desktop wallpaper. ${tagLine}. Download instantly, no account required.`;
+  const fallbackDesc = `${image.title} — free high-res dark fantasy iPhone wallpaper. ${tagLine}. Download instantly, no account required.`;
   const metaDesc = plainDesc ?? fallbackDesc;
-  const ogImage = "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/og/haunted-wallpapers-dark-4k-for-desktop-and-pc.webp";
+  const ogImage = "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/og/haunted-wallpapers-dark-4k-for-iphone-and-adnroid.webp";
 
   return {
     metadataBase: new URL(siteUrl),
-    title: `${image.title} — Free Desktop Wallpaper | HAUNTED WALLPAPERS`,
+    title: `${image.title} — Free iPhone Wallpaper | HAUNTED WALLPAPERS`,
     description: metaDesc,
-    keywords: ["desktop wallpaper", "dark wallpaper pc", "hd desktop wallpaper", "4k wallpaper", "pc wallpaper", image.title, ...image.tags],
+    keywords: ["iphone wallpaper", "dark wallpaper iphone", "hd iphone wallpaper", image.title, ...image.tags],
     openGraph: {
       title: `${image.title} | HAUNTED WALLPAPERS`,
       description: metaDesc,
-      url: `${siteUrl}/desktop/${imageSlug}`,
+      url: `${siteUrl}/iphone/${imageSlug}`,
       siteName: "HAUNTED WALLPAPERS",
       images: [{ url: ogImage, width: 1200, height: 630, alt: image.title }],
       type: "website",
@@ -90,7 +90,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       description: metaDesc,
       images: [ogImage],
     },
-    alternates: { canonical: `${siteUrl}/desktop/${imageSlug}` },
+    alternates: { canonical: `${siteUrl}/iphone/${imageSlug}` },
     ...(image.isAdult ? { robots: { index: false, follow: false, nosnippet: true } } : {}),
   };
 }
@@ -99,7 +99,7 @@ export async function generateStaticParams() {
   return [];
 }
 
-export default async function DesktopImagePage({ params }: PageProps) {
+export default async function IphoneImagePage({ params }: PageProps) {
   const { imageSlug } = await params;
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
 
@@ -114,18 +114,18 @@ export default async function DesktopImagePage({ params }: PageProps) {
     },
   });
 
-  if (!image || image.deviceType !== "DESKTOP") notFound();
+  if (!image || image.deviceType !== "IPHONE") notFound();
 
   const thumbUrl = getPublicUrl(image.r2Key);
   const displayDescription = image.description ?? buildFallbackDescription(image.title, image.tags);
   const plainDescription = displayDescription.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
 
-  // ── PERF: Only fetch prev/next slugs — NO r2Key, NO thumbnail URLs ──────
+  // ── Only fetch prev/next slugs + tag strip ──────────────────────────────
   const [prevSibling, nextSibling, tagSortedStrip] = await Promise.all([
     db.image.findFirst({
       where: {
         collectionId: null,
-        deviceType: "DESKTOP",
+        deviceType: "IPHONE",
         OR: [
           { sortOrder: { lt: image.sortOrder } },
           { sortOrder: image.sortOrder, id: { lt: image.id } },
@@ -137,7 +137,7 @@ export default async function DesktopImagePage({ params }: PageProps) {
     db.image.findFirst({
       where: {
         collectionId: null,
-        deviceType: "DESKTOP",
+        deviceType: "IPHONE",
         OR: [
           { sortOrder: { gt: image.sortOrder } },
           { sortOrder: image.sortOrder, id: { gt: image.id } },
@@ -149,7 +149,7 @@ export default async function DesktopImagePage({ params }: PageProps) {
     db.image.findMany({
       where: {
         collectionId: null,
-        deviceType: "DESKTOP",
+        deviceType: "IPHONE",
         slug: { not: imageSlug },
         tags: { hasSome: image.tags.slice(0, 3) },
       },
@@ -164,7 +164,7 @@ export default async function DesktopImagePage({ params }: PageProps) {
 
   if (image.tags.includes("badge-premium") && isPremiumLocked()) {
     return (
-      <PremiumLockedGateClient tags={image.tags} devicePath="desktop">
+      <PremiumLockedGateClient tags={image.tags} devicePath="iphone">
         <span />
       </PremiumLockedGateClient>
     );
@@ -175,17 +175,17 @@ export default async function DesktopImagePage({ params }: PageProps) {
 
       <Breadcrumbs items={[
         { label: "Home", href: "/" },
-        { label: "Desktop Wallpapers", href: "/desktop" },
+        { label: "iPhone Wallpapers", href: "/iphone" },
         { label: image.title },
       ]} />
 
       <section style={{ maxWidth: "1280px", margin: "0 auto", padding: "16px 16px 32px" }} className="hw-detail-section">
-        <div className="desktop-detail-grid" style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
+        <div className="iphone-detail-grid" style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
 
           {/* ── MAIN IMAGE with overlaid Prev/Next arrows ── */}
-          <div className="desktop-detail-image-wrap">
+          <div className="iphone-detail-image-wrap">
             <div style={{ position: "relative", width: "100%" }}>
-              <DeviceMockup deviceType="DESKTOP">
+              <DeviceMockup deviceType="IPHONE">
                 <div className="relative w-full h-full">
                   <Image
                     src={thumbUrl}
@@ -195,7 +195,7 @@ export default async function DesktopImagePage({ params }: PageProps) {
                     priority
                     fetchPriority="high"
                     quality={85}
-                    sizes="(max-width: 768px) 100vw, 640px"
+                    sizes="(max-width: 768px) 100vw, 480px"
                   />
                 </div>
               </DeviceMockup>
@@ -203,7 +203,7 @@ export default async function DesktopImagePage({ params }: PageProps) {
               {/* ── PREV/NEXT ARROWS — overlaid on the image ── */}
               {prevImage && (
                 <Link
-                  href={`/desktop/${prevImage.slug}`}
+                  href={`/iphone/${prevImage.slug}`}
                   prefetch={false}
                   className="hw-img-arrow hw-img-arrow--prev"
                   aria-label={`Previous: ${prevImage.title}`}
@@ -216,7 +216,7 @@ export default async function DesktopImagePage({ params }: PageProps) {
               )}
               {nextImage && (
                 <Link
-                  href={`/desktop/${nextImage.slug}`}
+                  href={`/iphone/${nextImage.slug}`}
                   prefetch={false}
                   className="hw-img-arrow hw-img-arrow--next"
                   aria-label={`Next: ${nextImage.title}`}
@@ -241,7 +241,7 @@ export default async function DesktopImagePage({ params }: PageProps) {
                 <PreviewButton src={thumbUrl} title={image.title} />
               </div>
 
-              {/* ── Save to Favorites (mobile: shown here below buttons) ── */}
+              {/* ── Save to Favorites (mobile) ── */}
               <div className="detail-fav-row hw-mobile-fav">
                 <FavoriteButton
                   size="md"
@@ -250,8 +250,8 @@ export default async function DesktopImagePage({ params }: PageProps) {
                     slug:   image.slug,
                     title:  image.title,
                     thumb:  thumbUrl,
-                    href:   `/desktop/${imageSlug}`,
-                    device: "desktop",
+                    href:   `/iphone/${imageSlug}`,
+                    device: "iphone",
                   }}
                 />
                 <span className="detail-fav-label">Save to Favorites</span>
@@ -263,9 +263,9 @@ export default async function DesktopImagePage({ params }: PageProps) {
                   <span className="hw-more-strip__label">More ▸</span>
                   <div className="hw-more-strip__thumbs">
                     {tagSortedStrip.map((img) => (
-                      <Link key={img.slug} href={`/desktop/${img.slug}`} className="more-strip-link">
+                      <Link key={img.slug} href={`/iphone/${img.slug}`} className="more-strip-link">
                         <div className="hw-more-strip__thumb" style={{ position: "relative" }}>
-                          <Image src={getPublicUrl(img.r2Key)} alt={img.title} fill className="object-cover" loading="lazy" sizes="64px" />
+                          <Image src={getPublicUrl(img.r2Key)} alt={img.title} fill className="object-cover" loading="lazy" sizes="44px" />
                         </div>
                       </Link>
                     ))}
@@ -305,7 +305,7 @@ export default async function DesktopImagePage({ params }: PageProps) {
             <SocialShare
               title={image.title}
               imageUrl={thumbUrl}
-              pageUrl={`${siteUrl}/desktop/${imageSlug}`}
+              pageUrl={`${siteUrl}/iphone/${imageSlug}`}
             />
 
             {image.tags.filter((t: string) => !t.startsWith("badge-")).length > 0 && (
@@ -315,12 +315,12 @@ export default async function DesktopImagePage({ params }: PageProps) {
                 </p>
                 <div style={{ display: "flex", flexWrap: "wrap" as const, gap: "6px" }}>
                   {image.tags.filter((t: string) => !t.startsWith("badge-")).map((tag: string) => (
-                    <a key={tag} href={`/desktop?tag=${encodeURIComponent(tag)}`}
+                    <a key={tag} href={`/iphone?tag=${encodeURIComponent(tag)}`}
                       style={{ display: "inline-block", padding: "4px 10px", borderRadius: "2px", fontFamily: "var(--font-space, monospace)", fontSize: "0.65rem", letterSpacing: "0.1em", textTransform: "uppercase" as const, textDecoration: "none", color: "rgba(224,224,224,0.7)", border: "1px solid rgba(224,224,224,0.12)", background: "rgba(255,255,255,0.03)" }}>
                       #{tag}
                     </a>
                   ))}
-                  <SummonRandomTag tags={image.tags.filter((t: string) => !t.startsWith("badge-"))} device="desktop" />
+                  <SummonRandomTag tags={image.tags.filter((t: string) => !t.startsWith("badge-"))} device="iphone" />
                 </div>
               </div>
             )}
@@ -335,7 +335,7 @@ export default async function DesktopImagePage({ params }: PageProps) {
               <BirthdayComments imageId={image.id} imageTitle={image.title} />
             )}
 
-            {/* ── Save to Favorites (desktop only — hidden on mobile) ── */}
+            {/* ── Save to Favorites (desktop) ── */}
             <div className="detail-fav-row hw-desktop-fav">
               <FavoriteButton
                 size="md"
@@ -344,8 +344,8 @@ export default async function DesktopImagePage({ params }: PageProps) {
                   slug:   image.slug,
                   title:  image.title,
                   thumb:  thumbUrl,
-                  href:   `/desktop/${imageSlug}`,
-                  device: "desktop",
+                  href:   `/iphone/${imageSlug}`,
+                  device: "iphone",
                 }}
               />
               <span className="detail-fav-label">Save to Favorites</span>
@@ -357,9 +357,9 @@ export default async function DesktopImagePage({ params }: PageProps) {
                 <span className="hw-more-strip__label">More ▸</span>
                 <div className="hw-more-strip__thumbs">
                   {tagSortedStrip.map((img) => (
-                    <Link key={img.slug} href={`/desktop/${img.slug}`} className="more-strip-link">
+                    <Link key={img.slug} href={`/iphone/${img.slug}`} className="more-strip-link">
                       <div className="hw-more-strip__thumb" style={{ position: "relative" }}>
-                        <Image src={getPublicUrl(img.r2Key)} alt={img.title} fill className="object-cover" loading="lazy" sizes="80px" />
+                        <Image src={getPublicUrl(img.r2Key)} alt={img.title} fill className="object-cover" loading="lazy" sizes="44px" />
                       </div>
                     </Link>
                   ))}
@@ -495,16 +495,16 @@ export default async function DesktopImagePage({ params }: PageProps) {
           align-items: center;
         }
         .hw-more-strip__thumb {
-          width: 64px;
-          height: 36px;
+          width: 36px;
+          height: 64px;
           overflow: hidden;
           border-radius: 4px;
           border: 1px solid rgba(255,255,255,0.08);
         }
         @media (min-width: 768px) {
           .hw-more-strip__thumb {
-            width: 80px;
-            height: 45px;
+            width: 44px;
+            height: 78px;
           }
         }
         /* Show/hide more strip by device */
@@ -540,18 +540,18 @@ export default async function DesktopImagePage({ params }: PageProps) {
         }
 
         /* ── Image wrap ── */
-        .desktop-detail-image-wrap {
+        .iphone-detail-image-wrap {
           display: flex;
           flex-direction: column;
           align-items: center;
         }
         @media (min-width: 768px) {
-          .desktop-detail-grid { flex-direction: row !important; align-items: flex-start; gap: 56px !important; }
-          .desktop-detail-image-wrap { flex: 0 0 520px; justify-content: flex-start; }
-          .desktop-detail-grid > div:last-child { flex: 1; position: sticky; top: 100px; }
+          .iphone-detail-grid { flex-direction: row !important; align-items: flex-start; gap: 56px !important; }
+          .iphone-detail-image-wrap { flex: 0 0 420px; justify-content: flex-start; }
+          .iphone-detail-grid > div:last-child { flex: 1; position: sticky; top: 100px; }
         }
         @media (min-width: 1024px) {
-          .desktop-detail-image-wrap { flex: 0 0 640px; }
+          .iphone-detail-image-wrap { flex: 0 0 480px; }
         }
 
         /* ── Description ── */
@@ -623,8 +623,8 @@ export default async function DesktopImagePage({ params }: PageProps) {
         }
         .recently-viewed-section .rv-thumb,
         .recently-viewed-thumb {
-          width: 64px !important;
-          height: 36px !important;
+          width: 36px !important;
+          height: 64px !important;
         }
         .recently-viewed-section .rv-title,
         .recently-viewed-title {
@@ -636,8 +636,8 @@ export default async function DesktopImagePage({ params }: PageProps) {
           }
           .recently-viewed-section .rv-thumb,
           .recently-viewed-thumb {
-            width: 120px !important;
-            height: 68px !important;
+            width: 60px !important;
+            height: 106px !important;
           }
           .recently-viewed-section .rv-title,
           .recently-viewed-title {
@@ -650,30 +650,29 @@ export default async function DesktopImagePage({ params }: PageProps) {
         slug: image.slug,
         title: image.title,
         thumb: thumbUrl,
-        href: `/desktop/${imageSlug}`,
+        href: `/iphone/${imageSlug}`,
       }} />
 
       <script type="application/ld+json" dangerouslySetInnerHTML={{
         __html: JSON.stringify({
           "@context": "https://schema.org",
           "@type": "Product",
-          "@id": `${siteUrl}/desktop/${imageSlug}#product`,
+          "@id": `${siteUrl}/iphone/${imageSlug}#product`,
           name: image.title,
           description: plainDescription,
-          url: `${siteUrl}/desktop/${imageSlug}`,
+          url: `${siteUrl}/iphone/${imageSlug}`,
           brand: { "@type": "Brand", name: "HAUNTED WALLPAPERS", url: siteUrl },
-          category: "Digital Products > Wallpapers > Desktop PC",
+          category: "Digital Products > Wallpapers > iPhone",
           image: [{ "@type": "ImageObject", url: thumbUrl, contentUrl: thumbUrl, caption: image.title }],
           additionalProperty: [
-            { "@type": "PropertyValue", name: "Format", value: "JPEG (4K High Resolution)" },
-            { "@type": "PropertyValue", name: "Device", value: "Desktop PC / Monitor" },
-            { "@type": "PropertyValue", name: "Aspect Ratio", value: "16:9 Landscape" },
-            { "@type": "PropertyValue", name: "Resolution", value: "3840×2160 (4K UHD)" },
+            { "@type": "PropertyValue", name: "Format", value: "JPEG (HD High Resolution)" },
+            { "@type": "PropertyValue", name: "Device", value: "iPhone" },
+            { "@type": "PropertyValue", name: "Aspect Ratio", value: "9:16 Portrait" },
             { "@type": "PropertyValue", name: "Instant Download", value: "Yes" },
           ],
           offers: {
             "@type": "Offer",
-            url: `${siteUrl}/desktop/${imageSlug}`,
+            url: `${siteUrl}/iphone/${imageSlug}`,
             price: "0.00",
             priceCurrency: "USD",
             availability: "https://schema.org/InStock",
