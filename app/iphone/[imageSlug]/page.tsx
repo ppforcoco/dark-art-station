@@ -14,7 +14,6 @@ import SocialShare from "@/components/SocialShare";
 import PageTracker from "@/components/PageTracker";
 import FavoriteButton from "@/components/FavoriteButton";
 import PreviewButton from "@/components/PreviewButton";
-import WallpaperTips from "@/components/WallpaperTips";
 import KeyboardNav from "@/components/KeyboardNav";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import PremiumLockedGateClient from "@/components/PremiumLockedGate";
@@ -202,7 +201,6 @@ export default async function IphoneImagePage({ params }: PageProps) {
       {/* Preload next image for instant navigation */}
       {nextImageSrc && <link rel="preload" as="image" href={nextImageSrc} />}
 
-      <WallpaperTips mode="banner" />
 
       <Breadcrumbs items={[
         { label: "Home", href: "/" },

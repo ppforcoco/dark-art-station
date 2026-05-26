@@ -6,7 +6,6 @@ import { db, getPageContent } from "@/lib/db";
 import { Prisma } from "@prisma/client";
 import { getPublicUrl } from "@/lib/r2";
 import Pagination from "@/components/Pagination";
-import WallpaperTips from "@/components/WallpaperTips";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import AdminHtmlBlock from "@/components/AdminHtmlBlock";
 import IphoneImageGrid from "@/components/IphoneImageGrid";
@@ -182,7 +181,6 @@ export default async function IphonePage({ searchParams }: PageProps) {
 
   return (
     <main className="min-h-screen" style={{ backgroundColor: "var(--bg-primary)", color: "var(--text-primary)" }}>
-      <WallpaperTips mode="banner" />
       <Breadcrumbs items={[
         { label: "Home", href: "/" },
         { label: "iPhone Wallpapers" },

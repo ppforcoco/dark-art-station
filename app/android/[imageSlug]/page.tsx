@@ -15,7 +15,6 @@ import PageTracker from "@/components/PageTracker";
 import FavoriteButton from "@/components/FavoriteButton";
 import { shouldCountPageView } from "@/lib/analytics-filter";
 import PreviewButton from "@/components/PreviewButton";
-import WallpaperTips from "@/components/WallpaperTips";
 import KeyboardNav from "@/components/KeyboardNav";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import PremiumCountdown from "@/components/PremiumCountdown";
@@ -223,7 +222,6 @@ export default async function AndroidImagePage({ params }: PageProps) {
       />
       {nextImageSrc && <link rel="preload" as="image" href={nextImageSrc} />}
 
-      <WallpaperTips mode="banner" />
 
       <Breadcrumbs items={[
         { label: "Home", href: "/" },

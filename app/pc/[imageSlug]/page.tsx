@@ -12,7 +12,6 @@ import SocialShare from "@/components/SocialShare";
 import PageTracker from "@/components/PageTracker";
 import FavoriteButton from "@/components/FavoriteButton";
 import { shouldCountPageView } from "@/lib/analytics-filter";
-import WallpaperTips from "@/components/WallpaperTips";
 import KeyboardNav from "@/components/KeyboardNav";
 import Breadcrumbs from "@/components/Breadcrumbs";
 
@@ -159,7 +158,6 @@ export default async function PcImagePage({ params }: PageProps) {
       />
       {nextImageSrc && <link rel="preload" as="image" href={nextImageSrc} />}
 
-      <WallpaperTips mode="banner" />
 
       <Breadcrumbs items={[
         { label: "Home", href: "/" },

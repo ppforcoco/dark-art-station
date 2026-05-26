@@ -6,7 +6,6 @@ import { db, getPageContent } from "@/lib/db";
 import { getPublicUrl } from "@/lib/r2";
 import Pagination from "@/components/Pagination";
 import DeviceImageCard from "@/components/DeviceImageCard";
-import WallpaperTips from "@/components/WallpaperTips";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import AdminHtmlBlock from "@/components/AdminHtmlBlock";
 
@@ -96,7 +95,6 @@ export default async function PcPage({ searchParams }: PageProps) {
 
   return (
     <main className="min-h-screen" style={{ backgroundColor: "var(--bg-primary)", color: "var(--text-primary)" }}>
-      <WallpaperTips mode="banner" />
       <Breadcrumbs items={[{ label: "Home", href: "/" }, { label: "PC Wallpapers" }]} />
 
       <section className="max-w-7xl mx-auto px-6 md:px-[60px] pt-10 pb-8">
