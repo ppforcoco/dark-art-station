@@ -73,9 +73,14 @@ export const metadata: Metadata = {
     images: [OG_IMAGE], creator: "@hauntedwallpapers",
   },
   icons: {
+    // Only reference icon files that actually exist in /public.
+    // icon-180.png does NOT exist → removed to eliminate the 404 console error.
+    // The PWA manifest is handled by app/manifest.ts (see that file).
     icon: [
-      { url: "/favicon.ico", sizes: "any" },
+      { url: "/favicon.ico",       sizes: "any" },
       { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+      { url: "/icon-192.png",      sizes: "192x192", type: "image/png" },
+      { url: "/icon-512.png",      sizes: "512x512", type: "image/png" },
     ],
     apple: "/apple-touch-icon.png",
   },
@@ -90,9 +95,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" dir="ltr" style={{ backgroundColor: "#0c0b14", color: "#e8e4dc" }}>
       <head>
         {/*
-          ── Inline critical styles ──────────────────────────────────────────
-          Kept as a <style> block (not a preloaded external file) so it is
-          render-blocking only for its own tiny payload — no browser warning.
+          ── Critical inline styles ───────────────────────────────────────────
+          Inlined here so zero extra network requests are needed for above-the-
+          fold rendering. Do NOT add <link rel="preload"> for CSS chunks — Next.js
+          App Router already preloads every chunk it generates, and adding manual
+          preloads for the same files produces the "preloaded but not used within
+          a few seconds" browser warnings seen in the console.
         */}
         <style dangerouslySetInnerHTML={{ __html: `
           @media(pointer:fine){html,body,*,*::before,*::after{cursor:none!important}}
@@ -105,8 +113,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             70%{opacity:.88}
             72%{opacity:1}
           }
-
-          /* ── Announcement Bar ── */
           .hw-announce-bar {
             position: sticky;
             top: 0;
@@ -139,9 +145,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             padding: 0 12px;
             animation: hw-flicker 6s infinite;
           }
-          .hw-announce-bar a:hover {
-            color: #dc2626;
-          }
+          .hw-announce-bar a:hover { color: #dc2626; }
           .hw-announce-dot {
             display: inline-block;
             width: 6px;
@@ -152,78 +156,64 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             flex-shrink: 0;
             box-shadow: 0 0 6px #dc2626;
           }
-
-          /* ── Mobile: hide the long text, show short version ── */
-          .hw-announce-full { display: inline; }
+          .hw-announce-full  { display: inline; }
           .hw-announce-short { display: none; }
-
           @media (max-width: 600px) {
-            .hw-announce-bar a {
-              font-size: 0.58rem;
-              letter-spacing: 0.06em;
-              padding: 0 8px;
-            }
-            .hw-announce-dot {
-              margin: 0 5px;
-            }
-            .hw-announce-full { display: none; }
+            .hw-announce-bar a { font-size: 0.58rem; letter-spacing: 0.06em; padding: 0 8px; }
+            .hw-announce-dot   { margin: 0 5px; }
+            .hw-announce-full  { display: none; }
             .hw-announce-short { display: inline; }
           }
-
           @media (max-width: 380px) {
-            .hw-announce-bar a {
-              font-size: 0.52rem;
-              letter-spacing: 0.04em;
-            }
+            .hw-announce-bar a { font-size: 0.52rem; letter-spacing: 0.04em; }
           }
         ` }} />
 
         {/*
-          ── Theme + night-mode init (must run synchronously before paint) ──
-          These are plain <script> tags, not Next.js <Script> components,
-          because they must block rendering to avoid a flash of wrong theme.
-          They are covered by 'unsafe-inline' in script-src.
+          ── Synchronous theme + night-mode init ─────────────────────────────
+          Plain <script> (not Next.js <Script>) so it blocks paint and prevents
+          a flash of wrong background colour. Covered by 'unsafe-inline' in CSP.
         */}
         <script dangerouslySetInnerHTML={{ __html: `(function(){try{var t=localStorage.getItem('hw-theme');if(t){document.documentElement.setAttribute('data-theme',t);if(t==='fog'){document.documentElement.style.backgroundColor='#ece9e2';document.documentElement.style.color='#1c1a17';}else if(t==='ghost'){document.documentElement.style.backgroundColor='#0d0d14';document.documentElement.style.color='#e0e0f8';}else{document.documentElement.style.backgroundColor='#0c0b14';document.documentElement.style.color='#e8e4dc';}}else{document.documentElement.style.backgroundColor='#0c0b14';document.documentElement.style.color='#e8e4dc';}}catch(e){}})();` }} />
         <script dangerouslySetInnerHTML={{ __html: `(function(){try{var h=new Date().getHours();if(h>=20||h<6)document.documentElement.setAttribute('data-night','true');}catch(e){}})();` }} />
 
         {/*
-          ── GA4 Consent + Trusted-Types bootstrap ───────────────────────────
-          FIX 1 (sequence): strategy="beforeInteractive" ensures consent and
-          the goog#html Trusted-Types policy are registered BEFORE the GA
-          library is fetched and parsed. Previously "afterInteractive" meant
-          the library could arrive and try to execute before consent was set,
-          causing "Event processing aborted during validation".
+          ── GA4: Trusted-Types policy + consent defaults ─────────────────────
+          WHY beforeInteractive:
+            The console log shows the sequence:
+              gtm.init_consent (id:3) → gtm.init (id:4) → [tags fire] → gtag('config')
+                                                                          ↑ ABORTED
+            The config command aborts because GA4's internal validator checks
+            that consent defaults were already pushed to dataLayer before config
+            runs. Using "afterInteractive" (the previous setting) meant the GA
+            library could load and reach config BEFORE our consent snippet ran.
+            beforeInteractive guarantees consent is in dataLayer first.
 
-          FIX 2 (Trusted-Types): GTM/gtag inject <script> tags via innerHTML
-          and document.write. Both are blocked by Require-Trusted-Types-For:
-          'script' unless a policy named exactly "goog#html" exists. We create
-          it here. The policy name is hard-coded in the GTM source — it is not
-          configurable. The matching header change is in next.config.ts.
+          WHY goog#html Trusted-Types policy:
+            GTM injects script tags via innerHTML which is blocked by
+            Require-Trusted-Types-For: 'script' unless a policy named exactly
+            "goog#html" exists. That name is hard-coded in the GTM bundle.
+            next.config.ts also adds it to the Trusted-Types header allowlist.
         */}
         {gaId && (
           <Script id="consent-and-tt-init" strategy="beforeInteractive">{`
-            (function() {
-              // ── Trusted-Types policy for GTM/gtag ──
-              // GTM looks for a policy named 'goog#html' specifically.
+            (function () {
+              // 1. Register the Trusted-Types policy GTM requires.
               if (typeof trustedTypes !== 'undefined' && trustedTypes.createPolicy) {
                 try {
                   trustedTypes.createPolicy('goog#html', {
-                    createHTML:      function(s) { return s; },
-                    createScript:    function(s) { return s; },
-                    createScriptURL: function(s) { return s; },
+                    createHTML:      function (s) { return s; },
+                    createScript:    function (s) { return s; },
+                    createScriptURL: function (s) { return s; },
                   });
-                } catch(e) {
-                  // Policy may already exist if the page is navigated to twice
-                  // in the same context — safe to ignore.
+                } catch (_) {
+                  // Already registered on client-side navigation — safe to ignore.
                 }
               }
 
-              // ── GA4 consent defaults ──
-              // Must be set before gtag('config', ...) fires, which is why
-              // this whole block is beforeInteractive.
+              // 2. Push consent defaults into dataLayer BEFORE the GA library loads.
               window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}
+              function gtag() { dataLayer.push(arguments); }
               window.gtag = gtag;
               gtag('consent', 'default', {
                 ad_storage:              'denied',
@@ -232,7 +222,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 analytics_storage:       'granted',
                 functionality_storage:   'granted',
                 personalization_storage: 'denied',
-                security_storage:        'granted'
+                security_storage:        'granted',
               });
               gtag('set', 'url_passthrough', true);
             })();
@@ -240,13 +230,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         )}
 
         {/*
-          ── Resource hints ──────────────────────────────────────────────────
-          Only origins actually needed on every page. GoogleAnalytics (below)
-          adds its own preconnect to googletagmanager.com, so we omit it here
-          to avoid duplicate hints.
-          No manual CSS <link rel="preload"> — Next.js handles chunked CSS
-          loading automatically; manual preloads for unused stylesheets trigger
-          a browser warning ("preload but not used within a few seconds").
+          ── Resource hints ───────────────────────────────────────────────────
+          Only preconnect to origins needed on EVERY page load.
+          <GoogleAnalytics> (below) adds its own preconnect to googletagmanager.com
+          so we deliberately omit it here to avoid a duplicate hint.
+          No manual <link rel="preload"> for CSS or fonts — Next.js handles those
+          automatically. Adding extra preloads for the same chunks causes the
+          "preloaded but not used" warning that fills the console.
         */}
         <link rel="preconnect" href="https://assets.hauntedwallpapers.com" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://assets.hauntedwallpapers.com" />
@@ -254,17 +244,20 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="dns-prefetch" href="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev" />
 
         {/*
-          ── PWA manifest + icons ─────────────────────────────────────────────
-          /icons/icon-180.png was 404-ing. Removed. The apple-touch-icon
-          (<link rel="apple-touch-icon">) already points to /apple-touch-icon.png
-          which exists. Standard PWA icon sizes (192, 512) kept. The manifest
-          itself should also not reference icon-180.png — check public/manifest.json
-          and remove that entry there too if present.
+          ── PWA / icons ──────────────────────────────────────────────────────
+          manifest.json is now generated by app/manifest.ts (Next.js built-in).
+          That file only lists /icon-192.png and /icon-512.png which actually
+          exist, eliminating the "icon-180.png — 404" and the manifest download
+          error. Delete public/manifest.json if one exists — app/manifest.ts
+          takes precedence and having both causes a conflict.
+
+          Icon links here mirror what app/manifest.ts declares so browsers that
+          read <link> tags directly (Safari, older Chrome) also resolve correctly.
         */}
-        <link rel="manifest" href="/manifest.json" />
+        <link rel="manifest" href="/manifest.webmanifest" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-        <link rel="icon" type="image/x-icon" href="/favicon.ico" />
-        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+        <link rel="icon" type="image/x-icon"  href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32"  href="/favicon-32x32.png" />
         <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png" />
         <link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png" />
 
@@ -318,16 +311,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           }}
         />
 
-        {/* ── Announcement Bar ── */}
         <div className="hw-announce-bar">
           <a href="https://hauntedwallpapers.com/blog/the-skeleton-collection-4k-visions-for-the-obsessed">
             <span className="hw-announce-dot" aria-hidden="true" />
-            <span className="hw-announce-full">
-              THE TOWN HAS BEEN WATCHING YOUR OBSESSION WITH SKELETONS...
-            </span>
-            <span className="hw-announce-short">
-              ENTER BONE STREET
-            </span>
+            <span className="hw-announce-full">THE TOWN HAS BEEN WATCHING YOUR OBSESSION WITH SKELETONS...</span>
+            <span className="hw-announce-short">ENTER BONE STREET</span>
             <span className="hw-announce-dot" aria-hidden="true" />
             <span className="hw-announce-full">ENTER BONE STREET</span>
             <span className="hw-announce-dot" aria-hidden="true" />
@@ -335,35 +323,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </div>
 
         <Header />
-        <main className="content-wrapper">
-          {children}
-        </main>
+        <main className="content-wrapper">{children}</main>
         <Footer />
         <ClientComponents />
         <PWARegister />
 
         {/*
-          ── GA4 via @next/third-parties ──────────────────────────────────────
-          FIX 3 (GTM/gtag conflict): Previously the code loaded gtag/js manually
-          AND called gtag('config') in a second Script tag. This caused a race
-          where 'config' could fire before the library validated, producing
-          "Event processing aborted during validation".
-
-          GoogleAnalytics from @next/third-parties handles the script load and
-          the config call atomically — it will not call config until the library
-          is ready. It also adds its own preconnect hints and uses afterInteractive
-          by default, so it runs after hydration.
-
-          Consent is already set in the beforeInteractive block above, so by the
-          time this fires analytics_storage is 'granted' and the config command
-          passes validation.
-
-          Cloudflare note: the script is served from googletagmanager.com with
-          Content-Type: application/javascript. If Cloudflare rewrites it to
-          text/plain, go to Cloudflare → Speed → Optimization and disable
-          "Rocket Loader" — it is the most common cause of MIME-type mangling
-          for third-party scripts. Also confirm your Page Rule / Cache Rule for
-          gtag/js is set to "Bypass Cache".
+          ── GA4 script ───────────────────────────────────────────────────────
+          @next/third-parties GoogleAnalytics loads gtag/js and fires
+          gtag('config') atomically after the library is validated — no manual
+          Script tags needed. Consent defaults are already in dataLayer from the
+          beforeInteractive block above, so config passes validation cleanly.
         */}
         {gaId && <GoogleAnalytics gaId={gaId} />}
       </body>
