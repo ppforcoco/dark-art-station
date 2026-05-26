@@ -184,7 +184,7 @@ export default async function PcImagePage({ params }: PageProps) {
                 overflow: "hidden", borderRadius: "4px",
                 border: "1px solid rgba(255,255,255,0.08)",
               }}>
-                <Image src={getPublicUrl(img.r2Key)} alt={img.title} fill className="object-cover" sizes="78px" />
+                <Image src={getPublicUrl(img.r2Key)} alt={img.title} fill className="object-cover" unoptimized sizes="78px" />
               </div>
             </Link>
           ))}

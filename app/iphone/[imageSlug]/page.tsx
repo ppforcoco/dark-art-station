@@ -215,7 +215,7 @@ export default async function IphoneImagePage({ params }: PageProps) {
           {tagSortedStrip.map((img) => (
             <Link key={img.slug} href={`/iphone/${img.slug}`} className="more-strip-link">
               <div className="more-strip-thumb" style={{ position: "relative", width: "44px", height: "78px", overflow: "hidden", borderRadius: "4px", border: "1px solid rgba(255,255,255,0.08)" }}>
-                <Image src={getPublicUrl(img.r2Key)} alt={img.title} fill className="object-cover" sizes="44px" />
+                <Image src={getPublicUrl(img.r2Key)} alt={img.title} fill className="object-cover" unoptimized sizes="44px" />
               </div>
             </Link>
           ))}
