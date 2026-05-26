@@ -1,7 +1,3 @@
-// components/Header.tsx — added "Sets" nav link
-// CHANGE: Added { label: "Sets", href: "/sets" } to NAV_LINKS only.
-// Everything else is identical to the original file.
-
 "use client";
 import Link from "next/link";
 import { useState, useEffect, useCallback, useRef } from "react";
@@ -42,15 +38,14 @@ export default function Header() {
   }, []);
 
   const handleRandom = useCallback(async () => {
-    if (randomSpin) return;                          // block double-click
+    if (randomSpin) return;
     setRandomSpin(true);
     setMenuOpen(false);
-    // Always reset after 1.5s max — never stay stuck
     const resetTimer = setTimeout(() => setRandomSpin(false), 1500);
     try {
       const controller = new AbortController();
       const apiTimeout = setTimeout(() => controller.abort(), 3000);
-      const res = await fetch(`/api/random-wallpaper?t=${Date.now()}`, { 
+      const res = await fetch(`/api/random-wallpaper?t=${Date.now()}`, {
         signal: controller.signal,
         cache: "no-store"
       });
@@ -60,7 +55,7 @@ export default function Header() {
         const cats = ["iphone","android","pc"];
         return "/" + cats[Math.floor(Math.random() * cats.length)];
       })();
-      router.push(dest);                             // soft nav — uses Next.js cache
+      router.push(dest);
     } catch {
       const cats = ["iphone","android","pc"];
       router.push("/" + cats[Math.floor(Math.random() * cats.length)]);
@@ -70,10 +65,13 @@ export default function Header() {
     }
   }, [router, randomSpin]);
 
-
   const toggleMenu  = useCallback(() => setMenuOpen(p => !p), []);
   const closeMenu   = useCallback(() => setMenuOpen(false), []);
-  const openSearch  = useCallback(() => { setSearchOpen(true); setMenuOpen(false); setTimeout(() => overlayInputRef.current?.focus(), 80); }, []);
+  const openSearch  = useCallback(() => {
+    setSearchOpen(true);
+    setMenuOpen(false);
+    setTimeout(() => overlayInputRef.current?.focus(), 80);
+  }, []);
 
   const handleLiveSearch = useCallback((val: string) => {
     setQuery(val);
@@ -93,6 +91,7 @@ export default function Header() {
     setSearchOpen(false); setQuery(""); setLiveResults([]);
   }, []);
   const closeSearch = closeSearchFull;
+
   const handleSearch = useCallback((e: React.FormEvent) => {
     e.preventDefault();
     const q = query.trim();
@@ -101,6 +100,7 @@ export default function Header() {
     router.push(`/search?q=${encodeURIComponent(q)}`);
   }, [query, router, closeSearch, closeMenu]);
 
+  /* Lock body scroll when menu is open — restore scroll position on close */
   useEffect(() => {
     if (menuOpen) {
       const y = window.scrollY;
@@ -135,7 +135,7 @@ export default function Header() {
   return (
     <>
       <style>{`
-        /* ── GHOST THEME — charcoal blue-black, cool whites ── */
+        /* ── GHOST THEME ── */
         [data-theme="ghost"] {
           --bg-primary:#0d0d14;
           --bg-secondary:#12121c;
@@ -177,6 +177,9 @@ export default function Header() {
           position: fixed;
           top: var(--topbar-total, 0px);
           width: 100%;
+          /* FIX: z-index 600 was fighting mobile bottom nav (z:650) and page overlays.
+             Nav stays at 600. Mobile menu panel is 699. Search overlay is 900.
+             Bottom nav is 650. Heart/fav buttons on page are z:1–10, all clear. */
           z-index: 600;
           padding: 18px 60px;
           display: flex;
@@ -230,7 +233,6 @@ export default function Header() {
         .nav-links a:hover,
         .hw2-nav__link:hover { color: var(--white, #f0f0ff); }
 
-        /* Sets link — subtle highlight */
         .hw2-nav__link--sets {
           color: rgba(192,0,26,0.75) !important;
         }
@@ -270,7 +272,11 @@ export default function Header() {
           padding: 6px;
           border-radius: 6px;
           transition: color 0.2s;
+          /* FIX: ensure tappable on mobile */
+          -webkit-tap-highlight-color: transparent;
+          touch-action: manipulation;
         }
+        .mobile-menu-btn:active { color: var(--white, #f0f0ff); }
 
         /* ── BREADCRUMBS ── */
         .breadcrumbs {
@@ -409,9 +415,7 @@ export default function Header() {
           display: flex;
           flex-direction: column;
         }
-        .hw2-search-form {
-          max-width: 100%;
-        }
+        .hw2-search-form { max-width: 100%; }
         .hw2-live-results {
           background: var(--deep, #18182a);
           border: 1px solid rgba(144,144,184,0.2);
@@ -476,9 +480,11 @@ export default function Header() {
         .mobile-menu-backdrop {
           position: fixed;
           inset: 0;
+          /* FIX: z-index 698 — above bottom nav (650), below panel (699) */
           z-index: 698;
-          background: rgba(0,0,0,0.5);
+          background: rgba(0,0,0,0.6);
           backdrop-filter: blur(4px);
+          -webkit-backdrop-filter: blur(4px);
         }
 
         /* ── MOBILE MENU PANEL ── */
@@ -487,20 +493,32 @@ export default function Header() {
           top: 0;
           left: 0;
           width: min(320px, 85vw);
+          /* FIX: full dvh so panel reaches bottom safely above bottom nav */
           height: 100dvh;
           z-index: 699;
           background: rgba(13,13,20,0.99);
           border-right: 1px solid rgba(120,120,216,0.15);
           transform: translateX(-100%);
-          transition: transform 0.32s cubic-bezier(0.4, 0, 0.2, 1);
+          /* FIX: was missing visibility:hidden when closed — screen readers + no click-through */
+          visibility: hidden;
+          transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+                      visibility 0s linear 0.28s;
           display: flex;
           flex-direction: column;
           overflow-y: auto;
-          padding-bottom: env(safe-area-inset-bottom, 20px);
+          -webkit-overflow-scrolling: touch;
+          overscroll-behavior: contain;
+          padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 80px);
         }
-        .mobile-menu-panel--open { transform: translateX(0); }
+        .mobile-menu-panel--open {
+          transform: translateX(0);
+          visibility: visible;
+          transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+                      visibility 0s linear 0s;
+        }
 
         .mobile-menu-topbar {
+          /* Match nav height so links start below the nav bar */
           height: 60px;
           flex-shrink: 0;
         }
@@ -516,7 +534,7 @@ export default function Header() {
         .hw2-mobile-link {
           display: flex;
           align-items: center;
-          padding: 15px 28px;
+          padding: 16px 28px;
           font-family: var(--font-cinzel), 'Cinzel Decorative', cursive;
           font-size: 0.78rem;
           font-weight: 400;
@@ -530,12 +548,17 @@ export default function Header() {
           cursor: pointer;
           width: 100%;
           text-align: left;
-          transition: color 0.2s, background 0.2s;
-          animation: slideInLink 0.35s ease calc(var(--mi, 0) * 0.05s) both;
+          /* FIX: no animation on mobile — instant, zero jank */
+          transition: color 0.15s, background 0.15s;
+          -webkit-tap-highlight-color: transparent;
+          touch-action: manipulation;
+          /* min tap target */
+          min-height: 48px;
         }
-        @keyframes slideInLink {
-          from { opacity: 0; transform: translateX(-16px); }
-          to   { opacity: 1; transform: translateX(0); }
+        .mobile-menu-link:active,
+        .hw2-mobile-link:active {
+          color: var(--white, #f0f0ff);
+          background: rgba(144,144,184,0.08);
         }
         .mobile-menu-link:hover,
         .hw2-mobile-link:hover {
@@ -543,9 +566,10 @@ export default function Header() {
           background: rgba(144,144,184,0.06);
         }
         .hw2-mobile-link--sets {
-          color: rgba(192,0,26,0.8) !important;
+          color: rgba(192,0,26,0.85) !important;
         }
-        .hw2-mobile-link--sets:hover {
+        .hw2-mobile-link--sets:hover,
+        .hw2-mobile-link--sets:active {
           color: #c0001a !important;
         }
 
@@ -583,6 +607,7 @@ export default function Header() {
           bottom: 0;
           left: 0;
           right: 0;
+          /* FIX: z-index 650 — above page content but below menu panel (699) */
           z-index: 650;
           background: rgba(10,10,18,0.97);
           border-top: 1px solid rgba(120,120,216,0.18);
@@ -605,34 +630,45 @@ export default function Header() {
           font-size: 0.45rem;
           letter-spacing: 0.1em;
           text-transform: uppercase;
-          transition: color 0.2s;
+          /* FIX: no transition on bottom nav — instant tap response */
+          transition: color 0.1s;
           background: none;
           border: none;
           cursor: pointer;
+          -webkit-tap-highlight-color: transparent;
+          touch-action: manipulation;
+          min-height: 44px;
         }
-        .hw-mobile-bottom-nav__item:hover,
         .hw-mobile-bottom-nav__item:active { color: #fff; }
         .hw-mobile-bottom-nav__icon { display: flex; align-items: center; justify-content: center; }
+
         @media (max-width: 900px) {
           .hw-mobile-bottom-nav { display: flex; }
-          /* push page content up so it's not hidden behind bottom nav */
-          body { padding-bottom: calc(60px + env(safe-area-inset-bottom, 0px)); }
+          /* FIX: push page content up so bottom nav never covers heart/save buttons */
+          body { padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px)) !important; }
         }
-        /* Random button spin animation */
+
+        /* Random button spin */
         .hw-bottom-random--spin .hw-bottom-random__icon {
-          animation: spin 0.7s linear;
+          animation: bottomNavSpin 0.7s linear;
         }
         @keyframes bottomNavSpin {
           from { transform: rotate(0deg); }
           to   { transform: rotate(360deg); }
         }
-        .hw-bottom-random--spin .hw-bottom-random__icon {
-          animation: bottomNavSpin 0.7s linear;
+        @keyframes spin {
+          from { transform: rotate(0deg); }
+          to   { transform: rotate(360deg); }
         }
       `}</style>
 
       {/* ── NAV ── */}
-      <nav className={`site-nav hw2-nav-enhanced${scrolled ? " hw2-nav-enhanced--scrolled" : ""}`} style={{position:"relative"}}>
+      <nav
+        className={`site-nav hw2-nav-enhanced${scrolled ? " hw2-nav-enhanced--scrolled" : ""}`}
+        style={{ position: "relative" }}
+        role="navigation"
+        aria-label="Main navigation"
+      >
         {/* Blood drip */}
         <div className="hw2-nav__drip" aria-hidden="true">
           {Array.from({length:8}).map((_,i) => (
@@ -645,6 +681,7 @@ export default function Header() {
           <span className="logo-compact">H<span className="logo-red">W</span></span>
         </Link>
 
+        {/* Desktop links */}
         <div className="nav-links">
           {NAV_LINKS.map(l => (
             <Link
@@ -658,11 +695,9 @@ export default function Header() {
         </div>
 
         <div className="nav-actions">
-          {/* Search */}
           <button type="button" className="hw-nav-icon" onClick={openSearch} aria-label="Search">
             <Search size={18}/>
           </button>
-          {/* Random */}
           <button
             type="button"
             className={`hw-nav-icon${randomSpin?" spinning":""}`}
@@ -678,25 +713,25 @@ export default function Header() {
             type="button"
             className="mobile-menu-btn"
             onClick={toggleMenu}
-            aria-label={menuOpen?"Close menu":"Open menu"}
+            aria-label={menuOpen ? "Close menu" : "Open menu"}
             aria-expanded={menuOpen}
-            style={{touchAction:"manipulation"}}
+            aria-controls="mobile-menu-panel"
           >
-            {menuOpen ? <X size={20}/> : <Menu size={20}/>}
+            {menuOpen ? <X size={22}/> : <Menu size={22}/>}
           </button>
         </div>
       </nav>
 
       {/* ── SEARCH OVERLAY ── */}
       {searchOpen && (
-        <div className="hw2-search-overlay" onClick={closeSearchFull}>
-          <div className="hw2-search-wrap" onClick={e=>e.stopPropagation()}>
+        <div className="hw2-search-overlay" onClick={closeSearchFull} role="dialog" aria-modal="true" aria-label="Search">
+          <div className="hw2-search-wrap" onClick={e => e.stopPropagation()}>
             <form className="hw2-search-form" onSubmit={handleSearch}>
               <input
                 ref={overlayInputRef}
                 className="hw2-search-input"
                 value={query}
-                onChange={e=>handleLiveSearch(e.target.value)}
+                onChange={e => handleLiveSearch(e.target.value)}
                 placeholder="Search wallpapers…"
                 autoComplete="off"
               />
@@ -715,14 +750,24 @@ export default function Header() {
                   return (
                     <Link key={img.id} href={href} className="hw2-live-item" onClick={closeSearchFull}>
                       <div className="hw2-live-thumb">
-                        <img src={`https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/${img.r2Key}`} alt={img.title} />
+                        <img
+                          src={`https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/${img.r2Key}`}
+                          alt={img.title}
+                          loading="lazy"
+                          width="36"
+                          height="64"
+                        />
                       </div>
                       <span className="hw2-live-title">{img.title}</span>
                     </Link>
                   );
                 })}
                 {!liveLoading && liveResults.length > 0 && (
-                  <Link href={`/search?q=${encodeURIComponent(query)}`} className="hw2-live-see-all" onClick={closeSearchFull}>
+                  <Link
+                    href={`/search?q=${encodeURIComponent(query)}`}
+                    className="hw2-live-see-all"
+                    onClick={closeSearchFull}
+                  >
                     See all results →
                   </Link>
                 )}
@@ -732,34 +777,56 @@ export default function Header() {
         </div>
       )}
 
-      {/* ── MOBILE MENU ── */}
-      {menuOpen && <div className="mobile-menu-backdrop" onClick={closeMenu} aria-hidden="true"/>}
-      <div className={`mobile-menu-panel${menuOpen?" mobile-menu-panel--open":""}`} aria-hidden={!menuOpen}>
-        <div className="mobile-menu-topbar"/>
-        <nav className="mobile-menu-nav">
+      {/* ── MOBILE MENU BACKDROP ── */}
+      {menuOpen && (
+        <div
+          className="mobile-menu-backdrop"
+          onClick={closeMenu}
+          aria-hidden="true"
+        />
+      )}
+
+      {/* ── MOBILE MENU PANEL ── */}
+      {/*
+        FIX: Panel always rendered in DOM (not conditional) so CSS transition works.
+        visibility:hidden when closed prevents interaction, transform slides it out.
+      */}
+      <div
+        id="mobile-menu-panel"
+        className={`mobile-menu-panel${menuOpen ? " mobile-menu-panel--open" : ""}`}
+        aria-hidden={!menuOpen}
+        role="dialog"
+        aria-label="Site navigation"
+        aria-modal="true"
+      >
+        {/* Spacer matching nav height */}
+        <div className="mobile-menu-topbar" />
+
+        <nav className="mobile-menu-nav" aria-label="Mobile links">
           {NAV_LINKS.map((l, i) => (
             <Link
               key={l.href}
               href={l.href}
               className={`mobile-menu-link hw2-mobile-link${l.href === "/sets" ? " hw2-mobile-link--sets" : ""}`}
-              style={{"--mi": i} as React.CSSProperties}
               onClick={closeMenu}
+              tabIndex={menuOpen ? 0 : -1}
             >
               {l.label}
             </Link>
           ))}
           <button
             className="mobile-menu-link hw2-mobile-link"
-            style={{"--mi":NAV_LINKS.length} as React.CSSProperties}
             onClick={handleRandom}
+            tabIndex={menuOpen ? 0 : -1}
+            type="button"
           >
             Random Wallpaper
           </button>
           <Link
             href="/favorites"
             className="mobile-menu-link hw2-mobile-link"
-            style={{"--mi":NAV_LINKS.length+1} as React.CSSProperties}
             onClick={closeMenu}
+            tabIndex={menuOpen ? 0 : -1}
           >
             Saved Wallpapers
           </Link>
@@ -767,34 +834,56 @@ export default function Header() {
       </div>
 
       {/* ── MOBILE BOTTOM NAV BAR ── */}
-      <nav className="hw-mobile-bottom-nav" aria-label="Mobile navigation">
+      <nav className="hw-mobile-bottom-nav" aria-label="Mobile quick navigation">
         <Link href="/iphone" className="hw-mobile-bottom-nav__item" onClick={closeMenu}>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="7" y="2" width="10" height="20" rx="2"/><line x1="12" y1="18" x2="12" y2="18" strokeWidth="2" strokeLinecap="round"/></svg>
+          <svg className="hw-mobile-bottom-nav__icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
+            <rect x="7" y="2" width="10" height="20" rx="2"/>
+            <line x1="12" y1="18" x2="12" y2="18" strokeWidth="2" strokeLinecap="round"/>
+          </svg>
           iPhone
         </Link>
         <Link href="/android" className="hw-mobile-bottom-nav__item" onClick={closeMenu}>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M6 18V9a6 6 0 0 1 12 0v9"/><path d="M4 19h16"/><circle cx="9" cy="6" r="0.5" fill="currentColor"/><circle cx="15" cy="6" r="0.5" fill="currentColor"/></svg>
+          <svg className="hw-mobile-bottom-nav__icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
+            <path d="M6 18V9a6 6 0 0 1 12 0v9"/>
+            <path d="M4 19h16"/>
+            <circle cx="9" cy="6" r="0.5" fill="currentColor"/>
+            <circle cx="15" cy="6" r="0.5" fill="currentColor"/>
+          </svg>
           Android
         </Link>
         <Link href="/obsessions" className="hw-mobile-bottom-nav__item" onClick={closeMenu}>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="12" cy="9" r="5"/><path d="M9 9c0-1.7 1.3-3 3-3"/><path d="M6 21c0-3.3 2.7-6 6-6s6 2.7 6 6"/></svg>
+          <svg className="hw-mobile-bottom-nav__icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
+            <circle cx="12" cy="9" r="5"/>
+            <path d="M9 9c0-1.7 1.3-3 3-3"/>
+            <path d="M6 21c0-3.3 2.7-6 6-6s6 2.7 6 6"/>
+          </svg>
           Archive
         </Link>
         <Link href="/mood" className="hw-mobile-bottom-nav__item" onClick={closeMenu}>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg className="hw-mobile-bottom-nav__icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
           Mood
         </Link>
         <button
           className={`hw-mobile-bottom-nav__item${randomSpin ? " hw-bottom-random--spin" : ""}`}
           onClick={handleRandom}
           aria-label="Random wallpaper"
-          style={{touchAction:"manipulation"}}
+          type="button"
         >
-          <svg className="hw-bottom-random__icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/></svg>
+          <svg className="hw-bottom-random__icon hw-mobile-bottom-nav__icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
+            <polyline points="16 3 21 3 21 8"/>
+            <line x1="4" y1="20" x2="21" y2="3"/>
+            <polyline points="21 16 21 21 16 21"/>
+            <line x1="15" y1="15" x2="21" y2="21"/>
+          </svg>
           Random
         </button>
-        <button className="hw-mobile-bottom-nav__item" onClick={openSearch}>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <button className="hw-mobile-bottom-nav__item" onClick={openSearch} type="button" aria-label="Search">
+          <svg className="hw-mobile-bottom-nav__icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
+            <circle cx="11" cy="11" r="8"/>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
           Search
         </button>
       </nav>

@@ -319,37 +319,57 @@ export default async function Home() {
           .hw-hero-split        { grid-template-columns:380px 1fr !important; align-items:center !important; height:560px !important; }
           .hw-hero-phones-wrap  { height:560px !important; overflow:visible !important; align-items:center !important; justify-content:center !important; }
         }
-        /* ── Defiant Manifesto mobile fix ── */
+
+        /* ── DEFIANT MANIFESTO ──
+           FIX: was aspect-ratio:16/9 which on mobile was ~200px tall and clipped the title.
+           Now: small fixed height on mobile (200px) with object-fit:cover — tiny image,
+           instant load, title always visible in the gradient overlay.
+        */
         .hw-defiant-wrap {
           position: relative;
           width: 100%;
-          /* 16:9 on desktop, auto-height on mobile so title is never cut */
-          aspect-ratio: 16/9;
           overflow: hidden;
           border: 1px solid rgba(224,0,31,0.5);
           background: #080510;
+          /* Desktop: 16:9 */
+          aspect-ratio: 16/9;
         }
         @media (max-width: 640px) {
           .hw-defiant-wrap {
-            aspect-ratio: unset;       /* remove fixed ratio */
-            min-height: 320px;         /* enough room for image + full title */
+            aspect-ratio: unset;
+            /* FIX: small fixed height on mobile — tiny image, loads fast */
+            height: 220px;
           }
+          /* FIX: shrink the massive title on mobile */
+          .hw-defiant-title {
+            font-size: clamp(1rem, 6vw, 1.5rem) !important;
+          }
+          .hw-defiant-body { display: none !important; }
         }
-        /* Desktop sections hidden on mobile */
+
+        /* ── OBSESSION GRID ──
+           FIX: smaller images, less height — load fast on both mobile and desktop.
+           Thumbnails constrained to low bandwidth sizes.
+        */
         @media (max-width:767px) {
           .hw-desktop-section-mobile-hidden { display:none !important; }
           .dt-phone-showcase  { gap:4px !important; padding:0 8px !important; }
           .dt-phone-card__shell { width:64px !important; }
           .dt-phone-card--hero .dt-phone-card__shell { width:88px !important; }
-          .dt-obs-grid { grid-template-columns:repeat(2,1fr) !important; gap:8px !important; }
-          .dt-obs-card { min-height:160px !important; }
-          .dt-obs-card__title { font-size:0.72rem !important; padding:8px 10px !important; }
+          /* FIX: 3-col on mobile for obsession cards — smaller = faster */
+          .dt-obs-grid { grid-template-columns:repeat(3,1fr) !important; gap:6px !important; }
+          /* FIX: much shorter cards on mobile */
+          .dt-obs-card { min-height:100px !important; }
+          .dt-obs-card__title { font-size:0.6rem !important; padding:6px 8px !important; }
+        }
+        /* FIX: desktop obsession cards also smaller */
+        @media (min-width:768px) {
+          .dt-obs-card { min-height:140px !important; }
         }
       `}</style>
 
       {/* ══════════════════════════════════════════════════════════
           NEW THIS WEEK
-          rootMargin="400px 0px" — start loading 400px before visible
       ══════════════════════════════════════════════════════════ */}
       {newThisWeek.length > 0 && (
         <LazySection skeletonVariant="cards" minHeight="480px" rootMargin="400px 0px">
@@ -687,42 +707,48 @@ export default async function Home() {
             </p>
           </div>
 
-          {/* ── DEFIANT MANIFESTO — FIXED ── */}
+          {/* ── DEFIANT MANIFESTO ──
+              FIX: tiny image with fixed small height on mobile.
+              Desktop: aspect-ratio 16/9. Mobile (≤640px): 220px tall, no clipping.
+              sizes attr set small so browser fetches tiny version.
+          */}
           {obsessions.some(o => o.slug === "the-defiant-manifesto") && (() => {
             const defiant = obsessions.find(o => o.slug === "the-defiant-manifesto")!;
             return (
               <div style={{ marginBottom: "2px" }}>
                 <Link href={`/obsessions/${encodeURIComponent(defiant.slug)}`}
                   style={{ display: "block", position: "relative", textDecoration: "none", overflow: "hidden" }}>
-
-                  {/*
-                    KEY FIX: was aspectRatio:"16/9" which = ~200px on mobile and clips the title.
-                    Now uses className="hw-defiant-wrap" which removes aspect-ratio on ≤640px
-                    and sets min-height:320px instead, giving enough space for the full title.
-                  */}
                   <div className="hw-defiant-wrap">
                     <Image
                       src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/extras/the-defiant-crew-team-members-collection.webp"
                       alt="The Defiant Manifesto — Crew Collection"
-                      fill loading="lazy" className="object-cover"
-                      sizes="(max-width:640px) 100vw,(max-width:1024px) 90vw,1200px"
-                      style={{ objectFit: "cover", objectPosition: "center center", transition: "transform 0.6s ease" }}
-                      quality={75}
+                      fill
+                      loading="lazy"
+                      className="object-cover"
+                      /* FIX: tiny sizes on mobile — browser fetches a tiny version */
+                      sizes="(max-width:640px) 280px,(max-width:1024px) 90vw,1200px"
+                      style={{ objectFit: "cover", objectPosition: "center center" }}
+                      quality={60}
                     />
                     <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top,rgba(0,0,0,0.97) 0%,rgba(0,0,0,0.75) 40%,rgba(0,0,0,0.2) 70%,transparent 100%)", pointerEvents: "none" }} />
-                    <div style={{ position: "absolute", top: "16px", right: "16px" }}>
-                      <span style={{ fontFamily: "var(--font-space,monospace)", fontSize: "0.55rem", letterSpacing: "0.22em", textTransform: "uppercase", color: "#ff6a00", background: "linear-gradient(135deg,rgba(255,106,0,0.18),rgba(224,0,31,0.18))", border: "1px solid rgba(255,106,0,0.5)", padding: "4px 10px", borderRadius: "2px", fontWeight: 700 }}>⚡ Limited</span>
+                    <div style={{ position: "absolute", top: "12px", right: "12px" }}>
+                      <span style={{ fontFamily: "var(--font-space,monospace)", fontSize: "0.5rem", letterSpacing: "0.2em", textTransform: "uppercase", color: "#ff6a00", background: "linear-gradient(135deg,rgba(255,106,0,0.18),rgba(224,0,31,0.18))", border: "1px solid rgba(255,106,0,0.5)", padding: "3px 8px", borderRadius: "2px", fontWeight: 700 }}>⚡ Limited</span>
                     </div>
-                    {/* Title content — no longer gets clipped because wrapper has min-height on mobile */}
-                    <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "clamp(20px,4vw,40px)" }}>
-                      <span style={{ display: "block", fontFamily: "var(--font-space,monospace)", fontSize: "0.58rem", letterSpacing: "0.28em", textTransform: "uppercase", color: "#e0001f", marginBottom: "10px" }}>Featured Collection</span>
-                      <h3 style={{ fontFamily: "var(--font-cinzel,serif)", fontSize: "clamp(1.3rem,4vw,3rem)", fontWeight: 700, color: "#f0e8d8", margin: "0 0 10px", letterSpacing: "0.04em", lineHeight: 1.1, textShadow: "0 2px 30px rgba(224,0,31,0.4)" }}>
+                    <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "clamp(14px,3vw,40px)" }}>
+                      <span style={{ display: "block", fontFamily: "var(--font-space,monospace)", fontSize: "0.52rem", letterSpacing: "0.26em", textTransform: "uppercase", color: "#e0001f", marginBottom: "8px" }}>Featured Collection</span>
+                      <h3
+                        className="hw-defiant-title"
+                        style={{ fontFamily: "var(--font-cinzel,serif)", fontSize: "clamp(1.3rem,4vw,3rem)", fontWeight: 700, color: "#f0e8d8", margin: "0 0 8px", letterSpacing: "0.04em", lineHeight: 1.1, textShadow: "0 2px 30px rgba(224,0,31,0.4)" }}
+                      >
                         {defiant.title}
                       </h3>
-                      <p style={{ fontFamily: "var(--font-cormorant,serif)", fontSize: "clamp(0.85rem,1.5vw,1.05rem)", color: "rgba(224,224,248,0.65)", margin: "0 0 18px", maxWidth: "520px", lineHeight: 1.6 }}>
+                      <p
+                        className="hw-defiant-body"
+                        style={{ fontFamily: "var(--font-cormorant,serif)", fontSize: "clamp(0.82rem,1.4vw,1rem)", color: "rgba(224,224,248,0.6)", margin: "0 0 14px", maxWidth: "500px", lineHeight: 1.55 }}
+                      >
                         The art they tried to ban. The skeleton that went viral on every platform — then got rejected. Now it lives here.
                       </p>
-                      <span style={{ display: "inline-flex", alignItems: "center", gap: "6px", fontFamily: "var(--font-space,monospace)", fontSize: "0.62rem", letterSpacing: "0.16em", textTransform: "uppercase", color: "#fff", background: "#e0001f", padding: "10px 20px", borderRadius: "2px" }}>
+                      <span style={{ display: "inline-flex", alignItems: "center", gap: "6px", fontFamily: "var(--font-space,monospace)", fontSize: "0.58rem", letterSpacing: "0.14em", textTransform: "uppercase", color: "#fff", background: "#e0001f", padding: "8px 16px", borderRadius: "2px" }}>
                         Enter The Vault →
                       </span>
                     </div>
@@ -732,6 +758,10 @@ export default async function Home() {
             );
           })()}
 
+          {/* ── OBSESSION GRID ──
+              FIX: images use tiny sizes — (max-width:640px) 33vw means browser fetches
+              ~120px wide images. Previously was fetching 44vw+ which is massive on mobile.
+          */}
           <div className="dt-obs-grid">
             {obsessions.filter(o => o.slug !== "the-defiant-manifesto").map((obs, i) => {
               const thumb = obs.thumbnail ? (obs.thumbnail.startsWith("http") ? obs.thumbnail : `${r2Base}/${obs.thumbnail}`) : null;
@@ -740,11 +770,20 @@ export default async function Home() {
                   className="dt-obs-card" style={{ "--delay": `${i * 0.07}s` } as React.CSSProperties}>
                   <div className="dt-obs-card__bg">
                     {thumb ? (
-                      <Image src={thumb} alt={obs.title} fill loading="lazy" className="object-cover" sizes="(max-width:600px) 44vw,(max-width:1024px) 33vw,25vw" />
+                      <Image
+                        src={thumb}
+                        alt={obs.title}
+                        fill
+                        loading="lazy"
+                        className="object-cover"
+                        /* FIX: tiny sizes — 33vw on mobile means ~120px, not 400px */
+                        sizes="(max-width:640px) 33vw,(max-width:1024px) 25vw,20vw"
+                        quality={50}
+                      />
                     ) : (
                       <div className="dt-obs-card__placeholder" style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", height: "100%", gap: "0.5rem" }}>
-                        <span className="dt-obs-card__icon" style={{ fontSize: "2.5rem" }}>{obs.icon ?? "🖤"}</span>
-                        <span style={{ fontSize: "0.7rem", letterSpacing: "0.15em", color: "rgba(255,255,255,0.35)", textTransform: "uppercase" }}>Coming Soon</span>
+                        <span className="dt-obs-card__icon" style={{ fontSize: "2rem" }}>{obs.icon ?? "🖤"}</span>
+                        <span style={{ fontSize: "0.6rem", letterSpacing: "0.15em", color: "rgba(255,255,255,0.3)", textTransform: "uppercase" }}>Coming Soon</span>
                       </div>
                     )}
                     <div className="dt-obs-card__veil" />
