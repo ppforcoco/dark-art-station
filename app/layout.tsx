@@ -374,7 +374,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             />
             <Script
               id="ga-init"
-              strategy="afterInteractive"
+              strategy="lazyOnload"
               dangerouslySetInnerHTML={{
                 __html:
                   'window.dataLayer=window.dataLayer||[];'
