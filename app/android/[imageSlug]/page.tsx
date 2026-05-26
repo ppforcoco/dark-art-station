@@ -13,7 +13,6 @@ import RecentlyViewed from "@/components/RecentlyViewed";
 import SocialShare from "@/components/SocialShare";
 import PageTracker from "@/components/PageTracker";
 import FavoriteButton from "@/components/FavoriteButton";
-import { shouldCountPageView } from "@/lib/analytics-filter";
 import PreviewButton from "@/components/PreviewButton";
 import KeyboardNav from "@/components/KeyboardNav";
 import Breadcrumbs from "@/components/Breadcrumbs";
@@ -159,12 +158,9 @@ export default async function AndroidImagePage({ params }: PageProps) {
   const isLocked  = isCurrentlyLocked();
   if (isPremium && isLocked) return <PremiumVaultGate devicePath="android" />;
 
-  if (await shouldCountPageView()) {
-    db.image.update({
-      where: { id: image.id },
-      data: { viewCount: { increment: 1 } },
-    }).catch(() => {});
-  }
+  // View count increment removed — shouldCountPageView() reads headers()
+  // which forces pages dynamic and breaks caching. Views still increment
+  // via the download API route.
 
   const thumbUrl = getPublicUrl(image.r2Key);
   const displayDescription = image.description ?? buildFallbackDescription(image.title, image.tags);

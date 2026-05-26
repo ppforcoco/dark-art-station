@@ -3,7 +3,6 @@ import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { db, getRelatedImages } from "@/lib/db";
-import { shouldCountPageView } from "@/lib/analytics-filter";
 import { getPublicUrl } from "@/lib/r2";
 import DeviceMockup from "@/components/DeviceMockup";
 import RelatedWallpapers from "@/components/RelatedWallpapers";
@@ -119,12 +118,9 @@ export default async function IphoneImagePage({ params }: PageProps) {
 
   if (!image || image.deviceType !== "IPHONE") notFound();
 
-  if (await shouldCountPageView()) {
-    db.image.update({
-      where: { id: image.id },
-      data: { viewCount: { increment: 1 } },
-    }).catch(() => {});
-  }
+  // View count increment removed — shouldCountPageView() reads headers()
+  // which forces pages dynamic and breaks caching. Views still increment
+  // via the download API route.
 
   const thumbUrl = getPublicUrl(image.r2Key);
   const displayDescription = image.description ?? buildFallbackDescription(image.title, image.tags);
