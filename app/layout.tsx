@@ -275,102 +275,77 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <meta name="apple-mobile-web-app-title" content="Haunted WP" />
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="format-detection" content="telephone=no" />
-        {/* Referrer Policy: lets GA4 see pinterest.com/pinterest.com/pin/... as referrer */}
-        {/* HTTP header in next.config.ts is the primary signal; this meta is the fallback */}
         <meta name="referrer" content="no-referrer-when-downgrade" />
         {process.env.NEXT_PUBLIC_GSC_VERIFICATION && (
           <meta name="google-site-verification" content={process.env.NEXT_PUBLIC_GSC_VERIFICATION} />
         )}
-
         {/*
-          ── Pinterest / Social Source Detection ────────────────────────────────
-          Runs afterInteractive (after GA4 library is loaded and config is done).
-          Checks document.referrer for known social platforms and fires a GA4
-          event with the correct source — so even without UTM parameters,
-          GA4 sees "Pinterest" as the traffic source in your reports.
+          ── Pinterest / Social Source Detection ─────────────────────────────
+          Runs afterInteractive — after GA4 library is loaded and gtag('config')
+          has completed, so there is zero race condition with the consent block.
 
-          Why this is needed:
-            GA4 reads document.referrer to classify traffic. But if the referrer
-            is stripped by a proxy, Cloudflare hop, or the browser's own policy,
-            GA4 falls back to "Direct" or "Unassigned". This script fires an
-            explicit 'social_referral' event that you can see in GA4 → Events
-            and use as a secondary signal alongside the referrer policy fix.
+          WHY: GA4 reads document.referrer to classify traffic. Cloudflare hops
+          or browser privacy settings can strip the referrer, causing Pinterest
+          clicks to land as "Direct" or "Unassigned". This script fires an
+          explicit 'social_referral' event as a backup signal.
 
-          What it captures:
-            pinterest.com, pinterest.co.uk, pin.it (short links)
-            instagram.com
-            facebook.com, fb.me, m.facebook.com
-            twitter.com, t.co, x.com
-            reddit.com
-            tiktok.com
-            youtube.com, youtu.be
-            Any other referrer domain (logged as 'other_social_referral')
+          WHAT IT CAPTURES:
+            pinterest.com, pin.it, instagram.com, facebook.com, fb.me,
+            twitter.com, x.com, t.co, reddit.com, tiktok.com, youtube.com
 
-          It will NOT fire on:
-            - Direct visits (document.referrer is empty)
-            - Internal navigation (same hostname)
-            - Search engines (handled natively by GA4)
+          WHERE TO SEE IT: GA4 → Reports → Engagement → Events → social_referral
+          Fields: source, referrer_url, landing_page, event_category
 
-          GA4 DebugView: look for event name 'social_referral' with
-          params source, referrer_url, landing_page.
+          non_interaction: true  →  does NOT inflate engagement metrics.
         */}
         {gaId && (
           <Script id="source-detect" strategy="afterInteractive">{`
             (function () {
               var ref = document.referrer;
-              if (!ref) return; // direct visit — nothing to do
-
-              // Skip internal navigation
+              if (!ref) return;
               try {
                 if (new URL(ref).hostname === window.location.hostname) return;
               } catch (_) { return; }
 
-              // Map referrer hostnames → clean source names
               var SOCIAL_MAP = [
-                { pattern: /pinterest\.co[^/]*/i, source: 'Pinterest' },
-                { pattern: /pin\.it/i,             source: 'Pinterest' },
-                { pattern: /instagram\.com/i,       source: 'Instagram' },
-                { pattern: /facebook\.com/i,        source: 'Facebook' },
-                { pattern: /fb\.me/i,               source: 'Facebook' },
-                { pattern: /twitter\.com/i,         source: 'Twitter/X' },
-                { pattern: /x\.com/i,               source: 'Twitter/X' },
-                { pattern: /t\.co/i,                source: 'Twitter/X' },
-                { pattern: /reddit\.com/i,          source: 'Reddit' },
-                { pattern: /tiktok\.com/i,          source: 'TikTok' },
-                { pattern: /youtube\.com/i,         source: 'YouTube' },
-                { pattern: /youtu\.be/i,            source: 'YouTube' },
+                { p: /pinterest\.co/i,   s: 'Pinterest' },
+                { p: /pin\.it/i,         s: 'Pinterest' },
+                { p: /instagram\.com/i,  s: 'Instagram' },
+                { p: /facebook\.com/i,   s: 'Facebook'  },
+                { p: /fb\.me/i,          s: 'Facebook'  },
+                { p: /twitter\.com/i,    s: 'Twitter/X' },
+                { p: /x\.com/i,          s: 'Twitter/X' },
+                { p: /t\.co/i,           s: 'Twitter/X' },
+                { p: /reddit\.com/i,     s: 'Reddit'    },
+                { p: /tiktok\.com/i,     s: 'TikTok'    },
+                { p: /youtube\.com/i,    s: 'YouTube'   },
+                { p: /youtu\.be/i,       s: 'YouTube'   },
               ];
 
               var matched = null;
               for (var i = 0; i < SOCIAL_MAP.length; i++) {
-                if (SOCIAL_MAP[i].pattern.test(ref)) {
-                  matched = SOCIAL_MAP[i].source;
-                  break;
-                }
+                if (SOCIAL_MAP[i].p.test(ref)) { matched = SOCIAL_MAP[i].s; break; }
               }
+              if (!matched) return;
 
-              if (!matched) return; // not a known social platform
-
-              // Wait for gtag to be ready (it's afterInteractive so it should be,
-              // but on very slow connections we retry up to 3 seconds)
               var attempts = 0;
-              var interval = setInterval(function () {
+              var iv = setInterval(function () {
                 attempts++;
                 if (typeof window.gtag === 'function') {
-                  clearInterval(interval);
+                  clearInterval(iv);
                   window.gtag('event', 'social_referral', {
-                    source:        matched,
-                    referrer_url:  ref,
-                    landing_page:  window.location.pathname,
-                    event_category: 'acquisition',
-                    non_interaction: true, // don't inflate engagement metrics
+                    source:          matched,
+                    referrer_url:    ref,
+                    landing_page:    window.location.pathname,
+                    event_category:  'acquisition',
+                    non_interaction: true,
                   });
                 } else if (attempts >= 30) {
-                  clearInterval(interval); // give up after 3s
+                  clearInterval(iv);
                 }
               }, 100);
             })();
-          \`}</Script>
+          `}</Script>
         )}
       </head>
 
