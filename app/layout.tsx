@@ -278,53 +278,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {process.env.NEXT_PUBLIC_GSC_VERIFICATION && (
           <meta name="google-site-verification" content={process.env.NEXT_PUBLIC_GSC_VERIFICATION} />
         )}
-        {/*
-          ── Pinterest / Social Source Detection ─────────────────────────────
-          Fires afterInteractive. Reads document.referrer, matches known social
-          platforms, and fires gtag('event', 'social_referral') so GA4 sees
-          Pinterest/Instagram/etc even when UTM params are absent.
-          non_interaction: true — does not affect engagement metrics.
-        */}
-        {gaId && (
-          <Script id="source-detect" strategy="afterInteractive">{`
-            (function () {
-              var ref = document.referrer;
-              if (!ref) return;
-              try { if (new URL(ref).hostname === window.location.hostname) return; } catch(_) { return; }
-              var MAP = [
-                { p: /pinterest\.co/i,  s: 'Pinterest' },
-                { p: /pin\.it/i,        s: 'Pinterest' },
-                { p: /instagram\.com/i, s: 'Instagram' },
-                { p: /facebook\.com/i,  s: 'Facebook'  },
-                { p: /fb\.me/i,         s: 'Facebook'  },
-                { p: /twitter\.com/i,   s: 'Twitter/X' },
-                { p: /x\.com/i,         s: 'Twitter/X' },
-                { p: /t\.co/i,          s: 'Twitter/X' },
-                { p: /reddit\.com/i,    s: 'Reddit'    },
-                { p: /tiktok\.com/i,    s: 'TikTok'    },
-                { p: /youtube\.com/i,   s: 'YouTube'   },
-                { p: /youtu\.be/i,      s: 'YouTube'   },
-              ];
-              var matched = null;
-              for (var i = 0; i < MAP.length; i++) {
-                if (MAP[i].p.test(ref)) { matched = MAP[i].s; break; }
-              }
-              if (!matched) return;
-              var attempts = 0;
-              var iv = setInterval(function() {
-                attempts++;
-                if (typeof window.gtag === 'function') {
-                  clearInterval(iv);
-                  window.gtag('event', 'social_referral', {
-                    source: matched, referrer_url: ref,
-                    landing_page: window.location.pathname,
-                    event_category: 'acquisition', non_interaction: true,
-                  });
-                } else if (attempts >= 30) { clearInterval(iv); }
-              }, 100);
-            })();
-          \`}</Script>
-        )}
       </head>
 
       <body className={`${cormorant.variable} ${cinzel.variable} ${spaceMono.variable}`}>
@@ -412,20 +365,67 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           for third-party scripts. Also confirm your Page Rule / Cache Rule for
           gtag/js is set to "Bypass Cache".
         */}
-        {/* GA4 — manual equivalent of @next/third-parties GoogleAnalytics */}
+        {/* GA4 scripts — no @next/third-parties dependency */}
         {gaId && (
           <>
             <Script
               src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}
               strategy="afterInteractive"
             />
-            <Script id="ga-init" strategy="afterInteractive"
-              dangerouslySetInnerHTML={{ __html: `
-                window.dataLayer = window.dataLayer || [];
-                function gtag(){dataLayer.push(arguments);}
-                gtag('js', new Date());
-                gtag('config', '${gaId}', { send_page_view: true });
-              `}}
+            <Script
+              id="ga-init"
+              strategy="afterInteractive"
+              dangerouslySetInnerHTML={{
+                __html:
+                  'window.dataLayer=window.dataLayer||[];'
+                  + 'function gtag(){dataLayer.push(arguments);}'
+                  + 'gtag(\'js\',new Date());'
+                  + ('gtag(\'config\',\'' + gaId + '\',{send_page_view:true});'),
+              }}
+            />
+            {/*
+              Social referral detection: reads document.referrer and fires
+              gtag('event','social_referral') for Pinterest, Instagram, etc.
+              Uses dangerouslySetInnerHTML so JS dollar signs are never
+              parsed as JSX template expressions.
+            */}
+            <Script
+              id="source-detect"
+              strategy="afterInteractive"
+              dangerouslySetInnerHTML={{
+                __html:
+                  '(function(){' +
+                  'var ref=document.referrer;' +
+                  'if(!ref)return;' +
+                  'try{if(new URL(ref).hostname===window.location.hostname)return;}catch(_){return;}' +
+                  'var MAP=[' +
+                    '{p:/pinterest\.co/i,s:"Pinterest"},' +
+                    '{p:/pin\.it/i,s:"Pinterest"},' +
+                    '{p:/instagram\.com/i,s:"Instagram"},' +
+                    '{p:/facebook\.com/i,s:"Facebook"},' +
+                    '{p:/fb\.me/i,s:"Facebook"},' +
+                    '{p:/twitter\.com/i,s:"Twitter/X"},' +
+                    '{p:/x\.com/i,s:"Twitter/X"},' +
+                    '{p:/t\.co/i,s:"Twitter/X"},' +
+                    '{p:/reddit\.com/i,s:"Reddit"},' +
+                    '{p:/tiktok\.com/i,s:"TikTok"},' +
+                    '{p:/youtube\.com/i,s:"YouTube"},' +
+                    '{p:/youtu\.be/i,s:"YouTube"}' +
+                  '];' +
+                  'var matched=null;' +
+                  'for(var i=0;i<MAP.length;i++){if(MAP[i].p.test(ref)){matched=MAP[i].s;break;}}' +
+                  'if(!matched)return;' +
+                  'var a=0,iv=setInterval(function(){' +
+                    'a++;' +
+                    'if(typeof window.gtag==="function"){' +
+                      'clearInterval(iv);' +
+                      'window.gtag("event","social_referral",' +
+                        '{source:matched,referrer_url:ref,landing_page:window.location.pathname,' +
+                        'event_category:"acquisition",non_interaction:true});' +
+                    '}else if(a>=30){clearInterval(iv);}' +
+                  '},100);' +
+                  '})();'
+              }}
             />
           </>
         )}
