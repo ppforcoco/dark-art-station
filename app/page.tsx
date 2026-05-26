@@ -189,8 +189,8 @@ export default async function Home() {
         prevents wasted bandwidth on the wrong size.
       */}
 
-      {/* ── ATMOSPHERIC FOG OVERLAY ── */}
-      <div className="dt-fog" aria-hidden="true">
+      {/* ── ATMOSPHERIC FOG OVERLAY — desktop only, skip DOM on mobile ── */}
+      <div className="dt-fog dt-fog--desktop-only" aria-hidden="true">
         <div className="dt-fog__layer dt-fog__layer--1" />
         <div className="dt-fog__layer dt-fog__layer--2" />
         <div className="dt-fog__layer dt-fog__layer--3" />
@@ -323,6 +323,9 @@ export default async function Home() {
             className="hw-hero-mobile-thumb"
             loading="eager"
             fetchPriority="high"
+            decoding="sync"
+            width="800"
+            height="450"
           />
 
           {/* DESKTOP ONLY phone mockup strip */}

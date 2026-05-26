@@ -11949,3 +11949,44 @@ h4 { font-size: clamp(0.9rem, 1.5vw, 1.2rem); }
 .more-strip-thumb {
   transition: border-color 0.18s ease;
 }
+/* ═══════════════════════════════════════════════════════════════
+   MOBILE PERFORMANCE — Kill ALL animations & transitions on mobile.
+   This alone fixes the "25 non-composited animations" Lighthouse flag,
+   reduces TBT, and improves FCP/LCP by stopping paint thrash.
+   Desktop is completely unaffected.
+   ═══════════════════════════════════════════════════════════════ */
+@media (max-width: 767px) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-delay: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    transition-delay: 0.001ms !important;
+    will-change: auto !important;
+  }
+  /* Keep the fog hidden (already hidden via its own rule, belt+suspenders) */
+  .dt-fog { display: none !important; }
+  /* Kill wotd particles entirely */
+  .wotd-particles { display: none !important; }
+  /* Kill skeleton pulse on mobile — just show a flat placeholder */
+  @keyframes hw-skeleton-pulse { 0%, 100% { opacity: 0.5; } }
+}
+
+/* Fog is desktop-only — hide on mobile at CSS level too */
+@media (max-width: 767px) {
+  .dt-fog--desktop-only { display: none !important; }
+}
+
+/* Kill backdrop-filter on mobile — causes paint thrash and blocks FCP */
+@media (max-width: 767px) {
+  .dt-coffin,
+  .hw-img-arrow,
+  .wotd-img-frame__hover,
+  [style*="backdrop-filter"],
+  [style*="backdropFilter"] {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+}
