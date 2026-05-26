@@ -12,78 +12,114 @@ interface LazySectionProps {
   className?: string;
 }
 
+/* ── Shimmer — injected once into <head> ─────────────────────────────────── */
+const SHIMMER_CSS = `
+@keyframes hw-shimmer {
+  0%   { background-position: -800px 0; }
+  100% { background-position:  800px 0; }
+}
+.hw-sk {
+  background: #0c0a18;
+  background-image: linear-gradient(
+    90deg,
+    #0c0a18 0px,
+    rgba(255,255,255,0.04) 200px,
+    #0c0a18 400px
+  );
+  background-size: 800px 100%;
+  animation: hw-shimmer 1.8s linear infinite;
+  border-radius: 6px;
+}
+`;
+
+let shimmerInjected = false;
+function ensureShimmer() {
+  if (shimmerInjected || typeof document === "undefined") return;
+  const s = document.createElement("style");
+  s.textContent = SHIMMER_CSS;
+  document.head.appendChild(s);
+  shimmerInjected = true;
+}
+
+/* ── Skeletons ───────────────────────────────────────────────────────────── */
+
 function Skeleton({ variant, minHeight }: { variant: SkeletonVariant; minHeight: string }) {
-  const base: React.CSSProperties = {
+  useEffect(() => { ensureShimmer(); }, []);
+
+  const wrap: React.CSSProperties = {
     minHeight,
-    background: "#07050f",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
+    background: "#07050f",
+    overflow: "hidden",
+    padding: "0 clamp(16px,5vw,72px)",
+    boxSizing: "border-box" as const,
   };
 
-  if (variant === "cards") {
-    return (
-      <div style={base}>
-        <div style={{ display: "flex", gap: "12px", padding: "0 16px", width: "100%", maxWidth: "1200px" }}>
-          {[1, 2, 3].map((i) => (
-            <div key={i} style={{ flex: 1, aspectRatio: "9/16", maxHeight: "280px", background: "rgba(255,255,255,0.04)", borderRadius: "8px" }} />
-          ))}
-        </div>
+  if (variant === "cards") return (
+    <div style={wrap}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 12, width: "100%", maxWidth: 1200 }}>
+        {[0,1,2].map(i => (
+          <div key={i} className="hw-sk" style={{ aspectRatio: "9/16", maxHeight: 300, width: "100%" }} />
+        ))}
       </div>
-    );
-  }
-  if (variant === "wotd") {
-    return (
-      <div style={{ ...base, flexDirection: "column", gap: "16px" }}>
-        <div style={{ width: "clamp(100px,22vw,200px)", aspectRatio: "9/16", background: "rgba(255,255,255,0.04)", borderRadius: "16px" }} />
-        <div style={{ width: "160px", height: "18px", background: "rgba(255,255,255,0.04)", borderRadius: "4px" }} />
+    </div>
+  );
+
+  if (variant === "wotd") return (
+    <div style={{ ...wrap, flexDirection: "column", gap: 16 }}>
+      <div className="hw-sk" style={{ width: "clamp(100px,22vw,200px)", aspectRatio: "9/16", borderRadius: 16 }} />
+      <div className="hw-sk" style={{ width: 160, height: 18 }} />
+    </div>
+  );
+
+  if (variant === "tall") return (
+    <div style={wrap}>
+      <div className="hw-sk" style={{ width: "100%", maxWidth: 1200, height: 320 }} />
+    </div>
+  );
+
+  if (variant === "kits") return (
+    <div style={wrap}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 12, width: "100%", maxWidth: 1200 }}>
+        {[0,1,2].map(i => (
+          <div key={i} className="hw-sk" style={{ aspectRatio: "3/4", width: "100%" }} />
+        ))}
       </div>
-    );
-  }
-  if (variant === "tall") {
-    return (
-      <div style={{ ...base, minHeight: minHeight ?? "600px" }}>
-        <div style={{ width: "90%", maxWidth: "1200px", height: "300px", background: "rgba(255,255,255,0.03)", borderRadius: "8px" }} />
-      </div>
-    );
-  }
-  if (variant === "kits") {
-    return (
-      <div style={base}>
-        <div style={{ display: "flex", gap: "12px", padding: "0 16px", width: "100%", maxWidth: "1200px" }}>
-          {[1, 2, 3].map((i) => (
-            <div key={i} style={{ flex: 1, aspectRatio: "3/4", background: "rgba(255,255,255,0.04)", borderRadius: "4px" }} />
-          ))}
-        </div>
-      </div>
-    );
-  }
+    </div>
+  );
+
   return (
-    <div style={{ ...base, minHeight }}>
-      <div style={{ width: "60%", height: "80px", background: "rgba(255,255,255,0.04)", borderRadius: "8px" }} />
+    <div style={wrap}>
+      <div className="hw-sk" style={{ width: "60%", height: 80 }} />
     </div>
   );
 }
+
+/* ── LazySection ─────────────────────────────────────────────────────────── */
 
 export default function LazySection({
   children,
   skeletonVariant = "default",
   minHeight = "400px",
-  rootMargin = "100px 0px",
+  rootMargin = "400px 0px",   // start loading 400px before it enters viewport
   className,
 }: LazySectionProps) {
   const ref = useRef<HTMLDivElement>(null);
+  // Start as false — ALWAYS show skeleton first, let observer decide when to swap
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
 
-    // ── STRICT: only mount when IntersectionObserver fires ──────────────────
-    // Do NOT check getBoundingClientRect() at mount — that immediately mounts
-    // all sections within 200px of fold, defeating the whole purpose.
-    // IntersectionObserver with rootMargin handles "just below viewport" correctly.
-    // ─────────────────────────────────────────────────────────────────────────
+    // Do NOT do a getBoundingClientRect fast-path here.
+    // That was the bug — it made every section within 400px of fold
+    // mount immediately, which defeats progressive loading entirely.
+    // Let the IntersectionObserver handle everything, including near-fold sections.
+    // The 400px rootMargin gives enough lead time.
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
@@ -91,19 +127,28 @@ export default function LazySection({
           observer.disconnect();
         }
       },
-      // rootMargin: start loading when section is 150px below the viewport edge.
-      // This gives enough lead time for images to load before user sees them.
-      { rootMargin: "150px 0px", threshold: 0 }
+      {
+        // Use the passed rootMargin prop — don't hardcode it
+        rootMargin,
+        threshold: 0,
+      }
     );
 
     observer.observe(el);
     return () => observer.disconnect();
-  // Run once on mount only — rootMargin is intentionally not a dependency
+  // rootMargin is a static prop, intentionally not a dep
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
-    <div ref={ref} className={className} style={{ minHeight: visible ? undefined : minHeight }}>
+    <div
+      ref={ref}
+      className={className}
+      // Keep minHeight on the wrapper at ALL times so the page has
+      // the correct scroll height and the observer fires at the right moment.
+      // Without this, sections collapse and everything loads at once.
+      style={{ minHeight }}
+    >
       {visible ? children : <Skeleton variant={skeletonVariant} minHeight={minHeight} />}
     </div>
   );

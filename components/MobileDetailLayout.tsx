@@ -3,13 +3,12 @@
 /**
  * MobileDetailLayout.tsx — FULLY SELF-CONTAINED mobile detail page
  *
- * Changes vs previous version:
- *  ✓ Main image is a full-width wallpaper preview (no tiny phone mockup shell)
- *  ✓ Prev/Next thumbnails enlarged to real card size (80×142px)
- *  ✓ "More you'll like" strip uses larger cards (72×128px)
- *  ✓ Recently Viewed uses larger cards (60×107px)
- *  ✓ ALL images load on scroll via IntersectionObserver (true per-image lazy load)
- *  ✓ Zero animations — no transitions, no pulses, no glows
+ * Fixes vs previous version:
+ *  ✓ Prev/Next thumbnails: 28×50px (9:16) — tiny but correct ratio
+ *  ✓ "More you'll like": 44×78px (9:16) — small, correct ratio
+ *  ✓ "Recently Viewed": 36×64px (9:16) — tiny, correct ratio
+ *  ✓ All images load on scroll via IntersectionObserver
+ *  ✓ Zero animations
  *  ✓ Only renders on ≤767px viewports
  */
 
@@ -43,6 +42,7 @@ interface Props {
   nextImage: MobileSibling | null;
   relatedImages: MobileSibling[];
   recentlyViewed?: MobileSibling[];
+  deviceType?: "iphone" | "android" | "pc";
 }
 
 /* ─── Badge config ───────────────────────────────────────────────────────── */
@@ -53,20 +53,19 @@ const BADGE_MAP: Record<string, { label: string; color: string; bg: string }> = 
   "badge-hot":       { label: "💀 Hot",        color: "#e040fb", bg: "rgba(224,64,251,0.12)"  },
   "badge-exclusive": { label: "🌙 Exclusive",  color: "#42a5f5", bg: "rgba(66,165,245,0.12)"  },
   "badge-limited":   { label: "⏳ Limited",    color: "#ff5252", bg: "rgba(255,82,82,0.12)"   },
+  "badge-new":       { label: "✦ New",         color: "#4caf50", bg: "rgba(76,175,80,0.12)"   },
 };
 
-/* ─── LazyImg ────────────────────────────────────────────────────────────────
- * A plain <img> that only sets its src when it scrolls into view.
- * Uses IntersectionObserver with rootMargin so it loads ~150px before visible.
- * No Next/Image — avoids the optimizer overhead for small thumbnails.
- * No animation — just shows the image as soon as it's fetched.
- * --------------------------------------------------------------------------- */
+/* ─── LazyImg ─────────────────────────────────────────────────────────────
+ * Pure <img> with IntersectionObserver lazy loading.
+ * No Next/Image — avoids optimizer overhead for tiny thumbnails.
+ * -------------------------------------------------------------------------- */
 
 interface LazyImgProps {
   src: string;
   alt: string;
   style?: React.CSSProperties;
-  priority?: boolean; // skip observer, load immediately (hero image only)
+  priority?: boolean;
 }
 
 function LazyImg({ src, alt, style, priority = false }: LazyImgProps) {
@@ -77,41 +76,24 @@ function LazyImg({ src, alt, style, priority = false }: LazyImgProps) {
     const img = ref.current;
     if (!img) return;
 
-    const doLoad = () => {
-      img.src = src;
-    };
+    const doLoad = () => { img.src = src; };
 
-    if (priority) {
-      doLoad();
-      return;
-    }
+    if (priority) { doLoad(); return; }
 
-    // If already in/near viewport at mount, load immediately
     const rect = img.getBoundingClientRect();
-    if (rect.top < window.innerHeight + 200) {
-      doLoad();
-      return;
-    }
+    if (rect.top < window.innerHeight + 300) { doLoad(); return; }
 
     const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          doLoad();
-          observer.disconnect();
-        }
-      },
-      { rootMargin: "200px 0px", threshold: 0 }
+      ([entry]) => { if (entry.isIntersecting) { doLoad(); observer.disconnect(); } },
+      { rootMargin: "300px 0px", threshold: 0 }
     );
-
     observer.observe(img);
     return () => observer.disconnect();
   }, [src, priority]);
 
-  // Fallback: if image was cached and onLoad never fires, show it anyway after mount
   useEffect(() => {
     const img = ref.current;
-    if (!img) return;
-    if (img.complete && img.naturalWidth > 0) setLoaded(true);
+    if (img?.complete && img.naturalWidth > 0) setLoaded(true);
   });
 
   return (
@@ -119,18 +101,63 @@ function LazyImg({ src, alt, style, priority = false }: LazyImgProps) {
       ref={ref}
       alt={alt}
       onLoad={() => setLoaded(true)}
-      onError={() => setLoaded(true)} // show placeholder slot even on error
+      onError={() => setLoaded(true)}
       style={{
         display: "block",
         width: "100%",
         height: "100%",
         objectFit: "cover",
-        opacity: loaded ? 1 : 0.01,
-        transition: "opacity 0.15s ease",
+        opacity: loaded ? 1 : 0,
+        transition: "opacity 0.12s ease",
         ...style,
       }}
     />
   );
+}
+
+/* ─── Thumb helper ────────────────────────────────────────────────────────── 
+ * Renders a thumbnail box with explicit width/height maintaining ratio.
+ * ratio: "portrait" = 9:16, "landscape" = 16:9
+ * -------------------------------------------------------------------------- */
+
+interface ThumbProps {
+  src: string;
+  alt: string;
+  width: number;        // px
+  ratio?: "portrait" | "landscape";
+  priority?: boolean;
+  href?: string;
+  devicePath?: string;
+}
+
+function Thumb({ src, alt, width, ratio = "portrait", priority = false, href, devicePath = "iphone" }: ThumbProps) {
+  const height = ratio === "portrait"
+    ? Math.round(width * (16 / 9))
+    : Math.round(width * (9 / 16));
+
+  const box = (
+    <div style={{
+      position: "relative",
+      width,
+      height,
+      flexShrink: 0,
+      overflow: "hidden",
+      borderRadius: ratio === "landscape" ? 4 : 5,
+      border: "1px solid rgba(255,255,255,0.09)",
+      background: "#111",
+    }}>
+      <LazyImg src={src} alt={alt} priority={priority} />
+    </div>
+  );
+
+  if (href) {
+    return (
+      <Link href={href} prefetch={false} style={{ textDecoration: "none", flexShrink: 0, display: "block" }}>
+        {box}
+      </Link>
+    );
+  }
+  return box;
 }
 
 /* ─── Styles ─────────────────────────────────────────────────────────────── */
@@ -143,7 +170,6 @@ const S = {
     fontFamily: "'Space Mono', 'Courier New', monospace",
   } as React.CSSProperties,
 
-  /* Prev / Next sticky strip */
   prevNext: {
     display: "flex",
     alignItems: "center",
@@ -160,60 +186,46 @@ const S = {
   prevNextItem: (align: "left" | "right"): React.CSSProperties => ({
     display: "flex",
     alignItems: "center",
-    gap: 8,
+    gap: 6,
     textDecoration: "none",
-    color: "rgba(255,255,255,0.45)",
-    fontSize: "0.58rem",
+    color: "rgba(255,255,255,0.4)",
+    fontSize: "0.52rem",
     letterSpacing: "0.07em",
     flex: 1,
     minWidth: 0,
     justifyContent: align === "right" ? "flex-end" : "flex-start",
   }),
 
-  /* Prev/Next thumbnail — compact */
-  prevNextThumbWrap: {
-    position: "relative",
-    width: 32,
-    height: 57,
-    flexShrink: 0,
-    overflow: "hidden",
-    borderRadius: 5,
-    border: "1px solid rgba(255,255,255,0.10)",
-    background: "#111",
-  } as React.CSSProperties,
-
   prevNextLabel: {
     whiteSpace: "nowrap",
     overflow: "hidden",
     textOverflow: "ellipsis",
-    maxWidth: 52,
-    fontSize: "0.52rem",
-    color: "rgba(255,255,255,0.3)",
+    maxWidth: 44,
+    fontSize: "0.48rem",
+    color: "rgba(255,255,255,0.28)",
   } as React.CSSProperties,
 
   gridBtn: {
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    width: 32,
-    height: 32,
+    width: 30,
+    height: 30,
     border: "1px solid rgba(255,255,255,0.1)",
     borderRadius: 4,
     color: "rgba(255,255,255,0.3)",
     textDecoration: "none",
-    fontSize: "0.75rem",
+    fontSize: "0.7rem",
     flexShrink: 0,
   } as React.CSSProperties,
 
-  /* Body */
   body: {
-    padding: "12px 12px 48px",
+    padding: "12px 12px 56px",
     display: "flex",
     flexDirection: "column",
-    gap: 12,
+    gap: 11,
   } as React.CSSProperties,
 
-  /* Hero wallpaper — full width, no phone shell */
   heroWrap: {
     width: "100%",
     aspectRatio: "9/16",
@@ -224,7 +236,6 @@ const S = {
     border: "1px solid rgba(255,255,255,0.08)",
   } as React.CSSProperties,
 
-  /* Buttons */
   btnRow: {
     display: "flex",
     gap: 8,
@@ -233,7 +244,7 @@ const S = {
   btn: (variant: "primary" | "ghost"): React.CSSProperties => ({
     flex: 1,
     padding: "10px 0",
-    fontSize: "0.65rem",
+    fontSize: "0.62rem",
     letterSpacing: "0.1em",
     textTransform: "uppercase",
     fontFamily: "inherit",
@@ -242,7 +253,7 @@ const S = {
     borderRadius: 3,
     cursor: "pointer",
     background: variant === "primary" ? "#8b0000" : "rgba(255,255,255,0.03)",
-    color: variant === "primary" ? "#fff" : "rgba(255,255,255,0.55)",
+    color: variant === "primary" ? "#fff" : "rgba(255,255,255,0.5)",
   }),
 
   favRow: {
@@ -256,59 +267,46 @@ const S = {
     background: "none",
     border: "1px solid rgba(255,255,255,0.1)",
     borderRadius: 3,
-    padding: "6px 12px",
-    fontSize: "0.7rem",
+    padding: "5px 10px",
+    fontSize: "0.65rem",
     cursor: "pointer",
     color: active ? "#ff5252" : "rgba(255,255,255,0.3)",
     fontFamily: "inherit",
   }),
 
   favLabel: {
-    fontSize: "0.55rem",
+    fontSize: "0.5rem",
     letterSpacing: "0.14em",
     textTransform: "uppercase",
-    color: "rgba(255,255,255,0.25)",
+    color: "rgba(255,255,255,0.22)",
   } as React.CSSProperties,
 
-  /* More strip — bigger cards */
-  moreWrap: {
+  stripWrap: {
     display: "flex",
     flexDirection: "column" as const,
-    gap: 8,
+    gap: 6,
     paddingTop: 10,
     borderTop: "1px solid rgba(255,255,255,0.06)",
   } as React.CSSProperties,
 
-  moreLabel: {
-    fontSize: "0.44rem",
+  stripLabel: {
+    fontSize: "0.42rem",
     letterSpacing: "0.22em",
     textTransform: "uppercase",
     color: "rgba(255,255,255,0.2)",
+    margin: 0,
   } as React.CSSProperties,
 
-  moreThumbs: {
+  hscroll: {
     display: "flex",
-    gap: 6,
+    gap: 5,
     overflowX: "auto" as const,
     scrollbarWidth: "none" as const,
     paddingBottom: 2,
   } as React.CSSProperties,
 
-  /* 52×92px — small card, still legible */
-  moreThumb: {
-    position: "relative",
-    width: 52,
-    height: 92,
-    flexShrink: 0,
-    overflow: "hidden",
-    borderRadius: 5,
-    border: "1px solid rgba(255,255,255,0.08)",
-    background: "#111",
-  } as React.CSSProperties,
-
-  /* Title */
   title: {
-    fontSize: "clamp(1rem, 4.5vw, 1.25rem)",
+    fontSize: "clamp(0.95rem, 4vw, 1.2rem)",
     fontWeight: 700,
     lineHeight: 1.2,
     margin: 0,
@@ -317,16 +315,15 @@ const S = {
     fontFamily: "'Space Mono', monospace",
   } as React.CSSProperties,
 
-  /* Badges */
   badgesRow: {
     display: "flex",
     flexWrap: "wrap" as const,
-    gap: 5,
+    gap: 4,
   } as React.CSSProperties,
 
   badge: (color: string, bg: string): React.CSSProperties => ({
-    fontSize: "0.55rem",
-    padding: "2px 7px",
+    fontSize: "0.5rem",
+    padding: "2px 6px",
     letterSpacing: "0.07em",
     fontFamily: "inherit",
     border: `1px solid ${color}`,
@@ -336,10 +333,10 @@ const S = {
   }),
 
   dlCount: {
-    fontSize: "0.5rem",
+    fontSize: "0.46rem",
     letterSpacing: "0.18em",
     textTransform: "uppercase",
-    color: "rgba(255,255,255,0.18)",
+    color: "rgba(255,255,255,0.16)",
     margin: 0,
   } as React.CSSProperties,
 
@@ -350,10 +347,10 @@ const S = {
   } as React.CSSProperties,
 
   tagsLabel: {
-    fontSize: "0.44rem",
+    fontSize: "0.42rem",
     letterSpacing: "0.22em",
     textTransform: "uppercase",
-    color: "rgba(255,255,255,0.2)",
+    color: "rgba(255,255,255,0.18)",
     margin: 0,
   } as React.CSSProperties,
 
@@ -365,62 +362,28 @@ const S = {
 
   tag: {
     display: "inline-block",
-    padding: "2px 7px",
+    padding: "2px 6px",
     borderRadius: 2,
     fontFamily: "inherit",
-    fontSize: "0.55rem",
+    fontSize: "0.5rem",
     letterSpacing: "0.07em",
     textTransform: "uppercase",
     textDecoration: "none",
-    color: "rgba(200,200,200,0.55)",
-    border: "1px solid rgba(200,200,200,0.08)",
-    background: "rgba(255,255,255,0.015)",
+    color: "rgba(190,190,190,0.5)",
+    border: "1px solid rgba(200,200,200,0.07)",
+    background: "rgba(255,255,255,0.01)",
   } as React.CSSProperties,
 
   desc: {
-    fontSize: "clamp(0.72rem, 3vw, 0.84rem)",
+    fontSize: "clamp(0.68rem, 2.8vw, 0.8rem)",
     lineHeight: 1.65,
-    color: "rgba(200,200,200,0.6)",
+    color: "rgba(200,200,200,0.55)",
   } as React.CSSProperties,
 
   divider: {
     height: 1,
     background: "rgba(255,255,255,0.05)",
-    margin: "2px 0",
-  } as React.CSSProperties,
-
-  /* Recently Viewed — bigger than before (60×107px) */
-  rvSection: {
-    display: "flex",
-    flexDirection: "column" as const,
-    gap: 8,
-  } as React.CSSProperties,
-
-  rvLabel: {
-    fontSize: "0.44rem",
-    letterSpacing: "0.22em",
-    textTransform: "uppercase",
-    color: "rgba(255,255,255,0.18)",
-    margin: 0,
-  } as React.CSSProperties,
-
-  rvRow: {
-    display: "flex",
-    gap: 6,
-    overflowX: "auto" as const,
-    scrollbarWidth: "none" as const,
-    paddingBottom: 2,
-  } as React.CSSProperties,
-
-  rvThumb: {
-    position: "relative",
-    width: 40,
-    height: 71,
-    flexShrink: 0,
-    overflow: "hidden",
-    borderRadius: 5,
-    border: "1px solid rgba(255,255,255,0.07)",
-    background: "#111",
+    margin: "1px 0",
   } as React.CSSProperties,
 };
 
@@ -432,6 +395,7 @@ export default function MobileDetailLayout({
   nextImage,
   relatedImages,
   recentlyViewed = [],
+  deviceType = "iphone",
 }: Props) {
   const [isMobile, setIsMobile] = useState(false);
   const [favorited, setFavorited] = useState(image.isFavorited ?? false);
@@ -465,14 +429,13 @@ export default function MobileDetailLayout({
     setTimeout(() => setPreviewing(false), 1000);
   }, [image.fullUrl]);
 
-  const handleFavorite = useCallback(() => {
-    setFavorited(f => !f);
-  }, []);
+  const handleFavorite = useCallback(() => setFavorited(f => !f), []);
 
   if (!isMobile) return null;
 
   const badges = image.tags.filter(t => t.startsWith("badge-"));
   const plainTags = image.tags.filter(t => !t.startsWith("badge-"));
+  const dp = deviceType;
 
   return (
     <div style={S.root}>
@@ -491,24 +454,21 @@ export default function MobileDetailLayout({
       `}</style>
 
       {/* ── Prev / Next sticky strip ── */}
+      {/* Portrait thumbnails: 28px wide × 50px tall (≈9:16) */}
       <div style={S.prevNext}>
         {prevImage ? (
-          <Link href={`/iphone/${prevImage.slug}`} style={S.prevNextItem("left")} prefetch={false}>
-            <div style={S.prevNextThumbWrap}>
-              <LazyImg src={prevImage.thumbUrl} alt={prevImage.title} />
-            </div>
+          <Link href={`/${dp}/${prevImage.slug}`} style={S.prevNextItem("left")} prefetch={false}>
+            <Thumb src={prevImage.thumbUrl} alt={prevImage.title} width={28} ratio="portrait" />
             <span style={S.prevNextLabel}>‹ Prev</span>
           </Link>
         ) : <div style={{ flex: 1 }} />}
 
-        <Link href="/iphone" style={S.gridBtn} aria-label="All wallpapers">⊞</Link>
+        <Link href={`/${dp}`} style={S.gridBtn} aria-label="All wallpapers">⊞</Link>
 
         {nextImage ? (
-          <Link href={`/iphone/${nextImage.slug}`} style={S.prevNextItem("right")} prefetch={false}>
+          <Link href={`/${dp}/${nextImage.slug}`} style={S.prevNextItem("right")} prefetch={false}>
             <span style={S.prevNextLabel}>Next ›</span>
-            <div style={S.prevNextThumbWrap}>
-              <LazyImg src={nextImage.thumbUrl} alt={nextImage.title} />
-            </div>
+            <Thumb src={nextImage.thumbUrl} alt={nextImage.title} width={28} ratio="portrait" />
           </Link>
         ) : <div style={{ flex: 1 }} />}
       </div>
@@ -516,7 +476,7 @@ export default function MobileDetailLayout({
       {/* ── Main body ── */}
       <div style={S.body}>
 
-        {/* Hero wallpaper — full width, no phone shell */}
+        {/* Hero wallpaper — full width 9:16 */}
         <div style={S.heroWrap}>
           <LazyImg src={image.thumbUrl} alt={image.title} priority />
         </div>
@@ -544,17 +504,21 @@ export default function MobileDetailLayout({
           <span style={S.favLabel}>Add to Favorites</span>
         </div>
 
-        {/* More you'll like */}
+        {/* More you'll like — 44×78px (9:16) */}
         {relatedImages.length > 0 && (
-          <div style={S.moreWrap}>
-            <p style={S.moreLabel}>More You&apos;ll Like</p>
-            <div className="mdl-hscroll" style={S.moreThumbs}>
+          <div style={S.stripWrap}>
+            <p style={S.stripLabel}>More You&apos;ll Like</p>
+            <div className="mdl-hscroll" style={S.hscroll}>
               {relatedImages.map(img => (
-                <Link key={img.slug} href={`/iphone/${img.slug}`} prefetch={false} style={{ textDecoration: "none", flexShrink: 0 }}>
-                  <div style={S.moreThumb}>
-                    <LazyImg src={img.thumbUrl} alt={img.title} />
-                  </div>
-                </Link>
+                <Thumb
+                  key={img.slug}
+                  src={img.thumbUrl}
+                  alt={img.title}
+                  width={44}
+                  ratio="portrait"
+                  href={`/${dp}/${img.slug}`}
+                  devicePath={dp}
+                />
               ))}
             </div>
           </div>
@@ -582,7 +546,7 @@ export default function MobileDetailLayout({
             <p style={S.tagsLabel}>More Like This</p>
             <div style={S.tagsList}>
               {plainTags.map(tag => (
-                <a key={tag} href={`/iphone?tag=${encodeURIComponent(tag)}`} style={S.tag}>#{tag}</a>
+                <a key={tag} href={`/${dp}?tag=${encodeURIComponent(tag)}`} style={S.tag}>#{tag}</a>
               ))}
             </div>
           </div>
@@ -597,17 +561,21 @@ export default function MobileDetailLayout({
 
         <div style={S.divider} />
 
-        {/* Recently Viewed */}
+        {/* Recently Viewed — 36×64px (9:16) */}
         {recentlyViewed.length > 0 && (
-          <div style={S.rvSection}>
-            <p style={S.rvLabel}>Recently Viewed</p>
-            <div className="mdl-hscroll" style={S.rvRow}>
+          <div style={S.stripWrap}>
+            <p style={S.stripLabel}>Recently Viewed</p>
+            <div className="mdl-hscroll" style={S.hscroll}>
               {recentlyViewed.map(img => (
-                <Link key={img.slug} href={`/iphone/${img.slug}`} prefetch={false} style={{ textDecoration: "none", flexShrink: 0 }}>
-                  <div style={S.rvThumb}>
-                    <LazyImg src={img.thumbUrl} alt={img.title} />
-                  </div>
-                </Link>
+                <Thumb
+                  key={img.slug}
+                  src={img.thumbUrl}
+                  alt={img.title}
+                  width={36}
+                  ratio="portrait"
+                  href={`/${dp}/${img.slug}`}
+                  devicePath={dp}
+                />
               ))}
             </div>
           </div>
