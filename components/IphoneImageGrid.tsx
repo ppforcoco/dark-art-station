@@ -8,7 +8,92 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { CSSProperties, useEffect, useState } from "react";
+import { CSSProperties, useCallback, useEffect, useRef, useState } from "react";
+
+// ─── Inline favorites helpers (no import to avoid circular deps) ──────────────
+const FAV_KEY = "hw-favorites";
+type FavItem = { slug: string; title: string; thumb: string; href: string; device?: string };
+function getFavs(): FavItem[] {
+  try { const r = localStorage.getItem(FAV_KEY); return r ? JSON.parse(r) : []; } catch { return []; }
+}
+function isFaved(slug: string) { return getFavs().some(f => f.slug === slug); }
+function toggleFav(item: FavItem): boolean {
+  const existing = getFavs();
+  const idx = existing.findIndex(f => f.slug === item.slug);
+  const updated = idx !== -1 ? existing.filter(f => f.slug !== item.slug) : [item, ...existing].slice(0, 200);
+  try { localStorage.setItem(FAV_KEY, JSON.stringify(updated)); } catch {}
+  window.dispatchEvent(new CustomEvent("hw-favorites-change", { detail: updated }));
+  return idx === -1;
+}
+
+// ─── Heart button — self-contained, reads/writes localStorage ─────────────────
+function HeartBtn({ slug, title, thumb, href, device }: FavItem) {
+  const [saved, setSaved] = useState(false);
+  const [pop, setPop] = useState(false);
+  const mounted = useRef(false);
+
+  useEffect(() => {
+    mounted.current = true;
+    setSaved(isFaved(slug));
+    const h = (e: Event) => {
+      const list = (e as CustomEvent<FavItem[]>).detail;
+      setSaved(list.some(f => f.slug === slug));
+    };
+    window.addEventListener("hw-favorites-change", h);
+    return () => window.removeEventListener("hw-favorites-change", h);
+  }, [slug]);
+
+  const handleClick = useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const nowSaved = toggleFav({ slug, title, thumb, href, device });
+    setSaved(nowSaved);
+    if (nowSaved) { setPop(true); setTimeout(() => setPop(false), 300); }
+  }, [slug, title, thumb, href, device]);
+
+  return (
+    <button
+      type="button"
+      onClick={handleClick}
+      aria-label={saved ? "Remove from favorites" : "Save to favorites"}
+      style={{
+        position: "absolute",
+        top: 8,
+        right: 8,
+        zIndex: 20,
+        width: 30,
+        height: 30,
+        borderRadius: "50%",
+        border: saved ? "1px solid rgba(255,30,50,0.6)" : "1px solid rgba(255,255,255,0.18)",
+        background: saved ? "rgba(192,0,26,0.85)" : "rgba(7,7,16,0.72)",
+        backdropFilter: "blur(6px)",
+        WebkitBackdropFilter: "blur(6px)",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        cursor: "pointer",
+        padding: 0,
+        transform: pop ? "scale(1.3)" : "scale(1)",
+        transition: "transform 0.15s ease, background 0.15s ease, border-color 0.15s ease",
+        WebkitTapHighlightColor: "transparent",
+        touchAction: "manipulation",
+      }}
+    >
+      <svg
+        viewBox="0 0 24 24"
+        fill={saved ? "currentColor" : "none"}
+        stroke="currentColor"
+        strokeWidth={saved ? 0 : 1.8}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        style={{ width: 14, height: 14, color: saved ? "#fff" : "rgba(255,255,255,0.8)", display: "block" }}
+        aria-hidden="true"
+      >
+        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+      </svg>
+    </button>
+  );
+}
 
 // ─── Cycle constants — must match PremiumCountdown.tsx and page.tsx files ──
 const EPOCH_MS  = Date.UTC(2025, 0, 1, 0, 0, 0); // Jan 1 2025 00:00 UTC
@@ -68,6 +153,26 @@ interface IphoneImageGridProps {
   insertAfter?: number;
   /** When true, premium cards show vault placeholder + "BACK IN" countdown */
   isLockedGlobal?: boolean;
+  /** How many cards to show immediately without scrolling (default 6 on mobile) */
+  initialCount?: number;
+  /** How many cards to add per scroll batch (default 6) */
+  batchSize?: number;
+}
+
+/* ── Sentinel — triggers next batch when it enters viewport ────────────── */
+function LoadMoreSentinel({ onVisible }: { onVisible: () => void }) {
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) { onVisible(); obs.disconnect(); } },
+      { rootMargin: "300px 0px", threshold: 0 }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, [onVisible]);
+  return <div ref={ref} style={{ height: 1, gridColumn: "1/-1" }} />;
 }
 
 export default function IphoneImageGrid({
@@ -82,12 +187,40 @@ export default function IphoneImageGrid({
   sizes = "(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 20vw",
   insertAfter,
   isLockedGlobal = false,
+  initialCount = 6,
+  batchSize = 6,
 }: IphoneImageGridProps) {
   const defaultGridClass = "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3";
 
+  // On desktop show all immediately; on mobile start with initialCount
+  const [isMobile, setIsMobile] = useState<boolean | null>(null);
+  const [visibleCount, setVisibleCount] = useState(initialCount);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 767px)");
+    setIsMobile(mq.matches);
+    const h = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+    mq.addEventListener("change", h);
+    return () => mq.removeEventListener("change", h);
+  }, []);
+
+  const loadMore = useCallback(() => {
+    setVisibleCount(c => Math.min(c + batchSize, images.length));
+  }, [batchSize, images.length]);
+
+  // How many to actually render — all on desktop, progressive on mobile
+  const renderCount = isMobile === null
+    ? images.length // SSR: render all (SEO), hydration corrects
+    : isMobile
+      ? visibleCount
+      : images.length;
+
+  const visibleImages = images.slice(0, renderCount);
+  const hasMore = isMobile && renderCount < images.length;
+
   return (
     <div className={gridClassName ?? defaultGridClass} style={gridStyle}>
-      {images.map((img, idx) => {
+      {visibleImages.map((img, idx) => {
         const isPremium = img.tags.includes("badge-premium");
         const isNew     = img.tags.includes("badge-new");
         const showVault = isPremium && isLockedGlobal;
@@ -97,7 +230,7 @@ export default function IphoneImageGrid({
             <Link
               key={img.id}
               href={`${hrefPrefix}/${img.slug}`}
-              className="group relative block overflow-hidden rounded-lg bg-[#0e0d1a] border border-white/[0.06] hover:border-white/20 transition-all duration-300"
+              className="group relative block overflow-hidden rounded-lg bg-[#0e0d1a] border border-white/[0.06]"
               style={{ aspectRatio }}
             >
               {showVault ? (
@@ -143,10 +276,22 @@ export default function IphoneImageGrid({
                   src={img.src}
                   alt={`${img.title}${altSuffix ? " — " + altSuffix : ""}`}
                   fill
-                  className="object-cover transition-transform duration-500 group-hover:scale-105"
+                  unoptimized
+                  className="object-cover"
                   sizes={sizes}
                   priority={priority || idx < priorityCount}
                   loading={priority || idx < priorityCount ? "eager" : "lazy"}
+                />
+              )}
+
+              {/* ── HEART / FAVORITE button — always visible top-right ── */}
+              {!showVault && (
+                <HeartBtn
+                  slug={img.slug}
+                  title={img.title}
+                  thumb={img.src}
+                  href={`${hrefPrefix}/${img.slug}`}
+                  device={hrefPrefix.replace("/", "")}
                 />
               )}
 
@@ -215,6 +360,33 @@ export default function IphoneImageGrid({
           </>
         );
       })}
+
+      {/* ── Load-more sentinel — fires when user scrolls near bottom of loaded cards ── */}
+      {hasMore && (
+        <>
+          <LoadMoreSentinel onVisible={loadMore} />
+          {/* Ghost skeleton cards so the page doesn't jump */}
+          {Array.from({ length: Math.min(batchSize, images.length - renderCount) }).map((_, i) => (
+            <div
+              key={`skel-${i}`}
+              style={{
+                aspectRatio,
+                borderRadius: 8,
+                background: "#0e0d1a",
+                border: "1px solid rgba(255,255,255,0.04)",
+                overflow: "hidden",
+              }}
+            >
+              <div style={{
+                width: "100%",
+                height: "100%",
+                background: "linear-gradient(90deg, #0c0a18 0px, rgba(255,255,255,0.03) 50%, #0c0a18 100%)",
+                backgroundSize: "200% 100%",
+              }} />
+            </div>
+          ))}
+        </>
+      )}
     </div>
   );
 }

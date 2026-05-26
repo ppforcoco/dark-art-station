@@ -172,7 +172,7 @@ export default async function PcImagePage({ params }: PageProps) {
               {prevImage && (
                 <Link
                   href={`/pc/${prevImage.slug}`}
-                  prefetch={false}
+                  prefetch={true}
                   className="hw-img-arrow hw-img-arrow--prev"
                   aria-label={`Previous: ${prevImage.title}`}
                   title={prevImage.title}
@@ -185,7 +185,7 @@ export default async function PcImagePage({ params }: PageProps) {
               {nextImage && (
                 <Link
                   href={`/pc/${nextImage.slug}`}
-                  prefetch={false}
+                  prefetch={true}
                   className="hw-img-arrow hw-img-arrow--next"
                   aria-label={`Next: ${nextImage.title}`}
                   title={nextImage.title}
@@ -267,7 +267,6 @@ export default async function PcImagePage({ params }: PageProps) {
                 className="detail-fav-inline"
                 item={{ slug: image.slug, title: image.title, thumb: thumbUrl, href: `/pc/${imageSlug}`, device: "pc" }}
               />
-              <span className="detail-fav-label">Save to Favorites</span>
             </div>
 
             {/* ── More You'll Like strip (desktop) — lazy loaded ── */}

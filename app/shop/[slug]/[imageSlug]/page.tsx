@@ -259,7 +259,7 @@ export default async function CollectionImagePage({ params }: PageProps) {
                 className="detail-fav-inline"
                 item={{ slug: image.slug, title: image.title, thumb: thumbUrl, href: `/shop/${slug}/${imageSlug}`, device: "collection" }}
               />
-              <span className="detail-fav-label">Save to Favorites</span>
+              
             </div>
           </div>
         </div>

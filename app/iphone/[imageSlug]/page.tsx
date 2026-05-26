@@ -191,10 +191,10 @@ export default async function IphoneImagePage({ params }: PageProps) {
                     src={thumbUrl}
                     alt={image.title}
                     fill
+                    unoptimized
                     className="object-cover"
                     priority
                     fetchPriority="high"
-                    quality={85}
                     sizes="(max-width: 768px) 100vw, 480px"
                   />
                 </div>
@@ -204,7 +204,7 @@ export default async function IphoneImagePage({ params }: PageProps) {
               {prevImage && (
                 <Link
                   href={`/iphone/${prevImage.slug}`}
-                  prefetch={false}
+                  prefetch={true}
                   className="hw-img-arrow hw-img-arrow--prev"
                   aria-label={`Previous: ${prevImage.title}`}
                   title={prevImage.title}
@@ -217,7 +217,7 @@ export default async function IphoneImagePage({ params }: PageProps) {
               {nextImage && (
                 <Link
                   href={`/iphone/${nextImage.slug}`}
-                  prefetch={false}
+                  prefetch={true}
                   className="hw-img-arrow hw-img-arrow--next"
                   aria-label={`Next: ${nextImage.title}`}
                   title={nextImage.title}
@@ -254,7 +254,6 @@ export default async function IphoneImagePage({ params }: PageProps) {
                     device: "iphone",
                   }}
                 />
-                <span className="detail-fav-label">Save to Favorites</span>
               </div>
 
               {/* ── More You'll Like strip (mobile) — lazy loaded ── */}
@@ -348,7 +347,7 @@ export default async function IphoneImagePage({ params }: PageProps) {
                   device: "iphone",
                 }}
               />
-              <span className="detail-fav-label">Save to Favorites</span>
+              <span className="hw-fav-tooltip">Saved ♥</span>
             </div>
 
             {/* ── More You'll Like strip (desktop) — lazy loaded ── */}

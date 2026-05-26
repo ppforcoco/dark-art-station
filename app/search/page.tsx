@@ -35,7 +35,7 @@ const CDN_BASE = process.env.NEXT_PUBLIC_R2_PUBLIC_URL ?? "";
 function r2Url(key: string) { return `${CDN_BASE}/${key}`; }
 
 // ── Result Card ───────────────────────────────────────────────
-function ResultCard({ item }: { item: SearchResultItem }) {
+function ResultCard({ item, index, total }: { item: SearchResultItem; index: number; total: number }) {
   const devicePath =
     item.deviceType === "IPHONE"  ? "iphone"  :
     item.deviceType === "ANDROID" ? "android" :
@@ -74,6 +74,9 @@ function ResultCard({ item }: { item: SearchResultItem }) {
         )}
         <div className="search-card-kind">
           {item.kind === "collection" ? (item.tag ?? "Collection") : (deviceLabel ?? "Standalone")}
+        </div>
+        <div className="search-card-num">
+          {index + 1}<span style={{opacity:0.4}}>/{total}</span>
         </div>
       </div>
       <div className="search-card-info">
@@ -219,7 +222,7 @@ export default async function SearchPage({
             <div className="search-grid">
               {results.map((item, idx) => (
                 <>
-                  <ResultCard key={item.id} item={item} />
+                  <ResultCard key={item.id} item={item} index={idx} total={results.length} />
                   {idx === 5 && (
                     <div key="search-mid-ad" style={{ gridColumn: "1 / -1" }}>
                     </div>

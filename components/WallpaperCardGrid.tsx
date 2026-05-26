@@ -106,6 +106,11 @@ export default function WallpaperCardGrid({ items, accentRgb, badge, badgeColor 
             scroll-snap-align: start;
           }
         }
+        /* Desktop-only hover effects — no paint cost on mobile */
+        @media (pointer: fine) {
+          .wcg-card { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+          .wcg-card:hover { transform: translateY(-4px); }
+        }
       `}</style>
       <div className="wcg-outer">
       {items.map((img) => {
@@ -157,15 +162,6 @@ export default function WallpaperCardGrid({ items, accentRgb, badge, badgeColor 
                 overflow: "hidden",
                 background: "#0d0b14",
                 boxShadow: shadowDefault,
-                transition: "transform 0.28s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.28s ease",
-              }}
-              onMouseEnter={e => {
-                (e.currentTarget as HTMLDivElement).style.transform = "translateY(-7px) scale(1.025)";
-                (e.currentTarget as HTMLDivElement).style.boxShadow = shadowHover;
-              }}
-              onMouseLeave={e => {
-                (e.currentTarget as HTMLDivElement).style.transform = "";
-                (e.currentTarget as HTMLDivElement).style.boxShadow = shadowDefault;
               }}
             >
               {/* Phone mockup shell */}
@@ -181,11 +177,10 @@ export default function WallpaperCardGrid({ items, accentRgb, badge, badgeColor 
                   src={img.src}
                   alt={img.title}
                   fill
+                  unoptimized
                   loading="lazy"
                   sizes="(max-width: 640px) 100px, (max-width: 1024px) 180px, 220px"
-                  style={{ objectFit: "cover", transition: "transform 0.45s ease" }}
-                  onMouseEnter={e => (e.currentTarget as HTMLImageElement).style.transform = "scale(1.07)"}
-                  onMouseLeave={e => (e.currentTarget as HTMLImageElement).style.transform = ""}
+                  style={{ objectFit: "cover" }}
                 />
                 {/* Glass gloss */}
                 <div style={{ position: "absolute", inset: 0, background: "linear-gradient(135deg, rgba(255,255,255,0.07) 0%, transparent 50%)", pointerEvents: "none" }} />

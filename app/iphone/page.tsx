@@ -345,11 +345,13 @@ export default async function IphonePage({ searchParams }: PageProps) {
               hrefPrefix="/iphone"
               altSuffix="free dark iPhone wallpaper HD"
               gridClassName="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3"
-              priorityCount={10}
+              priorityCount={6}
               aspectRatio="9/16"
               sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 20vw"
               insertAfter={9}
               isLockedGlobal={isLockedGlobal}
+              initialCount={6}
+              batchSize={6}
             />
             <Pagination currentPage={page} totalPages={totalPages} baseUrl={baseUrl} />
           </>

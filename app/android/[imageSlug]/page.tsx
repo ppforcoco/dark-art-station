@@ -221,10 +221,10 @@ export default async function AndroidImagePage({ params }: PageProps) {
                     src={thumbUrl}
                     alt={image.title}
                     fill
+                    unoptimized
                     className="object-cover"
                     priority
                     fetchPriority="high"
-                    quality={85}
                     sizes="(max-width: 768px) 100vw, 480px"
                   />
                 </div>
@@ -234,7 +234,7 @@ export default async function AndroidImagePage({ params }: PageProps) {
               {prevImage && (
                 <Link
                   href={`/android/${prevImage.slug}`}
-                  prefetch={false}
+                  prefetch={true}
                   className="hw-img-arrow hw-img-arrow--prev"
                   aria-label={`Previous: ${prevImage.title}`}
                   title={prevImage.title}
@@ -247,7 +247,7 @@ export default async function AndroidImagePage({ params }: PageProps) {
               {nextImage && (
                 <Link
                   href={`/android/${nextImage.slug}`}
-                  prefetch={false}
+                  prefetch={true}
                   className="hw-img-arrow hw-img-arrow--next"
                   aria-label={`Next: ${nextImage.title}`}
                   title={nextImage.title}
@@ -271,7 +271,6 @@ export default async function AndroidImagePage({ params }: PageProps) {
               {/* ── Save to Favorites (mobile) ── */}
               <div className="detail-fav-row hw-mobile-fav">
                 <FavoriteButton size="md" className="detail-fav-inline" item={{ slug: image.slug, title: image.title, thumb: thumbUrl, href: `/android/${imageSlug}`, device: "android" }} />
-                <span className="detail-fav-label">Save to Favorites</span>
               </div>
 
               {/* ── More You'll Like strip (mobile) — lazy loaded ── */}
@@ -341,7 +340,6 @@ export default async function AndroidImagePage({ params }: PageProps) {
             {/* ── Save to Favorites (desktop) ── */}
             <div className="detail-fav-row hw-desktop-fav">
               <FavoriteButton size="md" className="detail-fav-inline" item={{ slug: image.slug, title: image.title, thumb: thumbUrl, href: `/android/${imageSlug}`, device: "android" }} />
-              <span className="detail-fav-label">Save to Favorites</span>
             </div>
 
             {/* ── More You'll Like strip (desktop) — lazy loaded ── */}

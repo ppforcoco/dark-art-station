@@ -8,6 +8,7 @@ import Pagination from "@/components/Pagination";
 import DeviceImageCard from "@/components/DeviceImageCard";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import AdminHtmlBlock from "@/components/AdminHtmlBlock";
+import ProgressiveGrid from "@/components/ProgressiveGrid";
 
 export const dynamic = "force-dynamic";
 
@@ -180,7 +181,12 @@ export default async function PcPage({ searchParams }: PageProps) {
             <p className="font-mono text-[0.6rem] tracking-[0.2em] uppercase text-[#4a445a] mb-6">
               — {total} wallpapers · page {page} of {totalPages}
             </p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <ProgressiveGrid
+              gridClassName="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
+              initialCount={4}
+              batchSize={4}
+              skeletonAspect="16/9"
+            >
               {images.map((img, idx) => (
                 <React.Fragment key={img.id}>
                   <DeviceImageCard
@@ -190,16 +196,16 @@ export default async function PcPage({ searchParams }: PageProps) {
                     title={img.title}
                     tags={img.tags}
                     isAdult={img.isAdult}
-                    priority={idx < 6}
+                    priority={idx < 4}
                     aspectRatio="16/9"
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                   />
-                  {idx === 5 && (
+                  {idx === 3 && (
                     <div className="col-span-1 sm:col-span-2 lg:col-span-3 my-2" />
                   )}
                 </React.Fragment>
               ))}
-            </div>
+            </ProgressiveGrid>
             <Pagination currentPage={page} totalPages={totalPages} baseUrl={baseUrl} />
           </>
         ) : null}

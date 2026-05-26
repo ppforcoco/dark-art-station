@@ -27,25 +27,14 @@ function glowDelay(seed: string): string {
   return `-${seconds.toFixed(1)}s`;
 }
 
-/** Spectral white glow — moonlight hitting glass.
- *  Replaces the cardGlowRotate rainbow animation which was overriding
- *  the CSS border and producing an unwanted red ring on the mockup.
- *  Uses drop-shadow (GPU composited) instead of box-shadow.
- *  The seed is kept as a parameter for API compatibility but is unused now.
+/** Simple static border — no filter/drop-shadow (kills mobile GPU).
+ *  Drop-shadow was causing full-page compositing on every scroll.
  */
 function animatedGlow(_seed: string, _durationSeconds = 8): React.CSSProperties {
   return {
-    // Spectral white border: #e0e0e0 at 10% — "moonlight hitting the phone"
     border: "1.5px solid rgba(224,224,224,0.10)",
-    // Pure black background for OLED infinite contrast
     background: "#000000",
-    // GPU-composited drop-shadow: deep lift + faint spectral white halo
-    filter: [
-      "drop-shadow(0 20px 60px rgba(0,0,0,0.90))",
-      "drop-shadow(0 8px 20px rgba(0,0,0,0.70))",
-      "drop-shadow(0 0 28px rgba(224,224,224,0.07))",
-      "drop-shadow(0 0 8px rgba(224,224,224,0.04))",
-    ].join(" "),
+    // NO filter/drop-shadow — too expensive on mobile GPUs
   };
 }
 

@@ -107,18 +107,22 @@ export default function LazySection({
   className,
 }: LazySectionProps) {
   const ref = useRef<HTMLDivElement>(null);
-  // Start as false — ALWAYS show skeleton first, let observer decide when to swap
+  // Start as false — show skeleton first. But check immediately on mount
+  // if the element is already in/near the viewport and flip to true instantly.
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
 
-    // Do NOT do a getBoundingClientRect fast-path here.
-    // That was the bug — it made every section within 400px of fold
-    // mount immediately, which defeats progressive loading entirely.
-    // Let the IntersectionObserver handle everything, including near-fold sections.
-    // The 400px rootMargin gives enough lead time.
+    // Fast-path: if element top is within rootMargin pixels of viewport, show immediately.
+    // This prevents the skeleton flash for sections that are already visible or close.
+    const rect = el.getBoundingClientRect();
+    const marginPx = parseInt(rootMargin, 10) || 400;
+    if (rect.top < window.innerHeight + marginPx) {
+      setVisible(true);
+      return;
+    }
 
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -127,16 +131,11 @@ export default function LazySection({
           observer.disconnect();
         }
       },
-      {
-        // Use the passed rootMargin prop — don't hardcode it
-        rootMargin,
-        threshold: 0,
-      }
+      { rootMargin, threshold: 0 }
     );
 
     observer.observe(el);
     return () => observer.disconnect();
-  // rootMargin is a static prop, intentionally not a dep
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

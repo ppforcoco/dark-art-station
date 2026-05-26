@@ -11990,3 +11990,185 @@ h4 { font-size: clamp(0.9rem, 1.5vw, 1.2rem); }
     -webkit-backdrop-filter: none !important;
   }
 }
+/* ═══════════════════════════════════════════════════════════════
+   KILL ALL ANIMATIONS — Performance patch
+   Every animation and heavy glow removed for max speed
+   ═══════════════════════════════════════════════════════════════ */
+
+/* 1. Nuke every @keyframes by overriding animation on ALL elements */
+*, *::before, *::after {
+  animation: none !important;
+  animation-duration: 0s !important;
+  animation-delay: 0s !important;
+  animation-iteration-count: 1 !important;
+}
+
+/* 2. Kill all glow box-shadows sitewide */
+.hw2-particle,
+.hw2-particles,
+.dt-ember,
+.dt-fog__layer,
+.dt-fog__layer--1,
+.dt-fog__layer--2,
+.dt-fog__layer--3,
+.hw2-float,
+.hw2-drip,
+.hw2-pulse,
+.hw2-glow-pulse,
+.hw2-card-float,
+.hw2-glitch,
+.hw2-spin-slow,
+.hw2-fog,
+.hw-spin,
+.hc-ember,
+.download-btn-glow-pulse,
+.hint-pulse,
+.hwFadeUp,
+.hwPulse,
+.hw2-fade-up,
+.hw2-fade-in,
+.hw2-slide-in,
+.fade-up-1, .fade-up-2, .fade-up-3, .fade-up-4, .fade-up-5 {
+  animation: none !important;
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+/* 3. Kill particle elements entirely — they're pure overhead */
+.hw2-particles { display: none !important; }
+
+/* 4. Kill download button pulsing glow */
+.hw-glow-btn-wrap--download,
+.hw-glow-btn-wrap--preview {
+  animation: none !important;
+  box-shadow: none !important;
+}
+
+/* 5. Kill halloween countdown ember */
+.hc-progress-glow,
+.hc-unit-glow {
+  animation: none !important;
+}
+
+/* 6. Remove glow from card-glow — just keep the static border */
+.card-glow {
+  animation: none !important;
+  animation-delay: 0s !important;
+}
+
+/* 7. Faster transitions — cap all at 0.1s */
+* { transition-duration: 0.1s !important; }
+
+/* 8. Kill What Haunts You section floating/drip/fog */
+.hw2-hero__bg,
+.hw2-hero__fog {
+  display: none !important;
+}
+
+/* 9. Fav button pop — instant, no animation */
+.fav-btn--pop svg {
+  animation: none !important;
+  transform: scale(1) !important;
+}
+
+/* ── Search result position number badge ─────────────────────────────── */
+.search-card-num {
+  position: absolute;
+  bottom: 6px;
+  left: 6px;
+  background: rgba(0,0,0,0.72);
+  color: rgba(255,255,255,0.85);
+  font-family: var(--font-space, monospace);
+  font-size: 0.52rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  padding: 2px 5px;
+  border-radius: 3px;
+  z-index: 5;
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255,255,255,0.08);
+  line-height: 1.4;
+  pointer-events: none;
+}
+
+/* ── Fav button always visible on card images (not just on hover) ────── */
+.fav-btn {
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+/* Ensure heart icon is clearly visible */
+.fav-btn svg {
+  opacity: 1 !important;
+  color: rgba(255,255,255,0.7) !important;
+}
+.fav-btn--saved svg {
+  color: #fff !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   WHAT HAUNTS YOU — Kill all effects, smaller mobile thumbs
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Kill drip, glow, glitch, corner crosses entirely */
+.dt-obs-card__drip,
+.dt-obs-card__glitch,
+.dt-obs-card__glow,
+.dt-obs-card__corner {
+  display: none !important;
+}
+
+/* No hover lift/transform on cards */
+.dt-obs-card:hover {
+  transform: none !important;
+  border-color: rgba(192,0,26,0.3) !important;
+}
+
+/* No scale on bg image hover */
+.dt-obs-card:hover .dt-obs-card__bg img {
+  transform: none !important;
+}
+
+/* Smaller thumbnails on mobile for What Haunts You grid */
+@media (max-width: 767px) {
+  .dt-obs-grid {
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 6px !important;
+  }
+  .dt-obs-card__title {
+    font-size: 0.6rem !important;
+    letter-spacing: 0.01em !important;
+  }
+  .dt-obs-card__body {
+    padding: 8px 6px !important;
+  }
+}
+
+/* Cache bust: add version to force reload without hard refresh */
+/* Version: 2026-05-27-v2 */
+
+/* ── Hide "Save to Favorites" text label everywhere — icon only ─────── */
+.detail-fav-label { display: none !important; }
+
+/* ── Fav row: just show the button, no text ─────────────────────────── */
+.detail-fav-row {
+  width: fit-content !important;
+  padding: 8px !important;
+  border-radius: 50% !important;
+  border: 1px solid rgba(192,0,26,0.2) !important;
+  background: rgba(0,0,0,0.4) !important;
+  box-shadow: none !important;
+}
+.detail-fav-row:hover {
+  border-color: rgba(192,0,26,0.5) !important;
+  background: rgba(60,0,10,0.5) !important;
+}
+
+/* ── Remove drop-shadow filter from phone mockup — kills mobile GPU ── */
+.mockup-phone-shell {
+  filter: none !important;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.6) !important;
+}
+.mockup-monitor-bezel {
+  filter: none !important;
+}
