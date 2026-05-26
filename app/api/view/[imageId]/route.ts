@@ -18,11 +18,10 @@ export async function POST(
   }
 
   const { imageId } = await params;
-  const id = parseInt(imageId, 10);
-  if (isNaN(id)) return NextResponse.json({ ok: false }, { status: 400 });
+  if (!imageId) return NextResponse.json({ ok: false }, { status: 400 });
 
   db.image.update({
-    where: { id },
+    where: { id: imageId },
     data: { viewCount: { increment: 1 } },
   }).catch(() => {});
 
