@@ -130,7 +130,7 @@ export default function WallpaperCardGrid({ items, accentRgb, badge, badgeColor 
                 {/* Dynamic island */}
                 <div style={{ position: "absolute", top: "7px", left: "50%", transform: "translateX(-50%)", width: "35%", height: "10px", background: "#000", borderRadius: "6px", zIndex: 4 }} />
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <Image src={img.src} alt="" aria-hidden="true" fill sizes="160px" style={{ objectFit: "cover", filter: "blur(12px) brightness(0.18)", transform: "scale(1.12)" }} />
+                <Image src={img.src} alt="" aria-hidden="true" fill loading="lazy" sizes="100px" style={{ objectFit: "cover", filter: "blur(12px) brightness(0.18)", transform: "scale(1.12)" }} />
                 {/* Vault overlay */}
                 <div style={{ position: "absolute", inset: 0, zIndex: 5, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "8px", padding: "1rem", textAlign: "center", background: "rgba(8,6,16,0.5)" }}>
                   <span style={{ fontSize: "1.8rem", lineHeight: 1, filter: `drop-shadow(0 0 8px rgba(${accentRgb},0.6))` }}>🔒</span>
@@ -181,6 +181,7 @@ export default function WallpaperCardGrid({ items, accentRgb, badge, badgeColor 
                   src={img.src}
                   alt={img.title}
                   fill
+                  loading="lazy"
                   sizes="(max-width: 640px) 100px, (max-width: 1024px) 180px, 220px"
                   style={{ objectFit: "cover", transition: "transform 0.45s ease" }}
                   onMouseEnter={e => (e.currentTarget as HTMLImageElement).style.transform = "scale(1.07)"}

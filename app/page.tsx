@@ -369,6 +369,7 @@ export default async function Home() {
                         alt={phone.alt}
                         fill
                         priority={false}
+                        loading="lazy"
                         fetchPriority="low"
                         sizes="(max-width: 539px) 70px, (max-width: 640px) 120px, 240px"
                         style={{ objectFit: "cover" }}
@@ -1081,7 +1082,7 @@ export default async function Home() {
               ].map((kit) => (
                 <a key={kit.href} href={kit.href} className="hw-kit-card hw-kit-card--sm" style={{ "--kit-accent": kit.accent } as React.CSSProperties}>
                   <div className="hw-kit-card__thumb">
-                    <Image src={kit.img} alt={kit.alt} fill sizes="(max-width: 540px) 54vw, (max-width: 1024px) 45vw, 360px" style={{ objectFit: "cover" }} className="hw-kit-card__img" />
+                    <Image src={kit.img} alt={kit.alt} fill loading="lazy" sizes="(max-width: 540px) 54vw, (max-width: 1024px) 45vw, 360px" style={{ objectFit: "cover" }} className="hw-kit-card__img" />
                     <div className="hw-kit-card__overlay" />
                     <span className="hw-kit-card__num">Kit {kit.num}</span>
                     {(kit as { premium?: boolean }).premium && (
