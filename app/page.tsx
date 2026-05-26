@@ -445,14 +445,14 @@ export default async function Home() {
 
           /* Non-featured phones: compact */
           .hw-hero-phone-shell {
-            width: 62px !important;
-            height: 135px !important;
+            width: 90px !important;
+            height: 195px !important;
             border-radius: 14px !important;
           }
           /* Featured (middle) phone slightly bigger */
           .hw-hero-phones-wrap > div:nth-child(3) .hw-hero-phone-shell {
-            width: 80px !important;
-            height: 174px !important;
+            width: 116px !important;
+            height: 252px !important;
             border-radius: 18px !important;
           }
         }

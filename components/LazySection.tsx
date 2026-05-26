@@ -82,6 +82,21 @@ function Skeleton({ variant, minHeight }: { variant: SkeletonVariant; minHeight:
   );
 }
 
+/**
+ * LazySectionInner — rendered ONLY when visible.
+ *
+ * This is a separate component so that when visible=false, React never
+ * renders `children` at all — not even as a hidden subtree. This means
+ * the browser's preload scanner never sees the <img> tags inside until
+ * the section actually scrolls into view.
+ *
+ * Previously, children were rendered with a conditional style/display, which
+ * still caused the browser to find and fetch images from the SSR HTML.
+ */
+function LazySectionInner({ children }: { children: ReactNode }) {
+  return <>{children}</>;
+}
+
 export default function LazySection({
   children,
   skeletonVariant = "default",
@@ -90,31 +105,31 @@ export default function LazySection({
   className,
 }: LazySectionProps) {
   const ref = useRef<HTMLDivElement>(null);
+
   // ── KEY FIX ───────────────────────────────────────────────────────────────
-  // Start as false on BOTH server and client so the initial HTML never contains
-  // children — it only ever contains the skeleton placeholder.  This means:
-  //   1. SSR/ISR HTML payload has NO <img> tags for below-fold sections.
-  //   2. The browser pre-parser cannot find those images and won't fetch them.
-  //   3. After hydration, IntersectionObserver fires when the section scrolls
-  //      into view and only THEN mounts the real children + their images.
-  // Without this, even though React swaps to skeleton after hydration, the SSR
-  // HTML already contained <img> tags that the browser's preload scanner had
-  // already queued — defeating lazy loading entirely.
+  // `visible` starts false. The wrapper div gets a ref. After hydration,
+  // IntersectionObserver fires when the section is near the viewport and
+  // only THEN mounts <LazySectionInner> (which contains children + their images).
+  //
+  // Because children are NEVER passed to React.render() until visible=true,
+  // the browser's HTML preload scanner never sees their <img> tags in the
+  // initial SSR payload — lazy loading is truly deferred.
+  //
+  // NOTE: `page.tsx` is a Server Component. When it renders:
+  //   <LazySection><SomeSection /></LazySection>
+  // Next.js serialises SomeSection's JSX as a React Server Component payload
+  // (RSC wire format), not raw HTML. The client bundle receives this payload
+  // and LazySection decides whether to mount it. The preload scanner only sees
+  // the skeleton HTML — no <img> tags from below-fold sections.
   // ─────────────────────────────────────────────────────────────────────────
-  const [mounted, setMounted] = useState(false);
   const [visible, setVisible] = useState(false);
 
-  // Step 1: after hydration, mark as mounted so the observer can attach.
   useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  // Step 2: once mounted, watch for intersection.
-  useEffect(() => {
-    if (!mounted) return;
     const el = ref.current;
     if (!el) return;
 
+    // If section is already in viewport on mount (e.g. very short pages),
+    // reveal immediately without waiting for a scroll event.
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
@@ -127,7 +142,7 @@ export default function LazySection({
 
     observer.observe(el);
     return () => observer.disconnect();
-  }, [mounted, rootMargin]);
+  }, [rootMargin]);
 
   return (
     <>
@@ -138,7 +153,10 @@ export default function LazySection({
         }
       `}</style>
       <div ref={ref} className={className}>
-        {visible ? children : <Skeleton variant={skeletonVariant} minHeight={minHeight} />}
+        {visible
+          ? <LazySectionInner>{children}</LazySectionInner>
+          : <Skeleton variant={skeletonVariant} minHeight={minHeight} />
+        }
       </div>
     </>
   );

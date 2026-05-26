@@ -3,36 +3,17 @@
 /**
  * MobileDetailLayout.tsx — FULLY SELF-CONTAINED mobile detail page
  *
- * Drop this into your component folder and call it from page.tsx like:
- *
- *   import MobileDetailLayout from "@/components/MobileDetailLayout";
- *   ...
- *   <MobileDetailLayout
- *     image={image}
- *     prevImage={prevImage}
- *     nextImage={nextImage}
- *     relatedImages={relatedImages}
- *     recentlyViewed={recentlyViewed}
- *   />
- *
- * It renders ONLY on ≤767px viewports. Desktop sees nothing from this component.
- * The parent page.tsx handles desktop as it always did — no changes needed there.
- *
- * Features:
- *  ✓ Zero animations (no glow, no pulse, no transitions)
- *  ✓ Tiny compact images everywhere
- *  ✓ Prev/Next thumbnail strip (no full reload, prefetch=false)
- *  ✓ Inline download + preview + favorite buttons
- *  ✓ "More You'll Like" compact strip below favorites
- *  ✓ Description rendered as tiny HTML (dangerouslySetInnerHTML)
- *  ✓ Tags — tiny pill chips
- *  ✓ Recently Viewed — tiny thumbs, no labels
- *  ✓ Everything auto-adjusts via clamp() and relative units
- *  ✓ No render-props — handles its own layout entirely
+ * Changes vs previous version:
+ *  ✓ Main image is a full-width wallpaper preview (no tiny phone mockup shell)
+ *  ✓ Prev/Next thumbnails enlarged to real card size (80×142px)
+ *  ✓ "More you'll like" strip uses larger cards (72×128px)
+ *  ✓ Recently Viewed uses larger cards (60×107px)
+ *  ✓ ALL images load on scroll via IntersectionObserver (true per-image lazy load)
+ *  ✓ Zero animations — no transitions, no pulses, no glows
+ *  ✓ Only renders on ≤767px viewports
  */
 
-import React, { useEffect, useState, useCallback } from "react";
-import Image from "next/image";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import Link from "next/link";
 
 /* ─── Types ─────────────────────────────────────────────────────────────── */
@@ -41,12 +22,12 @@ export interface MobileImage {
   id: string;
   slug: string;
   title: string;
-  thumbUrl: string;         // low-res thumbnail
-  fullUrl: string;          // full-res image for download/preview
-  displayDescription: string; // may contain HTML
+  thumbUrl: string;
+  fullUrl: string;
+  displayDescription: string;
   tags: string[];
   downloadCount?: number;
-  isFavorited?: boolean;    // initial state from server
+  isFavorited?: boolean;
   commentsEnabled?: boolean;
 }
 
@@ -60,8 +41,8 @@ interface Props {
   image: MobileImage;
   prevImage: MobileSibling | null;
   nextImage: MobileSibling | null;
-  relatedImages: MobileSibling[];   // "More you'll like"
-  recentlyViewed?: MobileSibling[]; // optional, from localStorage or server
+  relatedImages: MobileSibling[];
+  recentlyViewed?: MobileSibling[];
 }
 
 /* ─── Badge config ───────────────────────────────────────────────────────── */
@@ -74,7 +55,66 @@ const BADGE_MAP: Record<string, { label: string; color: string; bg: string }> = 
   "badge-limited":   { label: "⏳ Limited",    color: "#ff5252", bg: "rgba(255,82,82,0.12)"   },
 };
 
-/* ─── Inline styles (no Tailwind needed, no animation, mobile-only) ──────── */
+/* ─── LazyImg ────────────────────────────────────────────────────────────────
+ * A plain <img> that only sets its src when it scrolls into view.
+ * Uses IntersectionObserver with rootMargin so it loads ~150px before visible.
+ * No Next/Image — avoids the optimizer overhead for small thumbnails.
+ * No animation — just shows the image as soon as it's fetched.
+ * --------------------------------------------------------------------------- */
+
+interface LazyImgProps {
+  src: string;
+  alt: string;
+  style?: React.CSSProperties;
+  priority?: boolean; // skip observer, load immediately (hero image only)
+}
+
+function LazyImg({ src, alt, style, priority = false }: LazyImgProps) {
+  const ref = useRef<HTMLImageElement>(null);
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    const img = ref.current;
+    if (!img) return;
+
+    if (priority) {
+      img.src = src;
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          img.src = src;
+          observer.disconnect();
+        }
+      },
+      { rootMargin: "150px 0px" }
+    );
+
+    observer.observe(img);
+    return () => observer.disconnect();
+  }, [src, priority]);
+
+  return (
+    <img
+      ref={ref}
+      alt={alt}
+      onLoad={() => setLoaded(true)}
+      style={{
+        display: "block",
+        width: "100%",
+        height: "100%",
+        objectFit: "cover",
+        opacity: loaded ? 1 : 0,
+        // No transition — just snaps in when ready
+        ...style,
+      }}
+    />
+  );
+}
+
+/* ─── Styles ─────────────────────────────────────────────────────────────── */
 
 const S = {
   root: {
@@ -84,12 +124,12 @@ const S = {
     fontFamily: "'Space Mono', 'Courier New', monospace",
   } as React.CSSProperties,
 
-  /* Prev / Next strip */
+  /* Prev / Next sticky strip */
   prevNext: {
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
-    padding: "6px 10px",
+    padding: "8px 10px",
     borderBottom: "1px solid rgba(255,255,255,0.06)",
     gap: 8,
     background: "#0a0a0a",
@@ -101,7 +141,7 @@ const S = {
   prevNextItem: (align: "left" | "right"): React.CSSProperties => ({
     display: "flex",
     alignItems: "center",
-    gap: 5,
+    gap: 8,
     textDecoration: "none",
     color: "rgba(255,255,255,0.45)",
     fontSize: "0.58rem",
@@ -111,21 +151,23 @@ const S = {
     justifyContent: align === "right" ? "flex-end" : "flex-start",
   }),
 
+  /* Prev/Next thumbnail — real card size now */
   prevNextThumbWrap: {
     position: "relative",
-    width: 30,
-    height: 54,
+    width: 48,
+    height: 86,
     flexShrink: 0,
     overflow: "hidden",
-    borderRadius: 4,
-    border: "1px solid rgba(255,255,255,0.1)",
+    borderRadius: 6,
+    border: "1px solid rgba(255,255,255,0.12)",
+    background: "#111",
   } as React.CSSProperties,
 
   prevNextLabel: {
     whiteSpace: "nowrap",
     overflow: "hidden",
     textOverflow: "ellipsis",
-    maxWidth: 48,
+    maxWidth: 60,
     fontSize: "0.55rem",
     color: "rgba(255,255,255,0.35)",
   } as React.CSSProperties,
@@ -134,50 +176,44 @@ const S = {
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    width: 26,
-    height: 26,
+    width: 32,
+    height: 32,
     border: "1px solid rgba(255,255,255,0.1)",
     borderRadius: 4,
     color: "rgba(255,255,255,0.3)",
     textDecoration: "none",
-    fontSize: "0.65rem",
+    fontSize: "0.75rem",
     flexShrink: 0,
   } as React.CSSProperties,
 
   /* Body */
   body: {
-    padding: "10px 10px 40px",
+    padding: "12px 12px 48px",
     display: "flex",
     flexDirection: "column",
-    gap: 10,
+    gap: 12,
   } as React.CSSProperties,
 
-  /* Mockup */
-  mockupWrap: {
-    display: "flex",
-    justifyContent: "center",
-    padding: "4px 0",
-  } as React.CSSProperties,
-
-  mockupInner: {
-    width: "min(52vw, 200px)",
-    aspectRatio: "9/19.5",
+  /* Hero wallpaper — full width, no phone shell */
+  heroWrap: {
+    width: "100%",
+    aspectRatio: "9/16",
     position: "relative",
-    borderRadius: 14,
     overflow: "hidden",
-    border: "1px solid rgba(255,255,255,0.12)",
+    borderRadius: 10,
     background: "#111",
+    border: "1px solid rgba(255,255,255,0.08)",
   } as React.CSSProperties,
 
   /* Buttons */
   btnRow: {
     display: "flex",
-    gap: 6,
+    gap: 8,
   } as React.CSSProperties,
 
   btn: (variant: "primary" | "ghost"): React.CSSProperties => ({
     flex: 1,
-    padding: "8px 0",
+    padding: "10px 0",
     fontSize: "0.65rem",
     letterSpacing: "0.1em",
     textTransform: "uppercase",
@@ -201,7 +237,7 @@ const S = {
     background: "none",
     border: "1px solid rgba(255,255,255,0.1)",
     borderRadius: 3,
-    padding: "5px 10px",
+    padding: "6px 12px",
     fontSize: "0.7rem",
     cursor: "pointer",
     color: active ? "#ff5252" : "rgba(255,255,255,0.3)",
@@ -215,41 +251,40 @@ const S = {
     color: "rgba(255,255,255,0.25)",
   } as React.CSSProperties,
 
-  /* More strip */
+  /* More strip — bigger cards */
   moreWrap: {
     display: "flex",
-    alignItems: "center",
-    gap: 6,
-    paddingTop: 8,
+    flexDirection: "column" as const,
+    gap: 8,
+    paddingTop: 10,
     borderTop: "1px solid rgba(255,255,255,0.06)",
   } as React.CSSProperties,
 
   moreLabel: {
-    fontSize: "0.4rem",
+    fontSize: "0.44rem",
     letterSpacing: "0.22em",
     textTransform: "uppercase",
-    color: "rgba(255,255,255,0.18)",
-    whiteSpace: "nowrap" as const,
-    writingMode: "vertical-rl" as const,
-    transform: "rotate(180deg)",
-    marginRight: 2,
+    color: "rgba(255,255,255,0.2)",
   } as React.CSSProperties,
 
   moreThumbs: {
     display: "flex",
-    gap: 4,
+    gap: 6,
     overflowX: "auto" as const,
     scrollbarWidth: "none" as const,
+    paddingBottom: 2,
   } as React.CSSProperties,
 
+  /* 72×128px — proper card size, readable wallpaper */
   moreThumb: {
     position: "relative",
-    width: 32,
-    height: 58,
+    width: 72,
+    height: 128,
     flexShrink: 0,
     overflow: "hidden",
-    borderRadius: 3,
-    border: "1px solid rgba(255,255,255,0.07)",
+    borderRadius: 6,
+    border: "1px solid rgba(255,255,255,0.08)",
+    background: "#111",
   } as React.CSSProperties,
 
   /* Title */
@@ -281,15 +316,14 @@ const S = {
     borderRadius: 2,
   }),
 
-  /* Download count */
   dlCount: {
     fontSize: "0.5rem",
     letterSpacing: "0.18em",
     textTransform: "uppercase",
     color: "rgba(255,255,255,0.18)",
+    margin: 0,
   } as React.CSSProperties,
 
-  /* Tags */
   tagsSection: {
     display: "flex",
     flexDirection: "column" as const,
@@ -301,6 +335,7 @@ const S = {
     letterSpacing: "0.22em",
     textTransform: "uppercase",
     color: "rgba(255,255,255,0.2)",
+    margin: 0,
   } as React.CSSProperties,
 
   tagsList: {
@@ -323,25 +358,23 @@ const S = {
     background: "rgba(255,255,255,0.015)",
   } as React.CSSProperties,
 
-  /* Description */
   desc: {
     fontSize: "clamp(0.72rem, 3vw, 0.84rem)",
     lineHeight: 1.65,
     color: "rgba(200,200,200,0.6)",
   } as React.CSSProperties,
 
-  /* Divider */
   divider: {
     height: 1,
     background: "rgba(255,255,255,0.05)",
     margin: "2px 0",
   } as React.CSSProperties,
 
-  /* Recently Viewed */
+  /* Recently Viewed — bigger than before (60×107px) */
   rvSection: {
     display: "flex",
     flexDirection: "column" as const,
-    gap: 6,
+    gap: 8,
   } as React.CSSProperties,
 
   rvLabel: {
@@ -349,23 +382,26 @@ const S = {
     letterSpacing: "0.22em",
     textTransform: "uppercase",
     color: "rgba(255,255,255,0.18)",
+    margin: 0,
   } as React.CSSProperties,
 
   rvRow: {
     display: "flex",
-    gap: 4,
+    gap: 6,
     overflowX: "auto" as const,
     scrollbarWidth: "none" as const,
+    paddingBottom: 2,
   } as React.CSSProperties,
 
   rvThumb: {
     position: "relative",
-    width: 30,
-    height: 54,
+    width: 60,
+    height: 107,
     flexShrink: 0,
     overflow: "hidden",
-    borderRadius: 3,
-    border: "1px solid rgba(255,255,255,0.07)",
+    borderRadius: 6,
+    border: "1px solid rgba(255,255,255,0.08)",
+    background: "#111",
   } as React.CSSProperties,
 };
 
@@ -383,7 +419,6 @@ export default function MobileDetailLayout({
   const [downloading, setDownloading] = useState(false);
   const [previewing, setPreviewing] = useState(false);
 
-  /* Only mount on mobile */
   useEffect(() => {
     const mq = window.matchMedia("(max-width: 767px)");
     setIsMobile(mq.matches);
@@ -413,8 +448,6 @@ export default function MobileDetailLayout({
 
   const handleFavorite = useCallback(() => {
     setFavorited(f => !f);
-    // TODO: wire up your real favorites API call here
-    // e.g. fetch('/api/favorites', { method: 'POST', body: JSON.stringify({ id: image.id }) })
   }, []);
 
   if (!isMobile) return null;
@@ -424,7 +457,6 @@ export default function MobileDetailLayout({
 
   return (
     <div style={S.root}>
-      {/* ── Global mobile overrides (description HTML, scrollbar hide) ── */}
       <style>{`
         .mdl-desc * { font-size: inherit !important; }
         .mdl-desc p { margin: 0 0 0.5em; }
@@ -436,7 +468,6 @@ export default function MobileDetailLayout({
           font-size: 0.8rem !important; font-weight: 700;
           color: #e0e0e0; margin: 0.6em 0 0.3em;
         }
-        /* Hide scrollbars on strips */
         .mdl-hscroll::-webkit-scrollbar { display: none; }
       `}</style>
 
@@ -445,21 +476,19 @@ export default function MobileDetailLayout({
         {prevImage ? (
           <Link href={`/iphone/${prevImage.slug}`} style={S.prevNextItem("left")} prefetch={false}>
             <div style={S.prevNextThumbWrap}>
-              <Image src={prevImage.thumbUrl} alt={prevImage.title} fill style={{ objectFit: "cover" }} loading="lazy" sizes="30px" unoptimized />
+              <LazyImg src={prevImage.thumbUrl} alt={prevImage.title} />
             </div>
             <span style={S.prevNextLabel}>‹ Prev</span>
           </Link>
         ) : <div style={{ flex: 1 }} />}
 
-        <Link href="/iphone" style={S.gridBtn} aria-label="All wallpapers">
-          ⊞
-        </Link>
+        <Link href="/iphone" style={S.gridBtn} aria-label="All wallpapers">⊞</Link>
 
         {nextImage ? (
           <Link href={`/iphone/${nextImage.slug}`} style={S.prevNextItem("right")} prefetch={false}>
             <span style={S.prevNextLabel}>Next ›</span>
             <div style={S.prevNextThumbWrap}>
-              <Image src={nextImage.thumbUrl} alt={nextImage.title} fill style={{ objectFit: "cover" }} loading="lazy" sizes="30px" unoptimized />
+              <LazyImg src={nextImage.thumbUrl} alt={nextImage.title} />
             </div>
           </Link>
         ) : <div style={{ flex: 1 }} />}
@@ -468,25 +497,14 @@ export default function MobileDetailLayout({
       {/* ── Main body ── */}
       <div style={S.body}>
 
-        {/* Mockup image */}
-        <div style={S.mockupWrap}>
-          <div style={S.mockupInner}>
-            <Image
-              src={image.thumbUrl}
-              alt={image.title}
-              fill
-              style={{ objectFit: "cover" }}
-              priority
-              sizes="(max-width: 767px) 52vw"
-            />
-          </div>
+        {/* Hero wallpaper — full width, no phone shell */}
+        <div style={S.heroWrap}>
+          <LazyImg src={image.thumbUrl} alt={image.title} priority />
         </div>
 
         {/* Download count */}
         {image.downloadCount !== undefined && (
-          <p style={S.dlCount}>
-            ↓ {image.downloadCount.toLocaleString()} downloads
-          </p>
+          <p style={S.dlCount}>↓ {image.downloadCount.toLocaleString()} downloads</p>
         )}
 
         {/* Action buttons */}
@@ -507,15 +525,15 @@ export default function MobileDetailLayout({
           <span style={S.favLabel}>Add to Favorites</span>
         </div>
 
-        {/* More you'll like strip */}
+        {/* More you'll like */}
         {relatedImages.length > 0 && (
           <div style={S.moreWrap}>
-            <span style={S.moreLabel}>More</span>
+            <p style={S.moreLabel}>More You&apos;ll Like</p>
             <div className="mdl-hscroll" style={S.moreThumbs}>
               {relatedImages.map(img => (
-                <Link key={img.slug} href={`/iphone/${img.slug}`} prefetch={false} style={{ textDecoration: "none" }}>
+                <Link key={img.slug} href={`/iphone/${img.slug}`} prefetch={false} style={{ textDecoration: "none", flexShrink: 0 }}>
                   <div style={S.moreThumb}>
-                    <Image src={img.thumbUrl} alt={img.title} fill style={{ objectFit: "cover" }} loading="lazy" sizes="32px" unoptimized />
+                    <LazyImg src={img.thumbUrl} alt={img.title} />
                   </div>
                 </Link>
               ))}
@@ -551,7 +569,7 @@ export default function MobileDetailLayout({
           </div>
         )}
 
-        {/* Description — rendered as tiny HTML */}
+        {/* Description */}
         <div
           className="mdl-desc"
           style={S.desc}
@@ -560,15 +578,15 @@ export default function MobileDetailLayout({
 
         <div style={S.divider} />
 
-        {/* Recently Viewed — tiny thumbs, no labels */}
+        {/* Recently Viewed */}
         {recentlyViewed.length > 0 && (
           <div style={S.rvSection}>
             <p style={S.rvLabel}>Recently Viewed</p>
             <div className="mdl-hscroll" style={S.rvRow}>
               {recentlyViewed.map(img => (
-                <Link key={img.slug} href={`/iphone/${img.slug}`} prefetch={false} style={{ textDecoration: "none" }}>
+                <Link key={img.slug} href={`/iphone/${img.slug}`} prefetch={false} style={{ textDecoration: "none", flexShrink: 0 }}>
                   <div style={S.rvThumb}>
-                    <Image src={img.thumbUrl} alt={img.title} fill style={{ objectFit: "cover" }} loading="lazy" sizes="30px" unoptimized />
+                    <LazyImg src={img.thumbUrl} alt={img.title} />
                   </div>
                 </Link>
               ))}
