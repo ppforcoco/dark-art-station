@@ -12,7 +12,6 @@ import RecentlyViewed from "@/components/RecentlyViewed";
 import SocialShare from "@/components/SocialShare";
 import PageTracker from "@/components/PageTracker";
 import FavoriteButton from "@/components/FavoriteButton";
-import { shouldCountPageView } from "@/lib/analytics-filter";
 import PreviewButton from "@/components/PreviewButton";
 import WallpaperTips from "@/components/WallpaperTips";
 import KeyboardNav from "@/components/KeyboardNav";
@@ -20,8 +19,9 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 import PremiumCountdown from "@/components/PremiumCountdown";
 import BirthdayComments from "@/components/BirthdayComments";
 import SummonRandomTag from "@/components/SummonRandomTag";
+import PageViewTracker from "@/components/PageViewTracker";
 
-export const dynamic = "force-dynamic";
+// No force-dynamic — view counting moved to /api/view/[imageId] (client-side POST)
 
 export const dynamicParams = true;
 export const revalidate = 3600;
@@ -211,13 +211,6 @@ export default async function AndroidImagePage({ params }: PageProps) {
     return <PremiumVaultGate devicePath="android" />;
   }
 
-  if (await shouldCountPageView()) {
-    db.image.update({
-      where: { id: image.id },
-      data: { viewCount: { increment: 1 } },
-    }).catch(() => {});
-  }
-
   const thumbUrl = getPublicUrl(image.r2Key);
   const displayDescription = image.description ?? buildFallbackDescription(image.title, image.tags);
   const plainDescription = displayDescription.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
@@ -248,6 +241,8 @@ export default async function AndroidImagePage({ params }: PageProps) {
 
   return (
     <main className="min-h-screen" style={{ backgroundColor: "var(--bg-primary)", color: "var(--text-primary)", colorScheme: "dark" }}>
+      <link rel="preload" as="image" href={thumbUrl} fetchPriority="high" />
+      <PageViewTracker imageId={image.id} />
       <WallpaperTips mode="banner" />
 
       <Breadcrumbs items={[
@@ -270,11 +265,9 @@ export default async function AndroidImagePage({ params }: PageProps) {
         </div>
       )}
       <KeyboardNav
-        prevHref={prevImage ? `/android/${prevImage.slug}` : null}
-        nextHref={nextImage ? `/android/${nextImage.slug}` : null}
+        prevHref={prevImage ? `/android/{prevImage.slug}` : null}
+        nextHref={nextImage ? `/android/{nextImage.slug}` : null}
         showHint
-        prevImage={prevImage ? { href: `/android/${prevImage.slug}`, title: prevImage.title, thumb: getPublicUrl(prevImage.r2Key) } : null}
-        nextImage={nextImage ? { href: `/android/${nextImage.slug}`, title: nextImage.title, thumb: getPublicUrl(nextImage.r2Key) } : null}
       />
 
       {nextImageSrc && (
@@ -287,7 +280,7 @@ export default async function AndroidImagePage({ params }: PageProps) {
           <div className="android-detail-image-wrap">
             <DeviceMockup deviceType="ANDROID">
               <div className="relative w-full h-full">
-                <Image src={thumbUrl} alt={image.title} fill className="object-cover" priority quality={90} unoptimized sizes="(max-width: 768px) 100vw, 65vw" />
+                <Image src={thumbUrl} alt={image.title} fill className="object-cover" priority fetchPriority="high" quality={85} sizes="(max-width: 768px) 100vw, 480px" />
               </div>
             </DeviceMockup>
             <div style={{ marginTop: "16px", width: "100%", display: "flex", flexDirection: "column", gap: "10px" }}>

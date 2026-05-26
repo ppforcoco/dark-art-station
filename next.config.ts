@@ -138,6 +138,14 @@ const nextConfig: NextConfig = {
           { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
         ],
       },
+      // ── Next.js image optimization — cache aggressively ───────────────
+      {
+        source: "/_next/image",
+        headers: [
+          { key: "Cache-Control", value: "public, max-age=2592000, stale-while-revalidate=86400" },
+          { key: "Vary", value: "Accept" },
+        ],
+      },
     ];
   },
 
@@ -146,6 +154,13 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "assets.hauntedwallpapers.com" },
       { protocol: "https", hostname: "pub-ba82ea76f3604402b8760527cc87149c.r2.dev" },
     ],
+    // Cache optimized images for 30 days on the CDN / browser
+    minimumCacheTTL: 2592000,
+    // Allow WebP and AVIF output
+    formats: ["image/avif", "image/webp"],
+    // Limit the sizes Next.js generates to reduce build variance
+    deviceSizes: [390, 640, 828, 1080, 1200, 1920],
+    imageSizes: [48, 96, 128, 256, 384],
   },
 
   compiler: {

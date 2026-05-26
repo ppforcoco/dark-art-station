@@ -3,7 +3,6 @@ import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { db, getRelatedImages } from "@/lib/db";
-import { shouldCountPageView } from "@/lib/analytics-filter";
 import { getPublicUrl } from "@/lib/r2";
 import DeviceMockup from "@/components/DeviceMockup";
 import RelatedWallpapers from "@/components/RelatedWallpapers";
@@ -20,9 +19,10 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 import PremiumLockedGateClient from "@/components/PremiumLockedGate";
 import BirthdayComments from "@/components/BirthdayComments";
 import SummonRandomTag from "@/components/SummonRandomTag";
+import PageViewTracker from "@/components/PageViewTracker";
 
 
-export const dynamic = "force-dynamic";
+// No force-dynamic — view counting moved to /api/view/[imageId] (client-side POST)
 
 // ─── Premium cycle constants (server-side, no flash) ────────────────────────
 const EPOCH_MS  = Date.UTC(2025, 0, 1, 0, 0, 0);
@@ -122,13 +122,6 @@ export default async function IphoneImagePage({ params }: PageProps) {
 
   if (!image || image.deviceType !== "IPHONE") notFound();
 
-  if (await shouldCountPageView()) {
-    db.image.update({
-      where: { id: image.id },
-      data: { viewCount: { increment: 1 } },
-    }).catch(() => {});
-  }
-
   const thumbUrl = getPublicUrl(image.r2Key);
   const displayDescription = image.description ?? buildFallbackDescription(image.title, image.tags);
   const plainDescription = displayDescription.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
@@ -168,6 +161,9 @@ export default async function IphoneImagePage({ params }: PageProps) {
 
   return (
     <main className="min-h-screen" style={{ backgroundColor: "var(--bg-primary)", color: "var(--text-primary)", colorScheme: "dark" }}>
+      {/* ── Hero image preload — tells browser about LCP image before it parses JSX ── */}
+      <link rel="preload" as="image" href={thumbUrl} fetchPriority="high" />
+      <PageViewTracker imageId={image.id} />
       <WallpaperTips mode="banner" />
 
       <Breadcrumbs items={[
@@ -190,11 +186,9 @@ export default async function IphoneImagePage({ params }: PageProps) {
         </div>
       )}
       <KeyboardNav
-        prevHref={prevImage ? `/iphone/${prevImage.slug}` : null}
-        nextHref={nextImage ? `/iphone/${nextImage.slug}` : null}
+        prevHref={prevImage ? `/iphone/{prevImage.slug}` : null}
+        nextHref={nextImage ? `/iphone/{nextImage.slug}` : null}
         showHint
-        prevImage={prevImage ? { href: `/iphone/${prevImage.slug}`, title: prevImage.title, thumb: getPublicUrl(prevImage.r2Key) } : null}
-        nextImage={nextImage ? { href: `/iphone/${nextImage.slug}`, title: nextImage.title, thumb: getPublicUrl(nextImage.r2Key) } : null}
       />
 
       {nextImageSrc && (
@@ -207,7 +201,7 @@ export default async function IphoneImagePage({ params }: PageProps) {
           <div className="iphone-detail-image-wrap">
             <DeviceMockup deviceType="IPHONE">
               <div className="relative w-full h-full">
-                <Image src={thumbUrl} alt={image.title} fill className="object-cover" priority quality={90} unoptimized sizes="(max-width: 768px) 100vw, 65vw" />
+                <Image src={thumbUrl} alt={image.title} fill className="object-cover" priority fetchPriority="high" quality={85} sizes="(max-width: 768px) 100vw, 480px" />
               </div>
             </DeviceMockup>
             <div style={{ marginTop: "16px", width: "100%", display: "flex", flexDirection: "column", gap: "10px" }}>
