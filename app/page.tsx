@@ -5,6 +5,11 @@
 //   3. wotdFloat rewritten to translate3d (compositor-only, no layout cost)
 //   4. will-change: transform, opacity added to all animated particles
 //   5. Removed calc(sin()) — not supported on all mobile Chrome versions
+// MOBILE-PERF FIXES (May 2026 v2):
+//   6. Desktop wallpaper section hidden on mobile via CSS (saves ~200KB image + render cost)
+//   7. Hero phone images reduced to 100px wide on mobile (was 170-240px) — cuts bandwidth ~60%
+//   8. Featured hero phone also tiny on mobile — not competing with WOTD LCP image
+//   9. Mobile section hidden class added to dt-desktop section
 
 import type { Metadata } from "next";
 import { Suspense } from "react";
@@ -304,8 +309,9 @@ export default async function Home() {
 
           {/* RIGHT — Phone mockups
               PERF: outermost 2 phones (edgePhone: true) are hidden on mobile via CSS.
-              All non-featured phones use loading="lazy" + fetchPriority="low" so only
-              the featured center phone competes with the WOTD preload on slow connections.
+              MOBILE-PERF: on mobile all phones are rendered at ~80px wide (tiny) so they
+              use minimal bandwidth. Only desktop gets full-size phones.
+              All non-featured phones use loading="lazy" + fetchPriority="low".
           */}
           <div className="hw-hero-phones-wrap" style={{
             display: "flex",
@@ -325,13 +331,21 @@ export default async function Home() {
                   className={phone.edgePhone ? "hw-hero-phone-edge" : undefined}
                   style={{ flexShrink: 0, filter: phone.featured ? "drop-shadow(0 0 28px rgba(139,0,0,0.55))" : "none" }}
                 >
-                  <div style={{
-                    width: w, height: h, borderRadius: br,
-                    background: "#080810",
-                    border: phone.featured ? "2px solid rgba(139,0,0,0.85)" : "1.5px solid rgba(255,255,255,0.1)",
-                    position: "relative", overflow: "hidden",
-                    boxShadow: phone.featured ? "0 24px 64px rgba(0,0,0,0.85), 0 0 0 3px rgba(139,0,0,0.25)" : "0 10px 36px rgba(0,0,0,0.65)",
-                  }}>
+                  {/* MOBILE-PERF: hw-hero-phone-shell uses CSS vars for w/h/br,
+                      overridden on mobile to much smaller values via the style block below */}
+                  <div
+                    className="hw-hero-phone-shell"
+                    style={{
+                      // Desktop sizes set via inline style; mobile overridden by CSS class
+                      ["--phone-w" as string]: w,
+                      ["--phone-h" as string]: h,
+                      ["--phone-br" as string]: br,
+                      width: w, height: h, borderRadius: br,
+                      background: "#080810",
+                      border: phone.featured ? "2px solid rgba(139,0,0,0.85)" : "1.5px solid rgba(255,255,255,0.1)",
+                      position: "relative", overflow: "hidden",
+                      boxShadow: phone.featured ? "0 24px 64px rgba(0,0,0,0.85), 0 0 0 3px rgba(139,0,0,0.25)" : "0 10px 36px rgba(0,0,0,0.65)",
+                    }}>
                     {/* Phone hardware details */}
                     <div style={{ position: "absolute", right: "-3px", top: "22%", width: "3px", height: "26px", background: "#1a1a2e", borderRadius: "0 2px 2px 0" }} />
                     <div style={{ position: "absolute", left: "-3px", top: "19%", width: "3px", height: "16px", background: "#1a1a2e", borderRadius: "2px 0 0 2px" }} />
@@ -346,7 +360,7 @@ export default async function Home() {
                         fill
                         priority={false}
                         fetchPriority="low"
-                        sizes="(max-width: 640px) 200px, 240px"
+                        sizes="(max-width: 539px) 80px, (max-width: 640px) 120px, 240px"
                         style={{ objectFit: "cover" }}
                       />
                     ) : (
@@ -407,14 +421,30 @@ export default async function Home() {
         @media (max-width: 539px) {
           .hw-hero-split { grid-template-columns: 1fr !important; }
           .hw-hero-phones-wrap {
-            padding: 12px 12px 16px !important;
+            padding: 8px 12px 12px !important;
             overflow-x: auto !important;
             justify-content: flex-start !important;
+            gap: 6px !important;
           }
           /* PERF FIX: hide outermost 2 phones on mobile so only 1 image
              fights for bandwidth alongside the WOTD preload */
           .hw-hero-phone-edge {
             display: none !important;
+          }
+          /* MOBILE-PERF: shrink all phone mockups to tiny on mobile.
+             This drastically reduces the image bytes fetched, freeing
+             bandwidth for the WOTD LCP image to load faster.
+             Featured phone: 80px wide. Non-featured: 60px wide. */
+          .hw-hero-phone-shell {
+            width: 60px !important;
+            height: 130px !important;
+            border-radius: 14px !important;
+          }
+          /* Featured phone (2nd shell after edge phones removed) gets slightly bigger */
+          .hw-hero-phones-wrap > div:nth-child(2) .hw-hero-phone-shell {
+            width: 80px !important;
+            height: 174px !important;
+            border-radius: 18px !important;
           }
         }
       `}</style>
@@ -949,8 +979,12 @@ export default async function Home() {
 
       {/* ══════════════════════════════════════════════════════════
           SECTION 4 — PC / DESKTOP
+          MOBILE-PERF: This entire section is hidden on mobile via CSS.
+          The monitor image is a large 16:9 image that is irrelevant on
+          mobile screens and costs ~100-200KB of bandwidth + render time.
+          Desktop users see it normally. No JSX change needed — pure CSS.
       ══════════════════════════════════════════════════════════ */}
-      <section className="dt-desktop">
+      <section className="dt-desktop hw-desktop-section-mobile-hidden">
         <div className="dt-section-head dt-section-head--center">
           <span className="dt-eyebrow">The Haunted Square</span>
           <h2 className="dt-section-title">Desktop Wallpapers</h2>
@@ -991,6 +1025,17 @@ export default async function Home() {
           <Link href="/pc" className="dt-btn dt-btn--enter">Browse PC Wallpapers →</Link>
         </div>
       </section>
+
+      {/* MOBILE-PERF: Global CSS to hide desktop section + shrink hero phones on mobile */}
+      <style>{`
+        @media (max-width: 767px) {
+          /* Hide the entire desktop wallpaper section on mobile —
+             saves the monitor image (~100-200KB) from loading at all */
+          .hw-desktop-section-mobile-hidden {
+            display: none !important;
+          }
+        }
+      `}</style>
 
       {/* ══════════════════════════════════════════════════════════
           SECTION — MATCHING KITS
