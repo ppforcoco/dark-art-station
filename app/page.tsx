@@ -1,6 +1,13 @@
 // app/page.tsx — HAUNTED TOWN REDESIGN (AdSense-safe, split-hero edition)
+// PERF FIXES (May 2026):
+//   1. Removed force-dynamic — use ISR (revalidate: 3600) so static shell ships from CDN
+//   2. Hero phones: outermost 2 hidden on mobile via CSS; all non-featured phones lazy + fetchPriority="low"
+//   3. wotdFloat rewritten to translate3d (compositor-only, no layout cost)
+//   4. will-change: transform, opacity added to all animated particles
+//   5. Removed calc(sin()) — not supported on all mobile Chrome versions
 
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { unstable_cache } from "next/cache";
 import Link from "next/link";
 import Image from "next/image";
@@ -13,7 +20,9 @@ import ProtectedImg from "@/components/ProtectedImg";
 import ProtectionOverlay from "@/components/ProtectionOverlay";
 import PremiumCountdown from "@/components/PremiumCountdown";
 
-export const dynamic = "force-dynamic";
+// REMOVED: export const dynamic = "force-dynamic";
+// Now uses ISR — static shell served from CDN edge, revalidates every hour.
+// Wrap any truly dynamic slots in <Suspense> below.
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
 const OG_IMAGE = `${SITE_URL}/og-image.jpg`;
@@ -77,10 +86,10 @@ export async function generateMetadata(): Promise<Metadata> {
       images: [OG_IMAGE],
     },
     alternates: { canonical: SITE_URL },
-
   };
 }
 
+// ISR: page revalidates every hour. Static shell ships instantly from CDN.
 export const revalidate = 3600;
 
 export default async function Home() {
@@ -99,12 +108,10 @@ export default async function Home() {
       [newThisWeek, premiumThisWeek],
       trendingThisWeek,
     ] = await Promise.all([
-      // 1. WOTD + image count
       Promise.all([
         getCachedWotd(),
         db.image.count(),
       ]),
-      // 2. Collections / obsessions
       db.collection.findMany({
         orderBy: [{ featured: "desc" }, { createdAt: "asc" }],
         where: { isAdult: false },
@@ -115,7 +122,6 @@ export default async function Home() {
           _count: { select: { images: { where: { deviceType: "IPHONE" } } } },
         },
       }),
-      // 3. New this week + premium
       Promise.all([
         db.image.findMany({
           where: {
@@ -135,7 +141,6 @@ export default async function Home() {
           select: { id: true, slug: true, title: true, r2Key: true, deviceType: true, tags: true, updatedAt: true },
         }),
       ]),
-      // 4. Trending (cached, groupBy is expensive)
       getCachedTrending(),
     ]);
   } catch (err) {
@@ -149,12 +154,20 @@ export default async function Home() {
 
   const r2Base = process.env.NEXT_PUBLIC_R2_PUBLIC_URL ?? "";
 
+  // Hero phone data — kept here so the CSS class names align with the hide logic below
+  const heroPhones = [
+    { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/haunted-cat-grin-dark-iphone-android.webp",              alt: "Creepy Cat",     featured: false, edgePhone: true  },
+    { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/wallpapers/shadows-have-eyes-android.webp",             alt: "Shadow Eyes",    featured: false, edgePhone: false },
+    { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/new/dark-horror-man-cosplay-makeup-idea.webp",          alt: "Horror Cosplay", featured: true,  edgePhone: false },
+    { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/new/gothic-crimson-rose-dark-art-wallpaper.webp",       alt: "Gothic Rose",    featured: false, edgePhone: false },
+    { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/new/skeleton-drinking-haunted-energy-drink-art.webp",   alt: "Skeleton Art",   featured: false, edgePhone: true  },
+  ];
+
   return (
     <>
       {/* ── LCP PRELOAD: Tell browser to fetch WOTD image before anything else ── */}
       {wotd && (() => {
         const wotdPreloadUrl = getPublicUrl(wotd.r2Key);
-        // Next.js /_next/image will serve AVIF; preload as image/avif for modern browsers
         return (
           <link
             rel="preload"
@@ -289,7 +302,11 @@ export default async function Home() {
             </div>
           </div>
 
-          {/* RIGHT — Phone mockups */}
+          {/* RIGHT — Phone mockups
+              PERF: outermost 2 phones (edgePhone: true) are hidden on mobile via CSS.
+              All non-featured phones use loading="lazy" + fetchPriority="low" so only
+              the featured center phone competes with the WOTD preload on slow connections.
+          */}
           <div className="hw-hero-phones-wrap" style={{
             display: "flex",
             alignItems: "center",
@@ -298,41 +315,58 @@ export default async function Home() {
             overflow: "visible",
             gap: "10px",
           }}>
-              {[
-                { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/haunted-cat-grin-dark-iphone-android.webp", alt: "Creepy Cat", featured: false },
-                { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/wallpapers/shadows-have-eyes-android.webp", alt: "Shadow Eyes", featured: false },
-                { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/new/dark-horror-man-cosplay-makeup-idea.webp", alt: "Horror Cosplay", featured: true },
-                { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/new/gothic-crimson-rose-dark-art-wallpaper.webp", alt: "Gothic Rose", featured: false },
-                { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/new/skeleton-drinking-haunted-energy-drink-art.webp", alt: "Skeleton Art", featured: false },
-              ].map((phone, i) => {
-                const w = phone.featured ? "240px" : "170px";
-                const h = phone.featured ? "520px" : "368px";
-                const br = phone.featured ? "42px" : "30px";
-                return (
-                  <div key={i} style={{ flexShrink: 0, filter: phone.featured ? "drop-shadow(0 0 28px rgba(139,0,0,0.55))" : "none" }}>
-                    <div style={{
-                      width: w, height: h, borderRadius: br,
-                      background: "#080810",
-                      border: phone.featured ? "2px solid rgba(139,0,0,0.85)" : "1.5px solid rgba(255,255,255,0.1)",
-                      position: "relative", overflow: "hidden",
-                      boxShadow: phone.featured ? "0 24px 64px rgba(0,0,0,0.85), 0 0 0 3px rgba(139,0,0,0.25)" : "0 10px 36px rgba(0,0,0,0.65)",
-                    }}>
-                      <div style={{ position: "absolute", right: "-3px", top: "22%", width: "3px", height: "26px", background: "#1a1a2e", borderRadius: "0 2px 2px 0" }} />
-                      <div style={{ position: "absolute", left: "-3px", top: "19%", width: "3px", height: "16px", background: "#1a1a2e", borderRadius: "2px 0 0 2px" }} />
-                      <div style={{ position: "absolute", left: "-3px", top: "30%", width: "3px", height: "16px", background: "#1a1a2e", borderRadius: "2px 0 0 2px" }} />
-                      <div style={{ position: "absolute", top: "7px", left: "50%", transform: "translateX(-50%)", width: "32%", height: "9px", background: "#000", borderRadius: "6px", zIndex: 4 }} />
-                      {phone.featured ? (
-                        <Image src={phone.src} alt={phone.alt} fill priority={false} fetchPriority="low" sizes="(max-width: 640px) 200px, 240px" style={{ objectFit: "cover" }} />
-                      ) : (
-                        <ProtectedImg src={phone.src} alt={phone.alt} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} loading={i < 3 ? "eager" : "lazy"} />
-                      )}
-                      <ProtectionOverlay />
-                      <div style={{ position: "absolute", inset: 0, background: "linear-gradient(135deg, rgba(255,255,255,0.07) 0%, transparent 42%)", pointerEvents: "none" }} />
-                      <div style={{ position: "absolute", bottom: "6px", left: "50%", transform: "translateX(-50%)", width: "33%", height: "3px", background: "rgba(255,255,255,0.22)", borderRadius: "2px" }} />
-                    </div>
+            {heroPhones.map((phone, i) => {
+              const w = phone.featured ? "240px" : "170px";
+              const h = phone.featured ? "520px" : "368px";
+              const br = phone.featured ? "42px" : "30px";
+              return (
+                <div
+                  key={i}
+                  className={phone.edgePhone ? "hw-hero-phone-edge" : undefined}
+                  style={{ flexShrink: 0, filter: phone.featured ? "drop-shadow(0 0 28px rgba(139,0,0,0.55))" : "none" }}
+                >
+                  <div style={{
+                    width: w, height: h, borderRadius: br,
+                    background: "#080810",
+                    border: phone.featured ? "2px solid rgba(139,0,0,0.85)" : "1.5px solid rgba(255,255,255,0.1)",
+                    position: "relative", overflow: "hidden",
+                    boxShadow: phone.featured ? "0 24px 64px rgba(0,0,0,0.85), 0 0 0 3px rgba(139,0,0,0.25)" : "0 10px 36px rgba(0,0,0,0.65)",
+                  }}>
+                    {/* Phone hardware details */}
+                    <div style={{ position: "absolute", right: "-3px", top: "22%", width: "3px", height: "26px", background: "#1a1a2e", borderRadius: "0 2px 2px 0" }} />
+                    <div style={{ position: "absolute", left: "-3px", top: "19%", width: "3px", height: "16px", background: "#1a1a2e", borderRadius: "2px 0 0 2px" }} />
+                    <div style={{ position: "absolute", left: "-3px", top: "30%", width: "3px", height: "16px", background: "#1a1a2e", borderRadius: "2px 0 0 2px" }} />
+                    <div style={{ position: "absolute", top: "7px", left: "50%", transform: "translateX(-50%)", width: "32%", height: "9px", background: "#000", borderRadius: "6px", zIndex: 4 }} />
+                    {phone.featured ? (
+                      // Featured center phone: eager, but still not competing with WOTD
+                      // (WOTD preload has fetchpriority="high" in <head>; this is just "auto")
+                      <Image
+                        src={phone.src}
+                        alt={phone.alt}
+                        fill
+                        priority={false}
+                        fetchPriority="low"
+                        sizes="(max-width: 640px) 200px, 240px"
+                        style={{ objectFit: "cover" }}
+                      />
+                    ) : (
+                      // PERF FIX: all non-featured phones are lazy with low fetch priority
+                      <ProtectedImg
+                        src={phone.src}
+                        alt={phone.alt}
+                        style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+                        loading="lazy"
+                        // @ts-expect-error fetchpriority not in React img types
+                        fetchpriority="low"
+                      />
+                    )}
+                    <ProtectionOverlay />
+                    <div style={{ position: "absolute", inset: 0, background: "linear-gradient(135deg, rgba(255,255,255,0.07) 0%, transparent 42%)", pointerEvents: "none" }} />
+                    <div style={{ position: "absolute", bottom: "6px", left: "50%", transform: "translateX(-50%)", width: "33%", height: "3px", background: "rgba(255,255,255,0.22)", borderRadius: "2px" }} />
                   </div>
-                );
-              })}
+                </div>
+              );
+            })}
           </div>
 
         </div>
@@ -377,6 +411,11 @@ export default async function Home() {
             overflow-x: auto !important;
             justify-content: flex-start !important;
           }
+          /* PERF FIX: hide outermost 2 phones on mobile so only 1 image
+             fights for bandwidth alongside the WOTD preload */
+          .hw-hero-phone-edge {
+            display: none !important;
+          }
         }
       `}</style>
 
@@ -407,7 +446,6 @@ export default async function Home() {
               devicePath: img.deviceType === "IPHONE" ? "iphone" : img.deviceType === "ANDROID" ? "android" : "pc",
             }))}
           />
-
         </section>
       )}
 
@@ -444,35 +482,34 @@ export default async function Home() {
         const countdownDate = new Date().toISOString();
 
         return (
-        <section style={{ padding: "clamp(32px,5vw,64px) clamp(16px,5vw,72px)", background: "#0a0810", position: "relative", overflow: "hidden" }}>
-          <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse 60% 40% at 50% 0%, rgba(201,168,76,0.07) 0%, transparent 70%)", pointerEvents: "none" }} />
+          <section style={{ padding: "clamp(32px,5vw,64px) clamp(16px,5vw,72px)", background: "#0a0810", position: "relative", overflow: "hidden" }}>
+            <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse 60% 40% at 50% 0%, rgba(201,168,76,0.07) 0%, transparent 70%)", pointerEvents: "none" }} />
 
-          <div className="dt-section-head dt-section-head--center" style={{ marginBottom: "clamp(24px,4vw,40px)" }}>
-            <span className="dt-eyebrow" style={{ color: isLockedGlobal ? "#6b6b7a" : "#c9a84c" }}>
-              {sectionEyebrow}
-            </span>
-            <h2 className="dt-section-title">{sectionTitle}</h2>
-            <p className="dt-section-sub" style={{ maxWidth: "480px", margin: "0 auto" }}>
-              {sectionSub}
-            </p>
-            <div style={{ marginTop: "1rem", display: "flex", justifyContent: "center" }}>
-              <PremiumCountdown updatedAt={countdownDate} />
+            <div className="dt-section-head dt-section-head--center" style={{ marginBottom: "clamp(24px,4vw,40px)" }}>
+              <span className="dt-eyebrow" style={{ color: isLockedGlobal ? "#6b6b7a" : "#c9a84c" }}>
+                {sectionEyebrow}
+              </span>
+              <h2 className="dt-section-title">{sectionTitle}</h2>
+              <p className="dt-section-sub" style={{ maxWidth: "480px", margin: "0 auto" }}>
+                {sectionSub}
+              </p>
+              <div style={{ marginTop: "1rem", display: "flex", justifyContent: "center" }}>
+                <PremiumCountdown updatedAt={countdownDate} />
+              </div>
             </div>
-          </div>
 
-          <WallpaperCardGrid
-            accentRgb="201,168,76"
-            badge="PREMIUM"
-            badgeColor="#c9a84c"
-            items={premiumItems}
-          />
-
-        </section>
+            <WallpaperCardGrid
+              accentRgb="201,168,76"
+              badge="PREMIUM"
+              badgeColor="#c9a84c"
+              items={premiumItems}
+            />
+          </section>
         );
       })()}
 
       {/* ══════════════════════════════════════════════════════════
-          SECTION 2 — DAILY PICK
+          SECTION 2 — DAILY PICK (WOTD)
       ══════════════════════════════════════════════════════════ */}
       {wotd && (() => {
         const devicePath = wotd.deviceType === "IPHONE" ? "iphone" : wotd.deviceType === "ANDROID" ? "android" : "pc";
@@ -573,6 +610,9 @@ export default async function Home() {
                 pointer-events: none;
                 overflow: hidden;
               }
+              /* PERF FIX: use translate3d (compositor-only) instead of translateY + calc(sin())
+                 which is unsupported on older mobile Chrome and causes layout thrashing.
+                 will-change promotes each particle to its own composited layer. */
               .wotd-particle {
                 position: absolute;
                 display: block;
@@ -582,6 +622,7 @@ export default async function Home() {
                 background: rgba(224,0,31,0.4);
                 left: calc(var(--pi, 0) * 5.8% + 2%);
                 bottom: -10px;
+                will-change: transform, opacity;
                 animation: wotdFloat calc(6s + var(--pi, 0) * 0.7s) ease-in infinite;
                 animation-delay: calc(var(--pi, 0) * 0.4s);
                 opacity: 0;
@@ -590,11 +631,14 @@ export default async function Home() {
                 background: rgba(150,100,50,0.3);
                 width: 1.5px; height: 1.5px;
               }
+              /* PERF FIX: translate3d keeps animation on the GPU compositor thread.
+                 Horizontal drift uses a fixed offset per particle index instead of
+                 calc(sin()) which is not universally supported and triggers layout. */
               @keyframes wotdFloat {
-                0%   { transform: translateY(0) translateX(0); opacity: 0; }
+                0%   { transform: translate3d(0, 0, 0);    opacity: 0; }
                 10%  { opacity: 0.6; }
                 80%  { opacity: 0.3; }
-                100% { transform: translateY(-100vh) translateX(calc(sin(var(--pi, 0)) * 40px)); opacity: 0; }
+                100% { transform: translate3d(calc((var(--pi, 0) - 9) * 4px), -100vh, 0); opacity: 0; }
               }
               .wotd-header {
                 display: flex;
@@ -626,6 +670,7 @@ export default async function Home() {
                 width: 5px; height: 5px;
                 border-radius: 50%;
                 background: #e0001f;
+                will-change: opacity;
                 animation: wotdPulse 2.4s ease-in-out infinite;
                 transition: box-shadow 0.3s ease, transform 0.3s ease;
               }
@@ -780,6 +825,7 @@ export default async function Home() {
                 width: 70%; height: 2px;
                 background: rgba(224,0,31,0.7);
                 box-shadow: 0 0 18px 6px rgba(224,0,31,0.4);
+                will-change: transform, opacity;
                 animation: wotdEyePulse 3s ease-in-out infinite;
                 border-radius: 50%;
                 transform-origin: center;
@@ -1026,7 +1072,6 @@ export default async function Home() {
               Browse All Kits →
             </a>
           </div>
-          {/* Swipe hint — only visible on mobile */}
           <p style={{
             display: "none",
             fontFamily: "var(--font-space, monospace)",
@@ -1036,14 +1081,12 @@ export default async function Home() {
             color: "rgba(224,224,248,0.3)",
             textAlign: "center",
             marginTop: "6px",
-            // shown via CSS below
           }} className="hw-kits-swipe-hint">
             ← Swipe to see all kits →
           </p>
         </div>
 
         <style>{`
-          /* Kits: 3-column grid on desktop, horizontal swipe on mobile */
           .hw-kits-row3 {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -1061,7 +1104,6 @@ export default async function Home() {
               -webkit-overflow-scrolling: touch;
               gap: 12px;
               padding-bottom: 12px;
-              /* hide scrollbar but keep scrollability */
               scrollbar-width: none;
             }
             .hw-kits-row3::-webkit-scrollbar { display: none; }
@@ -1071,9 +1113,7 @@ export default async function Home() {
               scroll-snap-align: start;
             }
           }
-
           .hw-kit-card--sm .hw-kit-card__title { font-size: clamp(0.85rem,1.5vw,1.05rem); }
-
           .hw-kit-card__tag {
             position: absolute;
             bottom: 10px; right: 10px;
@@ -1088,7 +1128,6 @@ export default async function Home() {
             border-radius: 2px;
             font-weight: 700;
           }
-
           .hw-kits-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -1096,7 +1135,6 @@ export default async function Home() {
           }
           @media (max-width: 900px) { .hw-kits-grid { grid-template-columns: repeat(2, 1fr); } }
           @media (max-width: 540px) { .hw-kits-grid { grid-template-columns: 1fr; } }
-
           .hw-kit-card {
             display: flex;
             flex-direction: column;
@@ -1257,16 +1295,12 @@ export default async function Home() {
         {/* ── FEATURED: THE DEFIANT MANIFESTO ── */}
         {obsessions.some(o => o.slug === "the-defiant-manifesto") && (() => {
           const defiant = obsessions.find(o => o.slug === "the-defiant-manifesto")!;
-          const thumb = defiant.thumbnail
-            ? (defiant.thumbnail.startsWith("http") ? defiant.thumbnail : `${r2Base}/${defiant.thumbnail}`)
-            : null;
           return (
             <div style={{ marginBottom: "2px" }}>
               <Link
                 href={`/obsessions/${encodeURIComponent(defiant.slug)}`}
                 style={{ display: "block", position: "relative", textDecoration: "none", overflow: "hidden" }}
               >
-                {/* Container: 16:9 cinematic banner */}
                 <div style={{
                   position: "relative",
                   width: "100%",
@@ -1284,9 +1318,7 @@ export default async function Home() {
                     sizes="100vw"
                     style={{ objectFit: "cover", objectPosition: "center center", transition: "transform 0.6s ease" }}
                   />
-                  {/* Dark veil */}
                   <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.97) 0%, rgba(0,0,0,0.75) 40%, rgba(0,0,0,0.2) 70%, transparent 100%)", pointerEvents: "none" }} />
-                  {/* LIMITED badge */}
                   <div style={{
                     position: "absolute", top: "16px", right: "16px",
                     display: "flex", alignItems: "center", gap: "6px",
@@ -1306,7 +1338,6 @@ export default async function Home() {
                       ⚡ Limited
                     </span>
                   </div>
-                  {/* Bottom text */}
                   <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "clamp(20px,4vw,40px)" }}>
                     <span style={{
                       display: "block",
