@@ -402,7 +402,7 @@ export default async function IphoneImagePage({ params }: PageProps) {
 
       {/* ── Related Wallpapers — lazy loaded on scroll ── */}
       <LazySection skeletonVariant="cards" minHeight="360px" rootMargin="200px 0px">
-        <RelatedWallpapers images={related} devicePath="iphone" />
+        <RelatedWallpapers images={related} />
       </LazySection>
 
       <style>{`
