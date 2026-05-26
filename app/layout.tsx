@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from "next";
 import Script from "next/script";
-import { GoogleAnalytics } from "@next/third-parties/google";
 import { Cinzel_Decorative, Cormorant_Garamond, Space_Mono } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
@@ -281,71 +280,50 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         )}
         {/*
           ── Pinterest / Social Source Detection ─────────────────────────────
-          Runs afterInteractive — after GA4 library is loaded and gtag('config')
-          has completed, so there is zero race condition with the consent block.
-
-          WHY: GA4 reads document.referrer to classify traffic. Cloudflare hops
-          or browser privacy settings can strip the referrer, causing Pinterest
-          clicks to land as "Direct" or "Unassigned". This script fires an
-          explicit 'social_referral' event as a backup signal.
-
-          WHAT IT CAPTURES:
-            pinterest.com, pin.it, instagram.com, facebook.com, fb.me,
-            twitter.com, x.com, t.co, reddit.com, tiktok.com, youtube.com
-
-          WHERE TO SEE IT: GA4 → Reports → Engagement → Events → social_referral
-          Fields: source, referrer_url, landing_page, event_category
-
-          non_interaction: true  →  does NOT inflate engagement metrics.
+          Fires afterInteractive. Reads document.referrer, matches known social
+          platforms, and fires gtag('event', 'social_referral') so GA4 sees
+          Pinterest/Instagram/etc even when UTM params are absent.
+          non_interaction: true — does not affect engagement metrics.
         */}
         {gaId && (
           <Script id="source-detect" strategy="afterInteractive">{`
             (function () {
               var ref = document.referrer;
               if (!ref) return;
-              try {
-                if (new URL(ref).hostname === window.location.hostname) return;
-              } catch (_) { return; }
-
-              var SOCIAL_MAP = [
-                { p: /pinterest\.co/i,   s: 'Pinterest' },
-                { p: /pin\.it/i,         s: 'Pinterest' },
-                { p: /instagram\.com/i,  s: 'Instagram' },
-                { p: /facebook\.com/i,   s: 'Facebook'  },
-                { p: /fb\.me/i,          s: 'Facebook'  },
-                { p: /twitter\.com/i,    s: 'Twitter/X' },
-                { p: /x\.com/i,          s: 'Twitter/X' },
-                { p: /t\.co/i,           s: 'Twitter/X' },
-                { p: /reddit\.com/i,     s: 'Reddit'    },
-                { p: /tiktok\.com/i,     s: 'TikTok'    },
-                { p: /youtube\.com/i,    s: 'YouTube'   },
-                { p: /youtu\.be/i,       s: 'YouTube'   },
+              try { if (new URL(ref).hostname === window.location.hostname) return; } catch(_) { return; }
+              var MAP = [
+                { p: /pinterest\.co/i,  s: 'Pinterest' },
+                { p: /pin\.it/i,        s: 'Pinterest' },
+                { p: /instagram\.com/i, s: 'Instagram' },
+                { p: /facebook\.com/i,  s: 'Facebook'  },
+                { p: /fb\.me/i,         s: 'Facebook'  },
+                { p: /twitter\.com/i,   s: 'Twitter/X' },
+                { p: /x\.com/i,         s: 'Twitter/X' },
+                { p: /t\.co/i,          s: 'Twitter/X' },
+                { p: /reddit\.com/i,    s: 'Reddit'    },
+                { p: /tiktok\.com/i,    s: 'TikTok'    },
+                { p: /youtube\.com/i,   s: 'YouTube'   },
+                { p: /youtu\.be/i,      s: 'YouTube'   },
               ];
-
               var matched = null;
-              for (var i = 0; i < SOCIAL_MAP.length; i++) {
-                if (SOCIAL_MAP[i].p.test(ref)) { matched = SOCIAL_MAP[i].s; break; }
+              for (var i = 0; i < MAP.length; i++) {
+                if (MAP[i].p.test(ref)) { matched = MAP[i].s; break; }
               }
               if (!matched) return;
-
               var attempts = 0;
-              var iv = setInterval(function () {
+              var iv = setInterval(function() {
                 attempts++;
                 if (typeof window.gtag === 'function') {
                   clearInterval(iv);
                   window.gtag('event', 'social_referral', {
-                    source:          matched,
-                    referrer_url:    ref,
-                    landing_page:    window.location.pathname,
-                    event_category:  'acquisition',
-                    non_interaction: true,
+                    source: matched, referrer_url: ref,
+                    landing_page: window.location.pathname,
+                    event_category: 'acquisition', non_interaction: true,
                   });
-                } else if (attempts >= 30) {
-                  clearInterval(iv);
-                }
+                } else if (attempts >= 30) { clearInterval(iv); }
               }, 100);
             })();
-          `}</Script>
+          \`}</Script>
         )}
       </head>
 
@@ -434,7 +412,23 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           for third-party scripts. Also confirm your Page Rule / Cache Rule for
           gtag/js is set to "Bypass Cache".
         */}
-        {gaId && <GoogleAnalytics gaId={gaId} />}
+        {/* GA4 — manual equivalent of @next/third-parties GoogleAnalytics */}
+        {gaId && (
+          <>
+            <Script
+              src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}
+              strategy="afterInteractive"
+            />
+            <Script id="ga-init" strategy="afterInteractive"
+              dangerouslySetInnerHTML={{ __html: `
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', '${gaId}', { send_page_view: true });
+              `}}
+            />
+          </>
+        )}
       </body>
     </html>
   );

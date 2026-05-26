@@ -22,7 +22,8 @@
     "react": "19.1.2",
     "react-dom": "19.1.2",
     "tailwindcss-animate": "^1.0.7",
-    "zod": "^4.3.6"
+    "zod": "^4.3.6",
+    "@next/third-parties": "^15.5.18"
   },
   "devDependencies": {
     "@types/node": "^20",
