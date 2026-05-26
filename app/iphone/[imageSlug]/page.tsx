@@ -118,19 +118,11 @@ export default async function IphoneImagePage({ params }: PageProps) {
 
   if (!image || image.deviceType !== "IPHONE") notFound();
 
-  // View count increment removed — shouldCountPageView() reads headers()
-  // which forces pages dynamic and breaks caching. Views still increment
-  // via the download API route.
-
   const thumbUrl = getPublicUrl(image.r2Key);
   const displayDescription = image.description ?? buildFallbackDescription(image.title, image.tags);
   const plainDescription = displayDescription.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
 
-  // ── PERF FIX: fetch only a small window of siblings around the current image
-  // instead of loading the entire table. Use sortOrder cursor-style: grab
-  // the 3 before and 6 after in two targeted queries, then run related in parallel.
   const [prevSibling, nextSibling, tagSortedStrip, related] = await Promise.all([
-    // Previous sibling (higher sortOrder = earlier in the list)
     db.image.findFirst({
       where: {
         collectionId: null,
@@ -143,7 +135,6 @@ export default async function IphoneImagePage({ params }: PageProps) {
       orderBy: [{ sortOrder: "desc" }, { id: "desc" }],
       select: { slug: true, title: true, r2Key: true },
     }),
-    // Next sibling
     db.image.findFirst({
       where: {
         collectionId: null,
@@ -156,7 +147,6 @@ export default async function IphoneImagePage({ params }: PageProps) {
       orderBy: [{ sortOrder: "asc" }, { id: "asc" }],
       select: { slug: true, title: true, r2Key: true },
     }),
-    // Tag-sorted strip: 4 images sharing tags — small, targeted
     db.image.findMany({
       where: {
         collectionId: null,
@@ -173,7 +163,6 @@ export default async function IphoneImagePage({ params }: PageProps) {
 
   const prevImage = prevSibling;
   const nextImage = nextSibling;
-  const nextImageSrc = nextImage ? getPublicUrl(nextImage.r2Key) : null;
 
   if (image.tags.includes("badge-premium") && isPremiumLocked()) {
     return (
@@ -192,35 +181,64 @@ export default async function IphoneImagePage({ params }: PageProps) {
         { label: image.title },
       ]} />
 
-      {/* ── More Dark Art — small strip at top ── */}
-      {tagSortedStrip.length > 0 && (
-        <div style={{ maxWidth: "1280px", margin: "0 auto", padding: "10px 24px", borderBottom: "1px solid rgba(255,255,255,0.06)", display: "flex", gap: "6px", alignItems: "center" }}>
-          <span style={{ fontFamily: "var(--font-space, monospace)", fontSize: "0.45rem", letterSpacing: "0.2em", textTransform: "uppercase", color: "rgba(255,255,255,0.2)", whiteSpace: "nowrap", marginRight: "4px" }}>More ▸</span>
-          {tagSortedStrip.map((img) => (
-            <Link key={img.slug} href={`/iphone/${img.slug}`} className="more-strip-link">
-              <div className="more-strip-thumb" style={{ position: "relative", width: "44px", height: "78px", overflow: "hidden", borderRadius: "4px", border: "1px solid rgba(255,255,255,0.08)" }}>
-                <Image src={getPublicUrl(img.r2Key)} alt={img.title} fill className="object-cover" unoptimized sizes="44px" />
+      {/* ── Keyboard Nav (desktop only — hidden on mobile via CSS) ── */}
+      <div className="hw-keyboard-nav-wrap">
+        <KeyboardNav
+          prevHref={prevImage ? `/iphone/${prevImage.slug}` : null}
+          nextHref={nextImage ? `/iphone/${nextImage.slug}` : null}
+          showHint
+          prevImage={prevImage ? { href: `/iphone/${prevImage.slug}`, title: prevImage.title, thumb: getPublicUrl(prevImage.r2Key) } : null}
+          nextImage={nextImage ? { href: `/iphone/${nextImage.slug}`, title: nextImage.title, thumb: getPublicUrl(nextImage.r2Key) } : null}
+        />
+      </div>
+
+      {/* ── Mobile Prev/Next strip (mobile only) — thumbnail strip style, no full reload ── */}
+      {(prevImage || nextImage) && (
+        <div className="hw-mobile-prevnext">
+          {prevImage && (
+            <Link href={`/iphone/${prevImage.slug}`} className="hw-mobile-prevnext__item hw-mobile-prevnext__item--prev" prefetch={false}>
+              <div className="hw-mobile-prevnext__thumb">
+                <Image
+                  src={getPublicUrl(prevImage.r2Key)}
+                  alt={prevImage.title}
+                  fill
+                  className="object-cover"
+                  loading="lazy"
+                  sizes="52px"
+                  unoptimized
+                />
+              </div>
+              <span className="hw-mobile-prevnext__label">‹ Prev</span>
+            </Link>
+          )}
+          <Link href="/iphone" className="hw-mobile-prevnext__all">
+            <span>⊞</span>
+          </Link>
+          {nextImage && (
+            <Link href={`/iphone/${nextImage.slug}`} className="hw-mobile-prevnext__item hw-mobile-prevnext__item--next" prefetch={false}>
+              <span className="hw-mobile-prevnext__label">Next ›</span>
+              <div className="hw-mobile-prevnext__thumb">
+                <Image
+                  src={getPublicUrl(nextImage.r2Key)}
+                  alt={nextImage.title}
+                  fill
+                  className="object-cover"
+                  loading="lazy"
+                  sizes="52px"
+                  unoptimized
+                />
               </div>
             </Link>
-          ))}
+          )}
         </div>
       )}
 
-      <KeyboardNav
-        prevHref={prevImage ? `/iphone/${prevImage.slug}` : null}
-        nextHref={nextImage ? `/iphone/${nextImage.slug}` : null}
-        showHint
-        prevImage={prevImage ? { href: `/iphone/${prevImage.slug}`, title: prevImage.title, thumb: getPublicUrl(prevImage.r2Key) } : null}
-        nextImage={nextImage ? { href: `/iphone/${nextImage.slug}`, title: nextImage.title, thumb: getPublicUrl(nextImage.r2Key) } : null}
-      />
-
-      <section style={{ maxWidth: "1280px", margin: "0 auto", padding: "24px 24px 40px" }}>
-        <div className="iphone-detail-grid" style={{ display: "flex", flexDirection: "column", gap: "40px" }}>
+      <section style={{ maxWidth: "1280px", margin: "0 auto", padding: "16px 16px 32px" }} className="hw-detail-section">
+        <div className="iphone-detail-grid" style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
 
           <div className="iphone-detail-image-wrap">
             <DeviceMockup deviceType="IPHONE">
               <div className="relative w-full h-full">
-                {/* ── PERF FIX: priority + fetchPriority on LCP image ── */}
                 <Image
                   src={thumbUrl}
                   alt={image.title}
@@ -233,7 +251,7 @@ export default async function IphoneImagePage({ params }: PageProps) {
                 />
               </div>
             </DeviceMockup>
-            <div style={{ marginTop: "16px", width: "100%", display: "flex", flexDirection: "column", gap: "10px" }}>
+            <div style={{ marginTop: "12px", width: "100%", display: "flex", flexDirection: "column", gap: "8px" }}>
               <WallpaperReactions imageId={image.id} />
               <div className="hw-glow-btn-wrap hw-glow-btn-wrap--download">
                 <DownloadButton
@@ -244,16 +262,48 @@ export default async function IphoneImagePage({ params }: PageProps) {
               <div className="hw-glow-btn-wrap hw-glow-btn-wrap--preview">
                 <PreviewButton src={thumbUrl} title={image.title} />
               </div>
+
+              {/* ── Save to Favorites (mobile: shown here below buttons) ── */}
+              <div className="detail-fav-row hw-mobile-fav">
+                <FavoriteButton
+                  size="md"
+                  className="detail-fav-inline"
+                  item={{
+                    slug:   image.slug,
+                    title:  image.title,
+                    thumb:  thumbUrl,
+                    href:   `/iphone/${imageSlug}`,
+                    device: "iphone",
+                  }}
+                />
+                <span className="detail-fav-label">Save to Favorites</span>
+              </div>
+
+              {/* ── More Dark You Will Like (mobile: below favorites, same size) ── */}
+              {tagSortedStrip.length > 0 && (
+                <div className="hw-more-strip hw-more-strip--mobile">
+                  <span className="hw-more-strip__label">More ▸</span>
+                  <div className="hw-more-strip__thumbs">
+                    {tagSortedStrip.map((img) => (
+                      <Link key={img.slug} href={`/iphone/${img.slug}`} className="more-strip-link">
+                        <div className="hw-more-strip__thumb" style={{ position: "relative" }}>
+                          <Image src={getPublicUrl(img.r2Key)} alt={img.title} fill className="object-cover" loading="lazy" sizes="44px" unoptimized />
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 
-          <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
             <div>
-              <h1 className="font-display text-2xl md:text-3xl font-bold mt-3 leading-tight">
+              <h1 className="font-display hw-detail-title font-bold mt-2 leading-tight">
                 {image.title}
               </h1>
               {image.tags.filter((t: string) => t.startsWith("badge-")).length > 0 && (
-                <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", marginTop: "10px", marginBottom: "4px" }}>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", marginTop: "8px", marginBottom: "4px" }}>
                   {image.tags.filter((t: string) => t.startsWith("badge-")).map((tag: string) => {
                     const badgeMap: Record<string, { label: string; color: string; bg: string }> = {
                       "badge-premium":   { label: "⭐ Premium",   color: "#c9a84c", bg: "rgba(201,168,76,0.15)" },
@@ -281,14 +331,14 @@ export default async function IphoneImagePage({ params }: PageProps) {
             />
 
             {image.tags.filter((t: string) => !t.startsWith("badge-")).length > 0 && (
-              <div style={{ padding: "14px 0 4px" }}>
-                <p style={{ fontFamily: "var(--font-space, monospace)", fontSize: "0.55rem", letterSpacing: "0.28em", textTransform: "uppercase" as const, color: "rgba(224,224,224,0.3)", margin: "0 0 10px" }}>
+              <div style={{ padding: "10px 0 4px" }}>
+                <p style={{ fontFamily: "var(--font-space, monospace)", fontSize: "0.55rem", letterSpacing: "0.28em", textTransform: "uppercase" as const, color: "rgba(224,224,224,0.3)", margin: "0 0 8px" }}>
                   Choose Your Next Obsession
                 </p>
-                <div style={{ display: "flex", flexWrap: "wrap" as const, gap: "8px" }}>
+                <div style={{ display: "flex", flexWrap: "wrap" as const, gap: "6px" }}>
                   {image.tags.filter((t: string) => !t.startsWith("badge-")).map((tag: string) => (
                     <a key={tag} href={`/iphone?tag=${encodeURIComponent(tag)}`}
-                      style={{ display: "inline-block", padding: "5px 12px", borderRadius: "2px", fontFamily: "var(--font-space, monospace)", fontSize: "0.68rem", letterSpacing: "0.1em", textTransform: "uppercase" as const, textDecoration: "none", color: "rgba(224,224,224,0.7)", border: "1px solid rgba(224,224,224,0.12)", background: "rgba(255,255,255,0.03)" }}>
+                      style={{ display: "inline-block", padding: "4px 10px", borderRadius: "2px", fontFamily: "var(--font-space, monospace)", fontSize: "0.65rem", letterSpacing: "0.1em", textTransform: "uppercase" as const, textDecoration: "none", color: "rgba(224,224,224,0.7)", border: "1px solid rgba(224,224,224,0.12)", background: "rgba(255,255,255,0.03)" }}>
                       #{tag}
                     </a>
                   ))}
@@ -298,7 +348,7 @@ export default async function IphoneImagePage({ params }: PageProps) {
             )}
 
             <div
-              className="font-body text-[1rem] leading-relaxed description-html"
+              className="font-body hw-detail-desc leading-relaxed description-html"
               style={{ color: "var(--text-muted)", colorScheme: "dark" }}
               dangerouslySetInnerHTML={{ __html: displayDescription }}
             />
@@ -307,7 +357,8 @@ export default async function IphoneImagePage({ params }: PageProps) {
               <BirthdayComments imageId={image.id} imageTitle={image.title} />
             )}
 
-            <div className="detail-fav-row">
+            {/* ── Save to Favorites (desktop only — hidden on mobile) ── */}
+            <div className="detail-fav-row hw-desktop-fav">
               <FavoriteButton
                 size="md"
                 className="detail-fav-inline"
@@ -321,11 +372,193 @@ export default async function IphoneImagePage({ params }: PageProps) {
               />
               <span className="detail-fav-label">Save to Favorites</span>
             </div>
+
+            {/* ── More Dark You Will Like (desktop: below favorites) ── */}
+            {tagSortedStrip.length > 0 && (
+              <div className="hw-more-strip hw-more-strip--desktop">
+                <span className="hw-more-strip__label">More ▸</span>
+                <div className="hw-more-strip__thumbs">
+                  {tagSortedStrip.map((img) => (
+                    <Link key={img.slug} href={`/iphone/${img.slug}`} className="more-strip-link">
+                      <div className="hw-more-strip__thumb" style={{ position: "relative" }}>
+                        <Image src={getPublicUrl(img.r2Key)} alt={img.title} fill className="object-cover" loading="lazy" sizes="44px" unoptimized />
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </section>
 
       <style>{`
+        /* ── Mobile detail scaling ── */
+        .hw-detail-section {
+          padding: 12px 12px 28px !important;
+        }
+        .hw-detail-title {
+          font-size: 1.25rem;
+        }
+        .hw-detail-desc {
+          font-size: 0.82rem;
+        }
+        @media (min-width: 768px) {
+          .hw-detail-section {
+            padding: 24px 24px 40px !important;
+          }
+          .hw-detail-title {
+            font-size: 1.5rem;
+          }
+          .hw-detail-desc {
+            font-size: 1rem;
+          }
+        }
+        @media (min-width: 1024px) {
+          .hw-detail-title {
+            font-size: 1.875rem;
+          }
+        }
+
+        /* ── Prev/Next: hide desktop KeyboardNav on mobile ── */
+        .hw-keyboard-nav-wrap {
+          display: none;
+        }
+        @media (min-width: 768px) {
+          .hw-keyboard-nav-wrap {
+            display: block;
+          }
+        }
+
+        /* ── Mobile Prev/Next strip ── */
+        .hw-mobile-prevnext {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 6px 12px;
+          border-bottom: 1px solid rgba(255,255,255,0.06);
+          gap: 8px;
+        }
+        @media (min-width: 768px) {
+          .hw-mobile-prevnext {
+            display: none;
+          }
+        }
+        .hw-mobile-prevnext__item {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          text-decoration: none;
+          color: rgba(255,255,255,0.55);
+          font-family: var(--font-space, monospace);
+          font-size: 0.62rem;
+          letter-spacing: 0.08em;
+          flex: 1;
+          min-width: 0;
+        }
+        .hw-mobile-prevnext__item--prev {
+          justify-content: flex-start;
+        }
+        .hw-mobile-prevnext__item--next {
+          justify-content: flex-end;
+        }
+        .hw-mobile-prevnext__thumb {
+          position: relative;
+          width: 34px;
+          height: 60px;
+          flex-shrink: 0;
+          overflow: hidden;
+          border-radius: 4px;
+          border: 1px solid rgba(255,255,255,0.1);
+        }
+        .hw-mobile-prevnext__label {
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          max-width: 60px;
+        }
+        .hw-mobile-prevnext__all {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 28px;
+          height: 28px;
+          border: 1px solid rgba(255,255,255,0.12);
+          border-radius: 4px;
+          color: rgba(255,255,255,0.4);
+          text-decoration: none;
+          font-size: 0.75rem;
+          flex-shrink: 0;
+        }
+
+        /* ── More strip ── */
+        .hw-more-strip {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          padding: 8px 0 0;
+          border-top: 1px solid rgba(255,255,255,0.06);
+        }
+        .hw-more-strip__label {
+          font-family: var(--font-space, monospace);
+          font-size: 0.45rem;
+          letter-spacing: 0.2em;
+          text-transform: uppercase;
+          color: rgba(255,255,255,0.2);
+          white-space: nowrap;
+          margin-right: 2px;
+        }
+        .hw-more-strip__thumbs {
+          display: flex;
+          gap: 5px;
+          align-items: center;
+        }
+        .hw-more-strip__thumb {
+          width: 36px;
+          height: 64px;
+          overflow: hidden;
+          border-radius: 4px;
+          border: 1px solid rgba(255,255,255,0.08);
+        }
+        @media (min-width: 768px) {
+          .hw-more-strip__thumb {
+            width: 44px;
+            height: 78px;
+          }
+        }
+        /* Show/hide more strip by device */
+        .hw-more-strip--mobile {
+          display: flex;
+        }
+        .hw-more-strip--desktop {
+          display: none;
+        }
+        @media (min-width: 768px) {
+          .hw-more-strip--mobile {
+            display: none;
+          }
+          .hw-more-strip--desktop {
+            display: flex;
+          }
+        }
+
+        /* ── Fav button show/hide ── */
+        .hw-mobile-fav {
+          display: flex;
+        }
+        .hw-desktop-fav {
+          display: none;
+        }
+        @media (min-width: 768px) {
+          .hw-mobile-fav {
+            display: none;
+          }
+          .hw-desktop-fav {
+            display: flex;
+          }
+        }
+
+        /* ── Image wrap ── */
         .iphone-detail-image-wrap {
           display: flex;
           flex-direction: column;
@@ -339,6 +572,8 @@ export default async function IphoneImagePage({ params }: PageProps) {
         @media (min-width: 1024px) {
           .iphone-detail-image-wrap { flex: 0 0 480px; }
         }
+
+        /* ── Description ── */
         .description-html { color-scheme: dark; }
         .description-html p { margin-bottom: 0.75rem; }
         .description-html p:last-child { margin-bottom: 0; }
@@ -347,26 +582,32 @@ export default async function IphoneImagePage({ params }: PageProps) {
         .description-html strong, .description-html b { color: #f0ecff; }
         .description-html ul, .description-html ol { padding-left: 1.25rem; margin-bottom: 0.75rem; }
         .description-html li { margin-bottom: 0.25rem; }
-        .hw-glow-btn-wrap--download {
-          animation: hwDlGlowPulse 2.8s ease-in-out infinite;
-          border-radius: 2px;
+
+        /* ── Download button glow — desktop only (no animation on mobile) ── */
+        @media (min-width: 768px) {
+          .hw-glow-btn-wrap--download {
+            animation: hwDlGlowPulse 2.8s ease-in-out infinite;
+            border-radius: 2px;
+          }
+          @keyframes hwDlGlowPulse {
+            0%, 100% { box-shadow: 0 0 12px rgba(192,0,26,0.35), 0 0 28px rgba(192,0,26,0.15); }
+            50%       { box-shadow: 0 0 22px rgba(192,0,26,0.65), 0 0 50px rgba(192,0,26,0.28); }
+          }
+          .hw-glow-btn-wrap--preview {
+            border-radius: 2px;
+            box-shadow: 0 0 10px rgba(201,168,76,0.2), 0 0 22px rgba(201,168,76,0.08);
+            transition: box-shadow 0.3s ease;
+          }
+          .hw-glow-btn-wrap--preview:hover {
+            box-shadow: 0 0 18px rgba(201,168,76,0.45), 0 0 38px rgba(201,168,76,0.2);
+          }
         }
-        @keyframes hwDlGlowPulse {
-          0%, 100% { box-shadow: 0 0 12px rgba(192,0,26,0.35), 0 0 28px rgba(192,0,26,0.15); }
-          50%       { box-shadow: 0 0 22px rgba(192,0,26,0.65), 0 0 50px rgba(192,0,26,0.28); }
-        }
-        .hw-glow-btn-wrap--preview {
-          border-radius: 2px;
-          box-shadow: 0 0 10px rgba(201,168,76,0.2), 0 0 22px rgba(201,168,76,0.08);
-          transition: box-shadow 0.3s ease;
-        }
-        .hw-glow-btn-wrap--preview:hover {
-          box-shadow: 0 0 18px rgba(201,168,76,0.45), 0 0 38px rgba(201,168,76,0.2);
-        }
+
+        /* ── Social share ── */
         .social-share {
           border: 1px solid rgba(192,0,26,0.25);
           border-radius: 6px;
-          padding: 12px 14px;
+          padding: 10px 12px;
           background: rgba(192,0,26,0.04);
         }
         .social-share-label {
@@ -377,11 +618,11 @@ export default async function IphoneImagePage({ params }: PageProps) {
           color: var(--text-muted);
           margin-bottom: 8px;
         }
-        .social-share-btns { display: flex; flex-wrap: wrap; gap: 8px; }
+        .social-share-btns { display: flex; flex-wrap: wrap; gap: 6px; }
         .social-btn {
           display: inline-flex; align-items: center; gap: 6px;
-          padding: 8px 14px; border-radius: 4px;
-          font-size: 0.72rem; font-family: var(--font-space, monospace);
+          padding: 6px 12px; border-radius: 4px;
+          font-size: 0.68rem; font-family: var(--font-space, monospace);
           letter-spacing: 0.06em; text-decoration: none;
           border: 1px solid var(--border-dim, rgba(255,255,255,0.1));
           color: var(--text-primary); background: transparent; cursor: pointer;
@@ -394,6 +635,34 @@ export default async function IphoneImagePage({ params }: PageProps) {
         .social-btn--pinterest { color: #e60023; border-color: rgba(230,0,35,0.3); }
         .social-btn--x { color: var(--text-primary); }
         .social-btn--whatsapp { color: #25d366; border-color: rgba(37,211,102,0.3); }
+
+        /* ── Recently Viewed — tiny on mobile ── */
+        .recently-viewed-section {
+          font-size: 0.7rem !important;
+        }
+        .recently-viewed-section .rv-thumb,
+        .recently-viewed-thumb {
+          width: 36px !important;
+          height: 64px !important;
+        }
+        .recently-viewed-section .rv-title,
+        .recently-viewed-title {
+          display: none !important;
+        }
+        @media (min-width: 768px) {
+          .recently-viewed-section {
+            font-size: 1rem !important;
+          }
+          .recently-viewed-section .rv-thumb,
+          .recently-viewed-thumb {
+            width: 60px !important;
+            height: 106px !important;
+          }
+          .recently-viewed-section .rv-title,
+          .recently-viewed-title {
+            display: block !important;
+          }
+        }
       `}</style>
 
       <PageTracker item={{
