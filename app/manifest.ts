@@ -45,8 +45,6 @@ export default function manifest(): MetadataRoute.Manifest {
     lang:             "en",
     categories:       ["entertainment", "lifestyle"],
     icons: [
-      // apple-touch-icon doubles as the 180×180 PWA icon for iOS.
-      // Do NOT add icon-180.png here unless the file exists in /public.
       {
         src:     "/apple-touch-icon.png",
         sizes:   "180x180",
@@ -68,29 +66,28 @@ export default function manifest(): MetadataRoute.Manifest {
     ],
     shortcuts: [
       {
-        name:      "Browse Wallpapers",
-        short_name: "Browse",
-        url:       "/all",
+        name:        "Browse Wallpapers",
+        short_name:  "Browse",
+        url:         "/all",
         description: "Browse all dark fantasy wallpapers",
         icons: [{ src: "/icon-192.png", sizes: "192x192" }],
       },
       {
-        name:      "iPhone Wallpapers",
-        short_name: "iPhone",
-        url:       "/iphone",
+        name:        "iPhone Wallpapers",
+        short_name:  "iPhone",
+        url:         "/iphone",
         description: "Wallpapers sized for iPhone",
         icons: [{ src: "/icon-192.png", sizes: "192x192" }],
       },
     ],
     screenshots: [
       {
-        src:          `${SITE_URL}/_next/static/media/og-image.webp`,
-        sizes:        "1200x630",
-        type:         "image/webp",
-        // @ts-expect-error — form_factor is valid in the spec but not yet in TS types
-        form_factor:  "wide",
-        label:        "Haunted Wallpapers home screen",
-      },
+        src:         `${SITE_URL}/_next/static/media/og-image.webp`,
+        sizes:       "1200x630",
+        type:        "image/webp",
+        form_factor: "wide",
+        label:       "Haunted Wallpapers home screen",
+      } as any,
     ],
   };
 }
