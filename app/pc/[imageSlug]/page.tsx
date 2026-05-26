@@ -11,8 +11,8 @@ import RecentlyViewed from "@/components/RecentlyViewed";
 import SocialShare from "@/components/SocialShare";
 import PageTracker from "@/components/PageTracker";
 import FavoriteButton from "@/components/FavoriteButton";
-import KeyboardNav from "@/components/KeyboardNav";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import LazySection from "@/components/LazySection";
 
 export const dynamicParams = true;
 export const revalidate = 3600;
@@ -95,16 +95,12 @@ export default async function PcImagePage({ params }: PageProps) {
 
   if (!image || image.deviceType !== "PC") notFound();
 
-  // View count increment removed — shouldCountPageView() reads headers()
-  // which forces pages dynamic and breaks caching. Views still increment
-  // via the download API route.
-
   const thumbUrl = getPublicUrl(image.r2Key);
   const displayDescription = image.description ?? buildFallbackDescription(image.title, image.tags);
   const plainDescription = displayDescription.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
 
-  // ── PERF FIX: 4 targeted queries instead of one full table scan ──
-  const [prevImage, nextImage, stripImages] = await Promise.all([
+  // ── Only fetch prev/next slugs + tag strip ──────────────────────────────
+  const [prevSibling, nextSibling, tagSortedStrip] = await Promise.all([
     db.image.findFirst({
       where: {
         collectionId: null, deviceType: "PC",
@@ -114,7 +110,7 @@ export default async function PcImagePage({ params }: PageProps) {
         ],
       },
       orderBy: [{ sortOrder: "desc" }, { id: "desc" }],
-      select: { slug: true, title: true, r2Key: true },
+      select: { slug: true, title: true },
     }),
     db.image.findFirst({
       where: {
@@ -125,7 +121,7 @@ export default async function PcImagePage({ params }: PageProps) {
         ],
       },
       orderBy: [{ sortOrder: "asc" }, { id: "asc" }],
-      select: { slug: true, title: true, r2Key: true },
+      select: { slug: true, title: true },
     }),
     db.image.findMany({
       where: {
@@ -139,7 +135,8 @@ export default async function PcImagePage({ params }: PageProps) {
     }),
   ]);
 
-  const nextImageSrc = nextImage ? getPublicUrl(nextImage.r2Key) : null;
+  const prevImage = prevSibling;
+  const nextImage = nextSibling;
 
   return (
     <main className="min-h-screen" style={{ backgroundColor: "var(--bg-primary)", color: "var(--text-primary)", colorScheme: "dark" }}>
@@ -150,111 +147,92 @@ export default async function PcImagePage({ params }: PageProps) {
         { label: image.title },
       ]} />
 
-      {/* ── More Dark Art — small thumbnail strip (16:9) ── */}
-      {stripImages.length > 0 && (
-        <div style={{
-          maxWidth: "1280px", margin: "0 auto", padding: "10px 24px",
-          borderBottom: "1px solid rgba(255,255,255,0.06)",
-          display: "flex", gap: "6px", alignItems: "center",
-        }}>
-          <span style={{
-            fontFamily: "var(--font-space, monospace)", fontSize: "0.45rem",
-            letterSpacing: "0.2em", textTransform: "uppercase",
-            color: "rgba(255,255,255,0.2)", whiteSpace: "nowrap", marginRight: "4px",
-          }}>More ▸</span>
-          {stripImages.map((img) => (
-            <Link key={img.slug} href={`/pc/${img.slug}`} className="more-strip-link">
-              <div className="more-strip-thumb" style={{
-                position: "relative", width: "78px", height: "50px",
-                overflow: "hidden", borderRadius: "4px",
-                border: "1px solid rgba(255,255,255,0.08)",
-              }}>
-                <Image src={getPublicUrl(img.r2Key)} alt={img.title} fill className="object-cover" unoptimized sizes="78px" />
-              </div>
-            </Link>
-          ))}
-        </div>
-      )}
+      <section style={{ maxWidth: "1280px", margin: "0 auto", padding: "16px 16px 32px" }} className="hw-detail-section">
+        <div className="pc-detail-grid" style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
 
-      {/* ── Prev / Next Navigation — 16:9 thumbnails ── */}
-      <div style={{
-        maxWidth: "1280px", margin: "16px auto 4px", padding: "0 24px",
-        display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px",
-      }}>
-        {prevImage ? (
-          <Link href={`/pc/${prevImage.slug}`} className="pc-prevnext-card">
-            <div className="pc-prevnext-thumb">
-              <Image src={getPublicUrl(prevImage.r2Key)} alt={prevImage.title} fill className="object-cover" sizes="(max-width: 768px) 45vw, 300px" />
-              <div className="pc-prevnext-overlay" />
-            </div>
-            <div className="pc-prevnext-label">
-              <span className="pc-prevnext-dir">← PREVIOUS</span>
-              <span className="pc-prevnext-title">{prevImage.title}</span>
-            </div>
-          </Link>
-        ) : <div />}
-
-        {nextImage ? (
-          <Link href={`/pc/${nextImage.slug}`} className="pc-prevnext-card">
-            <div className="pc-prevnext-thumb">
-              <Image src={getPublicUrl(nextImage.r2Key)} alt={nextImage.title} fill className="object-cover" sizes="(max-width: 768px) 45vw, 300px" />
-              <div className="pc-prevnext-overlay" />
-            </div>
-            <div className="pc-prevnext-label pc-prevnext-label--next">
-              <span className="pc-prevnext-dir">NEXT →</span>
-              <span className="pc-prevnext-title">{nextImage.title}</span>
-            </div>
-          </Link>
-        ) : <div />}
-      </div>
-
-      <KeyboardNav
-        prevHref={prevImage ? `/pc/${prevImage.slug}` : null}
-        nextHref={nextImage ? `/pc/${nextImage.slug}` : null}
-        showHint={false}
-        prevImage={prevImage ? { href: `/pc/${prevImage.slug}`, title: prevImage.title, thumb: getPublicUrl(prevImage.r2Key) } : null}
-        nextImage={nextImage ? { href: `/pc/${nextImage.slug}`, title: nextImage.title, thumb: getPublicUrl(nextImage.r2Key) } : null}
-      />
-
-      <section style={{ maxWidth: "1280px", margin: "0 auto", padding: "24px 24px 40px" }}>
-        <div className="pc-detail-grid" style={{ display: "flex", flexDirection: "column", gap: "40px" }}>
-
+          {/* ── MAIN IMAGE with overlaid Prev/Next arrows ── */}
           <div className="pc-detail-image-wrap">
-            <DeviceMockup deviceType="PC">
-              <div className="relative w-full h-full" style={{ background: "#050505" }}>
-                <Image
-                  src={thumbUrl}
-                  alt={image.title}
-                  fill
-                  className="object-contain"
-                  priority
-                  fetchPriority="high"
-                  quality={85}
-                  sizes="(max-width: 768px) 100vw, 860px"
-                />
-              </div>
-            </DeviceMockup>
+            <div style={{ position: "relative", width: "100%" }}>
+              <DeviceMockup deviceType="PC">
+                <div className="relative w-full h-full" style={{ background: "#050505" }}>
+                  <Image
+                    src={thumbUrl}
+                    alt={image.title}
+                    fill
+                    className="object-contain"
+                    priority
+                    fetchPriority="high"
+                    quality={85}
+                    sizes="(max-width: 768px) 100vw, 860px"
+                  />
+                </div>
+              </DeviceMockup>
 
-            <div style={{ marginTop: "16px", width: "100%", display: "flex", flexDirection: "column", gap: "10px" }}>
+              {/* ── PREV/NEXT ARROWS — overlaid on the image ── */}
+              {prevImage && (
+                <Link
+                  href={`/pc/${prevImage.slug}`}
+                  prefetch={false}
+                  className="hw-img-arrow hw-img-arrow--prev"
+                  aria-label={`Previous: ${prevImage.title}`}
+                  title={prevImage.title}
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="15 18 9 12 15 6" />
+                  </svg>
+                </Link>
+              )}
+              {nextImage && (
+                <Link
+                  href={`/pc/${nextImage.slug}`}
+                  prefetch={false}
+                  className="hw-img-arrow hw-img-arrow--next"
+                  aria-label={`Next: ${nextImage.title}`}
+                  title={nextImage.title}
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="9 18 15 12 9 6" />
+                  </svg>
+                </Link>
+              )}
+            </div>
+
+            <div style={{ marginTop: "12px", width: "100%", display: "flex", flexDirection: "column", gap: "8px" }}>
               <div className="hw-glow-btn-wrap hw-glow-btn-wrap--download">
                 <DownloadButton href={`/api/download/image/${image.id}`} downloadCount={image._count.downloads} />
               </div>
+
+              {/* ── More You'll Like strip (mobile) — lazy loaded ── */}
+              {tagSortedStrip.length > 0 && (
+                <LazySection skeletonVariant="default" minHeight="80px" rootMargin="100px 0px" className="hw-more-strip hw-more-strip--mobile">
+                  <span className="hw-more-strip__label">More ▸</span>
+                  <div className="hw-more-strip__thumbs">
+                    {tagSortedStrip.map((img) => (
+                      <Link key={img.slug} href={`/pc/${img.slug}`} className="more-strip-link">
+                        <div className="hw-more-strip__thumb" style={{ position: "relative" }}>
+                          <Image src={getPublicUrl(img.r2Key)} alt={img.title} fill className="object-cover" loading="lazy" sizes="80px" />
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                </LazySection>
+              )}
             </div>
           </div>
 
-          <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
             <div>
-              <h1 style={{
+              <h1 className="font-display hw-detail-title font-bold mt-2 leading-tight" style={{
                 fontFamily: "var(--font-cinzel, serif)",
                 fontSize: "clamp(1.5rem, 3vw, 2.4rem)",
                 fontWeight: 700, lineHeight: 1.15, letterSpacing: "0.04em",
-                marginTop: "0.75rem", color: "var(--text-primary)",
+                color: "var(--text-primary)",
               }}>
                 {image.title}
               </h1>
 
               {image.tags.filter((t: string) => t.startsWith("badge-")).length > 0 && (
-                <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", marginTop: "10px", marginBottom: "4px" }}>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", marginTop: "8px", marginBottom: "4px" }}>
                   {image.tags.filter((t: string) => t.startsWith("badge-")).map((tag: string) => {
                     const badgeMap: Record<string, { label: string; color: string; bg: string }> = {
                       "badge-premium":   { label: "⭐ Premium",   color: "#c9a84c", bg: "rgba(201,168,76,0.15)" },
@@ -278,7 +256,7 @@ export default async function PcImagePage({ params }: PageProps) {
             <SocialShare title={image.title} imageUrl={thumbUrl} pageUrl={`${siteUrl}/pc/${imageSlug}`} />
 
             <div
-              className="font-body text-[1rem] leading-relaxed description-html"
+              className="font-body hw-detail-desc leading-relaxed description-html"
               style={{ color: "var(--text-muted)", colorScheme: "dark" }}
               dangerouslySetInnerHTML={{ __html: displayDescription }}
             />
@@ -291,32 +269,195 @@ export default async function PcImagePage({ params }: PageProps) {
               />
               <span className="detail-fav-label">Save to Favorites</span>
             </div>
+
+            {/* ── More You'll Like strip (desktop) — lazy loaded ── */}
+            {tagSortedStrip.length > 0 && (
+              <LazySection skeletonVariant="default" minHeight="90px" rootMargin="100px 0px" className="hw-more-strip hw-more-strip--desktop">
+                <span className="hw-more-strip__label">More ▸</span>
+                <div className="hw-more-strip__thumbs">
+                  {tagSortedStrip.map((img) => (
+                    <Link key={img.slug} href={`/pc/${img.slug}`} className="more-strip-link">
+                      <div className="hw-more-strip__thumb" style={{ position: "relative" }}>
+                        <Image src={getPublicUrl(img.r2Key)} alt={img.title} fill className="object-cover" loading="lazy" sizes="100px" />
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </LazySection>
+            )}
           </div>
         </div>
       </section>
 
+      {/* ── RecentlyViewed — ONLY loads when user scrolls to bottom ── */}
+      <LazySection skeletonVariant="default" minHeight="120px" rootMargin="50px 0px">
+        <RecentlyViewed currentSlug={image.slug} />
+      </LazySection>
+
       <style>{`
-        .pc-prevnext-card {
-          display: flex; flex-direction: column; gap: 8px;
-          text-decoration: none; color: var(--text-primary);
-          border: 1px solid rgba(255,255,255,0.07); border-radius: 6px;
-          overflow: hidden; background: rgba(255,255,255,0.02);
-          transition: border-color 0.2s, background 0.2s;
+        /* ── Mobile detail scaling ── */
+        .hw-detail-section {
+          padding: 12px 12px 28px !important;
         }
-        .pc-prevnext-card:hover { border-color: rgba(192,0,26,0.35); background: rgba(192,0,26,0.04); }
-        .pc-prevnext-thumb { position: relative; width: 100%; aspect-ratio: 16 / 9; overflow: hidden; background: #0a0a0a; }
-        .pc-prevnext-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.45) 0%, transparent 60%); pointer-events: none; }
-        .pc-prevnext-label { display: flex; flex-direction: column; gap: 2px; padding: 8px 12px 10px; }
-        .pc-prevnext-label--next { align-items: flex-end; text-align: right; }
-        .pc-prevnext-dir { font-family: var(--font-space, monospace); font-size: 0.5rem; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(255,255,255,0.3); }
-        .pc-prevnext-title { font-family: var(--font-cinzel, serif); font-size: clamp(0.65rem, 1.2vw, 0.8rem); font-weight: 600; color: var(--text-primary); line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-        .pc-detail-image-wrap { display: flex; flex-direction: column; align-items: center; }
+        .hw-detail-title {
+          font-size: 1.25rem;
+        }
+        .hw-detail-desc {
+          font-size: 0.82rem;
+        }
+        @media (min-width: 768px) {
+          .hw-detail-section {
+            padding: 24px 24px 40px !important;
+          }
+          .hw-detail-title {
+            font-size: 1.5rem;
+          }
+          .hw-detail-desc {
+            font-size: 1rem;
+          }
+        }
+        @media (min-width: 1024px) {
+          .hw-detail-title {
+            font-size: 1.875rem;
+          }
+        }
+
+        /* ─────────────────────────────────────────────────────────────────
+           PREV / NEXT ARROWS — overlaid directly on the main image
+        ───────────────────────────────────────────────────────────────── */
+        .hw-img-arrow {
+          position: absolute;
+          top: 50%;
+          transform: translateY(-50%);
+          z-index: 10;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 36px;
+          height: 64px;
+          background: rgba(0, 0, 0, 0.52);
+          border: 1px solid rgba(255, 255, 255, 0.12);
+          color: rgba(255, 255, 255, 0.85);
+          text-decoration: none;
+          border-radius: 4px;
+          backdrop-filter: blur(6px);
+          -webkit-backdrop-filter: blur(6px);
+          transition: background 0.18s ease, color 0.18s ease, border-color 0.18s ease;
+          cursor: pointer;
+        }
+        .hw-img-arrow:hover {
+          background: rgba(139, 0, 0, 0.72);
+          border-color: rgba(192, 0, 26, 0.6);
+          color: #fff;
+        }
+        .hw-img-arrow svg {
+          width: 20px;
+          height: 20px;
+          flex-shrink: 0;
+        }
+        .hw-img-arrow--prev {
+          left: -18px;
+        }
+        .hw-img-arrow--next {
+          right: -18px;
+        }
+        @media (max-width: 480px) {
+          .hw-img-arrow--prev {
+            left: 6px;
+          }
+          .hw-img-arrow--next {
+            right: 6px;
+          }
+          .hw-img-arrow {
+            width: 32px;
+            height: 54px;
+            background: rgba(0, 0, 0, 0.6);
+          }
+        }
+        @media (min-width: 768px) {
+          .hw-img-arrow--prev {
+            left: -22px;
+          }
+          .hw-img-arrow--next {
+            right: -22px;
+          }
+          .hw-img-arrow {
+            width: 40px;
+            height: 72px;
+          }
+          .hw-img-arrow svg {
+            width: 22px;
+            height: 22px;
+          }
+        }
+
+        /* ── More strip (16:9 landscape) ── */
+        .hw-more-strip {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          padding: 8px 0 0;
+          border-top: 1px solid rgba(255,255,255,0.06);
+        }
+        .hw-more-strip__label {
+          font-family: var(--font-space, monospace);
+          font-size: 0.45rem;
+          letter-spacing: 0.2em;
+          text-transform: uppercase;
+          color: rgba(255,255,255,0.2);
+          white-space: nowrap;
+          margin-right: 2px;
+        }
+        .hw-more-strip__thumbs {
+          display: flex;
+          gap: 5px;
+          align-items: center;
+        }
+        .hw-more-strip__thumb {
+          width: 78px;
+          height: 44px;
+          overflow: hidden;
+          border-radius: 4px;
+          border: 1px solid rgba(255,255,255,0.08);
+        }
+        @media (min-width: 768px) {
+          .hw-more-strip__thumb {
+            width: 100px;
+            height: 56px;
+          }
+        }
+        /* Show/hide more strip by device */
+        .hw-more-strip--mobile {
+          display: flex;
+        }
+        .hw-more-strip--desktop {
+          display: none;
+        }
+        @media (min-width: 768px) {
+          .hw-more-strip--mobile {
+            display: none;
+          }
+          .hw-more-strip--desktop {
+            display: flex;
+          }
+        }
+
+        /* ── Image wrap ── */
+        .pc-detail-image-wrap {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+        }
         @media (min-width: 768px) {
           .pc-detail-grid { flex-direction: row !important; align-items: flex-start; gap: 56px !important; }
           .pc-detail-image-wrap { flex: 0 0 560px; justify-content: flex-start; }
           .pc-detail-grid > div:last-child { flex: 1; position: sticky; top: 100px; }
         }
-        @media (min-width: 1024px) { .pc-detail-image-wrap { flex: 0 0 640px; } }
+        @media (min-width: 1024px) {
+          .pc-detail-image-wrap { flex: 0 0 640px; }
+        }
+
+        /* ── Description ── */
         .description-html { color-scheme: dark; }
         .description-html p { margin-bottom: 0.75rem; }
         .description-html p:last-child { margin-bottom: 0; }
@@ -325,15 +466,44 @@ export default async function PcImagePage({ params }: PageProps) {
         .description-html strong, .description-html b { color: #f0ecff; }
         .description-html ul, .description-html ol { padding-left: 1.25rem; margin-bottom: 0.75rem; }
         .description-html li { margin-bottom: 0.25rem; }
-        .hw-glow-btn-wrap--download { animation: hwDlGlowPulse 2.8s ease-in-out infinite; border-radius: 2px; }
-        @keyframes hwDlGlowPulse {
-          0%, 100% { box-shadow: 0 0 12px rgba(192,0,26,0.35), 0 0 28px rgba(192,0,26,0.15); }
-          50%       { box-shadow: 0 0 22px rgba(192,0,26,0.65), 0 0 50px rgba(192,0,26,0.28); }
+
+        /* ── Download button glow — desktop only ── */
+        @media (min-width: 768px) {
+          .hw-glow-btn-wrap--download {
+            animation: hwDlGlowPulse 2.8s ease-in-out infinite;
+            border-radius: 2px;
+          }
+          @keyframes hwDlGlowPulse {
+            0%, 100% { box-shadow: 0 0 12px rgba(192,0,26,0.35), 0 0 28px rgba(192,0,26,0.15); }
+            50%       { box-shadow: 0 0 22px rgba(192,0,26,0.65), 0 0 50px rgba(192,0,26,0.28); }
+          }
         }
-        .social-share { border: 1px solid rgba(192,0,26,0.25); border-radius: 6px; padding: 12px 14px; background: rgba(192,0,26,0.04); }
-        .social-share-label { font-family: var(--font-space, monospace); font-size: 0.55rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px; }
+
+        /* ── Social share ── */
+        .social-share {
+          border: 1px solid rgba(192,0,26,0.25);
+          border-radius: 6px;
+          padding: 12px 14px;
+          background: rgba(192,0,26,0.04);
+        }
+        .social-share-label {
+          font-family: var(--font-space, monospace);
+          font-size: 0.55rem;
+          letter-spacing: 0.18em;
+          text-transform: uppercase;
+          color: var(--text-muted);
+          margin-bottom: 8px;
+        }
         .social-share-btns { display: flex; flex-wrap: wrap; gap: 8px; }
-        .social-btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: 4px; font-size: 0.72rem; font-family: var(--font-space, monospace); letter-spacing: 0.06em; text-decoration: none; border: 1px solid var(--border-dim, rgba(255,255,255,0.1)); color: var(--text-primary); background: transparent; cursor: pointer; transition: border-color 0.2s, background 0.2s; white-space: nowrap; }
+        .social-btn {
+          display: inline-flex; align-items: center; gap: 6px;
+          padding: 8px 14px; border-radius: 4px;
+          font-size: 0.72rem; font-family: var(--font-space, monospace);
+          letter-spacing: 0.06em; text-decoration: none;
+          border: 1px solid var(--border-dim, rgba(255,255,255,0.1));
+          color: var(--text-primary); background: transparent; cursor: pointer;
+          transition: border-color 0.2s, background 0.2s; white-space: nowrap;
+        }
         .social-btn svg { width: 14px; height: 14px; fill: currentColor; flex-shrink: 0; }
         .social-btn:hover { border-color: rgba(255,255,255,0.25); background: rgba(255,255,255,0.04); }
         .social-btn--native { border-color: rgba(192,0,26,0.4); color: #f0e8e8; }
@@ -341,10 +511,37 @@ export default async function PcImagePage({ params }: PageProps) {
         .social-btn--pinterest { color: #e60023; border-color: rgba(230,0,35,0.3); }
         .social-btn--x { color: var(--text-primary); }
         .social-btn--whatsapp { color: #25d366; border-color: rgba(37,211,102,0.3); }
+
+        /* ── Recently Viewed — 16:9 on mobile, loads on scroll ── */
+        .recently-viewed-section {
+          font-size: 0.7rem !important;
+        }
+        .recently-viewed-section .rv-thumb,
+        .recently-viewed-thumb {
+          width: 78px !important;
+          height: 44px !important;
+        }
+        .recently-viewed-section .rv-title,
+        .recently-viewed-title {
+          display: none !important;
+        }
+        @media (min-width: 768px) {
+          .recently-viewed-section {
+            font-size: 1rem !important;
+          }
+          .recently-viewed-section .rv-thumb,
+          .recently-viewed-thumb {
+            width: 120px !important;
+            height: 68px !important;
+          }
+          .recently-viewed-section .rv-title,
+          .recently-viewed-title {
+            display: block !important;
+          }
+        }
       `}</style>
 
       <PageTracker item={{ slug: image.slug, title: image.title, thumb: thumbUrl, href: `/pc/${imageSlug}` }} />
-      <RecentlyViewed currentSlug={image.slug} />
 
       <script type="application/ld+json" dangerouslySetInnerHTML={{
         __html: JSON.stringify({

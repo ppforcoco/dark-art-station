@@ -3,10 +3,9 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { db, getRelatedImages } from "@/lib/db";
+import { db } from "@/lib/db";
 import { getPublicUrl } from "@/lib/r2";
 import DeviceMockup from "@/components/DeviceMockup";
-import RelatedWallpapers from "@/components/RelatedWallpapers";
 import DownloadButton from "@/components/DownloadButton";
 import WallpaperReactions from "@/components/WallpaperReactions";
 import RecentlyViewed from "@/components/RecentlyViewed";
@@ -14,11 +13,11 @@ import SocialShare from "@/components/SocialShare";
 import PageTracker from "@/components/PageTracker";
 import FavoriteButton from "@/components/FavoriteButton";
 import PreviewButton from "@/components/PreviewButton";
-import KeyboardNav from "@/components/KeyboardNav";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import PremiumCountdown from "@/components/PremiumCountdown";
 import BirthdayComments from "@/components/BirthdayComments";
 import SummonRandomTag from "@/components/SummonRandomTag";
+import LazySection from "@/components/LazySection";
 
 export const dynamicParams = true;
 export const revalidate = 3600;
@@ -158,16 +157,12 @@ export default async function AndroidImagePage({ params }: PageProps) {
   const isLocked  = isCurrentlyLocked();
   if (isPremium && isLocked) return <PremiumVaultGate devicePath="android" />;
 
-  // View count increment removed — shouldCountPageView() reads headers()
-  // which forces pages dynamic and breaks caching. Views still increment
-  // via the download API route.
-
   const thumbUrl = getPublicUrl(image.r2Key);
   const displayDescription = image.description ?? buildFallbackDescription(image.title, image.tags);
   const plainDescription = displayDescription.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
 
-  // ── PERF FIX: targeted queries instead of full table scan ──
-  const [prevImage, nextImage, tagSortedStrip, related] = await Promise.all([
+  // ── Only fetch prev/next slugs + tag strip ──────────────────────────────
+  const [prevSibling, nextSibling, tagSortedStrip] = await Promise.all([
     db.image.findFirst({
       where: {
         collectionId: null, deviceType: "ANDROID",
@@ -177,7 +172,7 @@ export default async function AndroidImagePage({ params }: PageProps) {
         ],
       },
       orderBy: [{ sortOrder: "desc" }, { id: "desc" }],
-      select: { slug: true, title: true, r2Key: true },
+      select: { slug: true, title: true },
     }),
     db.image.findFirst({
       where: {
@@ -188,7 +183,7 @@ export default async function AndroidImagePage({ params }: PageProps) {
         ],
       },
       orderBy: [{ sortOrder: "asc" }, { id: "asc" }],
-      select: { slug: true, title: true, r2Key: true },
+      select: { slug: true, title: true },
     }),
     db.image.findMany({
       where: {
@@ -200,15 +195,13 @@ export default async function AndroidImagePage({ params }: PageProps) {
       take: 4,
       select: { slug: true, title: true, r2Key: true },
     }),
-    getRelatedImages(image.id, image.tags, 6, "ANDROID"),
   ]);
 
-  const nextImageSrc = nextImage ? getPublicUrl(nextImage.r2Key) : null;
+  const prevImage = prevSibling;
+  const nextImage = nextSibling;
 
   return (
     <main className="min-h-screen" style={{ backgroundColor: "var(--bg-primary)", color: "var(--text-primary)", colorScheme: "dark" }}>
-
-
 
       <Breadcrumbs items={[
         { label: "Home", href: "/" },
@@ -216,53 +209,94 @@ export default async function AndroidImagePage({ params }: PageProps) {
         { label: image.title },
       ]} />
 
-      {tagSortedStrip.length > 0 && (
-        <div style={{ maxWidth: "1280px", margin: "0 auto", padding: "10px 24px", borderBottom: "1px solid rgba(255,255,255,0.06)", display: "flex", gap: "6px", alignItems: "center" }}>
-          <span style={{ fontFamily: "var(--font-space, monospace)", fontSize: "0.45rem", letterSpacing: "0.2em", textTransform: "uppercase", color: "rgba(255,255,255,0.2)", whiteSpace: "nowrap", marginRight: "4px" }}>More ▸</span>
-          {tagSortedStrip.map((img) => (
-            <Link key={img.slug} href={`/android/${img.slug}`} className="more-strip-link">
-              <div className="more-strip-thumb" style={{ position: "relative", width: "44px", height: "78px", overflow: "hidden", borderRadius: "4px", border: "1px solid rgba(255,255,255,0.08)" }}>
-                <Image src={getPublicUrl(img.r2Key)} alt={img.title} fill className="object-cover" unoptimized sizes="44px" />
-              </div>
-            </Link>
-          ))}
-        </div>
-      )}
+      <section style={{ maxWidth: "1280px", margin: "0 auto", padding: "16px 16px 32px" }} className="hw-detail-section">
+        <div className="android-detail-grid" style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
 
-      <KeyboardNav
-        prevHref={prevImage ? `/android/${prevImage.slug}` : null}
-        nextHref={nextImage ? `/android/${nextImage.slug}` : null}
-        showHint
-        prevImage={prevImage ? { href: `/android/${prevImage.slug}`, title: prevImage.title, thumb: getPublicUrl(prevImage.r2Key) } : null}
-        nextImage={nextImage ? { href: `/android/${nextImage.slug}`, title: nextImage.title, thumb: getPublicUrl(nextImage.r2Key) } : null}
-      />
-
-      <section style={{ maxWidth: "1280px", margin: "0 auto", padding: "24px 24px 40px" }}>
-        <div className="android-detail-grid" style={{ display: "flex", flexDirection: "column", gap: "40px" }}>
-
+          {/* ── MAIN IMAGE with overlaid Prev/Next arrows ── */}
           <div className="android-detail-image-wrap">
-            <DeviceMockup deviceType="ANDROID">
-              <div className="relative w-full h-full">
-                <Image src={thumbUrl} alt={image.title} fill className="object-cover" priority fetchPriority="high" quality={85} sizes="(max-width: 768px) 100vw, 480px" />
-              </div>
-            </DeviceMockup>
-            <div style={{ marginTop: "16px", width: "100%", display: "flex", flexDirection: "column", gap: "10px" }}>
+            <div style={{ position: "relative", width: "100%" }}>
+              <DeviceMockup deviceType="ANDROID">
+                <div className="relative w-full h-full">
+                  <Image
+                    src={thumbUrl}
+                    alt={image.title}
+                    fill
+                    className="object-cover"
+                    priority
+                    fetchPriority="high"
+                    quality={85}
+                    sizes="(max-width: 768px) 100vw, 480px"
+                  />
+                </div>
+              </DeviceMockup>
+
+              {/* ── PREV/NEXT ARROWS — overlaid on the image ── */}
+              {prevImage && (
+                <Link
+                  href={`/android/${prevImage.slug}`}
+                  prefetch={false}
+                  className="hw-img-arrow hw-img-arrow--prev"
+                  aria-label={`Previous: ${prevImage.title}`}
+                  title={prevImage.title}
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="15 18 9 12 15 6" />
+                  </svg>
+                </Link>
+              )}
+              {nextImage && (
+                <Link
+                  href={`/android/${nextImage.slug}`}
+                  prefetch={false}
+                  className="hw-img-arrow hw-img-arrow--next"
+                  aria-label={`Next: ${nextImage.title}`}
+                  title={nextImage.title}
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="9 18 15 12 9 6" />
+                  </svg>
+                </Link>
+              )}
+            </div>
+
+            <div style={{ marginTop: "12px", width: "100%", display: "flex", flexDirection: "column", gap: "8px" }}>
               <WallpaperReactions imageId={image.id} />
               <div className="hw-glow-btn-wrap hw-glow-btn-wrap--download">
                 <DownloadButton href={`/api/download/image/${image.id}`} downloadCount={image._count.downloads} />
               </div>
-              <div className="hw-glow-btn-wrap hw-glow-btn-wrap--preview" style={{ position: "relative", borderRadius: "2px", overflow: "hidden" }}>
-                <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: "1px", background: "linear-gradient(to right, transparent, rgba(201,168,76,0.6), transparent)", pointerEvents: "none", zIndex: 1 }} />
+              <div className="hw-glow-btn-wrap hw-glow-btn-wrap--preview">
                 <PreviewButton src={thumbUrl} title={image.title} />
               </div>
+
+              {/* ── Save to Favorites (mobile) ── */}
+              <div className="detail-fav-row hw-mobile-fav">
+                <FavoriteButton size="md" className="detail-fav-inline" item={{ slug: image.slug, title: image.title, thumb: thumbUrl, href: `/android/${imageSlug}`, device: "android" }} />
+                <span className="detail-fav-label">Save to Favorites</span>
+              </div>
+
+              {/* ── More You'll Like strip (mobile) — lazy loaded ── */}
+              {tagSortedStrip.length > 0 && (
+                <LazySection skeletonVariant="default" minHeight="80px" rootMargin="100px 0px" className="hw-more-strip hw-more-strip--mobile">
+                  <span className="hw-more-strip__label">More ▸</span>
+                  <div className="hw-more-strip__thumbs">
+                    {tagSortedStrip.map((img) => (
+                      <Link key={img.slug} href={`/android/${img.slug}`} className="more-strip-link">
+                        <div className="hw-more-strip__thumb" style={{ position: "relative" }}>
+                          <Image src={getPublicUrl(img.r2Key)} alt={img.title} fill className="object-cover" loading="lazy" sizes="44px" />
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                </LazySection>
+              )}
             </div>
           </div>
 
-          <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
             <div>
-              <h1 className="font-display text-2xl md:text-3xl font-bold mt-3 leading-tight">{image.title}</h1>
+              <h1 className="font-display hw-detail-title font-bold mt-2 leading-tight">{image.title}</h1>
               {image.tags.filter((t: string) => t.startsWith("badge-")).length > 0 && (
-                <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", marginTop: "10px", marginBottom: "4px" }}>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", marginTop: "8px", marginBottom: "4px" }}>
                   {image.tags.filter((t: string) => t.startsWith("badge-")).map((tag: string) => {
                     const badgeMap: Record<string, { label: string; color: string; bg: string }> = {
                       "badge-premium":   { label: "⭐ Premium",   color: "#c9a84c", bg: "rgba(201,168,76,0.15)" },
@@ -282,12 +316,12 @@ export default async function AndroidImagePage({ params }: PageProps) {
             <SocialShare title={image.title} imageUrl={thumbUrl} pageUrl={`${siteUrl}/android/${imageSlug}`} />
 
             {image.tags.filter((t: string) => !t.startsWith("badge-")).length > 0 && (
-              <div style={{ padding: "14px 0 4px" }}>
-                <p style={{ fontFamily: "var(--font-space, monospace)", fontSize: "0.55rem", letterSpacing: "0.28em", textTransform: "uppercase" as const, color: "rgba(224,224,224,0.3)", margin: "0 0 10px" }}>Choose Your Next Obsession</p>
-                <div style={{ display: "flex", flexWrap: "wrap" as const, gap: "8px" }}>
+              <div style={{ padding: "10px 0 4px" }}>
+                <p style={{ fontFamily: "var(--font-space, monospace)", fontSize: "0.55rem", letterSpacing: "0.28em", textTransform: "uppercase" as const, color: "rgba(224,224,224,0.3)", margin: "0 0 8px" }}>Choose Your Next Obsession</p>
+                <div style={{ display: "flex", flexWrap: "wrap" as const, gap: "6px" }}>
                   {image.tags.filter((t: string) => !t.startsWith("badge-")).map((tag: string) => (
                     <a key={tag} href={`/android?tag=${encodeURIComponent(tag)}`}
-                      style={{ display: "inline-block", padding: "5px 12px", borderRadius: "2px", fontFamily: "var(--font-space, monospace)", fontSize: "0.68rem", letterSpacing: "0.1em", textTransform: "uppercase" as const, textDecoration: "none", color: "rgba(224,224,224,0.7)", border: "1px solid rgba(224,224,224,0.12)", background: "rgba(255,255,255,0.03)" }}>
+                      style={{ display: "inline-block", padding: "4px 10px", borderRadius: "2px", fontFamily: "var(--font-space, monospace)", fontSize: "0.65rem", letterSpacing: "0.1em", textTransform: "uppercase" as const, textDecoration: "none", color: "rgba(224,224,224,0.7)", border: "1px solid rgba(224,224,224,0.12)", background: "rgba(255,255,255,0.03)" }}>
                       #{tag}
                     </a>
                   ))}
@@ -296,7 +330,7 @@ export default async function AndroidImagePage({ params }: PageProps) {
               </div>
             )}
 
-            <div className="font-body text-[1rem] leading-relaxed description-html" style={{ color: "var(--text-muted)", colorScheme: "dark" }} dangerouslySetInnerHTML={{ __html: displayDescription }} />
+            <div className="font-body hw-detail-desc leading-relaxed description-html" style={{ color: "var(--text-muted)", colorScheme: "dark" }} dangerouslySetInnerHTML={{ __html: displayDescription }} />
 
             {image.commentsEnabled && (
               <div style={{ marginTop: "1rem" }}>
@@ -304,22 +338,216 @@ export default async function AndroidImagePage({ params }: PageProps) {
               </div>
             )}
 
-            <div className="detail-fav-row">
+            {/* ── Save to Favorites (desktop) ── */}
+            <div className="detail-fav-row hw-desktop-fav">
               <FavoriteButton size="md" className="detail-fav-inline" item={{ slug: image.slug, title: image.title, thumb: thumbUrl, href: `/android/${imageSlug}`, device: "android" }} />
               <span className="detail-fav-label">Save to Favorites</span>
             </div>
+
+            {/* ── More You'll Like strip (desktop) — lazy loaded ── */}
+            {tagSortedStrip.length > 0 && (
+              <LazySection skeletonVariant="default" minHeight="90px" rootMargin="100px 0px" className="hw-more-strip hw-more-strip--desktop">
+                <span className="hw-more-strip__label">More ▸</span>
+                <div className="hw-more-strip__thumbs">
+                  {tagSortedStrip.map((img) => (
+                    <Link key={img.slug} href={`/android/${img.slug}`} className="more-strip-link">
+                      <div className="hw-more-strip__thumb" style={{ position: "relative" }}>
+                        <Image src={getPublicUrl(img.r2Key)} alt={img.title} fill className="object-cover" loading="lazy" sizes="44px" />
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </LazySection>
+            )}
           </div>
         </div>
       </section>
 
+      {/* ── RecentlyViewed — ONLY loads when user scrolls to bottom ── */}
+      <LazySection skeletonVariant="default" minHeight="120px" rootMargin="50px 0px">
+        <RecentlyViewed currentSlug={image.slug} />
+      </LazySection>
+
       <style>{`
-        .android-detail-image-wrap { display: flex; flex-direction: column; align-items: center; }
+        /* ── Mobile detail scaling ── */
+        .hw-detail-section {
+          padding: 12px 12px 28px !important;
+        }
+        .hw-detail-title {
+          font-size: 1.25rem;
+        }
+        .hw-detail-desc {
+          font-size: 0.82rem;
+        }
+        @media (min-width: 768px) {
+          .hw-detail-section {
+            padding: 24px 24px 40px !important;
+          }
+          .hw-detail-title {
+            font-size: 1.5rem;
+          }
+          .hw-detail-desc {
+            font-size: 1rem;
+          }
+        }
+        @media (min-width: 1024px) {
+          .hw-detail-title {
+            font-size: 1.875rem;
+          }
+        }
+
+        /* ─────────────────────────────────────────────────────────────────
+           PREV / NEXT ARROWS — overlaid directly on the main image
+        ───────────────────────────────────────────────────────────────── */
+        .hw-img-arrow {
+          position: absolute;
+          top: 50%;
+          transform: translateY(-50%);
+          z-index: 10;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 36px;
+          height: 64px;
+          background: rgba(0, 0, 0, 0.52);
+          border: 1px solid rgba(255, 255, 255, 0.12);
+          color: rgba(255, 255, 255, 0.85);
+          text-decoration: none;
+          border-radius: 4px;
+          backdrop-filter: blur(6px);
+          -webkit-backdrop-filter: blur(6px);
+          transition: background 0.18s ease, color 0.18s ease, border-color 0.18s ease;
+          cursor: pointer;
+        }
+        .hw-img-arrow:hover {
+          background: rgba(139, 0, 0, 0.72);
+          border-color: rgba(192, 0, 26, 0.6);
+          color: #fff;
+        }
+        .hw-img-arrow svg {
+          width: 20px;
+          height: 20px;
+          flex-shrink: 0;
+        }
+        .hw-img-arrow--prev {
+          left: -18px;
+        }
+        .hw-img-arrow--next {
+          right: -18px;
+        }
+        @media (max-width: 480px) {
+          .hw-img-arrow--prev {
+            left: 6px;
+          }
+          .hw-img-arrow--next {
+            right: 6px;
+          }
+          .hw-img-arrow {
+            width: 32px;
+            height: 54px;
+            background: rgba(0, 0, 0, 0.6);
+          }
+        }
+        @media (min-width: 768px) {
+          .hw-img-arrow--prev {
+            left: -22px;
+          }
+          .hw-img-arrow--next {
+            right: -22px;
+          }
+          .hw-img-arrow {
+            width: 40px;
+            height: 72px;
+          }
+          .hw-img-arrow svg {
+            width: 22px;
+            height: 22px;
+          }
+        }
+
+        /* ── More strip ── */
+        .hw-more-strip {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          padding: 8px 0 0;
+          border-top: 1px solid rgba(255,255,255,0.06);
+        }
+        .hw-more-strip__label {
+          font-family: var(--font-space, monospace);
+          font-size: 0.45rem;
+          letter-spacing: 0.2em;
+          text-transform: uppercase;
+          color: rgba(255,255,255,0.2);
+          white-space: nowrap;
+          margin-right: 2px;
+        }
+        .hw-more-strip__thumbs {
+          display: flex;
+          gap: 5px;
+          align-items: center;
+        }
+        .hw-more-strip__thumb {
+          width: 36px;
+          height: 64px;
+          overflow: hidden;
+          border-radius: 4px;
+          border: 1px solid rgba(255,255,255,0.08);
+        }
+        @media (min-width: 768px) {
+          .hw-more-strip__thumb {
+            width: 44px;
+            height: 78px;
+          }
+        }
+        /* Show/hide more strip by device */
+        .hw-more-strip--mobile {
+          display: flex;
+        }
+        .hw-more-strip--desktop {
+          display: none;
+        }
+        @media (min-width: 768px) {
+          .hw-more-strip--mobile {
+            display: none;
+          }
+          .hw-more-strip--desktop {
+            display: flex;
+          }
+        }
+
+        /* ── Fav button show/hide ── */
+        .hw-mobile-fav {
+          display: flex;
+        }
+        .hw-desktop-fav {
+          display: none;
+        }
+        @media (min-width: 768px) {
+          .hw-mobile-fav {
+            display: none;
+          }
+          .hw-desktop-fav {
+            display: flex;
+          }
+        }
+
+        /* ── Image wrap ── */
+        .android-detail-image-wrap {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+        }
         @media (min-width: 768px) {
           .android-detail-grid { flex-direction: row !important; align-items: flex-start; gap: 56px !important; }
           .android-detail-image-wrap { flex: 0 0 420px; justify-content: flex-start; }
           .android-detail-grid > div:last-child { flex: 1; position: sticky; top: 100px; }
         }
-        @media (min-width: 1024px) { .android-detail-image-wrap { flex: 0 0 480px; } }
+        @media (min-width: 1024px) {
+          .android-detail-image-wrap { flex: 0 0 480px; }
+        }
+
+        /* ── Description ── */
         .description-html { color-scheme: dark; }
         .description-html p { margin-bottom: 0.75rem; }
         .description-html p:last-child { margin-bottom: 0; }
@@ -328,17 +556,53 @@ export default async function AndroidImagePage({ params }: PageProps) {
         .description-html strong, .description-html b { color: #f0ecff; }
         .description-html ul, .description-html ol { padding-left: 1.25rem; margin-bottom: 0.75rem; }
         .description-html li { margin-bottom: 0.25rem; }
-        .hw-glow-btn-wrap--download { animation: hwDlGlowPulse 2.8s ease-in-out infinite; border-radius: 2px; }
-        @keyframes hwDlGlowPulse {
-          0%, 100% { box-shadow: 0 0 12px rgba(192,0,26,0.35), 0 0 28px rgba(192,0,26,0.15); }
-          50%       { box-shadow: 0 0 22px rgba(192,0,26,0.65), 0 0 50px rgba(192,0,26,0.28); }
+
+        /* ── Download button glow — desktop only ── */
+        @media (min-width: 768px) {
+          .hw-glow-btn-wrap--download {
+            animation: hwDlGlowPulse 2.8s ease-in-out infinite;
+            border-radius: 2px;
+          }
+          @keyframes hwDlGlowPulse {
+            0%, 100% { box-shadow: 0 0 12px rgba(192,0,26,0.35), 0 0 28px rgba(192,0,26,0.15); }
+            50%       { box-shadow: 0 0 22px rgba(192,0,26,0.65), 0 0 50px rgba(192,0,26,0.28); }
+          }
+          .hw-glow-btn-wrap--preview {
+            border-radius: 2px;
+            box-shadow: 0 0 14px rgba(201,168,76,0.25), 0 0 30px rgba(201,168,76,0.1), inset 0 0 0 1px rgba(201,168,76,0.2);
+            transition: box-shadow 0.3s ease, transform 0.2s ease;
+          }
+          .hw-glow-btn-wrap--preview:hover {
+            box-shadow: 0 0 22px rgba(201,168,76,0.5), 0 0 50px rgba(201,168,76,0.22), inset 0 0 0 1px rgba(201,168,76,0.45);
+            transform: translateY(-1px);
+          }
         }
-        .hw-glow-btn-wrap--preview { border-radius: 2px; box-shadow: 0 0 14px rgba(201,168,76,0.25), 0 0 30px rgba(201,168,76,0.1), inset 0 0 0 1px rgba(201,168,76,0.2); transition: box-shadow 0.3s ease, transform 0.2s ease; }
-        .hw-glow-btn-wrap--preview:hover { box-shadow: 0 0 22px rgba(201,168,76,0.5), 0 0 50px rgba(201,168,76,0.22), inset 0 0 0 1px rgba(201,168,76,0.45); transform: translateY(-1px); }
-        .social-share { border: 1px solid rgba(192,0,26,0.25); border-radius: 6px; padding: 12px 14px; background: rgba(192,0,26,0.04); }
-        .social-share-label { font-family: var(--font-space, monospace); font-size: 0.55rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px; }
+
+        /* ── Social share ── */
+        .social-share {
+          border: 1px solid rgba(192,0,26,0.25);
+          border-radius: 6px;
+          padding: 12px 14px;
+          background: rgba(192,0,26,0.04);
+        }
+        .social-share-label {
+          font-family: var(--font-space, monospace);
+          font-size: 0.55rem;
+          letter-spacing: 0.18em;
+          text-transform: uppercase;
+          color: var(--text-muted);
+          margin-bottom: 8px;
+        }
         .social-share-btns { display: flex; flex-wrap: wrap; gap: 8px; }
-        .social-btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: 4px; font-size: 0.72rem; font-family: var(--font-space, monospace); letter-spacing: 0.06em; text-decoration: none; border: 1px solid var(--border-dim, rgba(255,255,255,0.1)); color: var(--text-primary); background: transparent; cursor: pointer; transition: border-color 0.2s, background 0.2s; white-space: nowrap; }
+        .social-btn {
+          display: inline-flex; align-items: center; gap: 6px;
+          padding: 8px 14px; border-radius: 4px;
+          font-size: 0.72rem; font-family: var(--font-space, monospace);
+          letter-spacing: 0.06em; text-decoration: none;
+          border: 1px solid var(--border-dim, rgba(255,255,255,0.1));
+          color: var(--text-primary); background: transparent; cursor: pointer;
+          transition: border-color 0.2s, background 0.2s; white-space: nowrap;
+        }
         .social-btn svg { width: 14px; height: 14px; fill: currentColor; flex-shrink: 0; }
         .social-btn:hover { border-color: rgba(255,255,255,0.25); background: rgba(255,255,255,0.04); }
         .social-btn--native { border-color: rgba(192,0,26,0.4); color: #f0e8e8; }
@@ -346,10 +610,37 @@ export default async function AndroidImagePage({ params }: PageProps) {
         .social-btn--pinterest { color: #e60023; border-color: rgba(230,0,35,0.3); }
         .social-btn--x { color: var(--text-primary); }
         .social-btn--whatsapp { color: #25d366; border-color: rgba(37,211,102,0.3); }
+
+        /* ── Recently Viewed — tiny on mobile, loads on scroll ── */
+        .recently-viewed-section {
+          font-size: 0.7rem !important;
+        }
+        .recently-viewed-section .rv-thumb,
+        .recently-viewed-thumb {
+          width: 36px !important;
+          height: 64px !important;
+        }
+        .recently-viewed-section .rv-title,
+        .recently-viewed-title {
+          display: none !important;
+        }
+        @media (min-width: 768px) {
+          .recently-viewed-section {
+            font-size: 1rem !important;
+          }
+          .recently-viewed-section .rv-thumb,
+          .recently-viewed-thumb {
+            width: 60px !important;
+            height: 106px !important;
+          }
+          .recently-viewed-section .rv-title,
+          .recently-viewed-title {
+            display: block !important;
+          }
+        }
       `}</style>
 
       <PageTracker item={{ slug: image.slug, title: image.title, thumb: thumbUrl, href: `/android/${imageSlug}` }} />
-      <RecentlyViewed currentSlug={image.slug} />
 
       <script type="application/ld+json" dangerouslySetInnerHTML={{
         __html: JSON.stringify({
