@@ -109,24 +109,56 @@ export default async function PcImagePage({ params }: PageProps) {
   const displayDescription = image.description ?? buildFallbackDescription(image.title, image.tags);
   const plainDescription = displayDescription.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
 
-  const siblings = await db.image.findMany({
-    where: { collectionId: null, deviceType: "PC" },
-    orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
-    select: { slug: true, title: true, r2Key: true, sortOrder: true },
-  });
+  // ── PERF FIX: 4 targeted queries instead of one full table scan ──
+  const [prevImage, nextImage, stripImages] = await Promise.all([
+    db.image.findFirst({
+      where: {
+        collectionId: null, deviceType: "PC",
+        OR: [
+          { sortOrder: { lt: image.sortOrder } },
+          { sortOrder: image.sortOrder, id: { lt: image.id } },
+        ],
+      },
+      orderBy: [{ sortOrder: "desc" }, { id: "desc" }],
+      select: { slug: true, title: true, r2Key: true },
+    }),
+    db.image.findFirst({
+      where: {
+        collectionId: null, deviceType: "PC",
+        OR: [
+          { sortOrder: { gt: image.sortOrder } },
+          { sortOrder: image.sortOrder, id: { gt: image.id } },
+        ],
+      },
+      orderBy: [{ sortOrder: "asc" }, { id: "asc" }],
+      select: { slug: true, title: true, r2Key: true },
+    }),
+    db.image.findMany({
+      where: {
+        collectionId: null, deviceType: "PC",
+        slug: { not: imageSlug },
+        tags: { hasSome: image.tags.slice(0, 3) },
+      },
+      orderBy: [{ sortOrder: "asc" }],
+      take: 4,
+      select: { slug: true, title: true, r2Key: true },
+    }),
+  ]);
 
-  const currentIdx = siblings.findIndex((s) => s.slug === imageSlug);
-  const prevImage = currentIdx > 0 ? siblings[currentIdx - 1] : null;
-  const nextImage = currentIdx < siblings.length - 1 ? siblings[currentIdx + 1] : null;
   const nextImageSrc = nextImage ? getPublicUrl(nextImage.r2Key) : null;
-
-  const stripImages = siblings
-    .slice(Math.max(0, currentIdx - 2), currentIdx)
-    .concat(siblings.slice(currentIdx + 1, currentIdx + 5))
-    .slice(0, 4);
 
   return (
     <main className="min-h-screen" style={{ backgroundColor: "var(--bg-primary)", color: "var(--text-primary)", colorScheme: "dark" }}>
+      {/* ── PERF FIX: Preload LCP hero image ── */}
+      <link
+        rel="preload"
+        as="image"
+        href={thumbUrl}
+        // @ts-expect-error — fetchpriority is valid HTML but not yet in React types
+        fetchpriority="high"
+      />
+      {nextImageSrc && <link rel="preload" as="image" href={nextImageSrc} />}
+
       <WallpaperTips mode="banner" />
 
       <Breadcrumbs items={[
@@ -135,9 +167,7 @@ export default async function PcImagePage({ params }: PageProps) {
         { label: image.title },
       ]} />
 
-      {nextImageSrc && <link rel="preload" as="image" href={nextImageSrc} />}
-
-      {/* ── More Dark Art — small thumbnail strip ── */}
+      {/* ── More Dark Art — small thumbnail strip (16:9) ── */}
       {stripImages.length > 0 && (
         <div style={{
           maxWidth: "1280px", margin: "0 auto", padding: "10px 24px",
@@ -156,14 +186,7 @@ export default async function PcImagePage({ params }: PageProps) {
                 overflow: "hidden", borderRadius: "4px",
                 border: "1px solid rgba(255,255,255,0.08)",
               }}>
-                <Image
-                  src={getPublicUrl(img.r2Key)}
-                  alt={img.title}
-                  fill
-                  className="object-cover"
-                  unoptimized
-                  sizes="78px"
-                />
+                <Image src={getPublicUrl(img.r2Key)} alt={img.title} fill className="object-cover" unoptimized sizes="78px" />
               </div>
             </Link>
           ))}
@@ -172,22 +195,13 @@ export default async function PcImagePage({ params }: PageProps) {
 
       {/* ── Prev / Next Navigation — 16:9 thumbnails ── */}
       <div style={{
-        maxWidth: "1280px", margin: "0 auto", padding: "0 24px",
+        maxWidth: "1280px", margin: "16px auto 4px", padding: "0 24px",
         display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px",
-        marginTop: "16px", marginBottom: "4px",
       }}>
-        {/* PREVIOUS */}
         {prevImage ? (
-          <Link href={`/pc/${prevImage.slug}`} className="pc-prevnext-card pc-prevnext-card--prev">
+          <Link href={`/pc/${prevImage.slug}`} className="pc-prevnext-card">
             <div className="pc-prevnext-thumb">
-              <Image
-                src={getPublicUrl(prevImage.r2Key)}
-                alt={prevImage.title}
-                fill
-                className="object-cover"
-                unoptimized
-                sizes="(max-width: 768px) 45vw, 300px"
-              />
+              <Image src={getPublicUrl(prevImage.r2Key)} alt={prevImage.title} fill className="object-cover" unoptimized sizes="(max-width: 768px) 45vw, 300px" />
               <div className="pc-prevnext-overlay" />
             </div>
             <div className="pc-prevnext-label">
@@ -195,22 +209,12 @@ export default async function PcImagePage({ params }: PageProps) {
               <span className="pc-prevnext-title">{prevImage.title}</span>
             </div>
           </Link>
-        ) : (
-          <div />
-        )}
+        ) : <div />}
 
-        {/* NEXT */}
         {nextImage ? (
-          <Link href={`/pc/${nextImage.slug}`} className="pc-prevnext-card pc-prevnext-card--next">
+          <Link href={`/pc/${nextImage.slug}`} className="pc-prevnext-card">
             <div className="pc-prevnext-thumb">
-              <Image
-                src={getPublicUrl(nextImage.r2Key)}
-                alt={nextImage.title}
-                fill
-                className="object-cover"
-                unoptimized
-                sizes="(max-width: 768px) 45vw, 300px"
-              />
+              <Image src={getPublicUrl(nextImage.r2Key)} alt={nextImage.title} fill className="object-cover" unoptimized sizes="(max-width: 768px) 45vw, 300px" />
               <div className="pc-prevnext-overlay" />
             </div>
             <div className="pc-prevnext-label pc-prevnext-label--next">
@@ -218,15 +222,13 @@ export default async function PcImagePage({ params }: PageProps) {
               <span className="pc-prevnext-title">{nextImage.title}</span>
             </div>
           </Link>
-        ) : (
-          <div />
-        )}
+        ) : <div />}
       </div>
 
       <KeyboardNav
         prevHref={prevImage ? `/pc/${prevImage.slug}` : null}
         nextHref={nextImage ? `/pc/${nextImage.slug}` : null}
-        showHint
+        showHint={false}
         prevImage={prevImage ? { href: `/pc/${prevImage.slug}`, title: prevImage.title, thumb: getPublicUrl(prevImage.r2Key) } : null}
         nextImage={nextImage ? { href: `/pc/${nextImage.slug}`, title: nextImage.title, thumb: getPublicUrl(nextImage.r2Key) } : null}
       />
@@ -234,7 +236,6 @@ export default async function PcImagePage({ params }: PageProps) {
       <section style={{ maxWidth: "1280px", margin: "0 auto", padding: "24px 24px 40px" }}>
         <div className="pc-detail-grid" style={{ display: "flex", flexDirection: "column", gap: "40px" }}>
 
-          {/* ── Image column ── */}
           <div className="pc-detail-image-wrap">
             <DeviceMockup deviceType="PC">
               <div className="relative w-full h-full" style={{ background: "#050505" }}>
@@ -253,25 +254,18 @@ export default async function PcImagePage({ params }: PageProps) {
 
             <div style={{ marginTop: "16px", width: "100%", display: "flex", flexDirection: "column", gap: "10px" }}>
               <div className="hw-glow-btn-wrap hw-glow-btn-wrap--download">
-                <DownloadButton
-                  href={`/api/download/image/${image.id}`}
-                  downloadCount={image._count.downloads}
-                />
+                <DownloadButton href={`/api/download/image/${image.id}`} downloadCount={image._count.downloads} />
               </div>
             </div>
           </div>
 
-          {/* ── Info column ── */}
           <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
             <div>
               <h1 style={{
                 fontFamily: "var(--font-cinzel, serif)",
                 fontSize: "clamp(1.5rem, 3vw, 2.4rem)",
-                fontWeight: 700,
-                lineHeight: 1.15,
-                letterSpacing: "0.04em",
-                marginTop: "0.75rem",
-                color: "var(--text-primary)",
+                fontWeight: 700, lineHeight: 1.15, letterSpacing: "0.04em",
+                marginTop: "0.75rem", color: "var(--text-primary)",
               }}>
                 {image.title}
               </h1>
@@ -289,10 +283,7 @@ export default async function PcImagePage({ params }: PageProps) {
                     const b = badgeMap[tag];
                     if (!b) return null;
                     return (
-                      <span key={tag} style={{
-                        background: b.bg, border: `1px solid ${b.color}`, color: b.color,
-                        fontSize: "0.65rem", fontFamily: "monospace", padding: "3px 10px", letterSpacing: "0.08em",
-                      }}>
+                      <span key={tag} style={{ background: b.bg, border: `1px solid ${b.color}`, color: b.color, fontSize: "0.65rem", fontFamily: "monospace", padding: "3px 10px", letterSpacing: "0.08em" }}>
                         {b.label}
                       </span>
                     );
@@ -313,83 +304,29 @@ export default async function PcImagePage({ params }: PageProps) {
               <FavoriteButton
                 size="md"
                 className="detail-fav-inline"
-                item={{
-                  slug:   image.slug,
-                  title:  image.title,
-                  thumb:  thumbUrl,
-                  href:   `/pc/${imageSlug}`,
-                  device: "pc",
-                }}
+                item={{ slug: image.slug, title: image.title, thumb: thumbUrl, href: `/pc/${imageSlug}`, device: "pc" }}
               />
               <span className="detail-fav-label">Save to Favorites</span>
             </div>
           </div>
-
         </div>
       </section>
 
       <style>{`
-        /* ── Prev / Next cards ── */
         .pc-prevnext-card {
-          display: flex;
-          flex-direction: column;
-          gap: 8px;
-          text-decoration: none;
-          color: var(--text-primary);
-          border: 1px solid rgba(255,255,255,0.07);
-          border-radius: 6px;
-          overflow: hidden;
-          background: rgba(255,255,255,0.02);
+          display: flex; flex-direction: column; gap: 8px;
+          text-decoration: none; color: var(--text-primary);
+          border: 1px solid rgba(255,255,255,0.07); border-radius: 6px;
+          overflow: hidden; background: rgba(255,255,255,0.02);
           transition: border-color 0.2s, background 0.2s;
         }
-        .pc-prevnext-card:hover {
-          border-color: rgba(192,0,26,0.35);
-          background: rgba(192,0,26,0.04);
-        }
-        /* 16:9 thumbnail wrapper */
-        .pc-prevnext-thumb {
-          position: relative;
-          width: 100%;
-          aspect-ratio: 16 / 9;
-          overflow: hidden;
-          background: #0a0a0a;
-        }
-        .pc-prevnext-overlay {
-          position: absolute;
-          inset: 0;
-          background: linear-gradient(to top, rgba(0,0,0,0.45) 0%, transparent 60%);
-          pointer-events: none;
-        }
-        .pc-prevnext-label {
-          display: flex;
-          flex-direction: column;
-          gap: 2px;
-          padding: 8px 12px 10px;
-        }
-        .pc-prevnext-label--next {
-          align-items: flex-end;
-          text-align: right;
-        }
-        .pc-prevnext-dir {
-          font-family: var(--font-space, monospace);
-          font-size: 0.5rem;
-          letter-spacing: 0.18em;
-          text-transform: uppercase;
-          color: rgba(255,255,255,0.3);
-        }
-        .pc-prevnext-title {
-          font-family: var(--font-cinzel, serif);
-          font-size: clamp(0.65rem, 1.2vw, 0.8rem);
-          font-weight: 600;
-          color: var(--text-primary);
-          line-height: 1.3;
-          display: -webkit-box;
-          -webkit-line-clamp: 2;
-          -webkit-box-orient: vertical;
-          overflow: hidden;
-        }
-
-        /* ── rest of existing styles ── */
+        .pc-prevnext-card:hover { border-color: rgba(192,0,26,0.35); background: rgba(192,0,26,0.04); }
+        .pc-prevnext-thumb { position: relative; width: 100%; aspect-ratio: 16 / 9; overflow: hidden; background: #0a0a0a; }
+        .pc-prevnext-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.45) 0%, transparent 60%); pointer-events: none; }
+        .pc-prevnext-label { display: flex; flex-direction: column; gap: 2px; padding: 8px 12px 10px; }
+        .pc-prevnext-label--next { align-items: flex-end; text-align: right; }
+        .pc-prevnext-dir { font-family: var(--font-space, monospace); font-size: 0.5rem; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(255,255,255,0.3); }
+        .pc-prevnext-title { font-family: var(--font-cinzel, serif); font-size: clamp(0.65rem, 1.2vw, 0.8rem); font-weight: 600; color: var(--text-primary); line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
         .pc-detail-image-wrap { display: flex; flex-direction: column; align-items: center; }
         @media (min-width: 768px) {
           .pc-detail-grid { flex-direction: row !important; align-items: flex-start; gap: 56px !important; }
@@ -451,10 +388,7 @@ export default async function PcImagePage({ params }: PageProps) {
             availability: "https://schema.org/InStock",
             seller: { "@type": "Organization", name: "HAUNTED WALLPAPERS", url: siteUrl },
           },
-          potentialAction: {
-            "@type": "DownloadAction",
-            target: `${siteUrl}/api/download/image/${image.id}`,
-          },
+          potentialAction: { "@type": "DownloadAction", target: `${siteUrl}/api/download/image/${image.id}` },
         })
       }} />
     </main>

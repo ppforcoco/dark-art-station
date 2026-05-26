@@ -1,3 +1,4 @@
+// app/android/[imageSlug]/page.tsx
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Image from "next/image";
@@ -22,7 +23,6 @@ import BirthdayComments from "@/components/BirthdayComments";
 import SummonRandomTag from "@/components/SummonRandomTag";
 
 export const dynamic = "force-dynamic";
-
 export const dynamicParams = true;
 export const revalidate = 3600;
 
@@ -105,14 +105,10 @@ function PremiumVaultGate({ devicePath }: { devicePath: string }) {
       backgroundColor: "var(--bg-primary, #07050f)",
       color: "var(--text-primary, #e8e4f8)",
       colorScheme: "dark",
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "center",
-      justifyContent: "center",
-      padding: "40px 24px",
-      textAlign: "center",
-      position: "relative",
-      overflow: "hidden",
+      display: "flex", flexDirection: "column",
+      alignItems: "center", justifyContent: "center",
+      padding: "40px 24px", textAlign: "center",
+      position: "relative", overflow: "hidden",
     }}>
       <div style={{
         position: "absolute", inset: 0, pointerEvents: "none",
@@ -125,63 +121,20 @@ function PremiumVaultGate({ devicePath }: { devicePath: string }) {
           bottom: pos.startsWith("b") ? "20px" : undefined,
           left: pos.endsWith("l") ? "20px" : undefined,
           right: pos.endsWith("r") ? "20px" : undefined,
-          fontFamily: "var(--font-cinzel, serif)",
-          fontSize: "1.1rem",
-          color: "rgba(201,168,76,0.2)",
+          fontFamily: "var(--font-cinzel, serif)", fontSize: "1.1rem", color: "rgba(201,168,76,0.2)",
         }}>†</span>
       ))}
       <div style={{ fontSize: "56px", marginBottom: "24px" }}>🔒</div>
-      <span style={{
-        fontFamily: "var(--font-space, monospace)",
-        fontSize: "0.6rem",
-        letterSpacing: "0.28em",
-        textTransform: "uppercase",
-        color: "rgba(201,168,76,0.55)",
-        marginBottom: "12px",
-        display: "block",
-      }}>Back In The Vault</span>
-      <h1 style={{
-        fontFamily: "var(--font-cinzel, serif)",
-        fontSize: "clamp(1.8rem, 4vw, 2.8rem)",
-        fontWeight: 700,
-        color: "#f0e8d8",
-        margin: "0 0 16px",
-        lineHeight: 1.1,
-        maxWidth: "560px",
-      }}>This Wallpaper Is Sealed</h1>
-      <p style={{
-        fontFamily: "var(--font-space, monospace)",
-        fontSize: "0.82rem",
-        color: "rgba(200,180,140,0.55)",
-        maxWidth: "400px",
-        lineHeight: 1.75,
-        margin: "0 0 32px",
-      }}>
-        Premium wallpapers are available for 24 hours, then sealed away for 24 hours.
-        Check back when the vault reopens.
+      <span style={{ fontFamily: "var(--font-space, monospace)", fontSize: "0.6rem", letterSpacing: "0.28em", textTransform: "uppercase", color: "rgba(201,168,76,0.55)", marginBottom: "12px", display: "block" }}>Back In The Vault</span>
+      <h1 style={{ fontFamily: "var(--font-cinzel, serif)", fontSize: "clamp(1.8rem, 4vw, 2.8rem)", fontWeight: 700, color: "#f0e8d8", margin: "0 0 16px", lineHeight: 1.1, maxWidth: "560px" }}>This Wallpaper Is Sealed</h1>
+      <p style={{ fontFamily: "var(--font-space, monospace)", fontSize: "0.82rem", color: "rgba(200,180,140,0.55)", maxWidth: "400px", lineHeight: 1.75, margin: "0 0 32px" }}>
+        Premium wallpapers are available for 24 hours, then sealed away for 24 hours. Check back when the vault reopens.
       </p>
       <div style={{ marginBottom: "36px" }}>
         <PremiumCountdown isLocked={true} />
       </div>
-      <div style={{
-        width: "100%", maxWidth: "320px", height: "1px",
-        background: "linear-gradient(to right, transparent, rgba(201,168,76,0.2), transparent)",
-        marginBottom: "32px",
-      }} />
-      <Link href={`/${devicePath}`} style={{
-        fontFamily: "var(--font-space, monospace)",
-        fontSize: "0.72rem",
-        letterSpacing: "0.16em",
-        textTransform: "uppercase",
-        color: "#e8e4f8",
-        textDecoration: "none",
-        border: "1px solid rgba(192,0,26,0.4)",
-        padding: "13px 28px",
-        background: "rgba(192,0,26,0.06)",
-        display: "inline-flex",
-        alignItems: "center",
-        gap: "8px",
-      }}>← Browse Free Wallpapers</Link>
+      <div style={{ width: "100%", maxWidth: "320px", height: "1px", background: "linear-gradient(to right, transparent, rgba(201,168,76,0.2), transparent)", marginBottom: "32px" }} />
+      <Link href={`/${devicePath}`} style={{ fontFamily: "var(--font-space, monospace)", fontSize: "0.72rem", letterSpacing: "0.16em", textTransform: "uppercase", color: "#e8e4f8", textDecoration: "none", border: "1px solid rgba(192,0,26,0.4)", padding: "13px 28px", background: "rgba(192,0,26,0.06)", display: "inline-flex", alignItems: "center", gap: "8px" }}>← Browse Free Wallpapers</Link>
       <style>{`@keyframes premCountPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }`}</style>
     </main>
   );
@@ -206,10 +159,7 @@ export default async function AndroidImagePage({ params }: PageProps) {
 
   const isPremium = image.tags.includes("badge-premium");
   const isLocked  = isCurrentlyLocked();
-
-  if (isPremium && isLocked) {
-    return <PremiumVaultGate devicePath="android" />;
-  }
+  if (isPremium && isLocked) return <PremiumVaultGate devicePath="android" />;
 
   if (await shouldCountPageView()) {
     db.image.update({
@@ -222,32 +172,57 @@ export default async function AndroidImagePage({ params }: PageProps) {
   const displayDescription = image.description ?? buildFallbackDescription(image.title, image.tags);
   const plainDescription = displayDescription.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
 
-  const [siblings, related] = await Promise.all([
+  // ── PERF FIX: targeted queries instead of full table scan ──
+  const [prevImage, nextImage, tagSortedStrip, related] = await Promise.all([
+    db.image.findFirst({
+      where: {
+        collectionId: null, deviceType: "ANDROID",
+        OR: [
+          { sortOrder: { lt: image.sortOrder } },
+          { sortOrder: image.sortOrder, id: { lt: image.id } },
+        ],
+      },
+      orderBy: [{ sortOrder: "desc" }, { id: "desc" }],
+      select: { slug: true, title: true, r2Key: true },
+    }),
+    db.image.findFirst({
+      where: {
+        collectionId: null, deviceType: "ANDROID",
+        OR: [
+          { sortOrder: { gt: image.sortOrder } },
+          { sortOrder: image.sortOrder, id: { gt: image.id } },
+        ],
+      },
+      orderBy: [{ sortOrder: "asc" }, { id: "asc" }],
+      select: { slug: true, title: true, r2Key: true },
+    }),
     db.image.findMany({
-      where: { collectionId: null, deviceType: "ANDROID" },
-      orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
-      select: { slug: true, title: true, r2Key: true, sortOrder: true, tags: true },
+      where: {
+        collectionId: null, deviceType: "ANDROID",
+        slug: { not: imageSlug },
+        tags: { hasSome: image.tags.slice(0, 3) },
+      },
+      orderBy: [{ sortOrder: "asc" }],
+      take: 4,
+      select: { slug: true, title: true, r2Key: true },
     }),
     getRelatedImages(image.id, image.tags, 6, "ANDROID"),
   ]);
-  const currentIdx = siblings.findIndex((s) => s.slug === imageSlug);
-  const prevImage = currentIdx > 0 ? siblings[currentIdx - 1] : null;
-  const nextImage = currentIdx < siblings.length - 1 ? siblings[currentIdx + 1] : null;
 
-  // Tag-sorted strip: siblings sharing most tags with current image appear first
-  const imageTags = new Set(image.tags);
-  const tagSortedStrip = siblings
-    .filter((s) => s.slug !== imageSlug)
-    .sort((a, b) => {
-      const aScore = (a.tags as string[]).filter((t) => imageTags.has(t)).length;
-      const bScore = (b.tags as string[]).filter((t) => imageTags.has(t)).length;
-      return bScore - aScore;
-    })
-    .slice(0, 4);
   const nextImageSrc = nextImage ? getPublicUrl(nextImage.r2Key) : null;
 
   return (
     <main className="min-h-screen" style={{ backgroundColor: "var(--bg-primary)", color: "var(--text-primary)", colorScheme: "dark" }}>
+      {/* ── PERF FIX: Preload LCP hero image ── */}
+      <link
+        rel="preload"
+        as="image"
+        href={thumbUrl}
+        // @ts-expect-error — fetchpriority is valid HTML but not yet in React types
+        fetchpriority="high"
+      />
+      {nextImageSrc && <link rel="preload" as="image" href={nextImageSrc} />}
+
       <WallpaperTips mode="banner" />
 
       <Breadcrumbs items={[
@@ -256,7 +231,6 @@ export default async function AndroidImagePage({ params }: PageProps) {
         { label: image.title },
       ]} />
 
-            {/* ── More Dark Art — small strip at top ── */}
       {tagSortedStrip.length > 0 && (
         <div style={{ maxWidth: "1280px", margin: "0 auto", padding: "10px 24px", borderBottom: "1px solid rgba(255,255,255,0.06)", display: "flex", gap: "6px", alignItems: "center" }}>
           <span style={{ fontFamily: "var(--font-space, monospace)", fontSize: "0.45rem", letterSpacing: "0.2em", textTransform: "uppercase", color: "rgba(255,255,255,0.2)", whiteSpace: "nowrap", marginRight: "4px" }}>More ▸</span>
@@ -269,6 +243,7 @@ export default async function AndroidImagePage({ params }: PageProps) {
           ))}
         </div>
       )}
+
       <KeyboardNav
         prevHref={prevImage ? `/android/${prevImage.slug}` : null}
         nextHref={nextImage ? `/android/${nextImage.slug}` : null}
@@ -276,10 +251,6 @@ export default async function AndroidImagePage({ params }: PageProps) {
         prevImage={prevImage ? { href: `/android/${prevImage.slug}`, title: prevImage.title, thumb: getPublicUrl(prevImage.r2Key) } : null}
         nextImage={nextImage ? { href: `/android/${nextImage.slug}`, title: nextImage.title, thumb: getPublicUrl(nextImage.r2Key) } : null}
       />
-
-      {nextImageSrc && (
-        <link rel="preload" as="image" href={nextImageSrc} />
-      )}
 
       <section style={{ maxWidth: "1280px", margin: "0 auto", padding: "24px 24px 40px" }}>
         <div className="android-detail-grid" style={{ display: "flex", flexDirection: "column", gap: "40px" }}>
@@ -293,17 +264,10 @@ export default async function AndroidImagePage({ params }: PageProps) {
             <div style={{ marginTop: "16px", width: "100%", display: "flex", flexDirection: "column", gap: "10px" }}>
               <WallpaperReactions imageId={image.id} />
               <div className="hw-glow-btn-wrap hw-glow-btn-wrap--download">
-                <DownloadButton
-                  href={`/api/download/image/${image.id}`}
-                  downloadCount={image._count.downloads}
-                />
+                <DownloadButton href={`/api/download/image/${image.id}`} downloadCount={image._count.downloads} />
               </div>
               <div className="hw-glow-btn-wrap hw-glow-btn-wrap--preview" style={{ position: "relative", borderRadius: "2px", overflow: "hidden" }}>
-                <div style={{
-                  position: "absolute", top: 0, left: 0, right: 0, height: "1px",
-                  background: "linear-gradient(to right, transparent, rgba(201,168,76,0.6), transparent)",
-                  pointerEvents: "none", zIndex: 1,
-                }} />
+                <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: "1px", background: "linear-gradient(to right, transparent, rgba(201,168,76,0.6), transparent)", pointerEvents: "none", zIndex: 1 }} />
                 <PreviewButton src={thumbUrl} title={image.title} />
               </div>
             </div>
@@ -311,10 +275,7 @@ export default async function AndroidImagePage({ params }: PageProps) {
 
           <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
             <div>
-              <h1 className="font-display text-2xl md:text-3xl font-bold mt-3 leading-tight">
-                {image.title}
-              </h1>
-              {/* FOMO Badges — badge-new removed */}
+              <h1 className="font-display text-2xl md:text-3xl font-bold mt-3 leading-tight">{image.title}</h1>
               {image.tags.filter((t: string) => t.startsWith("badge-")).length > 0 && (
                 <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", marginTop: "10px", marginBottom: "4px" }}>
                   {image.tags.filter((t: string) => t.startsWith("badge-")).map((tag: string) => {
@@ -327,29 +288,17 @@ export default async function AndroidImagePage({ params }: PageProps) {
                     };
                     const b = badgeMap[tag];
                     if (!b) return null;
-                    return (
-                      <span key={tag} style={{ background: b.bg, border: `1px solid ${b.color}`, color: b.color, fontSize: "0.65rem", fontFamily: "monospace", padding: "3px 10px", letterSpacing: "0.08em" }}>
-                        {b.label}
-                      </span>
-                    );
+                    return <span key={tag} style={{ background: b.bg, border: `1px solid ${b.color}`, color: b.color, fontSize: "0.65rem", fontFamily: "monospace", padding: "3px 10px", letterSpacing: "0.08em" }}>{b.label}</span>;
                   })}
                 </div>
               )}
             </div>
 
-            {/* ── Share buttons — prominent, above description ── */}
-            <SocialShare
-              title={image.title}
-              imageUrl={thumbUrl}
-              pageUrl={`${siteUrl}/android/${imageSlug}`}
-            />
+            <SocialShare title={image.title} imageUrl={thumbUrl} pageUrl={`${siteUrl}/android/${imageSlug}`} />
 
-            {/* ── Tag Strip ── */}
             {image.tags.filter((t: string) => !t.startsWith("badge-")).length > 0 && (
               <div style={{ padding: "14px 0 4px" }}>
-                <p style={{ fontFamily: "var(--font-space, monospace)", fontSize: "0.55rem", letterSpacing: "0.28em", textTransform: "uppercase" as const, color: "rgba(224,224,224,0.3)", margin: "0 0 10px" }}>
-                  Choose Your Next Obsession
-                </p>
+                <p style={{ fontFamily: "var(--font-space, monospace)", fontSize: "0.55rem", letterSpacing: "0.28em", textTransform: "uppercase" as const, color: "rgba(224,224,224,0.3)", margin: "0 0 10px" }}>Choose Your Next Obsession</p>
                 <div style={{ display: "flex", flexWrap: "wrap" as const, gap: "8px" }}>
                   {image.tags.filter((t: string) => !t.startsWith("badge-")).map((tag: string) => (
                     <a key={tag} href={`/android?tag=${encodeURIComponent(tag)}`}
@@ -362,33 +311,16 @@ export default async function AndroidImagePage({ params }: PageProps) {
               </div>
             )}
 
-            {/* Always rendered — real description or auto-generated fallback */}
-            <div
-              className="font-body text-[1rem] leading-relaxed description-html"
-              style={{ color: "var(--text-muted)", colorScheme: "dark" }}
-              dangerouslySetInnerHTML={{ __html: displayDescription }}
-            />
+            <div className="font-body text-[1rem] leading-relaxed description-html" style={{ color: "var(--text-muted)", colorScheme: "dark" }} dangerouslySetInnerHTML={{ __html: displayDescription }} />
 
-            {/* ── Comments — only when enabled in admin ── */}
             {image.commentsEnabled && (
               <div style={{ marginTop: "1rem" }}>
                 <BirthdayComments imageId={image.id} imageTitle={image.title} />
               </div>
             )}
 
-
             <div className="detail-fav-row">
-              <FavoriteButton
-                size="md"
-                className="detail-fav-inline"
-                item={{
-                  slug:   image.slug,
-                  title:  image.title,
-                  thumb:  thumbUrl,
-                  href:   `/android/${imageSlug}`,
-                  device: "android",
-                }}
-              />
+              <FavoriteButton size="md" className="detail-fav-inline" item={{ slug: image.slug, title: image.title, thumb: thumbUrl, href: `/android/${imageSlug}`, device: "android" }} />
               <span className="detail-fav-label">Save to Favorites</span>
             </div>
           </div>
@@ -396,19 +328,13 @@ export default async function AndroidImagePage({ params }: PageProps) {
       </section>
 
       <style>{`
-        .android-detail-image-wrap {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-        }
+        .android-detail-image-wrap { display: flex; flex-direction: column; align-items: center; }
         @media (min-width: 768px) {
           .android-detail-grid { flex-direction: row !important; align-items: flex-start; gap: 56px !important; }
           .android-detail-image-wrap { flex: 0 0 420px; justify-content: flex-start; }
           .android-detail-grid > div:last-child { flex: 1; position: sticky; top: 100px; }
         }
-        @media (min-width: 1024px) {
-          .android-detail-image-wrap { flex: 0 0 480px; }
-        }
+        @media (min-width: 1024px) { .android-detail-image-wrap { flex: 0 0 480px; } }
         .description-html { color-scheme: dark; }
         .description-html p { margin-bottom: 0.75rem; }
         .description-html p:last-child { margin-bottom: 0; }
@@ -417,60 +343,17 @@ export default async function AndroidImagePage({ params }: PageProps) {
         .description-html strong, .description-html b { color: #f0ecff; }
         .description-html ul, .description-html ol { padding-left: 1.25rem; margin-bottom: 0.75rem; }
         .description-html li { margin-bottom: 0.25rem; }
-        .hw-glow-btn-wrap--download {
-          animation: hwDlGlowPulse 2.8s ease-in-out infinite;
-          border-radius: 2px;
-        }
+        .hw-glow-btn-wrap--download { animation: hwDlGlowPulse 2.8s ease-in-out infinite; border-radius: 2px; }
         @keyframes hwDlGlowPulse {
           0%, 100% { box-shadow: 0 0 12px rgba(192,0,26,0.35), 0 0 28px rgba(192,0,26,0.15); }
           50%       { box-shadow: 0 0 22px rgba(192,0,26,0.65), 0 0 50px rgba(192,0,26,0.28); }
         }
-        .hw-glow-btn-wrap--preview {
-          border-radius: 2px;
-          box-shadow: 0 0 14px rgba(201,168,76,0.25), 0 0 30px rgba(201,168,76,0.1), inset 0 0 0 1px rgba(201,168,76,0.2);
-          transition: box-shadow 0.3s ease, transform 0.2s ease;
-        }
-        .hw-glow-btn-wrap--preview:hover {
-          box-shadow: 0 0 22px rgba(201,168,76,0.5), 0 0 50px rgba(201,168,76,0.22), inset 0 0 0 1px rgba(201,168,76,0.45);
-          transform: translateY(-1px);
-        }
-        /* Social share inline prominence */
-        .social-share {
-          border: 1px solid rgba(192,0,26,0.25);
-          border-radius: 6px;
-          padding: 12px 14px;
-          background: rgba(192,0,26,0.04);
-        }
-        .social-share-label {
-          font-family: var(--font-space, monospace);
-          font-size: 0.55rem;
-          letter-spacing: 0.18em;
-          text-transform: uppercase;
-          color: var(--text-muted);
-          margin-bottom: 8px;
-        }
-        .social-share-btns {
-          display: flex;
-          flex-wrap: wrap;
-          gap: 8px;
-        }
-        .social-btn {
-          display: inline-flex;
-          align-items: center;
-          gap: 6px;
-          padding: 8px 14px;
-          border-radius: 4px;
-          font-size: 0.72rem;
-          font-family: var(--font-space, monospace);
-          letter-spacing: 0.06em;
-          text-decoration: none;
-          border: 1px solid var(--border-dim, rgba(255,255,255,0.1));
-          color: var(--text-primary);
-          background: transparent;
-          cursor: pointer;
-          transition: border-color 0.2s, background 0.2s;
-          white-space: nowrap;
-        }
+        .hw-glow-btn-wrap--preview { border-radius: 2px; box-shadow: 0 0 14px rgba(201,168,76,0.25), 0 0 30px rgba(201,168,76,0.1), inset 0 0 0 1px rgba(201,168,76,0.2); transition: box-shadow 0.3s ease, transform 0.2s ease; }
+        .hw-glow-btn-wrap--preview:hover { box-shadow: 0 0 22px rgba(201,168,76,0.5), 0 0 50px rgba(201,168,76,0.22), inset 0 0 0 1px rgba(201,168,76,0.45); transform: translateY(-1px); }
+        .social-share { border: 1px solid rgba(192,0,26,0.25); border-radius: 6px; padding: 12px 14px; background: rgba(192,0,26,0.04); }
+        .social-share-label { font-family: var(--font-space, monospace); font-size: 0.55rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px; }
+        .social-share-btns { display: flex; flex-wrap: wrap; gap: 8px; }
+        .social-btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: 4px; font-size: 0.72rem; font-family: var(--font-space, monospace); letter-spacing: 0.06em; text-decoration: none; border: 1px solid var(--border-dim, rgba(255,255,255,0.1)); color: var(--text-primary); background: transparent; cursor: pointer; transition: border-color 0.2s, background 0.2s; white-space: nowrap; }
         .social-btn svg { width: 14px; height: 14px; fill: currentColor; flex-shrink: 0; }
         .social-btn:hover { border-color: rgba(255,255,255,0.25); background: rgba(255,255,255,0.04); }
         .social-btn--native { border-color: rgba(192,0,26,0.4); color: #f0e8e8; }
@@ -479,15 +362,9 @@ export default async function AndroidImagePage({ params }: PageProps) {
         .social-btn--x { color: var(--text-primary); }
         .social-btn--whatsapp { color: #25d366; border-color: rgba(37,211,102,0.3); }
       `}</style>
-      <PageTracker item={{
-        slug: image.slug,
-        title: image.title,
-        thumb: thumbUrl,
-        href: `/android/${imageSlug}`,
-      }} />
+
+      <PageTracker item={{ slug: image.slug, title: image.title, thumb: thumbUrl, href: `/android/${imageSlug}` }} />
       <RecentlyViewed currentSlug={image.slug} />
-
-
 
       <script type="application/ld+json" dangerouslySetInnerHTML={{
         __html: JSON.stringify({
@@ -509,15 +386,11 @@ export default async function AndroidImagePage({ params }: PageProps) {
           offers: {
             "@type": "Offer",
             url: `${siteUrl}/android/${imageSlug}`,
-            price: "0.00",
-            priceCurrency: "USD",
+            price: "0.00", priceCurrency: "USD",
             availability: "https://schema.org/InStock",
             seller: { "@type": "Organization", name: "HAUNTED WALLPAPERS", url: siteUrl },
           },
-          potentialAction: {
-            "@type": "DownloadAction",
-            target: `${siteUrl}/api/download/image/${image.id}`,
-          },
+          potentialAction: { "@type": "DownloadAction", target: `${siteUrl}/api/download/image/${image.id}` },
         })
       }} />
     </main>
