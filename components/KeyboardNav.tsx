@@ -46,7 +46,7 @@ export default function KeyboardNav({ prevHref, nextHref, showHint, prevImage, n
       <nav className="hw-prevnext-nav" aria-label="Wallpaper navigation">
         {/* ── PREVIOUS ── */}
         {hasPrev ? (
-          <Link href={prevHref!} className="hw-prevnext-link hw-prevnext-link--prev" prefetch>
+          <Link href={prevHref!} className="hw-prevnext-link hw-prevnext-link--prev" prefetch={false}>
             {prevImage?.thumb && (
               <div className="hw-prevnext-thumb">
                 <Image src={prevImage.thumb} alt={prevImage.title} fill className="object-cover" unoptimized sizes="48px" />
@@ -69,7 +69,7 @@ export default function KeyboardNav({ prevHref, nextHref, showHint, prevImage, n
 
         {/* ── NEXT ── */}
         {hasNext ? (
-          <Link href={nextHref!} className="hw-prevnext-link hw-prevnext-link--next" prefetch>
+          <Link href={nextHref!} className="hw-prevnext-link hw-prevnext-link--next" prefetch={false}>
             <div className="hw-prevnext-text hw-prevnext-text--right">
               <span className="hw-prevnext-label">Next →</span>
               {nextImage?.title && (

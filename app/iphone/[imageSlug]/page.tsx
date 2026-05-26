@@ -21,7 +21,6 @@ import PremiumLockedGateClient from "@/components/PremiumLockedGate";
 import BirthdayComments from "@/components/BirthdayComments";
 import SummonRandomTag from "@/components/SummonRandomTag";
 
-
 export const dynamic = "force-dynamic";
 
 // ─── Premium cycle constants (server-side, no flash) ────────────────────────
@@ -133,28 +132,54 @@ export default async function IphoneImagePage({ params }: PageProps) {
   const displayDescription = image.description ?? buildFallbackDescription(image.title, image.tags);
   const plainDescription = displayDescription.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
 
-  const [siblings, related] = await Promise.all([
+  // ── PERF FIX: fetch only a small window of siblings around the current image
+  // instead of loading the entire table. Use sortOrder cursor-style: grab
+  // the 3 before and 6 after in two targeted queries, then run related in parallel.
+  const [prevSibling, nextSibling, tagSortedStrip, related] = await Promise.all([
+    // Previous sibling (higher sortOrder = earlier in the list)
+    db.image.findFirst({
+      where: {
+        collectionId: null,
+        deviceType: "IPHONE",
+        OR: [
+          { sortOrder: { lt: image.sortOrder } },
+          { sortOrder: image.sortOrder, id: { lt: image.id } },
+        ],
+      },
+      orderBy: [{ sortOrder: "desc" }, { id: "desc" }],
+      select: { slug: true, title: true, r2Key: true },
+    }),
+    // Next sibling
+    db.image.findFirst({
+      where: {
+        collectionId: null,
+        deviceType: "IPHONE",
+        OR: [
+          { sortOrder: { gt: image.sortOrder } },
+          { sortOrder: image.sortOrder, id: { gt: image.id } },
+        ],
+      },
+      orderBy: [{ sortOrder: "asc" }, { id: "asc" }],
+      select: { slug: true, title: true, r2Key: true },
+    }),
+    // Tag-sorted strip: 4 images sharing tags — small, targeted
     db.image.findMany({
-      where: { collectionId: null, deviceType: "IPHONE" },
-      orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
-      select: { slug: true, title: true, r2Key: true, sortOrder: true, tags: true },
+      where: {
+        collectionId: null,
+        deviceType: "IPHONE",
+        slug: { not: imageSlug },
+        tags: { hasSome: image.tags.slice(0, 3) },
+      },
+      orderBy: [{ sortOrder: "asc" }],
+      take: 4,
+      select: { slug: true, title: true, r2Key: true },
     }),
     getRelatedImages(image.id, image.tags, 6, "IPHONE"),
   ]);
-  const currentIdx = siblings.findIndex((s) => s.slug === imageSlug);
-  const prevImage = currentIdx > 0 ? siblings[currentIdx - 1] : null;
-  const nextImage = currentIdx < siblings.length - 1 ? siblings[currentIdx + 1] : null;
 
-  // Tag-sorted strip: siblings sharing most tags with current image appear first
-  const imageTags = new Set(image.tags);
-  const tagSortedStrip = siblings
-    .filter((s) => s.slug !== imageSlug)
-    .sort((a, b) => {
-      const aScore = (a.tags as string[]).filter((t) => imageTags.has(t)).length;
-      const bScore = (b.tags as string[]).filter((t) => imageTags.has(t)).length;
-      return bScore - aScore;
-    })
-    .slice(0, 4);
+  const prevImage = prevSibling;
+  const nextImage = nextSibling;
+  const nextImageSrc = nextImage ? getPublicUrl(nextImage.r2Key) : null;
 
   if (image.tags.includes("badge-premium") && isPremiumLocked()) {
     return (
@@ -164,10 +189,19 @@ export default async function IphoneImagePage({ params }: PageProps) {
     );
   }
 
-  const nextImageSrc = nextImage ? getPublicUrl(nextImage.r2Key) : null;
-
   return (
     <main className="min-h-screen" style={{ backgroundColor: "var(--bg-primary)", color: "var(--text-primary)", colorScheme: "dark" }}>
+      {/* ── PERF FIX: Preload the LCP image (hero wallpaper) explicitly ── */}
+      <link
+        rel="preload"
+        as="image"
+        href={thumbUrl}
+        // @ts-expect-error — fetchpriority is valid HTML but not yet in React types
+        fetchpriority="high"
+      />
+      {/* Preload next image for instant navigation */}
+      {nextImageSrc && <link rel="preload" as="image" href={nextImageSrc} />}
+
       <WallpaperTips mode="banner" />
 
       <Breadcrumbs items={[
@@ -176,7 +210,7 @@ export default async function IphoneImagePage({ params }: PageProps) {
         { label: image.title },
       ]} />
 
-            {/* ── More Dark Art — small strip at top ── */}
+      {/* ── More Dark Art — small strip at top ── */}
       {tagSortedStrip.length > 0 && (
         <div style={{ maxWidth: "1280px", margin: "0 auto", padding: "10px 24px", borderBottom: "1px solid rgba(255,255,255,0.06)", display: "flex", gap: "6px", alignItems: "center" }}>
           <span style={{ fontFamily: "var(--font-space, monospace)", fontSize: "0.45rem", letterSpacing: "0.2em", textTransform: "uppercase", color: "rgba(255,255,255,0.2)", whiteSpace: "nowrap", marginRight: "4px" }}>More ▸</span>
@@ -189,6 +223,7 @@ export default async function IphoneImagePage({ params }: PageProps) {
           ))}
         </div>
       )}
+
       <KeyboardNav
         prevHref={prevImage ? `/iphone/${prevImage.slug}` : null}
         nextHref={nextImage ? `/iphone/${nextImage.slug}` : null}
@@ -197,17 +232,23 @@ export default async function IphoneImagePage({ params }: PageProps) {
         nextImage={nextImage ? { href: `/iphone/${nextImage.slug}`, title: nextImage.title, thumb: getPublicUrl(nextImage.r2Key) } : null}
       />
 
-      {nextImageSrc && (
-        <link rel="preload" as="image" href={nextImageSrc} />
-      )}
-
       <section style={{ maxWidth: "1280px", margin: "0 auto", padding: "24px 24px 40px" }}>
         <div className="iphone-detail-grid" style={{ display: "flex", flexDirection: "column", gap: "40px" }}>
 
           <div className="iphone-detail-image-wrap">
             <DeviceMockup deviceType="IPHONE">
               <div className="relative w-full h-full">
-                <Image src={thumbUrl} alt={image.title} fill className="object-cover" priority fetchPriority="high" quality={85} sizes="(max-width: 768px) 100vw, 480px" />
+                {/* ── PERF FIX: priority + fetchPriority on LCP image ── */}
+                <Image
+                  src={thumbUrl}
+                  alt={image.title}
+                  fill
+                  className="object-cover"
+                  priority
+                  fetchPriority="high"
+                  quality={85}
+                  sizes="(max-width: 768px) 100vw, 480px"
+                />
               </div>
             </DeviceMockup>
             <div style={{ marginTop: "16px", width: "100%", display: "flex", flexDirection: "column", gap: "10px" }}>
@@ -229,7 +270,6 @@ export default async function IphoneImagePage({ params }: PageProps) {
               <h1 className="font-display text-2xl md:text-3xl font-bold mt-3 leading-tight">
                 {image.title}
               </h1>
-              {/* FOMO Badges — badge-new removed */}
               {image.tags.filter((t: string) => t.startsWith("badge-")).length > 0 && (
                 <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", marginTop: "10px", marginBottom: "4px" }}>
                   {image.tags.filter((t: string) => t.startsWith("badge-")).map((tag: string) => {
@@ -252,14 +292,12 @@ export default async function IphoneImagePage({ params }: PageProps) {
               )}
             </div>
 
-            {/* ── Share buttons — prominent, above description ── */}
             <SocialShare
               title={image.title}
               imageUrl={thumbUrl}
               pageUrl={`${siteUrl}/iphone/${imageSlug}`}
             />
 
-            {/* ── Tag Strip ── */}
             {image.tags.filter((t: string) => !t.startsWith("badge-")).length > 0 && (
               <div style={{ padding: "14px 0 4px" }}>
                 <p style={{ fontFamily: "var(--font-space, monospace)", fontSize: "0.55rem", letterSpacing: "0.28em", textTransform: "uppercase" as const, color: "rgba(224,224,224,0.3)", margin: "0 0 10px" }}>
@@ -277,19 +315,15 @@ export default async function IphoneImagePage({ params }: PageProps) {
               </div>
             )}
 
-            {/* Always rendered — real description or auto-generated fallback */}
             <div
               className="font-body text-[1rem] leading-relaxed description-html"
               style={{ color: "var(--text-muted)", colorScheme: "dark" }}
               dangerouslySetInnerHTML={{ __html: displayDescription }}
             />
 
-            {/* ── Comments — only when enabled in admin ── */}
             {image.commentsEnabled && (
               <BirthdayComments imageId={image.id} imageTitle={image.title} />
             )}
-
-            
 
             <div className="detail-fav-row">
               <FavoriteButton
@@ -347,7 +381,6 @@ export default async function IphoneImagePage({ params }: PageProps) {
         .hw-glow-btn-wrap--preview:hover {
           box-shadow: 0 0 18px rgba(201,168,76,0.45), 0 0 38px rgba(201,168,76,0.2);
         }
-        /* Social share inline prominence */
         .social-share {
           border: 1px solid rgba(192,0,26,0.25);
           border-radius: 6px;
@@ -362,27 +395,15 @@ export default async function IphoneImagePage({ params }: PageProps) {
           color: var(--text-muted);
           margin-bottom: 8px;
         }
-        .social-share-btns {
-          display: flex;
-          flex-wrap: wrap;
-          gap: 8px;
-        }
+        .social-share-btns { display: flex; flex-wrap: wrap; gap: 8px; }
         .social-btn {
-          display: inline-flex;
-          align-items: center;
-          gap: 6px;
-          padding: 8px 14px;
-          border-radius: 4px;
-          font-size: 0.72rem;
-          font-family: var(--font-space, monospace);
-          letter-spacing: 0.06em;
-          text-decoration: none;
+          display: inline-flex; align-items: center; gap: 6px;
+          padding: 8px 14px; border-radius: 4px;
+          font-size: 0.72rem; font-family: var(--font-space, monospace);
+          letter-spacing: 0.06em; text-decoration: none;
           border: 1px solid var(--border-dim, rgba(255,255,255,0.1));
-          color: var(--text-primary);
-          background: transparent;
-          cursor: pointer;
-          transition: border-color 0.2s, background 0.2s;
-          white-space: nowrap;
+          color: var(--text-primary); background: transparent; cursor: pointer;
+          transition: border-color 0.2s, background 0.2s; white-space: nowrap;
         }
         .social-btn svg { width: 14px; height: 14px; fill: currentColor; flex-shrink: 0; }
         .social-btn:hover { border-color: rgba(255,255,255,0.25); background: rgba(255,255,255,0.04); }

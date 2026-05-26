@@ -169,6 +169,60 @@ export default async function PcImagePage({ params }: PageProps) {
           ))}
         </div>
       )}
+
+      {/* ── Prev / Next Navigation — 16:9 thumbnails ── */}
+      <div style={{
+        maxWidth: "1280px", margin: "0 auto", padding: "0 24px",
+        display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px",
+        marginTop: "16px", marginBottom: "4px",
+      }}>
+        {/* PREVIOUS */}
+        {prevImage ? (
+          <Link href={`/pc/${prevImage.slug}`} className="pc-prevnext-card pc-prevnext-card--prev">
+            <div className="pc-prevnext-thumb">
+              <Image
+                src={getPublicUrl(prevImage.r2Key)}
+                alt={prevImage.title}
+                fill
+                className="object-cover"
+                unoptimized
+                sizes="(max-width: 768px) 45vw, 300px"
+              />
+              <div className="pc-prevnext-overlay" />
+            </div>
+            <div className="pc-prevnext-label">
+              <span className="pc-prevnext-dir">← PREVIOUS</span>
+              <span className="pc-prevnext-title">{prevImage.title}</span>
+            </div>
+          </Link>
+        ) : (
+          <div />
+        )}
+
+        {/* NEXT */}
+        {nextImage ? (
+          <Link href={`/pc/${nextImage.slug}`} className="pc-prevnext-card pc-prevnext-card--next">
+            <div className="pc-prevnext-thumb">
+              <Image
+                src={getPublicUrl(nextImage.r2Key)}
+                alt={nextImage.title}
+                fill
+                className="object-cover"
+                unoptimized
+                sizes="(max-width: 768px) 45vw, 300px"
+              />
+              <div className="pc-prevnext-overlay" />
+            </div>
+            <div className="pc-prevnext-label pc-prevnext-label--next">
+              <span className="pc-prevnext-dir">NEXT →</span>
+              <span className="pc-prevnext-title">{nextImage.title}</span>
+            </div>
+          </Link>
+        ) : (
+          <div />
+        )}
+      </div>
+
       <KeyboardNav
         prevHref={prevImage ? `/pc/${prevImage.slug}` : null}
         nextHref={nextImage ? `/pc/${nextImage.slug}` : null}
@@ -275,6 +329,67 @@ export default async function PcImagePage({ params }: PageProps) {
       </section>
 
       <style>{`
+        /* ── Prev / Next cards ── */
+        .pc-prevnext-card {
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+          text-decoration: none;
+          color: var(--text-primary);
+          border: 1px solid rgba(255,255,255,0.07);
+          border-radius: 6px;
+          overflow: hidden;
+          background: rgba(255,255,255,0.02);
+          transition: border-color 0.2s, background 0.2s;
+        }
+        .pc-prevnext-card:hover {
+          border-color: rgba(192,0,26,0.35);
+          background: rgba(192,0,26,0.04);
+        }
+        /* 16:9 thumbnail wrapper */
+        .pc-prevnext-thumb {
+          position: relative;
+          width: 100%;
+          aspect-ratio: 16 / 9;
+          overflow: hidden;
+          background: #0a0a0a;
+        }
+        .pc-prevnext-overlay {
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(to top, rgba(0,0,0,0.45) 0%, transparent 60%);
+          pointer-events: none;
+        }
+        .pc-prevnext-label {
+          display: flex;
+          flex-direction: column;
+          gap: 2px;
+          padding: 8px 12px 10px;
+        }
+        .pc-prevnext-label--next {
+          align-items: flex-end;
+          text-align: right;
+        }
+        .pc-prevnext-dir {
+          font-family: var(--font-space, monospace);
+          font-size: 0.5rem;
+          letter-spacing: 0.18em;
+          text-transform: uppercase;
+          color: rgba(255,255,255,0.3);
+        }
+        .pc-prevnext-title {
+          font-family: var(--font-cinzel, serif);
+          font-size: clamp(0.65rem, 1.2vw, 0.8rem);
+          font-weight: 600;
+          color: var(--text-primary);
+          line-height: 1.3;
+          display: -webkit-box;
+          -webkit-line-clamp: 2;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+        }
+
+        /* ── rest of existing styles ── */
         .pc-detail-image-wrap { display: flex; flex-direction: column; align-items: center; }
         @media (min-width: 768px) {
           .pc-detail-grid { flex-direction: row !important; align-items: flex-start; gap: 56px !important; }

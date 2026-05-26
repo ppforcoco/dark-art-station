@@ -107,6 +107,15 @@ const securityHeaders = [
 const nextConfig: NextConfig = {
   eslint: { ignoreDuringBuilds: true },
   output: "standalone",
+  // ── PERF FIX: enable gzip/brotli compression for the Node.js server ──
+  compress: true,
+  // ── PERF FIX: experimental optimizations ──
+  experimental: {
+    // Optimize CSS — reduces render-blocking stylesheet size
+    optimizeCss: true,
+    // Optimize server-side packages (reduces cold start time)
+    serverComponentsExternalPackages: ["@prisma/client"],
+  },
 
   async headers() {
     return [
@@ -156,11 +165,12 @@ const nextConfig: NextConfig = {
     ],
     // Cache optimized images for 30 days on the CDN / browser
     minimumCacheTTL: 2592000,
-    // Allow WebP and AVIF output
+    // AVIF first — 50% smaller than WebP, dramatically reduces image payload
     formats: ["image/avif", "image/webp"],
-    // Limit the sizes Next.js generates to reduce build variance
-    deviceSizes: [390, 640, 828, 1080, 1200, 1920],
-    imageSizes: [48, 96, 128, 256, 384],
+    // ── PERF FIX: tighter device sizes — removes unnecessary breakpoints
+    // that generate extra image variants. Mobile-first for iPhone pages.
+    deviceSizes: [390, 640, 828, 1080, 1920],
+    imageSizes: [44, 48, 96, 256, 480],
   },
 
   compiler: {
