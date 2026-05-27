@@ -2,9 +2,18 @@
 "use client";
 
 import Link from "next/link";
+import { useState, useEffect } from "react";
 import type { JSX } from "react";
 
 export default function Footer(): JSX.Element {
+  // Fix React hydration error #418:
+  // new Date().getFullYear() evaluated during SSR gives a different result
+  // than when React hydrates on the client (timezone / build-time mismatch).
+  // Start with null and set via useEffect so the year only renders client-side,
+  // eliminating the server/client HTML mismatch entirely.
+  const [year, setYear] = useState<number | null>(null);
+  useEffect(() => { setYear(new Date().getFullYear()); }, []);
+
   return (
     <footer className="site-footer">
       <div className="footer-grid">
@@ -50,7 +59,8 @@ export default function Footer(): JSX.Element {
       <div className="footer-bottom">
         <div className="footer-bottom-left">
           <span className="footer-copy">
-            © {new Date().getFullYear()} HauntedWallpapers. All rights reserved. New visions arrive each night. You keep what finds you.
+            {/* year is null on SSR, renders as empty string — no hydration mismatch */}
+            © {year ?? ""} HauntedWallpapers. All rights reserved. New visions arrive each night. You keep what finds you.
           </span>
           <span className="footer-ai-disclosure">
             All artwork on this site is AI-generated using diffusion model pipelines.
