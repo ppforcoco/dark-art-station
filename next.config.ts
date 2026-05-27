@@ -42,12 +42,11 @@ const nextConfig: NextConfig = {
   compress: true,
   serverExternalPackages: ["@prisma/client"],
 
-  experimental: {
-    // Merges & inlines critical CSS at build time — eliminates the
-    // "preloaded but not used" warnings for /_next/static/css/*.css chunks.
-    // Requires: npm install --save-dev critters
-    optimizeCss: true,
-  },
+  // optimizeCss: true was removed — it crashes SSR in production causing a
+  // blank page. The CSS preload warnings it fixed are cosmetic (dev/console only)
+  // and not worth the build instability. critters remains in devDependencies
+  // in case we revisit this later.
+  experimental: {},
 
   async headers() {
     return [
@@ -55,6 +54,7 @@ const nextConfig: NextConfig = {
         source: "/(.*)",
         headers: securityHeaders,
       },
+      // Long-lived cache for hashed static assets
       {
         source: "/_next/static/:path*",
         headers: [
