@@ -10,22 +10,27 @@ const cinzel = Cinzel_Decorative({
   weight: ["400", "700", "900"],
   subsets: ["latin"],
   variable: "--font-cinzel",
-  display: "swap",
+  // 'optional' tells Next.js NOT to emit <link rel="preload"> hints for font files.
+  // 'swap' was causing woff2 preload warnings on every page because Next.js
+  // preloads all font variants upfront even if they aren't used on that route.
+  display: "optional",
   preload: false,
 });
+
 const cormorant = Cormorant_Garamond({
   weight: ["300", "400", "600"],
   subsets: ["latin"],
   style: ["normal", "italic"],
   variable: "--font-cormorant",
-  display: "swap",
+  display: "optional",
   preload: false,
 });
+
 const spaceMono = Space_Mono({
   weight: ["400", "700"],
   subsets: ["latin"],
   variable: "--font-space",
-  display: "swap",
+  display: "optional",
   preload: false,
 });
 
@@ -85,7 +90,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" dir="ltr" suppressHydrationWarning style={{ backgroundColor: "#0c0b14", color: "#e8e4dc" }}>
       <head>
-        {/* Critical inline CSS — blocks render intentionally to prevent flash */}
+        {/* Critical inline CSS */}
         <style dangerouslySetInnerHTML={{ __html: `
           @media(pointer:fine){html,body,*,*::before,*::after{cursor:none!important}}
           @keyframes hw-flicker {
@@ -99,7 +104,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           }
         ` }} />
 
-        {/* Theme init — must run before paint to prevent flash */}
+        {/* Theme init — must run before paint */}
         <script dangerouslySetInnerHTML={{ __html: `(function(){try{var t=localStorage.getItem('hw-theme');if(t){document.documentElement.setAttribute('data-theme',t);if(t==='fog'){document.documentElement.style.backgroundColor='#ece9e2';document.documentElement.style.color='#1c1a17';}else if(t==='ghost'){document.documentElement.style.backgroundColor='#0d0d14';document.documentElement.style.color='#e0e0f8';}else{document.documentElement.style.backgroundColor='#0c0b14';document.documentElement.style.color='#e8e4dc';}}else{document.documentElement.style.backgroundColor='#0c0b14';document.documentElement.style.color='#e8e4dc';}}catch(e){}})();` }} />
         <script dangerouslySetInnerHTML={{ __html: `(function(){try{var h=new Date().getHours();if(h>=20||h<6)document.documentElement.setAttribute('data-night','true');}catch(e){}})();` }} />
 
@@ -127,7 +132,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <meta name="google-site-verification" content={process.env.NEXT_PUBLIC_GSC_VERIFICATION} />
         )}
 
-        {/* Umami Analytics — no cookies, GDPR-safe */}
+        {/* Umami Analytics */}
         <script
           defer
           src="https://cloud.umami.is/script.js"
