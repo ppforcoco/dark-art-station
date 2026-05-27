@@ -721,9 +721,9 @@ export default async function Home() {
                       fill
                       loading="lazy"
                       className="object-cover"
-                      sizes="(max-width:640px) 200px,(max-width:1024px) 90vw,1200px"
+                      sizes="(max-width:640px) 200px, 800px"
                       style={{ objectFit: "cover", objectPosition: "center center" }}
-                      quality={55}
+                      quality={50}
                     />
                     <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top,rgba(0,0,0,0.97) 0%,rgba(0,0,0,0.75) 40%,rgba(0,0,0,0.2) 70%,transparent 100%)", pointerEvents: "none" }} />
                     <div style={{ position: "absolute", top: "12px", right: "12px" }}>
@@ -768,8 +768,8 @@ export default async function Home() {
                         fill
                         loading="lazy"
                         className="object-cover"
-                        sizes="(max-width:640px) 30vw,(max-width:1024px) 22vw,18vw"
-                        quality={45}
+                        sizes="(max-width:640px) 25vw, (max-width:1024px) 18vw, 15vw"
+                        quality={40}
                       />
                     ) : (
                       <div className="dt-obs-card__placeholder" style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", height: "100%", gap: "0.5rem" }}>
