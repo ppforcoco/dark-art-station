@@ -53,7 +53,8 @@ export default function ProgressiveGrid({
   const allChildren = Children.toArray(children);
   const total = allChildren.length;
 
-  const [isMobile, setIsMobile] = useState<boolean | null>(null);
+  // Start as true (assume mobile) — fixes SSR/hydration mismatch
+  const [isMobile, setIsMobile] = useState(true);
   const [visibleCount, setVisibleCount] = useState(initialCount);
 
   useEffect(() => {
@@ -69,10 +70,10 @@ export default function ProgressiveGrid({
   }, [batchSize, total]);
 
   // SSR / desktop: render everything
-  const renderCount = isMobile === null || !isMobile ? total : visibleCount;
+  const renderCount = isMobile ? visibleCount : total;
   const visible = allChildren.slice(0, renderCount);
   const skeletonCount = isMobile ? Math.max(0, Math.min(batchSize, total - renderCount)) : 0;
-  const hasMore = isMobile === true && renderCount < total;
+  const hasMore = isMobile && renderCount < total;
 
   return (
     <div className={gridClassName} style={gridStyle}>

@@ -417,14 +417,17 @@ export default function MobileDetailLayout({
   recentlyViewed = [],
   deviceType = "iphone",
 }: Props) {
-  const [isMobile, setIsMobile] = useState(false);
+  // Start as true so the component renders immediately on mobile without waiting
+  // for useEffect. On desktop, useEffect flips it to false and hides the component.
+  // Previously was useState(false) which caused mobile to return null on first render,
+  // leading to a hydration mismatch that permanently prevented the component from showing.
+  const [isMobile, setIsMobile] = useState(true);
   const [favorited, setFavorited] = useState(image.isFavorited ?? false);
   const [downloading, setDownloading] = useState(false);
 
   useEffect(() => {
-    // Check on mount
-    setIsMobile(window.matchMedia("(max-width: 767px)").matches);
     const mq = window.matchMedia("(max-width: 767px)");
+    setIsMobile(mq.matches);
     const h = (e: MediaQueryListEvent) => setIsMobile(e.matches);
     mq.addEventListener("change", h);
     return () => mq.removeEventListener("change", h);

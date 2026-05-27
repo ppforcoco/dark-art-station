@@ -192,8 +192,10 @@ export default function IphoneImageGrid({
 }: IphoneImageGridProps) {
   const defaultGridClass = "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3";
 
-  // On desktop show all immediately; on mobile start with initialCount
-  const [isMobile, setIsMobile] = useState<boolean | null>(null);
+  // Start as true (assume mobile) so SSR and first client render agree.
+  // useEffect immediately corrects to actual screen size.
+  // Previously was useState(null) causing SSR→client mismatch → React bail-out.
+  const [isMobile, setIsMobile] = useState(true);
   const [visibleCount, setVisibleCount] = useState(initialCount);
 
   useEffect(() => {
@@ -208,12 +210,8 @@ export default function IphoneImageGrid({
     setVisibleCount(c => Math.min(c + batchSize, images.length));
   }, [batchSize, images.length]);
 
-  // How many to actually render — all on desktop, progressive on mobile
-  const renderCount = isMobile === null
-    ? images.length // SSR: render all (SEO), hydration corrects
-    : isMobile
-      ? visibleCount
-      : images.length;
+  // How many to actually render — progressive on mobile, all on desktop
+  const renderCount = isMobile ? visibleCount : images.length;
 
   const visibleImages = images.slice(0, renderCount);
   const hasMore = isMobile && renderCount < images.length;
