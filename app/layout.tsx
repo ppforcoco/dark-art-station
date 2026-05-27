@@ -284,11 +284,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <Script
               src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}
               strategy="afterInteractive"
-              onLoad={() => {
-                // @ts-expect-error gtag global
-                window.gtag('js', new Date());
-                // @ts-expect-error gtag global
-                window.gtag('config', gaId, { send_page_view: true });
+            />
+            <Script
+              id="ga-init"
+              strategy="afterInteractive"
+              dangerouslySetInnerHTML={{
+                __html: 'window.addEventListener("load",function(){if(typeof window.gtag==="function"){window.gtag("js",new Date());window.gtag("config","' + gaId + '",{send_page_view:true});}});',
               }}
             />
             {/*
