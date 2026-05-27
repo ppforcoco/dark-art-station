@@ -211,8 +211,7 @@ export default async function PcImagePage({ params }: PageProps) {
                     {tagSortedStrip.map((img) => (
                       <Link key={img.slug} href={`/pc/${img.slug}`} className="more-strip-link">
                         <div className="hw-more-strip__thumb" style={{ position: "relative" }}>
-                          <Image src={getPublicUrl(img.r2Key)} alt={img.title} fill className="object-cover" loading="lazy" sizes="80px" />
-                            unoptimized
+                          <Image src={getPublicUrl(img.r2Key)} alt={img.title} fill className="object-cover" loading="lazy" sizes="80px" unoptimized />
                         </div>
                       </Link>
                     ))}
@@ -279,8 +278,7 @@ export default async function PcImagePage({ params }: PageProps) {
                   {tagSortedStrip.map((img) => (
                     <Link key={img.slug} href={`/pc/${img.slug}`} className="more-strip-link">
                       <div className="hw-more-strip__thumb" style={{ position: "relative" }}>
-                        <Image src={getPublicUrl(img.r2Key)} alt={img.title} fill className="object-cover" loading="lazy" sizes="100px" />
-                          unoptimized
+                        <Image src={getPublicUrl(img.r2Key)} alt={img.title} fill className="object-cover" loading="lazy" sizes="100px" unoptimized />
                       </div>
                     </Link>
                   ))}
