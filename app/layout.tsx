@@ -83,11 +83,11 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    // suppressHydrationWarning is required because inline scripts set data-theme
-    // and data-night attributes before React hydrates, causing a benign mismatch.
-    // This suppresses React error #418 without affecting any functionality.
+    // suppressHydrationWarning: inline scripts set data-theme/data-night before hydration.
+    // This is intentional and safe — suppresses React error #418.
     <html lang="en" dir="ltr" suppressHydrationWarning style={{ backgroundColor: "#0c0b14", color: "#e8e4dc" }}>
       <head>
+        {/* Critical inline CSS — blocks render intentionally to prevent flash */}
         <style dangerouslySetInnerHTML={{ __html: `
           @media(pointer:fine){html,body,*,*::before,*::after{cursor:none!important}}
           @keyframes hw-flicker {
@@ -101,15 +101,23 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           }
         ` }} />
 
-        {/* Theme + night-mode init — must run before paint */}
+        {/* Theme init — must run before paint to prevent flash */}
         <script dangerouslySetInnerHTML={{ __html: `(function(){try{var t=localStorage.getItem('hw-theme');if(t){document.documentElement.setAttribute('data-theme',t);if(t==='fog'){document.documentElement.style.backgroundColor='#ece9e2';document.documentElement.style.color='#1c1a17';}else if(t==='ghost'){document.documentElement.style.backgroundColor='#0d0d14';document.documentElement.style.color='#e0e0f8';}else{document.documentElement.style.backgroundColor='#0c0b14';document.documentElement.style.color='#e8e4dc';}}else{document.documentElement.style.backgroundColor='#0c0b14';document.documentElement.style.color='#e8e4dc';}}catch(e){}})();` }} />
         <script dangerouslySetInnerHTML={{ __html: `(function(){try{var h=new Date().getHours();if(h>=20||h<6)document.documentElement.setAttribute('data-night','true');}catch(e){}})();` }} />
 
-        {/* Resource hints — only preconnect to CDNs actually used for images */}
-        <link rel="preconnect" href="https://assets.hauntedwallpapers.com" crossOrigin="anonymous" />
-        <link rel="dns-prefetch" href="https://assets.hauntedwallpapers.com" />
+        {/* Preconnect to image CDNs only — no font CDN (next/font self-hosts) */}
         <link rel="preconnect" href="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev" />
+
+        {/* LCP preload — hero mobile thumbnail (shown on mobile, hidden on desktop) */}
+        {/* This tells the browser to fetch it immediately before CSS runs */}
+        <link
+          rel="preload"
+          as="image"
+          href="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/extras/the-haunted-wallpapers-hero-thumbnail.webp"
+          type="image/webp"
+          fetchPriority="high"
+        />
 
         {/* PWA */}
         <link rel="manifest" href="/manifest.webmanifest" />
@@ -131,7 +139,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <meta name="google-site-verification" content={process.env.NEXT_PUBLIC_GSC_VERIFICATION} />
         )}
 
-        {/* Umami Analytics — no cookies, no consent needed, no CSP issues */}
+        {/* Umami Analytics — no cookies, GDPR-safe */}
         <script
           defer
           src="https://cloud.umami.is/script.js"
