@@ -1,16 +1,5 @@
 "use client";
 // components/PremiumLockedGate.tsx
-//
-// Drop this at the TOP of any detail page (iphone/[slug]/page.tsx, android/[slug]/page.tsx).
-// If the wallpaper has tag "badge-premium" AND the global cycle is currently LOCKED,
-// this replaces the entire page content with a vault gate + live countdown.
-//
-// Usage in detail page:
-//   import PremiumLockedGate from "@/components/PremiumLockedGate";
-//   // In your server component, pass tags + children:
-//   <PremiumLockedGate tags={image.tags}>
-//     {/* normal page content */}
-//   </PremiumLockedGate>
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
@@ -41,7 +30,6 @@ function fmt(ms: number) {
 
 interface PremiumLockedGateProps {
   tags: string[];
-  /** The device path for the back link: "iphone" | "android" | "pc" */
   devicePath?: string;
   children: React.ReactNode;
 }
@@ -49,26 +37,34 @@ interface PremiumLockedGateProps {
 export default function PremiumLockedGate({ tags, devicePath = "iphone", children }: PremiumLockedGateProps) {
   const isPremium = tags.includes("badge-premium");
 
-  const [isLocked, setIsLocked] = useState<boolean | null>(null);
+  // FIX for React hydration error #418:
+  // mounted starts false — server and client both render children on first pass.
+  // After mount, we check the lock state client-side only.
+  // This means SSR always renders children (no mismatch), and the gate
+  // only appears after hydration is complete.
+  const [mounted, setMounted] = useState(false);
+  const [isLocked, setIsLocked] = useState(false);
   const [msRemaining, setMsRemaining] = useState(0);
 
   useEffect(() => {
+    if (!isPremium) return;
     const update = () => {
       const locked = getClientLockState();
       setIsLocked(locked);
       if (locked) setMsRemaining(getMsUntilUnlock());
     };
     update();
+    setMounted(true);
     const id = setInterval(update, 1000);
     return () => clearInterval(id);
-  }, []);
+  }, [isPremium]);
 
-  // Not yet hydrated or not premium — render children normally
-  if (!isPremium || isLocked === null || !isLocked) {
+  // Not premium, or not yet mounted — always render children (matches SSR)
+  if (!isPremium || !mounted || !isLocked) {
     return <>{children}</>;
   }
 
-  // LOCKED PREMIUM — show vault gate
+  // LOCKED PREMIUM — show vault gate (only after hydration)
   const { h, m, s } = fmt(msRemaining);
 
   return (
