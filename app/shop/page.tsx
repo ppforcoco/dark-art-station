@@ -4,7 +4,6 @@ import { db, getPageContent } from "@/lib/db";
 import Link from "next/link";
 import ProductCard from "@/components/ProductCard";
 import Pagination from "@/components/Pagination";
-// AdSlot removed — disabled pending AdSense approval
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
 const OG_IMAGE = `${SITE_URL}/og-image.jpg`;
@@ -101,10 +100,10 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
       </div>
 
       <div className="shop-filter-bar">
-        <Link href="/shop"             className="filter-pill" data-active={!category && !filter}>All</Link>
-        <Link href="/shop?filter=free" className="filter-pill" data-active={filter === "free"}>Free</Link>
+        <Link prefetch={false} href="/shop"             className="filter-pill" data-active={!category && !filter}>All</Link>
+        <Link prefetch={false} href="/shop?filter=free" className="filter-pill" data-active={filter === "free"}>Free</Link>
         {allCategories.map((c) => (
-          <Link
+          <Link prefetch={false}
             key={c.category}
             href={`/shop?category=${encodeURIComponent(c.category)}`}
             className="filter-pill"
@@ -142,7 +141,7 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
         ) : (
           <div className="shop-empty">
             <p className="shop-empty-msg">Nothing here yet.</p>
-            <Link href="/shop" className="section-link">Clear filters →</Link>
+            <Link prefetch={false} href="/shop" className="section-link">Clear filters →</Link>
           </div>
         )}
       </div>

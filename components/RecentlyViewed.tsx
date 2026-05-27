@@ -64,7 +64,7 @@ export default function RecentlyViewed({ currentSlug }: RecentlyViewedProps) {
       {portraitItems.length > 0 && (
         <div className="rv-grid rv-grid--portrait">
           {portraitItems.map(item => (
-            <Link key={item.slug} href={item.href} className="rv-card rv-card--portrait">
+            <Link prefetch={false} key={item.slug} href={item.href} className="rv-card rv-card--portrait">
               <div style={{ position: "relative", width: "100%", height: "100%" }}>
                 <Image
                   src={item.thumb}
@@ -90,7 +90,7 @@ export default function RecentlyViewed({ currentSlug }: RecentlyViewedProps) {
           </p>
           <div className="rv-grid rv-grid--landscape">
             {landscapeItems.map(item => (
-              <Link key={item.slug} href={item.href} className="rv-card rv-card--landscape">
+              <Link prefetch={false} key={item.slug} href={item.href} className="rv-card rv-card--landscape">
                 <div style={{ position: "relative", width: "100%", height: "100%" }}>
                   <Image
                     src={item.thumb}

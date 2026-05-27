@@ -150,9 +150,9 @@ export default function CookieBanner() {
         <p className="cookie-title">🍪 Cookies</p>
         <p className="cookie-desc">
           We use AdSense to keep this site free. Personalised ads use cookies.{" "}
-          <Link href="/privacy#cookies" className="cookie-link">Privacy</Link>
+          <Link prefetch={false} href="/privacy#cookies" className="cookie-link">Privacy</Link>
           {" · "}
-          <Link href="/terms" className="cookie-link">Terms</Link>
+          <Link prefetch={false} href="/terms" className="cookie-link">Terms</Link>
         </p>
         <div className="cookie-actions">
           <button

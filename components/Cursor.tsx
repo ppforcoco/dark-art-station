@@ -160,7 +160,7 @@ export default function Cursor() {
         el.innerHTML = trustedHtml(HAND_HTML) as string;
         el.style.filter = "drop-shadow(0 0 10px rgba(192,0,26,0.85)) drop-shadow(0 0 22px rgba(192,0,26,0.4))";
       } else if (next === "cursor-btn") {
-        el.style.width = "48px"; el.style.height = "48px";
+        el.style.width = "32px"; el.style.height = "32px";
         el.innerHTML = trustedHtml(CURSOR_HTML) as string;
         el.style.filter = "drop-shadow(0 0 8px rgba(192,0,26,0.7)) drop-shadow(0 0 18px rgba(192,0,26,0.35))";
       } else {

@@ -186,7 +186,7 @@ export default function PremiumLockedGate({ tags, devicePath = "iphone", childre
       }} />
 
       {/* Back link */}
-      <Link
+      <Link prefetch={false}
         href={`/${devicePath}`}
         style={{
           fontFamily: "var(--font-space, monospace)",

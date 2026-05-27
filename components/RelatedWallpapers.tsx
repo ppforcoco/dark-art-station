@@ -38,7 +38,7 @@ export default function RelatedWallpapers({
               : `/shop`;
 
           return (
-            <Link key={img.id} href={href} className={landscape ? "related-card related-card--landscape" : "related-card"}>
+            <Link prefetch={false} key={img.id} href={href} className={landscape ? "related-card related-card--landscape" : "related-card"}>
               <div className="related-card-img" style={{ position: "relative" }}>
                 <Image
                   src={getPublicUrl(img.r2Key)}

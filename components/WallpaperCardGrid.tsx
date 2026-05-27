@@ -153,7 +153,7 @@ export default function WallpaperCardGrid({ items, accentRgb, badge, badgeColor 
 
         /* UNLOCKED CARD */
         return (
-          <Link key={img.id} href={`/${img.devicePath}/${img.slug}`} style={{ textDecoration: "none", display: "block" }}>
+          <Link prefetch={false} key={img.id} href={`/${img.devicePath}/${img.slug}`} style={{ textDecoration: "none", display: "block" }}>
             <div
               className="wcg-card"
               style={{

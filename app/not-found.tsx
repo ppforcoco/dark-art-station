@@ -57,8 +57,8 @@ export default async function NotFound() {
           explore some art while you&apos;re here.
         </p>
         <div className="nf-actions">
-          <Link href="/"     className="nf-btn-primary">← Back to Home</Link>
-          <Link href="/shop" className="nf-btn-secondary">Browse All Collections</Link>
+          <Link prefetch={false} href="/"     className="nf-btn-primary">← Back to Home</Link>
+          <Link prefetch={false} href="/shop" className="nf-btn-secondary">Browse All Collections</Link>
         </div>
       </div>
 
@@ -68,7 +68,7 @@ export default async function NotFound() {
           <p className="nf-suggestions-label">— While you&apos;re here —</p>
           <div className="nf-grid">
             {suggestions.map(img => (
-              <Link key={img.id} href={getHref(img)} className="nf-card">
+              <Link prefetch={false} key={img.id} href={getHref(img)} className="nf-card">
                 <Image
                   src={getPublicUrl(img.r2Key)}
                   alt={img.title}

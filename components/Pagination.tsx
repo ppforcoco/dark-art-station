@@ -44,7 +44,7 @@ export default function Pagination({ currentPage, totalPages, baseUrl }: Paginat
 
       {/* Previous */}
       {hasPrev ? (
-        <Link
+        <Link prefetch={false}
           href={pageUrl(baseUrl, currentPage - 1)}
           className="pagination-btn"
           aria-label="Previous page"
@@ -63,7 +63,7 @@ export default function Pagination({ currentPage, totalPages, baseUrl }: Paginat
         item === "…" ? (
           <span key={`ellipsis-${i}`} className="pagination-ellipsis">…</span>
         ) : (
-          <Link
+          <Link prefetch={false}
             key={item}
             href={pageUrl(baseUrl, item)}
             className={`pagination-btn${item === currentPage ? " pagination-btn--active" : ""}`}
@@ -77,7 +77,7 @@ export default function Pagination({ currentPage, totalPages, baseUrl }: Paginat
 
       {/* Next */}
       {hasNext ? (
-        <Link
+        <Link prefetch={false}
           href={pageUrl(baseUrl, currentPage + 1)}
           className="pagination-btn"
           aria-label="Next page"

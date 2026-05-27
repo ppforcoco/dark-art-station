@@ -288,7 +288,7 @@ function MobileCard({ img, priority }: { img: WallpaperItem; priority: boolean }
   const href = `/${img.deviceType === "IPHONE" ? "iphone" : "android"}/${img.slug}`;
   const isNew = img.tags.includes("badge-new");
   return (
-    <Link href={href} className="hw-wall-card" style={{ position: "relative", display: "block", aspectRatio: "9/16", overflow: "hidden", borderRadius: "6px", background: "#0e0d1a", border: "1px solid rgba(255,255,255,0.06)", transition: "border-color 0.25s, box-shadow 0.25s" }}>
+    <Link prefetch={false} href={href} className="hw-wall-card" style={{ position: "relative", display: "block", aspectRatio: "9/16", overflow: "hidden", borderRadius: "6px", background: "#0e0d1a", border: "1px solid rgba(255,255,255,0.06)", transition: "border-color 0.25s, box-shadow 0.25s" }}>
       <Image src={img.src} alt={img.title} fill unoptimized className="hw-wall-card-img" sizes="(max-width:640px) 33vw, (max-width:1024px) 25vw, 17vw" priority={priority} loading={priority ? "eager" : "lazy"} style={{ objectFit: "cover", transition: "transform 0.5s ease" }} />
       {isNew && <span style={{ position: "absolute", top: 6, left: 6, fontFamily: "var(--font-space, monospace)", fontSize: "0.48rem", fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: "#fff", background: "#4caf50", padding: "2px 5px", borderRadius: "2px", zIndex: 10 }}>NEW</span>}
       <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.45) 0%, transparent 40%)", pointerEvents: "none" }} />
@@ -299,7 +299,7 @@ function MobileCard({ img, priority }: { img: WallpaperItem; priority: boolean }
 function DesktopCard({ img, priority }: { img: WallpaperItem; priority: boolean }) {
   const isNew = img.tags.includes("badge-new");
   return (
-    <Link href={`/pc/${img.slug}`} className="hw-wall-card" style={{ position: "relative", display: "block", aspectRatio: "16/9", overflow: "hidden", borderRadius: "6px", background: "#0e0d1a", border: "1px solid rgba(255,255,255,0.06)", transition: "border-color 0.25s, box-shadow 0.25s" }}>
+    <Link prefetch={false} href={`/pc/${img.slug}`} className="hw-wall-card" style={{ position: "relative", display: "block", aspectRatio: "16/9", overflow: "hidden", borderRadius: "6px", background: "#0e0d1a", border: "1px solid rgba(255,255,255,0.06)", transition: "border-color 0.25s, box-shadow 0.25s" }}>
       <Image src={img.src} alt={img.title} fill unoptimized className="hw-wall-card-img" sizes="(max-width:768px) 50vw, 33vw" priority={priority} loading={priority ? "eager" : "lazy"} style={{ objectFit: "cover", transition: "transform 0.5s ease" }} />
       {isNew && <span style={{ position: "absolute", top: 8, left: 8, fontFamily: "var(--font-space, monospace)", fontSize: "0.5rem", fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: "#fff", background: "#4caf50", padding: "2px 6px", borderRadius: "2px", zIndex: 10 }}>NEW</span>}
       <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.4) 0%, transparent 40%)", pointerEvents: "none" }} />

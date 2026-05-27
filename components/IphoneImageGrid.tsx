@@ -231,7 +231,7 @@ export default function IphoneImageGrid({
         const showVault = isPremium && isLockedGlobal;
 
         return (
-            <Link
+            <Link prefetch={false}
               key={img.id}
               href={`${hrefPrefix}/${img.slug}`}
               style={{

@@ -255,7 +255,7 @@ export default function DeviceImageCard({
         />
       )}
 
-      <Link
+      <Link prefetch={false}
         href={href}
         className="dic-wrap"
         style={{

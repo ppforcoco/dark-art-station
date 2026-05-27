@@ -224,7 +224,7 @@ export default async function Home() {
             </p>
 
             <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-              <Link href="/all" className="dt-btn dt-btn--enter" style={{ alignSelf: "flex-start" }}>
+              <Link prefetch={false} href="/all" className="dt-btn dt-btn--enter" style={{ alignSelf: "flex-start" }}>
                 <span>Browse All Wallpapers →</span>
               </Link>
               <span style={{
@@ -454,7 +454,7 @@ export default async function Home() {
                 <span className="wotd-header__rule" aria-hidden="true" />
               </div>
               <div className="wotd-top-frame">
-                <Link href={wotdHref} className="wotd-img-frame" aria-label={wotd.title}>
+                <Link prefetch={false} href={wotdHref} className="wotd-img-frame" aria-label={wotd.title}>
                   <div className="wotd-img-frame__wrap">
                     <Image src={wotdUrl} alt={wotd.title} fill loading="lazy" className="object-cover"
                       unoptimized
@@ -574,8 +574,8 @@ export default async function Home() {
             ))}
           </div>
           <div className="dt-mobile__cta-row">
-            <Link href="/iphone" className="dt-btn dt-btn--enter">Browse iPhone Wallpapers →</Link>
-            <Link href="/android" className="dt-btn dt-btn--ghost">Android Wallpapers →</Link>
+            <Link prefetch={false} href="/iphone" className="dt-btn dt-btn--enter">Browse iPhone Wallpapers →</Link>
+            <Link prefetch={false} href="/android" className="dt-btn dt-btn--ghost">Android Wallpapers →</Link>
           </div>
         </section>
       </LazySection>
@@ -606,7 +606,7 @@ export default async function Home() {
             <div className="dt-monitor__tag dt-monitor__tag--tr"><span>PC</span><span>Desktop</span></div>
           </div>
           <div className="dt-desktop__cta-row">
-            <Link href="/pc" className="dt-btn dt-btn--enter">Browse PC Wallpapers →</Link>
+            <Link prefetch={false} href="/pc" className="dt-btn dt-btn--enter">Browse PC Wallpapers →</Link>
           </div>
         </section>
       </LazySection>
@@ -723,7 +723,7 @@ export default async function Home() {
             const defiant = obsessions.find(o => o.slug === "the-defiant-manifesto")!;
             return (
               <div style={{ marginBottom: "2px" }}>
-                <Link href={`/obsessions/${encodeURIComponent(defiant.slug)}`}
+                <Link prefetch={false} href={`/obsessions/${encodeURIComponent(defiant.slug)}`}
                   style={{ display: "block", position: "relative", textDecoration: "none", overflow: "hidden" }}>
                   <div className="hw-defiant-wrap">
                     <Image
@@ -770,7 +770,7 @@ export default async function Home() {
             {obsessions.filter(o => o.slug !== "the-defiant-manifesto").map((obs, i) => {
               const thumb = obs.thumbnail ? (obs.thumbnail.startsWith("http") ? obs.thumbnail : `${r2Base}/${obs.thumbnail}`) : null;
               return (
-                <Link key={obs.id} href={`/obsessions/${encodeURIComponent(obs.slug)}`}
+                <Link prefetch={false} key={obs.id} href={`/obsessions/${encodeURIComponent(obs.slug)}`}
                   className="dt-obs-card" style={{ "--delay": `${i * 0.07}s` } as React.CSSProperties}>
                   <div className="dt-obs-card__bg">
                     {thumb ? (
@@ -804,7 +804,7 @@ export default async function Home() {
           </div>
 
           <div className="dt-obsessions__footer">
-            <Link href="/obsessions" className="dt-btn dt-btn--ghost">All Obsessions →</Link>
+            <Link prefetch={false} href="/obsessions" className="dt-btn dt-btn--ghost">All Obsessions →</Link>
           </div>
         </section>
       </LazySection>
@@ -828,8 +828,8 @@ export default async function Home() {
             <p className="dt-manifesto__body">You are not here by accident. The algorithm tried to show you bright things. You kept scrolling. Something darker. Something quieter. Something that stays.</p>
             <p className="dt-manifesto__body">You arrived because your phone screen felt empty without a shadow in the corner. Because a blank background is just a blank background. But a haunted wallpaper? That is a conversation. That is a pause. That is the moment someone borrows your phone and says &ldquo;what is that?&rdquo; and you just smile.</p>
             <div className="dt-manifesto__ctas">
-              <Link href="/obsessions" className="dt-btn dt-btn--enter"><span>Browse Freemium Packs →</span></Link>
-              <Link href="/about" className="dt-btn dt-btn--ghost dt-btn--sm">Our Story</Link>
+              <Link prefetch={false} href="/obsessions" className="dt-btn dt-btn--enter"><span>Browse Freemium Packs →</span></Link>
+              <Link prefetch={false} href="/about" className="dt-btn dt-btn--ghost dt-btn--sm">Our Story</Link>
             </div>
           </div>
         </section>

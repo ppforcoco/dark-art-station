@@ -56,7 +56,7 @@ export default function Breadcrumbs({ items }: BreadcrumbsProps) {
                     {item.label}
                   </span>
                 ) : (
-                  <Link href={item.href} className="hw-breadcrumb__link">
+                  <Link prefetch={false} href={item.href} className="hw-breadcrumb__link">
                     {index === 0 && (
                       <svg className="hw-breadcrumb__home-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                         <path d="M3 9.5L12 3L21 9.5V20C21 20.5523 20.5523 21 20 21H15V15H9V21H4C3.44772 21 3 20.5523 3 20V9.5Z" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>

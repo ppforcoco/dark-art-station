@@ -502,7 +502,7 @@ export default function MobileDetailLayout({
           </Link>
         ) : <div style={{ flex: 1 }} />}
 
-        <Link href={`/${dp}`} style={S.gridBtn} aria-label="All wallpapers">⊞</Link>
+        <Link prefetch={false} href={`/${dp}`} style={S.gridBtn} aria-label="All wallpapers">⊞</Link>
 
         {nextImage ? (
           <Link

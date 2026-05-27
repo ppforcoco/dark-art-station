@@ -234,7 +234,7 @@ export default function ProductCard({
           </div>
         ) : (
           /* ── Normal card (or adult after reveal) ── */
-          <Link
+          <Link prefetch={false}
             href={isAdult ? "#" : `/shop/${slug}`}
             onClick={isAdult ? (e) => { e.preventDefault(); setShowAgeGate(true); } : undefined}
             className={`product-card-image relative overflow-hidden block ${!thumbnail ? bgClass : ""}`}
@@ -309,7 +309,7 @@ export default function ProductCard({
                 ? `$${Number(price).toFixed(2)}`
                 : price}
             </span>
-            <Link
+            <Link prefetch={false}
               href={isAdult ? "#" : `/shop/${slug}`}
               onClick={isAdult ? (e) => { e.preventDefault(); setShowAgeGate(true); } : undefined}
               className="product-card-cta"

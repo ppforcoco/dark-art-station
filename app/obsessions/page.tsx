@@ -182,7 +182,7 @@ export default async function ObsessionsPage() {
                     );
 
                     return (
-                      <Link key={col.id} href={`/shop/${col.slug}`} style={{ textDecoration: "none", display: "block" }}>{card}</Link>
+                      <Link prefetch={false} key={col.id} href={`/shop/${col.slug}`} style={{ textDecoration: "none", display: "block" }}>{card}</Link>
                     );
                   })}
                 </div>

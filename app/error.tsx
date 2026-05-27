@@ -28,7 +28,7 @@ export default function ErrorPage({ error, reset }: ErrorProps) {
         )}
         <div className="error-actions">
           <button onClick={reset} className="error-btn-primary">Try Again</button>
-          <Link href="/" className="error-btn-secondary">Back to Home</Link>
+          <Link prefetch={false} href="/" className="error-btn-secondary">Back to Home</Link>
         </div>
       </div>
     </main>

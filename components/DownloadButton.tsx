@@ -19,10 +19,10 @@ function KeepExploringBar({ visible }: { visible: boolean }) {
       <div className="keep-exploring-inner">
         <span className="keep-exploring-text">🔥 Like this? Explore more dark wallpapers</span>
         <div className="keep-exploring-links">
-          <Link href="/iphone"  className="keep-exploring-link">iPhone</Link>
-          <Link href="/android" className="keep-exploring-link">Android</Link>
-          <Link href="/pc"      className="keep-exploring-link">PC</Link>
-          <Link href="/shop"    className="keep-exploring-link keep-exploring-link--accent">Browse All →</Link>
+          <Link prefetch={false} href="/iphone"  className="keep-exploring-link">iPhone</Link>
+          <Link prefetch={false} href="/android" className="keep-exploring-link">Android</Link>
+          <Link prefetch={false} href="/pc"      className="keep-exploring-link">PC</Link>
+          <Link prefetch={false} href="/shop"    className="keep-exploring-link keep-exploring-link--accent">Browse All →</Link>
         </div>
         <button
           type="button"

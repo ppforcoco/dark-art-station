@@ -937,7 +937,7 @@ export default function MoodClient({ moods, imagesByMood }: Props) {
           <div className="mood-grid" key={animKey}>
             {shownImages.length > 0 ? (
               shownImages.map((img) => (
-                <Link
+                <Link prefetch={false}
                   key={img.id}
                   href={devicePath(img)}
                   className="mood-card"
