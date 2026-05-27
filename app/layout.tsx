@@ -83,8 +83,6 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    // suppressHydrationWarning: inline scripts set data-theme/data-night before hydration.
-    // This is intentional and safe — suppresses React error #418.
     <html lang="en" dir="ltr" suppressHydrationWarning style={{ backgroundColor: "#0c0b14", color: "#e8e4dc" }}>
       <head>
         {/* Critical inline CSS — blocks render intentionally to prevent flash */}
@@ -105,19 +103,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <script dangerouslySetInnerHTML={{ __html: `(function(){try{var t=localStorage.getItem('hw-theme');if(t){document.documentElement.setAttribute('data-theme',t);if(t==='fog'){document.documentElement.style.backgroundColor='#ece9e2';document.documentElement.style.color='#1c1a17';}else if(t==='ghost'){document.documentElement.style.backgroundColor='#0d0d14';document.documentElement.style.color='#e0e0f8';}else{document.documentElement.style.backgroundColor='#0c0b14';document.documentElement.style.color='#e8e4dc';}}else{document.documentElement.style.backgroundColor='#0c0b14';document.documentElement.style.color='#e8e4dc';}}catch(e){}})();` }} />
         <script dangerouslySetInnerHTML={{ __html: `(function(){try{var h=new Date().getHours();if(h>=20||h<6)document.documentElement.setAttribute('data-night','true');}catch(e){}})();` }} />
 
-        {/* Preconnect to image CDNs only — no font CDN (next/font self-hosts) */}
+        {/* Preconnect to image CDN only */}
         <link rel="preconnect" href="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev" />
-
-        {/* LCP preload — hero mobile thumbnail (shown on mobile, hidden on desktop) */}
-        {/* This tells the browser to fetch it immediately before CSS runs */}
-        <link
-          rel="preload"
-          as="image"
-          href="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/extras/the-haunted-wallpapers-hero-thumbnail.webp"
-          type="image/webp"
-          fetchPriority="high"
-        />
 
         {/* PWA */}
         <link rel="manifest" href="/manifest.webmanifest" />
