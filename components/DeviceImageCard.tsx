@@ -91,9 +91,12 @@ export default function DeviceImageCard({
           }
         `}</style>
         <div
-          className="group relative overflow-hidden bg-[#0a0a0a]"
+          className="dic-wrap"
           style={{
             aspectRatio: aspectRatio.replace("/", " / "),
+            position: "relative",
+            overflow: "hidden",
+            backgroundColor: "#0a0a0a",
             cursor: "pointer",
             ...glowStyle,
           }}
@@ -254,10 +257,13 @@ export default function DeviceImageCard({
 
       <Link
         href={href}
-        className="dic-wrap group relative overflow-hidden bg-[#0a0a0a]"
+        className="dic-wrap"
         style={{
           aspectRatio: aspectRatio.replace("/", " / "),
           display: "block",
+          position: "relative",
+          overflow: "hidden",
+          backgroundColor: "#0a0a0a",
           ...glowStyle,
         }}
         onMouseEnter={() => setHovered(true)}
@@ -270,7 +276,7 @@ export default function DeviceImageCard({
           fill
           loading={priority ? "eager" : "lazy"}
           priority={priority}
-          className="object-cover transition-transform duration-500 group-hover:scale-105"
+          className="object-cover"
           sizes={sizes}
         />
 
@@ -319,9 +325,16 @@ export default function DeviceImageCard({
         </button>
 
         {/* Title overlay — bottom on hover */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[rgba(5,5,5,0.92)] via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-3">
-          <p className="font-body italic text-[0.85rem] text-white leading-tight">{title}</p>
-        </div>
+        <div style={{
+            position: "absolute", inset: 0,
+            background: "linear-gradient(to top, rgba(5,5,5,0.92), transparent)",
+            opacity: hovered ? 1 : 0,
+            transition: "opacity 0.3s ease",
+            display: "flex", alignItems: "flex-end",
+            padding: "12px",
+          }}>
+            <p style={{ fontStyle: "italic", fontSize: "0.85rem", color: "#fff", lineHeight: 1.3, margin: 0 }}>{title}</p>
+          </div>
       </Link>
     </>
   );

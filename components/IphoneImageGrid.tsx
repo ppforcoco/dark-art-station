@@ -224,12 +224,18 @@ export default function IphoneImageGrid({
         const showVault = isPremium && isLockedGlobal;
 
         return (
-          <>
             <Link
               key={img.id}
               href={`${hrefPrefix}/${img.slug}`}
-              className="group relative block overflow-hidden rounded-lg bg-[#0e0d1a] border border-white/[0.06]"
-              style={{ aspectRatio }}
+              style={{
+                position: "relative",
+                display: "block",
+                overflow: "hidden",
+                borderRadius: "8px",
+                backgroundColor: "#0e0d1a",
+                border: "1px solid rgba(255,255,255,0.06)",
+                aspectRatio,
+              }}
             >
               {showVault ? (
                 /* ── LOCKED PREMIUM — vault placeholder with live countdown ── */
@@ -355,7 +361,6 @@ export default function IphoneImageGrid({
                 </span>
               )}
             </Link>
-          </>
         );
       })}
 
