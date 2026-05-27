@@ -83,7 +83,7 @@ export default function ProgressiveGrid({
 
       {hasMore && (
         <>
-          <Sentinel onVisible={loadMore} />
+          <Sentinel key={visibleCount} onVisible={loadMore} />
           {Array.from({ length: skeletonCount }).map((_, i) => (
             <div
               key={`skel-${i}`}

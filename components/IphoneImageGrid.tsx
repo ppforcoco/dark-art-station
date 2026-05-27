@@ -374,7 +374,7 @@ export default function IphoneImageGrid({
       {/* ── Load-more sentinel — fires when user scrolls near bottom of loaded cards ── */}
       {hasMore && (
         <>
-          <LoadMoreSentinel onVisible={loadMore} />
+          <LoadMoreSentinel key={visibleCount} onVisible={loadMore} />
           {/* Ghost skeleton cards so the page doesn't jump */}
           {Array.from({ length: Math.min(batchSize, images.length - renderCount) }).map((_, i) => (
             <div
