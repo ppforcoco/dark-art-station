@@ -9,8 +9,9 @@ const CSP = [
   `default-src 'self'`,
   `script-src 'self' 'unsafe-inline' https://cloud.umami.is https://static.cloudflareinsights.com`,
   `script-src-elem 'self' 'unsafe-inline' https://cloud.umami.is https://static.cloudflareinsights.com`,
-  `style-src 'self' 'unsafe-inline'`,
-  `font-src 'self' data:`,
+  // fonts.googleapis.com serves the @font-face CSS; fonts.gstatic.com serves the actual font files
+  `style-src 'self' 'unsafe-inline' https://fonts.googleapis.com`,
+  `font-src 'self' data: https://fonts.gstatic.com`,
   `img-src 'self' data: blob: ${R2_CDN} ${ASSETS}`,
   `connect-src 'self' ${R2_CDN} ${ASSETS} https://cloud.umami.is https://api-gateway.umami.dev https://cloudflareinsights.com`,
   `media-src 'self' ${R2_CDN} ${ASSETS}`,
@@ -42,10 +43,12 @@ const nextConfig: NextConfig = {
   compress: true,
   serverExternalPackages: ["@prisma/client"],
 
-  // NOTE: Do NOT set experimental.optimizeCss: false
-  // That flag disables CSS inlining which hurts LCP (forces extra round-trips for styles).
-  // The "preload not used" CSS warnings in dev are a Next.js internals artifact — harmless in prod.
-  experimental: {},
+  experimental: {
+    // Merges CSS chunks at build time → eliminates the "preloaded but not used"
+    // warnings caused by Next.js emitting preload hints for intermediate CSS chunks
+    // that get superseded by the final merged stylesheet.
+    optimizeCss: true,
+  },
 
   async headers() {
     return [
@@ -53,7 +56,6 @@ const nextConfig: NextConfig = {
         source: "/(.*)",
         headers: securityHeaders,
       },
-      // Long-lived cache for hashed static assets
       {
         source: "/_next/static/:path*",
         headers: [
