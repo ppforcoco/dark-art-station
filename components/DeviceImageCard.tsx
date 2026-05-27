@@ -109,6 +109,7 @@ export default function DeviceImageCard({
           }}
         >
           <Image
+          unoptimized
             src={src}
             alt=""
             fill
@@ -177,6 +178,7 @@ export default function DeviceImageCard({
       >
         {/* Blurred background image */}
         <Image
+          unoptimized
           src={src}
           alt=""
           fill
@@ -262,6 +264,7 @@ export default function DeviceImageCard({
         onMouseLeave={() => setHovered(false)}
       >
         <Image
+          unoptimized
           src={src}
           alt={alt}
           fill

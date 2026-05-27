@@ -285,6 +285,7 @@ export default async function Home() {
                     <div style={{ position: "absolute", top: "7px", left: "50%", transform: "translateX(-50%)", width: "32%", height: "9px", background: "#000", borderRadius: "6px", zIndex: 4 }} />
                     {phone.featured ? (
                       <Image src={phone.src} alt={phone.alt} fill priority={false} loading="lazy"
+                        unoptimized
                         fetchPriority="low" sizes="(max-width:539px) 70px,(max-width:640px) 120px,240px"
                         style={{ objectFit: "cover" }} />
                     ) : (
@@ -330,7 +331,7 @@ export default async function Home() {
           .hw-hero-phones-wrap  { height:560px !important; overflow:visible !important; align-items:center !important; justify-content:center !important; }
         }
 
-        /* ── DEFIANT MANIFESTO — desktop 16:9 capped, mobile tiny fixed height ── */
+        /* ── DEFIANT MANIFESTO — true 16:9, constrain via max-width not max-height ── */
         .hw-defiant-wrap {
           position: relative;
           width: 100%;
@@ -338,30 +339,28 @@ export default async function Home() {
           border: 1px solid rgba(224,0,31,0.5);
           background: #080510;
           aspect-ratio: 16/9;
-          /* Cap height on desktop so it doesn't render as a giant mock */
-          max-height: 320px;
-        }
-        @media (min-width: 1200px) {
-          .hw-defiant-wrap { max-height: 380px; }
+          max-width: 900px;
         }
         @media (max-width: 640px) {
-          .hw-defiant-wrap { aspect-ratio: unset; height: 130px; max-height: unset; }
+          .hw-defiant-wrap { aspect-ratio: unset; height: 130px; max-width: unset; }
           .hw-defiant-title { font-size: clamp(0.8rem, 5vw, 1.1rem) !important; }
           .hw-defiant-body  { display: none !important; }
         }
 
-        /* ── OBSESSION GRID — 4-col mobile, 6-col tablet, 10-col desktop ── */
+        /* ── OBSESSION GRID — 4-col mobile, 7-col tablet, 10-col desktop ── */
         @media (max-width:767px) {
           .hw-desktop-section-mobile-hidden { display:none !important; }
           .dt-obs-grid { grid-template-columns:repeat(4,1fr) !important; gap:4px !important; }
           .dt-obs-card__title { font-size:0.44rem !important; padding:3px 4px !important; letter-spacing:0.03em !important; }
         }
         @media (min-width:768px) and (max-width:1199px) {
-          .dt-obs-grid { grid-template-columns:repeat(6,1fr) !important; gap:6px !important; }
+          .dt-obs-grid { grid-template-columns:repeat(7,1fr) !important; gap:5px !important; }
+          .dt-obs-card__title { font-size:0.42rem !important; padding:3px 4px !important; }
         }
         @media (min-width:1200px) {
-          /* 10 small columns — 9:16 cards stay ~110px wide → ~195px tall, compact */
-          .dt-obs-grid { grid-template-columns:repeat(10,minmax(60px,1fr)) !important; gap:6px !important; }
+          /* 10 cols — each card ~120px wide so 9:16 height is ~213px, compact not huge */
+          .dt-obs-grid { grid-template-columns:repeat(10,1fr) !important; gap:6px !important; }
+          .dt-obs-card__title { font-size:0.44rem !important; padding:3px 5px !important; }
         }
 
         /* ── KILL ALL ANIMATIONS + TRANSITIONS ON MOBILE ── */
@@ -458,6 +457,7 @@ export default async function Home() {
                 <Link href={wotdHref} className="wotd-img-frame" aria-label={wotd.title}>
                   <div className="wotd-img-frame__wrap">
                     <Image src={wotdUrl} alt={wotd.title} fill loading="lazy" className="object-cover"
+                      unoptimized
                       sizes="(max-width:480px) 38vw,(max-width:768px) 40vw,280px"
                       style={{ objectPosition: "center top" }} />
                   </div>
@@ -630,6 +630,7 @@ export default async function Home() {
                 <a key={kit.href} href={kit.href} className="hw-kit-card hw-kit-card--sm" style={{ "--kit-accent": kit.accent } as React.CSSProperties}>
                   <div className="hw-kit-card__thumb">
                     <Image src={kit.img} alt={kit.alt} fill loading="lazy" sizes="(max-width:540px) 54vw,(max-width:1024px) 33vw,360px" style={{ objectFit: "cover" }} className="hw-kit-card__img" />
+                      unoptimized
                     <div className="hw-kit-card__overlay" />
                     <span className="hw-kit-card__num">Kit {kit.num}</span>
                     {(kit as { premium?: boolean }).premium && <span className="hw-kit-card__premium">Premium</span>}
@@ -726,6 +727,7 @@ export default async function Home() {
                   style={{ display: "block", position: "relative", textDecoration: "none", overflow: "hidden" }}>
                   <div className="hw-defiant-wrap">
                     <Image
+                      unoptimized
                       src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/extras/the-defiant-crew-team-members-collection.webp"
                       alt="The Defiant Manifesto — Crew Collection"
                       fill
@@ -773,6 +775,7 @@ export default async function Home() {
                   <div className="dt-obs-card__bg">
                     {thumb ? (
                       <Image
+                        unoptimized
                         src={thumb}
                         alt={obs.title}
                         fill
