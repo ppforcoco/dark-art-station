@@ -104,8 +104,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             70%{opacity:.88}
             72%{opacity:1}
           }
-
-
+          }
         ` }} />
 
         {/*
@@ -248,8 +247,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             ]),
           }}
         />
-
-
         <Header />
         <main className="content-wrapper">
           {children}
@@ -281,20 +278,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           for third-party scripts. Also confirm your Page Rule / Cache Rule for
           gtag/js is set to "Bypass Cache".
         */}
-        {/* GA4 scripts — no @next/third-parties dependency */}
+        {/* GA4 — library + init in one afterInteractive block, no race condition */}
         {gaId && (
           <>
             <Script
               src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}
               strategy="afterInteractive"
-            />
-            <Script
-              id="ga-init"
-              strategy="lazyOnload"
-              dangerouslySetInnerHTML={{
-                __html:
-                  'gtag(\'js\',new Date());'
-                  + ('gtag(\'config\',\'' + gaId + '\',{send_page_view:true});'),
+              onLoad={() => {
+                // @ts-expect-error gtag global
+                window.gtag('js', new Date());
+                // @ts-expect-error gtag global
+                window.gtag('config', gaId, { send_page_view: true });
               }}
             />
             {/*
