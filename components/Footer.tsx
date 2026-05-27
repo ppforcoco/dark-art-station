@@ -11,7 +11,7 @@ export default function Footer(): JSX.Element {
 
         {/* ── Brand ── */}
         <div className="footer-col footer-col--brand">
-          <Link href="/" className="nav-logo">
+          <Link href="/" prefetch={false} className="nav-logo">
             HAUNTED<span className="logo-red">WALLPAPERS</span>
           </Link>
           <p className="footer-brand-desc">
@@ -23,12 +23,12 @@ export default function Footer(): JSX.Element {
         <div className="footer-col">
           <h3 className="footer-col-title">Company</h3>
           <ul>
-            <li><Link href="/all">All Wallpapers</Link></li>
-            <li><Link href="/obsessions">The Archive</Link></li>
-            <li><Link href="/mood">Mood Wallpapers</Link></li>
-            <li><Link href="/favorites">♥ Saved Wallpapers</Link></li>
-            <li><Link href="/blog">The Secrets</Link></li>
-            <li><Link href="/tools">Free Tools</Link></li>
+            <li><Link href="/all" prefetch={false}>All Wallpapers</Link></li>
+            <li><Link href="/obsessions" prefetch={false}>The Archive</Link></li>
+            <li><Link href="/mood" prefetch={false}>Mood Wallpapers</Link></li>
+            <li><Link href="/favorites" prefetch={false}>♥ Saved Wallpapers</Link></li>
+            <li><Link href="/blog" prefetch={false}>The Secrets</Link></li>
+            <li><Link href="/tools" prefetch={false}>Free Tools</Link></li>
           </ul>
         </div>
 
@@ -36,12 +36,12 @@ export default function Footer(): JSX.Element {
         <div className="footer-col">
           <h3 className="footer-col-title">Legal</h3>
           <ul>
-            <li><Link href="/about">About</Link></li>
-            <li><Link href="/contact">Contact</Link></li>
-            <li><Link href="/faq">FAQ</Link></li>
-            <li><Link href="/privacy">Privacy Policy</Link></li>
-            <li><Link href="/licensing">Licensing &amp; Usage</Link></li>
-            <li><Link href="/dmca">DMCA &amp; Copyright</Link></li>
+            <li><Link href="/about" prefetch={false}>About</Link></li>
+            <li><Link href="/contact" prefetch={false}>Contact</Link></li>
+            <li><Link href="/faq" prefetch={false}>FAQ</Link></li>
+            <li><Link href="/privacy" prefetch={false}>Privacy Policy</Link></li>
+            <li><Link href="/licensing" prefetch={false}>Licensing &amp; Usage</Link></li>
+            <li><Link href="/dmca" prefetch={false}>DMCA &amp; Copyright</Link></li>
           </ul>
         </div>
 

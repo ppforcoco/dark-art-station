@@ -625,7 +625,7 @@ export default function Header() {
       <nav className={`hw-nav${scrolled ? " hw-nav--scrolled" : ""}`} role="navigation" aria-label="Main navigation">
         <div className="hw-nav__inner">
           {/* Logo */}
-          <Link href="/" className="hw-nav__logo" onClick={closeMenu}>
+          <Link href="/" prefetch={false} className="hw-nav__logo" onClick={closeMenu}>
             <span className="hw-nav__logo-full">
               HAUNTED<span className="hw-nav__logo-accent">WALLPAPERS</span>
             </span>
@@ -640,6 +640,7 @@ export default function Header() {
               <Link
                 key={l.href}
                 href={l.href}
+                prefetch={false}
                 className={`hw-nav__link${l.href === "/sets" ? " hw-nav__link--sets" : ""}`}
               >
                 {l.label}
@@ -723,7 +724,7 @@ export default function Header() {
                       ? `/${img.deviceType.toLowerCase()}/${img.slug}`
                       : `/search?q=${encodeURIComponent(query)}`;
                   return (
-                    <Link key={img.id} href={href} className="hw-live-item" onClick={closeSearch}>
+                    <Link key={img.id} href={href} prefetch={false} className="hw-live-item" onClick={closeSearch}>
                       <div className="hw-live-thumb">
                         <img
                           src={`https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/${img.r2Key}`}
@@ -740,6 +741,7 @@ export default function Header() {
                 {!liveLoading && liveResults.length > 0 && (
                   <Link
                     href={`/search?q=${encodeURIComponent(query)}`}
+                    prefetch={false}
                     className="hw-live-see-all"
                     onClick={closeSearch}
                   >
@@ -775,6 +777,7 @@ export default function Header() {
             <Link
               key={l.href}
               href={l.href}
+              prefetch={false}
               className={`hw-menu-panel__link${l.href === "/sets" ? " hw-menu-panel__link--sets" : ""}`}
               onClick={closeMenu}
               tabIndex={menuOpen ? 0 : -1}
@@ -792,6 +795,7 @@ export default function Header() {
           </button>
           <Link
             href="/favorites"
+            prefetch={false}
             className="hw-menu-panel__link"
             onClick={closeMenu}
             tabIndex={menuOpen ? 0 : -1}
@@ -803,14 +807,14 @@ export default function Header() {
 
       {/* ── BOTTOM NAV ── */}
       <nav className="hw-bottom-nav" aria-label="Quick navigation">
-        <Link href="/iphone" className="hw-bottom-nav__item" onClick={closeMenu}>
+        <Link href="/iphone" prefetch={false} className="hw-bottom-nav__item" onClick={closeMenu}>
           <svg className="hw-bottom-nav__icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
             <rect x="7" y="2" width="10" height="20" rx="2" />
             <line x1="12" y1="18" x2="12" y2="18" strokeWidth="2" strokeLinecap="round" />
           </svg>
           iPhone
         </Link>
-        <Link href="/android" className="hw-bottom-nav__item" onClick={closeMenu}>
+        <Link href="/android" prefetch={false} className="hw-bottom-nav__item" onClick={closeMenu}>
           <svg className="hw-bottom-nav__icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
             <path d="M6 18V9a6 6 0 0 1 12 0v9" />
             <path d="M4 19h16" />
@@ -819,7 +823,7 @@ export default function Header() {
           </svg>
           Android
         </Link>
-        <Link href="/obsessions" className="hw-bottom-nav__item" onClick={closeMenu}>
+        <Link href="/obsessions" prefetch={false} className="hw-bottom-nav__item" onClick={closeMenu}>
           <svg className="hw-bottom-nav__icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
             <circle cx="12" cy="9" r="5" />
             <path d="M9 9c0-1.7 1.3-3 3-3" />
@@ -827,7 +831,7 @@ export default function Header() {
           </svg>
           Archive
         </Link>
-        <Link href="/mood" className="hw-bottom-nav__item" onClick={closeMenu}>
+        <Link href="/mood" prefetch={false} className="hw-bottom-nav__item" onClick={closeMenu}>
           <svg className="hw-bottom-nav__icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
             <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
           </svg>
