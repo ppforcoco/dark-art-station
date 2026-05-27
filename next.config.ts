@@ -35,14 +35,16 @@ const securityHeaders = [
     key: "Content-Security-Policy",
     value: CSP,
   },
-  {
-    key: "Require-Trusted-Types-For",
-    value: "'script'",
-  },
-  {
-    key: "Trusted-Types",
-    value: "hw-svg dompurify default 'allow-duplicates'",
-  },
+  // Trusted-Types disabled — it conflicts with Next.js CSS chunk injection,
+  // causing "preloaded but not used" warnings for /_next/static/css/*.css
+  // {
+  //   key: "Require-Trusted-Types-For",
+  //   value: "'script'",
+  // },
+  // {
+  //   key: "Trusted-Types",
+  //   value: "hw-svg dompurify default 'allow-duplicates'",
+  // },
   {
     key: "X-Frame-Options",
     value: "DENY",
@@ -81,6 +83,12 @@ const nextConfig: NextConfig = {
   output: "standalone",
   compress: true,
   serverExternalPackages: ["@prisma/client"],
+
+  experimental: {
+    // Prevents Next.js from injecting <link rel="preload"> for CSS chunks.
+    // Those preloads were firing but not consumed within the load event → console warnings.
+    optimizeCss: false,
+  },
 
   async headers() {
     return [
