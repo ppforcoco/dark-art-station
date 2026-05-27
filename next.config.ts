@@ -64,7 +64,7 @@ const securityHeaders = [
   },
   {
     key: "Trusted-Types",
-    value: "hw-svg dompurify default 'allow-duplicates'",
+    value: "hw-svg goog#html dompurify default 'allow-duplicates'",
   },
   // ── Clickjacking / framing ────────────────────────────────────────────────
   {
@@ -96,7 +96,7 @@ const securityHeaders = [
   // ── Cross-Origin policies ─────────────────────────────────────────────────
   {
     key: "Cross-Origin-Opener-Policy",
-    value: "same-origin",
+    value: "same-origin-allow-popups",
   },
   {
     key: "Cross-Origin-Resource-Policy",
