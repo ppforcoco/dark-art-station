@@ -42,17 +42,11 @@ const nextConfig: NextConfig = {
   compress: true,
   serverExternalPackages: ["@prisma/client"],
 
-  experimental: {},
-
-  // Remove CSS preload hints that Next.js emits for intermediate chunk files.
-  // Those <link rel="preload" as="style"> tags cause "preloaded but not used"
-  // console warnings because the browser preloads the chunk stylesheets but
-  // Next.js applies them via its own runtime before the load event fires.
-  webpack(config) {
-    config.plugins = (config.plugins ?? []).filter(
-      (p: { constructor?: { name?: string } }) => p?.constructor?.name !== "CssChunkingPlugin"
-    );
-    return config;
+  experimental: {
+    // Merges & inlines critical CSS at build time — eliminates the
+    // "preloaded but not used" warnings for /_next/static/css/*.css chunks.
+    // Requires: npm install --save-dev critters
+    optimizeCss: true,
   },
 
   async headers() {
