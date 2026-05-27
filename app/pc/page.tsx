@@ -154,8 +154,7 @@ export default async function PcPage({ searchParams }: PageProps) {
         <div className="pc-tag-pills">
           <Link href="/pc" className={`pc-tag-pill ${!tag ? "pc-tag-pill--active" : ""}`}>All</Link>
           {(() => {
-            const offset = Math.floor(Date.now() / (1000 * 60 * 60)) % topTags.length;
-            const visible = [...topTags, ...topTags].slice(offset, offset + 10);
+            const visible = topTags;
             return visible.map((t) => (
               <Link key={t} href={`/pc?tag=${encodeURIComponent(t)}`}
                 className={`pc-tag-pill ${tag === t ? "pc-tag-pill--active" : ""}`}>

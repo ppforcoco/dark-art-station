@@ -230,10 +230,7 @@ export default async function IphonePage({ searchParams }: PageProps) {
         const ALL_CATS = [
           "skeletons","minimal","dark-humor","gaming","cyberpunk","lofi","anime","dark-fantasy","gothic",
         ];
-        // Rotate by hour — stable: truncate to hour boundary so server+client agree
-        const stableHour = Math.floor(Date.now() / (1000 * 60 * 60));
-        const stableOffset = stableHour % ALL_CATS.length;
-        const visible = [...ALL_CATS, ...ALL_CATS].slice(stableOffset, stableOffset + 10);
+        const visible = ALL_CATS;
         return (
           <div className="hw-tag-pills-wrap">
             <div className="hw-tag-pills">
