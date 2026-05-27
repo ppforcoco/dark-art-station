@@ -350,22 +350,18 @@ export default async function Home() {
           .hw-defiant-body  { display: none !important; }
         }
 
-        /* ── OBSESSION GRID — 4-col mobile, 5-col tablet, 6-col desktop ── */
+        /* ── OBSESSION GRID — 4-col mobile, 6-col tablet, 10-col desktop ── */
         @media (max-width:767px) {
           .hw-desktop-section-mobile-hidden { display:none !important; }
           .dt-obs-grid { grid-template-columns:repeat(4,1fr) !important; gap:4px !important; }
           .dt-obs-card__title { font-size:0.44rem !important; padding:3px 4px !important; letter-spacing:0.03em !important; }
         }
         @media (min-width:768px) and (max-width:1199px) {
-          .dt-obs-grid { grid-template-columns:repeat(5,1fr) !important; gap:6px !important; }
-          /* Keep 9:16 ratio but cap the card height so it doesn't render huge */
-          .dt-obs-card { max-height:180px !important; }
+          .dt-obs-grid { grid-template-columns:repeat(6,1fr) !important; gap:6px !important; }
         }
         @media (min-width:1200px) {
-          .dt-obs-grid { grid-template-columns:repeat(6,1fr) !important; gap:8px !important; }
-          /* Smaller cards on desktop — 9:16 ratio preserved via the component,
-             we just constrain the column width via the 6-col grid */
-          .dt-obs-card { max-height:200px !important; }
+          /* 10 small columns — 9:16 cards stay ~110px wide → ~195px tall, compact */
+          .dt-obs-grid { grid-template-columns:repeat(10,minmax(60px,1fr)) !important; gap:6px !important; }
         }
 
         /* ── KILL ALL ANIMATIONS + TRANSITIONS ON MOBILE ── */
