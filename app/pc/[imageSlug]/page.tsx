@@ -163,7 +163,7 @@ export default async function PcImagePage({ params }: PageProps) {
                     priority
                     fetchPriority="high"
                     quality={85}
-                    sizes="(max-width: 768px) 100vw, 860px"
+                    sizes="(max-width: 768px) 100vw, 760px"
                   />
                 </div>
               </DeviceMockup>

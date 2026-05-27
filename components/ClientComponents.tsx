@@ -14,8 +14,7 @@ const ScrollReset       = dynamic(() => import("@/components/ScrollReset"),     
 const ScrollToTopButton = dynamic(() => import("@/components/ScrollToTopButton"),  { ssr: false });
 const CookieBanner      = dynamic(() => import("@/components/CookieBanner"),       { ssr: false });
 // Deferred — lowest priority, load after everything else is interactive
-const HalloweenCountdown = dynamic(() => import("@/components/HalloweenCountdown"), { ssr: false });
-const FeedbackWidget     = dynamic(() => import("@/components/FeedbackWidget"),     { ssr: false });
+const FeedbackWidget = dynamic(() => import("@/components/FeedbackWidget"), { ssr: false });
 
 export default function ClientComponents() {
   return (
@@ -26,7 +25,6 @@ export default function ClientComponents() {
       <CookieBanner />
       <ScrollToTopButton />
       {/* Non-critical — deferred, won't block interactivity */}
-      <HalloweenCountdown />
       <FeedbackWidget />
     </>
   );

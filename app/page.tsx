@@ -311,7 +311,8 @@ export default async function Home() {
         .hw-hero-gate-override { padding-top:8px !important; padding-bottom:0 !important; overflow:visible !important; }
         .hw-hero-mobile-thumb  { display:none; }
         @media (max-width:859px) {
-          .hw-hero-mobile-thumb { display:block; width:100%; max-height:260px; object-fit:cover; object-position:center top; }
+          /* Tiny hero thumb on mobile */
+          .hw-hero-mobile-thumb { display:block; width:100%; max-height:160px; object-fit:cover; object-position:center top; }
           .hw-hero-phones-wrap  { display:none !important; }
         }
         @media (min-width:860px) {
@@ -320,10 +321,7 @@ export default async function Home() {
           .hw-hero-phones-wrap  { height:560px !important; overflow:visible !important; align-items:center !important; justify-content:center !important; }
         }
 
-        /* ── DEFIANT MANIFESTO ──
-           Desktop: 16:9 aspect-ratio — unchanged.
-           Mobile (≤640px): fixed small height, no aspect-ratio, image cropped by overflow:hidden.
-        */
+        /* ── DEFIANT MANIFESTO — desktop 16:9, mobile tiny fixed height ── */
         .hw-defiant-wrap {
           position: relative;
           width: 100%;
@@ -333,38 +331,35 @@ export default async function Home() {
           aspect-ratio: 16/9;
         }
         @media (max-width: 640px) {
-          .hw-defiant-wrap {
-            aspect-ratio: unset;
-            height: 160px;
-          }
-          .hw-defiant-title {
-            font-size: clamp(0.9rem, 5.5vw, 1.3rem) !important;
-          }
-          .hw-defiant-body { display: none !important; }
+          .hw-defiant-wrap { aspect-ratio: unset; height: 130px; }
+          .hw-defiant-title { font-size: clamp(0.8rem, 5vw, 1.1rem) !important; }
+          .hw-defiant-body  { display: none !important; }
         }
 
-        /* ── OBSESSION GRID ──
-           Cards keep their natural 9:16 aspect-ratio (set by dt-obs-card in global CSS).
-           We just shrink the grid so each column — and therefore each card — is smaller.
-           No max-height, no overflow:hidden on the card, ratio fully intact.
-        */
+        /* ── OBSESSION GRID — 4-col mobile, 5-col tablet, 6-col desktop ── */
         @media (max-width:767px) {
           .hw-desktop-section-mobile-hidden { display:none !important; }
-          .dt-phone-showcase  { gap:4px !important; padding:0 8px !important; }
-          .dt-phone-card__shell { width:64px !important; }
-          .dt-phone-card--hero .dt-phone-card__shell { width:88px !important; }
-          /* 4-col on mobile — smaller columns = smaller cards = less blank space while loading */
-          .dt-obs-grid { grid-template-columns:repeat(4,1fr) !important; gap:5px !important; }
-          .dt-obs-card__title { font-size:0.48rem !important; padding:4px 5px !important; letter-spacing:0.04em !important; }
+          .dt-obs-grid { grid-template-columns:repeat(4,1fr) !important; gap:4px !important; }
+          .dt-obs-card__title { font-size:0.44rem !important; padding:3px 4px !important; letter-spacing:0.03em !important; }
         }
-        /* Tablet: 5-col */
         @media (min-width:768px) and (max-width:1199px) {
           .dt-obs-grid { grid-template-columns:repeat(5,1fr) !important; gap:6px !important; }
-          .dt-obs-card__title { font-size:0.6rem !important; }
         }
-        /* Desktop: 6-col */
         @media (min-width:1200px) {
           .dt-obs-grid { grid-template-columns:repeat(6,1fr) !important; gap:8px !important; }
+        }
+
+        /* ── KILL ALL ANIMATIONS + TRANSITIONS ON MOBILE ── */
+        @media (max-width:767px) {
+          *, *::before, *::after {
+            animation-duration: 0.001ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.001ms !important;
+            will-change: auto !important;
+          }
+          .wotd-particle    { display: none !important; }
+          .dt-fog           { display: none !important; }
+          .hw-nav__drip     { display: none !important; }
         }
       `}</style>
 
@@ -448,7 +443,7 @@ export default async function Home() {
                 <Link href={wotdHref} className="wotd-img-frame" aria-label={wotd.title}>
                   <div className="wotd-img-frame__wrap">
                     <Image src={wotdUrl} alt={wotd.title} fill loading="lazy" className="object-cover"
-                      sizes="(max-width:480px) 38vw,(max-width:768px) 40vw,320px"
+                      sizes="(max-width:480px) 38vw,(max-width:768px) 40vw,280px"
                       style={{ objectPosition: "center top" }} />
                   </div>
                   <div className="wotd-img-frame__scanlines" aria-hidden="true" />
@@ -619,7 +614,7 @@ export default async function Home() {
               ].map(kit => (
                 <a key={kit.href} href={kit.href} className="hw-kit-card hw-kit-card--sm" style={{ "--kit-accent": kit.accent } as React.CSSProperties}>
                   <div className="hw-kit-card__thumb">
-                    <Image src={kit.img} alt={kit.alt} fill loading="lazy" sizes="(max-width:540px) 54vw,(max-width:1024px) 45vw,360px" style={{ objectFit: "cover" }} className="hw-kit-card__img" />
+                    <Image src={kit.img} alt={kit.alt} fill loading="lazy" sizes="(max-width:540px) 54vw,(max-width:1024px) 33vw,360px" style={{ objectFit: "cover" }} className="hw-kit-card__img" />
                     <div className="hw-kit-card__overlay" />
                     <span className="hw-kit-card__num">Kit {kit.num}</span>
                     {(kit as { premium?: boolean }).premium && <span className="hw-kit-card__premium">Premium</span>}

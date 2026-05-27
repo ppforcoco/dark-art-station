@@ -18,6 +18,7 @@ import PremiumCountdown from "@/components/PremiumCountdown";
 import BirthdayComments from "@/components/BirthdayComments";
 import SummonRandomTag from "@/components/SummonRandomTag";
 import LazySection from "@/components/LazySection";
+import MobileDetailLayout from "@/components/MobileDetailLayout";
 
 export const dynamicParams = true;
 export const revalidate = 3600;
@@ -225,7 +226,7 @@ export default async function AndroidImagePage({ params }: PageProps) {
                     className="object-cover"
                     priority
                     fetchPriority="high"
-                    sizes="(max-width: 768px) 100vw, 480px"
+                    sizes="(max-width: 480px) 280px, (max-width: 768px) 340px, 480px"
                   />
                 </div>
               </DeviceMockup>
@@ -637,6 +638,25 @@ export default async function AndroidImagePage({ params }: PageProps) {
           }
         }
       `}</style>
+
+      {/* ── MOBILE DETAIL LAYOUT ── */}
+      <MobileDetailLayout
+        image={{
+          id: image.id,
+          slug: image.slug,
+          title: image.title,
+          thumbUrl,
+          fullUrl: thumbUrl,
+          displayDescription,
+          tags: image.tags,
+          downloadCount: image._count.downloads,
+          commentsEnabled: image.commentsEnabled ?? false,
+        }}
+        prevImage={prevImage ? { slug: prevImage.slug, title: prevImage.title, thumbUrl: `/api/thumb/android/${prevImage.slug}` } : null}
+        nextImage={nextImage ? { slug: nextImage.slug, title: nextImage.title, thumbUrl: `/api/thumb/android/${nextImage.slug}` } : null}
+        relatedImages={tagSortedStrip.map(img => ({ slug: img.slug, title: img.title, thumbUrl: getPublicUrl(img.r2Key) }))}
+        deviceType="android"
+      />
 
       <PageTracker item={{ slug: image.slug, title: image.title, thumb: thumbUrl, href: `/android/${imageSlug}` }} />
 

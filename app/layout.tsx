@@ -105,76 +105,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             72%{opacity:1}
           }
 
-          /* ── Announcement Bar ── */
-          .hw-announce-bar {
-            position: sticky;
-            top: 0;
-            z-index: 9999;
-            height: 36px;
-            background: #000000;
-            border-bottom: 1px solid #dc2626;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-          }
-          .hw-announce-bar a {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0;
-            width: 100%;
-            height: 100%;
-            text-decoration: none;
-            color: #ffffff;
-            font-family: var(--font-space, monospace);
-            font-size: 0.7rem;
-            font-weight: 700;
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            padding: 0 12px;
-            animation: hw-flicker 6s infinite;
-          }
-          .hw-announce-bar a:hover {
-            color: #dc2626;
-          }
-          .hw-announce-dot {
-            display: inline-block;
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background: #dc2626;
-            margin: 0 8px;
-            flex-shrink: 0;
-            box-shadow: 0 0 6px #dc2626;
-          }
 
-          /* ── Mobile: hide the long text, show short version ── */
-          .hw-announce-full { display: inline; }
-          .hw-announce-short { display: none; }
-
-          @media (max-width: 600px) {
-            .hw-announce-bar a {
-              font-size: 0.58rem;
-              letter-spacing: 0.06em;
-              padding: 0 8px;
-            }
-            .hw-announce-dot {
-              margin: 0 5px;
-            }
-            .hw-announce-full { display: none; }
-            .hw-announce-short { display: inline; }
-          }
-
-          @media (max-width: 380px) {
-            .hw-announce-bar a {
-              font-size: 0.52rem;
-              letter-spacing: 0.04em;
-            }
-          }
         ` }} />
 
         {/*
@@ -318,21 +249,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           }}
         />
 
-        {/* ── Announcement Bar ── */}
-        <div className="hw-announce-bar">
-          <a href="https://hauntedwallpapers.com/blog/the-skeleton-collection-4k-visions-for-the-obsessed">
-            <span className="hw-announce-dot" aria-hidden="true" />
-            <span className="hw-announce-full">
-              THE TOWN HAS BEEN WATCHING YOUR OBSESSION WITH SKELETONS...
-            </span>
-            <span className="hw-announce-short">
-              ENTER BONE STREET
-            </span>
-            <span className="hw-announce-dot" aria-hidden="true" />
-            <span className="hw-announce-full">ENTER BONE STREET</span>
-            <span className="hw-announce-dot" aria-hidden="true" />
-          </a>
-        </div>
 
         <Header />
         <main className="content-wrapper">

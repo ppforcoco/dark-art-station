@@ -17,6 +17,7 @@ import PremiumLockedGateClient from "@/components/PremiumLockedGate";
 import BirthdayComments from "@/components/BirthdayComments";
 import SummonRandomTag from "@/components/SummonRandomTag";
 import LazySection from "@/components/LazySection";
+import MobileDetailLayout, { type MobileImage, type MobileSibling } from "@/components/MobileDetailLayout";
 
 // ─── Premium cycle constants (server-side, no flash) ────────────────────────
 const EPOCH_MS  = Date.UTC(2025, 0, 1, 0, 0, 0);
@@ -195,7 +196,7 @@ export default async function IphoneImagePage({ params }: PageProps) {
                     className="object-cover"
                     priority
                     fetchPriority="high"
-                    sizes="(max-width: 768px) 100vw, 480px"
+                    sizes="(max-width: 480px) 280px, (max-width: 768px) 340px, 480px"
                   />
                 </div>
               </DeviceMockup>
@@ -644,6 +645,25 @@ export default async function IphoneImagePage({ params }: PageProps) {
           }
         }
       `}</style>
+
+      {/* ── MOBILE DETAIL LAYOUT — renders only on ≤767px ── */}
+      <MobileDetailLayout
+        image={{
+          id: image.id,
+          slug: image.slug,
+          title: image.title,
+          thumbUrl,
+          fullUrl: thumbUrl,
+          displayDescription,
+          tags: image.tags,
+          downloadCount: image._count.downloads,
+          commentsEnabled: image.commentsEnabled ?? false,
+        }}
+        prevImage={prevImage ? { slug: prevImage.slug, title: prevImage.title, thumbUrl: `/api/thumb/iphone/${prevImage.slug}` } : null}
+        nextImage={nextImage ? { slug: nextImage.slug, title: nextImage.title, thumbUrl: `/api/thumb/iphone/${nextImage.slug}` } : null}
+        relatedImages={tagSortedStrip.map(img => ({ slug: img.slug, title: img.title, thumbUrl: getPublicUrl(img.r2Key) }))}
+        deviceType="iphone"
+      />
 
       <PageTracker item={{
         slug: image.slug,
