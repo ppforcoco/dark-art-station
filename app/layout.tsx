@@ -11,22 +11,25 @@ const cinzel = Cinzel_Decorative({
   subsets: ["latin"],
   variable: "--font-cinzel",
   display: "swap",
-  preload: false,
+  preload: true,  // Critical — nav logo "HAUNTEDWALLPAPERS" = LCP element
+  adjustFontFallback: true,
 });
 const cormorant = Cormorant_Garamond({
-  weight: ["300", "400", "600"],
+  weight: ["400", "600"],  // Dropped 300 — saves one font file, rarely used
   subsets: ["latin"],
   style: ["normal", "italic"],
   variable: "--font-cormorant",
   display: "swap",
-  preload: false,
+  preload: false,  // Non-critical — body/description text, not LCP
+  adjustFontFallback: true,
 });
 const spaceMono = Space_Mono({
   weight: ["400", "700"],
   subsets: ["latin"],
   variable: "--font-space",
   display: "swap",
-  preload: false,
+  preload: true,  // Critical — used on nav, buttons, labels everywhere → affects FCP
+  adjustFontFallback: true, // Reduces layout shift by adjusting fallback metrics
 });
 
 const SITE_URL  = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
@@ -103,6 +106,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <script dangerouslySetInnerHTML={{ __html: `(function(){try{var h=new Date().getHours();if(h>=20||h<6)document.documentElement.setAttribute('data-night','true');}catch(e){}})();` }} />
 
         {/* Resource hints */}
+        {/* Google Fonts — preconnect speeds up font file fetch after preload */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://assets.hauntedwallpapers.com" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://assets.hauntedwallpapers.com" />
         <link rel="preconnect" href="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev" crossOrigin="anonymous" />
