@@ -143,22 +143,19 @@ export default async function Home() {
     { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/new/skeleton-drinking-haunted-energy-drink-art.webp", alt: "Skeleton Art",   featured: false, edgePhone: true  },
   ];
 
-  const EPOCH_MS  = Date.UTC(2025, 0, 1, 0, 0, 0);
-  const CYCLE_MS  = 48 * 60 * 60 * 1000;
-  const UNLOCK_MS = 24 * 60 * 60 * 1000;
-  const pos = (Date.now() - EPOCH_MS) % CYCLE_MS;
-  const isLockedGlobal = pos >= UNLOCK_MS;
-  const countdownDate  = new Date().toISOString();
+  // Lock state is computed client-side only (in WallpaperCardGrid + PremiumCountdown)
+  // to avoid React hydration mismatch from Date.now() differing between SSR and client.
+  const countdownDate  = new Date(Date.UTC(2025, 0, 1)).toISOString(); // stable epoch reference
 
   const premiumItems = premiumThisWeek.map((img) => {
     const devicePath = img.deviceType === "IPHONE" ? "iphone" : img.deviceType === "ANDROID" ? "android" : "pc";
     return {
       id: img.id, slug: img.slug,
-      title: isLockedGlobal ? "Sealed Away" : img.title,
+      title: img.title,
       src: getPublicUrl(img.r2Key),
       devicePath,
-      isLocked: isLockedGlobal,
-      href: isLockedGlobal ? "#" : undefined,
+      isLocked: img.tags?.includes("badge-premium") ?? false,
+      href: undefined,
       updatedAt: img.updatedAt ? new Date(img.updatedAt).toISOString() : null,
     };
   });
@@ -409,12 +406,12 @@ export default async function Home() {
           <section style={{ padding: "clamp(32px,5vw,64px) clamp(16px,5vw,72px)", background: "#0a0810", position: "relative", overflow: "hidden" }}>
             <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse 60% 40% at 50% 0%,rgba(201,168,76,0.07) 0%,transparent 70%)", pointerEvents: "none" }} />
             <div className="dt-section-head dt-section-head--center" style={{ marginBottom: "clamp(24px,4vw,40px)" }}>
-              <span className="dt-eyebrow" style={{ color: isLockedGlobal ? "#6b6b7a" : "#c9a84c" }}>
-                {isLockedGlobal ? "Back In The Vault" : "Hand-Picked Excellence"}
+              <span className="dt-eyebrow" style={{ color: "#c9a84c" }}>
+                Hand-Picked Excellence
               </span>
-              <h2 className="dt-section-title">{isLockedGlobal ? "Premium — Locked" : "Premium This Week"}</h2>
+              <h2 className="dt-section-title">Premium This Week</h2>
               <p className="dt-section-sub" style={{ maxWidth: "480px", margin: "0 auto" }}>
-                {isLockedGlobal ? "These pieces are sealed away. Check back when the vault reopens." : "The finest pieces from the archive. Surfaces for 24 hours, then sealed away."}
+                The finest pieces from the archive. Surfaces for 24 hours, then sealed away.
               </p>
               <div style={{ marginTop: "1rem", display: "flex", justifyContent: "center" }}>
                 <PremiumCountdown updatedAt={countdownDate} />
@@ -433,7 +430,7 @@ export default async function Home() {
         const devicePath = wotd.deviceType === "IPHONE" ? "iphone" : wotd.deviceType === "ANDROID" ? "android" : "pc";
         const wotdUrl    = getPublicUrl(wotd.r2Key);
         const wotdHref   = `/${devicePath}/${wotd.slug}`;
-        const todayStr   = new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" });
+        const todayStr   = "Tonight's Pick"; // rendered client-side to avoid hydration mismatch
         return (
           <LazySection skeletonVariant="wotd" minHeight="560px" rootMargin="400px 0px">
             <section className="wotd-section">
@@ -447,7 +444,7 @@ export default async function Home() {
                 <div className="wotd-header__center">
                   <span className="wotd-eyebrow">
                     <span className="wotd-eyebrow__dot" />
-                    Tonight&rsquo;s Pick &middot; {todayStr}
+                    Tonight&rsquo;s Pick
                     <span className="wotd-eyebrow__dot" />
                   </span>
                 </div>

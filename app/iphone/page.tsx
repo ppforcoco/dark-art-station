@@ -16,16 +16,8 @@ export const revalidate = 3600;
 
 const PAGE_SIZE = 24;
 
-// ── Premium lock: 24h on / 24h off cycle anchored to Jan 1 2025 00:00 UTC ─
-// MUST match PremiumCountdown.tsx and android/page.tsx exactly.
-const EPOCH_MS  = Date.UTC(2025, 0, 1, 0, 0, 0);
-const CYCLE_MS  = 48 * 60 * 60 * 1000; // 48h full cycle
-const UNLOCK_MS = 24 * 60 * 60 * 1000; // first 24h = unlocked
-
-function getServerLockState(): boolean {
-  const pos = (Date.now() - EPOCH_MS) % CYCLE_MS;
-  return pos >= UNLOCK_MS; // true = locked
-}
+// Lock state is computed client-side only in WallpaperCardGrid to avoid
+// React hydration mismatch (error #418) from Date.now() differing SSR vs client.
 
 interface PageProps {
   searchParams: Promise<{ tag?: string; page?: string }>;
@@ -85,7 +77,7 @@ export default async function IphonePage({ searchParams }: PageProps) {
 
   // true  = currently LOCKED   → premium images hidden, show "BACK IN [countdown]"
   // false = currently UNLOCKED → premium images visible, show "GONE IN [countdown]"
-  const isLockedGlobal = getServerLockState();
+  // isLockedGlobal removed — WallpaperCardGrid handles lock state client-side
 
   const where = {
     collectionId: null,
@@ -270,7 +262,7 @@ export default async function IphonePage({ searchParams }: PageProps) {
             priorityCount={2}
             aspectRatio="9/16"
             sizes="(max-width: 640px) 33vw, 160px"
-            isLockedGlobal={isLockedGlobal}
+            isLockedGlobal={false}
           />
         </section>
       )}
@@ -310,7 +302,7 @@ export default async function IphonePage({ searchParams }: PageProps) {
             priorityCount={2}
             aspectRatio="9/16"
             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 15vw"
-            isLockedGlobal={isLockedGlobal}
+            isLockedGlobal={false}
           />
         </section>
       )}
@@ -346,7 +338,7 @@ export default async function IphonePage({ searchParams }: PageProps) {
               aspectRatio="9/16"
               sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 20vw"
               insertAfter={9}
-              isLockedGlobal={isLockedGlobal}
+              isLockedGlobal={false}
               initialCount={6}
               batchSize={6}
             />

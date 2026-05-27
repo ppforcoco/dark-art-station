@@ -15,6 +15,7 @@ import FavoriteButton from "@/components/FavoriteButton";
 import PreviewButton from "@/components/PreviewButton";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import PremiumCountdown from "@/components/PremiumCountdown";
+import PremiumLockedGateClient from "@/components/PremiumLockedGate";
 import BirthdayComments from "@/components/BirthdayComments";
 import SummonRandomTag from "@/components/SummonRandomTag";
 import LazySection from "@/components/LazySection";
@@ -23,14 +24,8 @@ import MobileDetailLayout from "@/components/MobileDetailLayout";
 export const dynamicParams = true;
 export const revalidate = 3600;
 
-const EPOCH_MS  = Date.UTC(2025, 0, 1, 0, 0, 0);
-const CYCLE_MS  = 48 * 60 * 60 * 1000;
-const UNLOCK_MS = 24 * 60 * 60 * 1000;
-
-function isCurrentlyLocked(): boolean {
-  const pos = (Date.now() - EPOCH_MS) % CYCLE_MS;
-  return pos >= UNLOCK_MS;
-}
+// Premium lock is handled entirely client-side by PremiumLockedGateClient
+// to avoid React hydration mismatch (error #418).
 
 interface PageProps {
   params: Promise<{ imageSlug: string }>;
@@ -155,8 +150,7 @@ export default async function AndroidImagePage({ params }: PageProps) {
   if (!image || image.deviceType !== "ANDROID") notFound();
 
   const isPremium = image.tags.includes("badge-premium");
-  const isLocked  = isCurrentlyLocked();
-  if (isPremium && isLocked) return <PremiumVaultGate devicePath="android" />;
+  void isPremium; // lock is handled client-side by PremiumLockedGateClient
 
   const thumbUrl = getPublicUrl(image.r2Key);
   const displayDescription = image.description ?? buildFallbackDescription(image.title, image.tags);
@@ -202,6 +196,7 @@ export default async function AndroidImagePage({ params }: PageProps) {
   const nextImage = nextSibling;
 
   return (
+    <PremiumLockedGateClient tags={image.tags} devicePath="android">
     <main className="min-h-screen" style={{ backgroundColor: "var(--bg-primary)", color: "var(--text-primary)", colorScheme: "dark" }}>
 
       <Breadcrumbs items={[
@@ -688,5 +683,6 @@ export default async function AndroidImagePage({ params }: PageProps) {
         })
       }} />
     </main>
+  </PremiumLockedGateClient>
   );
 }

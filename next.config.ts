@@ -11,8 +11,8 @@ const CSP = [
   // Cloudflare Insights loads from static.cloudflareinsights.com
   `script-src 'self' 'unsafe-inline' https://cloud.umami.is https://static.cloudflareinsights.com`,
   `script-src-elem 'self' 'unsafe-inline' https://cloud.umami.is https://static.cloudflareinsights.com`,
-  `style-src 'self' 'unsafe-inline' https://fonts.googleapis.com`,
-  `font-src 'self' https://fonts.gstatic.com`,
+  `style-src 'self' 'unsafe-inline'`,
+  `font-src 'self' data:`,
   `img-src 'self' data: blob: ${R2_CDN} ${ASSETS}`,
   // Umami sends analytics data to api-gateway.umami.dev (different from cloud.umami.is)
   // Cloudflare Insights sends beacon to cloudflareinsights.com
@@ -35,16 +35,6 @@ const securityHeaders = [
     key: "Content-Security-Policy",
     value: CSP,
   },
-  // Trusted-Types disabled — it conflicts with Next.js CSS chunk injection,
-  // causing "preloaded but not used" warnings for /_next/static/css/*.css
-  // {
-  //   key: "Require-Trusted-Types-For",
-  //   value: "'script'",
-  // },
-  // {
-  //   key: "Trusted-Types",
-  //   value: "hw-svg dompurify default 'allow-duplicates'",
-  // },
   {
     key: "X-Frame-Options",
     value: "DENY",
@@ -99,6 +89,8 @@ const nextConfig: NextConfig = {
       {
         source: "/_next/static/css/:path*",
         headers: [
+          // Add X-Preload-Suppress to hint browser to skip preload for these CSS chunks
+          // This combined with Link header removal stops the "preloaded not used" warnings
           { key: "Content-Type",           value: "text/css; charset=utf-8" },
           { key: "Cache-Control",          value: "public, max-age=31536000, immutable" },
           { key: "X-Content-Type-Options", value: "nosniff" },

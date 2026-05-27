@@ -19,14 +19,9 @@ import SummonRandomTag from "@/components/SummonRandomTag";
 import LazySection from "@/components/LazySection";
 import MobileDetailLayout, { type MobileImage, type MobileSibling } from "@/components/MobileDetailLayout";
 
-// ─── Premium cycle constants (server-side, no flash) ────────────────────────
-const EPOCH_MS  = Date.UTC(2025, 0, 1, 0, 0, 0);
-const CYCLE_MS  = 48 * 60 * 60 * 1000;
-const UNLOCK_MS = 24 * 60 * 60 * 1000;
-function isPremiumLocked(): boolean {
-  const pos = (Date.now() - EPOCH_MS) % CYCLE_MS;
-  return pos >= UNLOCK_MS;
-}
+// Premium lock is handled entirely client-side by PremiumLockedGateClient
+// to avoid React hydration mismatch (error #418) caused by Date.now() differing
+// between server render and client hydration.
 
 export const dynamicParams = true;
 export const revalidate = 3600;
@@ -163,15 +158,11 @@ export default async function IphoneImagePage({ params }: PageProps) {
   const prevImage = prevSibling;
   const nextImage = nextSibling;
 
-  if (image.tags.includes("badge-premium") && isPremiumLocked()) {
-    return (
-      <PremiumLockedGateClient tags={image.tags} devicePath="iphone">
-        <span />
-      </PremiumLockedGateClient>
-    );
-  }
-
+  // PremiumLockedGateClient handles the lock check client-side.
+  // It renders children normally until hydrated, then shows the vault if locked.
+  // This avoids the server/client HTML mismatch (React error #418).
   return (
+    <PremiumLockedGateClient tags={image.tags} devicePath="iphone">
     <main className="min-h-screen" style={{ backgroundColor: "var(--bg-primary)", color: "var(--text-primary)", colorScheme: "dark" }}>
 
       <Breadcrumbs items={[
@@ -704,5 +695,6 @@ export default async function IphoneImagePage({ params }: PageProps) {
         })
       }} />
     </main>
+  </PremiumLockedGateClient>
   );
 }
