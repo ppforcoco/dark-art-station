@@ -192,11 +192,18 @@ export default function IphoneImageGrid({
 }: IphoneImageGridProps) {
   const defaultGridClass = "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3";
 
-  // Start as true (assume mobile) so SSR and first client render agree.
-  // useEffect immediately corrects to actual screen size.
-  // Previously was useState(null) causing SSR→client mismatch → React bail-out.
-  const [isMobile, setIsMobile] = useState(true);
+  // Default to false (desktop) — SSR has no screen size, so we assume desktop.
+  // The useEffect immediately corrects to true on actual mobile devices after hydration.
+  // This ensures PC always renders all images on first paint without waiting for an effect.
+  const [isMobile, setIsMobile] = useState(false);
   const [visibleCount, setVisibleCount] = useState(initialCount);
+
+  // On mobile, cap priority images to 2 max to avoid preload warnings and
+  // too many eager network requests on slow connections.
+  const effectivePriorityCount = isMobile ? Math.min(priorityCount, 2) : priorityCount;
+  // Never use next/image priority (which injects <link rel="preload">) —
+  // instead rely on loading="eager" for above-fold images only.
+  const effectivePriority = false;
 
   useEffect(() => {
     const mq = window.matchMedia("(max-width: 767px)");
@@ -283,8 +290,8 @@ export default function IphoneImageGrid({
                   unoptimized
                   className="object-cover"
                   sizes={sizes}
-                  priority={priority || idx < priorityCount}
-                  loading={priority || idx < priorityCount ? "eager" : "lazy"}
+                  priority={effectivePriority}
+                  loading={idx < effectivePriorityCount ? "eager" : "lazy"}
                 />
               )}
 

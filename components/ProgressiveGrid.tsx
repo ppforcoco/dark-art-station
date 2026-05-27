@@ -53,8 +53,10 @@ export default function ProgressiveGrid({
   const allChildren = Children.toArray(children);
   const total = allChildren.length;
 
-  // Start as true (assume mobile) — fixes SSR/hydration mismatch
-  const [isMobile, setIsMobile] = useState(true);
+  // Default to false (desktop) — SSR has no screen size, so we assume desktop.
+  // The useEffect immediately corrects to true on actual mobile devices after hydration.
+  // This ensures PC always renders all images on first paint without waiting for an effect.
+  const [isMobile, setIsMobile] = useState(false);
   const [visibleCount, setVisibleCount] = useState(initialCount);
 
   useEffect(() => {

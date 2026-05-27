@@ -12,16 +12,14 @@ const cinzel = Cinzel_Decorative({
   variable: "--font-cinzel",
   display: "swap",
   preload: false,
-  adjustFontFallback: true,
 });
 const cormorant = Cormorant_Garamond({
-  weight: ["400", "600"],
+  weight: ["300", "400", "600"],
   subsets: ["latin"],
   style: ["normal", "italic"],
   variable: "--font-cormorant",
   display: "swap",
   preload: false,
-  adjustFontFallback: true,
 });
 const spaceMono = Space_Mono({
   weight: ["400", "700"],
@@ -29,7 +27,6 @@ const spaceMono = Space_Mono({
   variable: "--font-space",
   display: "swap",
   preload: false,
-  adjustFontFallback: true,
 });
 
 const SITE_URL  = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
@@ -106,8 +103,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <script dangerouslySetInnerHTML={{ __html: `(function(){try{var h=new Date().getHours();if(h>=20||h<6)document.documentElement.setAttribute('data-night','true');}catch(e){}})();` }} />
 
         {/* Resource hints */}
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://assets.hauntedwallpapers.com" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://assets.hauntedwallpapers.com" />
         <link rel="preconnect" href="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev" crossOrigin="anonymous" />

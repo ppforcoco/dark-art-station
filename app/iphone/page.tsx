@@ -267,7 +267,7 @@ export default async function IphonePage({ searchParams }: PageProps) {
             hrefPrefix="/iphone"
             altSuffix="free dark iPhone wallpaper HD"
             gridStyle={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "12px", maxWidth: "480px" }}
-            priority
+            priorityCount={2}
             aspectRatio="9/16"
             sizes="(max-width: 640px) 33vw, 160px"
             isLockedGlobal={isLockedGlobal}
@@ -307,7 +307,7 @@ export default async function IphonePage({ searchParams }: PageProps) {
               gridTemplateColumns: "repeat(auto-fill, minmax(120px, 1fr))",
               gap: "clamp(10px,1.8vw,20px)",
             }}
-            priorityCount={5}
+            priorityCount={2}
             aspectRatio="9/16"
             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 15vw"
             isLockedGlobal={isLockedGlobal}
@@ -342,7 +342,7 @@ export default async function IphonePage({ searchParams }: PageProps) {
               hrefPrefix="/iphone"
               altSuffix="free dark iPhone wallpaper HD"
               gridClassName="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3"
-              priorityCount={6}
+              priorityCount={4}
               aspectRatio="9/16"
               sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 20vw"
               insertAfter={9}

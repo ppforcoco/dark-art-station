@@ -275,7 +275,7 @@ export default function DeviceImageCard({
           alt={alt}
           fill
           loading={priority ? "eager" : "lazy"}
-          priority={priority}
+          priority={false}
           className="object-cover"
           sizes={sizes}
         />
