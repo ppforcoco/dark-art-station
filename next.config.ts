@@ -9,7 +9,6 @@ const CSP = [
   `default-src 'self'`,
   `script-src 'self' 'unsafe-inline' https://cloud.umami.is https://static.cloudflareinsights.com`,
   `script-src-elem 'self' 'unsafe-inline' https://cloud.umami.is https://static.cloudflareinsights.com`,
-  // fonts.googleapis.com serves the @font-face CSS; fonts.gstatic.com serves the actual font files
   `style-src 'self' 'unsafe-inline' https://fonts.googleapis.com`,
   `font-src 'self' data: https://fonts.gstatic.com`,
   `img-src 'self' data: blob: ${R2_CDN} ${ASSETS}`,
@@ -43,11 +42,17 @@ const nextConfig: NextConfig = {
   compress: true,
   serverExternalPackages: ["@prisma/client"],
 
-  experimental: {
-    // Merges CSS chunks at build time → eliminates the "preloaded but not used"
-    // warnings caused by Next.js emitting preload hints for intermediate CSS chunks
-    // that get superseded by the final merged stylesheet.
-    optimizeCss: true,
+  experimental: {},
+
+  // Remove CSS preload hints that Next.js emits for intermediate chunk files.
+  // Those <link rel="preload" as="style"> tags cause "preloaded but not used"
+  // console warnings because the browser preloads the chunk stylesheets but
+  // Next.js applies them via its own runtime before the load event fires.
+  webpack(config) {
+    config.plugins = (config.plugins ?? []).filter(
+      (p: { constructor?: { name?: string } }) => p?.constructor?.name !== "CssChunkingPlugin"
+    );
+    return config;
   },
 
   async headers() {
