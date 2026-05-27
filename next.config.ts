@@ -32,7 +32,7 @@ const CSP = [
   `script-src-elem 'self' 'unsafe-inline' ${GTM} ${GA} ${CF_BEACON}`,
   `style-src 'self' 'unsafe-inline' https://fonts.googleapis.com`,
   `font-src 'self' https://fonts.gstatic.com`,
-  `img-src 'self' data: blob: ${R2_CDN} ${ASSETS} ${GA} https://www.google.com`,
+  `img-src 'self' data: blob: ${R2_CDN} ${ASSETS} ${GA} ${GTM} https://www.google.com https://www.google.com.pk`,
   `connect-src 'self' ${R2_CDN} ${ASSETS} ${GTM} ${GA} ${GSTATIC} ${CF_BEACON} ${CF_INSIGHTS}`,
   `media-src 'self' ${R2_CDN} ${ASSETS}`,
   `frame-src 'self'`,

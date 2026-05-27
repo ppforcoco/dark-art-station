@@ -110,7 +110,7 @@ export default function Cursor() {
     if (!document.getElementById(styleId)) {
       const s = document.createElement("style");
       s.id = styleId;
-      s.textContent = "*, *::before, *::after { cursor: none !important; }";
+      s.textContent = "html, body, *, *::before, *::after { cursor: none !important; } a, button, [role=button], input, select, textarea, label { cursor: none !important; }";
       document.head.prepend(s);
     }
 
