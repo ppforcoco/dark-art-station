@@ -4,7 +4,7 @@
 //
 // IMPORTANT: /sw.js must exist at public/sw.js — see that file for the full
 // fetch routing logic, especially the analytics passthrough rules that prevent
-// the SW from intercepting GA4 beacon requests (which caused 0s engagement time).
+// the SW from intercepting analytics beacon requests.
 
 import { useEffect } from "react";
 

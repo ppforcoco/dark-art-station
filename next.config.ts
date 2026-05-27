@@ -3,11 +3,6 @@ import type { NextConfig } from "next";
 // ─── Trusted Origins (keep in sync with CSP connect-src) ───────────────────
 const R2_CDN   = "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev";
 const ASSETS   = "https://assets.hauntedwallpapers.com";
-const GTM      = "https://www.googletagmanager.com";
-const GA       = "https://www.google-analytics.com";
-const GSTATIC  = "https://www.gstatic.com";
-const CF_BEACON    = "https://static.cloudflareinsights.com";  // Cloudflare Web Analytics
-const CF_INSIGHTS  = "https://cloudflareinsights.com";         // Cloudflare beacon endpoint
 
 // ─── Content Security Policy ────────────────────────────────────────────────
 //
@@ -27,13 +22,13 @@ const CF_INSIGHTS  = "https://cloudflareinsights.com";         // Cloudflare bea
 //
 const CSP = [
   `default-src 'self'`,
-  `script-src 'self' 'unsafe-inline' ${GTM} ${GA} ${CF_BEACON}`,
+  `script-src 'self' 'unsafe-inline' https://cloud.umami.is`,
   // Explicit script-src-elem so browsers don't fall back to script-src warning
-  `script-src-elem 'self' 'unsafe-inline' ${GTM} ${GA} ${CF_BEACON}`,
+  `script-src-elem 'self' 'unsafe-inline' https://cloud.umami.is`,
   `style-src 'self' 'unsafe-inline' https://fonts.googleapis.com`,
   `font-src 'self' https://fonts.gstatic.com`,
-  `img-src 'self' data: blob: ${R2_CDN} ${ASSETS} ${GA} ${GTM} https://www.google.com https://www.google.com.pk`,
-  `connect-src 'self' ${R2_CDN} ${ASSETS} ${GTM} ${GA} ${GSTATIC} ${CF_BEACON} ${CF_INSIGHTS}`,
+  `img-src 'self' data: blob: ${R2_CDN} ${ASSETS}`,
+  `connect-src 'self' ${R2_CDN} ${ASSETS} https://cloud.umami.is`,
   `media-src 'self' ${R2_CDN} ${ASSETS}`,
   `frame-src 'self'`,
   `frame-ancestors 'none'`,
@@ -64,7 +59,7 @@ const securityHeaders = [
   },
   {
     key: "Trusted-Types",
-    value: "hw-svg goog#html dompurify default 'allow-duplicates'",
+    value: "hw-svg dompurify default 'allow-duplicates'",
   },
   // ── Clickjacking / framing ────────────────────────────────────────────────
   {

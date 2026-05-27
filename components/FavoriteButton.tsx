@@ -36,15 +36,6 @@ export function toggleFavorite(item: FavoriteItem): boolean {
   try { localStorage.setItem(STORAGE_KEY, JSON.stringify(updated)); } catch {}
   window.dispatchEvent(new CustomEvent("hw-favorites-change", { detail: updated }));
   const nowFavorited = idx === -1;
-  // GA4: favoriting = strong engagement signal
-  if (typeof window !== "undefined" && typeof (window as any).gtag === "function") {
-    (window as any).gtag("event", nowFavorited ? "add_to_wishlist" : "remove_from_wishlist", {
-      item_id:   item.slug,
-      item_name: item.title,
-      item_category: item.device ?? "wallpaper",
-      event_category: "engagement",
-    });
-  }
   return nowFavorited;
 }
 

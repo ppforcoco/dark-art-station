@@ -104,65 +104,6 @@ function writeConsent(value: "accepted" | "declined") {
 export function getConsent(): ConsentState { return readConsentSync(); }
 export function setConsentValue(value: "accepted" | "declined") { writeConsent(value); }
 
-// ── fireGtag ──────────────────────────────────────────────────────────────────
-// ROOT CAUSE FIX:
-//
-// The old code called gtag('consent', 'update') immediately when a returning
-// user's cookie was found on page load. At that moment gtag has just started
-// processing the 'config' command. The consent update interrupts it mid-
-// validation → "Event processing aborted during validation" → no hits reach GA4.
-//
-// Two-part fix:
-//
-// 1. SKIP the update for 'accepted' when analytics_storage is already 'granted'
-//    in layout.tsx's consent default. The update would be a no-op for analytics
-//    (ad_storage was already denied, we're just re-denying it for 'declined').
-//    We only need to update ad_storage/ad_user_data/ad_personalization, and only
-//    when the user has explicitly accepted ads. 'declined' keeps defaults so is
-//    also a no-op and can be skipped.
-//
-// 2. DELAY the update via setTimeout(0) so it queues AFTER the current JS call
-//    stack (which includes the config command) has fully completed. This
-//    eliminates the race condition entirely for any edge case where an update
-//    is genuinely needed.
-//
-// Result: returning users → no update fired → config completes cleanly → GA4
-//         receives hits. New users who accept → update fires after stack clears.
-
-function fireGtag(decision: "accepted" | "declined") {
-  // 'declined' = keep defaults (analytics_storage already granted, ads denied).
-  // No update needed — skipping prevents any possible race condition.
-  if (decision === "declined") return;
-
-  // 'accepted' = user wants personalised ads. We only need to update ad fields.
-  // analytics_storage is already 'granted' in the layout.tsx consent default,
-  // so including it here is redundant and risks a mid-validation collision.
-  const payload = {
-    ad_storage:          "granted" as const,
-    ad_user_data:        "granted" as const,
-    ad_personalization:  "granted" as const,
-  };
-
-  // setTimeout(0) pushes this off the current call stack entirely.
-  // The config command will have finished processing before this runs.
-  setTimeout(() => {
-    if (typeof (window as any).gtag === "function") {
-      (window as any).gtag("consent", "update", payload);
-      return;
-    }
-    // Fallback: gtag not yet available (very slow connections), retry up to 2s
-    let attempts = 0;
-    const interval = setInterval(() => {
-      attempts++;
-      if (typeof (window as any).gtag === "function") {
-        (window as any).gtag("consent", "update", payload);
-        clearInterval(interval);
-      } else if (attempts >= 20) {
-        clearInterval(interval);
-      }
-    }, 100);
-  }, 0);
-}
 
 // ── Component ─────────────────────────────────────────────────────────────────
 export default function CookieBanner() {
@@ -175,15 +116,11 @@ export default function CookieBanner() {
 
     const sync = readConsentSync();
     if (sync !== null) {
-      // Returning user — fire gtag update if they previously accepted ads.
-      // fireGtag now uses setTimeout(0) so it won't race with config.
-      if (sync === "accepted") fireGtag("accepted");
       return;
     }
 
     readConsentFull().then((result) => {
       if (result !== null) {
-        if (result === "accepted") fireGtag("accepted");
       } else {
         setVisible(true);
       }
@@ -192,13 +129,11 @@ export default function CookieBanner() {
 
   function accept() {
     writeConsent("accepted");
-    fireGtag("accepted");
     setVisible(false);
   }
 
   function decline() {
     writeConsent("declined");
-    // No fireGtag call needed — declined keeps the defaults unchanged
     setVisible(false);
   }
 

@@ -152,13 +152,10 @@ export default function DownloadButton({ href, viewCount, downloadCount, label, 
     setState("loading");
     setTimeout(() => setState("done"), 1400);
 
-    // Fire GA4 file_download event — maps to Key Event in GA4 dashboard
-    if (typeof window !== "undefined" && typeof (window as any).gtag === "function") {
-      (window as any).gtag("event", "file_download", {
-        file_name: href.split("/").pop() ?? href,
-        file_extension: "webp",
-        link_url: href,
-        event_category: "engagement",
+    // Track download in Umami
+    if (typeof window !== "undefined" && typeof (window as any).umami === "object") {
+      (window as any).umami.track("download", {
+        file: href.split("/").pop() ?? href,
       });
     }
   }
@@ -255,10 +252,6 @@ export default function DownloadButton({ href, viewCount, downloadCount, label, 
             </button>
           )}
         </div>
-
-
-
-        
       </div>
 
       {/* ── Sticky Keep Exploring bar ── */}

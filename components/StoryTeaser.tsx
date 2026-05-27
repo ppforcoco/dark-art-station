@@ -1,6 +1,5 @@
 // components/StoryTeaser.tsx
 // Lore teaser box shown below the main image on individual wallpaper pages.
-// Drives users to the blog (second page) → boosts GA4 engagement rate.
 
 import Link from "next/link";
 
