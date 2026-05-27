@@ -344,28 +344,27 @@ export default async function Home() {
         }
 
         /* ── OBSESSION GRID ──
-           Card boxes are now capped at a small max-height on all breakpoints.
-           The 9:16 thumbnail image inside is cropped by overflow:hidden — ratio preserved in the image, just the visible box is smaller.
+           Cards keep their natural 9:16 aspect-ratio (set by dt-obs-card in global CSS).
+           We just shrink the grid so each column — and therefore each card — is smaller.
+           No max-height, no overflow:hidden on the card, ratio fully intact.
         */
         @media (max-width:767px) {
           .hw-desktop-section-mobile-hidden { display:none !important; }
           .dt-phone-showcase  { gap:4px !important; padding:0 8px !important; }
           .dt-phone-card__shell { width:64px !important; }
           .dt-phone-card--hero .dt-phone-card__shell { width:88px !important; }
-          /* 3-col unchanged */
-          .dt-obs-grid { grid-template-columns:repeat(3,1fr) !important; gap:6px !important; }
-          /* Compact card height — no huge empty boxes while loading */
-          .dt-obs-card { min-height:unset !important; max-height:130px !important; overflow:hidden !important; }
-          .dt-obs-card__title { font-size:0.52rem !important; padding:5px 6px !important; letter-spacing:0.05em !important; }
+          /* 4-col on mobile — smaller columns = smaller cards = less blank space while loading */
+          .dt-obs-grid { grid-template-columns:repeat(4,1fr) !important; gap:5px !important; }
+          .dt-obs-card__title { font-size:0.48rem !important; padding:4px 5px !important; letter-spacing:0.04em !important; }
         }
-        /* Tablet */
+        /* Tablet: 5-col */
         @media (min-width:768px) and (max-width:1199px) {
-          .dt-obs-card { min-height:unset !important; max-height:210px !important; overflow:hidden !important; }
-          .dt-obs-card__title { font-size:0.68rem !important; }
+          .dt-obs-grid { grid-template-columns:repeat(5,1fr) !important; gap:6px !important; }
+          .dt-obs-card__title { font-size:0.6rem !important; }
         }
-        /* Desktop */
+        /* Desktop: 6-col */
         @media (min-width:1200px) {
-          .dt-obs-card { min-height:unset !important; max-height:270px !important; overflow:hidden !important; }
+          .dt-obs-grid { grid-template-columns:repeat(6,1fr) !important; gap:8px !important; }
         }
       `}</style>
 
