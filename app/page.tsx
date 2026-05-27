@@ -255,6 +255,7 @@ export default async function Home() {
             decoding="sync"
             width="800"
             height="450"
+            style={{ width: "100%", display: "block" }}
           />
 
           {/* DESKTOP phone strip */}
@@ -311,8 +312,16 @@ export default async function Home() {
         .hw-hero-gate-override { padding-top:8px !important; padding-bottom:0 !important; overflow:visible !important; }
         .hw-hero-mobile-thumb  { display:none; }
         @media (max-width:859px) {
-          /* Tiny hero thumb on mobile */
-          .hw-hero-mobile-thumb { display:block; width:100%; max-height:160px; object-fit:cover; object-position:center top; }
+          /* Hero thumbnail — full width, natural 16:9 aspect ratio, no cropping */
+          .hw-hero-mobile-thumb {
+            display:block !important;
+            width:100% !important;
+            height:auto !important;
+            max-height:unset !important;
+            aspect-ratio:16/9;
+            object-fit:cover;
+            object-position:center center;
+          }
           .hw-hero-phones-wrap  { display:none !important; }
         }
         @media (min-width:860px) {
@@ -321,7 +330,7 @@ export default async function Home() {
           .hw-hero-phones-wrap  { height:560px !important; overflow:visible !important; align-items:center !important; justify-content:center !important; }
         }
 
-        /* ── DEFIANT MANIFESTO — desktop 16:9, mobile tiny fixed height ── */
+        /* ── DEFIANT MANIFESTO — desktop 16:9 capped, mobile tiny fixed height ── */
         .hw-defiant-wrap {
           position: relative;
           width: 100%;
@@ -329,9 +338,14 @@ export default async function Home() {
           border: 1px solid rgba(224,0,31,0.5);
           background: #080510;
           aspect-ratio: 16/9;
+          /* Cap height on desktop so it doesn't render as a giant mock */
+          max-height: 320px;
+        }
+        @media (min-width: 1200px) {
+          .hw-defiant-wrap { max-height: 380px; }
         }
         @media (max-width: 640px) {
-          .hw-defiant-wrap { aspect-ratio: unset; height: 130px; }
+          .hw-defiant-wrap { aspect-ratio: unset; height: 130px; max-height: unset; }
           .hw-defiant-title { font-size: clamp(0.8rem, 5vw, 1.1rem) !important; }
           .hw-defiant-body  { display: none !important; }
         }
@@ -344,9 +358,14 @@ export default async function Home() {
         }
         @media (min-width:768px) and (max-width:1199px) {
           .dt-obs-grid { grid-template-columns:repeat(5,1fr) !important; gap:6px !important; }
+          /* Keep 9:16 ratio but cap the card height so it doesn't render huge */
+          .dt-obs-card { max-height:180px !important; }
         }
         @media (min-width:1200px) {
           .dt-obs-grid { grid-template-columns:repeat(6,1fr) !important; gap:8px !important; }
+          /* Smaller cards on desktop — 9:16 ratio preserved via the component,
+             we just constrain the column width via the 6-col grid */
+          .dt-obs-card { max-height:200px !important; }
         }
 
         /* ── KILL ALL ANIMATIONS + TRANSITIONS ON MOBILE ── */

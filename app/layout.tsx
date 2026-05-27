@@ -289,7 +289,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               id="ga-init"
               strategy="afterInteractive"
               dangerouslySetInnerHTML={{
-                __html: 'window.addEventListener("load",function(){if(typeof window.gtag==="function"){window.gtag("js",new Date());window.gtag("config","' + gaId + '",{send_page_view:true});}});',
+                __html: 'if(typeof window.gtag==="function"){window.gtag("js",new Date());window.gtag("config","' + gaId + '",{send_page_view:true});}',
               }}
             />
             {/*
