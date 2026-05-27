@@ -10,9 +10,6 @@ const cinzel = Cinzel_Decorative({
   weight: ["400", "700", "900"],
   subsets: ["latin"],
   variable: "--font-cinzel",
-  // 'optional' tells Next.js NOT to emit <link rel="preload"> hints for font files.
-  // 'swap' was causing woff2 preload warnings on every page because Next.js
-  // preloads all font variants upfront even if they aren't used on that route.
   display: "optional",
   preload: false,
 });
@@ -107,6 +104,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {/* Theme init — must run before paint */}
         <script dangerouslySetInnerHTML={{ __html: `(function(){try{var t=localStorage.getItem('hw-theme');if(t){document.documentElement.setAttribute('data-theme',t);if(t==='fog'){document.documentElement.style.backgroundColor='#ece9e2';document.documentElement.style.color='#1c1a17';}else if(t==='ghost'){document.documentElement.style.backgroundColor='#0d0d14';document.documentElement.style.color='#e0e0f8';}else{document.documentElement.style.backgroundColor='#0c0b14';document.documentElement.style.color='#e8e4dc';}}else{document.documentElement.style.backgroundColor='#0c0b14';document.documentElement.style.color='#e8e4dc';}}catch(e){}})();` }} />
         <script dangerouslySetInnerHTML={{ __html: `(function(){try{var h=new Date().getHours();if(h>=20||h<6)document.documentElement.setAttribute('data-night','true');}catch(e){}})();` }} />
+
+        {/* Fix: consume CSS preloads to silence "preloaded but not used" warnings.
+            Next.js emits <link rel="preload" as="style"> for CSS chunks but doesn't
+            apply them as stylesheets in time, triggering console warnings that can
+            affect AdSense review. This script promotes them to rel="stylesheet"
+            immediately on load so the browser considers them consumed. */}
+        <script dangerouslySetInnerHTML={{ __html: `(function(){function f(){document.querySelectorAll('link[rel="preload"][as="style"]').forEach(function(l){l.rel='stylesheet';});}if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',f,{once:true});}else{f();}window.addEventListener('load',f,{once:true});})();` }} />
 
         {/* Preconnect to image CDN only */}
         <link rel="preconnect" href="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev" crossOrigin="anonymous" />
