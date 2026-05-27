@@ -27,9 +27,12 @@ export default function Header() {
   const debounceRef = useRef<ReturnType<typeof setTimeout>|null>(null);
   const scrollYRef = useRef(0);
 
-  useEffect(() => {
-    document.documentElement.setAttribute("data-theme", "ghost");
-  }, []);
+  // REMOVED: the useEffect that forced data-theme="ghost" on every mount.
+  // That caused React hydration error #418 because the server rendered the
+  // theme from the inline script in layout.tsx, then the client immediately
+  // changed it — server HTML != client render = mismatch.
+  // The layout.tsx inline script already sets data-theme from localStorage
+  // before first paint, so this effect was both redundant and harmful.
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -157,11 +160,6 @@ export default function Header() {
           background-color: #0d0d14 !important;
         }
 
-        /* ── NAV WRAPPER ──
-           Key fix: top:0 always. Do NOT use --topbar-total here —
-           that variable may be unset or wrong on mobile and shifts the nav off screen.
-           The topbar (ENTER BONE STREET) sits above the nav in the DOM and pushes it naturally.
-        */
         .hw-nav {
           position: sticky;
           top: 0;
@@ -172,7 +170,6 @@ export default function Header() {
           box-sizing: border-box;
           background: rgba(13,13,20,0.97);
           border-bottom: 1px solid rgba(96,96,192,0.15);
-          /* Prevent ANY horizontal overflow */
           overflow: hidden;
         }
 
@@ -184,7 +181,6 @@ export default function Header() {
           height: 56px;
           width: 100%;
           box-sizing: border-box;
-          /* Prevent children from stretching nav wider than viewport */
           min-width: 0;
         }
 
@@ -260,7 +256,7 @@ export default function Header() {
         .hw-nav__icon-btn--spin svg { animation: hw-spin 0.7s linear; }
         @keyframes hw-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
-        /* ── HAMBURGER — hidden on desktop ── */
+        /* ── HAMBURGER ── */
         .hw-nav__hamburger {
           display: none;
           width: 40px;
@@ -444,7 +440,6 @@ export default function Header() {
           position: fixed;
           top: 0;
           left: 0;
-          /* Never wider than 82% of viewport — prevents overflow */
           width: min(280px, 82vw);
           height: 100dvh;
           z-index: 699;
@@ -457,12 +452,10 @@ export default function Header() {
           -webkit-overflow-scrolling: touch;
           overscroll-behavior: contain;
           box-sizing: border-box;
-          /* Always rendered — CSS transition for open/close */
           transform: translateX(-100%);
           visibility: hidden;
           transition: transform 0.26s cubic-bezier(0.4,0,0.2,1),
                       visibility 0s linear 0.26s;
-          /* Safe area bottom padding (tab bar) */
           padding-bottom: max(80px, calc(64px + env(safe-area-inset-bottom, 0px)));
         }
         .hw-menu-panel--open {
@@ -472,7 +465,6 @@ export default function Header() {
                       visibility 0s linear 0s;
         }
 
-        /* Panel top bar */
         .hw-menu-panel__top {
           height: 56px;
           flex-shrink: 0;
@@ -488,7 +480,6 @@ export default function Header() {
         }
         .hw-menu-panel__top-accent { color: #9090f0; }
 
-        /* Panel links */
         .hw-menu-panel__nav {
           display: flex;
           flex-direction: column;
@@ -541,7 +532,6 @@ export default function Header() {
           flex-direction: row;
           align-items: stretch;
           justify-content: space-around;
-          /* Prevent horizontal overflow */
           overflow: hidden;
           box-sizing: border-box;
         }
@@ -568,7 +558,6 @@ export default function Header() {
           min-height: 44px;
           box-sizing: border-box;
           transition: color 0.1s;
-          /* Prevent text overflow */
           overflow: hidden;
         }
         .hw-bottom-nav__item:active { color: #fff; }
@@ -601,7 +590,6 @@ export default function Header() {
           .hw-nav__icon-btn     { width: 32px; height: 32px; }
           .hw-nav__hamburger    { width: 36px; height: 36px; }
         }
-        /* Safe area horizontal padding */
         @supports (padding-left: env(safe-area-inset-left)) {
           .hw-nav__inner {
             padding-left:  max(16px, env(safe-area-inset-left));
@@ -616,7 +604,6 @@ export default function Header() {
         }
         @media (max-width: 900px) {
           .hw-bottom-nav { display: flex; }
-          /* Push page content above bottom nav */
           body { padding-bottom: calc(58px + env(safe-area-inset-bottom, 0px)) !important; }
         }
       `}</style>
@@ -624,7 +611,6 @@ export default function Header() {
       {/* ── NAV ── */}
       <nav className={`hw-nav${scrolled ? " hw-nav--scrolled" : ""}`} role="navigation" aria-label="Main navigation">
         <div className="hw-nav__inner">
-          {/* Logo */}
           <Link href="/" prefetch={false} className="hw-nav__logo" onClick={closeMenu}>
             <span className="hw-nav__logo-full">
               HAUNTED<span className="hw-nav__logo-accent">WALLPAPERS</span>
@@ -634,7 +620,6 @@ export default function Header() {
             </span>
           </Link>
 
-          {/* Desktop links */}
           <div className="hw-nav__links">
             {NAV_LINKS.map(l => (
               <Link
@@ -648,14 +633,8 @@ export default function Header() {
             ))}
           </div>
 
-          {/* Actions */}
           <div className="hw-nav__actions">
-            <button
-              type="button"
-              className="hw-nav__icon-btn"
-              onClick={openSearch}
-              aria-label="Search"
-            >
+            <button type="button" className="hw-nav__icon-btn" onClick={openSearch} aria-label="Search">
               <Search size={17} />
             </button>
             <button
@@ -666,7 +645,6 @@ export default function Header() {
             >
               <Shuffle size={17} />
             </button>
-            {/* Hamburger — mobile only */}
             <button
               type="button"
               className="hw-nav__hamburger"
@@ -680,27 +658,16 @@ export default function Header() {
           </div>
         </div>
 
-        {/* Drip decoration */}
         <div className="hw-nav__drip" aria-hidden="true">
           {Array.from({ length: 8 }).map((_, i) => (
-            <span
-              key={i}
-              className="hw-nav__drip-drop"
-              style={{ "--di": i } as React.CSSProperties}
-            />
+            <span key={i} className="hw-nav__drip-drop" style={{ "--di": i } as React.CSSProperties} />
           ))}
         </div>
       </nav>
 
       {/* ── SEARCH OVERLAY ── */}
       {searchOpen && (
-        <div
-          className="hw-search-overlay"
-          onClick={closeSearch}
-          role="dialog"
-          aria-modal="true"
-          aria-label="Search wallpapers"
-        >
+        <div className="hw-search-overlay" onClick={closeSearch} role="dialog" aria-modal="true" aria-label="Search wallpapers">
           <div className="hw-search-wrap" onClick={e => e.stopPropagation()}>
             <form className="hw-search-form" onSubmit={handleSearch}>
               <input
@@ -739,12 +706,7 @@ export default function Header() {
                   );
                 })}
                 {!liveLoading && liveResults.length > 0 && (
-                  <Link
-                    href={`/search?q=${encodeURIComponent(query)}`}
-                    prefetch={false}
-                    className="hw-live-see-all"
-                    onClick={closeSearch}
-                  >
+                  <Link href={`/search?q=${encodeURIComponent(query)}`} prefetch={false} className="hw-live-see-all" onClick={closeSearch}>
                     See all results →
                   </Link>
                 )}
@@ -754,12 +716,8 @@ export default function Header() {
         </div>
       )}
 
-      {/* ── BACKDROP ── */}
-      {menuOpen && (
-        <div className="hw-menu-backdrop" onClick={closeMenu} aria-hidden="true" />
-      )}
+      {menuOpen && <div className="hw-menu-backdrop" onClick={closeMenu} aria-hidden="true" />}
 
-      {/* ── MOBILE MENU PANEL — always in DOM for CSS transition ── */}
       <div
         id="hw-menu-panel"
         className={`hw-menu-panel${menuOpen ? " hw-menu-panel--open" : ""}`}
@@ -771,7 +729,6 @@ export default function Header() {
         <div className="hw-menu-panel__top">
           HAUNTED<span className="hw-menu-panel__top-accent">WALLPAPERS</span>
         </div>
-
         <nav className="hw-menu-panel__nav" aria-label="Mobile navigation">
           {NAV_LINKS.map(l => (
             <Link
@@ -785,21 +742,10 @@ export default function Header() {
               {l.label}
             </Link>
           ))}
-          <button
-            className="hw-menu-panel__link"
-            onClick={handleRandom}
-            tabIndex={menuOpen ? 0 : -1}
-            type="button"
-          >
+          <button className="hw-menu-panel__link" onClick={handleRandom} tabIndex={menuOpen ? 0 : -1} type="button">
             Random Wallpaper
           </button>
-          <Link
-            href="/favorites"
-            prefetch={false}
-            className="hw-menu-panel__link"
-            onClick={closeMenu}
-            tabIndex={menuOpen ? 0 : -1}
-          >
+          <Link href="/favorites" prefetch={false} className="hw-menu-panel__link" onClick={closeMenu} tabIndex={menuOpen ? 0 : -1}>
             Saved Wallpapers
           </Link>
         </nav>
@@ -851,12 +797,7 @@ export default function Header() {
           </svg>
           Random
         </button>
-        <button
-          type="button"
-          className="hw-bottom-nav__item"
-          onClick={openSearch}
-          aria-label="Search"
-        >
+        <button type="button" className="hw-bottom-nav__item" onClick={openSearch} aria-label="Search">
           <svg className="hw-bottom-nav__icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
             <circle cx="11" cy="11" r="8" />
             <line x1="21" y1="21" x2="16.65" y2="16.65" />
