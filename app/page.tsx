@@ -709,17 +709,20 @@ export default async function Home() {
       {/* COLLECTIONS — What Haunts You */}
       <LazySection skeletonVariant="tall" minHeight="600px" rootMargin="400px 0px">
         <section className="dt-obsessions">
-          <div className="dt-section-head">
-            <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", flexWrap: "wrap", marginBottom: "0.5rem" }}>
-              <span className="dt-eyebrow" style={{ margin: 0 }}>The Ones We Hid From The Feed</span>
-              <span style={{ fontFamily: "var(--font-space,monospace)", fontSize: "0.55rem", letterSpacing: "0.12em", textTransform: "uppercase", color: "#7a0000", border: "1px solid #7a0000", padding: "2px 8px", borderRadius: "2px", whiteSpace: "nowrap", background: "#ffffff", fontWeight: 700 }}>
-                Not in New · Not in Trending · Not in Premium
-              </span>
+          {/* ── SECTION HEADER — hidden, restore by removing this outer div ── */}
+          <div style={{ display: "none" }} aria-hidden="true">
+            <div className="dt-section-head">
+              <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", flexWrap: "wrap", marginBottom: "0.5rem" }}>
+                <span className="dt-eyebrow" style={{ margin: 0 }}>The Ones We Hid From The Feed</span>
+                <span style={{ fontFamily: "var(--font-space,monospace)", fontSize: "0.55rem", letterSpacing: "0.12em", textTransform: "uppercase", color: "#7a0000", border: "1px solid #7a0000", padding: "2px 8px", borderRadius: "2px", whiteSpace: "nowrap", background: "#ffffff", fontWeight: 700 }}>
+                  Not in New · Not in Trending · Not in Premium
+                </span>
+              </div>
+              <h2 className="dt-section-title">What Haunts You?</h2>
+              <p className="dt-section-sub" style={{ maxWidth: "560px", marginTop: "0.5rem" }}>
+                These collections never surface in New, Trending, or Premium. The only way in is through here — choose your obsession.
+              </p>
             </div>
-            <h2 className="dt-section-title">What Haunts You?</h2>
-            <p className="dt-section-sub" style={{ maxWidth: "560px", marginTop: "0.5rem" }}>
-              These collections never surface in New, Trending, or Premium. The only way in is through here — choose your obsession.
-            </p>
           </div>
 
           {/* ── DEFIANT MANIFESTO ── */}
@@ -769,31 +772,14 @@ export default async function Home() {
             );
           })()}
 
-          {/* ── OBSESSION GRID ── */}
+          {/* ── OBSESSION GRID — grid + titles visible, thumbnail Images removed so they don't load ── */}
           <div className="dt-obs-grid">
             {obsessions.filter(o => o.slug !== "the-defiant-manifesto").map((obs, i) => {
-              const thumb = obs.thumbnail ? (obs.thumbnail.startsWith("http") ? obs.thumbnail : `${r2Base}/${obs.thumbnail}`) : null;
               return (
                 <Link prefetch={false} key={obs.id} href={`/obsessions/${encodeURIComponent(obs.slug)}`}
                   className="dt-obs-card" style={{ "--delay": `${i * 0.07}s` } as React.CSSProperties}>
                   <div className="dt-obs-card__bg">
-                    {thumb ? (
-                      <Image
-                        unoptimized
-                        src={thumb}
-                        alt={obs.title}
-                        fill
-                        loading="lazy"
-                        className="object-cover"
-                        sizes="(max-width:640px) 25vw, (max-width:1024px) 18vw, 15vw"
-                        quality={40}
-                      />
-                    ) : (
-                      <div className="dt-obs-card__placeholder" style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", height: "100%", gap: "0.5rem" }}>
-                        <span className="dt-obs-card__icon" style={{ fontSize: "2rem" }}>{obs.icon ?? "🖤"}</span>
-                        <span style={{ fontSize: "0.6rem", letterSpacing: "0.15em", color: "rgba(255,255,255,0.3)", textTransform: "uppercase" }}>Coming Soon</span>
-                      </div>
-                    )}
+                    {/* thumbnail images removed — no network requests, dark bg shows */}
                     <div className="dt-obs-card__veil" />
                   </div>
                   <div className="dt-obs-card__glitch" aria-hidden="true" />
