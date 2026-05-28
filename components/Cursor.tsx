@@ -15,8 +15,7 @@ function trustedHtml(html: string): string | TrustedHTML {
 }
 
 // ─── Assets ───────────────────────────────────────────────────────────────────
-const HAND_URL   = "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/extras/Red_horror_mouse_hand_icon.webp";
-const CURSOR_URL = "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/extras/haunted-wallpapers-cursor-icon.webp";
+const HAND_URL = "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/extras/Red_horror_mouse_hand_icon.webp";
 
 // ─── Default dagger SVG ───────────────────────────────────────────────────────
 const DAGGER_SVG = `
@@ -58,16 +57,14 @@ const DAGGER_SCROLL_SVG = `
   </defs>
 </svg>`;
 
-const HAND_HTML   = `<img src="${HAND_URL}"   width="64" height="64" alt="" draggable="false" style="display:block;pointer-events:none;user-select:none;">`;
-const CURSOR_HTML = `<img src="${CURSOR_URL}" width="48" height="48" alt="" draggable="false" style="display:block;pointer-events:none;user-select:none;">`;
+const HAND_HTML = `<img src="${HAND_URL}" width="64" height="64" alt="" draggable="false" style="display:block;pointer-events:none;user-select:none;">`;
 
 // ─── State types ──────────────────────────────────────────────────────────────
-// "default"    → dagger (normal movement, scrolling)
-// "hand"       → red horror hand (hovering a link / <a>)
-// "cursor-btn" → haunted cursor webp (hovering a button / interactive control)
-type CursorState = "default" | "hand" | "cursor-btn";
+// "default" → dagger (normal movement, scrolling, buttons)
+// "hand"    → red horror hand (hovering a link / <a>)
+type CursorState = "default" | "hand";
 
-// Selectors — order matters: button check runs first inside onOver
+// Selectors
 const LINK_SEL = "a, [role='link']";
 const BTN_SEL  = [
   "button",
@@ -99,11 +96,9 @@ export default function Cursor() {
     const el = elRef.current;
     if (!el) return;
 
-    // Preload both raster images so first hover is instant
-    [HAND_URL, CURSOR_URL].forEach(url => {
-      const img = new window.Image();
-      img.src = url;
-    });
+    // Preload hand image so first hover is instant
+    const img = new window.Image();
+    img.src = HAND_URL;
 
     // Suppress native cursor globally
     const styleId = "hw-cursor-none";
@@ -135,14 +130,11 @@ export default function Cursor() {
       if (state === "hand") {
         // Fingertip of the red hand at pointer position
         ox = -18; oy = -6; rot = "0deg";
-      } else if (state === "cursor-btn") {
-        // Center of haunted cursor at pointer
-        ox = -24; oy = -24; rot = "0deg";
       } else if (isScrolling) {
         // Tilted dimmed dagger while scrolling
         ox = -16; oy = 0; rot = "-20deg";
       } else {
-        // Normal dagger
+        // Normal dagger (default + buttons)
         ox = -16; oy = 0; rot = "-45deg";
       }
 
@@ -159,10 +151,6 @@ export default function Cursor() {
         el.style.width = "64px"; el.style.height = "64px";
         el.innerHTML = trustedHtml(HAND_HTML) as string;
         el.style.filter = "drop-shadow(0 0 10px rgba(192,0,26,0.85)) drop-shadow(0 0 22px rgba(192,0,26,0.4))";
-      } else if (next === "cursor-btn") {
-        el.style.width = "32px"; el.style.height = "32px";
-        el.innerHTML = trustedHtml(CURSOR_HTML) as string;
-        el.style.filter = "drop-shadow(0 0 8px rgba(192,0,26,0.7)) drop-shadow(0 0 18px rgba(192,0,26,0.35))";
       } else {
         // default — show scroll variant if currently scrolling
         el.style.width = "32px"; el.style.height = "64px";
@@ -186,8 +174,11 @@ export default function Cursor() {
     const onOver = (e: MouseEvent) => {
       if (isScrolling) return; // scroll state wins
       const t = e.target as Element;
-      if (t?.closest(BTN_SEL)) {
-        applyState("cursor-btn");
+      // Links get the hand; everything else (including buttons) gets the dagger
+      if (t?.closest(LINK_SEL) && !t?.closest(BTN_SEL)) {
+        applyState("hand");
+      } else if (t?.closest(BTN_SEL)) {
+        applyState("default");
       } else if (t?.closest(LINK_SEL)) {
         applyState("hand");
       } else {
@@ -204,9 +195,7 @@ export default function Cursor() {
         isScrolling = false;
         // Re-check what's under the cursor after scroll settles
         const hovered = document.elementFromPoint(mx, my);
-        if (hovered?.closest(BTN_SEL)) {
-          applyState("cursor-btn");
-        } else if (hovered?.closest(LINK_SEL)) {
+        if (hovered?.closest(LINK_SEL) && !hovered?.closest(BTN_SEL)) {
           applyState("hand");
         } else {
           applyState("default");

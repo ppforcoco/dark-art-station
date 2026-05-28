@@ -537,76 +537,84 @@ export default async function Home() {
         );
       })()}
 
-      {/* MOBILE WALLPAPERS — desktop only */}
-      <LazySection skeletonVariant="default" minHeight="520px" rootMargin="400px 0px" className="hw-desktop-section-mobile-hidden">
-        <section className="dt-mobile">
-          <div className="dt-section-head dt-section-head--center">
-            <span className="dt-eyebrow">Pocket-Sized Darkness</span>
-            <h2 className="dt-section-title">Mobile Wallpapers</h2>
-            <p className="dt-section-sub">Your lock screen deserves something worth staring at.</p>
-          </div>
-          <div className="dt-phone-showcase">
-            {[
-              { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/12/always-watching-wallpaper.webp",                                                    alt: "Always Watching",    label: "Always Watching"    },
-              { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/12/funny-lockscreen-wallpaper.webp",                                                 alt: "Funny Lockscreen",   label: "Funny Lockscreen"   },
-              { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/12/vampire-man-and-woman-couple-dance-under-the-moon-wallpaper.webp",                 alt: "Vampire Couple",     label: "Vampire Dance"      },
-              { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/12/paper-cut-witch-red-backdrop-staff.webp",                                         alt: "Paper Cut Witch",    label: "Paper Cut Witch"    },
-              { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/12/hip-hop-haunted-skeleton-phone-wallpaper.webp",                                   alt: "Hip Hop Skeleton",   label: "Hip Hop Skeleton"   },
-            ].map((phone, i) => (
-              <div key={i} className={`dt-phone-card${i === 2 ? " dt-phone-card--hero" : ""}`} style={{ "--card-i": i } as React.CSSProperties}>
-                <div className="dt-phone-card__aura" aria-hidden="true" />
-                <div className="dt-phone-card__shell">
-                  <div className="dt-phone-card__btn dt-phone-card__btn--vol1" aria-hidden="true" />
-                  <div className="dt-phone-card__btn dt-phone-card__btn--vol2" aria-hidden="true" />
-                  <div className="dt-phone-card__btn dt-phone-card__btn--power" aria-hidden="true" />
-                  <div className="dt-phone-card__screen">
-                    <div className="dt-phone-card__island" aria-hidden="true"><span className="dt-phone-card__cam" /></div>
-                    <ProtectedImg src={phone.src} alt={phone.alt} className="dt-phone-card__img" loading="lazy" />
-                    <ProtectionOverlay />
-                    <div className="dt-phone-card__gloss" aria-hidden="true" />
-                  </div>
-                  <div className="dt-phone-card__indicator" aria-hidden="true" />
-                </div>
-              </div>
-            ))}
-          </div>
-          <div className="dt-mobile__cta-row">
-            <Link prefetch={false} href="/iphone" className="dt-btn dt-btn--enter">Browse iPhone Wallpapers →</Link>
-            <Link prefetch={false} href="/android" className="dt-btn dt-btn--ghost">Android Wallpapers →</Link>
-          </div>
-        </section>
-      </LazySection>
-
-      {/* DESKTOP WALLPAPERS — desktop only */}
-      <LazySection skeletonVariant="default" minHeight="440px" rootMargin="400px 0px" className="hw-desktop-section-mobile-hidden">
-        <section className="dt-desktop">
-          <div className="dt-section-head dt-section-head--center">
-            <span className="dt-eyebrow">The Haunted Square</span>
-            <h2 className="dt-section-title">Desktop Wallpapers</h2>
-            <p className="dt-section-sub">Your workspace, transformed with stunning atmospheric art.</p>
-          </div>
-          <div className="dt-monitor-wrap">
-            <div className="dt-monitor">
-              <div className="dt-monitor__bezel">
-                <span className="dt-monitor__cam" />
-                <div className="dt-monitor__screen">
-                  <ProtectedImg src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/monster-flower-offering-pc.webp" alt="Monster Flower Offering — PC wallpaper 16:9" className="dt-monitor__img" />
-                  <ProtectionOverlay />
-                  <div className="dt-monitor__scanlines" aria-hidden="true" />
-                  <div className="dt-monitor__glitch" aria-hidden="true" />
-                </div>
-              </div>
-              <div className="dt-monitor__neck" />
-              <div className="dt-monitor__foot" />
+      {/* ══════════════════════════════════════════════════════════
+          MOBILE WALLPAPERS — hidden, restore by removing the outer div
+      ══════════════════════════════════════════════════════════ */}
+      <div style={{ display: "none" }} aria-hidden="true">
+        <LazySection skeletonVariant="default" minHeight="520px" rootMargin="400px 0px" className="hw-desktop-section-mobile-hidden">
+          <section className="dt-mobile">
+            <div className="dt-section-head dt-section-head--center">
+              <span className="dt-eyebrow">Pocket-Sized Darkness</span>
+              <h2 className="dt-section-title">Mobile Wallpapers</h2>
+              <p className="dt-section-sub">Your lock screen deserves something worth staring at.</p>
             </div>
-            <div className="dt-monitor__tag dt-monitor__tag--tl"><span>16 : 9</span><span>Full HD</span></div>
-            <div className="dt-monitor__tag dt-monitor__tag--tr"><span>PC</span><span>Desktop</span></div>
-          </div>
-          <div className="dt-desktop__cta-row">
-            <Link prefetch={false} href="/pc" className="dt-btn dt-btn--enter">Browse PC Wallpapers →</Link>
-          </div>
-        </section>
-      </LazySection>
+            <div className="dt-phone-showcase">
+              {[
+                { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/12/always-watching-wallpaper.webp",                                                    alt: "Always Watching",    label: "Always Watching"    },
+                { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/12/funny-lockscreen-wallpaper.webp",                                                 alt: "Funny Lockscreen",   label: "Funny Lockscreen"   },
+                { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/12/vampire-man-and-woman-couple-dance-under-the-moon-wallpaper.webp",                 alt: "Vampire Couple",     label: "Vampire Dance"      },
+                { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/12/paper-cut-witch-red-backdrop-staff.webp",                                         alt: "Paper Cut Witch",    label: "Paper Cut Witch"    },
+                { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/12/hip-hop-haunted-skeleton-phone-wallpaper.webp",                                   alt: "Hip Hop Skeleton",   label: "Hip Hop Skeleton"   },
+              ].map((phone, i) => (
+                <div key={i} className={`dt-phone-card${i === 2 ? " dt-phone-card--hero" : ""}`} style={{ "--card-i": i } as React.CSSProperties}>
+                  <div className="dt-phone-card__aura" aria-hidden="true" />
+                  <div className="dt-phone-card__shell">
+                    <div className="dt-phone-card__btn dt-phone-card__btn--vol1" aria-hidden="true" />
+                    <div className="dt-phone-card__btn dt-phone-card__btn--vol2" aria-hidden="true" />
+                    <div className="dt-phone-card__btn dt-phone-card__btn--power" aria-hidden="true" />
+                    <div className="dt-phone-card__screen">
+                      <div className="dt-phone-card__island" aria-hidden="true"><span className="dt-phone-card__cam" /></div>
+                      <ProtectedImg src={phone.src} alt={phone.alt} className="dt-phone-card__img" loading="lazy" />
+                      <ProtectionOverlay />
+                      <div className="dt-phone-card__gloss" aria-hidden="true" />
+                    </div>
+                    <div className="dt-phone-card__indicator" aria-hidden="true" />
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="dt-mobile__cta-row">
+              <Link prefetch={false} href="/iphone" className="dt-btn dt-btn--enter">Browse iPhone Wallpapers →</Link>
+              <Link prefetch={false} href="/android" className="dt-btn dt-btn--ghost">Android Wallpapers →</Link>
+            </div>
+          </section>
+        </LazySection>
+      </div>
+
+      {/* ══════════════════════════════════════════════════════════
+          DESKTOP WALLPAPERS — hidden, restore by removing the outer div
+      ══════════════════════════════════════════════════════════ */}
+      <div style={{ display: "none" }} aria-hidden="true">
+        <LazySection skeletonVariant="default" minHeight="440px" rootMargin="400px 0px" className="hw-desktop-section-mobile-hidden">
+          <section className="dt-desktop">
+            <div className="dt-section-head dt-section-head--center">
+              <span className="dt-eyebrow">The Haunted Square</span>
+              <h2 className="dt-section-title">Desktop Wallpapers</h2>
+              <p className="dt-section-sub">Your workspace, transformed with stunning atmospheric art.</p>
+            </div>
+            <div className="dt-monitor-wrap">
+              <div className="dt-monitor">
+                <div className="dt-monitor__bezel">
+                  <span className="dt-monitor__cam" />
+                  <div className="dt-monitor__screen">
+                    <ProtectedImg src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/monster-flower-offering-pc.webp" alt="Monster Flower Offering — PC wallpaper 16:9" className="dt-monitor__img" />
+                    <ProtectionOverlay />
+                    <div className="dt-monitor__scanlines" aria-hidden="true" />
+                    <div className="dt-monitor__glitch" aria-hidden="true" />
+                  </div>
+                </div>
+                <div className="dt-monitor__neck" />
+                <div className="dt-monitor__foot" />
+              </div>
+              <div className="dt-monitor__tag dt-monitor__tag--tl"><span>16 : 9</span><span>Full HD</span></div>
+              <div className="dt-monitor__tag dt-monitor__tag--tr"><span>PC</span><span>Desktop</span></div>
+            </div>
+            <div className="dt-desktop__cta-row">
+              <Link prefetch={false} href="/pc" className="dt-btn dt-btn--enter">Browse PC Wallpapers →</Link>
+            </div>
+          </section>
+        </LazySection>
+      </div>
 
       {/* MATCHING KITS */}
       <LazySection skeletonVariant="kits" minHeight="440px" rootMargin="400px 0px">
