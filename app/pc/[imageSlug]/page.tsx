@@ -50,7 +50,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     .replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim().slice(0, 200);
   const metaDesc = plainDesc || `${image.title} — free dark fantasy PC wallpaper. ${tagLine}. Download instantly, no account required.`;
   const plainMetaDesc = metaDesc.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
-  const ogImage = "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/og/og-image-for-desktop-and%3Dpc-wallpaper.webp";
+  const ogImage = getPublicUrl(image.r2Key);
   return {
     metadataBase: new URL(siteUrl),
     title: `${image.title} — Free PC Wallpaper | HAUNTED WALLPAPERS`,

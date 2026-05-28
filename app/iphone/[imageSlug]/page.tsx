@@ -65,7 +65,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const tagLine = image.tags.slice(0, 3).map((t) => `#${t}`).join(" ");
   const fallbackDesc = `${image.title} — free high-res dark fantasy iPhone wallpaper. ${tagLine}. Download instantly, no account required.`;
   const metaDesc = plainDesc ?? fallbackDesc;
-  const ogImage = "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/og/haunted-wallpapers-dark-4k-for-iphone-and-adnroid.webp";
+  const ogImage = getPublicUrl(image.r2Key);
 
   return {
     metadataBase: new URL(siteUrl),
