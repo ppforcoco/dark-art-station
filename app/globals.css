@@ -1,4 +1,12 @@
 /* app/globals.css */
+@media (pointer: fine) {
+  html,
+  html *,
+  html *::before,
+  html *::after {
+    cursor: none !important;
+  }
+}
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
