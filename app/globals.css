@@ -11990,7 +11990,12 @@ h4 { font-size: clamp(0.9rem, 1.5vw, 1.2rem); }
     -webkit-backdrop-filter: none !important;
   }
 }
-/* animations removed for performance */
+/* ═══════════════════════════════════════════════════════════════
+   KILL ALL ANIMATIONS — Performance patch
+   Every animation and heavy glow removed for max speed
+   ═══════════════════════════════════════════════════════════════ */
+
+/* 1. Nuke every @keyframes by overriding animation on ALL elements */
 
 /* 2. Kill all glow box-shadows sitewide */
 .hw2-particle,
@@ -12159,4 +12164,5 @@ h4 { font-size: clamp(0.9rem, 1.5vw, 1.2rem); }
 .mockup-monitor-bezel {
   filter: none !important;
 }
-/* lazy section reveal — handled by LazySection.tsx */
+
+/* lazy section — CSS handled by LazySection.tsx */

@@ -48,15 +48,11 @@ const DAGGER_SCROLL_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="32" he
 const HAND_HTML = `<img src="${HAND_URL}" width="64" height="64" alt="" draggable="false" style="display:block;pointer-events:none;user-select:none;">`;
 
 type CursorState = "default" | "hand";
-
 const LINK_SEL = "a, [role='link']";
-const BTN_SEL = [
-  "button","input","select","textarea","label",
-  "[role='button']","[role='checkbox']","[role='switch']",
-  ".download-btn",".hw-glow-btn-wrap",".social-btn",".reaction-btn",
-  ".more-strip-link",".hw2-obs-card",".cat-card",".mosaic-card",
-  ".coll-card",".product-card",
-].join(",");
+const BTN_SEL = "button,input,select,textarea,label,[role='button'],[role='checkbox'],[role='switch'],.download-btn,.hw-glow-btn-wrap,.social-btn,.reaction-btn,.more-strip-link,.hw2-obs-card,.cat-card,.mosaic-card,.coll-card,.product-card";
+
+// Module-level flag so CSS is only injected once even if component hot-reloads
+let cursorCssInjected = false;
 
 export default function Cursor() {
   const elRef = useRef<HTMLDivElement>(null);
@@ -66,16 +62,32 @@ export default function Cursor() {
     const el = elRef.current;
     if (!el) return;
 
+    // Inject cursor:none once — use appendChild (not prepend) to avoid reflow
+    // that causes the "two cursor" flash. This runs AFTER globals.css is loaded
+    // so it stacks on top, not underneath.
+    if (!cursorCssInjected) {
+      cursorCssInjected = true;
+      if (!document.getElementById("hw-cur-hide")) {
+        const s = document.createElement("style");
+        s.id = "hw-cur-hide";
+        s.textContent = [
+          "@media(pointer:fine){",
+          "html,body,*,*::before,*::after{cursor:none!important}",
+          "a,button,[role=button],input,select,textarea,label,[tabindex],summary{cursor:none!important}",
+          "}"
+        ].join("");
+        document.head.appendChild(s); // appendChild not prepend — no reflow
+      }
+    }
+
     // Preload hand image
     const img = new window.Image();
     img.src = HAND_URL;
 
-    // Show the cursor element
     el.style.display = "block";
-    // Set initial content immediately so dagger renders before first mousemove
     el.innerHTML = trustedHtml(DAGGER_SVG) as string;
 
-    let mx = -200, my = -200;
+    let mx = -300, my = -300;
     let visible = false;
     let state: CursorState = "default";
     let isScrolling = false;
@@ -89,10 +101,10 @@ export default function Cursor() {
     const tick = () => {
       if (!rafRunning) return;
       let ox = 0, oy = 0, rot = "-45deg";
-      if (state === "hand")       { ox = -18; oy = -6;  rot = "0deg"; }
-      else if (isScrolling)       { ox = -16; oy = 0;   rot = "-20deg"; }
-      else                        { ox = -16; oy = 0;   rot = "-45deg"; }
-      el.style.transform = `translate(${mx + ox}px, ${my + oy}px) rotate(${rot})`;
+      if (state === "hand")  { ox = -18; oy = -6; rot = "0deg"; }
+      else if (isScrolling)  { ox = -16; oy = 0;  rot = "-20deg"; }
+      else                   { ox = -16; oy = 0;  rot = "-45deg"; }
+      el.style.transform = `translate(${mx + ox}px,${my + oy}px) rotate(${rot})`;
       rafId = requestAnimationFrame(tick);
     };
 
@@ -106,9 +118,7 @@ export default function Cursor() {
       } else {
         el.style.width = "32px"; el.style.height = "64px";
         el.innerHTML = trustedHtml(isScrolling ? DAGGER_SCROLL_SVG : DAGGER_SVG) as string;
-        el.style.filter = isScrolling
-          ? "drop-shadow(0 0 3px rgba(139,0,16,0.5))"
-          : "drop-shadow(0 0 4px rgba(192,0,26,0.7))";
+        el.style.filter = isScrolling ? "drop-shadow(0 0 3px rgba(139,0,16,0.5))" : "drop-shadow(0 0 4px rgba(192,0,26,0.7))";
       }
     };
 
@@ -174,7 +184,7 @@ export default function Cursor() {
         top: 0, left: 0,
         width: "32px", height: "64px",
         pointerEvents: "none",
-        zIndex: 99999,
+        zIndex: 999999,
         opacity: 0,
         display: "none",
         filter: "drop-shadow(0 0 4px rgba(192,0,26,0.7))",
