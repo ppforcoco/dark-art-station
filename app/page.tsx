@@ -143,9 +143,7 @@ export default async function Home() {
     { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/new/skeleton-drinking-haunted-energy-drink-art.webp", alt: "Skeleton Art",   featured: false, edgePhone: true  },
   ];
 
-  // Lock state is computed client-side only (in WallpaperCardGrid + PremiumCountdown)
-  // to avoid React hydration mismatch from Date.now() differing between SSR and client.
-  const countdownDate  = new Date(Date.UTC(2025, 0, 1)).toISOString(); // stable epoch reference
+  const countdownDate  = new Date(Date.UTC(2025, 0, 1)).toISOString();
 
   const premiumItems = premiumThisWeek.map((img) => {
     const devicePath = img.deviceType === "IPHONE" ? "iphone" : img.deviceType === "ANDROID" ? "android" : "pc";
@@ -170,7 +168,7 @@ export default async function Home() {
       </div>
 
       {/* ══════════════════════════════════════════════════════════
-          HERO
+          HERO  — no LazySection; renders immediately
       ══════════════════════════════════════════════════════════ */}
       <section className="dt-gate dt-gate--collage hw-hero-gate-override" style={{ padding: "0", minHeight: "unset" }}>
         <div className="dt-gate__crack" aria-hidden="true" />
@@ -310,7 +308,6 @@ export default async function Home() {
         .hw-hero-gate-override { padding-top:8px !important; padding-bottom:0 !important; overflow:visible !important; }
         .hw-hero-mobile-thumb  { display:none; }
         @media (max-width:859px) {
-          /* Hero thumbnail — full width, natural 16:9 aspect ratio, no cropping */
           .hw-hero-mobile-thumb {
             display:block !important;
             width:100% !important;
@@ -328,7 +325,7 @@ export default async function Home() {
           .hw-hero-phones-wrap  { height:560px !important; overflow:visible !important; align-items:center !important; justify-content:center !important; }
         }
 
-        /* ── DEFIANT MANIFESTO — true 16:9, constrain via max-width not max-height ── */
+        /* ── DEFIANT MANIFESTO ── */
         .hw-defiant-wrap {
           position: relative;
           width: 100%;
@@ -344,7 +341,7 @@ export default async function Home() {
           .hw-defiant-body  { display: none !important; }
         }
 
-        /* ── OBSESSION GRID — 4-col mobile, 7-col tablet, 10-col desktop ── */
+        /* ── OBSESSION GRID ── */
         @media (max-width:767px) {
           .hw-desktop-section-mobile-hidden { display:none !important; }
           .dt-obs-grid { grid-template-columns:repeat(4,1fr) !important; gap:4px !important; }
@@ -355,12 +352,11 @@ export default async function Home() {
           .dt-obs-card__title { font-size:0.42rem !important; padding:3px 4px !important; }
         }
         @media (min-width:1200px) {
-          /* 10 cols — each card ~120px wide so 9:16 height is ~213px, compact not huge */
           .dt-obs-grid { grid-template-columns:repeat(10,1fr) !important; gap:6px !important; }
           .dt-obs-card__title { font-size:0.44rem !important; padding:3px 5px !important; }
         }
 
-        /* ── KILL ALL ANIMATIONS + TRANSITIONS ON MOBILE ── */
+        /* ── KILL ANIMATIONS ON MOBILE ── */
         @media (max-width:767px) {
           *, *::before, *::after {
             animation-duration: 0.001ms !important;
@@ -376,9 +372,14 @@ export default async function Home() {
 
       {/* ══════════════════════════════════════════════════════════
           NEW THIS WEEK
+          reveal="up" — cards rise from below (ROG default)
       ══════════════════════════════════════════════════════════ */}
       {newThisWeek.length > 0 && (
-        <LazySection skeletonVariant="cards" minHeight="480px" rootMargin="400px 0px">
+        <LazySection
+          revealDirection="up"
+          minHeight="480px"
+          rootMargin="0px 0px -60px 0px"
+        >
           <section style={{ padding: "clamp(32px,5vw,64px) clamp(16px,5vw,72px)", background: "#07050f", position: "relative", overflow: "hidden" }}>
             <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse 60% 40% at 50% 0%,rgba(76,175,80,0.06) 0%,transparent 70%)", pointerEvents: "none" }} />
             <div className="dt-section-head dt-section-head--center" style={{ marginBottom: "clamp(24px,4vw,40px)" }}>
@@ -400,9 +401,13 @@ export default async function Home() {
         </LazySection>
       )}
 
-      {/* PREMIUM THIS WEEK */}
+      {/* PREMIUM THIS WEEK — reveal from left (alternating direction like ROG) */}
       {premiumThisWeek.length > 0 && (
-        <LazySection skeletonVariant="cards" minHeight="480px" rootMargin="400px 0px">
+        <LazySection
+          revealDirection="left"
+          minHeight="480px"
+          rootMargin="0px 0px -60px 0px"
+        >
           <section style={{ padding: "clamp(32px,5vw,64px) clamp(16px,5vw,72px)", background: "#0a0810", position: "relative", overflow: "hidden" }}>
             <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse 60% 40% at 50% 0%,rgba(201,168,76,0.07) 0%,transparent 70%)", pointerEvents: "none" }} />
             <div className="dt-section-head dt-section-head--center" style={{ marginBottom: "clamp(24px,4vw,40px)" }}>
@@ -425,14 +430,17 @@ export default async function Home() {
         </LazySection>
       )}
 
-      {/* WOTD */}
+      {/* WOTD — fade reveal (centred spotlight feel) */}
       {wotd && (() => {
         const devicePath = wotd.deviceType === "IPHONE" ? "iphone" : wotd.deviceType === "ANDROID" ? "android" : "pc";
         const wotdUrl    = getPublicUrl(wotd.r2Key);
         const wotdHref   = `/${devicePath}/${wotd.slug}`;
-        const todayStr   = "Tonight's Pick"; // rendered client-side to avoid hydration mismatch
         return (
-          <LazySection skeletonVariant="wotd" minHeight="560px" rootMargin="400px 0px">
+          <LazySection
+            revealDirection="fade"
+            minHeight="560px"
+            rootMargin="0px 0px -40px 0px"
+          >
             <section className="wotd-section">
               <div className="wotd-particles" aria-hidden="true">
                 {Array.from({ length: 18 }).map((_, i) => (
@@ -537,11 +545,9 @@ export default async function Home() {
         );
       })()}
 
-      {/* ══════════════════════════════════════════════════════════
-          MOBILE WALLPAPERS — hidden, restore by removing the outer div
-      ══════════════════════════════════════════════════════════ */}
+      {/* ── MOBILE WALLPAPERS — hidden ── */}
       <div style={{ display: "none" }} aria-hidden="true">
-        <LazySection skeletonVariant="default" minHeight="520px" rootMargin="400px 0px" className="hw-desktop-section-mobile-hidden">
+        <LazySection revealDirection="up" minHeight="520px" className="hw-desktop-section-mobile-hidden">
           <section className="dt-mobile">
             <div className="dt-section-head dt-section-head--center">
               <span className="dt-eyebrow">Pocket-Sized Darkness</span>
@@ -581,11 +587,9 @@ export default async function Home() {
         </LazySection>
       </div>
 
-      {/* ══════════════════════════════════════════════════════════
-          DESKTOP WALLPAPERS — hidden, restore by removing the outer div
-      ══════════════════════════════════════════════════════════ */}
+      {/* ── DESKTOP WALLPAPERS — hidden ── */}
       <div style={{ display: "none" }} aria-hidden="true">
-        <LazySection skeletonVariant="default" minHeight="440px" rootMargin="400px 0px" className="hw-desktop-section-mobile-hidden">
+        <LazySection revealDirection="right" minHeight="440px" className="hw-desktop-section-mobile-hidden">
           <section className="dt-desktop">
             <div className="dt-section-head dt-section-head--center">
               <span className="dt-eyebrow">The Haunted Square</span>
@@ -616,8 +620,12 @@ export default async function Home() {
         </LazySection>
       </div>
 
-      {/* MATCHING KITS */}
-      <LazySection skeletonVariant="kits" minHeight="440px" rootMargin="400px 0px">
+      {/* MATCHING KITS — reveal from right (alternates with Premium's left) */}
+      <LazySection
+        revealDirection="right"
+        minHeight="440px"
+        rootMargin="0px 0px -60px 0px"
+      >
         <section style={{ padding: "clamp(40px,6vw,72px) clamp(16px,5vw,72px)", background: "#07050f", position: "relative", overflow: "hidden" }}>
           <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse 70% 40% at 50% 0%,rgba(224,0,31,0.06) 0%,transparent 70%)", pointerEvents: "none" }} />
           <div style={{ maxWidth: "1200px", margin: "0 auto", position: "relative" }}>
@@ -683,9 +691,13 @@ export default async function Home() {
         </section>
       </LazySection>
 
-      {/* TRENDING */}
+      {/* TRENDING — reveal up */}
       {trendingThisWeek.length > 0 && (
-        <LazySection skeletonVariant="cards" minHeight="480px" rootMargin="400px 0px">
+        <LazySection
+          revealDirection="up"
+          minHeight="480px"
+          rootMargin="0px 0px -60px 0px"
+        >
           <section style={{ padding: "clamp(32px,5vw,64px) clamp(16px,5vw,72px)", background: "#060410", position: "relative", overflow: "hidden" }}>
             <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse 60% 40% at 50% 0%,rgba(224,0,31,0.07) 0%,transparent 70%)", pointerEvents: "none" }} />
             <div className="dt-section-head dt-section-head--center" style={{ marginBottom: "clamp(24px,4vw,40px)" }}>
@@ -706,10 +718,13 @@ export default async function Home() {
         </LazySection>
       )}
 
-      {/* COLLECTIONS — What Haunts You */}
-      <LazySection skeletonVariant="tall" minHeight="600px" rootMargin="400px 0px">
+      {/* COLLECTIONS — reveal from left (alternate) */}
+      <LazySection
+        revealDirection="left"
+        minHeight="600px"
+        rootMargin="0px 0px -40px 0px"
+      >
         <section className="dt-obsessions">
-          {/* ── SECTION HEADER — hidden, restore by removing this outer div ── */}
           <div style={{ display: "none" }} aria-hidden="true">
             <div className="dt-section-head">
               <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", flexWrap: "wrap", marginBottom: "0.5rem" }}>
@@ -725,7 +740,6 @@ export default async function Home() {
             </div>
           </div>
 
-          {/* ── DEFIANT MANIFESTO ── */}
           {obsessions.some(o => o.slug === "the-defiant-manifesto") && (() => {
             const defiant = obsessions.find(o => o.slug === "the-defiant-manifesto")!;
             return (
@@ -772,14 +786,12 @@ export default async function Home() {
             );
           })()}
 
-          {/* ── OBSESSION GRID — grid + titles visible, thumbnail Images removed so they don't load ── */}
           <div className="dt-obs-grid">
             {obsessions.filter(o => o.slug !== "the-defiant-manifesto").map((obs, i) => {
               return (
                 <Link prefetch={false} key={obs.id} href={`/obsessions/${encodeURIComponent(obs.slug)}`}
                   className="dt-obs-card" style={{ "--delay": `${i * 0.07}s` } as React.CSSProperties}>
                   <div className="dt-obs-card__bg">
-                    {/* thumbnail images removed — no network requests, dark bg shows */}
                     <div className="dt-obs-card__veil" />
                   </div>
                   <div className="dt-obs-card__glitch" aria-hidden="true" />
@@ -801,8 +813,12 @@ export default async function Home() {
 
       <HorrorFact />
 
-      {/* STORY */}
-      <LazySection skeletonVariant="default" minHeight="320px" rootMargin="400px 0px">
+      {/* STORY — fade reveal (text-heavy, subtle is better) */}
+      <LazySection
+        revealDirection="fade"
+        minHeight="320px"
+        rootMargin="0px 0px -40px 0px"
+      >
         <section className="dt-manifesto">
           <div className="dt-manifesto__gutter" aria-hidden="true">
             <span className="dt-manifesto__rune">☩</span>
@@ -827,8 +843,12 @@ export default async function Home() {
 
       <RecentlyViewed />
 
-      {/* MISSION */}
-      <LazySection skeletonVariant="default" minHeight="280px" rootMargin="400px 0px">
+      {/* MISSION — up reveal */}
+      <LazySection
+        revealDirection="up"
+        minHeight="280px"
+        rootMargin="0px 0px -40px 0px"
+      >
         <section style={{ padding: "clamp(48px,7vw,80px) clamp(16px,5vw,72px)", background: "linear-gradient(180deg,#07050d 0%,#0a0612 100%)", position: "relative", overflow: "hidden" }}>
           <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse 60% 40% at 50% 50%,rgba(224,0,31,0.05) 0%,transparent 70%)", pointerEvents: "none" }} />
           <div style={{ maxWidth: "800px", margin: "0 auto", position: "relative" }}>

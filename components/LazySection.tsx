@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, ReactNode } from "react";
+import { useEffect, useRef, useState, ReactNode, useCallback } from "react";
 
 type SkeletonVariant = "default" | "cards" | "wotd" | "tall" | "kits";
 
@@ -10,145 +10,213 @@ interface LazySectionProps {
   minHeight?: string;
   rootMargin?: string;
   className?: string;
+  /**
+   * ROG-style reveal direction.
+   * "up"    — content rises from below (default, like ROG product pages)
+   * "down"  — content drops from above
+   * "left"  — content sweeps from left
+   * "right" — content sweeps from right
+   * "fade"  — pure opacity fade (subtler, for WOTD / kits)
+   */
+  revealDirection?: "up" | "down" | "left" | "right" | "fade";
+  /**
+   * Delay before the reveal starts once the section enters the viewport (ms).
+   * Useful for staggering multiple adjacent sections.
+   */
+  revealDelay?: number;
 }
 
-/* ── Shimmer — injected once into <head> ─────────────────────────────────── */
-const SHIMMER_CSS = `
-@keyframes hw-shimmer {
-  0%   { background-position: -800px 0; }
-  100% { background-position:  800px 0; }
+/* ─── Global CSS — injected once ────────────────────────────────────────── */
+const REVEAL_CSS = `
+/* ── ROG-style section reveal ──────────────────────────────────────────── */
+.hw-lazy-section {
+  /* sections start invisible — no layout shift because min-height is set */
+  opacity: 0;
+  will-change: opacity, transform, clip-path;
+  transition:
+    opacity     0.75s cubic-bezier(0.22, 1, 0.36, 1),
+    transform   0.75s cubic-bezier(0.22, 1, 0.36, 1),
+    clip-path   0.75s cubic-bezier(0.22, 1, 0.36, 1);
 }
-.hw-sk {
-  background: #0c0a18;
-  background-image: linear-gradient(
-    90deg,
-    #0c0a18 0px,
-    rgba(255,255,255,0.04) 200px,
-    #0c0a18 400px
+
+/* ── Directional starting states ─────────────────────────────────────── */
+.hw-lazy-section[data-reveal="up"] {
+  transform: translateY(48px);
+  clip-path: inset(0 0 100% 0);        /* hidden from bottom */
+}
+.hw-lazy-section[data-reveal="down"] {
+  transform: translateY(-40px);
+  clip-path: inset(100% 0 0 0);
+}
+.hw-lazy-section[data-reveal="left"] {
+  transform: translateX(60px);
+  clip-path: inset(0 0 0 100%);
+}
+.hw-lazy-section[data-reveal="right"] {
+  transform: translateX(-60px);
+  clip-path: inset(0 100% 0 0);
+}
+.hw-lazy-section[data-reveal="fade"] {
+  transform: translateY(24px) scale(0.98);
+}
+
+/* ── Revealed state — all directions ──────────────────────────────────── */
+.hw-lazy-section.hw-revealed {
+  opacity: 1 !important;
+  transform: none !important;
+  clip-path: inset(0 0 0 0) !important;
+}
+
+/* ── Child stagger — every direct child animates in sequence ─────────── */
+.hw-lazy-section.hw-revealed > * {
+  animation: hw-child-rise 0.65s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.hw-lazy-section.hw-revealed > *:nth-child(1)  { animation-delay: 0.05s; }
+.hw-lazy-section.hw-revealed > *:nth-child(2)  { animation-delay: 0.13s; }
+.hw-lazy-section.hw-revealed > *:nth-child(3)  { animation-delay: 0.21s; }
+.hw-lazy-section.hw-revealed > *:nth-child(4)  { animation-delay: 0.29s; }
+.hw-lazy-section.hw-revealed > *:nth-child(5)  { animation-delay: 0.37s; }
+.hw-lazy-section.hw-revealed > *:nth-child(n+6){ animation-delay: 0.43s; }
+
+@keyframes hw-child-rise {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ── ROG-style scan-line sweep on reveal — decorative edge effect ──────── */
+.hw-lazy-section::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    rgba(224, 0, 31, 0.07) 48%,
+    rgba(224, 0, 31, 0.04) 52%,
+    transparent 100%
   );
-  background-size: 800px 100%;
-  animation: hw-shimmer 1.8s linear infinite;
-  border-radius: 6px;
+  transform: translateY(-110%);
+  transition: none;
+  z-index: 1;
+}
+.hw-lazy-section.hw-revealed::after {
+  animation: hw-scan-sweep 0.9s cubic-bezier(0.4, 0, 0.2, 1) 0.05s both;
+}
+@keyframes hw-scan-sweep {
+  0%   { transform: translateY(-110%); opacity: 0.9; }
+  100% { transform: translateY(110%);  opacity: 0;   }
+}
+
+/* ── Kill all motion on mobile (matches your existing rule) ───────────── */
+@media (max-width: 767px) {
+  .hw-lazy-section {
+    /* Still reveal, but instantly — no janky animation on phones */
+    transition-duration: 0.001ms !important;
+    clip-path: none !important;
+    transform: none !important;
+  }
+  .hw-lazy-section::after { display: none; }
+  .hw-lazy-section.hw-revealed > * { animation-duration: 0.001ms !important; }
+}
+
+/* ── Respect prefers-reduced-motion ─────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .hw-lazy-section,
+  .hw-lazy-section.hw-revealed > * {
+    transition-duration: 0.001ms !important;
+    animation-duration:  0.001ms !important;
+    clip-path: none !important;
+    transform: none !important;
+  }
+  .hw-lazy-section::after { display: none; }
 }
 `;
 
-let shimmerInjected = false;
-function ensureShimmer() {
-  if (shimmerInjected || typeof document === "undefined") return;
+let cssInjected = false;
+function ensureCSS() {
+  if (cssInjected || typeof document === "undefined") return;
   const s = document.createElement("style");
-  s.textContent = SHIMMER_CSS;
+  s.textContent = REVEAL_CSS;
   document.head.appendChild(s);
-  shimmerInjected = true;
+  cssInjected = true;
 }
 
-/* ── Skeletons ───────────────────────────────────────────────────────────── */
-
-function Skeleton({ variant, minHeight }: { variant: SkeletonVariant; minHeight: string }) {
-  useEffect(() => { ensureShimmer(); }, []);
-
-  const wrap: React.CSSProperties = {
-    minHeight,
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    background: "#07050f",
-    overflow: "hidden",
-    padding: "0 clamp(16px,5vw,72px)",
-    boxSizing: "border-box" as const,
-  };
-
-  if (variant === "cards") return (
-    <div style={wrap}>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 12, width: "100%", maxWidth: 1200 }}>
-        {[0,1,2].map(i => (
-          <div key={i} className="hw-sk" style={{ aspectRatio: "9/16", maxHeight: 300, width: "100%" }} />
-        ))}
-      </div>
-    </div>
-  );
-
-  if (variant === "wotd") return (
-    <div style={{ ...wrap, flexDirection: "column", gap: 16 }}>
-      <div className="hw-sk" style={{ width: "clamp(100px,22vw,200px)", aspectRatio: "9/16", borderRadius: 16 }} />
-      <div className="hw-sk" style={{ width: 160, height: 18 }} />
-    </div>
-  );
-
-  if (variant === "tall") return (
-    <div style={wrap}>
-      <div className="hw-sk" style={{ width: "100%", maxWidth: 1200, height: 320 }} />
-    </div>
-  );
-
-  if (variant === "kits") return (
-    <div style={wrap}>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 12, width: "100%", maxWidth: 1200 }}>
-        {[0,1,2].map(i => (
-          <div key={i} className="hw-sk" style={{ aspectRatio: "3/4", width: "100%" }} />
-        ))}
-      </div>
-    </div>
-  );
-
-  return (
-    <div style={wrap}>
-      <div className="hw-sk" style={{ width: "60%", height: 80 }} />
-    </div>
-  );
-}
-
-/* ── LazySection ─────────────────────────────────────────────────────────── */
+/* ─── LazySection ────────────────────────────────────────────────────────── */
 
 export default function LazySection({
   children,
-  skeletonVariant = "default",
+  skeletonVariant: _skeletonVariant,   // kept for API compat, no longer used
   minHeight = "400px",
-  rootMargin = "400px 0px",   // start loading 400px before it enters viewport
+  rootMargin = "0px 0px -80px 0px",   // trigger slightly before centre of viewport
   className,
+  revealDirection = "up",
+  revealDelay = 0,
 }: LazySectionProps) {
   const ref = useRef<HTMLDivElement>(null);
-  // Start as false — show skeleton first. But check immediately on mount
-  // if the element is already in/near the viewport and flip to true instantly.
-  const [visible, setVisible] = useState(false);
+  const [revealed, setRevealed] = useState(false);
+
+  const reveal = useCallback(() => {
+    if (revealDelay > 0) {
+      setTimeout(() => setRevealed(true), revealDelay);
+    } else {
+      setRevealed(true);
+    }
+  }, [revealDelay]);
 
   useEffect(() => {
+    ensureCSS();
+
     const el = ref.current;
     if (!el) return;
 
-    // Fast-path: if element top is within rootMargin pixels of viewport, show immediately.
-    // This prevents the skeleton flash for sections that are already visible or close.
+    // Fast-path: if element is already in/very near viewport, reveal without
+    // waiting for the observer (prevents invisible-forever on fast navigations).
     const rect = el.getBoundingClientRect();
-    const marginPx = parseInt(rootMargin, 10) || 400;
-    if (rect.top < window.innerHeight + marginPx) {
-      setVisible(true);
+    if (rect.top < window.innerHeight + 60) {
+      reveal();
       return;
     }
 
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          setVisible(true);
+          reveal();
           observer.disconnect();
         }
       },
-      { rootMargin, threshold: 0 }
+      { rootMargin, threshold: 0.04 }
     );
 
     observer.observe(el);
     return () => observer.disconnect();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [rootMargin, reveal]);
+
+  const classes = [
+    "hw-lazy-section",
+    revealed ? "hw-revealed" : "",
+    className ?? "",
+  ]
+    .filter(Boolean)
+    .join(" ");
 
   return (
     <div
       ref={ref}
-      className={className}
-      // Keep minHeight on the wrapper at ALL times so the page has
-      // the correct scroll height and the observer fires at the right moment.
-      // Without this, sections collapse and everything loads at once.
-      style={{ minHeight }}
+      className={classes}
+      data-reveal={revealDirection}
+      style={{
+        minHeight,
+        position: "relative",   // needed for ::after scan-sweep
+      }}
     >
-      {visible ? children : <Skeleton variant={skeletonVariant} minHeight={minHeight} />}
+      {children}
     </div>
   );
 }
