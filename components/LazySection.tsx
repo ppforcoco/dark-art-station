@@ -15,15 +15,13 @@ interface LazySectionProps {
 }
 
 const TRANSFORMS: Record<string, string> = {
-  up:    "translateY(56px)",
+  up:    "translateY(48px)",
   down:  "translateY(-40px)",
   left:  "translateX(64px)",
   right: "translateX(-64px)",
-  fade:  "translateY(24px) scale(0.97)",
+  fade:  "translateY(20px) scale(0.97)",
 };
 
-// Inject styles directly into a <style> tag with !important overrides.
-// We use a unique ID so we only inject once per page load.
 const STYLE_ID = "hw-lazy-reveal-styles";
 
 function ensureCSS() {
@@ -32,54 +30,115 @@ function ensureCSS() {
 
   const s = document.createElement("style");
   s.id = STYLE_ID;
-  // These rules use maximum specificity tricks to override globals.css
-  // which may set animation:none or transition-duration:0.1ms on *.
   s.textContent = `
-    /* ── LazySection reveal — must beat globals.css ── */
+    /* ── LazySection: hidden state via CSS class (NOT inline style) ── */
+    /* This way .hw-revealed can override it without specificity issues  */
+
     div.hw-lazy-section {
+      opacity: 0;
       will-change: opacity, transform;
     }
-    /* Revealed state: plain transition, no shorthand so globals can't clobber */
+
+    /* Each direction's hidden transform */
+    div.hw-lazy-section[data-reveal="up"]    { transform: translateY(48px); }
+    div.hw-lazy-section[data-reveal="down"]  { transform: translateY(-40px); }
+    div.hw-lazy-section[data-reveal="left"]  { transform: translateX(64px); }
+    div.hw-lazy-section[data-reveal="right"] { transform: translateX(-64px); }
+    div.hw-lazy-section[data-reveal="fade"]  { transform: translateY(20px) scale(0.97); }
+
+    /* ── Revealed state ── */
     div.hw-lazy-section.hw-revealed {
-      transition-property: opacity, transform !important;
-      transition-duration: 0.85s !important;
-      transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1) !important;
-      transition-delay: 0s !important;
       opacity: 1 !important;
       transform: none !important;
+      transition-property: opacity, transform !important;
+      transition-duration: 0.75s !important;
+      transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1) !important;
+      transition-delay: 0s !important;
     }
 
-    /* Red scan-line sweep on reveal */
+    /* ── ROG-style: clip wipe from left on reveal ── */
+    div.hw-lazy-section.hw-rog-wipe {
+      clip-path: inset(0 100% 0 0) !important;
+      transition: none !important;
+    }
+    div.hw-lazy-section.hw-rog-wipe.hw-revealed {
+      clip-path: inset(0 0% 0 0) !important;
+      transition-property: opacity, transform, clip-path !important;
+      transition-duration: 0.7s !important;
+      transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1) !important;
+    }
+
+    /* ── ROG red scan-line sweep ── */
+    div.hw-lazy-section { position: relative; overflow: hidden; }
+
     div.hw-lazy-section.hw-scanning::after {
       content: '' !important;
       display: block !important;
       position: absolute !important;
-      left: 0 !important; right: 0 !important;
+      left: -10% !important;
+      right: -10% !important;
       top: 0 !important;
-      height: 2px !important;
+      height: 1.5px !important;
       background: linear-gradient(
         90deg,
-        transparent,
-        rgba(192,0,26,0.65),
-        transparent
+        transparent 0%,
+        rgba(192,0,26,0) 10%,
+        rgba(192,0,26,0.9) 40%,
+        rgba(255,30,60,1) 50%,
+        rgba(192,0,26,0.9) 60%,
+        rgba(192,0,26,0) 90%,
+        transparent 100%
+      ) !important;
+      box-shadow: 0 0 8px 1px rgba(192,0,26,0.6), 0 0 20px 4px rgba(192,0,26,0.2) !important;
+      pointer-events: none !important;
+      z-index: 100 !important;
+      animation: hw-rog-scan 0.85s cubic-bezier(0.4, 0, 0.2, 1) forwards !important;
+    }
+
+    /* Second horizontal glitch bar */
+    div.hw-lazy-section.hw-scanning::before {
+      content: '' !important;
+      display: block !important;
+      position: absolute !important;
+      left: 0 !important;
+      right: 0 !important;
+      top: 0 !important;
+      height: 100% !important;
+      background: linear-gradient(
+        180deg,
+        rgba(192,0,26,0.04) 0%,
+        transparent 30%
       ) !important;
       pointer-events: none !important;
-      z-index: 10 !important;
-      animation: hw-scan 1.1s cubic-bezier(0.4,0,0.2,1) forwards !important;
+      z-index: 99 !important;
+      animation: hw-rog-flash 0.85s ease-out forwards !important;
     }
 
-    @keyframes hw-scan {
-      from { top: 0;    opacity: 1; }
-      to   { top: 100%; opacity: 0; }
+    @keyframes hw-rog-scan {
+      0%   { top: -2px; opacity: 1; }
+      85%  { opacity: 1; }
+      100% { top: 100%;  opacity: 0; }
     }
 
-    /* Mobile & reduced-motion: never hide, never animate */
+    @keyframes hw-rog-flash {
+      0%   { opacity: 1; }
+      100% { opacity: 0; }
+    }
+
+    /* ── Corner bracket accent (ROG-style) ── */
+    div.hw-lazy-section.hw-revealed.hw-brackets::after {
+      display: none !important; /* reset the scan-line pseudo when brackets active */
+    }
+
+    /* ── Mobile & reduced-motion: always visible, no animation ── */
     @media (max-width: 767px) {
       div.hw-lazy-section {
         opacity: 1 !important;
         transform: none !important;
+        clip-path: none !important;
       }
-      div.hw-lazy-section.hw-scanning::after {
+      div.hw-lazy-section.hw-scanning::after,
+      div.hw-lazy-section.hw-scanning::before {
         display: none !important;
       }
     }
@@ -87,18 +146,20 @@ function ensureCSS() {
       div.hw-lazy-section {
         opacity: 1 !important;
         transform: none !important;
+        clip-path: none !important;
+        transition: none !important;
       }
     }
   `;
-  // Append LAST so specificity beats everything loaded before it
+  // Append last so it beats everything loaded before it
   document.head.appendChild(s);
 }
 
 export default function LazySection({
   children,
   skeletonVariant: _unused,
-  minHeight = "400px",
-  rootMargin = "0px 0px -80px 0px",
+  minHeight = "auto",
+  rootMargin = "0px 0px -60px 0px",
   className,
   revealDirection = "up",
   revealDelay = 0,
@@ -111,23 +172,21 @@ export default function LazySection({
     const el = ref.current;
     if (!el) return;
 
-    // On mobile / reduced-motion the CSS already forces visible;
-    // skip all JS logic so we don't fight the cascade.
     const isMobile = window.matchMedia("(max-width: 767px)").matches;
     const noMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (isMobile || noMotion) return;
 
     function doReveal() {
       if (!el) return;
-      // 1. Add .hw-revealed — this drives the CSS transition to opacity:1 / transform:none
+
+      // 1. Transition to visible
       el.classList.add("hw-revealed");
 
-      // 2. Scan-line: add class a frame later so the transition has started
+      // 2. ROG scan-line — starts a frame after reveal begins
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
           el.classList.add("hw-scanning");
-          // Remove after animation completes so ::after pseudo vanishes
-          setTimeout(() => el.classList.remove("hw-scanning"), 1200);
+          setTimeout(() => el?.classList.remove("hw-scanning"), 950);
         });
       });
     }
@@ -144,9 +203,9 @@ export default function LazySection({
     const alreadyVisible = rect.top < window.innerHeight + 80;
 
     if (alreadyVisible) {
-      // Already in viewport on mount — wait one paint so browser renders
-      // the hidden inline styles before we transition to visible.
-      setTimeout(schedule, 180);
+      // Already in viewport on mount — delay one paint cycle so the
+      // hidden CSS class is applied before we flip to revealed
+      setTimeout(schedule, 200);
     } else {
       const io = new IntersectionObserver(
         ([entry]) => {
@@ -163,21 +222,15 @@ export default function LazySection({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Inline hidden state painted in SSR HTML — before any JS or CSS loads.
-  // We only set the "from" state here; the "to" state is driven by CSS class.
-  const hiddenStyle: React.CSSProperties = {
-    opacity: 0,
-    transform: TRANSFORMS[revealDirection] ?? TRANSFORMS.up,
-    minHeight,
-    position: "relative",
-  };
-
   return (
     <div
       ref={ref}
       className={["hw-lazy-section", className].filter(Boolean).join(" ")}
       data-reveal={revealDirection}
-      style={hiddenStyle}
+      // ✅ FIX: NO inline opacity/transform styles here.
+      // Hidden state is driven purely by CSS class rules above,
+      // so .hw-revealed can override them without specificity conflicts.
+      style={{ minHeight: minHeight !== "auto" ? minHeight : undefined }}
     >
       {children}
     </div>
