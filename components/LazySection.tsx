@@ -22,61 +22,75 @@ const TRANSFORMS: Record<string, string> = {
   fade:  "translateY(24px) scale(0.97)",
 };
 
-let cssInjected = false;
+// Inject styles directly into a <style> tag with !important overrides.
+// We use a unique ID so we only inject once per page load.
+const STYLE_ID = "hw-lazy-reveal-styles";
+
 function ensureCSS() {
-  if (cssInjected || typeof document === "undefined") return;
-  cssInjected = true;
+  if (typeof document === "undefined") return;
+  if (document.getElementById(STYLE_ID)) return;
+
   const s = document.createElement("style");
-  s.id = "hw-lazy-styles";
+  s.id = STYLE_ID;
+  // These rules use maximum specificity tricks to override globals.css
+  // which may set animation:none or transition-duration:0.1ms on *.
   s.textContent = `
-    .hw-lazy-section {
-      /* Long duration — makes animation clearly visible */
+    /* ── LazySection reveal — must beat globals.css ── */
+    div.hw-lazy-section {
+      will-change: opacity, transform;
+    }
+    /* Revealed state: plain transition, no shorthand so globals can't clobber */
+    div.hw-lazy-section.hw-revealed {
       transition-property: opacity, transform !important;
-      transition-duration: 0.9s !important;
+      transition-duration: 0.85s !important;
       transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1) !important;
       transition-delay: 0s !important;
-      position: relative;
-    }
-    .hw-lazy-section.hw-revealed {
       opacity: 1 !important;
       transform: none !important;
     }
-    /* Red scan-line sweep */
-    .hw-lazy-section::after {
-      content: '';
-      position: absolute;
-      left: 0; right: 0; top: 0;
-      height: 2px;
-      background: linear-gradient(90deg, transparent, rgba(192,0,26,0.7), transparent);
-      pointer-events: none;
-      opacity: 0;
-      z-index: 10;
-      transition-property: top, opacity !important;
-      transition-duration: 1.1s !important;
-      transition-timing-function: cubic-bezier(0.4,0,0.2,1) !important;
-      transition-delay: 0.2s !important;
+
+    /* Red scan-line sweep on reveal */
+    div.hw-lazy-section.hw-scanning::after {
+      content: '' !important;
+      display: block !important;
+      position: absolute !important;
+      left: 0 !important; right: 0 !important;
+      top: 0 !important;
+      height: 2px !important;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(192,0,26,0.65),
+        transparent
+      ) !important;
+      pointer-events: none !important;
+      z-index: 10 !important;
+      animation: hw-scan 1.1s cubic-bezier(0.4,0,0.2,1) forwards !important;
     }
-    .hw-lazy-section.hw-scanning::after {
-      top: 100% !important;
-      opacity: 0 !important;
+
+    @keyframes hw-scan {
+      from { top: 0;    opacity: 1; }
+      to   { top: 100%; opacity: 0; }
     }
+
+    /* Mobile & reduced-motion: never hide, never animate */
     @media (max-width: 767px) {
-      .hw-lazy-section {
+      div.hw-lazy-section {
         opacity: 1 !important;
         transform: none !important;
-        transition-duration: 0.001ms !important;
       }
-      .hw-lazy-section::after { display: none !important; }
+      div.hw-lazy-section.hw-scanning::after {
+        display: none !important;
+      }
     }
     @media (prefers-reduced-motion: reduce) {
-      .hw-lazy-section {
+      div.hw-lazy-section {
         opacity: 1 !important;
         transform: none !important;
-        transition-duration: 0.001ms !important;
       }
     }
   `;
-  // Must be LAST in <head> to override everything including globals.css
+  // Append LAST so specificity beats everything loaded before it
   document.head.appendChild(s);
 }
 
@@ -97,38 +111,43 @@ export default function LazySection({
     const el = ref.current;
     if (!el) return;
 
-    // Mobile / reduced-motion: reveal immediately, no animation
+    // On mobile / reduced-motion the CSS already forces visible;
+    // skip all JS logic so we don't fight the cascade.
     const isMobile = window.matchMedia("(max-width: 767px)").matches;
     const noMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (isMobile || noMotion) {
-      el.style.opacity = "";
-      el.style.transform = "";
-      return;
+    if (isMobile || noMotion) return;
+
+    function doReveal() {
+      if (!el) return;
+      // 1. Add .hw-revealed — this drives the CSS transition to opacity:1 / transform:none
+      el.classList.add("hw-revealed");
+
+      // 2. Scan-line: add class a frame later so the transition has started
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          el.classList.add("hw-scanning");
+          // Remove after animation completes so ::after pseudo vanishes
+          setTimeout(() => el.classList.remove("hw-scanning"), 1200);
+        });
+      });
     }
 
-    const doReveal = () => {
-      // Remove the inline hidden styles → CSS transition kicks in
-      el.style.opacity = "";
-      el.style.transform = "";
-      el.classList.add("hw-revealed");
-      // Scan-line sweep
-      setTimeout(() => {
-        el.classList.add("hw-scanning");
-        setTimeout(() => el.classList.remove("hw-scanning"), 1200);
-      }, 200);
-    };
-
-    const schedule = () => {
-      revealDelay > 0 ? setTimeout(doReveal, revealDelay) : doReveal();
-    };
+    function schedule() {
+      if (revealDelay > 0) {
+        setTimeout(doReveal, revealDelay);
+      } else {
+        doReveal();
+      }
+    }
 
     const rect = el.getBoundingClientRect();
+    const alreadyVisible = rect.top < window.innerHeight + 80;
 
-    if (rect.top < window.innerHeight + 80) {
-      // Already in viewport: wait 150ms so browser paints opacity:0 first
-      setTimeout(schedule, 150);
+    if (alreadyVisible) {
+      // Already in viewport on mount — wait one paint so browser renders
+      // the hidden inline styles before we transition to visible.
+      setTimeout(schedule, 180);
     } else {
-      // Below fold: trigger on scroll
       const io = new IntersectionObserver(
         ([entry]) => {
           if (entry.isIntersecting) {
@@ -141,13 +160,16 @@ export default function LazySection({
       io.observe(el);
       return () => io.disconnect();
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Inline styles set the hidden state in SSR HTML — guaranteed painted before JS runs
-  const hidden = {
-    opacity: 0 as unknown as string,
+  // Inline hidden state painted in SSR HTML — before any JS or CSS loads.
+  // We only set the "from" state here; the "to" state is driven by CSS class.
+  const hiddenStyle: React.CSSProperties = {
+    opacity: 0,
     transform: TRANSFORMS[revealDirection] ?? TRANSFORMS.up,
+    minHeight,
+    position: "relative",
   };
 
   return (
@@ -155,7 +177,7 @@ export default function LazySection({
       ref={ref}
       className={["hw-lazy-section", className].filter(Boolean).join(" ")}
       data-reveal={revealDirection}
-      style={{ minHeight, position: "relative", ...hidden }}
+      style={hiddenStyle}
     >
       {children}
     </div>
