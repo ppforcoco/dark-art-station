@@ -258,7 +258,7 @@ export default async function AndroidImagePage({ params }: PageProps) {
             <div style={{ marginTop: "12px", width: "100%", display: "flex", flexDirection: "column", gap: "8px" }}>
               <WallpaperReactions imageId={image.id} />
               <div className="hw-glow-btn-wrap hw-glow-btn-wrap--download">
-                <DownloadButton href={`/api/download/image/${image.id}`} downloadCount={image._count.downloads} />
+                <DownloadButton href={`/api/download/image/${image.id}`} slug={image.slug} downloadCount={image._count.downloads} />
               </div>
               <div className="hw-glow-btn-wrap hw-glow-btn-wrap--preview">
                 <PreviewButton src={thumbUrl} title={image.title} />

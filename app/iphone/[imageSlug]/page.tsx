@@ -226,6 +226,7 @@ export default async function IphoneImagePage({ params }: PageProps) {
               <div className="hw-glow-btn-wrap hw-glow-btn-wrap--download">
                 <DownloadButton
                   href={`/api/download/image/${image.id}`}
+                  slug={image.slug}
                   downloadCount={image._count.downloads}
                 />
               </div>

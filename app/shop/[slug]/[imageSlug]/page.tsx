@@ -197,7 +197,7 @@ export default async function CollectionImagePage({ params }: PageProps) {
             <div style={{ marginTop: "16px", display: "flex", flexDirection: "column", gap: "10px" }}>
               <WallpaperReactions imageId={image.id} />
               <div className="hw-glow-btn-wrap hw-glow-btn-wrap--download">
-                <DownloadButton href={`/api/download/image/${image.id}`} downloadCount={image._count?.downloads ?? 0} />
+                <DownloadButton href={`/api/download/image/${image.id}`} slug={image.slug} downloadCount={image._count?.downloads ?? 0} />
               </div>
               <Link href="/blog/the-dark-aesthetic-a-complete-guide-to-customizing-your-devices" className="setup-guide-link">
                 How to set wallpaper on iPhone, Android & PC →
@@ -296,6 +296,7 @@ export default async function CollectionImagePage({ params }: PageProps) {
 
       <PageTracker item={{ slug: image.slug, title: image.title, thumb: thumbUrl, href: `/shop/${slug}/${imageSlug}` }} />
       <RecentlyViewed currentSlug={image.slug} />
+      <RelatedWallpapers images={related} />
 
       <script
         type="application/ld+json"
