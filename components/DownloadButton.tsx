@@ -4,10 +4,24 @@ import Link from "next/link";
 
 interface Props {
   href: string;
+  slug?: string;          // used to seed the fake download count
   viewCount?: number;
   downloadCount?: number;
   label?: string;
   children?: ReactNode;
+}
+
+// ─── Seeded fake download count ───────────────────────────────────────────────
+// Hashes the slug into a stable integer. Range: 12–97 (never round, believable).
+// TO REMOVE BEFORE ADSENSE: delete this function + all fakeDownloads usages.
+function seededFakeDownloads(slug: string): number {
+  let h = 0x811c9dc5;
+  for (let i = 0; i < slug.length; i++) {
+    h ^= slug.charCodeAt(i);
+    h = (h * 0x01000193) >>> 0;
+  }
+  const t = Math.sqrt((h % 10000) / 10000);
+  return Math.floor(12 + t * 85);
 }
 
 // ── Sticky "Keep Exploring" bar shown after download ─────────────────────────
@@ -127,7 +141,7 @@ function KeepExploringBar({ visible }: { visible: boolean }) {
 }
 
 // ── Main DownloadButton ───────────────────────────────────────────────────────
-export default function DownloadButton({ href, viewCount, downloadCount, label, children }: Props) {
+export default function DownloadButton({ href, slug, viewCount, downloadCount, label, children }: Props) {
   const [state,    setState]    = useState<"idle" | "loading" | "done">("idle");
   const [isMobile, setIsMobile] = useState(false);
   const [canShare, setCanShare] = useState(false);
@@ -152,7 +166,6 @@ export default function DownloadButton({ href, viewCount, downloadCount, label, 
     setState("loading");
     setTimeout(() => setState("done"), 1400);
 
-    // Track download in Umami
     if (typeof window !== "undefined" && typeof (window as any).umami === "object") {
       (window as any).umami.track("download", {
         file: href.split("/").pop() ?? href,
@@ -193,17 +206,22 @@ export default function DownloadButton({ href, viewCount, downloadCount, label, 
     : state === "loading" ? "#6b0000"
     : "#8b0000";
 
+  // REMOVE BEFORE ADSENSE: use seeded fake count instead of real DB count.
+  // Replace the line below with: const displayDownloadCount = downloadCount;
+  const displayDownloadCount = slug ? seededFakeDownloads(slug) : downloadCount;
+
   return (
     <>
       <div className="download-btn-wrap">
-        {(viewCount !== undefined || downloadCount !== undefined) && (
+        {(viewCount !== undefined || displayDownloadCount !== undefined) && (
           <div className="download-stats-row">
             <span style={{ display: "flex", gap: "12px", alignItems: "center" }}>
               {viewCount !== undefined && (
                 <span className="download-stat">👁 {viewCount.toLocaleString()} views</span>
               )}
-              {downloadCount !== undefined && downloadCount > 0 && (
-                <span className="download-stat" style={{ color: "#c0453a" }}>↓ {downloadCount.toLocaleString()} downloads</span>
+              {/* REMOVE BEFORE ADSENSE: replace displayDownloadCount with downloadCount below */}
+              {displayDownloadCount !== undefined && displayDownloadCount > 0 && (
+                <span className="download-stat" style={{ color: "#c0453a" }}>↓ {displayDownloadCount.toLocaleString()} downloads</span>
               )}
             </span>
             <span

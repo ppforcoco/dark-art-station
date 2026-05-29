@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, ReactNode } from "react";
+import { useEffect, useRef, ReactNode, CSSProperties } from "react";
 
 type SkeletonVariant = "default" | "cards" | "wotd" | "tall" | "kits";
 
@@ -14,11 +14,13 @@ interface LazySectionProps {
   revealDelay?: number;
 }
 
-const TRANSFORMS: Record<string, string> = {
+// Initial hidden transforms — applied as inline styles so they exist from
+// the very first SSR paint. No flash, no FOUC, no "appears then hides" bug.
+const HIDDEN_TRANSFORMS: Record<string, string> = {
   up:    "translateY(48px)",
   down:  "translateY(-40px)",
   left:  "translateX(64px)",
-  right: "translateX(-64px)",
+  right:  "translateX(-64px)",
   fade:  "translateY(20px) scale(0.97)",
 };
 
@@ -31,22 +33,15 @@ function ensureCSS() {
   const s = document.createElement("style");
   s.id = STYLE_ID;
   s.textContent = `
-    /* ── LazySection: hidden state via CSS class (NOT inline style) ── */
-    /* This way .hw-revealed can override it without specificity issues  */
+    /* ── LazySection: transition + revealed state only ── */
+    /* Hidden state is set via inline styles on the element (SSR-safe).   */
+    /* This block only handles the REVEALED transition and scan-line FX.  */
 
     div.hw-lazy-section {
-      opacity: 0;
       will-change: opacity, transform;
     }
 
-    /* Each direction's hidden transform */
-    div.hw-lazy-section[data-reveal="up"]    { transform: translateY(48px); }
-    div.hw-lazy-section[data-reveal="down"]  { transform: translateY(-40px); }
-    div.hw-lazy-section[data-reveal="left"]  { transform: translateX(64px); }
-    div.hw-lazy-section[data-reveal="right"] { transform: translateX(-64px); }
-    div.hw-lazy-section[data-reveal="fade"]  { transform: translateY(20px) scale(0.97); }
-
-    /* ── Revealed state ── */
+    /* ── Revealed: clear inline hidden styles and transition in ── */
     div.hw-lazy-section.hw-revealed {
       opacity: 1 !important;
       transform: none !important;
@@ -54,18 +49,6 @@ function ensureCSS() {
       transition-duration: 0.75s !important;
       transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1) !important;
       transition-delay: 0s !important;
-    }
-
-    /* ── ROG-style: clip wipe from left on reveal ── */
-    div.hw-lazy-section.hw-rog-wipe {
-      clip-path: inset(0 100% 0 0) !important;
-      transition: none !important;
-    }
-    div.hw-lazy-section.hw-rog-wipe.hw-revealed {
-      clip-path: inset(0 0% 0 0) !important;
-      transition-property: opacity, transform, clip-path !important;
-      transition-duration: 0.7s !important;
-      transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1) !important;
     }
 
     /* ── ROG red scan-line sweep ── */
@@ -95,7 +78,6 @@ function ensureCSS() {
       animation: hw-rog-scan 0.85s cubic-bezier(0.4, 0, 0.2, 1) forwards !important;
     }
 
-    /* Second horizontal glitch bar */
     div.hw-lazy-section.hw-scanning::before {
       content: '' !important;
       display: block !important;
@@ -125,12 +107,7 @@ function ensureCSS() {
       100% { opacity: 0; }
     }
 
-    /* ── Corner bracket accent (ROG-style) ── */
-    div.hw-lazy-section.hw-revealed.hw-brackets::after {
-      display: none !important; /* reset the scan-line pseudo when brackets active */
-    }
-
-    /* ── Mobile & reduced-motion: always visible, no animation ── */
+    /* ── Mobile & reduced-motion: wipe inline styles, no animation ── */
     @media (max-width: 767px) {
       div.hw-lazy-section {
         opacity: 1 !important;
@@ -151,7 +128,6 @@ function ensureCSS() {
       }
     }
   `;
-  // Append last so it beats everything loaded before it
   document.head.appendChild(s);
 }
 
@@ -174,15 +150,25 @@ export default function LazySection({
 
     const isMobile = window.matchMedia("(max-width: 767px)").matches;
     const noMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (isMobile || noMotion) return;
+
+    if (isMobile || noMotion) {
+      // Clear the inline hidden styles immediately — CSS media query also
+      // handles this but clearing inline ensures no override fight.
+      el.style.opacity = "";
+      el.style.transform = "";
+      return;
+    }
 
     function doReveal() {
       if (!el) return;
 
-      // 1. Transition to visible
+      // Clear inline hidden styles, then add revealed class which
+      // applies the transition. Order matters: clear first, add class second.
+      el.style.opacity = "";
+      el.style.transform = "";
       el.classList.add("hw-revealed");
 
-      // 2. ROG scan-line — starts a frame after reveal begins
+      // ROG scan-line — starts a frame after reveal begins
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
           el.classList.add("hw-scanning");
@@ -200,12 +186,13 @@ export default function LazySection({
     }
 
     const rect = el.getBoundingClientRect();
-    const alreadyVisible = rect.top < window.innerHeight + 80;
+    // Add a tighter margin — only consider "already visible" if truly on screen
+    const alreadyVisible = rect.top < window.innerHeight - 40;
 
     if (alreadyVisible) {
-      // Already in viewport on mount — delay one paint cycle so the
-      // hidden CSS class is applied before we flip to revealed
-      setTimeout(schedule, 200);
+      // Small delay so the browser has painted the hidden state before we reveal.
+      // 80ms is enough for one paint; 200ms was causing a visible "flash then hide".
+      setTimeout(schedule, 80);
     } else {
       const io = new IntersectionObserver(
         ([entry]) => {
@@ -222,15 +209,23 @@ export default function LazySection({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // ── Inline hidden styles (SSR-safe) ──────────────────────────────────────
+  // Set opacity:0 and the direction transform directly on the element from
+  // the very first render (server + client). This means there is ZERO window
+  // where the section is visible before JS hides it — the old bug where
+  // ensureCSS() ran after paint and caused a flash is fully eliminated.
+  const hiddenStyle: CSSProperties = {
+    opacity: 0,
+    transform: HIDDEN_TRANSFORMS[revealDirection] ?? "translateY(48px)",
+    ...(minHeight !== "auto" ? { minHeight } : {}),
+  };
+
   return (
     <div
       ref={ref}
       className={["hw-lazy-section", className].filter(Boolean).join(" ")}
       data-reveal={revealDirection}
-      // ✅ FIX: NO inline opacity/transform styles here.
-      // Hidden state is driven purely by CSS class rules above,
-      // so .hw-revealed can override them without specificity conflicts.
-      style={{ minHeight: minHeight !== "auto" ? minHeight : undefined }}
+      style={hiddenStyle}
     >
       {children}
     </div>

@@ -24,6 +24,7 @@ const getCachedWotd = () => {
   )();
 };
 
+/* TRENDING-HIDDEN: restore by uncommenting this block
 const getCachedTrending = unstable_cache(
   async () => {
     const topDownloads = await db.download.groupBy({
@@ -48,6 +49,7 @@ const getCachedTrending = unstable_cache(
   ["trending-wallpapers"],
   { revalidate: 3600 },
 );
+TRENDING-HIDDEN */
 
 export async function generateMetadata(): Promise<Metadata> {
   const pageContent = await getPageContent("home");
@@ -83,14 +85,14 @@ export default async function Home() {
   let obsessions:       Array<{ id: string; slug: string; title: string; thumbnail: string; tag: string | null; icon: string | null; bgClass: string | null; _count: { images: number } }> = [];
   let newThisWeek:      Array<{ id: string; slug: string; title: string; r2Key: string; deviceType: string | null; tags: string[] }> = [];
   let premiumThisWeek:  Array<{ id: string; slug: string; title: string; r2Key: string; deviceType: string | null; tags: string[]; updatedAt: Date | null }> = [];
-  let trendingThisWeek: Array<{ id: string; slug: string; title: string; r2Key: string; deviceType: string | null; tags: string[]; _count: { downloads: number } }> = [];
+  /* TRENDING-HIDDEN */ // let trendingThisWeek: Array<{ id: string; slug: string; title: string; r2Key: string; deviceType: string | null; tags: string[]; _count: { downloads: number } }> = [];
 
   try {
+    /* TRENDING-HIDDEN: restore trendingThisWeek and getCachedTrending() here */
     [
       [wotd, totalImages],
       obsessions,
       [newThisWeek, premiumThisWeek],
-      trendingThisWeek,
     ] = await Promise.all([
       Promise.all([getCachedWotd(), db.image.count()]),
       db.collection.findMany({
@@ -122,7 +124,7 @@ export default async function Home() {
           select: { id: true, slug: true, title: true, r2Key: true, deviceType: true, tags: true, updatedAt: true },
         }),
       ]),
-      getCachedTrending(),
+      /* TRENDING-HIDDEN: getCachedTrending(), */
     ]);
   } catch (err) {
     console.error("[home/page] DB error:", err);
@@ -691,7 +693,7 @@ export default async function Home() {
         </section>
       </LazySection>
 
-      {/* TRENDING — reveal up */}
+      {/* TRENDING-HIDDEN: uncomment this entire block to restore Most Downloaded section
       {trendingThisWeek.length > 0 && (
         <LazySection
           revealDirection="up"
@@ -717,6 +719,7 @@ export default async function Home() {
           </section>
         </LazySection>
       )}
+      TRENDING-HIDDEN */}
 
       {/* COLLECTIONS — reveal from left (alternate) */}
       <LazySection

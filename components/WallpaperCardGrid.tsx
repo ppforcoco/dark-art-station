@@ -42,6 +42,24 @@ function VaultCountdown() {
   return <>{display}</>;
 }
 
+// ─── Seeded fake download count ───────────────────────────────────────────────
+// Hashes the slug into a stable integer. Range: 12–97 (never round, believable).
+// TO REMOVE BEFORE ADSENSE: delete this function + all fakeDownloads usages.
+function seededFakeDownloads(slug: string): number {
+  let h = 0x811c9dc5;
+  for (let i = 0; i < slug.length; i++) {
+    h ^= slug.charCodeAt(i);
+    h = (h * 0x01000193) >>> 0;
+  }
+  // sqrt curve weights toward lower numbers — most land 15–50, outliers up to 97
+  const t = Math.sqrt((h % 10000) / 10000);
+  return Math.floor(12 + t * 85);
+}
+
+function fmtDownloads(n: number): string {
+  return String(n);
+}
+
 export interface WallpaperCardItem {
   id: string;
   slug: string;
@@ -65,14 +83,9 @@ export default function WallpaperCardGrid({ items, accentRgb, badge, badgeColor 
   const shadowHover   = `0 0 0 1px rgba(${accentRgb},0.65), 0 20px 56px rgba(0,0,0,0.85), 0 0 32px rgba(${accentRgb},0.22)`;
 
   // ── FIX: hydration-safe lock state ───────────────────────────────────────
-  // Start as false (matches server render — server never knows client time).
-  // After mount, immediately read the real client clock. No mismatch, no #418.
   const [isLockedNow, setIsLockedNow] = useState(false);
   useEffect(() => {
-    // Set correct value immediately after hydration
     setIsLockedNow(getClientIsLocked());
-
-    // Re-check every minute so the lock state flips automatically
     const id = setInterval(() => setIsLockedNow(getClientIsLocked()), 60_000);
     return () => clearInterval(id);
   }, []);
@@ -106,7 +119,6 @@ export default function WallpaperCardGrid({ items, accentRgb, badge, badgeColor 
             scroll-snap-align: start;
           }
         }
-        /* Desktop-only hover effects — no paint cost on mobile */
         @media (pointer: fine) {
           .wcg-card { transition: transform 0.2s ease, box-shadow 0.2s ease; }
           .wcg-card:hover { transform: translateY(-4px); }
@@ -114,7 +126,10 @@ export default function WallpaperCardGrid({ items, accentRgb, badge, badgeColor 
       `}</style>
       <div className="wcg-outer">
       {items.map((img) => {
-        /* LOCKED CARD — uses isLockedNow (hydration-safe state, not raw Date.now()) */
+        // REMOVE BEFORE ADSENSE: seededFakeDownloads line below
+        const displayCount = img.downloadCount ?? seededFakeDownloads(img.slug);
+
+        /* LOCKED CARD */
         if (img.isLocked && isLockedNow) {
           return (
             <div
@@ -128,15 +143,12 @@ export default function WallpaperCardGrid({ items, accentRgb, badge, badgeColor 
               }}
             >
               <div style={{ position: "relative", aspectRatio: "9/16", background: "#0d0b14", borderRadius: "22px 22px 0 0", overflow: "hidden" }}>
-                {/* Side buttons */}
                 <div style={{ position: "absolute", left: "-3px", top: "24%", width: "3px", height: "20px", background: "#222", borderRadius: "2px 0 0 2px" }} />
                 <div style={{ position: "absolute", left: "-3px", top: "37%", width: "3px", height: "20px", background: "#222", borderRadius: "2px 0 0 2px" }} />
                 <div style={{ position: "absolute", right: "-3px", top: "29%", width: "3px", height: "28px", background: "#222", borderRadius: "0 2px 2px 0" }} />
-                {/* Dynamic island */}
                 <div style={{ position: "absolute", top: "7px", left: "50%", transform: "translateX(-50%)", width: "35%", height: "10px", background: "#000", borderRadius: "6px", zIndex: 4 }} />
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <Image src={img.src} alt="" aria-hidden="true" fill loading="lazy" sizes="100px" style={{ objectFit: "cover", filter: "blur(12px) brightness(0.18)", transform: "scale(1.12)" }} unoptimized />
-                {/* Vault overlay */}
                 <div style={{ position: "absolute", inset: 0, zIndex: 5, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "8px", padding: "1rem", textAlign: "center", background: "rgba(8,6,16,0.5)" }}>
                   <span style={{ fontSize: "1.8rem", lineHeight: 1, filter: `drop-shadow(0 0 8px rgba(${accentRgb},0.6))` }}>🔒</span>
                   <span style={{ fontSize: "0.52rem", letterSpacing: "0.2em", textTransform: "uppercase", color: accent, fontFamily: "monospace", fontWeight: 700 }}>Back in the Vault</span>
@@ -166,11 +178,9 @@ export default function WallpaperCardGrid({ items, accentRgb, badge, badgeColor 
             >
               {/* Phone mockup shell */}
               <div style={{ position: "relative", aspectRatio: "9/16", background: "#111", borderRadius: "22px 22px 0 0", overflow: "hidden" }}>
-                {/* Side buttons */}
                 <div style={{ position: "absolute", left: "-3px", top: "24%", width: "3px", height: "20px", background: "#222", borderRadius: "2px 0 0 2px" }} />
                 <div style={{ position: "absolute", left: "-3px", top: "37%", width: "3px", height: "20px", background: "#222", borderRadius: "2px 0 0 2px" }} />
                 <div style={{ position: "absolute", right: "-3px", top: "29%", width: "3px", height: "28px", background: "#222", borderRadius: "0 2px 2px 0" }} />
-                {/* Dynamic island */}
                 <div style={{ position: "absolute", top: "7px", left: "50%", transform: "translateX(-50%)", width: "35%", height: "10px", background: "#000", borderRadius: "6px", zIndex: 3 }} />
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <Image
@@ -197,16 +207,16 @@ export default function WallpaperCardGrid({ items, accentRgb, badge, badgeColor 
                 {/* Home indicator */}
                 <div style={{ position: "absolute", bottom: "6px", left: "50%", transform: "translateX(-50%)", width: "38px", height: "3px", background: "rgba(255,255,255,0.28)", borderRadius: "2px", zIndex: 4 }} />
               </div>
-              {/* Title footer */}
+              {/* Title + download count footer */}
               <div style={{ padding: "10px 10px 12px", background: "#0d0b14", borderTop: `1px solid rgba(${accentRgb},0.1)` }}>
                 <p style={{ color: "#e8e4dc", fontSize: "0.7rem", fontFamily: "monospace", margin: 0, lineHeight: 1.3, overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" as const }}>
                   {img.title}
                 </p>
-                {img.downloadCount != null && (
-                  <p style={{ color: "#ffffff", fontSize: "0.58rem", fontFamily: "monospace", margin: "4px 0 0", lineHeight: 1.2 }}>
-                    ↓ {img.downloadCount.toLocaleString()} downloads
-                  </p>
-                )}
+                {/* REMOVE BEFORE ADSENSE: the <p> below */}
+                <p style={{ color: "rgba(255,255,255,0.38)", fontSize: "0.56rem", fontFamily: "monospace", margin: "5px 0 0", lineHeight: 1.2, display: "flex", alignItems: "center", gap: "3px" }}>
+                  <span style={{ opacity: 0.6 }}>↓</span>
+                  {fmtDownloads(displayCount)} downloads
+                </p>
               </div>
             </div>
           </Link>
