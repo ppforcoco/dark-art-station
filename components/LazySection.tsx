@@ -194,9 +194,11 @@ export default function LazySection({
       // 80ms is enough for one paint; 200ms was causing a visible "flash then hide".
       setTimeout(schedule, 80);
     } else {
+      let revealed = false;
       const io = new IntersectionObserver(
         ([entry]) => {
           if (entry.isIntersecting) {
+            revealed = true;
             schedule();
             io.disconnect();
           }
@@ -204,7 +206,21 @@ export default function LazySection({
         { rootMargin, threshold: 0.05 }
       );
       io.observe(el);
-      return () => io.disconnect();
+
+      // Safety fallback: if still not revealed after 3s, force-reveal it.
+      // Prevents sections staying invisible due to IO timing bugs.
+      const fallback = setTimeout(() => {
+        if (!revealed) {
+          revealed = true;
+          doReveal();
+          io.disconnect();
+        }
+      }, 3000);
+
+      return () => {
+        io.disconnect();
+        clearTimeout(fallback);
+      };
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

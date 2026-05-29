@@ -21,7 +21,7 @@ function seededFakeDownloads(slug: string): number {
     h = (h * 0x01000193) >>> 0;
   }
   const t = Math.sqrt((h % 10000) / 10000);
-  return Math.floor(12 + t * 85);
+  return Math.floor(12 + t * 88);
 }
 
 // ── Sticky "Keep Exploring" bar shown after download ─────────────────────────
