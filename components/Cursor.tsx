@@ -3,24 +3,12 @@
 import { useEffect, useRef } from "react";
 
 // ── Step 1: Hide native cursor at module-eval time ───────────────────────────
-// This runs when the JS chunk is first parsed — before React renders anything.
-// It's the earliest possible JS execution point short of an inline <script> tag.
-//
-// BUT: if this component is inside a lazy-loaded chunk, the module may load
-// after the first paint. The GUARANTEED fix is to also add this to globals.css:
-//
-//   html, body, * { cursor: none !important; }
-//
-// Keep BOTH — the CSS covers the gap before this JS chunk loads.
 if (typeof document !== "undefined") {
   const existing = document.getElementById("hw-cursor-none");
   if (!existing) {
     const s = document.createElement("style");
     s.id = "hw-cursor-none";
-    // Target html so it inherits to everything immediately
     s.textContent = "html { cursor: none !important; } * { cursor: none !important; }";
-    // Insert as FIRST child of <head> so it's parsed immediately
-    // (later stylesheets can't override an inline !important)
     const head = document.head || document.documentElement;
     head.insertBefore(s, head.firstChild);
   }
@@ -63,18 +51,16 @@ export default function Cursor() {
 
       if (nowPointer !== isPointer) {
         isPointer = nowPointer;
-        // Scale dot slightly on interactive elements
-        dot.style.transform = `translate(${mouseX}px, ${mouseY}px) scale(${isPointer ? 1.4 : 1})`;
         dot.style.background = isPointer
           ? "rgba(192,0,26,0.9)"
           : "rgba(255,255,255,0.95)";
         trail.style.borderColor = isPointer
           ? "rgba(192,0,26,0.6)"
           : "rgba(192,0,26,0.35)";
-        trail.style.transform = `translate(${trailX}px, ${trailY}px) scale(${isPointer ? 1.5 : 1})`;
-      } else {
-        dot.style.transform = `translate(${mouseX}px, ${mouseY}px) scale(${isPointer ? 1.4 : 1})`;
       }
+
+      // Move dot instantly — no transform transition on position
+      dot.style.transform = `translate(${mouseX}px, ${mouseY}px) scale(${isPointer ? 1.4 : 1})`;
     }
 
     function tick() {
@@ -108,48 +94,50 @@ export default function Cursor() {
 
   return (
     <>
-      {/* Main dot — snaps to mouse instantly */}
+      {/* Main dot — snaps to mouse instantly, NO transform transition */}
       <div
         ref={dotRef}
         aria-hidden="true"
         style={{
-          position:         "fixed",
-          top:              0,
-          left:             0,
-          width:            "8px",
-          height:           "8px",
-          borderRadius:     "50%",
-          background:       "rgba(255,255,255,0.95)",
-          pointerEvents:    "none",
-          zIndex:           99999,
-          marginTop:        "-4px",
-          marginLeft:       "-4px",
-          willChange:       "transform",
-          transform:        "translate(-400px,-400px)",
-          transition:       "background 0.15s, transform 0.05s",
-          boxShadow:        "0 0 6px rgba(192,0,26,0.5)",
+          position:      "fixed",
+          top:           0,
+          left:          0,
+          width:         "8px",
+          height:        "8px",
+          borderRadius:  "50%",
+          background:    "rgba(255,255,255,0.95)",
+          pointerEvents: "none",
+          zIndex:        99999,
+          marginTop:     "-4px",
+          marginLeft:    "-4px",
+          willChange:    "transform",
+          transform:     "translate(-400px,-400px)",
+          // ✅ FIX: Only transition `background` — NOT `transform`
+          // Transitioning transform was causing a lag that looked like a second cursor
+          transition:    "background 0.15s, opacity 0.2s",
+          boxShadow:     "0 0 6px rgba(192,0,26,0.5)",
         }}
       />
 
-      {/* Trailing ring — lerps behind the dot */}
+      {/* Trailing ring — lerps behind the dot via rAF */}
       <div
         ref={trailRef}
         aria-hidden="true"
         style={{
-          position:         "fixed",
-          top:              0,
-          left:             0,
-          width:            "28px",
-          height:           "28px",
-          borderRadius:     "50%",
-          border:           "1.5px solid rgba(192,0,26,0.35)",
-          pointerEvents:    "none",
-          zIndex:           99998,
-          marginTop:        "-14px",
-          marginLeft:       "-14px",
-          willChange:       "transform",
-          transform:        "translate(-400px,-400px)",
-          transition:       "border-color 0.2s, transform 0.05s, opacity 0.2s",
+          position:      "fixed",
+          top:           0,
+          left:          0,
+          width:         "28px",
+          height:        "28px",
+          borderRadius:  "50%",
+          border:        "1.5px solid rgba(192,0,26,0.35)",
+          pointerEvents: "none",
+          zIndex:        99998,
+          marginTop:     "-14px",
+          marginLeft:    "-14px",
+          willChange:    "transform",
+          transform:     "translate(-400px,-400px)",
+          transition:    "border-color 0.2s, opacity 0.2s",
         }}
       />
     </>
