@@ -11990,18 +11990,7 @@ h4 { font-size: clamp(0.9rem, 1.5vw, 1.2rem); }
     -webkit-backdrop-filter: none !important;
   }
 }
-/* ═══════════════════════════════════════════════════════════════
-   KILL ALL ANIMATIONS — Performance patch
-   Every animation and heavy glow removed for max speed
-   ═══════════════════════════════════════════════════════════════ */
-
-/* 1. Nuke every @keyframes by overriding animation on ALL elements */
-*, *::before, *::after {
-  animation: none !important;
-  animation-duration: 0s !important;
-  animation-delay: 0s !important;
-  animation-iteration-count: 1 !important;
-}
+/* animations removed for performance */
 
 /* 2. Kill all glow box-shadows sitewide */
 .hw2-particle,
@@ -12056,8 +12045,6 @@ h4 { font-size: clamp(0.9rem, 1.5vw, 1.2rem); }
   animation-delay: 0s !important;
 }
 
-/* 7. Faster transitions — cap all at 0.1s */
-* { transition-duration: 0.1s !important; }
 
 /* 8. Kill What Haunts You section floating/drip/fog */
 .hw2-hero__bg,
@@ -12172,93 +12159,4 @@ h4 { font-size: clamp(0.9rem, 1.5vw, 1.2rem); }
 .mockup-monitor-bezel {
   filter: none !important;
 }
-/* ═══════════════════════════════════════════════════════════════
-   LAZY SECTION ROG-STYLE REVEAL — EXEMPT FROM ALL KILL RULES
-   Must be LAST in file to win specificity over the kill patches.
-   Uses transitions only (not animations) so animation:none can't
-   block it. The transition-duration override below restores proper
-   reveal timing on these elements only.
-   ═══════════════════════════════════════════════════════════════ */
-
-/* Initial hidden state — sections start invisible */
-.hw-lazy-section {
-  opacity: 0 !important;
-  will-change: opacity, transform;
-}
-
-/* Directional starting transforms */
-.hw-lazy-section[data-reveal="up"]    { transform: translateY(48px) !important; }
-.hw-lazy-section[data-reveal="down"]  { transform: translateY(-40px) !important; }
-.hw-lazy-section[data-reveal="left"]  { transform: translateX(60px) !important; }
-.hw-lazy-section[data-reveal="right"] { transform: translateX(-60px) !important; }
-.hw-lazy-section[data-reveal="fade"]  { transform: translateY(16px) scale(0.99) !important; }
-
-/* Transition timings — override the 0.1s cap from the kill patch */
-.hw-lazy-section {
-  transition-property: opacity, transform !important;
-  transition-duration: 0.75s !important;
-  transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1) !important;
-  transition-delay: 0s !important;
-}
-
-/* Revealed state — override everything back to visible */
-.hw-lazy-section.hw-revealed {
-  opacity: 1 !important;
-  transform: none !important;
-}
-
-/* Scan-line — transition-based sweep on reveal */
-.hw-lazy-section {
-  position: relative;
-}
-.hw-lazy-section::after {
-  content: '';
-  position: absolute;
-  left: 0; right: 0;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, rgba(192,0,26,0.55), transparent);
-  top: 0;
-  pointer-events: none;
-  opacity: 0;
-  transition-property: top, opacity !important;
-  transition-duration: 0.9s !important;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1) !important;
-  transition-delay: 0.05s !important;
-  z-index: 10;
-}
-.hw-lazy-section.hw-scanning::after {
-  top: 100% !important;
-  opacity: 0 !important;
-  transition-duration: 0.9s !important;
-}
-
-/* Mobile & reduced-motion: instant reveal, no effects */
-@media (max-width: 767px) {
-  .hw-lazy-section,
-  .hw-lazy-section[data-reveal="up"],
-  .hw-lazy-section[data-reveal="down"],
-  .hw-lazy-section[data-reveal="left"],
-  .hw-lazy-section[data-reveal="right"],
-  .hw-lazy-section[data-reveal="fade"] {
-    opacity: 1 !important;
-    transform: none !important;
-    transition-duration: 0.001ms !important;
-  }
-  .hw-lazy-section::after { display: none !important; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .hw-lazy-section,
-  .hw-lazy-section[data-reveal="up"],
-  .hw-lazy-section[data-reveal="down"],
-  .hw-lazy-section[data-reveal="left"],
-  .hw-lazy-section[data-reveal="right"],
-  .hw-lazy-section[data-reveal="fade"] {
-    opacity: 1 !important;
-    transform: none !important;
-    transition-duration: 0.001ms !important;
-  }
-  .hw-lazy-section::after { display: none !important; }
-}
-
-/* ── END LAZY SECTION REVEAL ──────────────────────────────────── */
+/* lazy section reveal — handled by LazySection.tsx */
