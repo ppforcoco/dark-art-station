@@ -205,7 +205,7 @@ and wide-format phones. Desktop nav shows at ≥ 1280px only.    */
 @keyframes mobileNavIn {
   from { opacity: 0; transform: translateX(24px); }
   to   { opacity: 1; transform: translateX(0); }
-}.mobile-menu-open .mobile-menu-link { animation: mobileNavIn 0.4s ease both; }}
+}.mobile-menu-open .mobile-menu-link { animation: mobileNavIn 0.4s ease both; }
 
 /* ──────────────────────────────────────────────────────────── */
 /*  SEARCH OVERLAY                                              */
@@ -256,7 +256,7 @@ and wide-format phones. Desktop nav shows at ≥ 1280px only.    */
     width: 100%;
     justify-content: center;
     padding: 16px 24px;
-  }}
+  }
 
 .btn-primary {
   position: relative; overflow: hidden;
@@ -304,7 +304,7 @@ and wide-format phones. Desktop nav shows at ≥ 1280px only.    */
   margin-top: 4px;
   display: block;
 }/* Day of the Dead — deep emerald */
-.m4 { background: linear-gradient(180deg, #1a0808 0%, #2a0000 50%, #0e0000 100%); }}
+.m4 { background: linear-gradient(180deg, #1a0808 0%, #2a0000 50%, #0e0000 100%); }
 .section-eyebrow {
   font-family: var(--font-space), monospace;
   font-size: 0.65rem; letter-spacing: 0.25em; text-transform: uppercase;
@@ -1225,7 +1225,7 @@ show days only ── */
   color: #c9a84c;
   display: block;
   margin-top: 4px;
-}}
+}
 
 /* ──────────────────────────────────────────────────────────── */
 /*  SHOP PAGE                                                    */
@@ -1634,7 +1634,7 @@ grid on desktop */
   .mobile-cta-spacer {
     height: calc(96px + env(safe-area-inset-bottom));
     display: block;
-  }}
+  }
 
 /* ── Product card touch feedback ───────────────────────────── */
 @media (max-width: 1023px) {.group:active { transform: scale(0.98) translateY(0) !important; }
@@ -1654,7 +1654,7 @@ not 1 ──────────── */
     grid-template-columns: repeat(2, 1fr) !important;
     gap: 12px !important;
   }
-}.cat-card { aspect-ratio: 9/16 !important; }.cat-card.featured { aspect-ratio: 9/16 !important; }}
+}.cat-card { aspect-ratio: 9/16 !important; }.cat-card.featured { aspect-ratio: 9/16 !important; }
 
 /* ── Related wallpapers — better mobile spacing ─────────────── */
 @media (max-width: 639px) {
@@ -1667,7 +1667,7 @@ not 1 ──────────── */
   }.site-footer { padding-bottom: calc(40px + env(safe-area-inset-bottom)); }
 }/* ── Safe area insets for fixed nav ─────────────────────────── */
 
-.logo-full { display: inline; }.logo-full { display: none; }}
+.logo-full { display: inline; }.logo-full { display: none; }
 @media (min-width: 375px) and (max-width: 479px) {
   .nav-logo {
     letter-spacing: 0.04em;
@@ -1685,10 +1685,10 @@ not 1 ──────────── */
     padding-left: 0;
     padding-right: 0;
   }
-}}/* ── Hide sticky CTA on image detail pages ──────────────────── */
+}/* ── Hide sticky CTA on image detail pages ──────────────────── */
 /* These pages already have a download button in the details panel.
    The sticky CTA would create a duplicate red button at the bottom. */
-.image-detail-page .mobile-sticky-cta { display: none !important; }}/* Show normally once AdSense has filled the slot */
+.image-detail-page .mobile-sticky-cta { display: none !important; }/* Show normally once AdSense has filled the slot */
 .ad-banner--loaded { display: flex !important; }/* Dev placeholder — styled to match dark theme,
 not white box  */
 .ad-banner--dev {
@@ -2478,7 +2478,7 @@ no broken blank boxes ───────────────*/
   text-transform: uppercase;
   color: #e8a0a8;
   text-shadow: 0 0 12px rgba(192,0,26,0.3);
-}}
+}
 /* ─────────────────────────────────────────────────────────────
    BLOG INDEX PAGE
 ───────────────────────────────────────────────────────────── */
@@ -3282,7 +3282,7 @@ zero filter/blur ─────────────────────
 }
 @media (max-width: 767px) {
 .dt-fog { display: none; }
-}}
+}
 
 /* ══════════════════════════════════════════════════════════════════════
    SECTION 1 — GATE HERO
@@ -3830,7 +3830,7 @@ zero filter/blur ─────────────────────
   flex: 1;
 }.dt-coffin-row--compact .dt-coffin__num { font-size: 1.3rem; }/* Hero image strip — 5 phone previews */
 
-  .dt-gate__left .dt-gate__sub { max-width: 100%; }}
+  .dt-gate__left .dt-gate__sub { max-width: 100%; }
 
 /* Remove the heavy particle embers since we removed that div */
 /* Keep .dt-gate__crack for texture overlay — it's CSS-only,
