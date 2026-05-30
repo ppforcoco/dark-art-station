@@ -77,8 +77,11 @@ h3,
 h4,
 h5,
 h6,
-span,
-  background-color: var(--bg-primary) !important;
+span {
+  user-select: text;
+}
+body {
+  background-color: var(--bg-primary);
   color: var(--text-primary);
   font-family: var(--font-cormorant), 'Cormorant Garamond', Georgia, serif;
   font-size: clamp(16px, 1.2vw + 14px, 19px);
@@ -91,10 +94,7 @@ span,
   padding-left: env(safe-area-inset-left);
   padding-right: env(safe-area-inset-right);
 }/* Hide native cursor on desktop — applied immediately from CSS,
-no JS flash */
-@media (pointer: fine) {
-html, body, *, *::before, *::after {!important; }
-}/* ── Global Typography Scale & Contrast ────────────────────── */
+no JS flash *//* ── Global Typography Scale & Contrast ────────────────────── */
 /* Minimum readable sizes — overrides tiny 0.5-0.6rem labels   */
 
 /* All font-mono small labels — floor at 0.68rem */
@@ -179,8 +179,6 @@ default 0px) */
   width: 200px;
   padding: 0 12px 0 0;
 }/* ── Mobile Controls (search icon + hamburger) ── */
-
-}
 
 /* ── Responsive Breakpoint ── */
 /* 1279px covers: Galaxy Z Fold 4 cover (832px),

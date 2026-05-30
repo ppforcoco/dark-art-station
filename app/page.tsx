@@ -244,7 +244,7 @@ export default async function Home() {
           {/* MOBILE thumbnail */}
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/extras/the-haunted-wallpapers-hero-thumbnail.webp"
+            src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/extras/the-haunted-wallpapers-hero-section-image-mobile-dark-wallpapers.avif"
             alt="Haunted Wallpapers Hero"
             className="hw-hero-mobile-thumb"
             loading="eager"
