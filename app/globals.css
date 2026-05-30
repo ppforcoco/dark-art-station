@@ -4697,7 +4697,7 @@ exempt
   [tabindex],
   summary,
   [cursor],
-  .cursor-pointer { !important; }
+  .cursor-pointer { cursor: none !important; }
 }/* ── More ▸ thumbnail strip — hover glow so users know it's clickable ───── */
 .more-strip-link {
   display: block;
