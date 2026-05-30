@@ -3836,14 +3836,17 @@ fine */
    Beautiful minimal phones in the hero right column
 ═══════════════════════════════════════════════════════════════════════════ */
 
-/* Container — 5 phones side by side {
+/* Container — 5 phones side by side */
+.dt-hero-phones-container {
   display: flex;
   gap: 8px;
   align-items: flex-end;
   justify-content: center;
   padding: 20px 0 0;
-}.dt-phone-card--hero .dt-phone-card__aura,
-.hw2-obs-card:hover .hw2-obs-card__glitch { will-change: transform; }/* Disable non-essential animations for users who prefer reduced motion */
+}
+.dt-phone-card--hero .dt-phone-card__aura,
+.hw2-obs-card:hover .hw2-obs-card__glitch { will-change: transform; }
+/* Disable non-essential animations for users who prefer reduced motion */
 /* hw-track,
 hw-monitor,
 hw-phone,
@@ -4529,7 +4532,7 @@ needs boost */
 .hw-hero img[data-priority] {
   /* Force eager decode — avoids decode delay on LCP element */
   image-rendering: auto;
-}.dt-fog__layer — low priority */
+}.dt-fog__layer { /* low priority */}
 
 /* ── FORCED REFLOW FIX ──────────────────────────────────────────────── */
 /* Forced reflow is caused by reading layout properties after DOM mutations.
