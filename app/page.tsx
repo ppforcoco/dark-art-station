@@ -172,15 +172,16 @@ export default async function Home() {
       {/* ══════════════════════════════════════════════════════════
           HERO  — no LazySection; renders immediately
       ══════════════════════════════════════════════════════════ */}
-      <section className="dt-gate dt-gate--collage hw-hero-gate-override" style={{ padding: "0", minHeight: "unset" }}>
+      <section className="dt-gate dt-gate--collage hw-hero-gate-override" style={{ padding: "0", minHeight: "unset", background: "#000" }}>
         <div className="dt-gate__crack" aria-hidden="true" />
 
         <div className="hw-hero-split" style={{
           display: "grid", gridTemplateColumns: "1fr",
           alignItems: "center", width: "100%", maxWidth: "100%", overflow: "visible",
+          background: "#000",
         }}>
           {/* LEFT — text */}
-          <div style={{ display: "flex", flexDirection: "column", gap: "0.6rem", padding: "20px 24px 20px" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "0.6rem", padding: "20px 24px 20px", background: "#000" }}>
             <span className="dt-gate__eyebrow" style={{ fontSize: "0.75rem", letterSpacing: "0.25em" }}>You have arrived in</span>
 
             <h1 style={{
@@ -241,7 +242,7 @@ export default async function Home() {
             </div>
           </div>
 
-          {/* HERO IMAGE — mobile + desktop */}
+          {/* HERO IMAGE — locked, no link, no drag, no context menu */}
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/extras/the-haunted-wallpapers-hero-section-image-mobile-dark-wallpapers-thumbnail.avif"
@@ -252,7 +253,9 @@ export default async function Home() {
             decoding="sync"
             width="1200"
             height="800"
-            style={{ display: "block" }}
+            draggable={false}
+            onContextMenu={(e) => e.preventDefault()}
+            style={{ display: "block", pointerEvents: "none", userSelect: "none", WebkitUserSelect: "none" as React.CSSProperties["WebkitUserSelect"] }}
           />
         </div>
       </section>
@@ -265,8 +268,8 @@ export default async function Home() {
         }
 
         /* ── Hero layout ── */
-        .hw-hero-gate-override { padding-top:8px !important; padding-bottom:0 !important; overflow:visible !important; }
-        .hw-hero-split { display:grid; grid-template-columns:1fr; }
+        .hw-hero-gate-override { padding-top:8px !important; padding-bottom:0 !important; overflow:visible !important; background:#000 !important; }
+        .hw-hero-split { display:grid; grid-template-columns:1fr; background:#000; }
 
         /* Image: mobile stacks below text */
         .hw-hero-img {
@@ -275,7 +278,11 @@ export default async function Home() {
           max-height:220px;
           object-fit:contain;
           object-position:center center;
-          animation: hw-hero-img-reveal 1.1s cubic-bezier(0.22,1,0.36,1) both;
+          display:block;
+          pointer-events:none;
+          user-select:none;
+          -webkit-user-select:none;
+          -webkit-user-drag:none;
         }
 
         /* Desktop: text left, image right, full height */
@@ -290,10 +297,29 @@ export default async function Home() {
             max-height:none;
             object-fit:cover;
             object-position:center center;
+            /* gradient fade on left edge so image bleeds into black text panel */
+            mask-image: linear-gradient(to right, transparent 0%, black 12%);
+            -webkit-mask-image: linear-gradient(to right, transparent 0%, black 12%);
           }
         }
 
         @media (max-width:859px) { .hw-hero-vault-text { display:none !important; } }
+
+        /* ── Kill ALL kit card entrance animations globally ── */
+        .hw-kit-card--anim {
+          opacity: 1 !important;
+          transform: none !important;
+          animation: none !important;
+          transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease !important;
+        }
+
+        /* ── Kill recently viewed / RecentlyViewed animations ── */
+        [class*="recently"] *,
+        [class*="RecentlyViewed"] *,
+        .hw-recently-viewed * {
+          animation: none !important;
+          transition: none !important;
+        }
 
         /* ── Scroll fade-in: add class hw-fade-up to any section/element ── */
         .hw-fade-up {
@@ -715,22 +741,11 @@ export default async function Home() {
             .hw-kit-card__cta{font-family:var(--font-space,monospace);font-size:0.58rem;letter-spacing:0.14em;text-transform:uppercase;color:rgb(var(--kit-accent,224,0,31));transition:letter-spacing 0.2s ease;display:flex;align-items:center;gap:6px}
             .hw-kit-card:hover .hw-kit-card__cta{letter-spacing:0.22em}
 
-            /* ── Kit card entrance animation ── */
+            /* ── Kit card entrance animation — DISABLED ── */
             .hw-kit-card--anim {
-              opacity: 0;
-              transform: translateY(40px) scale(0.97);
-              animation: hw-kit-enter 0.65s cubic-bezier(0.16,1,0.3,1) forwards;
-            }
-            .hw-ls--on .hw-kit-card--anim,
-            .hw-kit-card--anim {
-              animation: hw-kit-enter 0.65s cubic-bezier(0.16,1,0.3,1) forwards;
-            }
-            .hw-kits-row3 .hw-kit-card--anim:nth-child(1) { animation-delay: 0.10s; }
-            .hw-kits-row3 .hw-kit-card--anim:nth-child(2) { animation-delay: 0.22s; }
-            .hw-kits-row3 .hw-kit-card--anim:nth-child(3) { animation-delay: 0.34s; }
-            @keyframes hw-kit-enter {
-              from { opacity: 0; transform: translateY(40px) scale(0.97); }
-              to   { opacity: 1; transform: none; }
+              opacity: 1 !important;
+              transform: none !important;
+              animation: none !important;
             }
 
             /* ── Kit thumb reveal sweep ── */
@@ -768,14 +783,7 @@ export default async function Home() {
             }
             .hw-kit-card:hover::before { opacity: 1; }
 
-            /* ── Mobile: instant visible ── */
-            @media (max-width: 767px) {
-              .hw-kit-card--anim {
-                opacity: 1 !important;
-                transform: none !important;
-                animation: none !important;
-              }
-            }
+            /* mobile: no special override needed — animations already killed globally */
           `}</style>
         </section>
       </LazySection>
