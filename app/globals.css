@@ -13,7 +13,6 @@
 
 /* ── HTML color-scheme — syncs browser native UI (scrollbars, inputs) ── */
 html                      { color-scheme: dark;  background-color: #0d0d14; }
-html[data-theme="ghost"]  { color-scheme: dark;  background-color: #0d0d14; }
 
 /* ── Rotating Rainbow Glow — applied to .card-glow elements ─────────────── */
 @keyframes cardGlowRotate {
@@ -68,78 +67,6 @@ html[data-theme="ghost"]  { color-scheme: dark;  background-color: #0d0d14; }
   --border-dim:   #20203a;
   --nav-bg:       rgba(13,13,20,0.96);
 }
-
-
-/* ── Ghost Theme — deep blue-black, spectral violet accents ─── */
-[data-theme="ghost"] {
-  --void:         #0d0d14;
-  --black:        #12121c;
-  --deep:         #18182a;
-  --ash:          #24243a;
-  --smoke:        #7878a8;
-  --ghost:        #9090b8;
-  --pale:         #d8d8f0;
-  --white:        #f0f0ff;
-  --bg-primary:   #0d0d14;
-  --bg-secondary: #12121c;
-  --text-primary: #e0e0f8;
-  --text-muted:   #9a9ac0;
-  --border-dim:   #20203a;
-  --nav-bg:       rgba(13,13,20,0.96);
-  --crimson:      #6060c0;
-  --blood:        #7878d8;
-  --ember:        #9090f0;
-  --gold:         #a0a0e0;
-}
-[data-theme="ghost"] body,
-[data-theme="ghost"] main { background-color: #0d0d14 !important; }
-[data-theme="ghost"] .site-nav { background: rgba(13,13,20,0.96) !important; border-bottom-color: rgba(96,96,192,0.15) !important; }
-[data-theme="ghost"] .nav-logo { color: #e0e0f8 !important; }
-[data-theme="ghost"] .logo-red { color: #9090f0 !important; text-shadow: 0 0 14px rgba(144,144,240,0.5) !important; }
-[data-theme="ghost"] .nav-links a { color: #8888aa !important; }
-[data-theme="ghost"] .nav-links a:hover { color: #e0e0f8 !important; }
-[data-theme="ghost"] .section-title { color: #e0e0f8 !important; }
-[data-theme="ghost"] .section-eyebrow { color: #7878d8 !important; }
-[data-theme="ghost"] .hero-title { color: #e0e0f8 !important; }
-[data-theme="ghost"] .hero-subtitle { color: #8888aa !important; }
-[data-theme="ghost"] .products-bg { background: #12121c !important; }
-[data-theme="ghost"] .product-grid .group { background: #18182a !important; }
-[data-theme="ghost"] .site-footer { background: #12121c !important; border-color: rgba(96,96,192,0.12) !important; }
-[data-theme="ghost"] .footer-bottom { border-color: rgba(96,96,192,0.12) !important; }
-[data-theme="ghost"] .mobile-menu-panel { background: rgba(13,13,20,0.99) !important; }
-
-
-/* ── Borders ── */
-
-
-/* ── Product cards / search cards / related cards ── */
-
-
-/* ── Nav ── */
-
-
-/* ── Path bar / breadcrumbs ── */
-
-
-/* ── Footer ── */
-
-
-/* ── Buttons ── */
-
-
-/* ── Shop page ── */
-
-
-/* ── Collection / image detail panels ── */
-
-
-/* ── Inline border cards (prev/next nav, tag pills) ── */
-
-
-/* ── Marquee, ad slots, section dividers ── */
-
-
-/* ── Category grid ── */
 
 
 /* ── WOTD section ── */
@@ -1205,11 +1132,6 @@ body::before {
               0 2px 8px rgba(0,0,0,0.4);
 }
 
-[data-theme="ghost"] .product-grid .group:hover {
-  box-shadow: 0 0 0 1px rgba(248,248,255,0.15),
-              0 8px 32px rgba(248,248,255,0.08),
-              0 2px 8px rgba(0,0,0,0.5);
-}
 @media (pointer: coarse) {
   /* No glow on touch — just a subtle scale tap feedback */
   .product-grid .group:hover { transform: none; box-shadow: none; }
@@ -1657,11 +1579,6 @@ body::before {
   border-color: rgba(139,0,0,0.3);
 }
 
-[data-theme="ghost"] .search-card-tag-pill {
-  color: #8888a0;
-  background: rgba(255,255,255,0.04);
-  border-color: rgba(255,255,255,0.1);
-}
 
 /* ── Sidebar ── */
 .search-sidebar {
@@ -5586,58 +5503,19 @@ body:has([data-force-blog="true"]) .halloween-bar {
    ══════════════════════════════════════════════════════════════ */
 
 /* ── Ghost theme: static/legal/blog pages ── */
-[data-theme="ghost"] .static-page { background: #1a1a1e !important; color: #f8f8ff !important; }
-[data-theme="ghost"] .static-page-title { color: #f8f8ff !important; }
-[data-theme="ghost"] .static-page-label { color: #ff1a33 !important; }
-[data-theme="ghost"] .static-page-meta { color: #8888a0 !important; }
-[data-theme="ghost"] .static-page-header { border-bottom-color: rgba(248,248,255,0.08) !important; }
-[data-theme="ghost"] .static-section h2 { color: #f8f8ff !important; border-bottom-color: rgba(248,248,255,0.08) !important; }
-[data-theme="ghost"] .static-section h3 { color: #bbbbcc !important; }
-[data-theme="ghost"] .static-section p,
-[data-theme="ghost"] .static-section li { color: #bbbbcc !important; }
-[data-theme="ghost"] .static-section a { color: #c8c0dc !important; }
-[data-theme="ghost"] .static-section strong { color: #f8f8ff !important; }
-[data-theme="ghost"] .blog-html-content { color: #d0d0e0 !important; }
-[data-theme="ghost"] .blog-html-content p { color: #c8c8d8 !important; }
-[data-theme="ghost"] .blog-html-content h1,
-[data-theme="ghost"] .blog-html-content h2,
-[data-theme="ghost"] .blog-html-content h3,
-[data-theme="ghost"] .blog-html-content h4 { color: #f8f8ff !important; }
-[data-theme="ghost"] .blog-html-content h2 { border-bottom-color: rgba(255,255,255,0.08) !important; }
-[data-theme="ghost"] .blog-html-content li { color: #c8c8d8 !important; }
-[data-theme="ghost"] .blog-html-content blockquote { background: rgba(255,255,255,0.04) !important; }
 
 /* ── Ember theme: static/legal/blog pages ── */
 
 /* ── Ghost + Ember: product/shop cards ── */
-[data-theme="ghost"] .product-card-title { color: #f8f8ff !important; }
-[data-theme="ghost"] .product-card-price { color: #f8f8ff !important; }
-[data-theme="ghost"] .coll-card-title    { color: #f8f8ff !important; }
 
 /* ── Ghost + Ember: collection pages ── */
-[data-theme="ghost"] .coll-title { color: #f8f8ff !important; }
-[data-theme="ghost"] .coll-desc  { color: #bbbbcc !important; }
-[data-theme="ghost"] .coll-meta  { color: #8888a0 !important; }
-[data-theme="ghost"] .coll-info-name { color: #f8f8ff !important; }
-[data-theme="ghost"] .coll-info-desc { color: #bbbbcc !important; }
-[data-theme="ghost"] .coll-card  { background: #222228 !important; border-color: rgba(255,255,255,0.05) !important; }
-[data-theme="ghost"] .coll-card:hover { border-color: rgba(192,0,26,0.5) !important; }
 
 /* ── Ghost + Ember: image detail page ── */
-[data-theme="ghost"] .download-section { background: rgba(26,26,30,0.8) !important; border-color: rgba(248,248,255,0.1) !important; }
-[data-theme="ghost"] .prev-next-link { background: rgba(26,26,30,0.7) !important; border-color: rgba(255,255,255,0.07) !important; }
-[data-theme="ghost"] .prev-next-link:hover { border-color: rgba(192,0,26,0.45) !important; }
 
 /* ── Light: search page full visibility ── */
 
 
 /* ── Ghost: search page ── */
-[data-theme="ghost"] .search-header-title { color: #f8f8ff !important; }
-[data-theme="ghost"] .sp-search-form  { background: #222228 !important; border-color: rgba(255,255,255,0.08) !important; }
-[data-theme="ghost"] .sp-search-input { color: #f8f8ff !important; }
-[data-theme="ghost"] .sp-search-btn   { background: #f8f8ff !important; color: #1a1a1e !important; }
-[data-theme="ghost"] .sp-pill         { background: #2a2a32 !important; color: #bbbbcc !important; border-color: rgba(255,255,255,0.08) !important; }
-[data-theme="ghost"] .sp-pill.active  { background: #f8f8ff !important; color: #1a1a1e !important; }
 
 /* ── Ember: search page ── */
 
@@ -5651,17 +5529,8 @@ body:has([data-force-blog="true"]) .halloween-bar {
 
 
 /* ── Breadcrumbs all themes ── */
-[data-theme="ghost"] .breadcrumb-link    { color: #8888a0 !important; }
-[data-theme="ghost"] .breadcrumb-current { color: #f8f8ff !important; }
-[data-theme="ghost"] .breadcrumb-sep     { color: #3a3a44 !important; }
 
 /* ── Ghost + Ember: blog index ── */
-[data-theme="ghost"] .blog-index-title    { color: #f8f8ff !important; }
-[data-theme="ghost"] .blog-index-subtitle { color: #bbbbcc !important; }
-[data-theme="ghost"] .blog-featured-title { color: #f8f8ff !important; }
-[data-theme="ghost"] .blog-featured-excerpt { color: #bbbbcc !important; }
-[data-theme="ghost"] .blog-post-card-title { color: #f8f8ff !important; }
-[data-theme="ghost"] .blog-post-card-excerpt { color: #bbbbcc !important; }
 
 /* ── Light: 404 page format badge fix ── */
 
@@ -5671,38 +5540,21 @@ body:has([data-force-blog="true"]) .halloween-bar {
 
 
 /* ── Ghost: format badges ── */
-[data-theme="ghost"] .text-\[\#7a7490\] { color: #8888a0 !important; }
-[data-theme="ghost"] .border-\[\#2a2535\] { border-color: #3a3a44 !important; }
 
 /* ── Ember: format badges ── */
 
 /* ── Ember: tags on image detail ── */
 
 /* ── Ghost: tags on image detail ── */
-[data-theme="ghost"] .border-\[\#2a2535\].text-\[\#8a8099\] {
-  color: #bbbbcc !important;
-  border-color: rgba(255,255,255,0.1) !important;
-}
 
-
-[data-theme="ghost"] .seasonal-page { background: #1a1a1e !important; color: #f8f8ff !important; }
 
 /* ── Light: device page intro box ── */
 
-[data-theme="ghost"] .device-page-intro {
-  background: rgba(255,255,255,0.03) !important;
-  border-color: rgba(255,255,255,0.06) !important;
-}
-
-[data-theme="ghost"] .device-page-guide-link a { color: #c8c0dc !important; }
-[data-theme="ghost"] .device-page-guide-link a:hover { color: #f8f8ff !important; }
 
 /* ── All themes: marquee / ticker ── */
 
 
 /* ── Ghost + Ember: Pagination ── */
-[data-theme="ghost"] .page-btn         { color: #bbbbcc !important; border-color: #3a3a44 !important; }
-[data-theme="ghost"] .page-btn.active  { background: #f8f8ff !important; color: #1a1a1e !important; }
 
 /* ── Light: Recently Viewed strip ── */
 
@@ -7525,10 +7377,6 @@ body {
 .hw2-mobile-link {
   animation: hw2-slide-in 0.35s ease calc(var(--mi, 0) * 0.05s) both;
 }
-@keyframes hw2-slide-in {
-  from { opacity: 0; transform: translateX(20px); }
-  to   { opacity: 1; transform: translateX(0); }
-}
 
 /* ══════════════════════════════════
    SEARCH OVERLAY
@@ -7588,7 +7436,6 @@ body {
   display: flex; align-items: center; justify-content: center;
 }
 .hw2-search-close:hover { color: #e2d9f3; }
-@keyframes hw2-fade-in { from{opacity:0} to{opacity:1} }
 
 /* ═══════════════════════════════════════════════════════════════
    GLOBAL HOVER EFFECTS
@@ -10446,41 +10293,6 @@ button:active:not(:disabled) { transform: translateY(0px) scale(0.98) !important
 
 
 /* ── GHOST THEME ─────────────────────────────────────────────────────── */
-[data-theme="ghost"] .dt-gate {
-  background:
-    radial-gradient(ellipse 80% 60% at 50% 100%, rgba(139,0,0,0.12) 0%, transparent 60%),
-    #1a1a1e !important;
-}
-[data-theme="ghost"] .dt-desktop {
-  background:
-    radial-gradient(ellipse 100% 60% at 50% 50%, rgba(15,0,30,0.5) 0%, transparent 70%),
-    #1a1a1e !important;
-  border-top-color: rgba(248,248,255,0.08) !important;
-}
-[data-theme="ghost"] .dt-daily {
-  background:
-    linear-gradient(to right, #1a1a1e 0%, rgba(30,30,40,0.6) 50%, #1a1a1e 100%),
-    #222228 !important;
-  border-color: rgba(248,248,255,0.08) !important;
-}
-[data-theme="ghost"] .dt-phones {
-  background:
-    radial-gradient(ellipse 70% 50% at 50% 50%, rgba(20,0,40,0.3) 0%, transparent 70%),
-    #1e1e24 !important;
-  border-color: rgba(248,248,255,0.08) !important;
-}
-[data-theme="ghost"] .dt-manifesto,
-[data-theme="ghost"] .dt-obsessions { background: #1a1a1e !important; }
-[data-theme="ghost"] .dt-gate__eyebrow,
-[data-theme="ghost"] .dt-eyebrow,
-[data-theme="ghost"] .dt-section-head .dt-eyebrow { color: #ff1a33 !important; }
-[data-theme="ghost"] .dt-gate__collection-num,
-[data-theme="ghost"] .dt-section-title { color: #f8f8ff !important; }
-[data-theme="ghost"] .dt-coffin {
-  border-color: rgba(248,248,255,0.1) !important;
-  background: rgba(30,30,40,0.7) !important;
-}
-[data-theme="ghost"] .dt-monitor__bezel { background: #222228 !important; border-color: rgba(248,248,255,0.08) !important; }
 
 /* ── EMBER THEME ─────────────────────────────────────────────────────── */
 
@@ -10546,240 +10358,38 @@ button:active:not(:disabled) { transform: translateY(0px) scale(0.98) !important
    ───────────────────────────────────────────────────────────────────────── */
 
 /* Nuclear option: every element under ghost becomes dark bg aware */
-html[data-theme="ghost"],
-html[data-theme="ghost"] body {
-  background-color: #0d0d14 !important;
-  color: #e0e0f8 !important;
-}
 
-[data-theme="ghost"] #__next,
-[data-theme="ghost"] #root,
-[data-theme="ghost"] main,
-[data-theme="ghost"] .content-wrapper,
-[data-theme="ghost"] .shop-page,
-[data-theme="ghost"] .search-page,
-[data-theme="ghost"] .static-page,
-[data-theme="ghost"] .hero-section,
-[data-theme="ghost"] .products-bg,
-[data-theme="ghost"] .manifesto-section,
-[data-theme="ghost"] .newsletter-section,
-[data-theme="ghost"] .wotd-section,
-[data-theme="ghost"] .seasonal-page,
-[data-theme="ghost"] .error-page,
-[data-theme="ghost"] .wallpaper-detail,
-[data-theme="ghost"] .wallpaper-panel,
-[data-theme="ghost"] .iphone-page,
-[data-theme="ghost"] .android-page,
-[data-theme="ghost"] .pc-page,
-[data-theme="ghost"] .detail-page,
-[data-theme="ghost"] .product-detail {
-  background-color: #0d0d14 !important;
-  color: #e0e0f8 !important;
-}
 
 /* Ghost: override ALL Tailwind hardcoded dark bg (they were already dark — make them ghost-dark) */
-[data-theme="ghost"] .bg-\[\#050505\],
-[data-theme="ghost"] .bg-\[\#070710\],
-[data-theme="ghost"] .bg-\[\#0a0a0a\],
-[data-theme="ghost"] .bg-\[\#0e0c14\],
-[data-theme="ghost"] .bg-\[\#0c0b14\],
-[data-theme="ghost"] .bg-\[\#080e14\] {
-  background-color: #0d0d14 !important;
-}
 
-[data-theme="ghost"] .bg-\[\#2a2535\],
-[data-theme="ghost"] .bg-\[\#1a1727\],
-[data-theme="ghost"] .bg-\[\#12121c\],
-[data-theme="ghost"] .bg-\[\#18182a\] {
-  background-color: #12121c !important;
-}
 
 /* Ghost: all white text stays white (these are fine on dark bg) */
-[data-theme="ghost"] .text-white,
-[data-theme="ghost"] .text-\[\#f0ecff\],
-[data-theme="ghost"] .text-\[\#d4cde8\] {
-  color: #e8e8ff !important;
-}
 
-[data-theme="ghost"] .text-\[\#a89bc0\],
-[data-theme="ghost"] .text-\[\#8a8099\] {
-  color: #a0a0cc !important;
-}
 
 /* ─────────────────────────────────────────────────────────────────────────
    SECTION 5: GHOST — BUTTON VISIBILITY FIX
    ───────────────────────────────────────────────────────────────────────── */
 
-[data-theme="ghost"] .btn-primary,
-[data-theme="ghost"] [class*="btn-primary"],
-[data-theme="ghost"] a.btn-primary,
-[data-theme="ghost"] button.btn-primary {
-  background-color: #6060c0 !important;
-  color: #ffffff !important;
-  border-color: #6060c0 !important;
-}
-[data-theme="ghost"] .btn-primary:hover,
-[data-theme="ghost"] a.btn-primary:hover {
-  background-color: #7878d8 !important;
-  color: #ffffff !important;
-}
-
-[data-theme="ghost"] .btn-secondary,
-[data-theme="ghost"] [class*="btn-secondary"] {
-  background: transparent !important;
-  color: #c0c0e8 !important;
-  border-color: rgba(144,144,200,0.4) !important;
-}
-[data-theme="ghost"] .btn-secondary:hover {
-  background: rgba(96,96,192,0.12) !important;
-  color: #e0e0f8 !important;
-  border-color: rgba(144,144,200,0.7) !important;
-}
-
-[data-theme="ghost"] .download-btn,
-[data-theme="ghost"] [class*="download"] {
-  color: #ffffff !important;
-}
 
 /* ─────────────────────────────────────────────────────────────────────────
    SECTION 6: GHOST — Cards, panels, inputs
    ───────────────────────────────────────────────────────────────────────── */
 
-[data-theme="ghost"] .card-glow,
-[data-theme="ghost"] .product-grid .group,
-[data-theme="ghost"] .blog-post-card,
-[data-theme="ghost"] .search-card,
-[data-theme="ghost"] .related-card,
-[data-theme="ghost"] .seasonal-card {
-  background: #18182a !important;
-  border-color: rgba(144,144,200,0.15) !important;
-  color: #e0e0f8 !important;
-}
-
-[data-theme="ghost"] .blog-post-card-title { color: #e8e8ff !important; }
-[data-theme="ghost"] .blog-post-card-excerpt { color: #9090b8 !important; }
-[data-theme="ghost"] .product-name { color: #e0e0f8 !important; }
-[data-theme="ghost"] .product-category { color: #9090f0 !important; }
-[data-theme="ghost"] .section-title { color: #f0f0ff !important; }
-[data-theme="ghost"] .section-eyebrow { color: #8080d0 !important; }
-
-[data-theme="ghost"] input,
-[data-theme="ghost"] textarea,
-[data-theme="ghost"] select {
-  background-color: #12121c !important;
-  color: #e0e0f8 !important;
-  border-color: rgba(144,144,200,0.25) !important;
-}
-[data-theme="ghost"] input::placeholder,
-[data-theme="ghost"] textarea::placeholder {
-  color: #5050a0 !important;
-}
 
 /* ─────────────────────────────────────────────────────────────────────────
    SECTION 7: GHOST — Nav, footer, mobile menu
    ───────────────────────────────────────────────────────────────────────── */
 
-[data-theme="ghost"] .site-nav {
-  background: rgba(13,13,20,0.97) !important;
-  border-bottom-color: rgba(96,96,192,0.15) !important;
-}
-[data-theme="ghost"] .nav-logo { color: #c0c0e8 !important; }
-[data-theme="ghost"] .logo-red { color: #9090f0 !important; text-shadow: 0 0 14px rgba(144,144,240,0.5) !important; }
-[data-theme="ghost"] .nav-links a { color: #8888aa !important; }
-[data-theme="ghost"] .nav-links a:hover { color: #e0e0f8 !important; }
-
-[data-theme="ghost"] .site-footer {
-  background: #12121c !important;
-  border-color: rgba(96,96,192,0.12) !important;
-  color: #a0a0cc !important;
-}
-[data-theme="ghost"] .footer-bottom { border-color: rgba(96,96,192,0.12) !important; color: #7070a0 !important; }
-[data-theme="ghost"] .footer-col-title { color: #c0c0e8 !important; }
-[data-theme="ghost"] .footer-col a { color: #9090cc !important; }
-[data-theme="ghost"] .footer-col a:hover { color: #d0d0f8 !important; }
-[data-theme="ghost"] .footer-copy { color: #7070a0 !important; }
-[data-theme="ghost"] .footer-brand-desc { color: #9090b8 !important; }
-
-[data-theme="ghost"] .mobile-menu-panel {
-  background: rgba(13,13,20,0.99) !important;
-}
-[data-theme="ghost"] .mobile-menu-link { border-bottom-color: rgba(96,96,192,0.12) !important; }
-[data-theme="ghost"] .mobile-link-label { color: #c0c0e8 !important; }
-[data-theme="ghost"] .mobile-menu-cart { color: #c0c0e8 !important; }
 
 /* ─────────────────────────────────────────────────────────────────────────
    SECTION 8: GHOST — DT sections (homepage hero, phones, daily, etc.)
    ───────────────────────────────────────────────────────────────────────── */
 
-[data-theme="ghost"] .dt-gate,
-[data-theme="ghost"] .dt-desktop,
-[data-theme="ghost"] .dt-daily,
-[data-theme="ghost"] .dt-phones,
-[data-theme="ghost"] .dt-manifesto,
-[data-theme="ghost"] .dt-obsessions {
-  background-color: #0d0d14 !important;
-  color: #e0e0f8 !important;
-}
-
-[data-theme="ghost"] .dt-gate__eyebrow,
-[data-theme="ghost"] .dt-eyebrow,
-[data-theme="ghost"] .dt-section-head .dt-eyebrow { color: #8080cc !important; }
-[data-theme="ghost"] .dt-gate__collection-num,
-[data-theme="ghost"] .dt-section-title { color: #f0f0ff !important; }
-[data-theme="ghost"] .dt-gate__sub,
-[data-theme="ghost"] .dt-section-sub { color: #9090b8 !important; }
-
-[data-theme="ghost"] .dt-coffin {
-  border-color: rgba(144,144,200,0.15) !important;
-  background: rgba(18,18,40,0.7) !important;
-}
-[data-theme="ghost"] .dt-coffin__num { color: #9090f0 !important; }
-[data-theme="ghost"] .dt-coffin__label { color: rgba(180,180,220,0.6) !important; }
-
-[data-theme="ghost"] .dt-monitor__bezel {
-  background: #18182a !important;
-  border-color: rgba(144,144,200,0.12) !important;
-}
-
-[data-theme="ghost"] .dt-phone-card__ls-hour { color: rgba(220,220,248,0.9) !important; }
-[data-theme="ghost"] .dt-phone-card__ls-date { color: rgba(160,160,210,0.7) !important; }
-[data-theme="ghost"] .dt-phone-card__label { color: #8080aa !important; }
-
-[data-theme="ghost"] .dt-daily__title { color: #f0f0ff !important; }
-[data-theme="ghost"] .dt-daily__desc { color: #9090b8 !important; }
-[data-theme="ghost"] .dt-manifesto__quote,
-[data-theme="ghost"] .dt-manifesto__body { color: #c8c8e8 !important; }
-
-[data-theme="ghost"] .dt-btn--ghost {
-  color: #c0c0e8 !important;
-  border-color: rgba(144,144,200,0.35) !important;
-}
-[data-theme="ghost"] .dt-btn--ghost:hover {
-  color: #f0f0ff !important;
-  border-color: rgba(144,144,200,0.7) !important;
-}
 
 /* ─────────────────────────────────────────────────────────────────────────
    SECTION 9: GHOST — Path bar, breadcrumbs, filters
    ───────────────────────────────────────────────────────────────────────── */
 
-[data-theme="ghost"] .path-bar {
-  background: #12121c !important;
-  border-bottom-color: rgba(96,96,192,0.12) !important;
-}
-[data-theme="ghost"] .breadcrumb-link { color: #7070a8 !important; }
-[data-theme="ghost"] .breadcrumb-current { color: #d0d0f0 !important; }
-
-[data-theme="ghost"] .shop-filter-bar { border-bottom-color: rgba(96,96,192,0.15) !important; }
-[data-theme="ghost"] .filter-pill {
-  color: #9090b8 !important;
-  border-color: rgba(96,96,192,0.25) !important;
-}
-[data-theme="ghost"] .filter-pill:hover,
-[data-theme="ghost"] .filter-pill.active {
-  color: #e0e0f8 !important;
-  border-color: rgba(144,144,240,0.5) !important;
-}
 
 /* ─────────────────────────────────────────────────────────────────────────
    SECTION 10: FOG — Missing section backgrounds (detail pages)
@@ -10876,152 +10486,26 @@ html[data-theme="ghost"] body {
    GHOST THEME: Reinforce deep dark — complete override
    ───────────────────────────────────────────────────────────────────────── */
 
-html[data-theme="ghost"],
-html[data-theme="ghost"] body {
-  background-color: #0d0d14 !important;
-  color: #e0e0f8 !important;
-}
-
-[data-theme="ghost"] #__next,
-[data-theme="ghost"] #root,
-[data-theme="ghost"] main,
-[data-theme="ghost"] .content-wrapper,
-[data-theme="ghost"] .shop-page,
-[data-theme="ghost"] .search-page,
-[data-theme="ghost"] .static-page,
-[data-theme="ghost"] .hero-section,
-[data-theme="ghost"] .products-bg,
-[data-theme="ghost"] .manifesto-section,
-[data-theme="ghost"] .newsletter-section,
-[data-theme="ghost"] .wotd-section,
-[data-theme="ghost"] .wallpaper-detail,
-[data-theme="ghost"] .iphone-page,
-[data-theme="ghost"] .android-page,
-[data-theme="ghost"] .pc-page,
-[data-theme="ghost"] .detail-page {
-  background-color: #0d0d14 !important;
-  color: #e0e0f8 !important;
-}
 
 /* Ghost: description html */
-[data-theme="ghost"] .image-description-html,
-[data-theme="ghost"] .description-html { color: #a89bc0 !important; }
-[data-theme="ghost"] .image-description-html strong,
-[data-theme="ghost"] .image-description-html b { color: #e8e4f8 !important; }
-[data-theme="ghost"] .image-description-html em { color: #c9a84c !important; }
-[data-theme="ghost"] .image-description-html h2,
-[data-theme="ghost"] .image-description-html h3 { color: #e8e4f8 !important; }
-[data-theme="ghost"] .image-description-html a { color: #c9a84c !important; }
-[data-theme="ghost"] .image-description-html a:hover { color: #e8e4f8 !important; }
 
 /* Ghost: all white text stays white */
-[data-theme="ghost"] .text-white,
-[data-theme="ghost"] .text-\[\#f0ecff\],
-[data-theme="ghost"] .text-\[\#d4cde8\] { color: #e8e8ff !important; }
-[data-theme="ghost"] .text-\[\#a89bc0\],
-[data-theme="ghost"] .text-\[\#8a8099\],
-[data-theme="ghost"] .text-\[\#8888aa\] { color: #a0a0cc !important; }
-[data-theme="ghost"] .text-\[\#7a7490\] { color: #8080aa !important; }
 
 /* Ghost: cards */
-[data-theme="ghost"] .card-glow,
-[data-theme="ghost"] .product-grid .group,
-[data-theme="ghost"] .blog-post-card,
-[data-theme="ghost"] .search-card {
-  background: #18182a !important;
-  border-color: rgba(144,144,200,0.15) !important;
-  color: #e0e0f8 !important;
-}
-[data-theme="ghost"] .products-bg { background: #12121c !important; }
 
 /* Ghost: inputs */
-[data-theme="ghost"] input,
-[data-theme="ghost"] textarea,
-[data-theme="ghost"] select {
-  background-color: #12121c !important;
-  color: #e0e0f8 !important;
-  border-color: rgba(144,144,200,0.25) !important;
-}
-[data-theme="ghost"] input::placeholder,
-[data-theme="ghost"] textarea::placeholder { color: #5050a0 !important; }
 
 /* Ghost: DT sections */
-[data-theme="ghost"] .dt-gate,
-[data-theme="ghost"] .dt-desktop,
-[data-theme="ghost"] .dt-daily,
-[data-theme="ghost"] .dt-phones,
-[data-theme="ghost"] .dt-manifesto,
-[data-theme="ghost"] .dt-obsessions {
-  background-color: #0d0d14 !important;
-  color: #e0e0f8 !important;
-}
-[data-theme="ghost"] .dt-eyebrow,
-[data-theme="ghost"] .dt-gate__eyebrow { color: #8080cc !important; }
-[data-theme="ghost"] .dt-section-title,
-[data-theme="ghost"] .dt-gate__collection-num { color: #f0f0ff !important; }
-[data-theme="ghost"] .dt-section-sub,
-[data-theme="ghost"] .dt-gate__sub { color: #9090b8 !important; }
-[data-theme="ghost"] .dt-coffin {
-  border-color: rgba(144,144,200,0.15) !important;
-  background: rgba(18,18,40,0.7) !important;
-}
-[data-theme="ghost"] .dt-coffin__num { color: #9090f0 !important; }
-[data-theme="ghost"] .dt-coffin__label { color: rgba(180,180,220,0.6) !important; }
-[data-theme="ghost"] .dt-btn--ghost {
-  color: #c0c0e8 !important;
-  border-color: rgba(144,144,200,0.35) !important;
-}
-[data-theme="ghost"] .dt-btn--ghost:hover {
-  color: #f0f0ff !important;
-  border-color: rgba(144,144,200,0.7) !important;
-  background: rgba(96,96,192,0.12) !important;
-}
-[data-theme="ghost"] .dt-daily__title { color: #f0f0ff !important; }
-[data-theme="ghost"] .dt-daily__desc { color: #9090b8 !important; }
-[data-theme="ghost"] .dt-manifesto__quote,
-[data-theme="ghost"] .dt-manifesto__body { color: #c8c8e8 !important; }
 
 /* Ghost: keep-exploring bar */
-[data-theme="ghost"] .keep-exploring-bar {
-  background: rgba(10,6,20,0.97) !important;
-  border-top-color: rgba(192,0,26,0.4) !important;
-}
-[data-theme="ghost"] .keep-exploring-text { color: #c0c0e8 !important; }
-[data-theme="ghost"] .keep-exploring-link { color: #8888aa !important; border-color: rgba(255,255,255,0.1) !important; }
-[data-theme="ghost"] .keep-exploring-link:hover { color: #e0e0f8 !important; }
-[data-theme="ghost"] .keep-exploring-link--accent { color: #9090f0 !important; }
 
 /* Ghost: footer */
-[data-theme="ghost"] .site-footer {
-  background: #12121c !important;
-  border-color: rgba(96,96,192,0.12) !important;
-  color: #a0a0cc !important;
-}
-[data-theme="ghost"] .footer-bottom { border-color: rgba(96,96,192,0.12) !important; color: #7070a0 !important; }
-[data-theme="ghost"] .footer-col-title { color: #c0c0e8 !important; }
-[data-theme="ghost"] .site-footer a { color: #9090cc !important; }
-[data-theme="ghost"] .site-footer a:hover { color: #d0d0f8 !important; }
 
 /* Ghost: mobile menu */
-[data-theme="ghost"] .mobile-menu-panel { background: rgba(13,13,20,0.99) !important; }
-[data-theme="ghost"] .mobile-link-label { color: #c0c0e0 !important; }
-[data-theme="ghost"] .mobile-menu-link { border-bottom-color: rgba(96,96,192,0.12) !important; }
 
 /* Ghost: breadcrumbs */
-[data-theme="ghost"] .breadcrumb-link { color: #7070a8 !important; }
-[data-theme="ghost"] .breadcrumb-current { color: #d0d0f0 !important; }
-[data-theme="ghost"] .breadcrumb-sep { color: #4040a0 !important; }
 
 /* Ghost: filter pills */
-[data-theme="ghost"] .filter-pill {
-  color: #9090b8 !important;
-  border-color: rgba(96,96,192,0.25) !important;
-}
-[data-theme="ghost"] .filter-pill:hover,
-[data-theme="ghost"] .filter-pill.active {
-  color: #e0e0f8 !important;
-  border-color: rgba(144,144,240,0.5) !important;
-}
 
 /* ══════════════════════════════════════════════════════════════════════════
    END MASTER THEME FIX v3
@@ -11030,9 +10514,6 @@ html[data-theme="ghost"] body {
 
 
 /* ── COFFINS ──────────────────────────────────────────────────────────── */
-
-
-/* ── GHOST BUTTONS ────────────────────────────────────────────────────── */
 
 
 /* ── MANIFESTO + OBSESSIONS ───────────────────────────────────────────── */
@@ -11047,7 +10528,6 @@ html[data-theme="ghost"] body {
 /* ── DAILY / WOTD SECTION ─────────────────────────────────────────────── */
 
 
-/* ── FOG OVERLAY ──────────────────────────────────────────────────────── */
 /* ═══════════════════════════════════════════════════════════════
    DEVICE PAGE INTRO — Scrolling monitor/phone slideshow strip
    Used in: /pc, /iphone, /android page HTML content blocks
@@ -11816,19 +11296,6 @@ img {
 
 /* ── ACCESSIBILITY: CONTRAST FOR GHOST THEME ────────────────────────
    Ghost theme has its own muted palette — bring it to AA as well */
-[data-theme="ghost"] .hero-subtitle,
-[data-theme="ghost"] .wotd-desc,
-[data-theme="ghost"] .dt-section-sub,
-[data-theme="ghost"] .static-section p,
-[data-theme="ghost"] .blog-html-content p {
-  color: #b8b8d8 !important;
-}
-[data-theme="ghost"] .footer-copy,
-[data-theme="ghost"] .social-link,
-[data-theme="ghost"] .breadcrumb-link,
-[data-theme="ghost"] .ad-label {
-  color: #9898bc !important;
-}
 
 /* ── HEADING ORDER FIX ──────────────────────────────────────────────
    Lighthouse: headings not in sequentially-descending order.
