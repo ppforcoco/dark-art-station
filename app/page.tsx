@@ -227,7 +227,7 @@ export default async function Home() {
               <span style={{
                 fontFamily: "var(--font-space, monospace)", fontSize: "0.52rem",
                 letterSpacing: "0.18em", textTransform: "uppercase",
-                color: "rgba(224,224,248,0.3)", paddingLeft: "2px",
+                color: "rgba(224,224,248,0.55)", paddingLeft: "2px",
               }}>
                 Start Scrolling — If You Dare
               </span>
@@ -642,7 +642,7 @@ export default async function Home() {
               ))}
             </div>
             <div style={{ marginTop: "clamp(20px,3vw,32px)", textAlign: "center" }}>
-              <a href="/sets" style={{ fontFamily: "var(--font-space,monospace)", fontSize: "0.62rem", letterSpacing: "0.2em", textTransform: "uppercase", color: "rgba(224,224,248,0.45)", textDecoration: "none" }}>Browse All Kits →</a>
+              <a href="/sets" style={{ fontFamily: "var(--font-space,monospace)", fontSize: "0.62rem", letterSpacing: "0.2em", textTransform: "uppercase", color: "rgba(224,224,248,0.75)", textDecoration: "none" }}>Browse All Kits →</a>
             </div>
           </div>
           <style>{`

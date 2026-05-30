@@ -213,7 +213,7 @@ export default function WallpaperCardGrid({ items, accentRgb, badge, badgeColor 
                   {img.title}
                 </p>
                 {/* REMOVE BEFORE ADSENSE: the <p> below */}
-                <p style={{ color: "rgba(255,255,255,0.38)", fontSize: "0.56rem", fontFamily: "monospace", margin: "5px 0 0", lineHeight: 1.2, display: "flex", alignItems: "center", gap: "3px" }}>
+                <p style={{ color: "rgba(255,255,255,0.72)", fontSize: "0.62rem", fontFamily: "monospace", margin: "5px 0 0", lineHeight: 1.2, display: "flex", alignItems: "center", gap: "3px" }}>
                   <span style={{ opacity: 0.6 }}>↓</span>
                   {fmtDownloads(displayCount)} downloads
                 </p>
