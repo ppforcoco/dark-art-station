@@ -112,9 +112,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             immediately on load so the browser considers them consumed. */}
         <script dangerouslySetInnerHTML={{ __html: `(function(){function f(){document.querySelectorAll('link[rel="preload"][as="style"]').forEach(function(l){l.rel='stylesheet';});}if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',f,{once:true});}else{f();}window.addEventListener('load',f,{once:true});})();` }} />
 
-        {/* Preconnect to image CDN only */}
-        <link rel="preconnect" href="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev" crossOrigin="anonymous" />
-        <link rel="dns-prefetch" href="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev" />
+        {/* Preconnect to primary image CDN (assets.hauntedwallpapers.com) — used by getPublicUrl() */}
+        <link rel="preconnect" href="https://assets.hauntedwallpapers.com" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://assets.hauntedwallpapers.com" />
+        {/* LCP hero image — preload so browser fetches it before rendering starts */}
+        <link
+          rel="preload"
+          as="image"
+          href="https://assets.hauntedwallpapers.com/extras/the-haunted-wallpapers-hero-section-image-mobile-dark-wallpapers-thumbnail.avif"
+          type="image/avif"
+          fetchPriority="high"
+        />
 
         {/* PWA */}
         <link rel="manifest" href="/manifest.webmanifest" />

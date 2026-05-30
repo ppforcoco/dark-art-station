@@ -135,14 +135,15 @@ export default async function Home() {
     return `${Math.floor(n / 50) * 50}+`;
   }
 
-  const r2Base = process.env.NEXT_PUBLIC_R2_PUBLIC_URL ?? "";
+  const CDN = "https://assets.hauntedwallpapers.com";
 
+  // heroPhones defined but not currently rendered — kept for future use
   const heroPhones = [
-    { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/haunted-cat-grin-dark-iphone-android.webp",            alt: "Creepy Cat",     featured: false, edgePhone: true  },
-    { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/wallpapers/shadows-have-eyes-android.webp",           alt: "Shadow Eyes",    featured: false, edgePhone: false },
-    { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/new/dark-horror-man-cosplay-makeup-idea.webp",        alt: "Horror Cosplay", featured: true,  edgePhone: false },
-    { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/new/gothic-crimson-rose-dark-art-wallpaper.webp",     alt: "Gothic Rose",    featured: false, edgePhone: false },
-    { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/new/skeleton-drinking-haunted-energy-drink-art.webp", alt: "Skeleton Art",   featured: false, edgePhone: true  },
+    { src: `${CDN}/haunted-cat-grin-dark-iphone-android.webp`,            alt: "Creepy Cat",     featured: false, edgePhone: true  },
+    { src: `${CDN}/wallpapers/shadows-have-eyes-android.webp`,            alt: "Shadow Eyes",    featured: false, edgePhone: false },
+    { src: `${CDN}/new/dark-horror-man-cosplay-makeup-idea.webp`,         alt: "Horror Cosplay", featured: true,  edgePhone: false },
+    { src: `${CDN}/new/gothic-crimson-rose-dark-art-wallpaper.webp`,      alt: "Gothic Rose",    featured: false, edgePhone: false },
+    { src: `${CDN}/new/skeleton-drinking-haunted-energy-drink-art.webp`,  alt: "Skeleton Art",   featured: false, edgePhone: true  },
   ];
 
   const countdownDate  = new Date(Date.UTC(2025, 0, 1)).toISOString();
@@ -245,7 +246,7 @@ export default async function Home() {
           {/* HERO IMAGE — locked via CSS: pointer-events:none blocks all clicks, drags, and opens */}
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/extras/the-haunted-wallpapers-hero-section-image-mobile-dark-wallpapers-thumbnail.avif"
+            src="https://assets.hauntedwallpapers.com/extras/the-haunted-wallpapers-hero-section-image-mobile-dark-wallpapers-thumbnail.avif"
             alt="Haunted Wallpapers Hero"
             className="hw-hero-img"
             loading="eager"
@@ -607,11 +608,11 @@ export default async function Home() {
             </div>
             <div className="dt-phone-showcase">
               {[
-                { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/12/always-watching-wallpaper.webp",                                                    alt: "Always Watching",    label: "Always Watching"    },
-                { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/12/funny-lockscreen-wallpaper.webp",                                                 alt: "Funny Lockscreen",   label: "Funny Lockscreen"   },
-                { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/12/vampire-man-and-woman-couple-dance-under-the-moon-wallpaper.webp",                 alt: "Vampire Couple",     label: "Vampire Dance"      },
-                { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/12/paper-cut-witch-red-backdrop-staff.webp",                                         alt: "Paper Cut Witch",    label: "Paper Cut Witch"    },
-                { src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/12/hip-hop-haunted-skeleton-phone-wallpaper.webp",                                   alt: "Hip Hop Skeleton",   label: "Hip Hop Skeleton"   },
+                { src: `${CDN}/12/always-watching-wallpaper.webp`,                                                 alt: "Always Watching",  label: "Always Watching"  },
+                { src: `${CDN}/12/funny-lockscreen-wallpaper.webp`,                                                alt: "Funny Lockscreen",  label: "Funny Lockscreen" },
+                { src: `${CDN}/12/vampire-man-and-woman-couple-dance-under-the-moon-wallpaper.webp`,               alt: "Vampire Couple",    label: "Vampire Dance"    },
+                { src: `${CDN}/12/paper-cut-witch-red-backdrop-staff.webp`,                                        alt: "Paper Cut Witch",   label: "Paper Cut Witch"  },
+                { src: `${CDN}/12/hip-hop-haunted-skeleton-phone-wallpaper.webp`,                                  alt: "Hip Hop Skeleton",  label: "Hip Hop Skeleton" },
               ].map((phone, i) => (
                 <div key={i} className={`dt-phone-card${i === 2 ? " dt-phone-card--hero" : ""}`} style={{ "--card-i": i } as React.CSSProperties}>
                   <div className="dt-phone-card__aura" aria-hidden="true" />
@@ -652,7 +653,7 @@ export default async function Home() {
                 <div className="dt-monitor__bezel">
                   <span className="dt-monitor__cam" />
                   <div className="dt-monitor__screen">
-                    <ProtectedImg src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/monster-flower-offering-pc.webp" alt="Monster Flower Offering — PC wallpaper 16:9" className="dt-monitor__img" />
+                    <ProtectedImg src={`${CDN}/monster-flower-offering-pc.webp`} alt="Monster Flower Offering — PC wallpaper 16:9" className="dt-monitor__img" />
                     <ProtectionOverlay />
                     <div className="dt-monitor__scanlines" aria-hidden="true" />
                     <div className="dt-monitor__glitch" aria-hidden="true" />
@@ -687,9 +688,9 @@ export default async function Home() {
             </div>
             <div className="hw-kits-row3">
               {[
-                { href: "/sets/ghost-pitch",         num: "03", title: "The Ghost Pitch",        sub: "Dark Soccer Setup Kit",      tag: "Sports", img: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/12/sets_The%20Ghost%20Pitch_%20A%20Matching%20Dark%20Soccer%20Setup%20Kit_Haunted_soccer_stadium_midnight_soccer-kit.webp",                                                                                                       alt: "Ghost Pitch haunted soccer stadium dark horror matching wallpaper set",                                                       accent: "232,124,30" },
-                { href: "/sets/cyberpunk-gaming-hero",num: "05", title: "Cyberpunk Gaming Hero",  sub: "Neon Horror Gaming Kit",     tag: "Gaming", img: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/sets/Cyberpunk%20Gaming%20Hero%20Matching%20Wallpaper%20Set/terminal-paradox-cyber-neon-phantom-pointing-homescreen-mobile-thumbnail-cover.webp",                                                                            alt: "Terminal Paradox 4K cyberpunk gaming hero — OLED neon horror matching wallpaper set for PC phone and smartwatch",             accent: "139,92,246", premium: true },
-                { href: "/sets/crimson-sovereign",   num: "04", title: "The Crimson Sovereign",  sub: "Dark Fantasy Gaming Kit",    tag: "Gaming", img: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/sets/The%20Crimson%20Sovereign%20%7C%20Dark%20Fantasy%20Gaming%20Character%20Matching%20Setup%20Kit/ark-fantasy-gaming-character-4k-wallpaper-pc-setup-aesthetic.webp",                                                        alt: "Crimson Sovereign dark fantasy gaming character 4K wallpaper PC setup aesthetic",                                             accent: "224,0,31",   premium: true },
+                { href: "/sets/ghost-pitch",          num: "03", title: "The Ghost Pitch",       sub: "Dark Soccer Setup Kit",   tag: "Sports", img: `${CDN}/12/sets_The%20Ghost%20Pitch_%20A%20Matching%20Dark%20Soccer%20Setup%20Kit_Haunted_soccer_stadium_midnight_soccer-kit.webp`,                                                                                                      alt: "Ghost Pitch haunted soccer stadium dark horror matching wallpaper set",                                                      accent: "232,124,30" },
+                { href: "/sets/cyberpunk-gaming-hero", num: "05", title: "Cyberpunk Gaming Hero",   sub: "Neon Horror Gaming Kit",  tag: "Gaming", img: `${CDN}/sets/Cyberpunk%20Gaming%20Hero%20Matching%20Wallpaper%20Set/terminal-paradox-cyber-neon-phantom-pointing-homescreen-mobile-thumbnail-cover.webp`,                                                                           alt: "Terminal Paradox 4K cyberpunk gaming hero — OLED neon horror matching wallpaper set for PC phone and smartwatch",            accent: "139,92,246", premium: true },
+                { href: "/sets/crimson-sovereign",    num: "04", title: "The Crimson Sovereign",   sub: "Dark Fantasy Gaming Kit", tag: "Gaming", img: `${CDN}/sets/The%20Crimson%20Sovereign%20%7C%20Dark%20Fantasy%20Gaming%20Character%20Matching%20Setup%20Kit/ark-fantasy-gaming-character-4k-wallpaper-pc-setup-aesthetic.webp`,                                                       alt: "Crimson Sovereign dark fantasy gaming character 4K wallpaper PC setup aesthetic",                                            accent: "224,0,31",  premium: true },
               ].map((kit, i) => (
                 <a key={kit.href} href={kit.href} className="hw-kit-card hw-kit-card--sm hw-kit-card--anim" style={{ "--kit-accent": kit.accent, "--kit-i": i } as React.CSSProperties}>
                   <div className="hw-kit-card__thumb">
@@ -844,7 +845,7 @@ export default async function Home() {
                   <div className="hw-defiant-wrap">
                     <Image
                       unoptimized
-                      src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/extras/the-defiant-crew-team-members-collection.webp"
+                      src="https://assets.hauntedwallpapers.com/extras/the-defiant-crew-team-members-collection.webp"
                       alt="The Defiant Manifesto — Crew Collection"
                       fill
                       loading="lazy"
@@ -908,56 +909,7 @@ export default async function Home() {
 
       <HorrorFact />
 
-      {/* STORY — fade reveal (text-heavy, subtle is better) */}
-      <LazySection
-        revealDirection="fade"
-        rootMargin="0px 0px -60px 0px"
-      >
-        <section className="dt-manifesto">
-          <div className="dt-manifesto__gutter" aria-hidden="true">
-            <span className="dt-manifesto__rune">☩</span>
-            <span className="dt-manifesto__line" />
-            <span className="dt-manifesto__rune">☩</span>
-          </div>
-          <div className="dt-manifesto__content">
-            <span className="dt-eyebrow">The Haunted Town Story</span>
-            <blockquote className="dt-manifesto__quote">
-              Some people wake up to sunshine and pastel clouds.<br />
-              <em className="dt-manifesto__em">You wake up to a hallway that should not exist.</em>
-            </blockquote>
-            <p className="dt-manifesto__body">You are not here by accident. The algorithm tried to show you bright things. You kept scrolling. Something darker. Something quieter. Something that stays.</p>
-            <p className="dt-manifesto__body">You arrived because your phone screen felt empty without a shadow in the corner. Because a blank background is just a blank background. But a haunted wallpaper? That is a conversation. That is a pause. That is the moment someone borrows your phone and says &ldquo;what is that?&rdquo; and you just smile.</p>
-            <div className="dt-manifesto__ctas">
-              <Link prefetch={false} href="/obsessions" className="dt-btn dt-btn--enter"><span>Browse Freemium Packs →</span></Link>
-              <Link prefetch={false} href="/about" className="dt-btn dt-btn--ghost dt-btn--sm">Our Story</Link>
-            </div>
-          </div>
-        </section>
-      </LazySection>
-
       <RecentlyViewed />
-
-      {/* MISSION — up reveal */}
-      <LazySection
-        revealDirection="up"
-        rootMargin="0px 0px -60px 0px"
-      >
-        <section style={{ padding: "clamp(48px,7vw,80px) clamp(16px,5vw,72px)", background: "linear-gradient(180deg,#07050d 0%,#0a0612 100%)", position: "relative", overflow: "hidden" }}>
-          <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse 60% 40% at 50% 50%,rgba(224,0,31,0.05) 0%,transparent 70%)", pointerEvents: "none" }} />
-          <div style={{ maxWidth: "800px", margin: "0 auto", position: "relative" }}>
-            <div className="dt-section-head dt-section-head--center" style={{ marginBottom: "clamp(20px,3vw,32px)" }}>
-              <span className="dt-eyebrow" style={{ color: "#e0001f" }}>Our Purpose</span>
-              <h2 className="dt-section-title">The Haunted Wallpapers Mission</h2>
-            </div>
-            <div style={{ background: "rgba(255,255,255,0.015)", border: "1px solid rgba(224,0,31,0.2)", padding: "clamp(24px,3.5vw,48px)", position: "relative" }}>
-              <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: "2px", background: "linear-gradient(90deg,transparent,rgba(224,0,31,0.6),transparent)" }} />
-              <p style={{ fontFamily: "var(--font-cormorant,serif)", fontSize: "clamp(1.05rem,1.8vw,1.2rem)", lineHeight: 1.85, color: "rgba(224,224,248,0.72)", margin: 0 }}>
-                At Haunted Wallpapers, we believe your digital setup should be an extension of your soul. We don&apos;t just &ldquo;dump&rdquo; images. Every wallpaper is manually curated and tested on real devices to ensure perfect crops for iPhone, Samsung, and Desktop. Our unique &ldquo;Matching Set&rdquo; philosophy ensures your watch, phone, and PC tell one cohesive story. Built for horror fans, by horror fans.
-              </p>
-            </div>
-          </div>
-        </section>
-      </LazySection>
 
       <script type="application/ld+json" dangerouslySetInnerHTML={{
         __html: JSON.stringify({
