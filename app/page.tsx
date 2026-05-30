@@ -379,8 +379,8 @@ export default async function Home() {
       {newThisWeek.length > 0 && (
         <LazySection
           revealDirection="up"
-          minHeight="480px"
-          rootMargin="0px 0px -60px 0px"
+          rootMargin="0px 0px -100px 0px"
+          staggerChildren
         >
           <section style={{ padding: "clamp(32px,5vw,64px) clamp(16px,5vw,72px)", background: "#07050f", position: "relative", overflow: "hidden" }}>
             <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse 60% 40% at 50% 0%,rgba(76,175,80,0.06) 0%,transparent 70%)", pointerEvents: "none" }} />
@@ -407,8 +407,8 @@ export default async function Home() {
       {premiumThisWeek.length > 0 && (
         <LazySection
           revealDirection="left"
-          minHeight="480px"
-          rootMargin="0px 0px -60px 0px"
+          rootMargin="0px 0px -100px 0px"
+          staggerChildren
         >
           <section style={{ padding: "clamp(32px,5vw,64px) clamp(16px,5vw,72px)", background: "#0a0810", position: "relative", overflow: "hidden" }}>
             <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse 60% 40% at 50% 0%,rgba(201,168,76,0.07) 0%,transparent 70%)", pointerEvents: "none" }} />
@@ -440,8 +440,7 @@ export default async function Home() {
         return (
           <LazySection
             revealDirection="fade"
-            minHeight="560px"
-            rootMargin="0px 0px -40px 0px"
+            rootMargin="0px 0px -80px 0px"
           >
             <section className="wotd-section">
               <div className="wotd-particles" aria-hidden="true">
@@ -625,8 +624,8 @@ export default async function Home() {
       {/* MATCHING KITS — reveal from right (alternates with Premium's left) */}
       <LazySection
         revealDirection="right"
-        minHeight="440px"
-        rootMargin="0px 0px -60px 0px"
+        rootMargin="0px 0px -100px 0px"
+        staggerChildren
       >
         <section style={{ padding: "clamp(40px,6vw,72px) clamp(16px,5vw,72px)", background: "#07050f", position: "relative", overflow: "hidden" }}>
           <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse 70% 40% at 50% 0%,rgba(224,0,31,0.06) 0%,transparent 70%)", pointerEvents: "none" }} />
@@ -724,8 +723,7 @@ export default async function Home() {
       {/* COLLECTIONS — reveal from left (alternate) */}
       <LazySection
         revealDirection="left"
-        minHeight="600px"
-        rootMargin="0px 0px -40px 0px"
+        rootMargin="0px 0px -100px 0px"
       >
         <section className="dt-obsessions">
           <div style={{ display: "none" }} aria-hidden="true">
@@ -819,8 +817,7 @@ export default async function Home() {
       {/* STORY — fade reveal (text-heavy, subtle is better) */}
       <LazySection
         revealDirection="fade"
-        minHeight="320px"
-        rootMargin="0px 0px -40px 0px"
+        rootMargin="0px 0px -60px 0px"
       >
         <section className="dt-manifesto">
           <div className="dt-manifesto__gutter" aria-hidden="true">
@@ -849,8 +846,7 @@ export default async function Home() {
       {/* MISSION — up reveal */}
       <LazySection
         revealDirection="up"
-        minHeight="280px"
-        rootMargin="0px 0px -40px 0px"
+        rootMargin="0px 0px -60px 0px"
       >
         <section style={{ padding: "clamp(48px,7vw,80px) clamp(16px,5vw,72px)", background: "linear-gradient(180deg,#07050d 0%,#0a0612 100%)", position: "relative", overflow: "hidden" }}>
           <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse 60% 40% at 50% 50%,rgba(224,0,31,0.05) 0%,transparent 70%)", pointerEvents: "none" }} />

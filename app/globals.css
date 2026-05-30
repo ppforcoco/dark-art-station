@@ -6,7 +6,6 @@
 /* ── HTML color-scheme — syncs browser native UI (scrollbars, inputs) ── */
 html                      { color-scheme: dark;  background-color: #0d0d14; }/* Each card gets a different animation-delay so colors are staggered */
 
-
 /* ── Design Tokens ─────────────────────────────────────────── */
 :root {
   /* Layout geometry — single source of truth for nav heights */
@@ -39,33 +38,23 @@ html                      { color-scheme: dark;  background-color: #0d0d14; }/* 
   --nav-bg:       rgba(13,13,20,0.96);
 }/* ── WOTD section ── */
 
-
 /* ── Hero section text ── */
-
 
 /* ── Manifesto ── */
 
-
 /* ── Newsletter ── */
-
 
 /* ── Pagination ── */
 
-
 /* ── Search overlay ── */
-
 
 /* ── Mockup frames in light mode ── */
 
-
 /* ── Mobile menu ── */
-
 
 /* ── Lightbox ── */
 
-
 /* ── Scrollbar ── */
-
 
 /* ── Global Reset ──────────────────────────────────────────── */
 *,
@@ -80,10 +69,7 @@ html                      { color-scheme: dark;  background-color: #0d0d14; }/* 
 }body {
   /* Already defined below — these are added to the existing body rule */
 }/* ── Mobile tap highlight removal ──────────────────────────── */
-* {
-  -webkit-tap-highlight-color: transparent;
-  -webkit-touch-callout: none;
-}/* Allow text selection on content areas */
+* { -webkit-tap-highlight-color: transparent; }/* Allow text selection on content areas */
 p,
 h1,
 h2,
@@ -92,7 +78,6 @@ h4,
 h5,
 h6,
 span,
-a { -webkit-touch-callout: default; }body {
   background-color: var(--bg-primary) !important;
   color: var(--text-primary);
   font-family: var(--font-cormorant), 'Cormorant Garamond', Georgia, serif;
@@ -133,18 +118,14 @@ meta labels */
   font-size: 1.1rem !important;
   line-height: 1.8 !important;
 }/* Nav links */
-.nav-links a {
-  font-size: 0.8rem !important;
-}/* Download / CTA buttons */
+.nav-links a { font-size: 0.8rem !important; }/* Download / CTA buttons */
 .btn-primary,
 .btn-secondary {
   font-size: 0.78rem !important;
   letter-spacing: 0.14em !important;
 }/* Light theme font contrast boost */
 
-
 /* Dark theme contrast boost for muted text */
-
 
 /* ── Noise Texture Overlay ─────────────────────────────────── */
 
@@ -159,26 +140,15 @@ body::before {
   pointer-events: none;
   z-index: 9000;
 }/* ── Custom Scrollbar ──────────────────────────────────────── */
-::-webkit-scrollbar { width: 4px; }::-webkit-scrollbar-track { background: #e4dfd4; }::-webkit-scrollbar-thumb { background: #c0b8ac; }/* ── Marquee (removed — MarqueeTicker component deleted) ── */
 
-/* ── FadeUp ────────────────────────────────────────────────── */
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(32px); }
-  to   { opacity: 1; transform: translateY(0); }
-}/* ── Global Content Wrapper — prevents nav overlap ──────────── */
+/* ── FadeUp ────────────────────────────────────────────────── *//* ── Global Content Wrapper — prevents nav overlap ──────────── */
 /* Wraps {children}in layout.tsx. Accounts for:                 */
 /*   --topbar-h  = Halloween bar height (set by JS,
 default 0px) */
 /*   --nav-h     = 88px desktop / 72px mobile                    */
-.content-wrapper {
-  padding-top: calc(var(--topbar-total, 72px) + var(--nav-h, 88px));
-}
-@media (max-width: 1279px) {
-.content-wrapper {
-    padding-top: calc(var(--topbar-total, 72px) + var(--nav-h-mob, 84px));
-  }
+.content-wrapper { padding-top: calc(var(--topbar-total, 72px) + var(--nav-h, 88px)); }
+@media (max-width: 1279px) {.content-wrapper { padding-top: calc(var(--topbar-total, 72px) + var(--nav-h-mob, 84px)); }
 }/* ── Path Bar — breadcrumb strip below nav ──────────────────── */
-
 
 .nav-logo {
   font-family: var(--font-cinzel), cursive;
@@ -197,12 +167,9 @@ default 0px) */
   transition: color 0.2s;
 }.nav-links a:hover { color: #f0ecff; }.btn-secondary:active { opacity: 0.75; transform: scale(0.97); }/* ── Theme Toggle Button ── */
 
-
 /* ── Hamburger Button ── */
 
-
 /* ── Nav Right Cluster (desktop) ── */
-
 
 .nav-search-wrap.nav-search-open {
   border-color: rgba(139,0,0,0.5);
@@ -212,7 +179,6 @@ default 0px) */
   width: 200px;
   padding: 0 12px 0 0;
 }/* ── Mobile Controls (search icon + hamburger) ── */
-
 
 }
 
@@ -234,22 +200,14 @@ and wide-format phones. Desktop nav shows at ≥ 1280px only.    */
 .mobile-menu-overlay.mobile-menu-open {
   display: block;
   pointer-events: all;
-}.mobile-menu-open .mobile-menu-backdrop {
-  opacity: 1;
-}/* Off-canvas panel — slides in from the right */
+}.mobile-menu-open .mobile-menu-backdrop { opacity: 1; }/* Off-canvas panel — slides in from the right */
 
-
-.mobile-menu-open .mobile-menu-panel {
-  transform: translateX(0);
-}
-
+.mobile-menu-open .mobile-menu-panel { transform: translateX(0); }
 
 @keyframes mobileNavIn {
   from { opacity: 0; transform: translateX(24px); }
   to   { opacity: 1; transform: translateX(0); }
-}.mobile-menu-open .mobile-menu-link {
-  animation: mobileNavIn 0.4s ease both;
-}}
+}.mobile-menu-open .mobile-menu-link { animation: mobileNavIn 0.4s ease both; }}
 
 /* ──────────────────────────────────────────────────────────── */
 /*  SEARCH OVERLAY                                              */
@@ -277,14 +235,9 @@ and wide-format phones. Desktop nav shows at ≥ 1280px only.    */
   }
 }
 
-
-@keyframes overlayPanelIn {
-  from { opacity: 0; transform: translateY(-16px); }
-  to   { opacity: 1; transform: translateY(0); }
-}/* ──────────────────────────────────────────────────────────── */
+/* ──────────────────────────────────────────────────────────── */
 /*  HERO                                                        */
 /* ──────────────────────────────────────────────────────────── */
-
 
 .hero-eyebrow {
   display: flex; align-items: center; gap: 16px;
@@ -374,7 +327,6 @@ and wide-format phones. Desktop nav shows at ≥ 1280px only.    */
 /*  CATEGORY GRID                                               */
 /* ──────────────────────────────────────────────────────────── */
 
-
 .cat-card {
   position: relative; overflow: hidden;
   display: flex; flex-direction: column; justify-content: flex-end;
@@ -427,12 +379,8 @@ and wide-format phones. Desktop nav shows at ≥ 1280px only.    */
   color: #7a7490; flex-shrink: 0;
   word-break: break-word; /* Handle long text gracefully */
 }/* Side labels: shown on desktop AND mobile */
-.ad-label--side {
-  display: inline;
-}/* Mobile label: hidden everywhere — we use side labels on all screens */
-.ad-label--mobile {
-  display: none;
-}.ad-content {
+.ad-label--side { display: inline; }/* Mobile label: hidden everywhere — we use side labels on all screens */
+.ad-label--mobile { display: none; }.ad-content {
   flex: 1; display: flex; align-items: center; justify-content: center;
   border-left: 1px solid #2a2535; border-right: 1px solid #2a2535;
   padding: 12px 40px; min-height: 60px;
@@ -506,15 +454,9 @@ works on all themes */
 /*  MANIFESTO                                                   */
 /* ──────────────────────────────────────────────────────────── */
 
-
 .manifesto-quote .em { color: #c9a84c; font-style: italic; }/* ──────────────────────────────────────────────────────────── */
 /*  NEWSLETTER                                                  */
 /* ──────────────────────────────────────────────────────────── */
-
-
-  
-  
-
 
 .nl-feedback.error { color: #ff3c00; }.nl-feedback.success { color: #c9a84c; }/* ──────────────────────────────────────────────────────────── */
 /*  FOOTER                                                      */
@@ -581,7 +523,6 @@ body:not(.sticky-ad-dismissed) .site-footer { padding-bottom: calc(58px + 24px +
   background: var(--bg-primary);
   /* padding-top handled by .content-wrapper in layout.tsx */
 }/* ── Ad slots ── */
-
 
 /* ── Page Header ── */
 .search-header {
@@ -672,9 +613,7 @@ body:not(.sticky-ad-dismissed) .site-footer { padding-bottom: calc(58px + 24px +
   background: rgba(7,7,16,0.75);
   padding: 4px 8px;
   backdrop-filter: blur(6px);
-}.search-card-info {
-  padding: 14px 16px 16px;
-}.search-card-title {
+}.search-card-info { padding: 14px 16px 16px; }.search-card-title {
   font-family: var(--font-cormorant), serif;
   font-size: 0.98rem;
   font-style: italic;
@@ -760,9 +699,7 @@ FAQ)     */
   max-width: 100%;
   margin: 0 auto;
   padding: 80px clamp(24px, 6vw, 80px) 120px;
-}.static-page-inner--narrow {
-  max-width: 680px;
-}
+}.static-page-inner--narrow { max-width: 680px; }
 @media (max-width: 767px) {
 .static-page-inner { padding: 60px 24px 80px; }
 }/* ── Page Header ── */
@@ -1007,9 +944,7 @@ H4 = label.
   flex-direction: column;
   gap: 0;
   border-top: 1px solid #2a2535;
-}.faq-item {
-  border-bottom: 1px solid #2a2535;
-}.faq-item[open] > .faq-question { color: #f0ecff; }.faq-item[open] > .faq-question .faq-chevron { transform: rotate(45deg); color: #ff1a33; }.faq-question {
+}.faq-item { border-bottom: 1px solid #2a2535; }.faq-item[open] > .faq-question { color: #f0ecff; }.faq-item[open] > .faq-question .faq-chevron { transform: rotate(45deg); color: #ff1a33; }.faq-question {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -1021,7 +956,6 @@ H4 = label.
   color: #8a8099;
   list-style: none;
   transition: color 0.2s;
-}.faq-question:hover { color: #d4cde8; }.faq-question::-webkit-details-marker { display: none; }.faq-chevron {
   font-size: 1.2rem;
   color: #7a7490;
   flex-shrink: 0;
@@ -1244,7 +1178,6 @@ JS sets --topbar-h: 0px automatically. */
   margin-right: 4px;
 }/* Light theme: countdown on cream background needs dark text */
 
-
 /* ── Halloween Active ("zero state") message ── */
 .hc-active {
   font-family: var(--font-cinzel), cursive;
@@ -1272,33 +1205,13 @@ show days only ── */
 
 /* Portrait ratio (9:16) — matches wallpaper cards */
 
-/* Shimmer sweep */
-@keyframes shimmer {
-  0%   { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
-}/* Info bar at the bottom of skeleton */
-@keyframes skeletonPulse {
-  0%, 100% { opacity: 0.4; }
-  50%       { opacity: 1; }
-}
+/* Shimmer sweep *//* Info bar at the bottom of skeleton */
 
-@keyframes lb-fade-in {
-  from { opacity: 0; }
-  to   { opacity: 1; }
-}
-
-
-@keyframes lb-scale-in {
-  from { transform: scale(0.92); opacity: 0; }
-  to   { transform: scale(1);    opacity: 1; }
-}/* Prev / Next arrows */
-
+/* Prev / Next arrows */
 
 /* Caption bar */
 
-
 /* Thumbnail strip */
-
 
 .lb-grid-hover-text p {
   font-family: var(--font-cormorant), Georgia, serif;
@@ -1328,9 +1241,7 @@ show days only ── */
 .shop-header {
   padding: 60px 60px 24px;
   border-bottom: 1px solid #2a2535;
-}.shop-page-title {
-  font-size: clamp(2rem, 4vw, 3.5rem);
-}.shop-page-num {
+}.shop-page-title { font-size: clamp(2rem, 4vw, 3.5rem); }.shop-page-num {
   font-size: 1.5rem;
   color: #7a7490;
 }.shop-page-count {
@@ -1366,9 +1277,7 @@ show days only ── */
   border-color: #ff1a33;
   background: rgba(192, 0, 26, 0.1);
 }/* ── Product grid wrapper ── */
-.shop-grid-wrap {
-  padding: 60px 60px 0;
-}/* ── Empty state ── */
+.shop-grid-wrap { padding: 60px 60px 0; }/* ── Empty state ── */
 .shop-empty {
   text-align: center;
   padding: 120px 0;
@@ -1670,10 +1579,7 @@ grid on desktop */
   gap: 12px;
 }
 
-@media (max-width: 1023px) {
-.related-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
+@media (max-width: 1023px) {.related-grid { grid-template-columns: repeat(3, 1fr); }
 }
 
 @media (max-width: 639px) {
@@ -1685,7 +1591,6 @@ grid on desktop */
     scrollbar-width: none;
     padding-bottom: 8px;
   }
-  .related-grid::-webkit-scrollbar { display: none; }
 }/* Each related card */
 .related-card {
   position: relative;
@@ -1704,16 +1609,9 @@ grid on desktop */
   aspect-ratio: 9 / 16;
   padding-top: 0;
 }/* 16:9 landscape variant for PC pages */
-.related-grid--landscape {
-  grid-template-columns: repeat(3, 1fr);
-}
-@media (max-width: 1023px) {
-.related-grid--landscape {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}.related-card--landscape .related-card-img {
-  aspect-ratio: 16 / 9;
-}.related-card-img img {
+.related-grid--landscape { grid-template-columns: repeat(3, 1fr); }
+@media (max-width: 1023px) {.related-grid--landscape { grid-template-columns: repeat(2, 1fr); }
+}.related-card--landscape .related-card-img { aspect-ratio: 16 / 9; }.related-card-img img {
   position: absolute;
   inset: 0;
   width: 100%; height: 100%;
@@ -1741,26 +1639,16 @@ grid on desktop */
   }}
 
 /* ── Product card touch feedback ───────────────────────────── */
-@media (max-width: 1023px) {
-  .group:active {
-    transform: scale(0.98) translateY(0) !important;
-  }
+@media (max-width: 1023px) {.group:active { transform: scale(0.98) translateY(0) !important; }
 }/* ── Nav compact on very small phones (SE size) ─────────────── */
 @media (max-width: 374px) {
 .nav-logo  { font-size: 1rem; }
 }/* ── Fix hero section on mobile — prevent overflow ──────────── */
 
-
 /* ── Image detail page — grid to single column on mobile ────── */
-@media (max-width: 767px) {
-/* Ensure grid collapses cleanly */
-  .grid.md\:grid-cols-\[1fr_360px\] {
-    grid-template-columns: 1fr !important;
-  }
-  /* Unstick the details panel on mobile */
-  .sticky.top-8 {
-    position: static !important;
-  }
+@media (max-width: 767px) {/* Ensure grid collapses cleanly */
+  .grid.md\:grid-cols-\[1fr_360px\] { grid-template-columns: 1fr !important; }/* Unstick the details panel on mobile */
+  .sticky.top-8 { position: static !important; }
 }/* ── Shop grid — 2 columns on small phones,
 not 1 ──────────── */
 @media (max-width: 639px) {
@@ -1778,12 +1666,8 @@ not 1 ──────────── */
 .footer-grid {
     grid-template-columns: 1fr !important;
     gap: 32px !important;
-  }
-  .site-footer {
-    padding-bottom: calc(40px + env(safe-area-inset-bottom));
-  }
+  }.site-footer { padding-bottom: calc(40px + env(safe-area-inset-bottom)); }
 }/* ── Safe area insets for fixed nav ─────────────────────────── */
-
 
 .logo-full { display: inline; }.logo-full { display: none; }}
 @media (min-width: 375px) and (max-width: 479px) {
@@ -1803,19 +1687,11 @@ not 1 ──────────── */
     padding-left: 0;
     padding-right: 0;
   }
-}}
-/* ── Hide sticky CTA on image detail pages ──────────────────── */
+}}/* ── Hide sticky CTA on image detail pages ──────────────────── */
 /* These pages already have a download button in the details panel.
    The sticky CTA would create a duplicate red button at the bottom. */
-.image-detail-page .mobile-sticky-cta {
-  display: none !important;
-}}
-
-
-/* Show normally once AdSense has filled the slot */
-.ad-banner--loaded {
-  display: flex !important;
-}/* Dev placeholder — styled to match dark theme,
+.image-detail-page .mobile-sticky-cta { display: none !important; }}/* Show normally once AdSense has filled the slot */
+.ad-banner--loaded { display: flex !important; }/* Dev placeholder — styled to match dark theme,
 not white box  */
 .ad-banner--dev {
   background: var(--bg-secondary) !important;
@@ -1832,13 +1708,8 @@ not white box  */
     font-size: 0.45rem; /* smaller but visible on mobile dev */
   }
 }/* ── 2. Search overlay — smooth fade-in animation ─────────────
-   Replaces the abrupt pop-in when search results appear.        */
-@keyframes searchResultsIn {
-  from { opacity: 0; transform: translateY(-8px); }
-  to   { opacity: 1; transform: translateY(0); }
-}/* ── 3. Hero Stats — center labels under numbers ─────────────
+   Replaces the abrupt pop-in when search results appear.        *//* ── 3. Hero Stats — center labels under numbers ─────────────
    Tighten alignment so labels sit directly below their stat.    */
-
 
 .stat-label {
   margin-top: 0;
@@ -1853,19 +1724,13 @@ not white box  */
 .footer-grid {
     grid-template-columns: 1fr 1fr !important;
     gap: 32px !important;
-  }
-  .footer-col--brand {
-    grid-column: 1 / -1;
-  }
+  }.footer-col--brand { grid-column: 1 / -1; }
 }
 @media (max-width: 639px) {
 .footer-grid {
     grid-template-columns: 1fr !important;
     gap: 24px !important;
-  }
-  .footer-col--brand {
-    grid-column: unset;
-  }
+  }.footer-col--brand { grid-column: unset; }
 }/* Footer column internals */
 .footer-col {
   display: flex;
@@ -1877,11 +1742,8 @@ not white box  */
   display: flex;
   flex-direction: column;
   gap: 8px;
-}.footer-col li {
-  margin-bottom: 0;
-}/* ── 7. Mobile menu — top padding so first item clears header ─
+}.footer-col li { margin-bottom: 0; }/* ── 7. Mobile menu — top padding so first item clears header ─
    Fixes "01 IPHONE" touching the header border.                 */
-
 
 }
 
@@ -1893,9 +1755,7 @@ not white box  */
   transform: scale(0.96) !important;
   transition: transform 0.1s ease !important;
 }/* btn-secondary — hover lift + active press */
-.btn-secondary {
-  transition: border-color 0.2s, color 0.2s, background 0.2s, transform 0.15s ease !important;
-}.btn-secondary:hover {
+.btn-secondary { transition: border-color 0.2s, color 0.2s, background 0.2s, transform 0.15s ease !important; }.btn-secondary:hover {
   background: rgba(192, 0, 26, 0.06) !important;
   border-color: rgba(192, 0, 26, 0.6) !important;
   color: #f0ecff !important;
@@ -1918,26 +1778,19 @@ not white box  */
 }/* ── 9. Body text line-height global boost ────────────────────
    Ensures all paragraph-level text has comfortable leading.     */
 p,
-.footer-brand-desc {
-  line-height: 1.85;
-}/* ── 10. Ad slot light-theme integration ─────────────────────
+.footer-brand-desc { line-height: 1.85; }/* ── 10. Ad slot light-theme integration ─────────────────────
    Ensure the dev placeholder also adapts to light mode.         */
-
 
 /* ── 11. Touch target minimum sizes on mobile ─────────────────
    Ensures category grid tiles and filter pills are comfortably
    tappable (≥ 44px touch target per Apple HIG).                 */
-@media (max-width: 1023px) {
-.cat-card {
-    min-height: 140px;
-  }
+@media (max-width: 1023px) {.cat-card { min-height: 140px; }
   .filter-pill {
     min-height: 40px;
     padding: 10px 18px !important;
   }
 }/* ── 12. Hero stats label alignment (PC) ─────────────────────
    Ensures the stat labels are precisely beneath their number.   */
-
 
 /* ══════════════════════════════════════════════════════════════
    PC POLISH PATCH — Image Detail,
@@ -1959,7 +1812,6 @@ single column mobile */
    → height = 400 × 1.7778 = 711px → correct 9:16 portrait box.
    The image fills that 400×711 box perfectly.
    ─────────────────────────────────────────────────────────── */
-
 
 }
 
@@ -1983,7 +1835,6 @@ single column mobile */
 }/* Outer frame — just a border/background wrapper,
 no height set here */
 
-
 }
 
 /* Inner wrapper: padding-top: 177.78% on a 400px-wide column
@@ -1997,35 +1848,27 @@ no height set here */
 }/* Nav thumbnail inner — same padding-top trick,
 fixed width set on outer */
 
-
 /* Target images inside the inner wrapper — beats Tailwind + Next.js inline styles */
 .image-detail-frame-inner .image-detail-img {
   object-fit: contain !important;
   object-position: center center !important;
 }/* Nav thumbs use cover */
 
-
 /* Badge over image */
 
-
 /* Details panel */
-
 
 /* ── FIX 2: Prev / Next navigation ───────────────────────────
    Full-width cards with a locked 9/16 portrait thumbnail.
    Previously was a tiny 56×56 square — now properly sized.    */
 
-
 /* Nav thumbnail — fixed pixel width so Next.js fill has real dimensions.
    padding-top enforces 9:16 ratio. object-fit:cover fills cleanly.     */
-
 
 /* When hero-right is gone,
 hero-left should center its content */
 
-
 /* Override the fixed width to fit the label */
-
 
 /* ── Search page — big search bar ─────────────────────────── */
 .sp-search-wrap {
@@ -2209,13 +2052,7 @@ fewer per row */
   gap: 12px;
 }
 
-@media (max-width: 639px) {
-.rv-grid--portrait {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  .rv-grid--landscape {
-    grid-template-columns: repeat(2, 1fr);
-  }
+@media (max-width: 639px) {.rv-grid--portrait { grid-template-columns: repeat(2, 1fr); }.rv-grid--landscape { grid-template-columns: repeat(2, 1fr); }
 }.rv-section-label {
   font-family: var(--font-space), monospace;
   font-size: 0.55rem;
@@ -2270,18 +2107,14 @@ not cropped */
   line-height: 1.35;
   color: #ffffff;
   text-shadow: 0 1px 4px rgba(0,0,0,0.9);
-  display: -webkit-box;
   -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
   overflow: hidden;
   word-break: break-word;
   /* Hide by default, reveal on hover */
   opacity: 0;
   transition: opacity 0.3s ease;
 }.rv-card--portrait:hover .rv-card-title,
-.rv-card--landscape:hover .rv-card-title {
-  opacity: 1;
-}.setup-page {
+.rv-card--landscape:hover .rv-card-title { opacity: 1; }.setup-page {
   background-color: #070710;
   min-height: 100vh;
 }/* ── Auto night mode — deeper darks after 8pm ──────────────── */
@@ -2293,17 +2126,12 @@ not cropped */
   --deep: #0a0918;
   --nav-bg: rgba(5,4,13,0.98);
 }/* Theme button gets a subtle red tint on the arrow */
-.nav-text-btn--theme .nav-text-btn-arrow {
-  color: #ff1a33;
-}.nav-text-btn--theme:hover {
+.nav-text-btn--theme .nav-text-btn-arrow { color: #ff1a33; }.nav-text-btn--theme:hover {
   border-color: #ff1a33;
   color: #f0ecff;
 }/* ── data-cursor=off: hide custom cursor elements ── */
 [data-cursor="off"] .cursor-ring,
-[data-cursor="off"] .cursor-dot {
-  display: none !important;
-}/* Light theme overrides */
-
+[data-cursor="off"] .cursor-dot { display: none !important; }/* Light theme overrides */
 
 /* ── Dark Drift — deteriorating background tint overlay ─────── */
 body::after {
@@ -2332,10 +2160,7 @@ mobile sizing
   margin-top: 12px;
   width: 100%;
 }
-@media (max-width: 767px) {
-.download-btn-wrap {
-    padding-bottom: 72px;
-  }
+@media (max-width: 767px) {.download-btn-wrap { padding-bottom: 72px; }
 }.download-stats-row {
   display: flex;
   align-items: center;
@@ -2458,9 +2283,7 @@ a.download-btn {
   font-size: 1.05rem;
   color: #f0ecff;
   line-height: 1.3;
-  display: -webkit-box;
   -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
   overflow: hidden;
 }.product-card-bottom {
   display: flex;
@@ -2507,25 +2330,16 @@ a.download-btn {
 }.product-card-cta:hover {
   background-color: #ff1a33;
   color: #f0ecff !important;
-}.product-card-cta:active {
-  background-color: #8b0000;
-}
+}.product-card-cta:active { background-color: #8b0000; }
 
 @media (max-width: 639px) {
 .product-card-cta {
     min-height: 42px;
     line-height: 42px;
     font-size: 0.6rem;
-  }
-  .product-grid .flex.flex-col.gap-3 {
-    gap: 8px !important;
-  }
-  .product-grid > div > .p-5,
-  .product-grid > div > div[class*="p-5"] {
-    padding: 10px 10px 12px !important;
-  }
+  }.product-grid .flex.flex-col.gap-3 { gap: 8px !important; }.product-grid > div > .p-5,
+  .product-grid > div > div[class*="p-5"] { padding: 10px 10px 12px !important; }
 }/* Light theme */
-
 
 /* ── AdSense: responsive,
 no broken blank boxes ───────────────*/
@@ -2540,10 +2354,7 @@ no broken blank boxes ───────────────*/
   max-width: 100%;
 }
 
-@media (max-width: 767px) {
-.ad-banner {
-    padding: 10px 8px;
-  }
+@media (max-width: 767px) {.ad-banner { padding: 10px 8px; }
   .ad-content {
     padding: 6px 0;
     border-left: none !important;
@@ -2552,9 +2363,7 @@ no broken blank boxes ───────────────*/
   .ad-label--side {
     font-size: 0.45rem; /* slightly smaller on mobile but still visible */
   }
-}.img-lazy.loaded {
-  opacity: 1;
-}/* ══════════════════════════════════════════════════════════════
+}.img-lazy.loaded { opacity: 1; }/* ══════════════════════════════════════════════════════════════
    DOWNLOAD SHARE BUTTON (mobile Web Share API)
    ══════════════════════════════════════════════════════════════ */
 .download-share-btn {
@@ -2577,10 +2386,6 @@ no broken blank boxes ───────────────*/
   color: #f0ecff;
 }
 
-@keyframes hint-pulse {
-  0%, 100% { opacity: 0.6; }
-  50%       { opacity: 1; }
-}
 @media (max-width: 767px) {
 .download-share-btn { min-height: 62px; width: 62px; }
 }/* ── Device listing page intro text ────────────────────────────────────────── */
@@ -2645,7 +2450,6 @@ no broken blank boxes ───────────────*/
 }/* sizes */
 .fav-btn--sm { width: 30px; height: 30px; }.fav-btn--sm svg { width: 14px; height: 14px; }.fav-btn--md { width: 36px; height: 36px; }.fav-btn--md svg { width: 17px; height: 17px; }.fav-btn--lg { width: 44px; height: 44px; top: 14px; right: 14px; }.fav-btn--lg svg { width: 22px; height: 22px; }/* light theme */
 
-
 /* ── Detail page inline favorites row ───────────────────────────────────────── */
 .detail-fav-row {
   display: flex;
@@ -2684,9 +2488,7 @@ no broken blank boxes ───────────────*/
   min-height: 100vh;
   background: var(--bg-primary);
   color: var(--text-primary);
-}body:has([data-force-blog="true"]) .halloween-bar {
-  display: none !important;
-}/* ── Blog top nav (replaces global header on blog pages) ── */
+}body:has([data-force-blog="true"]) .halloween-bar { display: none !important; }/* ── Blog top nav (replaces global header on blog pages) ── */
 .blog-topnav {
   position: sticky;
   top: 0;
@@ -2712,9 +2514,7 @@ no broken blank boxes ───────────────*/
   letter-spacing: 0.12em;
   color: #f0ecff;
   text-transform: uppercase;
-}.blog-topnav-logo-text span {
-  color: #ff1a33;
-}.blog-topnav-links {
+}.blog-topnav-logo-text span { color: #ff1a33; }.blog-topnav-links {
   display: flex;
   align-items: center;
   gap: 4px;
@@ -2791,9 +2591,7 @@ no broken blank boxes ───────────────*/
 }
 @media (max-width: 767px) {
 .blog-index-body { padding: 32px 20px 60px; }
-}.blog-index-ad {
-  margin-bottom: 40px;
-}/* Empty */
+}.blog-index-ad { margin-bottom: 40px; }/* Empty */
 .blog-index-empty {
   text-align: center;
   padding: 80px 0;
@@ -2805,9 +2603,7 @@ no broken blank boxes ───────────────*/
   color: #6b6480;
   font-style: italic;
 }/* Featured post */
-.blog-index-featured {
-  margin-bottom: 48px;
-}.blog-featured-card {
+.blog-index-featured { margin-bottom: 48px; }.blog-featured-card {
   display: block;
   padding: 32px 36px;
   border: 1px solid #2a2535;
@@ -2862,9 +2658,7 @@ no broken blank boxes ───────────────*/
   border: 1px solid #2a2535;
   text-decoration: none;
   transition: border-color 0.2s;
-}.blog-post-card:hover {
-  border-color: rgba(192,0,26,0.4);
-}.blog-post-card-label {
+}.blog-post-card:hover { border-color: rgba(192,0,26,0.4); }.blog-post-card-label {
   font-family: var(--font-space), monospace;
   font-size: 0.55rem;
   letter-spacing: 0.2em;
@@ -2931,19 +2725,13 @@ no broken blank boxes ───────────────*/
   border-bottom: 1px solid #1a1825;
   text-decoration: none;
   transition: padding-left 0.15s;
-}.blog-category-item:hover {
-  padding-left: 6px;
-}.blog-category-item:last-child {
-  border-bottom: none;
-}.blog-category-item-title {
+}.blog-category-item:hover { padding-left: 6px; }.blog-category-item:last-child { border-bottom: none; }.blog-category-item-title {
   font-family: var(--font-cormorant), serif;
   font-size: 1rem;
   color: #c9c4dd;
   line-height: 1.4;
   flex: 1;
-}.blog-category-item:hover .blog-category-item-title {
-  color: #f0ecff;
-}.blog-category-item-date {
+}.blog-category-item:hover .blog-category-item-title { color: #f0ecff; }.blog-category-item-date {
   font-family: var(--font-space), monospace;
   font-size: 0.55rem;
   letter-spacing: 0.1em;
@@ -2951,7 +2739,6 @@ no broken blank boxes ───────────────*/
   text-transform: uppercase;
   flex-shrink: 0;
 }/* ─── Light theme overrides for blog index ── */
-
 
 /* ══════════════════════════════════════════════════════════════
    COMPREHENSIVE THEME AUDIT — ALL REMAINING VISIBILITY FIXES
@@ -2969,19 +2756,15 @@ no broken blank boxes ───────────────*/
 
 /* ── Light: search page full visibility ── */
 
-
 /* ── Ghost: search page ── */
 
 /* ── Ember: search page ── */
 
 /* ── Light: FAQs / About / Contact / Legal pages ── */
 
-
 /* ── Light: image detail page remaining ── */
 
-
 /* ── Light: format badge pills (JPEG · 4K · 9:16) ── */
-
 
 /* ── Breadcrumbs all themes ── */
 
@@ -2989,12 +2772,10 @@ no broken blank boxes ───────────────*/
 
 /* ── Light: 404 page format badge fix ── */
 
-
 /* ── All themes: inline Tailwind color overrides for image detail ── */
 /* format badges: JPEG,
 4K·Free,
 9:16 Portrait */
-
 
 /* ── Ghost: format badges ── */
 
@@ -3004,23 +2785,17 @@ no broken blank boxes ───────────────*/
 
 /* ── Ghost: tags on image detail ── */
 
-
 /* ── Light: device page intro box ── */
 
-
 /* ── All themes: marquee / ticker ── */
-
 
 /* ── Ghost + Ember: Pagination ── */
 
 /* ── Light: Recently Viewed strip ── */
 
-
 /* ── Light: Related wallpapers section ── */
 
-
 /* ── All themes: Social Share ── */
-
 
 /* ═══════════════════════════════════════════════════════════════════
    BLOG & GUIDES — FORCE LIGHT THEME
@@ -3056,58 +2831,32 @@ body:has([data-force-blog="true"]) main[data-force-blog="true"] {
   background-color: #ffffff !important;
   color: #1a1814 !important;
 }/* 3. Page-level wrapper */
-body:has([data-force-blog="true"]) .content-wrapper {
-  background-color: #ffffff !important;
-}/* 4. Blog top nav — light style */
+body:has([data-force-blog="true"]) .content-wrapper { background-color: #ffffff !important; }/* 4. Blog top nav — light style */
 body:has([data-force-blog="true"]) .blog-topnav {
   background: #ffffff !important;
   border-bottom-color: #e0dbd4 !important;
-}body:has([data-force-blog="true"]) .blog-topnav-logo-text {
-  color: #1a1814 !important;
-}body:has([data-force-blog="true"]) .blog-topnav-logo-text span {
-  color: #ff1a33 !important;
-}body:has([data-force-blog="true"]) .blog-topnav-link {
-  color: #7a7468 !important;
-}body:has([data-force-blog="true"]) .blog-topnav-link:hover {
+}body:has([data-force-blog="true"]) .blog-topnav-logo-text { color: #1a1814 !important; }body:has([data-force-blog="true"]) .blog-topnav-logo-text span { color: #ff1a33 !important; }body:has([data-force-blog="true"]) .blog-topnav-link { color: #7a7468 !important; }body:has([data-force-blog="true"]) .blog-topnav-link:hover {
   color: #1a1814 !important;
   border-color: #cdc8bc !important;
 }/* 5. Hero section */
 body:has([data-force-blog="true"]) .blog-index-hero {
   border-bottom-color: #cdc8bc !important;
   background: linear-gradient(to bottom, rgba(192,0,26,0.03), transparent) !important;
-}body:has([data-force-blog="true"]) .blog-index-title {
-  color: #1a1814 !important;
-}body:has([data-force-blog="true"]) .blog-index-subtitle {
-  color: #7a7468 !important;
-}body:has([data-force-blog="true"]) .blog-index-count {
-  color: #a09888 !important;
-}/* 6. Featured card */
+}body:has([data-force-blog="true"]) .blog-index-title { color: #1a1814 !important; }body:has([data-force-blog="true"]) .blog-index-subtitle { color: #7a7468 !important; }body:has([data-force-blog="true"]) .blog-index-count { color: #a09888 !important; }/* 6. Featured card */
 body:has([data-force-blog="true"]) .blog-featured-card {
   background: rgba(192,0,26,0.03) !important;
   border-color: #cdc8bc !important;
 }body:has([data-force-blog="true"]) .blog-featured-card:hover {
   border-color: rgba(192,0,26,0.4) !important;
   background: rgba(192,0,26,0.05) !important;
-}body:has([data-force-blog="true"]) .blog-featured-title {
-  color: #1a1814 !important;
-}body:has([data-force-blog="true"]) .blog-featured-excerpt {
-  color: #5a5450 !important;
-}body:has([data-force-blog="true"]) .blog-featured-cta {
-  color: #8b0000 !important;
-}/* 7. Post grid cards */
+}body:has([data-force-blog="true"]) .blog-featured-title { color: #1a1814 !important; }body:has([data-force-blog="true"]) .blog-featured-excerpt { color: #5a5450 !important; }body:has([data-force-blog="true"]) .blog-featured-cta { color: #8b0000 !important; }/* 7. Post grid cards */
 body:has([data-force-blog="true"]) .blog-post-card {
   background: #ece8df !important;
   border-color: #cdc8bc !important;
 }body:has([data-force-blog="true"]) .blog-post-card:hover {
   border-color: rgba(192,0,26,0.4) !important;
   background: #e4dfd4 !important;
-}body:has([data-force-blog="true"]) .blog-post-card-title {
-  color: #1a1814 !important;
-}body:has([data-force-blog="true"]) .blog-post-card-excerpt {
-  color: #5a5450 !important;
-}body:has([data-force-blog="true"]) .blog-post-card-date {
-  color: #a09888 !important;
-}/* 8. Category groups */
+}body:has([data-force-blog="true"]) .blog-post-card-title { color: #1a1814 !important; }body:has([data-force-blog="true"]) .blog-post-card-excerpt { color: #5a5450 !important; }body:has([data-force-blog="true"]) .blog-post-card-date { color: #a09888 !important; }/* 8. Category groups */
 body:has([data-force-blog="true"]) .blog-categories-heading {
   color: #1a1814 !important;
   border-bottom-color: #cdc8bc !important;
@@ -3117,74 +2866,34 @@ body:has([data-force-blog="true"]) .blog-categories-heading {
 }body:has([data-force-blog="true"]) .blog-category-count {
   background: #e4dfd4 !important;
   color: #7a7468 !important;
-}body:has([data-force-blog="true"]) .blog-category-item {
-  border-top-color: #d8d3c8 !important;
-}body:has([data-force-blog="true"]) .blog-category-item:hover {
-  background: #e4dfd4 !important;
-}body:has([data-force-blog="true"]) .blog-category-item-title {
-  color: #3a3430 !important;
-}body:has([data-force-blog="true"]) .blog-category-item-date {
-  color: #a09888 !important;
-}/* 9. Static-page elements on blog pages (title,
+}body:has([data-force-blog="true"]) .blog-category-item { border-top-color: #d8d3c8 !important; }body:has([data-force-blog="true"]) .blog-category-item:hover { background: #e4dfd4 !important; }body:has([data-force-blog="true"]) .blog-category-item-title { color: #3a3430 !important; }body:has([data-force-blog="true"]) .blog-category-item-date { color: #a09888 !important; }/* 9. Static-page elements on blog pages (title,
 label,
 header) */
-body:has([data-force-blog="true"]) .static-page-title {
-  color: #1a1814 !important;
-}body:has([data-force-blog="true"]) .static-page-title em {
-  color: #8b4000 !important;
-}body:has([data-force-blog="true"]) .static-page-label {
-  color: #8a8468 !important;
-}body:has([data-force-blog="true"]) .static-page-header {
-  border-bottom-color: #cdc8bc !important;
-}body:has([data-force-blog="true"]) .static-page-inner {
-  background-color: #ffffff !important;
-}body:has([data-force-blog="true"]) .static-section h2 {
+body:has([data-force-blog="true"]) .static-page-title { color: #1a1814 !important; }body:has([data-force-blog="true"]) .static-page-title em { color: #8b4000 !important; }body:has([data-force-blog="true"]) .static-page-label { color: #8a8468 !important; }body:has([data-force-blog="true"]) .static-page-header { border-bottom-color: #cdc8bc !important; }body:has([data-force-blog="true"]) .static-page-inner { background-color: #ffffff !important; }body:has([data-force-blog="true"]) .static-section h2 {
   color: #1a1814 !important;
   border-bottom-color: rgba(139,0,0,0.15) !important;
 }body:has([data-force-blog="true"]) .static-section h3 { color: #5a5450 !important; }body:has([data-force-blog="true"]) .static-section p,
 body:has([data-force-blog="true"]) .static-section li { color: #3a3430 !important; }/* 9b. Blog post article page */
-body:has([data-force-blog="true"]) .blog-post-page {
-  background-color: #ffffff !important;
-}body:has([data-force-blog="true"]) .blog-post-header {
-  border-bottom-color: #cdc8bc !important;
-}body:has([data-force-blog="true"]) .blog-post-title {
-  color: #1a1814 !important;
-}body:has([data-force-blog="true"]) .blog-post-meta {
+body:has([data-force-blog="true"]) .blog-post-page { background-color: #ffffff !important; }body:has([data-force-blog="true"]) .blog-post-header { border-bottom-color: #cdc8bc !important; }body:has([data-force-blog="true"]) .blog-post-title { color: #1a1814 !important; }body:has([data-force-blog="true"]) .blog-post-meta {
   color: #7a7468 !important;
   border-bottom-color: #cdc8bc !important;
-}body:has([data-force-blog="true"]) .blog-post-back {
-  color: #8b0000 !important;
-}body:has([data-force-blog="true"]) .blog-post-back:hover {
-  color: #ff1a33 !important;
-}/* 10. HTML content within blog posts */
-body:has([data-force-blog="true"]) .blog-html-content {
-  color: #2a2520 !important;
-}body:has([data-force-blog="true"]) .blog-html-content p {
-  color: #3a3430 !important;
-}body:has([data-force-blog="true"]) .blog-html-content h1,
+}body:has([data-force-blog="true"]) .blog-post-back { color: #8b0000 !important; }body:has([data-force-blog="true"]) .blog-post-back:hover { color: #ff1a33 !important; }/* 10. HTML content within blog posts */
+body:has([data-force-blog="true"]) .blog-html-content { color: #2a2520 !important; }body:has([data-force-blog="true"]) .blog-html-content p { color: #3a3430 !important; }body:has([data-force-blog="true"]) .blog-html-content h1,
 body:has([data-force-blog="true"]) .blog-html-content h2,
 body:has([data-force-blog="true"]) .blog-html-content h3,
-body:has([data-force-blog="true"]) .blog-html-content h4 {
-  color: #1a1814 !important;
-}body:has([data-force-blog="true"]) .blog-html-content h3 { color: #8b0000 !important; }body:has([data-force-blog="true"]) .blog-html-content strong { color: #0a0908 !important; }body:has([data-force-blog="true"]) .blog-html-content em { color: #8b0000 !important; }body:has([data-force-blog="true"]) .blog-html-content a { color: #8b0000 !important; border-color: rgba(139,0,0,0.3) !important; }body:has([data-force-blog="true"]) .blog-html-content a:hover { color: #ff1a33 !important; }body:has([data-force-blog="true"]) .blog-html-content li { color: #3a3430 !important; }body:has([data-force-blog="true"]) .blog-html-content blockquote {
+body:has([data-force-blog="true"]) .blog-html-content h4 { color: #1a1814 !important; }body:has([data-force-blog="true"]) .blog-html-content h3 { color: #8b0000 !important; }body:has([data-force-blog="true"]) .blog-html-content strong { color: #0a0908 !important; }body:has([data-force-blog="true"]) .blog-html-content em { color: #8b0000 !important; }body:has([data-force-blog="true"]) .blog-html-content a { color: #8b0000 !important; border-color: rgba(139,0,0,0.3) !important; }body:has([data-force-blog="true"]) .blog-html-content a:hover { color: #ff1a33 !important; }body:has([data-force-blog="true"]) .blog-html-content li { color: #3a3430 !important; }body:has([data-force-blog="true"]) .blog-html-content blockquote {
   border-left-color: #8b0000 !important;
   background: rgba(139,0,0,0.05) !important;
   color: #5a5450 !important;
 }body:has([data-force-blog="true"]) .blog-html-content code {
   background: #e4dfd4 !important;
   color: #8b0000 !important;
-}body:has([data-force-blog="true"]) .blog-html-content hr {
-  border-color: #cdc8bc !important;
-}/* 11. Footer on blog pages */
+}body:has([data-force-blog="true"]) .blog-html-content hr { border-color: #cdc8bc !important; }/* 11. Footer on blog pages */
 body:has([data-force-blog="true"]) .site-footer {
   background: #ece8df !important;
   border-color: #cdc8bc !important;
-}body:has([data-force-blog="true"]) .footer-bottom {
-  border-color: #cdc8bc !important;
-}/* 12. Scrollbar on blog pages */
-body:has([data-force-blog="true"]) ::-webkit-scrollbar-track {
+}body:has([data-force-blog="true"]) .footer-bottom { border-color: #cdc8bc !important; }/* 12. Scrollbar on blog pages */
   background: #ece8df !important;
-}body:has([data-force-blog="true"]) ::-webkit-scrollbar-thumb {
   background: #cdc8bc !important;
 }/* ── Image description HTML renderer ─────────────────────────────────────────
    Styles for rich HTML descriptions written in the admin panel.             */
@@ -3227,21 +2936,11 @@ body:has([data-force-blog="true"]) ::-webkit-scrollbar-track {
 .hw-hero { grid-template-columns: 1fr; min-height: auto; }
 }/* CTA row */
 
-
 }
 
 @media (max-width: 767px) { .hw-daily__text { padding: 48px 24px; } }
 
-
-@keyframes hwFadeUp {
-  from { opacity: 0; transform: translateY(16px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-@keyframes hwPulse {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50%       { opacity: 0.5; transform: scale(0.85); }
-}/* ── Light theme overrides ──────────────────────────────────── */
-
+/* ── Light theme overrides ──────────────────────────────────── */
 
 /* ═══════════════════════════════════════════════════════════════
    HW2 REDESIGN — Deep Purple / Black / Crimson
@@ -3276,60 +2975,20 @@ body {
    PARTICLES
 ══════════════════════════════════ */
 
-
-@keyframes hw2-float {
-  0%   { transform: translateY(0) translateX(0);       opacity: 0; }
-  10%  { opacity: 0.7; }
-  90%  { opacity: 0.3; }
-  100% { transform: translateY(-110vh) translateX(calc(sin(var(--i, 0)) * 60px)); opacity: 0; }
-}
-
-
-@keyframes hw2-drip {
-  0%   { height: 0; opacity: 0; }
-  20%  { opacity: 0.8; }
-  80%  { height: clamp(8px, 2vh, 20px); opacity: 0.4; }
-  100% { height: clamp(8px, 2vh, 20px); opacity: 0; }
-}/* Desktop links */
-
+/* Desktop links */
 
 /* Burger */
 
-
 .hw2-nav__burger--open span:nth-child(1) { transform: translateY(6px) rotate(45deg); }.hw2-nav__burger--open span:nth-child(2) { opacity: 0; }.hw2-nav__burger--open span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
 
-
-@keyframes hw2-slide-in {
-  from { opacity: 0; transform: translateX(24px); }
-  to   { opacity: 1; transform: translateX(0); }
-}/* ══════════════════════════════════
+/* ══════════════════════════════════
    HERO
 ══════════════════════════════════ */
 
-
 /* Animated fog */
 
-@keyframes hw2-fog {
-  from { opacity: 0.6; transform: scale(1); }
-  to   { opacity: 1;   transform: scale(1.05) translateY(-10px); }
-}
-
-
-@keyframes hw2-pulse {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.7; transform: scale(0.88); }
-}
-
-@keyframes hw2-glow-pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.75; }
-}/* Daily pick card */
-
-@keyframes hw2-card-float {
-  0%, 100% { transform: translateY(0) rotate(0.5deg); }
-  50% { transform: translateY(-12px) rotate(-0.5deg); }
-}/* Obsession cards grid */
-
+/* Daily pick card */
+/* Obsession cards grid */
 
 .hw2-obs-card {
   position: relative;
@@ -3343,7 +3002,6 @@ body {
   background: var(--hw2-surface, #13112a);
   animation: hw2-fade-up 0.6s ease calc(var(--delay, 0s)) both;
 }/* All absolute children fill the card */
-
 
 .hw2-obs-card:hover .hw2-obs-card__bg { transform: scale(1.08); }.hw2-obs-card:hover .hw2-obs-card__veil { opacity: 0.7; }.hw2-obs-card:hover .hw2-obs-card__glitch {
   opacity: 1;
@@ -3360,20 +3018,12 @@ body {
   box-shadow: inset 0 0 30px rgba(192,0,26,0.08);
 }
 
-
-@keyframes hw2-spin-slow {
-  from { transform: rotate(0deg); }
-  to   { transform: rotate(360deg); }
-}/* ══════════════════════════════════
+/* ══════════════════════════════════
    SHARED ANIMATIONS
 ══════════════════════════════════ */
 @keyframes hw2-fade-up {
   from { opacity: 0; transform: translateY(20px); }
   to   { opacity: 1; transform: translateY(0); }
-}
-@keyframes hw2-fade-in {
-  from { opacity: 0; }
-  to   { opacity: 1; }
 }/* ═══════════════════════════════════════════════════════════════
    GLOBAL HOVER EFFECTS
    ═══════════════════════════════════════════════════════════════ */
@@ -3404,9 +3054,7 @@ button,
   transform: translateY(-2px) !important;
   box-shadow: 0 6px 20px rgba(192, 0, 26, 0.3) !important;
 }button:active:not(:disabled) { transform: translateY(0px) scale(0.98) !important; }.nav-links a,
-.footer-links a {
-  transition: color 0.2s, opacity 0.2s !important;
-}/* ── Obsession cards ── */
+.footer-links a { transition: color 0.2s, opacity 0.2s !important; }/* ── Obsession cards ── */
 .hw2-obs-card {
   transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1),
               box-shadow 0.35s ease !important;
@@ -3441,23 +3089,15 @@ button,
   transition: transform 0.3s ease;
 }.download-btn:hover::after { transform: scaleX(1); }/* ── Blog post cards ── */
 .blog-post-card,
-.related-post-card {
-  transition: transform 0.25s ease, box-shadow 0.25s ease !important;
-}.blog-post-card:hover,
+.related-post-card { transition: transform 0.25s ease, box-shadow 0.25s ease !important; }.blog-post-card:hover,
 .related-post-card:hover {
   transform: translateY(-4px) !important;
   box-shadow: 0 12px 32px rgba(0,0,0,0.4) !important;
 }/* ── Logo hover ── */
-.nav-logo {
-  transition: opacity 0.2s ease !important;
-}.nav-logo:hover { opacity: 0.75 !important; }.tag-chip {
-  transition: color 0.2s, border-color 0.2s, background 0.2s !important;
-}/* ── Icon buttons in nav ── */
-
+.nav-logo { transition: opacity 0.2s ease !important; }.nav-logo:hover { opacity: 0.75 !important; }.tag-chip { transition: color 0.2s, border-color 0.2s, background 0.2s !important; }/* ── Icon buttons in nav ── */
 
 /* Icon buttons (search,
 shuffle) */
-
 
 .hw-nav-icon.spinning {
   pointer-events: none;
@@ -3472,16 +3112,10 @@ shuffle) */
   to   { transform: rotate(360deg); }
 }/* The visible button: icon + label side by side */
 
-
-@keyframes theme-menu-in {
-  from { opacity: 0; transform: translateY(-6px); }
-  to   { opacity: 1; transform: translateY(0); }
-}/* ── Hamburger (mobile only) ── */
-
+/* ── Hamburger (mobile only) ── */
 
 /* ── Responsive: show hamburger,
 hide desktop actions ── */
-
 
 }
 
@@ -3528,9 +3162,7 @@ breaking the layout and showing unrelated ad text in card slots.
    ═══════════════════════════════════════════════════════════════ */
 
 .hw2-obsessions__grid ins.adsbygoogle,
-.grid ins.adsbygoogle {
-  display: none !important;
-}/* ═══════════════════════════════════════════════════════════════
+.grid ins.adsbygoogle { display: none !important; }/* ═══════════════════════════════════════════════════════════════
    HERO — remove excessive top whitespace,
 tighten spacing
    ═══════════════════════════════════════════════════════════════ */
@@ -3551,21 +3183,15 @@ tighten spacing
 
 /* Stat boxes */
 
-
 /* Hero text */
-
 
 /* Marquee ticker */
 
-
 /* Obsession cards */
-
 
 /* Statement / manifesto */
 
-
 /* Daily pick */
-
 
 /* ═══════════════════════════════════════════════════════════════════════
    DEAD TOWN REDESIGN — globals-additions.css
@@ -3607,45 +3233,10 @@ tighten spacing
   87%       { opacity: 0.6; }
   89%       { opacity: 1; }
 }
-@keyframes dtPulse {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50%       { opacity: 0.45; transform: scale(0.8); }
-}
-@keyframes dtDrip {
-  0%   { transform: scaleY(0); opacity: 0.8; }
-  70%  { transform: scaleY(1); opacity: 1; }
-  100% { transform: scaleY(1) translateY(4px); opacity: 0; }
-}
-@keyframes dtEmber {
-  0%   { transform: translateY(0) translateX(0) scale(1); opacity: 0.8; }
-  50%  { transform: translateY(-60px) translateX(calc(var(--ex) * 1px)) scale(0.7); opacity: 0.5; }
-  100% { transform: translateY(-130px) translateX(calc(var(--ex2) * 1px)) scale(0.2); opacity: 0; }
-}
 @keyframes dtFogDrift {
   0%   { transform: translateX(0) translateY(0); opacity: 0.18; }
   50%  { transform: translateX(40px) translateY(-20px); opacity: 0.28; }
   100% { transform: translateX(0) translateY(0); opacity: 0.18; }
-}
-@keyframes dtGlitch {
-  0%, 100% { clip-path: none; transform: none; opacity: 0; }
-  92%       { opacity: 0; }
-  93%       { clip-path: polygon(0 20%, 100% 20%, 100% 26%, 0 26%); transform: translateX(-3px); opacity: 0.7; }
-  94%       { clip-path: polygon(0 55%, 100% 55%, 100% 60%, 0 60%); transform: translateX(3px); opacity: 0.5; }
-  95%       { clip-path: none; transform: none; opacity: 0; }
-}
-@keyframes dtScanline {
-  0%   { top: -8px; }
-  100% { top: calc(100% + 8px); }
-}
-@keyframes dtTownGlow {
-  /* text-shadow animation removed — it forces a full repaint each frame.
-     Replaced with opacity-only flicker which composites on GPU cheaply. */
-  0%, 100% { opacity: 1; }
-  50%       { opacity: 0.88; }
-}
-@keyframes dtScrollCue {
-  0%, 100% { transform: translateY(0); opacity: 0.6; }
-  50%       { transform: translateY(10px); opacity: 0.3; }
 }
 @keyframes dtCoffinFloat {
   0%, 100% { transform: translateY(0); }
@@ -3814,11 +3405,7 @@ zero filter/blur ─────────────────────
   padding: 12px 24px;
   font-size: 0.65rem;
 }/* ── SECTION SHARED HEADS ─────────────────────────────────────────────── */
-.dt-section-head {
-  margin-bottom: 56px;
-}.dt-section-head--center {
-  text-align: center;
-}.dt-eyebrow {
+.dt-section-head { margin-bottom: 56px; }.dt-section-head--center { text-align: center; }.dt-eyebrow {
   display: block;
   font-family: var(--dt-font-mono);
   font-size: 0.6rem;
@@ -3843,9 +3430,7 @@ zero filter/blur ─────────────────────
    SECTION 2 — MOBILE PHONES
 ══════════════════════════════════════════════════════════════════════ */
 
-
 /* Individual phone wrapper */
-
 
 /* Phone chassis */
 .dt-phone {
@@ -3853,24 +3438,16 @@ zero filter/blur ─────────────────────
   width: 200px;
 }
 
-
 @media (max-width: 767px) {
 /* Kill scanline animation on mobile — 5× running = jank */
 }/* Side buttons */
 
-
 /* Featured phone glow */
-
 
   .dt-obs-card__glitch { display: none; }
 
-
-@media (max-width: 767px) {
-.dt-phone {
-    width: 100%;
-  }
+@media (max-width: 767px) {.dt-phone { width: 100%; }
 }/* Phone-style 9:16 image frame with corner accents */
-
 
 /* ══════════════════════════════════════════════════════════════════════
    SECTION 4 — DESKTOP / MONITOR
@@ -4029,7 +3606,6 @@ zero filter/blur ─────────────────────
     scrollbar-width: none;
     margin-bottom: 32px;
   }
-  .dt-obs-grid::-webkit-scrollbar { display: none; }
   .dt-obs-grid .dt-obs-card {
     flex: 0 0 64vw;
     max-width: 260px;
@@ -4056,9 +3632,7 @@ zero filter/blur ─────────────────────
   position: absolute;
   inset: 0;
   overflow: hidden;
-}.dt-obs-card__bg img {
-  transition: transform 0.6s ease;
-}.dt-obs-card:hover .dt-obs-card__bg img { transform: scale(1.08); }.dt-obs-card__placeholder {
+}.dt-obs-card__bg img { transition: transform 0.6s ease; }.dt-obs-card:hover .dt-obs-card__bg img { transform: scale(1.08); }.dt-obs-card__placeholder {
   position: absolute;
   inset: 0;
   display: flex;
@@ -4071,12 +3645,8 @@ zero filter/blur ─────────────────────
   inset: 0;
   background: linear-gradient(to top, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.2) 60%, transparent 100%);
   transition: opacity 0.3s;
-}.dt-obs-card:hover .dt-obs-card__veil {
-  background: linear-gradient(to top, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.3) 60%, transparent 100%);
-}/* Glitch stripe on hover */
-.dt-obs-card__glitch {
-  display: none;
-}/* Blood drip on hover */
+}.dt-obs-card:hover .dt-obs-card__veil { background: linear-gradient(to top, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.3) 60%, transparent 100%); }/* Glitch stripe on hover */
+.dt-obs-card__glitch { display: none; }/* Blood drip on hover */
 .dt-obs-card__drip {
   position: absolute;
   top: 0; left: 20%;
@@ -4134,7 +3704,6 @@ zero filter/blur ─────────────────────
   font-family: serif;
   line-height: 1;
 }.dt-obs-card:hover .dt-obs-card__corner { opacity: 0.7; }.dt-obs-card__corner--tl { top: 8px; left: 8px; }.dt-obs-card__corner--br { bottom: 8px; right: 8px; }/* ── Admin Tags displayed under "What Haunts You?" ───────────────────── */
-
 
 }
 
@@ -4225,9 +3794,7 @@ zero filter/blur ─────────────────────
 
 /* Override old single-column gate with split layout */
 
-
 /* LEFT column: title */
-
 
 .dt-gate__left .dt-gate__eyebrow {
   font-size: 0.75rem;
@@ -4258,22 +3825,14 @@ zero filter/blur ─────────────────────
   color: var(--dt-muted, #7a6e6e);
 }/* RIGHT column */
 
-
 /* Compact coffin row for right side */
-.dt-coffin-row--compact {
-  gap: 10px;
-}.dt-coffin-row--compact .dt-coffin {
+.dt-coffin-row--compact { gap: 10px; }.dt-coffin-row--compact .dt-coffin {
   padding: 14px 10px;
   min-width: 0;
   flex: 1;
-}.dt-coffin-row--compact .dt-coffin__num {
-  font-size: 1.3rem;
-}/* Hero image strip — 5 phone previews */
+}.dt-coffin-row--compact .dt-coffin__num { font-size: 1.3rem; }/* Hero image strip — 5 phone previews */
 
-
-  .dt-gate__left .dt-gate__sub {
-    max-width: 100%;
-  }}
+  .dt-gate__left .dt-gate__sub { max-width: 100%; }}
 
 /* Remove the heavy particle embers since we removed that div */
 /* Keep .dt-gate__crack for texture overlay — it's CSS-only,
@@ -4293,47 +3852,22 @@ fine */
   justify-content: center;
   padding: 20px 0 0;
 }.dt-phone-card--hero .dt-phone-card__aura,
-.hw2-obs-card:hover .hw2-obs-card__glitch {
-  will-change: transform;
-}/* Disable non-essential animations for users who prefer reduced motion */
+.hw2-obs-card:hover .hw2-obs-card__glitch { will-change: transform; }/* Disable non-essential animations for users who prefer reduced motion */
 /* hw-track,
 hw-monitor,
 hw-phone,
 hw-p1-p5 excluded — device-page slideshow always runs */
-
-@keyframes heroPhoneFloat {
-  0%, 100% { transform: translateY(0px); }
-  50%       { transform: translateY(-6px); }
-}
-@keyframes heroPhoneFloatFeatured {
-  0%, 100% { transform: translateY(-14px) scale(1.06); }
-  50%       { transform: translateY(-20px) scale(1.06); }
-}/* Hover: lift and glow */
-
+/* Hover: lift and glow */
 
 /* Featured phone border */
 
+/* Hover glow on all phones */
 
-@keyframes featuredBorderPulse {
-  0%, 100% { border-color: rgba(192,0,26,0.75); box-shadow: 0 0 0 1px rgba(192,0,26,0.25), inset 0 1px 0 rgba(255,255,255,0.10), 0 28px 64px rgba(0,0,0,0.9), 0 0 48px rgba(192,0,26,0.35), 0 0 80px rgba(192,0,26,0.15); }
-  50%       { border-color: rgba(220,20,50,0.95); box-shadow: 0 0 0 2px rgba(192,0,26,0.4), inset 0 1px 0 rgba(255,255,255,0.12), 0 28px 64px rgba(0,0,0,0.9), 0 0 64px rgba(192,0,26,0.5), 0 0 110px rgba(192,0,26,0.22); }
-}/* Hover glow on all phones */
-
-
-@keyframes heroGlowPulse {
-  0%, 100% { opacity: 0.7; transform: scale(1); }
-  50%       { opacity: 1;   transform: scale(1.05); }
-}/* Label */
-
+/* Label */
 
 /* Entry animation — phones slide up on load */
 
-
-@keyframes heroPhoneEnter {
-  from { opacity: 0; transform: translateY(30px); }
-  to   { opacity: 1; }
-}/* Reduce float animations on mobile */
-  
+/* Reduce float animations on mobile */
 
 }
 
@@ -4355,7 +3889,6 @@ hw-p1-p5 excluded — device-page slideshow always runs */
   overflow-x: auto;
   scrollbar-width: none;
   -webkit-overflow-scrolling: touch;
-}.dt-phone-showcase::-webkit-scrollbar { display: none; }/* Single phone card */
 .dt-phone-card {
   position: relative;
   display: flex;
@@ -4390,14 +3923,6 @@ hw-p1-p5 excluded — device-page slideshow always runs */
 @keyframes phoneCardEnter {
   from { opacity: 0; transform: translateY(40px) scale(0.95); }
   to   { opacity: 1; transform: translateY(0); }
-}
-@keyframes phoneCardFloat {
-  0%, 100% { transform: translateY(0px); }
-  50%       { transform: translateY(-8px); }
-}
-@keyframes phoneCardFloatHero {
-  0%, 100% { transform: translateY(-16px) scale(1.05); }
-  50%       { transform: translateY(-24px) scale(1.05); }
 }/* Ambient aura behind phone */
 .dt-phone-card__aura {
   position: absolute;
@@ -4412,9 +3937,7 @@ hw-p1-p5 excluded — device-page slideshow always runs */
   transition: opacity 0.4s;
   opacity: 0;
 }.dt-phone-card:hover .dt-phone-card__aura,
-.dt-phone-card--hero .dt-phone-card__aura {
-  opacity: 1;
-}.dt-phone-card--hero .dt-phone-card__aura {
+.dt-phone-card--hero .dt-phone-card__aura { opacity: 1; }.dt-phone-card--hero .dt-phone-card__aura {
   background: radial-gradient(ellipse, rgba(192,0,26,0.2) 0%, transparent 70%);
   animation: auraBreath 6s ease-in-out infinite;
 }
@@ -4519,9 +4042,7 @@ hw-p1-p5 excluded — device-page slideshow always runs */
   border: 1px solid rgba(255,255,255,0.04);
   border-top: none;
   transition: width 0.3s ease;
-}.dt-phone-card:hover .dt-phone-card__island {
-  width: 42%;
-}.dt-phone-card__cam {
+}.dt-phone-card:hover .dt-phone-card__island { width: 42%; }.dt-phone-card__cam {
   width: 5px;
   height: 5px;
   border-radius: 50%;
@@ -4538,13 +4059,9 @@ hw-p1-p5 excluded — device-page slideshow always runs */
   display: block;
   transition: transform 0.7s ease;
   z-index: 1;
-}.dt-phone-card:hover .dt-phone-card__img {
-  transform: scale(1.08);
-}/* Lock screen decorative UI */
+}.dt-phone-card:hover .dt-phone-card__img { transform: scale(1.08); }/* Lock screen decorative UI */
 
-.dt-phone-card:hover .dt-phone-card__lockscreen {
-  opacity: 0;
-}/* Glass gloss */
+.dt-phone-card:hover .dt-phone-card__lockscreen { opacity: 0; }/* Glass gloss */
 .dt-phone-card__gloss {
   position: absolute;
   inset: 0;
@@ -4557,9 +4074,7 @@ hw-p1-p5 excluded — device-page slideshow always runs */
   pointer-events: none;
   z-index: 7;
   border-radius: inherit;
-}.dt-phone-card:hover .dt-phone-card__hover-veil {
-  opacity: 1;
-}/* Home indicator */
+}.dt-phone-card:hover .dt-phone-card__hover-veil { opacity: 1; }/* Home indicator */
 .dt-phone-card__indicator {
   position: absolute;
   bottom: 7px;
@@ -4576,42 +4091,24 @@ hw-p1-p5 excluded — device-page slideshow always runs */
   width: 35%;
 }/* Label below phone */
 
-.dt-phone-card:hover .dt-phone-card__label {
-  color: rgba(192,0,26,0.7);
-}.dt-phone-card--hero .dt-phone-card__label {
-  color: rgba(192,0,26,0.5);
-}/* Odd cards tilt slightly */
+.dt-phone-card:hover .dt-phone-card__label { color: rgba(192,0,26,0.7); }.dt-phone-card--hero .dt-phone-card__label { color: rgba(192,0,26,0.5); }/* Odd cards tilt slightly */
 .dt-phone-card:nth-child(1) .dt-phone-card__shell { transform: rotate(-1.5deg); }.dt-phone-card:nth-child(2) .dt-phone-card__shell { transform: rotate(-0.5deg); }.dt-phone-card:nth-child(4) .dt-phone-card__shell { transform: rotate(0.5deg); }.dt-phone-card:nth-child(5) .dt-phone-card__shell { transform: rotate(1.5deg); }.dt-phone-card:nth-child(1):hover .dt-phone-card__shell,
 .dt-phone-card:nth-child(2):hover .dt-phone-card__shell,
 .dt-phone-card:nth-child(4):hover .dt-phone-card__shell,
-.dt-phone-card:nth-child(5):hover .dt-phone-card__shell {
-  transform: rotate(0deg) translateY(-6px);
-}/* Responsive */
+.dt-phone-card:nth-child(5):hover .dt-phone-card__shell { transform: rotate(0deg) translateY(-6px); }/* Responsive */
 @media (max-width: 900px) {
 .dt-phone-showcase {
     gap: 12px;
     padding: 10px 16px 40px;
     justify-content: flex-start;
-  }
-  .dt-phone-card {
-    width: clamp(88px, 22vw, 120px);
-  }
-  .dt-phone-card--hero {
-    width: clamp(100px, 25vw, 136px);
-  }
+  }.dt-phone-card { width: clamp(88px, 22vw, 120px); }.dt-phone-card--hero { width: clamp(100px, 25vw, 136px); }
 }
 
 @media (max-width: 600px) {
 .dt-phone-showcase {
     gap: 10px;
     padding: 10px 12px 36px;
-  }
-  .dt-phone-card {
-    width: 82px;
-  }
-  .dt-phone-card--hero {
-    width: 96px;
-  }
+  }.dt-phone-card { width: 82px; }.dt-phone-card--hero { width: 96px; }
   /* Reduce animations on mobile */
   .dt-phone-card {
     animation: phoneCardEnter 0.6s ease backwards;
@@ -4622,7 +4119,6 @@ hw-p1-p5 excluded — device-page slideshow always runs */
     animation-delay: 0.16s;
   }
 }/* Light theme adjustments for new phone mockups */
-
 
 /* ═══════════════════════════════════════════════════════════════════════
    THEME OVERRIDES FOR DT- SECTIONS (hero,
@@ -4637,9 +4133,7 @@ etc.)
 [data-theme="blood"] .dt-gate,
 [data-theme="blood"] .dt-desktop,
 [data-theme="blood"] .dt-manifesto,
-[data-theme="blood"] .dt-obsessions {
-  background-color: #080000 !important;
-}[data-theme="blood"] .dt-gate {
+[data-theme="blood"] .dt-obsessions { background-color: #080000 !important; }[data-theme="blood"] .dt-gate {
   background:
     radial-gradient(ellipse 80% 60% at 50% 100%, rgba(192,0,0,0.25) 0%, transparent 60%),
     radial-gradient(ellipse 60% 40% at 50% 0%, rgba(40,0,0,0.6) 0%, transparent 70%),
@@ -4655,18 +4149,15 @@ etc.)
 [data-theme="blood"] .dt-eyebrow { color: #ff5555 !important; }[data-theme="blood"] .dt-gate__collection-num,
 [data-theme="blood"] .dt-section-title { color: #fff0f0 !important; }[data-theme="blood"] .dt-monitor__bezel { background: #100000 !important; border-color: #2a0808 !important; }[data-theme="blood"] .dt-coffin { border-color: rgba(192,0,0,0.3) !important; background: rgba(20,0,0,0.6) !important; }[data-theme="blood"] .dt-coffin__num { color: #ff5555 !important; }[data-theme="blood"] .dt-coffin__label { color: rgba(255,200,200,0.5) !important; }/* ── LIGHT THEME ─────────────────────────────────────────────────────── */
 
-
 /* ── GHOST THEME ─────────────────────────────────────────────────────── */
 
 /* ── EMBER THEME ─────────────────────────────────────────────────────── */
 
 /* PC hero 2-column layout — stacks on mobile */
 
-
 }
 
 /* ── Fog theme — warm parchment light mode ── */
-
 
 /* ══════════════════════════════════════════════════════════════════════════
    MASTER THEME FIX v2 — Complete Ghost + Fog overhaul
@@ -4682,20 +4173,15 @@ etc.)
 
 /* All inline-style dark backgrounds → fog light */
 
-
 /* ALL Tailwind hardcoded dark bg classes → light */
-
 
 /* Wallpaper detail page dark panel → light */
 
-
 /* Deep catch-all: any div/section/article with dark bg in fog theme */
-
 
 /* ─────────────────────────────────────────────────────────────────────────
    SECTION 2: FOG — Text that's white/near-white → must be dark
    ───────────────────────────────────────────────────────────────────────── */
-
 
 /* ─────────────────────────────────────────────────────────────────────────
    SECTION 3: FOG — BUTTON VISIBILITY FIX
@@ -4706,18 +4192,13 @@ etc.)
 Browse,
 etc.) */
 
-
 /* Secondary / ghost buttons */
-
 
 /* Download button specifically (often has custom class) */
 
-
 /* Inline styled buttons with dark backgrounds */
 
-
 /* Any button with very dark inline bg → ensure text visible */
-
 
 /* ─────────────────────────────────────────────────────────────────────────
    SECTION 4: GHOST — Fix entire page not going dark
@@ -4725,17 +4206,13 @@ etc.) */
 
 /* Nuclear option: every element under ghost becomes dark bg aware */
 
-
 /* Ghost: override ALL Tailwind hardcoded dark bg (they were already dark — make them ghost-dark) */
 
-
 /* Ghost: all white text stays white (these are fine on dark bg) */
-
 
 /* ─────────────────────────────────────────────────────────────────────────
    SECTION 5: GHOST — BUTTON VISIBILITY FIX
    ───────────────────────────────────────────────────────────────────────── */
-
 
 /* ─────────────────────────────────────────────────────────────────────────
    SECTION 6: GHOST — Cards,
@@ -4743,13 +4220,11 @@ panels,
 inputs
    ───────────────────────────────────────────────────────────────────────── */
 
-
 /* ─────────────────────────────────────────────────────────────────────────
    SECTION 7: GHOST — Nav,
 footer,
 mobile menu
    ───────────────────────────────────────────────────────────────────────── */
-
 
 /* ─────────────────────────────────────────────────────────────────────────
    SECTION 8: GHOST — DT sections (homepage hero,
@@ -4758,21 +4233,17 @@ daily,
 etc.)
    ───────────────────────────────────────────────────────────────────────── */
 
-
 /* ─────────────────────────────────────────────────────────────────────────
    SECTION 9: GHOST — Path bar,
 breadcrumbs,
 filters
    ───────────────────────────────────────────────────────────────────────── */
 
-
 /* ─────────────────────────────────────────────────────────────────────────
    SECTION 10: FOG — Missing section backgrounds (detail pages)
    ───────────────────────────────────────────────────────────────────────── */
 
-
 /* Catch-all: any section that's nearly black in fog → make light */
-
 
 /* ══════════════════════════════════════════════════════════════════════════
    END MASTER THEME FIX v2
@@ -4792,79 +4263,55 @@ cold morning haze
    NOT just "light mode" — it has personality and visible texture
    ───────────────────────────────────────────────────────────────────────── */
 
-
 /* Fog body: misty grain texture + warm background */
-
 
 /* Fog: force all main containers light */
 
-
 /* ─── FOG: Detail pages — full override ── */
-
 
 /* ─── FOG: ALL inline dark backgrounds ── */
 
-
 /* ─── FOG: Tailwind hardcoded dark bg classes ── */
-
 
 /* ─── FOG: Dark inline style on detail page backgrounds ── */
 
-
 /* ─── FOG: White/light text → must be dark ── */
 
-
 /* ─── FOG: Description HTML (hardcoded dark colors) ── */
-
 
 /* ─── FOG: H1,
 h2,
 h3 on detail pages ── */
 
-
 /* ─── FOG: Navigation ── */
-
 
 /* ─── FOG: Cards ── */
 
-
 /* ─── FOG: Dispatch/anonymous source box ── */
-
 
 /* ─── FOG: Inputs ── */
 
-
 /* ─── FOG: Buttons ── */
-
 
 /* ─── FOG: Footer ── */
 
-
 /* ─── FOG: Keep-exploring bar ── */
-
 
 /* ─── FOG: Breadcrumbs ── */
 
-
 /* ─── FOG: Phone mockup shell ── */
-
 
 /* ─── FOG: DT sections (homepage) ── */
 
-
 /* ─── FOG: Section titles on listing pages ── */
-
 
 /* ─── FOG: Filter pills ── */
 
-
 /* ─── FOG: Search ── */
-
 
 /* ─────────────────────────────────────────────────────────────────────────
    GHOST THEME: Reinforce deep dark — complete override
    ───────────────────────────────────────────────────────────────────────── */
-
 
 /* Ghost: description html */
 
@@ -4891,21 +4338,15 @@ h3 on detail pages ── */
    ══════════════════════════════════════════════════════════════════════════ */
 /* ── HERO / GATE SECTION ──────────────────────────────────────────────── */
 
-
 /* ── COFFINS ──────────────────────────────────────────────────────────── */
-
 
 /* ── MANIFESTO + OBSESSIONS ───────────────────────────────────────────── */
 
-
 /* ── MONITOR (PC section) ─────────────────────────────────────────────── */
-
 
 /* ── MOBILE SECTION ───────────────────────────────────────────────────── */
 
-
 /* ── DAILY / WOTD SECTION ─────────────────────────────────────────────── */
-
 
 /* ═══════════════════════════════════════════════════════════════
    DEVICE PAGE INTRO — Scrolling monitor/phone slideshow strip
@@ -4914,76 +4355,30 @@ h3 on detail pages ── */
 /android page HTML content blocks
    ═══════════════════════════════════════════════════════════════ */
 
-@keyframes hw-vertical-scroll {
-  0%   { transform: translateY(0); }
-  100% { transform: translateY(-50%); }
-}
-
-@keyframes hw-pulse-pc {
-  0%,100% { opacity: 1; }
-  50%     { opacity: 0.7; }
-}/* Layout wrapper */
-
+/* Layout wrapper */
 
 /* Text box */
-
 
 /* Collage container */
 /* PC scrolling strip */
 
-
 /* Pause on hover */
-
 
 /* Fade masks */
 
-
 /* iPhone / Android phone strip variant */
-
 
 /* ── Floating phone collage — used in /iphone and /android page HTML content ── */
 /* hw-phone = the full floating collage container */
 
-
 /* hw-collage-inner = absolutely positioned wrapper for all floating phones */
-
 
 /* Individual phone positions — portrait 9:16 cards */
 
-
-/* Float keyframes — compositor-only: transform only */
-@keyframes hw-float1 {
-  0%, 100% { transform: translateY(0px) rotate(-3deg); }
-  50%       { transform: translateY(-14px) rotate(-3deg); }
-}
-@keyframes hw-float2 {
-  0%, 100% { transform: translateY(0px) rotate(1.5deg); }
-  50%       { transform: translateY(-18px) rotate(1.5deg); }
-}
-@keyframes hw-float3 {
-  0%, 100% { transform: translateY(-8px) rotate(0deg); }
-  50%       { transform: translateY(-22px) rotate(0deg); }
-}
-@keyframes hw-float4 {
-  0%, 100% { transform: translateY(0px) rotate(-1deg); }
-  50%       { transform: translateY(-16px) rotate(-1deg); }
-}
-@keyframes hw-float5 {
-  0%, 100% { transform: translateY(0px) rotate(3deg); }
-  50%       { transform: translateY(-12px) rotate(3deg); }
-}/* Hover: pause float,
+/* Float keyframes — compositor-only: transform only *//* Hover: pause float,
 pop glow */
 
-
-/* Pulse animations for android/iphone variants — opacity-only = compositor thread */
-@keyframes hw-pulse-android {
-  0%,100% { opacity: 1; }
-  50%     { opacity: 0.7; }
-}
-@keyframes hw-pulse-iphone {
-  0%,100% { opacity: 1; }
-  50%     { opacity: 0.7; }
-}/* ═══════════════════════════════════════════════════════════════
+/* Pulse animations for android/iphone variants — opacity-only = compositor thread *//* ═══════════════════════════════════════════════════════════════
    DAILY HORROR FACT SECTION
    ═══════════════════════════════════════════════════════════════ */
 .hf-section {
@@ -5074,10 +4469,10 @@ pop glow */
    ══════════════════════════════════════════════════════════════════════════ */
 
 /* ── GLOBAL TEXT CONTRAST BOOST ──────────────────────────────────────── */
-/* 
+/*
    Old muted color: #8a8099 (3.2:1 on #070710) → FAIL
    New:             #b0aac0 (5.1:1 on #070710) → PASS AA
-   Old muted color: #7a7490 (2.8:1 on #070710) → FAIL  
+   Old muted color: #7a7490 (2.8:1 on #070710) → FAIL
    New:             #a09aaf (4.5:1 on #070710) → PASS AA
 */
 
@@ -5103,15 +4498,9 @@ pop glow */
 .error-desc,
 .search-card-title,
 .image-description-html,
-.hf-quote {
-  color: #c8c4d8 !important;
-}/* Navigation links — was #c9c4dd (3.9:1) on dark nav,
+.hf-quote { color: #c8c4d8 !important; }/* Navigation links — was #c9c4dd (3.9:1) on dark nav,
 needs boost */
-.nav-links a {
-  color: #ddd8f0 !important;
-}.nav-links a:hover {
-  color: #ffffff !important;
-}/* Stat labels — was #7a7490 (~2.8:1) → too dark */
+.nav-links a { color: #ddd8f0 !important; }.nav-links a:hover { color: #ffffff !important; }/* Stat labels — was #7a7490 (~2.8:1) → too dark */
 .stat-label,
 .dt-coffin__label,
 .search-header-count,
@@ -5121,10 +4510,7 @@ needs boost */
 .section-link,
 .related-eyebrow,
 .hw-kit-card__sub,
-.hf-counter {
-  color: #a09aaf !important;
-}/* Breadcrumbs — was #60608a (2.5:1) → fail */
-
+.hf-counter { color: #a09aaf !important; }/* Breadcrumbs — was #60608a (2.5:1) → fail */
 
 /* Footer links — was #7a7490 */
 .footer-col a { color: #a09aaf !important; }.footer-col a:hover { color: #d8d4ec !important; }/* Section link — was #8a8099 */
@@ -5309,8 +4695,7 @@ exempt
    Appended last so it beats every cursor:pointer rule above.
    The dagger SVG is the cursor — no system cursor should ever show.
    On touch/coarse devices this block doesn't apply (they have no cursor).  */
-@media (pointer: fine) {
-*,
+@media (pointer: fine) {*,
   *::before,
   *::after,
   a,
@@ -5323,9 +4708,7 @@ exempt
   [tabindex],
   summary,
   [cursor],
-  .cursor-pointer {
-!important;
-  }
+  .cursor-pointer { !important; }
 }/* ── More ▸ thumbnail strip — hover glow so users know it's clickable ───── */
 .more-strip-link {
   display: block;
@@ -5339,11 +4722,7 @@ exempt
     0 0 12px rgba(192, 0, 26, 0.55),
     0 0 28px rgba(192, 0, 26, 0.25),
     0 4px 16px rgba(0, 0, 0, 0.5);
-}.more-strip-link:hover .more-strip-thumb {
-  border-color: rgba(192, 0, 26, 0.6) !important;
-}.more-strip-thumb {
-  transition: border-color 0.18s ease;
-}/* ═══════════════════════════════════════════════════════════════
+}.more-strip-link:hover .more-strip-thumb { border-color: rgba(192, 0, 26, 0.6) !important; }.more-strip-thumb { transition: border-color 0.18s ease; }/* ═══════════════════════════════════════════════════════════════
    MOBILE PERFORMANCE — Kill ALL animations & transitions on mobile.
    This alone fixes the "25 non-composited animations" Lighthouse flag,
 reduces TBT,
@@ -5366,7 +4745,7 @@ and improves FCP/LCP by stopping paint thrash.
   /* Kill wotd particles entirely */
   .wotd-particles { display: none !important; }
   /* Kill skeleton pulse on mobile — just show a flat placeholder */
-  @keyframes hw-skeleton-pulse { 0%, 100% { opacity: 0.5; } }
+
 }/* Fog is desktop-only — hide on mobile at CSS level too */
 @media (max-width: 767px) {
 .dt-fog--desktop-only { display: none !important; }
@@ -5424,9 +4803,7 @@ no animation */
 .fav-btn svg {
   opacity: 1 !important;
   color: rgba(255,255,255,0.7) !important;
-}.fav-btn--saved svg {
-  color: #fff !important;
-}/* ═══════════════════════════════════════════════════════════════
+}.fav-btn--saved svg { color: #fff !important; }/* ═══════════════════════════════════════════════════════════════
    WHAT HAUNTS YOU — Kill all effects,
 smaller mobile thumbs
    ═══════════════════════════════════════════════════════════════ */
@@ -5438,16 +4815,12 @@ corner crosses entirely */
 .dt-obs-card__drip,
 .dt-obs-card__glitch,
 .dt-obs-card__glow,
-.dt-obs-card__corner {
-  display: none !important;
-}/* No hover lift/transform on cards */
+.dt-obs-card__corner { display: none !important; }/* No hover lift/transform on cards */
 .dt-obs-card:hover {
   transform: none !important;
   border-color: rgba(192,0,26,0.3) !important;
 }/* No scale on bg image hover */
-.dt-obs-card:hover .dt-obs-card__bg img {
-  transform: none !important;
-}/* Smaller thumbnails on mobile for What Haunts You grid */
+.dt-obs-card:hover .dt-obs-card__bg img { transform: none !important; }/* Smaller thumbnails on mobile for What Haunts You grid */
 @media (max-width: 767px) {
 .dt-obs-grid {
     grid-template-columns: repeat(3, 1fr) !important;
@@ -5456,10 +4829,7 @@ corner crosses entirely */
   .dt-obs-card__title {
     font-size: 0.6rem !important;
     letter-spacing: 0.01em !important;
-  }
-  .dt-obs-card__body {
-    padding: 8px 6px !important;
-  }
+  }.dt-obs-card__body { padding: 8px 6px !important; }
 }/* Cache bust: add version to force reload without hard refresh */
 /* Version: 2026-05-27-v2 */
 
@@ -5480,8 +4850,6 @@ no text ────────────────────────
 .mockup-phone-shell {
   filter: none !important;
   box-shadow: 0 4px 24px rgba(0,0,0,0.6) !important;
-}.mockup-monitor-bezel {
-  filter: none !important;
-}
+}.mockup-monitor-bezel { filter: none !important; }
 
 /* lazy section — CSS handled by LazySection.tsx */
