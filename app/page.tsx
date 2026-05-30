@@ -242,7 +242,7 @@ export default async function Home() {
             </div>
           </div>
 
-          {/* HERO IMAGE — locked, no link, no drag, no context menu */}
+          {/* HERO IMAGE — locked via CSS: pointer-events:none blocks all clicks, drags, and opens */}
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/extras/the-haunted-wallpapers-hero-section-image-mobile-dark-wallpapers-thumbnail.avif"
@@ -253,9 +253,7 @@ export default async function Home() {
             decoding="sync"
             width="1200"
             height="800"
-            draggable={false}
-            onContextMenu={(e) => e.preventDefault()}
-            style={{ display: "block", pointerEvents: "none", userSelect: "none", WebkitUserSelect: "none" as React.CSSProperties["WebkitUserSelect"] }}
+            style={{ display: "block" }}
           />
         </div>
       </section>
