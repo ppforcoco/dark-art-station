@@ -1743,8 +1743,6 @@ not white box  */
 }.footer-col li { margin-bottom: 0; }/* ── 7. Mobile menu — top padding so first item clears header ─
    Fixes "01 IPHONE" touching the header border.                 */
 
-}
-
 /* ── 8. Interactive states — hover + active feedback ─────────
    Adds visual response to buttons so the site feels alive.      */
 
@@ -1811,7 +1809,6 @@ single column mobile */
    The image fills that 400×711 box perfectly.
    ─────────────────────────────────────────────────────────── */
 
-}
 
 .image-detail-grid {
   display: grid;
@@ -1833,7 +1830,6 @@ single column mobile */
 }/* Outer frame — just a border/background wrapper,
 no height set here */
 
-}
 
 /* Inner wrapper: padding-top: 177.78% on a 400px-wide column
    = 711px tall → perfect 9:16 portrait.
@@ -2893,7 +2889,7 @@ body:has([data-force-blog="true"]) .site-footer {
 }body:has([data-force-blog="true"]) .footer-bottom { border-color: #cdc8bc !important; }/* 12. Scrollbar on blog pages */
   background: #ece8df !important;
   background: #cdc8bc !important;
-}/* ── Image description HTML renderer ─────────────────────────────────────────
+/* ── Image description HTML renderer ─────────────────────────────────────────
    Styles for rich HTML descriptions written in the admin panel.             */
 .image-description-html { color: #a89bc0; line-height: 1.85; }.image-description-html p { margin-bottom: 0.9em; }.image-description-html strong,
 .image-description-html b {
@@ -2934,7 +2930,6 @@ body:has([data-force-blog="true"]) .site-footer {
 .hw-hero { grid-template-columns: 1fr; min-height: auto; }
 }/* CTA row */
 
-}
 
 @media (max-width: 767px) { .hw-daily__text { padding: 48px 24px; } }
 
@@ -3115,7 +3110,6 @@ shuffle) */
 /* ── Responsive: show hamburger,
 hide desktop actions ── */
 
-}
 
 /* ═══════════════════════════════════════════════════════════════
    COMING SOON — empty state for device / collection pages
@@ -3703,7 +3697,6 @@ zero filter/blur ─────────────────────
   line-height: 1;
 }.dt-obs-card:hover .dt-obs-card__corner { opacity: 0.7; }.dt-obs-card__corner--tl { top: 8px; left: 8px; }.dt-obs-card__corner--br { bottom: 8px; right: 8px; }/* ── Admin Tags displayed under "What Haunts You?" ───────────────────── */
 
-}
 
 .dt-obsessions__footer {
   display: flex;
@@ -3867,9 +3860,7 @@ hw-p1-p5 excluded — device-page slideshow always runs */
 
 /* Reduce float animations on mobile */
 
-}
 
-}
 
 /* ═══════════════════════════════════════════════════════════════════════════
    MOBILE SECTION PHONE CARDS — dt-phone-card-*
