@@ -241,106 +241,84 @@ export default async function Home() {
             </div>
           </div>
 
-          {/* MOBILE thumbnail */}
+          {/* HERO IMAGE — mobile + desktop */}
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/extras/the-haunted-wallpapers-hero-section-image-mobile-dark-wallpapers.avif"
             alt="Haunted Wallpapers Hero"
-            className="hw-hero-mobile-thumb"
+            className="hw-hero-img"
             loading="eager"
             fetchPriority="high"
             decoding="sync"
-            width="800"
-            height="450"
-            style={{ width: "100%", display: "block" }}
+            width="1200"
+            height="800"
+            style={{ display: "block" }}
           />
-
-          {/* DESKTOP phone strip */}
-          <div className="hw-hero-phones-wrap" style={{
-            display: "flex", alignItems: "center", justifyContent: "center",
-            padding: "0 16px", overflow: "visible", gap: "10px",
-          }}>
-            {heroPhones.map((phone, i) => {
-              const w  = phone.featured ? "240px" : "170px";
-              const h  = phone.featured ? "520px" : "368px";
-              const br = phone.featured ? "42px"  : "30px";
-              return (
-                <div key={i}
-                  className={phone.edgePhone ? "hw-hero-phone-edge" : undefined}
-                  style={{ flexShrink: 0, filter: phone.featured ? "drop-shadow(0 0 28px rgba(139,0,0,0.55))" : "none" }}
-                >
-                  <div className="hw-hero-phone-shell" style={{
-                    ["--phone-w" as string]: w, ["--phone-h" as string]: h, ["--phone-br" as string]: br,
-                    width: w, height: h, borderRadius: br, background: "#080810",
-                    border: phone.featured ? "2px solid rgba(139,0,0,0.85)" : "1.5px solid rgba(255,255,255,0.1)",
-                    position: "relative", overflow: "hidden",
-                    boxShadow: phone.featured ? "0 24px 64px rgba(0,0,0,0.85),0 0 0 3px rgba(139,0,0,0.25)" : "0 10px 36px rgba(0,0,0,0.65)",
-                  }}>
-                    <div style={{ position: "absolute", right: "-3px", top: "22%", width: "3px", height: "26px", background: "#1a1a2e", borderRadius: "0 2px 2px 0" }} />
-                    <div style={{ position: "absolute", left: "-3px", top: "19%", width: "3px", height: "16px", background: "#1a1a2e", borderRadius: "2px 0 0 2px" }} />
-                    <div style={{ position: "absolute", left: "-3px", top: "30%", width: "3px", height: "16px", background: "#1a1a2e", borderRadius: "2px 0 0 2px" }} />
-                    <div style={{ position: "absolute", top: "7px", left: "50%", transform: "translateX(-50%)", width: "32%", height: "9px", background: "#000", borderRadius: "6px", zIndex: 4 }} />
-                    {phone.featured ? (
-                      <Image src={phone.src} alt={phone.alt} fill priority={false} loading="lazy"
-                        unoptimized
-                        fetchPriority="low" sizes="(max-width:539px) 70px,(max-width:640px) 120px,240px"
-                        style={{ objectFit: "cover" }} />
-                    ) : (
-                      <ProtectedImg src={phone.src} alt={phone.alt}
-                        style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
-                        loading="lazy"
-                        // @ts-expect-error fetchpriority not in React img types
-                        fetchpriority="low"
-                      />
-                    )}
-                    <ProtectionOverlay />
-                    <div style={{ position: "absolute", inset: 0, background: "linear-gradient(135deg,rgba(255,255,255,0.07) 0%,transparent 42%)", pointerEvents: "none" }} />
-                    <div style={{ position: "absolute", bottom: "6px", left: "50%", transform: "translateX(-50%)", width: "33%", height: "3px", background: "rgba(255,255,255,0.22)", borderRadius: "2px" }} />
-                  </div>
-                </div>
-              );
-            })}
-          </div>
         </div>
       </section>
 
       <style>{`
         @keyframes hw-hero-pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
-        @media (max-width:859px) { .hw-hero-vault-text { display:none !important; } }
+        @keyframes hw-hero-img-reveal {
+          from { opacity:0; transform:scale(1.06) translateY(8px); }
+          to   { opacity:1; transform:scale(1)    translateY(0); }
+        }
+
+        /* ── Hero layout ── */
         .hw-hero-gate-override { padding-top:8px !important; padding-bottom:0 !important; overflow:visible !important; }
-        .hw-hero-mobile-thumb  { display:none; }
-        @media (max-width:859px) {
-          .hw-hero-mobile-thumb {
-            display:block !important;
-            width:100% !important;
-            height:auto !important;
-            max-height:unset !important;
-            aspect-ratio:16/9;
-            object-fit:cover;
+        .hw-hero-split { display:grid; grid-template-columns:1fr; }
+
+        /* Image: mobile stacks below text */
+        .hw-hero-img {
+          width:100%;
+          height:280px;
+          object-fit:cover;
+          object-position:center top;
+          animation: hw-hero-img-reveal 1.1s cubic-bezier(0.22,1,0.36,1) both;
+        }
+
+        /* Desktop: text left, image right, full height */
+        @media (min-width:860px) {
+          .hw-hero-split {
+            grid-template-columns: 420px 1fr !important;
+            align-items: stretch !important;
+            min-height: 580px;
+          }
+          .hw-hero-img {
+            height:100%;
+            max-height:none;
             object-position:center center;
           }
-          .hw-hero-phones-wrap  { display:none !important; }
         }
-        @media (min-width:860px) {
-          .hw-hero-mobile-thumb { display:none !important; }
-          .hw-hero-split        { grid-template-columns:380px 1fr !important; align-items:center !important; height:560px !important; }
-          .hw-hero-phones-wrap  { height:560px !important; overflow:visible !important; align-items:center !important; justify-content:center !important; }
+
+        @media (max-width:859px) { .hw-hero-vault-text { display:none !important; } }
+
+        /* ── Scroll fade-in: add class hw-fade-up to any section/element ── */
+        .hw-fade-up {
+          opacity: 0;
+          transform: translateY(36px);
+          transition: opacity 0.7s ease, transform 0.7s ease;
         }
+        .hw-fade-up.hw-visible {
+          opacity: 1;
+          transform: translateY(0);
+        }
+        .hw-fade-up:nth-child(2) { transition-delay:0.08s; }
+        .hw-fade-up:nth-child(3) { transition-delay:0.16s; }
+        .hw-fade-up:nth-child(4) { transition-delay:0.24s; }
+        .hw-fade-up:nth-child(5) { transition-delay:0.32s; }
+        .hw-fade-up:nth-child(6) { transition-delay:0.40s; }
 
         /* ── DEFIANT MANIFESTO ── */
         .hw-defiant-wrap {
-          position: relative;
-          width: 100%;
-          overflow: hidden;
-          border: 1px solid rgba(224,0,31,0.5);
-          background: #080510;
-          aspect-ratio: 16/9;
-          max-width: 900px;
+          position:relative; width:100%; overflow:hidden;
+          border:1px solid rgba(224,0,31,0.5); background:#080510;
+          aspect-ratio:16/9; max-width:900px;
         }
-        @media (max-width: 640px) {
-          .hw-defiant-wrap { aspect-ratio: unset; height: 130px; max-width: unset; }
-          .hw-defiant-title { font-size: clamp(0.8rem, 5vw, 1.1rem) !important; }
-          .hw-defiant-body  { display: none !important; }
+        @media (max-width:640px) {
+          .hw-defiant-wrap  { aspect-ratio:unset; height:130px; max-width:unset; }
+          .hw-defiant-title { font-size:clamp(0.8rem,5vw,1.1rem) !important; }
+          .hw-defiant-body  { display:none !important; }
         }
 
         /* ── OBSESSION GRID ── */
@@ -358,19 +336,25 @@ export default async function Home() {
           .dt-obs-card__title { font-size:0.44rem !important; padding:3px 5px !important; }
         }
 
-        /* ── KILL ANIMATIONS ON MOBILE ── */
+        /* ── Reduce decorative animations on mobile ── */
         @media (max-width:767px) {
-          *, *::before, *::after {
-            animation-duration: 0.001ms !important;
-            animation-iteration-count: 1 !important;
-            transition-duration: 0.001ms !important;
-            will-change: auto !important;
-          }
-          .wotd-particle    { display: none !important; }
-          .dt-fog           { display: none !important; }
-          .hw-nav__drip     { display: none !important; }
+          .wotd-particle { display:none !important; }
+          .dt-fog        { display:none !important; }
+          .hw-nav__drip  { display:none !important; }
         }
       `}</style>
+
+      {/* Scroll-fade IntersectionObserver — vanilla JS, no deps */}
+      <script dangerouslySetInnerHTML={{ __html: `(function(){
+        if(typeof IntersectionObserver==='undefined')return;
+        var io=new IntersectionObserver(function(entries){
+          entries.forEach(function(e){
+            if(e.isIntersecting){e.target.classList.add('hw-visible');io.unobserve(e.target);}
+          });
+        },{threshold:0.1,rootMargin:'0px 0px -40px 0px'});
+        function run(){document.querySelectorAll('.hw-fade-up').forEach(function(el){io.observe(el);});}
+        document.readyState==='loading'?document.addEventListener('DOMContentLoaded',run):run();
+      })();`}} />
 
       {/* ══════════════════════════════════════════════════════════
           NEW THIS WEEK
@@ -382,7 +366,7 @@ export default async function Home() {
           rootMargin="0px 0px -100px 0px"
           staggerChildren
         >
-          <section style={{ padding: "clamp(32px,5vw,64px) clamp(16px,5vw,72px)", background: "#07050f", position: "relative", overflow: "hidden" }}>
+          <section style={{ padding: "clamp(32px,5vw,64px) clamp(16px,5vw,72px)", background: "#07050f", position: "relative", overflow: "hidden" }} className="hw-fade-up">
             <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse 60% 40% at 50% 0%,rgba(76,175,80,0.06) 0%,transparent 70%)", pointerEvents: "none" }} />
             <div className="dt-section-head dt-section-head--center" style={{ marginBottom: "clamp(24px,4vw,40px)" }}>
               <span className="dt-eyebrow" style={{ color: "#4caf50" }}>Fresh From The Vault</span>
@@ -410,7 +394,7 @@ export default async function Home() {
           rootMargin="0px 0px -100px 0px"
           staggerChildren
         >
-          <section style={{ padding: "clamp(32px,5vw,64px) clamp(16px,5vw,72px)", background: "#0a0810", position: "relative", overflow: "hidden" }}>
+          <section style={{ padding: "clamp(32px,5vw,64px) clamp(16px,5vw,72px)", background: "#0a0810", position: "relative", overflow: "hidden" }} className="hw-fade-up">
             <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse 60% 40% at 50% 0%,rgba(201,168,76,0.07) 0%,transparent 70%)", pointerEvents: "none" }} />
             <div className="dt-section-head dt-section-head--center" style={{ marginBottom: "clamp(24px,4vw,40px)" }}>
               <span className="dt-eyebrow" style={{ color: "#c9a84c" }}>
@@ -725,7 +709,7 @@ export default async function Home() {
         revealDirection="left"
         rootMargin="0px 0px -100px 0px"
       >
-        <section className="dt-obsessions">
+        <section className="dt-obsessions hw-fade-up">
           <div style={{ display: "none" }} aria-hidden="true">
             <div className="dt-section-head">
               <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", flexWrap: "wrap", marginBottom: "0.5rem" }}>
