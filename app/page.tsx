@@ -244,7 +244,7 @@ export default async function Home() {
           {/* HERO IMAGE — mobile + desktop */}
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/extras/the-haunted-wallpapers-hero-section-image-mobile-dark-wallpapers.avif"
+            src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/extras/the-haunted-wallpapers-hero-section-image-mobile-dark-wallpapers-thumbnail.avif"
             alt="Haunted Wallpapers Hero"
             className="hw-hero-img"
             loading="eager"
@@ -271,9 +271,10 @@ export default async function Home() {
         /* Image: mobile stacks below text */
         .hw-hero-img {
           width:100%;
-          height:280px;
-          object-fit:cover;
-          object-position:center top;
+          height:auto;
+          max-height:220px;
+          object-fit:contain;
+          object-position:center center;
           animation: hw-hero-img-reveal 1.1s cubic-bezier(0.22,1,0.36,1) both;
         }
 
@@ -287,6 +288,7 @@ export default async function Home() {
           .hw-hero-img {
             height:100%;
             max-height:none;
+            object-fit:cover;
             object-position:center center;
           }
         }
@@ -366,12 +368,18 @@ export default async function Home() {
           rootMargin="0px 0px -100px 0px"
           staggerChildren
         >
-          <section style={{ padding: "clamp(32px,5vw,64px) clamp(16px,5vw,72px)", background: "#07050f", position: "relative", overflow: "hidden" }} className="hw-fade-up">
+          <section style={{ padding: "clamp(32px,5vw,64px) clamp(16px,5vw,72px)", background: "#07050f", position: "relative", overflow: "hidden" }} className="hw-fade-up hw-new-section">
+            {/* Animated green particles */}
+            <div className="hw-new-particles" aria-hidden="true">
+              {Array.from({ length: 12 }).map((_, i) => (
+                <span key={i} className="hw-new-particle" style={{ "--npi": i } as React.CSSProperties} />
+              ))}
+            </div>
             <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse 60% 40% at 50% 0%,rgba(76,175,80,0.06) 0%,transparent 70%)", pointerEvents: "none" }} />
             <div className="dt-section-head dt-section-head--center" style={{ marginBottom: "clamp(24px,4vw,40px)" }}>
-              <span className="dt-eyebrow" style={{ color: "#4caf50" }}>Fresh From The Vault</span>
-              <h2 className="dt-section-title">New This Week</h2>
-              <p className="dt-section-sub" style={{ maxWidth: "480px", margin: "0 auto" }}>
+              <span className="dt-eyebrow hw-section-eyebrow-anim" style={{ color: "#4caf50" }}>Fresh From The Vault</span>
+              <h2 className="dt-section-title hw-section-title-anim">New This Week</h2>
+              <p className="dt-section-sub hw-section-sub-anim" style={{ maxWidth: "480px", margin: "0 auto" }}>
                 Just surfaced. These disappear from this section in 48 hours.
               </p>
             </div>
@@ -383,6 +391,40 @@ export default async function Home() {
                 devicePath: img.deviceType === "IPHONE" ? "iphone" : img.deviceType === "ANDROID" ? "android" : "pc",
               }))}
             />
+            <style>{`
+              /* ── New This Week floating particles ── */
+              .hw-new-particles{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+              .hw-new-particle{position:absolute;display:block;width:2px;height:2px;border-radius:50%;background:rgba(76,175,80,0.35);left:calc(var(--npi,0)*8.5% + 2%);bottom:-8px;animation:hwNewFloat calc(7s + var(--npi,0)*0.6s) ease-in infinite;animation-delay:calc(var(--npi,0)*0.55s);opacity:0}
+              .hw-new-particle:nth-child(odd){background:rgba(120,210,100,0.25);width:1.5px}
+              @keyframes hwNewFloat{0%{transform:translate3d(0,0,0);opacity:0}8%{opacity:0.5}80%{opacity:0.2}100%{transform:translate3d(calc((var(--npi,0)-6)*5px),-100vh,0);opacity:0}}
+
+              /* ── Section header entrance animations ── */
+              .hw-ls--on .hw-section-eyebrow-anim {
+                animation: hwSectionEyebrow 0.6s 0.1s cubic-bezier(0.16,1,0.3,1) both;
+              }
+              .hw-ls--on .hw-section-title-anim {
+                animation: hwSectionTitle 0.7s 0.2s cubic-bezier(0.16,1,0.3,1) both;
+              }
+              .hw-ls--on .hw-section-sub-anim {
+                animation: hwSectionSub 0.7s 0.32s cubic-bezier(0.16,1,0.3,1) both;
+              }
+              @keyframes hwSectionEyebrow {
+                from { opacity:0; transform:translateY(-10px); letter-spacing:0.45em; }
+                to   { opacity:1; transform:none; }
+              }
+              @keyframes hwSectionTitle {
+                from { opacity:0; transform:translateY(16px); }
+                to   { opacity:1; transform:none; }
+              }
+              @keyframes hwSectionSub {
+                from { opacity:0; transform:translateY(10px); }
+                to   { opacity:1; transform:none; }
+              }
+              @media(max-width:767px){
+                .hw-new-particle{display:none}
+                .hw-section-eyebrow-anim,.hw-section-title-anim,.hw-section-sub-anim{animation:none!important}
+              }
+            `}</style>
           </section>
         </LazySection>
       )}
@@ -397,11 +439,11 @@ export default async function Home() {
           <section style={{ padding: "clamp(32px,5vw,64px) clamp(16px,5vw,72px)", background: "#0a0810", position: "relative", overflow: "hidden" }} className="hw-fade-up">
             <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse 60% 40% at 50% 0%,rgba(201,168,76,0.07) 0%,transparent 70%)", pointerEvents: "none" }} />
             <div className="dt-section-head dt-section-head--center" style={{ marginBottom: "clamp(24px,4vw,40px)" }}>
-              <span className="dt-eyebrow" style={{ color: "#c9a84c" }}>
+              <span className="dt-eyebrow hw-section-eyebrow-anim" style={{ color: "#c9a84c" }}>
                 Hand-Picked Excellence
               </span>
-              <h2 className="dt-section-title">Premium This Week</h2>
-              <p className="dt-section-sub" style={{ maxWidth: "480px", margin: "0 auto" }}>
+              <h2 className="dt-section-title hw-section-title-anim">Premium This Week</h2>
+              <p className="dt-section-sub hw-section-sub-anim" style={{ maxWidth: "480px", margin: "0 auto" }}>
                 The finest pieces from the archive. Surfaces for 24 hours, then sealed away.
               </p>
               <div style={{ marginTop: "1rem", display: "flex", justifyContent: "center" }}>
@@ -615,17 +657,17 @@ export default async function Home() {
           <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse 70% 40% at 50% 0%,rgba(224,0,31,0.06) 0%,transparent 70%)", pointerEvents: "none" }} />
           <div style={{ maxWidth: "1200px", margin: "0 auto", position: "relative" }}>
             <div style={{ marginBottom: "clamp(24px,4vw,40px)" }}>
-              <span style={{ display: "block", fontFamily: "var(--font-space,monospace)", fontSize: "0.58rem", letterSpacing: "0.28em", textTransform: "uppercase", color: "#e0001f", marginBottom: "10px" }}>Full Digital Identity</span>
-              <h2 style={{ fontFamily: "var(--font-cinzel,serif)", fontSize: "clamp(1.4rem,3vw,2.2rem)", fontWeight: 700, color: "#f0e8d8", margin: "0 0 10px", letterSpacing: "0.04em" }}>Matching Setup Kits</h2>
-              <p style={{ fontFamily: "var(--font-cormorant,serif)", fontSize: "clamp(0.95rem,1.5vw,1.1rem)", lineHeight: 1.65, color: "rgba(224,224,248,0.6)", margin: 0, maxWidth: "520px" }}>One dark aesthetic across every screen. Phone, watch, desktop, and avatar — unified.</p>
+              <span style={{ display: "block", fontFamily: "var(--font-space,monospace)", fontSize: "0.58rem", letterSpacing: "0.28em", textTransform: "uppercase", color: "#e0001f", marginBottom: "10px" }} className="hw-section-eyebrow-anim">Full Digital Identity</span>
+              <h2 style={{ fontFamily: "var(--font-cinzel,serif)", fontSize: "clamp(1.4rem,3vw,2.2rem)", fontWeight: 700, color: "#f0e8d8", margin: "0 0 10px", letterSpacing: "0.04em" }} className="hw-section-title-anim">Matching Setup Kits</h2>
+              <p style={{ fontFamily: "var(--font-cormorant,serif)", fontSize: "clamp(0.95rem,1.5vw,1.1rem)", lineHeight: 1.65, color: "rgba(224,224,248,0.6)", margin: 0, maxWidth: "520px" }} className="hw-section-sub-anim">One dark aesthetic across every screen. Phone, watch, desktop, and avatar — unified.</p>
             </div>
             <div className="hw-kits-row3">
               {[
                 { href: "/sets/ghost-pitch",         num: "03", title: "The Ghost Pitch",        sub: "Dark Soccer Setup Kit",      tag: "Sports", img: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/12/sets_The%20Ghost%20Pitch_%20A%20Matching%20Dark%20Soccer%20Setup%20Kit_Haunted_soccer_stadium_midnight_soccer-kit.webp",                                                                                                       alt: "Ghost Pitch haunted soccer stadium dark horror matching wallpaper set",                                                       accent: "232,124,30" },
                 { href: "/sets/cyberpunk-gaming-hero",num: "05", title: "Cyberpunk Gaming Hero",  sub: "Neon Horror Gaming Kit",     tag: "Gaming", img: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/sets/Cyberpunk%20Gaming%20Hero%20Matching%20Wallpaper%20Set/terminal-paradox-cyber-neon-phantom-pointing-homescreen-mobile-thumbnail-cover.webp",                                                                            alt: "Terminal Paradox 4K cyberpunk gaming hero — OLED neon horror matching wallpaper set for PC phone and smartwatch",             accent: "139,92,246", premium: true },
                 { href: "/sets/crimson-sovereign",   num: "04", title: "The Crimson Sovereign",  sub: "Dark Fantasy Gaming Kit",    tag: "Gaming", img: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/sets/The%20Crimson%20Sovereign%20%7C%20Dark%20Fantasy%20Gaming%20Character%20Matching%20Setup%20Kit/ark-fantasy-gaming-character-4k-wallpaper-pc-setup-aesthetic.webp",                                                        alt: "Crimson Sovereign dark fantasy gaming character 4K wallpaper PC setup aesthetic",                                             accent: "224,0,31",   premium: true },
-              ].map(kit => (
-                <a key={kit.href} href={kit.href} className="hw-kit-card hw-kit-card--sm" style={{ "--kit-accent": kit.accent } as React.CSSProperties}>
+              ].map((kit, i) => (
+                <a key={kit.href} href={kit.href} className="hw-kit-card hw-kit-card--sm hw-kit-card--anim" style={{ "--kit-accent": kit.accent, "--kit-i": i } as React.CSSProperties}>
                   <div className="hw-kit-card__thumb">
                     <Image src={kit.img} alt={kit.alt} fill loading="lazy" unoptimized sizes="(max-width:540px) 54vw,(max-width:1024px) 33vw,360px" style={{ objectFit: "cover" }} className="hw-kit-card__img" />
                     <div className="hw-kit-card__overlay" />
@@ -672,6 +714,68 @@ export default async function Home() {
             .hw-kit-card__title{font-family:var(--font-cinzel,serif);font-size:clamp(1rem,1.5vw,1.2rem);font-weight:700;color:#f0e8d8;margin:0;letter-spacing:0.04em}
             .hw-kit-card__cta{font-family:var(--font-space,monospace);font-size:0.58rem;letter-spacing:0.14em;text-transform:uppercase;color:rgb(var(--kit-accent,224,0,31));transition:letter-spacing 0.2s ease;display:flex;align-items:center;gap:6px}
             .hw-kit-card:hover .hw-kit-card__cta{letter-spacing:0.22em}
+
+            /* ── Kit card entrance animation ── */
+            .hw-kit-card--anim {
+              opacity: 0;
+              transform: translateY(40px) scale(0.97);
+              animation: hw-kit-enter 0.65s cubic-bezier(0.16,1,0.3,1) forwards;
+            }
+            .hw-ls--on .hw-kit-card--anim,
+            .hw-kit-card--anim {
+              animation: hw-kit-enter 0.65s cubic-bezier(0.16,1,0.3,1) forwards;
+            }
+            .hw-kits-row3 .hw-kit-card--anim:nth-child(1) { animation-delay: 0.10s; }
+            .hw-kits-row3 .hw-kit-card--anim:nth-child(2) { animation-delay: 0.22s; }
+            .hw-kits-row3 .hw-kit-card--anim:nth-child(3) { animation-delay: 0.34s; }
+            @keyframes hw-kit-enter {
+              from { opacity: 0; transform: translateY(40px) scale(0.97); }
+              to   { opacity: 1; transform: none; }
+            }
+
+            /* ── Kit thumb reveal sweep ── */
+            .hw-kit-card__thumb::after {
+              content: '';
+              position: absolute;
+              inset: 0;
+              background: linear-gradient(90deg, transparent 0%, rgba(224,0,31,0.12) 50%, transparent 100%);
+              background-size: 200% 100%;
+              background-position: 200% 0;
+              pointer-events: none;
+              opacity: 0;
+              transition: opacity 0.2s;
+            }
+            .hw-kit-card:hover .hw-kit-card__thumb::after {
+              opacity: 1;
+              animation: hw-kit-sweep 0.8s ease forwards;
+            }
+            @keyframes hw-kit-sweep {
+              from { background-position: 200% 0; }
+              to   { background-position: -200% 0; }
+            }
+
+            /* ── Kit card red bottom glow on hover ── */
+            .hw-kit-card::before {
+              content: '';
+              position: absolute;
+              bottom: 0; left: 10%; right: 10%;
+              height: 2px;
+              background: linear-gradient(90deg, transparent, rgb(var(--kit-accent,224,0,31)), transparent);
+              opacity: 0;
+              transition: opacity 0.35s ease;
+              pointer-events: none;
+              z-index: 2;
+            }
+            .hw-kit-card:hover::before { opacity: 1; }
+
+            /* ── Mobile: instant visible ── */
+            @media (max-width: 767px) {
+              .hw-kit-card--anim {
+                opacity: 1 !important;
+                transform: none !important;
+                animation: none !important;
+              }
+            }
           `}</style>
         </section>
       </LazySection>
