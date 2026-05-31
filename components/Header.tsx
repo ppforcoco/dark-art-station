@@ -219,7 +219,7 @@ export default function Header() {
           font-size: 0.75rem;
           letter-spacing: 0.12em;
           text-transform: uppercase;
-          color: #8888aa;
+          color: #aaaacc;
           text-decoration: none;
           white-space: nowrap;
           transition: color 0.2s;
@@ -246,7 +246,7 @@ export default function Header() {
           border: none;
           border-radius: 6px;
           cursor: pointer;
-          color: #8888aa;
+          color: #aaaacc;
           transition: color 0.2s;
           -webkit-tap-highlight-color: transparent;
           touch-action: manipulation;
@@ -267,7 +267,7 @@ export default function Header() {
           border: none;
           border-radius: 6px;
           cursor: pointer;
-          color: #8888aa;
+          color: #aaaacc;
           -webkit-tap-highlight-color: transparent;
           touch-action: manipulation;
           flex-shrink: 0;
@@ -357,7 +357,7 @@ export default function Header() {
         .hw-search-close-btn {
           background: none;
           border: none;
-          color: #8888aa;
+          color: #aaaacc;
           cursor: pointer;
           font-size: 1rem;
           padding: 4px;
@@ -545,7 +545,7 @@ export default function Header() {
           min-width: 0;
           padding: 8px 2px;
           text-decoration: none;
-          color: rgba(160,160,200,0.65);
+          color: rgba(190,185,220,0.92);
           font-family: var(--font-space, monospace);
           font-size: 0.42rem;
           letter-spacing: 0.08em;

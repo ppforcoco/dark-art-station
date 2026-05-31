@@ -1,5 +1,5 @@
 // app/world/[color]/page.tsx
-// Dedicated color-world page — shows wallpapers filtered by color tag
+// Dedicated color-world page — shows wallpapers filtered by color tag OR title
 // with the full site theme tinted to that color
 
 import type { Metadata } from "next";
@@ -9,6 +9,7 @@ import { notFound } from "next/navigation";
 import { db } from "@/lib/db";
 import { getPublicUrl } from "@/lib/r2";
 import Pagination from "@/components/Pagination";
+import WorldTheme from "@/components/WorldTheme";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 300;
@@ -26,8 +27,9 @@ const WORLDS = {
     borderHi:   "rgba(168,85,247,0.7)",
     glow:       "rgba(124,58,237,0.35)",
     text:       "#e9d5ff",
-    textMuted:  "#a78bfa",
-    tags:       ["purple", "violet", "lavender", "indigo", "dark purple", "neon purple", "mystic", "cosmic", "galaxy", "nebula", "witch", "magic", "ethereal", "amethyst", "ultraviolet"],
+    textMuted:  "#c4b5fd",
+    tags:       ["purple", "violet", "lavender", "indigo", "dark purple", "neon purple", "mystic", "cosmic", "galaxy", "nebula", "magic", "ethereal", "amethyst", "ultraviolet"],
+    titleWords: ["purple", "violet", "lavender", "indigo", "amethyst", "mystic", "cosmic", "galaxy", "nebula"],
     desc:       "Where reality dissolves into violet mist. Wallpapers that hum with cosmic energy.",
     eyebrow:    "ENTER THE VOID",
   },
@@ -42,9 +44,10 @@ const WORLDS = {
     borderHi:   "rgba(255,26,51,0.7)",
     glow:       "rgba(192,0,26,0.35)",
     text:       "#ffe0e0",
-    textMuted:  "#ff9999",
-    tags:       ["red", "crimson", "blood", "fire", "horror", "demon", "hellfire", "scarlet", "ruby", "inferno", "vampire", "gore", "rage"],
-    desc:       "Blood and fire. The darkest reds the abyss has to offer.",
+    textMuted:  "#ffb3b3",
+    tags:       ["red", "crimson", "blood", "fire", "scarlet", "ruby", "inferno", "rage", "dark red", "burning"],
+    titleWords: ["red", "crimson", "scarlet", "ruby", "fire", "inferno", "burning", "blood"],
+    desc:       "Blood and fire. The darkest reds the dark has to offer.",
     eyebrow:    "BLEED INTO CRIMSON",
   },
   green: {
@@ -59,12 +62,13 @@ const WORLDS = {
     glow:       "rgba(22,163,74,0.3)",
     text:       "#dcfce7",
     textMuted:  "#86efac",
-    tags:       ["green", "forest", "nature", "emerald", "poison", "toxic", "fungal", "mold", "swamp", "haunted", "ghoul", "zombie", "plague", "moss", "dark forest"],
+    tags:       ["green", "forest", "nature", "emerald", "poison", "toxic", "fungal", "mold", "swamp", "haunted", "zombie", "plague", "moss", "dark forest"],
+    titleWords: ["green", "forest", "emerald", "nature", "swamp", "haunted", "moss", "toxic"],
     desc:       "Something lurks in the green. Overgrown, rotting, alive.",
     eyebrow:    "INTO THE DARK FOREST",
   },
   blue: {
-    label:      "Abyss",
+    label:      "Deep",
     dot:        "#1d4ed8",
     accent:     "#3b82f6",
     accentDim:  "#1e3a8a",
@@ -75,9 +79,10 @@ const WORLDS = {
     glow:       "rgba(29,78,216,0.3)",
     text:       "#dbeafe",
     textMuted:  "#93c5fd",
-    tags:       ["blue", "ocean", "abyss", "deep", "ice", "frozen", "water", "storm", "thunder", "electric", "neon blue", "cyber", "midnight", "dark ocean"],
-    desc:       "The abyss stares back. Wallpapers born from the deepest cold.",
-    eyebrow:    "DESCEND INTO ABYSS",
+    tags:       ["blue", "ocean", "deep", "ice", "frozen", "water", "storm", "thunder", "electric", "neon blue", "cyber", "midnight", "dark ocean"],
+    titleWords: ["blue", "ocean", "deep", "ice", "frozen", "storm", "midnight", "electric", "cyber"],
+    desc:       "Wallpapers born from the deepest cold. Electric, frozen, vast.",
+    eyebrow:    "DESCEND INTO THE DEEP",
   },
   black: {
     label:      "Shadow",
@@ -90,8 +95,9 @@ const WORLDS = {
     borderHi:   "rgba(255,255,255,0.35)",
     glow:       "rgba(100,100,100,0.2)",
     text:       "#f0f0f0",
-    textMuted:  "#888888",
-    tags:       ["black", "shadow", "void", "dark", "obsidian", "night", "eclipse", "monochrome", "noir", "abyss", "coal", "onyx", "pitch black", "darkness"],
+    textMuted:  "#aaaaaa",
+    tags:       ["black", "shadow", "dark", "obsidian", "night", "eclipse", "monochrome", "noir", "coal", "onyx", "pitch black", "darkness"],
+    titleWords: ["black", "shadow", "dark", "obsidian", "night", "eclipse", "monochrome", "noir"],
     desc:       "Pure void. The absence of everything. AMOLED-perfect.",
     eyebrow:    "EMBRACE THE SHADOW",
   },
@@ -110,7 +116,7 @@ export async function generateMetadata(
   if (!world) return { title: "Not Found" };
 
   return {
-    title: `${world.label} World — ${world.eyebrow.replace(/INTO |ENTER |DESCEND |EMBRACE /g, "").toLowerCase().replace(/^\w/, c => c.toUpperCase())} | Haunted Wallpapers`,
+    title: `${world.label} World — Dark Wallpapers | Haunted Wallpapers`,
     description: world.desc + " Free dark wallpapers for iPhone, Android and PC.",
     openGraph: {
       title: `${world.label} World | Haunted Wallpapers`,
@@ -133,9 +139,9 @@ export default async function WorldPage({
   const world = WORLDS[color as WorldKey];
   if (!world) notFound();
 
-  const page       = Math.max(1, parseInt(rawPage ?? "1", 10) || 1);
-  const device     = rawDevice ?? "";
-  const skip       = (page - 1) * PAGE_SIZE;
+  const page   = Math.max(1, parseInt(rawPage ?? "1", 10) || 1);
+  const device = rawDevice ?? "";
+  const skip   = (page - 1) * PAGE_SIZE;
 
   // Device type filter
   const deviceFilter =
@@ -144,10 +150,18 @@ export default async function WorldPage({
     device === "pc"      ? { deviceType: "PC"      as const } :
     {};
 
+  // Match by tags OR title containing any of the world's keywords
+  const titleConditions = world.titleWords.map((w) => ({
+    title: { contains: w, mode: "insensitive" as const },
+  }));
+
   const where = {
-    isAdult:  false,
-    tags:     { hasSome: world.tags as unknown as string[] },
+    isAdult: false,
     ...deviceFilter,
+    OR: [
+      { tags: { hasSome: world.tags as unknown as string[] } },
+      ...titleConditions,
+    ],
   };
 
   const [images, total] = await Promise.all([
@@ -171,19 +185,21 @@ export default async function WorldPage({
   const totalPages = Math.ceil(total / PAGE_SIZE);
   const baseUrl    = `/world/${color}${device ? `?device=${device}` : ""}`;
 
-  const accent     = world.accent;
-  const accentDim  = world.accentDim;
-  const bg         = world.bg;
-  const bgDeep     = world.bgDeep;
-  const border     = world.border;
-  const borderHi   = world.borderHi;
-  const glow       = world.glow;
-  const text       = world.text;
-  const textMuted  = world.textMuted;
+  const accent    = world.accent;
+  const accentDim = world.accentDim;
+  const bg        = world.bg;
+  const bgDeep    = world.bgDeep;
+  const border    = world.border;
+  const borderHi  = world.borderHi;
+  const glow      = world.glow;
+  const text      = world.text;
+  const textMuted = world.textMuted;
 
   return (
     <>
-      {/* ── Inline scoped theme — overrides ONLY on this page, no global side effects ── */}
+      {/* ── Inline scoped theme ── */}
+      <WorldTheme color={color} />
+
       <style>{`
         .world-page { background: ${bgDeep}; min-height: 100vh; }
         .world-hero {
@@ -196,7 +212,6 @@ export default async function WorldPage({
           position: relative;
           overflow: hidden;
         }
-        /* Animated border glow at top */
         .world-hero::before {
           content: "";
           position: absolute;
@@ -206,8 +221,8 @@ export default async function WorldPage({
         }
         .world-eyebrow {
           font-family: var(--font-space, 'Courier New', monospace);
-          font-size: 0.58rem;
-          letter-spacing: 0.35em;
+          font-size: 0.62rem;
+          letter-spacing: 0.32em;
           text-transform: uppercase;
           color: ${accent};
           margin-bottom: 16px;
@@ -240,11 +255,10 @@ export default async function WorldPage({
         }
         .world-stat {
           font-family: var(--font-space, 'Courier New', monospace);
-          font-size: 0.6rem;
+          font-size: 0.62rem;
           letter-spacing: 0.18em;
           text-transform: uppercase;
           color: ${textMuted};
-          opacity: 0.7;
         }
         .world-stat strong {
           color: ${accent};
@@ -253,13 +267,12 @@ export default async function WorldPage({
           display: block;
           margin-bottom: 2px;
         }
-        /* Back link */
         .world-back {
           position: absolute;
           top: 20px;
           left: 24px;
           font-family: var(--font-space, 'Courier New', monospace);
-          font-size: 0.58rem;
+          font-size: 0.6rem;
           letter-spacing: 0.15em;
           text-transform: uppercase;
           color: ${textMuted};
@@ -267,10 +280,9 @@ export default async function WorldPage({
           display: flex;
           align-items: center;
           gap: 6px;
-          opacity: 0.6;
           transition: opacity 0.2s;
         }
-        .world-back:hover { opacity: 1; color: ${accent}; }
+        .world-back:hover { color: ${accent}; }
 
         /* ── Device filter bar ── */
         .world-filter-bar {
@@ -284,16 +296,15 @@ export default async function WorldPage({
         }
         .world-filter-label {
           font-family: var(--font-space, 'Courier New', monospace);
-          font-size: 0.52rem;
+          font-size: 0.56rem;
           letter-spacing: 0.22em;
           text-transform: uppercase;
           color: ${textMuted};
-          opacity: 0.5;
           margin-right: 4px;
         }
         .world-filter-pill {
           font-family: var(--font-space, 'Courier New', monospace);
-          font-size: 0.6rem;
+          font-size: 0.62rem;
           letter-spacing: 0.14em;
           text-transform: uppercase;
           color: ${textMuted};
@@ -324,9 +335,9 @@ export default async function WorldPage({
           background: ${bgDeep};
         }
         @media (max-width: 767px) {
-          .world-grid-wrap { padding: 20px; }
-          .world-filter-bar { padding: 16px 20px; }
-          .world-hero { padding: 56px 20px 40px; }
+          .world-grid-wrap { padding: 16px; }
+          .world-filter-bar { padding: 14px 16px; gap: 8px; }
+          .world-hero { padding: 56px 20px 36px; }
         }
         .world-grid {
           display: grid;
@@ -334,7 +345,7 @@ export default async function WorldPage({
           gap: 16px;
         }
         @media (max-width: 1279px) { .world-grid { grid-template-columns: repeat(3, 1fr); } }
-        @media (max-width: 767px)  { .world-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; } }
+        @media (max-width: 767px)  { .world-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; } }
 
         /* ── Card ── */
         .world-card {
@@ -360,30 +371,31 @@ export default async function WorldPage({
         .world-card-cap {
           position: absolute;
           bottom: 0; left: 0; right: 0;
-          background: linear-gradient(transparent, rgba(0,0,0,0.9) 40%);
+          background: linear-gradient(transparent, rgba(0,0,0,0.92) 40%);
           padding: 32px 12px 12px;
           opacity: 0;
           transition: opacity 0.25s;
         }
         .world-card:hover .world-card-cap { opacity: 1; }
+        /* Always show caption on touch screens */
+        @media (hover: none) { .world-card-cap { opacity: 1; padding: 20px 10px 10px; } }
         .world-card-title {
           font-family: var(--font-cormorant, Georgia, serif);
-          font-size: 0.85rem;
+          font-size: 0.9rem;
           font-style: italic;
-          color: ${text};
+          color: #f0f0f0;
           line-height: 1.3;
           display: block;
         }
         .world-card-device {
           font-family: var(--font-space, 'Courier New', monospace);
-          font-size: 0.48rem;
+          font-size: 0.5rem;
           letter-spacing: 0.15em;
           text-transform: uppercase;
           color: ${accent};
           margin-top: 3px;
           display: block;
         }
-        /* Glow corner on hover */
         .world-card::after {
           content: "";
           position: absolute;
@@ -405,11 +417,10 @@ export default async function WorldPage({
         @media (max-width: 767px) { .world-nav { padding: 32px 20px; } }
         .world-nav-label {
           font-family: var(--font-space, 'Courier New', monospace);
-          font-size: 0.55rem;
+          font-size: 0.58rem;
           letter-spacing: 0.28em;
           text-transform: uppercase;
           color: ${textMuted};
-          opacity: 0.5;
           margin-bottom: 20px;
           display: block;
         }
@@ -437,10 +448,10 @@ export default async function WorldPage({
         }
         .world-nav-dot-label {
           font-family: var(--font-space, 'Courier New', monospace);
-          font-size: 0.48rem;
+          font-size: 0.52rem;
           letter-spacing: 0.15em;
           text-transform: uppercase;
-          color: rgba(255,255,255,0.35);
+          color: rgba(255,255,255,0.5);
         }
         .world-nav-dot--active .world-nav-dot-circle {
           border-color: ${accent};
@@ -456,7 +467,7 @@ export default async function WorldPage({
         .world-empty-glyph {
           font-size: 2rem;
           color: ${accent};
-          opacity: 0.3;
+          opacity: 0.4;
           margin-bottom: 16px;
           display: block;
         }
@@ -600,7 +611,6 @@ export default async function WorldPage({
   );
 }
 
-// Generate static params for all 5 worlds
 export function generateStaticParams() {
   return Object.keys(WORLDS).map((color) => ({ color }));
 }

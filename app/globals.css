@@ -5043,3 +5043,220 @@ img[loading="eager"] {
     cursor: pointer !important;
   }
 }
+/* ═══════════════════════════════════════════════════════════════════════════
+   WORLD COLOR THEMES — appended to globals.css
+   These override CSS vars site-wide when data-world is set on <html>.
+   Header uses rgba(13,13,20,…) hardcoded, so we also target those via the
+   nav background color in the header styles.
+   ═════════════════════════════════════════════════════════════════════════ */
+
+/* ── PURPLE / VOID ────────────────────────────────────────── */
+[data-world="purple"] {
+  --bg-primary:   #060412 !important;
+  --bg-secondary: #0a0620 !important;
+  --border-dim:   rgba(147,51,234,0.2) !important;
+  --nav-bg:       rgba(6,4,18,0.97)   !important;
+  --text-primary: #e9d5ff !important;
+  --text-muted:   #a78bfa !important;
+}
+[data-world="purple"] body {
+  background-color: #060412;
+  color: #e9d5ff;
+}
+/* nav bar background */
+[data-world="purple"] .hw-nav {
+  background: rgba(6,4,18,0.97) !important;
+  border-bottom-color: rgba(147,51,234,0.2) !important;
+}
+/* mobile menu panel */
+[data-world="purple"] .hw-mob-panel {
+  background: #0a0620 !important;
+}
+/* top glow sweep under nav */
+[data-world="purple"]::after,
+[data-world="purple"] body::before {
+  content: "";
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(168,85,247,0.6), transparent);
+  pointer-events: none;
+  z-index: 9999;
+}
+/* scrollbar accent */
+[data-world="purple"] ::-webkit-scrollbar-thumb {
+  background: rgba(124,58,237,0.5) !important;
+}
+[data-world="purple"] ::-webkit-scrollbar-thumb:hover {
+  background: rgba(168,85,247,0.7) !important;
+}
+/* footer */
+[data-world="purple"] footer,
+[data-world="purple"] .hw-footer {
+  background: #030209 !important;
+  border-top-color: rgba(147,51,234,0.2) !important;
+}
+
+/* ── RED / CRIMSON ────────────────────────────────────────── */
+[data-world="red"] {
+  --bg-primary:   #090000 !important;
+  --bg-secondary: #110000 !important;
+  --border-dim:   rgba(192,0,26,0.2) !important;
+  --nav-bg:       rgba(9,0,0,0.97)   !important;
+  --text-primary: #ffe0e0 !important;
+  --text-muted:   #ff9999 !important;
+}
+[data-world="red"] body {
+  background-color: #090000;
+  color: #ffe0e0;
+}
+[data-world="red"] .hw-nav {
+  background: rgba(9,0,0,0.97) !important;
+  border-bottom-color: rgba(192,0,26,0.25) !important;
+}
+[data-world="red"] .hw-mob-panel {
+  background: #110000 !important;
+}
+[data-world="red"] body::before {
+  content: "";
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,26,51,0.7), transparent);
+  pointer-events: none;
+  z-index: 9999;
+}
+[data-world="red"] ::-webkit-scrollbar-thumb {
+  background: rgba(192,0,26,0.5) !important;
+}
+[data-world="red"] ::-webkit-scrollbar-thumb:hover {
+  background: rgba(255,26,51,0.7) !important;
+}
+[data-world="red"] footer,
+[data-world="red"] .hw-footer {
+  background: #060000 !important;
+  border-top-color: rgba(192,0,26,0.2) !important;
+}
+
+/* ── BLUE / ABYSS ─────────────────────────────────────────── */
+[data-world="blue"] {
+  --bg-primary:   #010510 !important;
+  --bg-secondary: #020a1e !important;
+  --border-dim:   rgba(59,130,246,0.2) !important;
+  --nav-bg:       rgba(1,5,16,0.97)   !important;
+  --text-primary: #dbeafe !important;
+  --text-muted:   #93c5fd !important;
+}
+[data-world="blue"] body {
+  background-color: #010510;
+  color: #dbeafe;
+}
+[data-world="blue"] .hw-nav {
+  background: rgba(1,5,16,0.97) !important;
+  border-bottom-color: rgba(59,130,246,0.2) !important;
+}
+[data-world="blue"] .hw-mob-panel {
+  background: #020a1e !important;
+}
+[data-world="blue"] body::before {
+  content: "";
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(59,130,246,0.6), transparent);
+  pointer-events: none;
+  z-index: 9999;
+}
+[data-world="blue"] ::-webkit-scrollbar-thumb {
+  background: rgba(29,78,216,0.5) !important;
+}
+[data-world="blue"] ::-webkit-scrollbar-thumb:hover {
+  background: rgba(59,130,246,0.7) !important;
+}
+[data-world="blue"] footer,
+[data-world="blue"] .hw-footer {
+  background: #010308 !important;
+  border-top-color: rgba(59,130,246,0.2) !important;
+}
+
+/* ── GREEN / HAUNTED ──────────────────────────────────────── */
+[data-world="green"] {
+  --bg-primary:   #010802 !important;
+  --bg-secondary: #020f04 !important;
+  --border-dim:   rgba(34,197,94,0.18) !important;
+  --nav-bg:       rgba(1,8,2,0.97)    !important;
+  --text-primary: #dcfce7 !important;
+  --text-muted:   #86efac !important;
+}
+[data-world="green"] body {
+  background-color: #010802;
+  color: #dcfce7;
+}
+[data-world="green"] .hw-nav {
+  background: rgba(1,8,2,0.97) !important;
+  border-bottom-color: rgba(34,197,94,0.2) !important;
+}
+[data-world="green"] .hw-mob-panel {
+  background: #020f04 !important;
+}
+[data-world="green"] body::before {
+  content: "";
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(34,197,94,0.6), transparent);
+  pointer-events: none;
+  z-index: 9999;
+}
+[data-world="green"] ::-webkit-scrollbar-thumb {
+  background: rgba(22,163,74,0.5) !important;
+}
+[data-world="green"] ::-webkit-scrollbar-thumb:hover {
+  background: rgba(34,197,94,0.7) !important;
+}
+[data-world="green"] footer,
+[data-world="green"] .hw-footer {
+  background: #010501 !important;
+  border-top-color: rgba(34,197,94,0.18) !important;
+}
+
+/* ── BLACK / SHADOW ───────────────────────────────────────── */
+[data-world="black"] {
+  --bg-primary:   #000000 !important;
+  --bg-secondary: #080808 !important;
+  --border-dim:   rgba(255,255,255,0.07) !important;
+  --nav-bg:       rgba(0,0,0,0.98)       !important;
+  --text-primary: #f0f0f0 !important;
+  --text-muted:   #888888 !important;
+}
+[data-world="black"] body {
+  background-color: #000000;
+  color: #f0f0f0;
+}
+[data-world="black"] .hw-nav {
+  background: rgba(0,0,0,0.98) !important;
+  border-bottom-color: rgba(255,255,255,0.07) !important;
+}
+[data-world="black"] .hw-mob-panel {
+  background: #080808 !important;
+}
+[data-world="black"] body::before {
+  content: "";
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+  pointer-events: none;
+  z-index: 9999;
+}
+[data-world="black"] ::-webkit-scrollbar-thumb {
+  background: rgba(100,100,100,0.4) !important;
+}
+[data-world="black"] ::-webkit-scrollbar-thumb:hover {
+  background: rgba(150,150,150,0.6) !important;
+}
+[data-world="black"] footer,
+[data-world="black"] .hw-footer {
+  background: #000000 !important;
+  border-top-color: rgba(255,255,255,0.07) !important;
+}

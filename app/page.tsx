@@ -178,8 +178,20 @@ export default async function Home() {
         }
         .hw-hero-split { display: grid; grid-template-columns: 1fr; background: #000; }
 
-        /* Mobile: hide hero image entirely — no empty block, no LCP penalty */
-        .hw-hero-img { display: none !important; }
+        /* Mobile: show hero image — small thumbnail, no LCP penalty */
+        .hw-hero-img {
+          display: block;
+          width: 100%;
+          height: 180px;
+          object-fit: cover;
+          object-position: center top;
+          pointer-events: none;
+          user-select: none;
+          -webkit-user-select: none;
+          -webkit-user-drag: none;
+          mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+          -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+        }
 
         @media (min-width: 860px) {
           .hw-hero-split {
@@ -188,15 +200,8 @@ export default async function Home() {
             min-height: 580px;
           }
           .hw-hero-img {
-            display: block !important;
             width: 100%;
             height: 100%;
-            object-fit: cover;
-            object-position: center center;
-            pointer-events: none;
-            user-select: none;
-            -webkit-user-select: none;
-            -webkit-user-drag: none;
             mask-image: linear-gradient(to right, transparent 0%, black 12%);
             -webkit-mask-image: linear-gradient(to right, transparent 0%, black 12%);
           }
@@ -259,43 +264,7 @@ export default async function Home() {
         }
       `}</style>
 
-      {/* ── COLOR WORLD SWITCHER — vanilla JS, no deps ── */}
-      <script dangerouslySetInnerHTML={{ __html: `(function(){
-        var STORAGE_KEY = 'hw-color-world';
-        var html = document.documentElement;
 
-        function applyWorld(world) {
-          if (world && world !== 'none') {
-            html.setAttribute('data-color-world', world);
-          } else {
-            html.removeAttribute('data-color-world');
-          }
-          // Highlight active dot
-          document.querySelectorAll('#hw-color-worlds button').forEach(function(btn) {
-            var active = btn.getAttribute('data-color-world') === world;
-            btn.style.transform = active ? 'scale(1.35)' : '';
-            btn.style.boxShadow = active ? '0 0 0 3px rgba(255,255,255,0.4)' : '';
-          });
-        }
-
-        // Restore saved world
-        try {
-          var saved = localStorage.getItem(STORAGE_KEY);
-          if (saved) applyWorld(saved);
-        } catch(e) {}
-
-        // Wire up clicks
-        document.addEventListener('click', function(e) {
-          var btn = e.target.closest('#hw-color-worlds button');
-          if (!btn) return;
-          var world = btn.getAttribute('data-color-world');
-          var current = html.getAttribute('data-color-world');
-          // Toggle off if clicking same world
-          var next = (current === world) ? null : world;
-          applyWorld(next);
-          try { localStorage.setItem(STORAGE_KEY, next || 'none'); } catch(e) {}
-        });
-      })();`}} />
 
       {/* ══════════════════════════════════════════════════════════
           HERO — renders immediately
@@ -359,35 +328,33 @@ export default async function Home() {
               </span>
             </div>
 
-            {/* ── COLOR WORLD FILTER — enter a new world ── */}
-            <div id="hw-color-worlds" style={{ display: "flex", flexDirection: "column", gap: "10px", marginTop: "4px" }}>
+            {/* ── COLOR WORLD — navigate to dedicated world page ── */}
+            <div style={{ display: "flex", flexDirection: "column", gap: "10px", marginTop: "4px" }}>
               <span style={{
-                fontFamily: "var(--font-space, monospace)", fontSize: "0.52rem",
+                fontFamily: "var(--font-space, monospace)", fontSize: "0.56rem",
                 letterSpacing: "0.24em", textTransform: "uppercase",
-                color: "rgba(224,224,248,0.35)",
+                color: "rgba(200,180,255,0.75)",
               }}>Enter a World</span>
-              <div style={{ display: "flex", gap: "14px", alignItems: "center", flexWrap: "wrap" }}>
+              <div style={{ display: "flex", gap: "12px", alignItems: "center", flexWrap: "wrap" }}>
                 {[
-                  { color: "#e0001f", world: "red",    label: "Crimson",  border: "#e0001f" },
-                  { color: "#7c3aed", world: "purple",  label: "Void",     border: "#7c3aed" },
-                  { color: "#16a34a", world: "green",   label: "Haunted",  border: "#16a34a" },
-                  { color: "#1d4ed8", world: "blue",    label: "Abyss",    border: "#1d4ed8" },
-                  { color: "#050505", world: "black",   label: "Shadow",   border: "rgba(255,255,255,0.25)" },
-                ].map(({ color, world, label, border }) => (
-                  <button
+                  { bg: "#e0001f", world: "red",    label: "Crimson", bd: "#e0001f" },
+                  { bg: "#7c3aed", world: "purple", label: "Void",    bd: "#7c3aed" },
+                  { bg: "#16a34a", world: "green",  label: "Haunted", bd: "#16a34a" },
+                  { bg: "#1d4ed8", world: "blue",   label: "Deep",    bd: "#1d4ed8" },
+                  { bg: "#1a1a1a", world: "black",  label: "Shadow",  bd: "rgba(255,255,255,0.3)" },
+                ].map(({ bg, world, label, bd }) => (
+                  <a
                     key={world}
-                    data-color-world={world}
+                    href={`/world/${world}`}
                     aria-label={`Enter ${label} world`}
                     title={label}
-                    onClick={undefined}
                     style={{
-                      width: "28px", height: "28px", borderRadius: "50%",
-                      background: color,
-                      border: `2px solid ${border}`,
-                      cursor: "pointer",
-                      padding: 0,
+                      width: "30px", height: "30px", borderRadius: "50%",
+                      background: bg,
+                      border: `2px solid ${bd}`,
                       flexShrink: 0,
-                      outline: "none",
+                      display: "inline-block",
+                      textDecoration: "none",
                     }}
                   />
                 ))}
