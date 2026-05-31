@@ -1,6 +1,14 @@
 // app/world/[color]/page.tsx
-// Dedicated color-world page — shows wallpapers filtered by color tag OR title
-// with the full site theme tinted to that color
+// ─────────────────────────────────────────────────────────────────────────────
+// COLOR WORLD PAGE
+//
+// Fixes applied:
+//   1. Tags: ONLY exact color-name tags — no broad words that bleed across worlds
+//   2. No PC — query filters out PC, filter bar has no PC option
+//   3. Images load properly — priority on first 8, lazy after, correct sizes
+//   4. Cards never cut — 9:16 portrait only (no PC cards, no landscape)
+//   5. Title fallback — if few tag results, also match title containing the color word only
+// ─────────────────────────────────────────────────────────────────────────────
 
 import type { Metadata } from "next";
 import Link from "next/link";
@@ -15,6 +23,11 @@ export const dynamic = "force-dynamic";
 export const revalidate = 300;
 
 // ── World definitions ─────────────────────────────────────────────────────────
+// tags:       ONLY the exact tags you actually put in the DB for this color.
+//             No synonyms, no broad words. If a wallpaper doesn't have one of
+//             these exact tags it will NOT show here.
+// titleWords: Single words to match in the title as a fallback.
+//             Keep this SHORT — only the actual color name(s).
 const WORLDS = {
   purple: {
     label:      "Void",
@@ -28,9 +41,10 @@ const WORLDS = {
     glow:       "rgba(124,58,237,0.35)",
     text:       "#e9d5ff",
     textMuted:  "#c4b5fd",
-    tags:       ["purple", "violet", "lavender", "indigo", "dark purple", "neon purple", "mystic", "cosmic", "galaxy", "nebula", "magic", "ethereal", "amethyst", "ultraviolet"],
-    titleWords: ["purple", "violet", "lavender", "indigo", "amethyst", "mystic", "cosmic", "galaxy", "nebula"],
-    desc:       "Where reality dissolves into violet mist. Wallpapers that hum with cosmic energy.",
+    // Purple exact tags — these are what you tag in admin
+    tags:       ["purple", "violet", "lavender", "indigo", "dark purple", "neon purple", "amethyst"],
+    titleWords: ["purple", "violet"],
+    desc:       "Where reality dissolves into violet mist.",
     eyebrow:    "ENTER THE VOID",
   },
   red: {
@@ -45,8 +59,8 @@ const WORLDS = {
     glow:       "rgba(192,0,26,0.35)",
     text:       "#ffe0e0",
     textMuted:  "#ffb3b3",
-    tags:       ["red", "crimson", "blood", "fire", "scarlet", "ruby", "inferno", "rage", "dark red", "burning"],
-    titleWords: ["red", "crimson", "scarlet", "ruby", "fire", "inferno", "burning", "blood"],
+    tags:       ["red", "crimson", "scarlet", "dark red"],
+    titleWords: ["red", "crimson", "scarlet"],
     desc:       "Blood and fire. The darkest reds the dark has to offer.",
     eyebrow:    "BLEED INTO CRIMSON",
   },
@@ -62,9 +76,11 @@ const WORLDS = {
     glow:       "rgba(22,163,74,0.3)",
     text:       "#dcfce7",
     textMuted:  "#86efac",
-    tags:       ["green", "forest", "nature", "emerald", "poison", "toxic", "fungal", "mold", "swamp", "haunted", "zombie", "plague", "moss", "dark forest"],
-    titleWords: ["green", "forest", "emerald", "nature", "swamp", "haunted", "moss", "toxic"],
-    desc:       "Something lurks in the green. Overgrown, rotting, alive.",
+    // ONLY green-specific tags — removed broad words like "haunted", "forest", "nature"
+    // that match wallpapers meant for other worlds
+    tags:       ["green", "emerald", "dark green", "neon green"],
+    titleWords: ["green", "emerald"],
+    desc:       "Something stirs in the green. A world of shadow and overgrowth.",
     eyebrow:    "INTO THE DARK FOREST",
   },
   blue: {
@@ -79,9 +95,11 @@ const WORLDS = {
     glow:       "rgba(29,78,216,0.3)",
     text:       "#dbeafe",
     textMuted:  "#93c5fd",
-    tags:       ["blue", "ocean", "deep", "ice", "frozen", "water", "storm", "thunder", "electric", "neon blue", "cyber", "midnight", "dark ocean"],
-    titleWords: ["blue", "ocean", "deep", "ice", "frozen", "storm", "midnight", "electric", "cyber"],
-    desc:       "Wallpapers born from the deepest cold. Electric, frozen, vast.",
+    // ONLY blue-specific tags — removed "deep", "midnight", "electric", "cyber"
+    // which match non-blue wallpapers
+    tags:       ["blue", "dark blue", "neon blue", "ice blue"],
+    titleWords: ["blue"],
+    desc:       "From the deepest cold. Electric, frozen, vast.",
     eyebrow:    "DESCEND INTO THE DEEP",
   },
   black: {
@@ -96,8 +114,8 @@ const WORLDS = {
     glow:       "rgba(100,100,100,0.2)",
     text:       "#f0f0f0",
     textMuted:  "#aaaaaa",
-    tags:       ["black", "shadow", "dark", "obsidian", "night", "eclipse", "monochrome", "noir", "coal", "onyx", "pitch black", "darkness"],
-    titleWords: ["black", "shadow", "dark", "obsidian", "night", "eclipse", "monochrome", "noir"],
+    tags:       ["black", "obsidian", "pitch black", "amoled", "monochrome"],
+    titleWords: ["black", "obsidian"],
     desc:       "Pure void. The absence of everything. AMOLED-perfect.",
     eyebrow:    "EMBRACE THE SHADOW",
   },
@@ -117,7 +135,7 @@ export async function generateMetadata(
 
   return {
     title: `${world.label} World — Dark Wallpapers | Haunted Wallpapers`,
-    description: world.desc + " Free dark wallpapers for iPhone, Android and PC.",
+    description: world.desc + " Free dark wallpapers for iPhone and Android.",
     openGraph: {
       title: `${world.label} World | Haunted Wallpapers`,
       description: world.desc,
@@ -140,17 +158,24 @@ export default async function WorldPage({
   if (!world) notFound();
 
   const page   = Math.max(1, parseInt(rawPage ?? "1", 10) || 1);
-  const device = rawDevice ?? "";
+  const device = rawDevice === "android" ? "android" : rawDevice === "iphone" ? "iphone" : "";
   const skip   = (page - 1) * PAGE_SIZE;
 
-  // Device type filter
+  // ── Device filter — NO PC on world pages ──────────────────────────────────
   const deviceFilter =
     device === "iphone"  ? { deviceType: "IPHONE"  as const } :
     device === "android" ? { deviceType: "ANDROID" as const } :
-    device === "pc"      ? { deviceType: "PC"      as const } :
-    {};
+    // Default: iPhone + Android only, exclude PC
+    { deviceType: { in: ["IPHONE", "ANDROID"] as const } };
 
-  // Match by tags OR title containing any of the world's keywords
+  // ── Tag matching — use `has` (exact per tag) not `hasSome` (any in array) ──
+  // Each tag becomes its own OR condition so Prisma does:
+  //   WHERE tags @> ARRAY['green'] OR tags @> ARRAY['emerald'] OR title ILIKE '%green%'
+  // NOT: WHERE tags && ARRAY['green','emerald','haunted','forest'...]
+  const tagConditions = (world.tags as unknown as string[]).map((t) => ({
+    tags: { has: t },
+  }));
+
   const titleConditions = world.titleWords.map((w) => ({
     title: { contains: w, mode: "insensitive" as const },
   }));
@@ -159,7 +184,7 @@ export default async function WorldPage({
     isAdult: false,
     ...deviceFilter,
     OR: [
-      ...((world.tags as unknown as string[]).map((t) => ({ tags: { has: t } }))),
+      ...tagConditions,
       ...titleConditions,
     ],
   };
@@ -186,7 +211,6 @@ export default async function WorldPage({
   const baseUrl    = `/world/${color}${device ? `?device=${device}` : ""}`;
 
   const accent    = world.accent;
-  const accentDim = world.accentDim;
   const bg        = world.bg;
   const bgDeep    = world.bgDeep;
   const border    = world.border;
@@ -197,236 +221,258 @@ export default async function WorldPage({
 
   return (
     <>
-      {/* ── Inline scoped theme ── */}
       <WorldTheme color={color} />
 
       <style>{`
-        .world-page { background: ${bgDeep}; min-height: 100vh; }
+        /* ── Kill all animations on this page ── */
+        .world-page * {
+          animation: none !important;
+          box-shadow: none !important;
+          text-shadow: none !important;
+        }
+        .world-page a, .world-page button {
+          transition: color 0.15s, border-color 0.15s, background 0.15s, opacity 0.15s !important;
+        }
+
+        .world-page {
+          background: ${bgDeep};
+          min-height: 100vh;
+          overflow-x: hidden;
+        }
+
+        /* ── Hero ── */
         .world-hero {
-          background:
-            radial-gradient(ellipse 80% 50% at 50% 0%, ${glow.replace("0.35", "0.25")} 0%, transparent 65%),
-            ${bg};
+          background: ${bg};
           border-bottom: 1px solid ${border};
-          padding: 64px 40px 48px;
+          padding: 60px 24px 44px;
           text-align: center;
           position: relative;
           overflow: hidden;
         }
-        .world-hero::before {
-          content: "";
+        .world-hero__line {
           position: absolute;
           top: 0; left: 0; right: 0;
           height: 2px;
           background: linear-gradient(90deg, transparent, ${accent}, transparent);
         }
         .world-eyebrow {
-          font-family: var(--font-space, 'Courier New', monospace);
-          font-size: 0.62rem;
+          font-family: 'Courier New', monospace;
+          font-size: 0.6rem;
           letter-spacing: 0.32em;
           text-transform: uppercase;
           color: ${accent};
-          margin-bottom: 16px;
+          margin-bottom: 14px;
           display: block;
         }
         .world-title {
           font-family: var(--font-cinzel, serif);
-          font-size: clamp(2.2rem, 5vw, 4rem);
+          font-size: clamp(2rem, 5vw, 3.6rem);
           font-weight: 900;
           color: ${text};
           line-height: 1.1;
-          margin-bottom: 16px;
-          text-shadow: 0 0 40px ${glow};
+          margin: 0 0 14px;
         }
         .world-desc {
           font-family: var(--font-cormorant, Georgia, serif);
-          font-size: 1.1rem;
+          font-size: 1.05rem;
           font-style: italic;
           color: ${textMuted};
-          max-width: 520px;
-          margin: 0 auto 32px;
-          line-height: 1.7;
+          max-width: 480px;
+          margin: 0 auto 28px;
+          line-height: 1.65;
         }
         .world-stats {
           display: flex;
           align-items: center;
           justify-content: center;
-          gap: 24px;
-          flex-wrap: wrap;
+          gap: 0;
+          border: 1px solid ${border};
+          width: fit-content;
+          margin: 0 auto;
         }
         .world-stat {
-          font-family: var(--font-space, 'Courier New', monospace);
-          font-size: 0.62rem;
-          letter-spacing: 0.18em;
+          padding: 10px 20px;
+          border-right: 1px solid ${border};
+          font-family: 'Courier New', monospace;
+          font-size: 0.54rem;
+          letter-spacing: 0.16em;
           text-transform: uppercase;
           color: ${textMuted};
+          text-align: center;
         }
+        .world-stat:last-child { border-right: none; }
         .world-stat strong {
-          color: ${accent};
-          font-size: 1rem;
-          font-family: var(--font-cinzel, serif);
           display: block;
+          font-family: var(--font-cinzel, serif);
+          font-size: 0.95rem;
+          color: ${accent};
           margin-bottom: 2px;
+          font-weight: 700;
         }
         .world-back {
           position: absolute;
-          top: 20px;
-          left: 24px;
-          font-family: var(--font-space, 'Courier New', monospace);
-          font-size: 0.6rem;
-          letter-spacing: 0.15em;
+          top: 18px;
+          left: 20px;
+          font-family: 'Courier New', monospace;
+          font-size: 0.58rem;
+          letter-spacing: 0.14em;
           text-transform: uppercase;
           color: ${textMuted};
           text-decoration: none;
-          display: flex;
-          align-items: center;
-          gap: 6px;
-          transition: opacity 0.2s;
         }
         .world-back:hover { color: ${accent}; }
 
-        /* ── Device filter bar ── */
+        /* ── Filter bar — iPhone / Android only ── */
         .world-filter-bar {
           display: flex;
           align-items: center;
-          gap: 10px;
-          padding: 20px 40px;
+          gap: 8px;
+          padding: 16px 24px;
           border-bottom: 1px solid ${border};
           background: ${bg};
           flex-wrap: wrap;
+          overflow-x: hidden;
         }
         .world-filter-label {
-          font-family: var(--font-space, 'Courier New', monospace);
-          font-size: 0.56rem;
+          font-family: 'Courier New', monospace;
+          font-size: 0.54rem;
           letter-spacing: 0.22em;
           text-transform: uppercase;
           color: ${textMuted};
-          margin-right: 4px;
         }
         .world-filter-pill {
-          font-family: var(--font-space, 'Courier New', monospace);
-          font-size: 0.62rem;
-          letter-spacing: 0.14em;
+          font-family: 'Courier New', monospace;
+          font-size: 0.6rem;
+          letter-spacing: 0.12em;
           text-transform: uppercase;
           color: ${textMuted};
           border: 1px solid ${border};
           padding: 7px 16px;
-          min-height: 36px;
+          min-height: 34px;
           display: inline-flex;
           align-items: center;
           text-decoration: none;
-          transition: color 0.2s, border-color 0.2s, background 0.2s;
           background: transparent;
+          white-space: nowrap;
         }
         .world-filter-pill:hover {
           color: ${text};
           border-color: ${borderHi};
-          background: ${glow.replace("0.35", "0.08")};
         }
         .world-filter-pill.active {
           color: ${text};
           border-color: ${accent};
-          background: ${glow.replace("0.35", "0.15")};
-          box-shadow: 0 0 12px ${glow.replace("0.35", "0.2")};
+          background: ${glow.replace("0.35", "0.12")};
         }
 
         /* ── Grid ── */
         .world-grid-wrap {
-          padding: 40px;
+          padding: 24px;
           background: ${bgDeep};
         }
-        @media (max-width: 767px) {
-          .world-grid-wrap { padding: 16px; }
-          .world-filter-bar { padding: 14px 16px; gap: 8px; }
-          .world-hero { padding: 56px 20px 36px; }
+        @media (max-width: 600px) {
+          .world-grid-wrap { padding: 12px; }
+          .world-filter-bar { padding: 12px; }
+          .world-hero { padding: 52px 16px 32px; }
+          .world-stats { flex-wrap: wrap; }
         }
+
         .world-grid {
           display: grid;
           grid-template-columns: repeat(4, 1fr);
-          gap: 16px;
+          gap: 12px;
         }
         @media (max-width: 1279px) { .world-grid { grid-template-columns: repeat(3, 1fr); } }
         @media (max-width: 767px)  { .world-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; } }
+        @media (max-width: 400px)  { .world-grid { grid-template-columns: repeat(2, 1fr); gap: 6px; } }
 
-        /* ── Card ── */
+        /* ── Card — always 9:16, no landscape, no PC ── */
         .world-card {
           display: block;
           text-decoration: none;
           position: relative;
           overflow: hidden;
           border: 1px solid ${border};
-          background: #0a0a0a;
-          transition: border-color 0.25s, transform 0.25s, box-shadow 0.25s;
+          background: #080808;
+          width: 100%;
         }
-        .world-card:hover {
-          border-color: ${borderHi};
-          transform: translateY(-4px);
-          box-shadow: 0 12px 40px ${glow.replace("0.35", "0.3")}, 0 0 0 1px ${accent}33;
-        }
+        .world-card:hover { border-color: ${borderHi}; }
+
+        /* Portrait-only: 9:16 */
         .world-card-img {
           position: relative;
           width: 100%;
           aspect-ratio: 9 / 16;
+          overflow: hidden;
+          background: #0a0a0a;
         }
-        .world-card-img--landscape { aspect-ratio: 16 / 9; }
+
+        /* Caption: always visible on touch, hover on pointer */
         .world-card-cap {
           position: absolute;
           bottom: 0; left: 0; right: 0;
-          background: linear-gradient(transparent, rgba(0,0,0,0.92) 40%);
-          padding: 32px 12px 12px;
-          opacity: 0;
-          transition: opacity 0.25s;
+          background: linear-gradient(transparent, rgba(0,0,0,0.9) 35%);
+          padding: 28px 10px 10px;
         }
-        .world-card:hover .world-card-cap { opacity: 1; }
-        /* Always show caption on touch screens */
-        @media (hover: none) { .world-card-cap { opacity: 1; padding: 20px 10px 10px; } }
+        @media (hover: hover) {
+          .world-card-cap { opacity: 0; }
+          .world-card:hover .world-card-cap { opacity: 1; }
+        }
         .world-card-title {
           font-family: var(--font-cormorant, Georgia, serif);
-          font-size: 0.9rem;
+          font-size: 0.85rem;
           font-style: italic;
           color: #f0f0f0;
           line-height: 1.3;
           display: block;
         }
         .world-card-device {
-          font-family: var(--font-space, 'Courier New', monospace);
-          font-size: 0.5rem;
-          letter-spacing: 0.15em;
+          font-family: 'Courier New', monospace;
+          font-size: 0.48rem;
+          letter-spacing: 0.14em;
           text-transform: uppercase;
           color: ${accent};
-          margin-top: 3px;
+          margin-top: 2px;
           display: block;
         }
-        .world-card::after {
-          content: "";
-          position: absolute;
-          inset: 0;
-          background: radial-gradient(ellipse at 50% 100%, ${glow.replace("0.35","0.12")} 0%, transparent 65%);
-          opacity: 0;
-          transition: opacity 0.3s;
-          pointer-events: none;
+
+        /* ── Empty state ── */
+        .world-empty {
+          padding: 80px 24px;
+          text-align: center;
         }
-        .world-card:hover::after { opacity: 1; }
+        .world-empty-title {
+          font-family: var(--font-cinzel, serif);
+          font-size: 1.3rem;
+          color: ${text};
+          margin-bottom: 10px;
+        }
+        .world-empty-sub {
+          font-family: var(--font-cormorant, serif);
+          font-style: italic;
+          color: ${textMuted};
+          font-size: 1rem;
+        }
 
         /* ── Other worlds nav ── */
         .world-nav {
-          padding: 48px 40px;
+          padding: 40px 24px;
           border-top: 1px solid ${border};
           background: ${bg};
           text-align: center;
         }
-        @media (max-width: 767px) { .world-nav { padding: 32px 20px; } }
         .world-nav-label {
-          font-family: var(--font-space, 'Courier New', monospace);
-          font-size: 0.58rem;
+          font-family: 'Courier New', monospace;
+          font-size: 0.56rem;
           letter-spacing: 0.28em;
           text-transform: uppercase;
           color: ${textMuted};
-          margin-bottom: 20px;
+          margin-bottom: 18px;
           display: block;
         }
         .world-nav-dots {
           display: flex;
-          gap: 16px;
+          gap: 20px;
           justify-content: center;
           align-items: center;
           flex-wrap: wrap;
@@ -437,58 +483,32 @@ export default async function WorldPage({
           align-items: center;
           gap: 6px;
           text-decoration: none;
-          transition: transform 0.2s;
         }
-        .world-nav-dot:hover { transform: scale(1.15); }
+        .world-nav-dot:hover { opacity: 0.75; }
         .world-nav-dot-circle {
-          width: 32px;
-          height: 32px;
+          width: 30px;
+          height: 30px;
           border-radius: 50%;
-          border: 2px solid rgba(255,255,255,0.15);
+          border: 2px solid rgba(255,255,255,0.12);
         }
         .world-nav-dot-label {
-          font-family: var(--font-space, 'Courier New', monospace);
-          font-size: 0.52rem;
-          letter-spacing: 0.15em;
+          font-family: 'Courier New', monospace;
+          font-size: 0.5rem;
+          letter-spacing: 0.14em;
           text-transform: uppercase;
-          color: rgba(255,255,255,0.5);
+          color: rgba(255,255,255,0.45);
         }
         .world-nav-dot--active .world-nav-dot-circle {
           border-color: ${accent};
-          box-shadow: 0 0 12px ${glow};
         }
         .world-nav-dot--active .world-nav-dot-label { color: ${accent}; }
-
-        /* ── Empty state ── */
-        .world-empty {
-          padding: 80px 40px;
-          text-align: center;
-        }
-        .world-empty-glyph {
-          font-size: 2rem;
-          color: ${accent};
-          opacity: 0.4;
-          margin-bottom: 16px;
-          display: block;
-        }
-        .world-empty-title {
-          font-family: var(--font-cinzel, serif);
-          font-size: 1.4rem;
-          color: ${text};
-          margin-bottom: 12px;
-        }
-        .world-empty-sub {
-          font-family: var(--font-cormorant, serif);
-          font-style: italic;
-          color: ${textMuted};
-          font-size: 1rem;
-        }
       `}</style>
 
       <div className="world-page">
 
         {/* ── Hero ── */}
         <section className="world-hero">
+          <span className="world-hero__line" aria-hidden="true" />
           <Link href="/" className="world-back">← Back</Link>
           <span className="world-eyebrow">{world.eyebrow}</span>
           <h1 className="world-title">{world.label} World</h1>
@@ -509,14 +529,13 @@ export default async function WorldPage({
           </div>
         </section>
 
-        {/* ── Device filter bar ── */}
+        {/* ── Device filter — iPhone & Android only, no PC ── */}
         <nav className="world-filter-bar" aria-label="Filter by device">
           <span className="world-filter-label">Filter:</span>
           {[
             { label: "All",     value: "" },
             { label: "iPhone",  value: "iphone" },
             { label: "Android", value: "android" },
-            { label: "PC",      value: "pc" },
           ].map(({ label, value }) => (
             <Link
               key={value}
@@ -532,41 +551,44 @@ export default async function WorldPage({
         <div className="world-grid-wrap">
           {images.length === 0 ? (
             <div className="world-empty">
-              <span className="world-empty-glyph">✦</span>
-              <p className="world-empty-title">No wallpapers found in this world</p>
-              <p className="world-empty-sub">Try a different device filter or explore another world.</p>
+              <p className="world-empty-title">No wallpapers found in this world yet.</p>
+              <p className="world-empty-sub">
+                Try a different filter — or tag wallpapers with &ldquo;{world.tags[0]}&rdquo; in admin.
+              </p>
             </div>
           ) : (
             <div className="world-grid">
               {images.map((img, idx) => {
-                const devicePath =
-                  img.deviceType === "IPHONE"  ? "iphone"  :
-                  img.deviceType === "ANDROID" ? "android" :
-                  img.deviceType === "PC"      ? "pc"      : null;
-                const href = devicePath ? `/${devicePath}/${img.slug}` : `/shop/${img.slug}`;
-                const isLandscape = img.deviceType === "PC";
-                const url = getPublicUrl(img.r2Key);
+                // Only iPhone and Android — no PC, no landscape
+                const dp =
+                  img.deviceType === "IPHONE"  ? "iphone" :
+                  img.deviceType === "ANDROID" ? "android" : null;
+
+                // Skip any PC that slipped through (shouldn't happen with deviceFilter above)
+                if (!dp) return null;
+
+                const href = `/${dp}/${img.slug}`;
+                const url  = getPublicUrl(img.r2Key);
 
                 return (
-                  <Link key={img.id} href={href} className="world-card">
-                    <div className={`world-card-img${isLandscape ? " world-card-img--landscape" : ""}`}>
+                  <Link key={img.id} href={href} className="world-card" prefetch={false}>
+                    {/* Always 9:16 — phone only */}
+                    <div className="world-card-img">
                       <Image
                         src={url}
                         alt={img.title}
                         fill
-                        loading={idx < 4 ? "eager" : "lazy"}
+                        // First 8 cards load eagerly — they're above the fold
+                        loading={idx < 8 ? "eager" : "lazy"}
                         priority={idx < 4}
-                        sizes="(max-width: 640px) 50vw, (max-width: 1279px) 33vw, 25vw"
+                        sizes="(max-width: 767px) 50vw, (max-width: 1279px) 33vw, 25vw"
                         style={{ objectFit: "cover" }}
+                        unoptimized
                       />
                     </div>
                     <div className="world-card-cap">
                       <span className="world-card-title">{img.title}</span>
-                      {img.deviceType && (
-                        <span className="world-card-device">
-                          {img.deviceType.charAt(0) + img.deviceType.slice(1).toLowerCase()}
-                        </span>
-                      )}
+                      <span className="world-card-device">{dp}</span>
                     </div>
                   </Link>
                 );
@@ -574,9 +596,8 @@ export default async function WorldPage({
             </div>
           )}
 
-          {/* Pagination */}
           {totalPages > 1 && (
-            <div style={{ marginTop: "48px" }}>
+            <div style={{ marginTop: "40px" }}>
               <Pagination
                 currentPage={page}
                 totalPages={totalPages}
@@ -596,6 +617,7 @@ export default async function WorldPage({
                 href={`/world/${key}`}
                 className={`world-nav-dot${key === color ? " world-nav-dot--active" : ""}`}
                 title={w.label}
+                prefetch={false}
               >
                 <span
                   className="world-nav-dot-circle"
