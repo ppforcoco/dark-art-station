@@ -244,7 +244,21 @@ export default async function IphoneImagePage({ params }: PageProps) {
                 />
               </div>
 
-
+              {/* ── More You'll Like strip (mobile) ── */}
+              {tagSortedStrip.length > 0 && (
+                <div className="hw-more-strip--mobile" style={{ flexDirection: "column", gap: "6px" }}>
+                  <span className="hw-more-strip__label">More ▸</span>
+                  <div className="hw-more-strip__thumbs">
+                    {tagSortedStrip.map((img) => (
+                      <Link key={img.slug} href={`/iphone/${img.slug}`} className="more-strip-link">
+                        <div className="hw-more-strip__thumb" style={{ position: "relative" }}>
+                          <Image src={getPublicUrl(img.r2Key)} alt={img.title} fill className="object-cover" loading="lazy" sizes="44px" />
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 
