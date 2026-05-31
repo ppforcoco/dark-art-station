@@ -18,7 +18,6 @@ import PremiumCountdown from "@/components/PremiumCountdown";
 import PremiumLockedGateClient from "@/components/PremiumLockedGate";
 import BirthdayComments from "@/components/BirthdayComments";
 import SummonRandomTag from "@/components/SummonRandomTag";
-import MobileDetailLayout from "@/components/MobileDetailLayout";
 
 export const dynamicParams = true;
 export const revalidate = 3600;
@@ -270,7 +269,6 @@ export default async function AndroidImagePage({ params }: PageProps) {
 
               {/* ── More You'll Like strip (mobile) — lazy loaded ── */}
               {tagSortedStrip.length > 0 && (
-                
                 <>
                   <span className="hw-more-strip__label">More ▸</span>
                   <div className="hw-more-strip__thumbs">
@@ -282,7 +280,6 @@ export default async function AndroidImagePage({ params }: PageProps) {
                       </Link>
                     ))}
                   </div>
-                
                 </>
               )}
             </div>
@@ -341,7 +338,6 @@ export default async function AndroidImagePage({ params }: PageProps) {
 
             {/* ── More You'll Like strip (desktop) — lazy loaded ── */}
             {tagSortedStrip.length > 0 && (
-              
               <>
                 <span className="hw-more-strip__label">More ▸</span>
                 <div className="hw-more-strip__thumbs">
@@ -353,7 +349,6 @@ export default async function AndroidImagePage({ params }: PageProps) {
                     </Link>
                   ))}
                 </div>
-              
               </>
             )}
           </div>
@@ -361,9 +356,7 @@ export default async function AndroidImagePage({ params }: PageProps) {
       </section>
 
       {/* ── RecentlyViewed — ONLY loads when user scrolls to bottom ── */}
-      
-        <RecentlyViewed currentSlug={image.slug} />
-      
+      <RecentlyViewed currentSlug={image.slug} />
 
       <style>{`
         /* ── Mobile detail scaling ── */
@@ -636,25 +629,6 @@ export default async function AndroidImagePage({ params }: PageProps) {
           }
         }
       `}</style>
-
-      {/* ── MOBILE DETAIL LAYOUT ── */}
-      <MobileDetailLayout
-        image={{
-          id: image.id,
-          slug: image.slug,
-          title: image.title,
-          thumbUrl,
-          fullUrl: thumbUrl,
-          displayDescription,
-          tags: image.tags,
-          downloadCount: image._count.downloads,
-          commentsEnabled: image.commentsEnabled ?? false,
-        }}
-        prevImage={prevImage ? { slug: prevImage.slug, title: prevImage.title, thumbUrl: `/api/thumb/android/${prevImage.slug}` } : null}
-        nextImage={nextImage ? { slug: nextImage.slug, title: nextImage.title, thumbUrl: `/api/thumb/android/${nextImage.slug}` } : null}
-        relatedImages={tagSortedStrip.map(img => ({ slug: img.slug, title: img.title, thumbUrl: getPublicUrl(img.r2Key) }))}
-        deviceType="android"
-      />
 
       <PageTracker item={{ slug: image.slug, title: image.title, thumb: thumbUrl, href: `/android/${imageSlug}` }} />
 

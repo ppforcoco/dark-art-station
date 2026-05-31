@@ -16,7 +16,6 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 import PremiumLockedGateClient from "@/components/PremiumLockedGate";
 import BirthdayComments from "@/components/BirthdayComments";
 import SummonRandomTag from "@/components/SummonRandomTag";
-import MobileDetailLayout, { type MobileImage, type MobileSibling } from "@/components/MobileDetailLayout";
 
 // Premium lock is handled entirely client-side by PremiumLockedGateClient
 // to avoid React hydration mismatch (error #418) caused by Date.now() differing
@@ -157,9 +156,6 @@ export default async function IphoneImagePage({ params }: PageProps) {
   const prevImage = prevSibling;
   const nextImage = nextSibling;
 
-  // PremiumLockedGateClient handles the lock check client-side.
-  // It renders children normally until hydrated, then shows the vault if locked.
-  // This avoids the server/client HTML mismatch (React error #418).
   return (
     <PremiumLockedGateClient tags={image.tags} devicePath="iphone">
     <main className="min-h-screen" style={{ backgroundColor: "var(--bg-primary)", color: "var(--text-primary)", colorScheme: "dark" }}>
@@ -250,7 +246,6 @@ export default async function IphoneImagePage({ params }: PageProps) {
 
               {/* ── More You'll Like strip (mobile) — lazy loaded ── */}
               {tagSortedStrip.length > 0 && (
-                
                 <>
                   <span className="hw-more-strip__label">More ▸</span>
                   <div className="hw-more-strip__thumbs">
@@ -262,7 +257,6 @@ export default async function IphoneImagePage({ params }: PageProps) {
                       </Link>
                     ))}
                   </div>
-                
                 </>
               )}
             </div>
@@ -346,7 +340,6 @@ export default async function IphoneImagePage({ params }: PageProps) {
 
             {/* ── More You'll Like strip (desktop) — lazy loaded ── */}
             {tagSortedStrip.length > 0 && (
-              
               <>
                 <span className="hw-more-strip__label">More ▸</span>
                 <div className="hw-more-strip__thumbs">
@@ -358,7 +351,6 @@ export default async function IphoneImagePage({ params }: PageProps) {
                     </Link>
                   ))}
                 </div>
-              
               </>
             )}
           </div>
@@ -366,9 +358,7 @@ export default async function IphoneImagePage({ params }: PageProps) {
       </section>
 
       {/* ── RecentlyViewed — ONLY loads when user scrolls to bottom ── */}
-      
-        <RecentlyViewed currentSlug={image.slug} />
-      
+      <RecentlyViewed currentSlug={image.slug} />
 
       <style>{`
         /* ── Mobile detail scaling ── */
@@ -640,25 +630,6 @@ export default async function IphoneImagePage({ params }: PageProps) {
           }
         }
       `}</style>
-
-      {/* ── MOBILE DETAIL LAYOUT — renders only on ≤767px ── */}
-      <MobileDetailLayout
-        image={{
-          id: image.id,
-          slug: image.slug,
-          title: image.title,
-          thumbUrl,
-          fullUrl: thumbUrl,
-          displayDescription,
-          tags: image.tags,
-          downloadCount: image._count.downloads,
-          commentsEnabled: image.commentsEnabled ?? false,
-        }}
-        prevImage={prevImage ? { slug: prevImage.slug, title: prevImage.title, thumbUrl: `/api/thumb/iphone/${prevImage.slug}` } : null}
-        nextImage={nextImage ? { slug: nextImage.slug, title: nextImage.title, thumbUrl: `/api/thumb/iphone/${nextImage.slug}` } : null}
-        relatedImages={tagSortedStrip.map(img => ({ slug: img.slug, title: img.title, thumbUrl: getPublicUrl(img.r2Key) }))}
-        deviceType="iphone"
-      />
 
       <PageTracker item={{
         slug: image.slug,
