@@ -113,35 +113,38 @@ export default async function Home() {
     updatedAt: img.updatedAt ? new Date(img.updatedAt).toISOString() : null,
   }));
 
+  const newItems = newThisWeek.map((img) => ({
+    id: img.id, slug: img.slug, title: img.title,
+    src: getPublicUrl(img.r2Key),
+    devicePath: img.deviceType === "IPHONE" ? "iphone" : img.deviceType === "ANDROID" ? "android" : "pc",
+    isLocked: false,
+    updatedAt: null,
+  }));
+
   return (
     <>
       <style>{`
         .hp { background:#070510; min-height:100vh; color:#e8e4f0 }
 
         /* ═══════════════════════════════════════════════════════════════════
-           HERO — mobile: stacked (image top, text below)
-                  desktop: two-column, text left / image right
-                  full-bleed dark bg, vignette edges
+           HERO
         ═══════════════════════════════════════════════════════════════════ */
 
-        /* Full-width dark container — blends into page background */
         .hp-hero {
           position: relative;
           width: 100%;
-          background: #070510;
+          background: #000000;
           overflow: hidden;
         }
 
-        /* Vignette layer — dark edges that bleed into the page on all sides */
         .hp-hero-vignette {
           position: absolute;
           inset: 0;
           pointer-events: none;
           z-index: 2;
-          /* strong left/right fade + top/bottom fade */
           background:
-            linear-gradient(to right,  #070510 0%, transparent 30%, transparent 70%, #070510 100%),
-            linear-gradient(to bottom, #070510 0%, transparent 18%, transparent 72%, #070510 100%);
+            linear-gradient(to right,  #000000 0%, transparent 30%, transparent 70%, #000000 100%),
+            linear-gradient(to bottom, #000000 0%, transparent 18%, transparent 72%, #000000 100%);
         }
 
         /* ── Mobile layout ──────────────────────────────────────────── */
@@ -159,7 +162,6 @@ export default async function Home() {
           object-position: center top;
         }
 
-        /* Text sits below image on mobile */
         .hp-hero-body {
           position: relative;
           z-index: 3;
@@ -173,25 +175,24 @@ export default async function Home() {
           .hp-hero {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            /* let taller of the two sides define height */
             align-items: center;
             min-height: 420px;
             max-height: 520px;
           }
 
-          /* Left: text */
           .hp-hero-body {
             padding: clamp(32px,4vw,56px) clamp(32px,5vw,72px);
             order: 1;
           }
 
-          /* Right: image fills the cell */
           .hp-hero-img-wrap {
             order: 2;
             aspect-ratio: unset;
             height: 100%;
             min-height: 420px;
             max-height: 520px;
+            /* Pull image away from right edge */
+            padding-right: clamp(24px, 4vw, 60px);
           }
         }
 
@@ -275,15 +276,49 @@ export default async function Home() {
         .hp-new     { background: #06050e }
         .hp-premium { background: #080710 }
 
-        /* CARD GRID */
-        .hp-sgrid {
-          display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(clamp(90px,20vw,130px),1fr));
+        /* ═══════════════════════════════════════════════════════════════════
+           NEW THIS WEEK — mobile: horizontal scroll slider
+                           desktop: grid (unchanged)
+        ═══════════════════════════════════════════════════════════════════ */
+
+        /* Mobile slider: horizontally scrollable row */
+        .hp-new-slider {
+          display: flex;
           gap: clamp(6px,1.2vw,10px);
+          overflow-x: auto;
+          scroll-snap-type: x mandatory;
+          -webkit-overflow-scrolling: touch;
+          /* hide scrollbar */
+          scrollbar-width: none;
+          -ms-overflow-style: none;
+          /* bleed to edges on mobile */
+          margin: 0 calc(-1 * clamp(16px,5vw,48px));
+          padding: 0 clamp(16px,5vw,48px) 12px;
         }
-        @media(min-width:768px){
-          .hp-sgrid { grid-template-columns: repeat(auto-fill,minmax(90px,1fr)); gap:7px }
+        .hp-new-slider::-webkit-scrollbar { display: none }
+
+        .hp-new-slider .hp-scard {
+          flex: 0 0 clamp(110px, 42vw, 150px);
+          scroll-snap-align: start;
         }
+
+        /* On desktop, revert to grid */
+        @media (min-width: 768px) {
+          .hp-new-slider {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+            gap: 7px;
+            overflow-x: visible;
+            scroll-snap-type: unset;
+            margin: 0;
+            padding: 0;
+          }
+          .hp-new-slider .hp-scard {
+            flex: unset;
+          }
+        }
+
+        /* CARD (shared by new + collections) */
         .hp-scard {
           display: flex; flex-direction: column; text-decoration: none;
           border: 1px solid rgba(255,255,255,.07); background: #0a0818; overflow: hidden;
@@ -415,10 +450,9 @@ export default async function Home() {
 
       <div className="hp">
 
-        {/* ══ HERO — text left, image right, vignette edges ════════════════ */}
+        {/* ══ HERO ════════════════════════════════════════════════════════ */}
         <section className="hp-hero">
 
-          {/* Vignette overlay — bleeds dark bg into all edges */}
           <div className="hp-hero-vignette" aria-hidden="true" />
 
           {/* LEFT: text content */}
@@ -486,7 +520,9 @@ export default async function Home() {
               </div>
               <Link prefetch={false} href="/all" className="hp-see-all">See all →</Link>
             </div>
-            <div className="hp-sgrid">
+
+            {/* Mobile: horizontal scroll slider / Desktop: grid */}
+            <div className="hp-new-slider">
               {newThisWeek.map((img, i) => {
                 const devicePath = img.deviceType === "IPHONE" ? "iphone"
                   : img.deviceType === "ANDROID" ? "android" : "pc";
