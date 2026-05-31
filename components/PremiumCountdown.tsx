@@ -87,7 +87,7 @@ export default function PremiumCountdown({ isLocked, updatedAt }: PremiumCountdo
   const urgent = !locked && msRemaining < 2 * 60 * 60 * 1000;
 
   const label   = locked ? "BACK IN"  : "GONE IN";
-  const accent  = locked ? "#6b6b7a"  : (urgent ? "#c0001a" : "#c9a84c");
+  const accent  = locked ? "#9090a0"  : (urgent ? "#c0001a" : "#c9a84c");
   const bgColor = locked ? "rgba(30,28,40,0.85)"   : "rgba(20,14,8,0.85)";
   const borderC = locked ? "rgba(107,107,122,0.3)" : (urgent ? "rgba(192,0,26,0.45)" : "rgba(201,168,76,0.35)");
   const glowC   = locked ? "transparent"           : (urgent ? "rgba(192,0,26,0.2)"  : "rgba(201,168,76,0.12)");
@@ -126,7 +126,7 @@ export default function PremiumCountdown({ isLocked, updatedAt }: PremiumCountdo
       />
 
       {/* Label */}
-      <span style={{ color: "rgba(200,180,140,0.65)", letterSpacing: "0.2em" }}>
+      <span style={{ color: "rgba(210,190,150,0.9)", letterSpacing: "0.2em" }}>
         {label}
       </span>
 

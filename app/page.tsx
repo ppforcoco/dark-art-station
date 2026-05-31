@@ -232,7 +232,7 @@ export default async function Home() {
           font-family: monospace;
           font-size: clamp(.46rem,.56vw,.54rem);
           letter-spacing: .2em; text-transform: uppercase;
-          color: #5a4e78; display: block; margin-top: 2px;
+          color: #7a6e98; display: block; margin-top: 2px;
         }
         .hp-hero-cta { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 4px; }
 
@@ -273,13 +273,13 @@ export default async function Home() {
         }
         .hp-section-sub {
           font-family: var(--font-cormorant, Georgia, serif); font-style: italic;
-          font-size: clamp(.88rem,1.3vw,1rem); color: #8a7fa0; margin: 5px 0 0;
+          font-size: clamp(.88rem,1.3vw,1rem); color: #9e94b8; margin: 5px 0 0;
         }
         .hp-see-all {
           font-family: monospace; font-size: clamp(.5rem,.62vw,.58rem);
           letter-spacing: .16em; text-transform: uppercase;
-          color: #c9a84c; text-decoration: none;
-          border-bottom: 1px solid rgba(201,168,76,.25);
+          color: #d4b85c; text-decoration: none;
+          border-bottom: 1px solid rgba(201,168,76,.4);
           padding-bottom: 2px; white-space: nowrap; flex-shrink: 0;
         }
         .hp-see-all:hover { border-color: #c9a84c }
@@ -358,7 +358,7 @@ export default async function Home() {
         }
         .hp-worlds-sub {
           font-family:monospace; font-size:clamp(.5rem,.6vw,.58rem);
-          letter-spacing:.26em; text-transform:uppercase; color:#d01030; margin:0 0 4px;
+          letter-spacing:.26em; text-transform:uppercase; color:#e8001f; margin:0 0 4px;
         }
         .hp-worlds-grid {
           display:grid; grid-template-columns:repeat(5,1fr);
@@ -383,7 +383,7 @@ export default async function Home() {
         .hp-world-sub {
           font-family:monospace; font-size:clamp(.32rem,.42vw,.4rem);
           letter-spacing:.1em; text-transform:uppercase;
-          color:rgba(255,255,255,.38); text-align:center; display:none;
+          color:rgba(255,255,255,.55); text-align:center; display:none;
         }
         @media(min-width:480px){ .hp-world-sub { display:block } }
 
@@ -424,7 +424,7 @@ export default async function Home() {
         }
         .hp-wotd-note {
           font-family:var(--font-cormorant,Georgia,serif); font-style:italic;
-          font-size:clamp(.88rem,1.3vw,1rem); color:#8a7fa0; margin:0; line-height:1.6;
+          font-size:clamp(.88rem,1.3vw,1rem); color:#9e94b8; margin:0; line-height:1.6;
         }
 
         /* COLLECTIONS */
@@ -447,7 +447,7 @@ export default async function Home() {
         .hp-col-info { padding:6px 8px 8px; display:flex; flex-direction:column; gap:2px }
         .hp-col-cat {
           font-family:monospace; font-size:clamp(.4rem,.5vw,.48rem);
-          letter-spacing:.2em; text-transform:uppercase; color:#b0001a;
+          letter-spacing:.2em; text-transform:uppercase; color:#d4001f;
         }
         .hp-col-title {
           font-family:var(--font-cormorant,Georgia,serif);
@@ -455,7 +455,7 @@ export default async function Home() {
         }
         .hp-col-count {
           font-family:monospace; font-size:clamp(.4rem,.5vw,.48rem);
-          letter-spacing:.13em; text-transform:uppercase; color:rgba(255,255,255,.3);
+          letter-spacing:.13em; text-transform:uppercase; color:rgba(255,255,255,.5);
         }
       `}</style>
 
