@@ -174,9 +174,13 @@ export default async function Home() {
           padding-top: 8px !important;
           padding-bottom: 0 !important;
           overflow: visible !important;
+          overflow-x: hidden !important;
           background: #000 !important;
+          width: 100% !important;
+          max-width: 100vw !important;
+          box-sizing: border-box !important;
         }
-        .hw-hero-split { display: grid; grid-template-columns: 1fr; background: #000; }
+        .hw-hero-split { display: grid; grid-template-columns: 1fr; background: #000; width: 100%; max-width: 100%; overflow-x: hidden; }
 
         /* Mobile: show hero image — small thumbnail, no LCP penalty */
         .hw-hero-img {

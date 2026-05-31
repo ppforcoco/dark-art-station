@@ -159,7 +159,7 @@ export default async function WorldPage({
     isAdult: false,
     ...deviceFilter,
     OR: [
-      { tags: { hasSome: world.tags as unknown as string[] } },
+      ...((world.tags as unknown as string[]).map((t) => ({ tags: { has: t } }))),
       ...titleConditions,
     ],
   };
@@ -538,7 +538,7 @@ export default async function WorldPage({
             </div>
           ) : (
             <div className="world-grid">
-              {images.map((img) => {
+              {images.map((img, idx) => {
                 const devicePath =
                   img.deviceType === "IPHONE"  ? "iphone"  :
                   img.deviceType === "ANDROID" ? "android" :
@@ -554,7 +554,8 @@ export default async function WorldPage({
                         src={url}
                         alt={img.title}
                         fill
-                        loading="lazy"
+                        loading={idx < 4 ? "eager" : "lazy"}
+                        priority={idx < 4}
                         sizes="(max-width: 640px) 50vw, (max-width: 1279px) 33vw, 25vw"
                         style={{ objectFit: "cover" }}
                       />
