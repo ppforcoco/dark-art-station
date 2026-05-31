@@ -205,6 +205,7 @@ export default async function PcImagePage({ params }: PageProps) {
               {/* ── More You'll Like strip (mobile) — lazy loaded ── */}
               {tagSortedStrip.length > 0 && (
                 
+                <>
                   <span className="hw-more-strip__label">More ▸</span>
                   <div className="hw-more-strip__thumbs">
                     {tagSortedStrip.map((img) => (
@@ -216,6 +217,7 @@ export default async function PcImagePage({ params }: PageProps) {
                     ))}
                   </div>
                 
+                </>
               )}
             </div>
           </div>
@@ -272,6 +274,7 @@ export default async function PcImagePage({ params }: PageProps) {
             {/* ── More You'll Like strip (desktop) — lazy loaded ── */}
             {tagSortedStrip.length > 0 && (
               
+              <>
                 <span className="hw-more-strip__label">More ▸</span>
                 <div className="hw-more-strip__thumbs">
                   {tagSortedStrip.map((img) => (
@@ -283,6 +286,7 @@ export default async function PcImagePage({ params }: PageProps) {
                   ))}
                 </div>
               
+              </>
             )}
           </div>
         </div>
