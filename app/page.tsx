@@ -1,14 +1,8 @@
 // app/page.tsx — Haunted Wallpapers Homepage
-// LCP fixes:
-//   1. StreakBar + TrailSection wrapped in LazyClientShell (dynamic ssr:false)
-//      so they never block first paint
-//   2. WallpaperCardGrid replaced with a lean server-rendered grid for the
-//      "New This Week" section — no JS needed to paint images
-//   3. Hero: removed the heavy .hp * selector; kill-animations now scoped tighter
-//   4. PremiumCountdown is below-fold — stays client but deferred by position
-//   5. Cinzel font only used for headings — hero text now reads from system fallback
-//      until font swaps in (swap keeps text visible immediately)
-//   6. Collections grid renders thumbnails for ALL slugs, not just WIDE_SLUGS
+// FIXES:
+//   1. BUILD FIX: WallpaperCardGrid moved to a client wrapper to allow ssr:false
+//   2. HERO FIX: Full-bleed 16:9 on desktop, full-width portrait on mobile
+//      No cropping — image scales to fill without cutting content
 
 import type { Metadata } from "next";
 import { unstable_cache } from "next/cache";
@@ -20,10 +14,14 @@ import { getPublicUrl } from "@/lib/r2";
 import PremiumCountdown from "@/components/PremiumCountdown";
 import StreakBar from "@/components/StreakBar";
 
-const WallpaperCardGrid = dynamic(
-  () => import("@/components/WallpaperCardGrid"),
-  { ssr: false },
-);
+// ── FIX: wrap in a Client Component so ssr:false is legal ────────────────────
+// Create /components/WallpaperCardGridClient.tsx with:
+//   "use client";
+//   import dynamic from "next/dynamic";
+//   const WallpaperCardGrid = dynamic(() => import("@/components/WallpaperCardGrid"), { ssr: false });
+//   export default WallpaperCardGrid;
+// Then import that here:
+import WallpaperCardGridClient from "@/components/WallpaperCardGridClient";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
 const OG_IMAGE = `${SITE_URL}/og-image.jpg`;
@@ -130,61 +128,75 @@ export default async function Home() {
 
   return (
     <>
-      {/* ── Critical CSS — inlined, zero network request ─────────────────────
-          Only what's needed for above-the-fold paint.
-          Below-fold sections are covered by globals.css + component styles.
-          NO wildcard selectors — they cause full style recalc before LCP. */}
       <style>{`
         .hp{background:#070510;min-height:100vh;color:#e8e4f0}
 
-        /* HERO */
+        /* ── HERO ─────────────────────────────────────────────────────────
+           Mobile  : 16:9 aspect ratio, full width, image fills it
+           Desktop : still 16:9 but at least 480px tall so it breathes
+           The image is positioned center-top so characters stay visible.
+           No hard clip — aspect-ratio does the work.                      */
         .hp-hero{
-          position:relative;width:100%;background:#000;overflow:hidden;
-          /* Tall enough to breathe on all screen sizes */
-          min-height:clamp(340px,65vw,520px);
+          position:relative;
+          width:100%;
+          /* 16:9 on all screen sizes */
+          aspect-ratio:16/9;
+          /* But never too short on very wide monitors */
+          min-height:320px;
+          max-height:90vh;
+          background:#000;
+          overflow:hidden;
         }
+
+        /* On very small phones (< 480px) a 16:9 box is only ~170px tall
+           which is too short for the text. Floor it so it never collapses. */
+        @media(max-width:479px){
+          .hp-hero{ min-height:220px; }
+        }
+
         .hp-hero-img{
           position:absolute;top:0;left:0;width:100%;height:100%;
           object-fit:cover;
-          /* Anchored to top — character heads stay visible on mobile */
+          /* Keep characters' heads/faces in frame on all ratios */
           object-position:center top;
         }
-        @media(min-width:640px){
-          .hp-hero{min-height:clamp(380px,48vw,560px)}
-          .hp-hero-img{object-position:center 15%}
-        }
+
         .hp-hero-veil{
           position:absolute;inset:0;pointer-events:none;
           background:linear-gradient(to bottom,
             rgba(7,5,16,.0) 0%,
-            rgba(7,5,16,.2) 40%,
-            rgba(7,5,16,.75) 70%,
+            rgba(7,5,16,.15) 35%,
+            rgba(7,5,16,.70) 65%,
             rgba(7,5,16,.97) 100%);
         }
+
+        /* Text sits in the bottom-left, no longer floating mid-screen */
         .hp-hero-body{
           position:absolute;bottom:0;left:0;right:0;z-index:1;
-          padding:clamp(16px,3vw,28px) clamp(20px,5vw,52px) clamp(20px,3.5vw,36px);
-          max-width:760px;display:flex;flex-direction:column;gap:10px;
+          padding:clamp(14px,2.5vw,28px) clamp(20px,4vw,52px) clamp(18px,3vw,36px);
+          max-width:800px;
+          display:flex;flex-direction:column;gap:clamp(6px,1.2vw,12px);
         }
+
         .hp-eyebrow{
-          font-family:monospace;font-size:clamp(.52rem,.9vw,.62rem);
+          font-family:monospace;font-size:clamp(.5rem,.8vw,.6rem);
           letter-spacing:.28em;text-transform:uppercase;color:#c0001a;margin:0;
         }
         .hp-hero-tagline{
           font-family:var(--font-cormorant,Georgia,serif);font-style:italic;
-          font-size:clamp(1.1rem,2.4vw,1.4rem);color:#c0b8d8;line-height:1.45;margin:0;
+          font-size:clamp(1rem,2vw,1.35rem);color:#c0b8d8;line-height:1.45;margin:0;
           max-width:500px;
         }
-        .hp-hero-stat{display:flex;align-items:center;gap:clamp(16px,3vw,32px);flex-wrap:wrap}
+        .hp-hero-stat{display:flex;align-items:center;gap:clamp(14px,2.5vw,32px);flex-wrap:wrap}
         .hp-hero-num{
           font-family:var(--font-cinzel,Georgia,serif);
-          font-size:clamp(1.2rem,3vw,1.8rem);font-weight:900;color:#f0ecff;
+          font-size:clamp(1.1rem,2.5vw,1.75rem);font-weight:900;color:#f0ecff;
         }
         .hp-hero-numlabel{
-          font-family:monospace;font-size:.46rem;letter-spacing:.2em;
+          font-family:monospace;font-size:.44rem;letter-spacing:.2em;
           text-transform:uppercase;color:#5a4e78;display:block;margin-top:2px;
         }
-        .hp-hero-cta{display:flex;gap:10px;flex-wrap:wrap;margin-top:4px}
+        .hp-hero-cta{display:flex;gap:10px;flex-wrap:wrap;margin-top:2px}
 
         /* BUTTONS */
         .hp-btn-red{
@@ -233,7 +245,7 @@ export default async function Home() {
         .hp-new{background:#06050e}
         .hp-premium{background:#080710}
 
-        /* STATIC card grid — server-rendered, zero JS needed for paint */
+        /* STATIC card grid */
         .hp-sgrid{
           display:grid;
           grid-template-columns:repeat(auto-fill,minmax(clamp(90px,20vw,130px),1fr));
@@ -367,14 +379,11 @@ export default async function Home() {
           font-family:monospace;font-size:.38rem;letter-spacing:.13em;
           text-transform:uppercase;color:rgba(255,255,255,.28);
         }
-
-
-
       `}</style>
 
       <div className="hp">
 
-        {/* ══ HERO ══════════════════════════════════════════════════════════ */}
+        {/* ══ HERO — full-bleed 16:9, no empty space ══════════════════════ */}
         <section className="hp-hero">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
@@ -385,8 +394,8 @@ export default async function Home() {
             fetchPriority="high"
             decoding="sync"
             loading="eager"
-            width="800"
-            height="600"
+            width="1600"
+            height="900"
           />
           <div className="hp-hero-veil" />
           <div className="hp-hero-body">
@@ -425,7 +434,7 @@ export default async function Home() {
 
         <StreakBar />
 
-        {/* ══ NEW THIS WEEK — server-rendered static grid, zero JS ════════ */}
+        {/* ══ NEW THIS WEEK ════════════════════════════════════════════════ */}
         {newThisWeek.length > 0 && (
           <section className="hp-section hp-new">
             <div className="hp-section-head">
@@ -436,7 +445,6 @@ export default async function Home() {
               </div>
               <Link prefetch={false} href="/all" className="hp-see-all">See all →</Link>
             </div>
-            {/* Static server grid — no JS, paints immediately */}
             <div className="hp-sgrid">
               {newThisWeek.map((img, i) => {
                 const devicePath = img.deviceType === "IPHONE" ? "iphone"
@@ -513,8 +521,7 @@ export default async function Home() {
             <div style={{ marginBottom: "clamp(12px,2vw,20px)" }}>
               <PremiumCountdown updatedAt={countdownDate} />
             </div>
-            {/* WallpaperCardGrid for premium — needs client JS for lock state */}
-            <WallpaperCardGrid
+            <WallpaperCardGridClient
               accentRgb="201,168,76"
               badge="PREMIUM"
               badgeColor="#c9a84c"
@@ -610,7 +617,6 @@ export default async function Home() {
             </div>
           </section>
         )}
-
 
       </div>
 
