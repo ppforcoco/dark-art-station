@@ -130,15 +130,19 @@ export default async function Home() {
         /* ── HERO ── */
         .hp-hero{
           position:relative;
-          min-height:clamp(260px,70vw,340px);
+          width:100%;
+          aspect-ratio:16/9;
+          max-height:320px;
           display:flex;align-items:flex-end;
           overflow:hidden;
           background:#000;
         }
-        @media(min-width:640px){.hp-hero{min-height:180px;height:220px}}
+        @media(min-width:640px){
+          .hp-hero{aspect-ratio:unset;height:200px;max-height:200px}
+        }
         .hp-hero-img{
           position:absolute;inset:0;width:100%;height:100%;
-          object-fit:cover;object-position:center top;
+          object-fit:contain;object-position:center top;
           display:block;
         }
         .hp-hero-veil{
