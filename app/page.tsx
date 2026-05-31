@@ -7,11 +7,8 @@ import { db, getWallpaperOfTheDay, getPageContent } from "@/lib/db";
 import { getPublicUrl } from "@/lib/r2";
 import WallpaperCardGrid from "@/components/WallpaperCardGrid";
 import PremiumCountdown from "@/components/PremiumCountdown";
-import dynamic from "next/dynamic";
-
-// ── Client components (streak + trail) ───────────────────────────────────────
-const StreakBar = dynamic(() => import("@/components/StreakBar"), { ssr: false });
-const TrailSection = dynamic(() => import("@/components/TrailSection"), { ssr: false });
+import StreakBar from "@/components/StreakBar";
+import TrailSection from "@/components/TrailSection";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
 const OG_IMAGE = `${SITE_URL}/og-image.jpg`;
