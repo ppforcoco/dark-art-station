@@ -13,23 +13,25 @@ import PWARegister from "@/components/PWARegister";
 // preload: true  → fetched in the first HTTP request, never blocks LCP text
 // display: swap  → shows fallback font immediately, swaps when ready (no invisible text)
 const cinzel = Cinzel_Decorative({
-  weight: ["400", "700", "900"],
+  weight: ["900"],           // only 900 used in practice — drops ~60KB
   subsets: ["latin"],
   variable: "--font-cinzel",
-  display: "swap",   // ✅ was "optional" → caused invisible text on slow connections
-  preload: true,     // ✅ was false → font was discovered late, after HTML/CSS parsed
+  display: "swap",
+  preload: true,
+  adjustFontFallback: false, // manual fallback metrics in globals.css
 });
 
 // ── FONT 2: Body / Prose ─────────────────────────────────────────────────────
 // Used for: all body copy, card descriptions, footer links, blog content
 // This is the LCP font — preloading it directly drops LCP by ~800ms-1.5s
 const cormorant = Cormorant_Garamond({
-  weight: ["300", "400", "600"],
+  weight: ["400", "600"],    // drop 300 — not used in hot paths
   subsets: ["latin"],
   style: ["normal", "italic"],
   variable: "--font-cormorant",
-  display: "swap",   // ✅ was "optional"
-  preload: true,     // ✅ was false — this is the body font, MUST load early
+  display: "swap",
+  preload: true,
+  adjustFontFallback: false, // manual fallback metrics in globals.css
 });
 
 // ── Space Mono REMOVED ───────────────────────────────────────────────────────

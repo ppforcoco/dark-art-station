@@ -3,6 +3,28 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ── Font fallback metrics — kills CLS during Google Font swap ──────────────
+   Size-adjusted fallbacks that match Cinzel Decorative + Cormorant Garamond
+   closely so layout does not shift when real fonts arrive.                  */
+@font-face {
+  font-family: 'Cinzel Decorative Fallback';
+  src: local('Georgia');
+  ascent-override: 90%;
+  descent-override: 22%;
+  line-gap-override: 0%;
+  size-adjust: 112%;
+}
+@font-face {
+  font-family: 'Cormorant Garamond Fallback';
+  src: local('Georgia');
+  ascent-override: 85%;
+  descent-override: 20%;
+  line-gap-override: 0%;
+  size-adjust: 102%;
+}
+
+
+
 /* ── HTML color-scheme — syncs browser native UI (scrollbars, inputs) ── */
 html                      { color-scheme: dark;  background-color: #0d0d14; }/* Each card gets a different animation-delay so colors are staggered */
 
