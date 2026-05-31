@@ -486,7 +486,7 @@ export default async function Home() {
                       unoptimized sizes="(max-width:480px) 38vw,(max-width:768px) 40vw,280px"
                       style={{ objectPosition: "center top" }} />
                   </div>
-                  <div style={{ position: "absolute", inset: 0, pointer: "none" }} className="wotd-img-frame__corners" aria-hidden="true"><span /><span /><span /><span /></div>
+                  <div style={{ position: "absolute", inset: 0, pointerEvents: "none" }} className="wotd-img-frame__corners" aria-hidden="true"><span /><span /><span /><span /></div>
                   {wotd.deviceType && (
                     <span style={{ position: "absolute", top: "12px", left: "12px", fontSize: "0.6rem", letterSpacing: "0.18em", textTransform: "uppercase", padding: "3px 8px", background: "rgba(0,0,0,0.75)", border: "1px solid rgba(224,0,31,0.4)", color: "#e0001f", borderRadius: "2px", fontFamily: "var(--font-space,monospace)" }}>
                       {wotd.deviceType.charAt(0) + wotd.deviceType.slice(1).toLowerCase()}
