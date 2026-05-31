@@ -174,13 +174,10 @@ export default async function Home() {
         @media (min-width: 768px) {
           .hp-hero {
             display: grid;
-            /* text gets 55%, image gets 45% — shifts image left naturally */
-            grid-template-columns: 55% 45%;
+            grid-template-columns: 1fr 1fr;
             align-items: center;
             min-height: 420px;
             max-height: 520px;
-            /* right padding so image doesn't bleed to browser edge */
-            padding-right: clamp(40px, 6vw, 100px);
           }
 
           .hp-hero-body {
@@ -194,6 +191,19 @@ export default async function Home() {
             height: 100%;
             min-height: 420px;
             max-height: 520px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 0 clamp(48px, 8vw, 120px) 0 0;
+          }
+
+          .hp-hero-img {
+            position: static !important;
+            width: auto !important;
+            height: 100% !important;
+            max-height: 480px;
+            object-fit: contain;
+            object-position: left center;
           }
         }
 
