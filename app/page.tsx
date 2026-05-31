@@ -7,7 +7,6 @@ import { db, getWallpaperOfTheDay, getPageContent } from "@/lib/db";
 import { getPublicUrl } from "@/lib/r2";
 import WallpaperCardGrid from "@/components/WallpaperCardGrid";
 import PremiumCountdown from "@/components/PremiumCountdown";
-import RecentlyViewed from "@/components/RecentlyViewed";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
 const OG_IMAGE = `${SITE_URL}/og-image.jpg`;
@@ -51,12 +50,15 @@ export const revalidate = 3600;
 
 // ── World config ──────────────────────────────────────────────────────────────
 const WORLDS = [
-  { key: "red",    label: "Crimson", sub: "Blood & fire",   dot: "#e0001f", glow: "rgba(192,0,26,0.5)",  border: "rgba(192,0,26,0.4)"   },
+  { key: "red",    label: "Crimson", sub: "Dark & Fire",     dot: "#e0001f", glow: "rgba(192,0,26,0.5)",  border: "rgba(192,0,26,0.4)"   },
   { key: "purple", label: "Void",    sub: "Cosmic & mystic", dot: "#7c3aed", glow: "rgba(124,58,237,0.5)", border: "rgba(147,51,234,0.4)" },
   { key: "green",  label: "Haunted", sub: "Forest & dark",   dot: "#16a34a", glow: "rgba(22,163,74,0.5)", border: "rgba(34,197,94,0.35)" },
   { key: "blue",   label: "Deep",    sub: "Ice & electric",  dot: "#1d4ed8", glow: "rgba(29,78,216,0.5)", border: "rgba(59,130,246,0.35)" },
   { key: "black",  label: "Shadow",  sub: "AMOLED void",     dot: "#1a1a1a", glow: "rgba(100,100,100,0.3)", border: "rgba(255,255,255,0.15)" },
 ] as const;
+
+// Slugs that should always render as 16:9
+const WIDE_SLUGS = new Set(["the-defiant-manifesto", "defiant-manifesto"]);
 
 export default async function Home() {
   let wotd:            Awaited<ReturnType<typeof getWallpaperOfTheDay>> = null;
@@ -66,7 +68,7 @@ export default async function Home() {
   let premiumThisWeek: Array<{ id: string; slug: string; title: string; r2Key: string; deviceType: string | null; tags: string[]; updatedAt: Date | null }> = [];
 
   try {
-    [[wotd, totalImages], obsessions, [newThisWeek, premiumThisWeek]] = await Promise.all([
+    [[wotd, totalImages], obsessions, newThisWeek, premiumThisWeek] = await Promise.all([
       Promise.all([getCachedWotd(), db.image.count()]),
       db.collection.findMany({
         orderBy: [{ featured: "desc" }, { createdAt: "asc" }],
@@ -78,25 +80,23 @@ export default async function Home() {
           _count: { select: { images: { where: { deviceType: "IPHONE" } } } },
         },
       }),
-      Promise.all([
-        db.image.findMany({
-          where: {
-            isAdult: false,
-            tags: { has: "badge-new" },
-            createdAt: { gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) },
-            NOT: { tags: { has: "badge-premium" } },
-          },
-          orderBy: { createdAt: "desc" },
-          take: 8,
-          select: { id: true, slug: true, title: true, r2Key: true, deviceType: true, tags: true },
-        }),
-        db.image.findMany({
-          where: { tags: { has: "badge-premium" }, isAdult: false },
-          orderBy: { createdAt: "desc" },
-          take: 8,
-          select: { id: true, slug: true, title: true, r2Key: true, deviceType: true, tags: true, updatedAt: true },
-        }),
-      ]),
+      db.image.findMany({
+        where: {
+          isAdult: false,
+          tags: { has: "badge-new" },
+          createdAt: { gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) },
+          NOT: { tags: { has: "badge-premium" } },
+        },
+        orderBy: { createdAt: "desc" },
+        take: 8,
+        select: { id: true, slug: true, title: true, r2Key: true, deviceType: true, tags: true },
+      }),
+      db.image.findMany({
+        where: { tags: { has: "badge-premium" }, isAdult: false },
+        orderBy: { createdAt: "desc" },
+        take: 8,
+        select: { id: true, slug: true, title: true, r2Key: true, deviceType: true, tags: true, updatedAt: true },
+      }),
     ]);
   } catch (err) {
     console.error("[home/page] DB error:", err);
@@ -130,57 +130,50 @@ export default async function Home() {
         /* ── HERO ── */
         .hp-hero{
           position:relative;
-          min-height:clamp(280px,55vw,520px);
+          min-height:clamp(260px,70vw,340px);
           display:flex;align-items:flex-end;
           overflow:hidden;
           background:#000;
         }
-        @media(min-width:640px){.hp-hero{min-height:clamp(400px,55vh,600px)}}
+        @media(min-width:640px){.hp-hero{min-height:180px;height:220px}}
         .hp-hero-img{
           position:absolute;inset:0;width:100%;height:100%;
-          object-fit:cover;object-position:center 20%;
+          object-fit:cover;object-position:center top;
           display:block;
         }
         .hp-hero-veil{
           position:absolute;inset:0;
-          background:linear-gradient(to bottom,rgba(7,5,16,.1) 0%,rgba(7,5,16,.55) 50%,rgba(7,5,16,.98) 100%);
+          background:linear-gradient(to bottom,rgba(7,5,16,.05) 0%,rgba(7,5,16,.45) 45%,rgba(7,5,16,.97) 100%);
         }
         .hp-hero-body{
           position:relative;z-index:1;
-          padding:clamp(20px,5vw,48px) clamp(16px,5vw,48px) clamp(28px,5vw,48px);
+          padding:clamp(16px,4vw,36px) clamp(16px,5vw,48px) clamp(20px,4vw,36px);
           max-width:720px;
-          display:flex;flex-direction:column;gap:12px;
+          display:flex;flex-direction:column;gap:10px;
         }
         .hp-eyebrow{
           font-family:monospace;
-          font-size:clamp(.52rem,.9vw,.65rem);
+          font-size:clamp(.5rem,.85vw,.62rem);
           letter-spacing:.32em;text-transform:uppercase;
           color:#c0001a;margin:0;
         }
-        .hp-h1{
-          font-family:var(--font-cinzel,serif);
-          font-size:clamp(1.4rem,4.5vw,2.8rem);
-          font-weight:900;line-height:1.08;
-          color:#f0ecff;margin:0;
-          letter-spacing:-.01em;
-        }
-        .hp-hero-sub{
+        .hp-hero-tagline{
           font-family:var(--font-cormorant,Georgia,serif);
           font-style:italic;
-          font-size:clamp(.9rem,2vw,1.1rem);
-          color:#9988b8;line-height:1.6;margin:0;
-          max-width:480px;
+          font-size:clamp(.95rem,2vw,1.15rem);
+          color:#b8acd4;line-height:1.5;margin:0;
+          max-width:520px;
         }
         .hp-hero-stat{
-          display:flex;align-items:center;gap:clamp(12px,3vw,24px);flex-wrap:wrap;
+          display:flex;align-items:center;gap:clamp(10px,2.5vw,20px);flex-wrap:wrap;
         }
         .hp-hero-num{
           font-family:var(--font-cinzel,serif);
-          font-size:clamp(1.1rem,3vw,1.6rem);
+          font-size:clamp(1rem,2.5vw,1.4rem);
           font-weight:900;color:#f0ecff;
         }
         .hp-hero-numlabel{
-          font-family:monospace;font-size:.52rem;
+          font-family:monospace;font-size:.5rem;
           letter-spacing:.22em;text-transform:uppercase;
           color:#6a5e88;display:block;margin-top:1px;
         }
@@ -206,19 +199,19 @@ export default async function Home() {
 
         /* ── WORLDS ── */
         .hp-worlds{
-          padding:clamp(32px,5vw,56px) clamp(16px,5vw,48px);
+          padding:clamp(28px,4vw,48px) clamp(16px,5vw,48px);
           background:#050410;
           border-bottom:1px solid rgba(255,255,255,.05);
         }
-        .hp-worlds-head{text-align:center;margin-bottom:clamp(24px,4vw,36px)}
+        .hp-worlds-head{text-align:center;margin-bottom:clamp(20px,3vw,30px)}
         .hp-worlds-title{
           font-family:var(--font-cinzel,serif);
-          font-size:clamp(1.1rem,3vw,1.9rem);
+          font-size:clamp(1rem,2.5vw,1.7rem);
           font-weight:900;color:#f0ecff;margin:0 0 8px;
         }
         .hp-worlds-sub{
           font-family:monospace;font-size:.55rem;letter-spacing:.28em;
-          text-transform:uppercase;color:#e0001f;margin:0 0 6px;
+          text-transform:uppercase;color:#ff1a35;margin:0 0 6px;
         }
         .hp-worlds-grid{
           display:grid;
@@ -230,26 +223,26 @@ export default async function Home() {
         .hp-world-card{
           display:flex;flex-direction:column;align-items:center;
           justify-content:center;gap:8px;
-          padding:clamp(16px,3vw,24px) 8px;
+          padding:clamp(14px,2.5vw,22px) 8px;
           border:1px solid var(--wb);background:rgba(0,0,0,.4);
           text-decoration:none;position:relative;overflow:hidden;
         }
         .hp-world-card:hover{background:rgba(0,0,0,.6);border-color:var(--wg);transform:translateY(-3px)}
         .hp-world-orb{
           display:block;
-          width:clamp(28px,4vw,44px);height:clamp(28px,4vw,44px);
+          width:clamp(26px,3.5vw,40px);height:clamp(26px,3.5vw,40px);
           border-radius:50%;background:var(--wd);
           box-shadow:0 0 16px var(--wg);
           flex-shrink:0;
         }
         .hp-world-label{
           font-family:var(--font-cinzel,serif);
-          font-size:clamp(.6rem,.9vw,.78rem);
+          font-size:clamp(.58rem,.85vw,.75rem);
           font-weight:700;color:var(--wt);
           text-align:center;
         }
         .hp-world-sub{
-          font-family:monospace;font-size:clamp(.42rem,.6vw,.5rem);
+          font-family:monospace;font-size:clamp(.4rem,.55vw,.48rem);
           letter-spacing:.1em;text-transform:uppercase;
           color:rgba(255,255,255,.4);text-align:center;
           display:none;
@@ -258,10 +251,10 @@ export default async function Home() {
 
         /* ── SECTION SHELL ── */
         .hp-section{
-          padding:clamp(32px,5vw,56px) clamp(16px,5vw,48px);
+          padding:clamp(28px,4vw,48px) clamp(16px,5vw,48px);
         }
         .hp-section-head{
-          margin-bottom:clamp(20px,3vw,32px);
+          margin-bottom:clamp(18px,3vw,28px);
           display:flex;align-items:flex-end;justify-content:space-between;gap:12px;
         }
         @media(max-width:540px){.hp-section-head{flex-direction:column;align-items:flex-start}}
@@ -271,12 +264,12 @@ export default async function Home() {
         }
         .hp-section-title{
           font-family:var(--font-cinzel,serif);
-          font-size:clamp(1.1rem,2.5vw,1.7rem);
+          font-size:clamp(1rem,2.2vw,1.6rem);
           font-weight:900;color:#f0ecff;margin:0;
         }
         .hp-section-sub{
           font-family:var(--font-cormorant,Georgia,serif);font-style:italic;
-          font-size:clamp(.9rem,1.5vw,1rem);color:#7a6e94;margin:6px 0 0;
+          font-size:clamp(.85rem,1.4vw,.98rem);color:#9a8fb0;margin:6px 0 0;
         }
         .hp-see-all{
           font-family:monospace;font-size:.52rem;letter-spacing:.18em;
@@ -292,14 +285,14 @@ export default async function Home() {
 
         /* ── WOTD ── */
         .hp-wotd{
-          padding:clamp(28px,4vw,48px) clamp(16px,5vw,48px);
+          padding:clamp(24px,4vw,44px) clamp(16px,5vw,48px);
           background:#07050e;
           border-top:1px solid rgba(224,0,31,.12);
           border-bottom:1px solid rgba(224,0,31,.12);
         }
         .hp-wotd-rule{
           display:flex;align-items:center;gap:1rem;
-          margin-bottom:clamp(16px,3vw,28px);
+          margin-bottom:clamp(14px,3vw,24px);
         }
         .hp-wotd-rule-line{flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(224,0,31,.4),transparent)}
         .hp-wotd-label{
@@ -314,7 +307,7 @@ export default async function Home() {
         @media(min-width:560px){.hp-wotd-body{flex-direction:row;align-items:flex-start}}
         .hp-wotd-img{
           position:relative;
-          width:clamp(120px,28vw,200px);
+          width:clamp(110px,25vw,180px);
           aspect-ratio:9/16;
           flex-shrink:0;
           border-radius:14px;overflow:hidden;
@@ -336,17 +329,17 @@ export default async function Home() {
         .hp-wotd-info{flex:1;display:flex;flex-direction:column;gap:12px;text-align:left}
         .hp-wotd-title{
           font-family:var(--font-cinzel,serif);
-          font-size:clamp(1rem,2.5vw,1.6rem);
+          font-size:clamp(.95rem,2.2vw,1.5rem);
           font-weight:700;color:#f0e8d8;margin:0;line-height:1.2;
         }
         .hp-wotd-note{
           font-family:var(--font-cormorant,Georgia,serif);font-style:italic;
-          font-size:clamp(.88rem,1.5vw,1rem);color:#7a6e94;margin:0;line-height:1.6;
+          font-size:clamp(.85rem,1.4vw,.98rem);color:#9a8fb0;margin:0;line-height:1.6;
         }
 
         /* ── COLLECTIONS (obsessions) ── */
         .hp-cols{
-          padding:clamp(32px,5vw,56px) clamp(16px,5vw,48px);
+          padding:clamp(28px,4vw,48px) clamp(16px,5vw,48px);
           background:#060410;
         }
         .hp-cols-grid{
@@ -365,7 +358,7 @@ export default async function Home() {
         .hp-col-card:hover{border-color:rgba(201,168,76,.4);transform:translateY(-2px)}
         /* 9:16 portrait for mobile/iPhone collections */
         .hp-col-thumb{position:relative;aspect-ratio:9/16;overflow:hidden;background:#111}
-        /* 16:9 landscape for PC/kit collections */
+        /* 16:9 landscape for PC/kit/wide collections */
         .hp-col-thumb--wide{aspect-ratio:16/9}
         .hp-col-info{padding:8px 10px 10px;display:flex;flex-direction:column;gap:3px}
         .hp-col-cat{
@@ -383,26 +376,26 @@ export default async function Home() {
 
         /* ── CTA strip ── */
         .hp-cta{
-          padding:clamp(40px,6vw,72px) clamp(16px,5vw,48px);
+          padding:clamp(36px,5vw,64px) clamp(16px,5vw,48px);
           text-align:center;background:#060410;
           border-top:1px solid rgba(255,255,255,.05);
         }
         .hp-cta-title{
           font-family:var(--font-cinzel,serif);
-          font-size:clamp(1.1rem,3.5vw,2.2rem);
+          font-size:clamp(1rem,3vw,2rem);
           font-weight:900;color:#f0ecff;margin:0 0 12px;
         }
         .hp-cta-sub{
           font-family:var(--font-cormorant,Georgia,serif);font-style:italic;
-          font-size:clamp(.9rem,1.8vw,1.05rem);color:#7a6e94;
-          max-width:420px;margin:0 auto 24px;line-height:1.6;
+          font-size:clamp(.88rem,1.6vw,1rem);color:#9a8fb0;
+          max-width:420px;margin:0 auto 22px;line-height:1.6;
         }
       `}</style>
 
       <div className="hp">
 
         {/* ════════════════════════════════════════════
-            HERO
+            HERO — compact, starts from very top of image
         ════════════════════════════════════════════ */}
         <section className="hp-hero">
           {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -424,11 +417,8 @@ export default async function Home() {
             }}>
               Haunted Wallpapers — Free Dark Fantasy &amp; Horror Wallpapers
             </h1>
-            <p className="hp-eyebrow">Free dark wallpapers</p>
-            <p className="hp-h1" aria-hidden="true">Where the Dark<br />Gets Beautiful</p>
-            <p className="hp-hero-sub">
-              Gothic, horror &amp; cosmic art for iPhone and Android — no sign-up, always free.
-            </p>
+            <p className="hp-eyebrow">New drops added every day</p>
+            <p className="hp-hero-tagline">You&rsquo;ve arrived in Haunted Town — where every wallpaper has a secret</p>
             <div className="hp-hero-stat">
               <div>
                 <span className="hp-hero-num">{fmt(totalImages)}</span>
@@ -450,6 +440,32 @@ export default async function Home() {
             </div>
           </div>
         </section>
+
+        {/* ════════════════════════════════════════════
+            NEW THIS WEEK
+        ════════════════════════════════════════════ */}
+        {newThisWeek.length > 0 && (
+          <section className="hp-section hp-new">
+            <div className="hp-section-head">
+              <div>
+                <p className="hp-section-eye" style={{ color: "#4caf50" }}>Fresh From The Vault</p>
+                <h2 className="hp-section-title">New This Week</h2>
+                <p className="hp-section-sub">Just surfaced. Disappear from here in 48 hrs.</p>
+              </div>
+              <Link prefetch={false} href="/all" className="hp-see-all">See all →</Link>
+            </div>
+            <WallpaperCardGrid
+              accentRgb="76,175,80"
+              badge="NEW"
+              badgeColor="#4caf50"
+              items={newThisWeek.map(img => ({
+                id: img.id, slug: img.slug, title: img.title,
+                src: getPublicUrl(img.r2Key),
+                devicePath: img.deviceType === "IPHONE" ? "iphone" : img.deviceType === "ANDROID" ? "android" : "pc",
+              }))}
+            />
+          </section>
+        )}
 
         {/* ════════════════════════════════════════════
             COLOR WORLDS
@@ -483,33 +499,7 @@ export default async function Home() {
         </section>
 
         {/* ════════════════════════════════════════════
-            NEW THIS WEEK
-        ════════════════════════════════════════════ */}
-        {newThisWeek.length > 0 && (
-          <section className="hp-section hp-new">
-            <div className="hp-section-head">
-              <div>
-                <p className="hp-section-eye" style={{ color: "#4caf50" }}>Fresh From The Vault</p>
-                <h2 className="hp-section-title">New This Week</h2>
-                <p className="hp-section-sub">Just surfaced. Disappear from here in 48 hrs.</p>
-              </div>
-              <Link prefetch={false} href="/all" className="hp-see-all">See all →</Link>
-            </div>
-            <WallpaperCardGrid
-              accentRgb="76,175,80"
-              badge="NEW"
-              badgeColor="#4caf50"
-              items={newThisWeek.map(img => ({
-                id: img.id, slug: img.slug, title: img.title,
-                src: getPublicUrl(img.r2Key),
-                devicePath: img.deviceType === "IPHONE" ? "iphone" : img.deviceType === "ANDROID" ? "android" : "pc",
-              }))}
-            />
-          </section>
-        )}
-
-        {/* ════════════════════════════════════════════
-            PREMIUM THIS WEEK
+            PREMIUM THIS WEEK — moved after Worlds
         ════════════════════════════════════════════ */}
         {premiumThisWeek.length > 0 && (
           <section className="hp-section hp-premium">
@@ -521,7 +511,7 @@ export default async function Home() {
               </div>
               <Link prefetch={false} href="/all" className="hp-see-all">Browse →</Link>
             </div>
-            <div style={{ marginBottom: "clamp(16px,3vw,24px)" }}>
+            <div style={{ marginBottom: "clamp(14px,2.5vw,22px)" }}>
               <PremiumCountdown updatedAt={countdownDate} />
             </div>
             <WallpaperCardGrid
@@ -579,22 +569,21 @@ export default async function Home() {
         })()}
 
         {/* ════════════════════════════════════════════
-            COLLECTIONS (obsessions) — 9:16 thumbnails
+            COLLECTIONS (obsessions)
+            — Defiant Manifesto forced 16:9 by slug
+            — "View all obsessions" link
         ════════════════════════════════════════════ */}
         {obsessions.length > 0 && (
           <section className="hp-cols">
-            <div className="hp-section-head" style={{ marginBottom: "clamp(20px,3vw,32px)" }}>
+            <div className="hp-section-head" style={{ marginBottom: "clamp(18px,3vw,28px)" }}>
               <div>
                 <p className="hp-section-eye" style={{ color: "#c9a84c" }}>Curated Sets</p>
                 <h2 className="hp-section-title">Collections</h2>
               </div>
-              <Link prefetch={false} href="/obsessions" className="hp-see-all">All collections →</Link>
+              <Link prefetch={false} href="/obsessions" className="hp-see-all">View all obsessions →</Link>
             </div>
             <div className="hp-cols-grid">
               {obsessions.map((obs) => {
-                // Detect if this collection has a wide (16:9) thumbnail
-                // Kit collections tend to have landscape thumbs — check by category/tag
-                const isWide = obs.tag === "pc" || obs.tag === "kit" || obs.tag === "desktop";
                 return (
                   <Link
                     key={obs.id}
@@ -602,8 +591,8 @@ export default async function Home() {
                     href={`/obsessions/${encodeURIComponent(obs.slug)}`}
                     className="hp-col-card"
                   >
-                    {obs.thumbnail && (
-                      <div className={`hp-col-thumb${isWide ? " hp-col-thumb--wide" : ""}`}>
+                    {obs.thumbnail && WIDE_SLUGS.has(obs.slug) && (
+                      <div className="hp-col-thumb hp-col-thumb--wide">
                         <Image
                           src={getPublicUrl(obs.thumbnail)}
                           alt={obs.title}
@@ -637,8 +626,6 @@ export default async function Home() {
           <p className="hp-cta-sub">Dark fantasy, gothic horror, cosmic art. All free. No account.</p>
           <Link prefetch={false} href="/all" className="hp-btn-red">Browse Everything →</Link>
         </section>
-
-        <RecentlyViewed />
 
       </div>
 
