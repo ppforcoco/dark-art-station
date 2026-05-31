@@ -7,6 +7,11 @@ import { db, getWallpaperOfTheDay, getPageContent } from "@/lib/db";
 import { getPublicUrl } from "@/lib/r2";
 import WallpaperCardGrid from "@/components/WallpaperCardGrid";
 import PremiumCountdown from "@/components/PremiumCountdown";
+import dynamic from "next/dynamic";
+
+// ── Client components (streak + trail) ───────────────────────────────────────
+const StreakBar = dynamic(() => import("@/components/StreakBar"), { ssr: false });
+const TrailSection = dynamic(() => import("@/components/TrailSection"), { ssr: false });
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
 const OG_IMAGE = `${SITE_URL}/og-image.jpg`;
@@ -131,29 +136,30 @@ export default async function Home() {
         .hp-hero{
           position:relative;
           width:100%;
-          aspect-ratio:16/9;
-          max-height:320px;
-          display:flex;align-items:flex-end;
-          overflow:hidden;
           background:#000;
-        }
-        @media(min-width:640px){
-          .hp-hero{aspect-ratio:unset;height:200px;max-height:200px}
+          overflow:hidden;
         }
         .hp-hero-img{
-          position:absolute;inset:0;width:100%;height:100%;
-          object-fit:contain;object-position:center top;
           display:block;
+          width:100%;
+          height:auto;
+          max-height:clamp(180px,56vw,280px);
+          object-fit:contain;
+          object-position:center top;
+        }
+        @media(min-width:640px){
+          .hp-hero-img{max-height:200px}
         }
         .hp-hero-veil{
           position:absolute;inset:0;
-          background:linear-gradient(to bottom,rgba(7,5,16,.05) 0%,rgba(7,5,16,.45) 45%,rgba(7,5,16,.97) 100%);
+          background:linear-gradient(to bottom,rgba(7,5,16,.0) 0%,rgba(7,5,16,.5) 55%,rgba(7,5,16,.97) 100%);
+          pointer-events:none;
         }
         .hp-hero-body{
-          position:relative;z-index:1;
-          padding:clamp(16px,4vw,36px) clamp(16px,5vw,48px) clamp(20px,4vw,36px);
+          position:absolute;bottom:0;left:0;right:0;z-index:1;
+          padding:clamp(10px,2vw,20px) clamp(16px,5vw,48px) clamp(14px,2.5vw,24px);
           max-width:720px;
-          display:flex;flex-direction:column;gap:10px;
+          display:flex;flex-direction:column;gap:7px;
         }
         .hp-eyebrow{
           font-family:monospace;
@@ -394,12 +400,82 @@ export default async function Home() {
           font-size:clamp(.88rem,1.6vw,1rem);color:#9a8fb0;
           max-width:420px;margin:0 auto 22px;line-height:1.6;
         }
+        /* ── STREAK ── */
+        .hp-streak{
+          display:flex;align-items:center;gap:10px;
+          padding:clamp(10px,2vw,16px) clamp(16px,5vw,48px);
+          background:#08060f;
+          border-bottom:1px solid rgba(255,255,255,.05);
+        }
+        .hp-streak-fire{font-size:1.2rem;line-height:1}
+        .hp-streak-text{
+          font-family:var(--font-cinzel,serif);
+          font-size:clamp(.7rem,1.5vw,.9rem);
+          font-weight:700;color:#c9a84c;
+        }
+        .hp-streak-sub{
+          font-family:monospace;font-size:.48rem;
+          letter-spacing:.2em;text-transform:uppercase;
+          color:#6a5e88;margin-left:4px;
+        }
+        .hp-streak-days{
+          font-size:clamp(1rem,2vw,1.3rem);
+          font-weight:900;color:#ff9500;
+          font-family:var(--font-cinzel,serif);
+        }
+
+        /* ── YOUR TRAIL (netflix style) ── */
+        .hp-trail{
+          padding:clamp(24px,4vw,40px) 0 clamp(24px,4vw,40px) clamp(16px,5vw,48px);
+          background:#07050e;
+          border-top:1px solid rgba(255,255,255,.05);
+          overflow:hidden;
+        }
+        .hp-trail-head{
+          display:flex;align-items:flex-end;justify-content:space-between;
+          padding-right:clamp(16px,5vw,48px);
+          margin-bottom:clamp(14px,2.5vw,20px);
+        }
+        .hp-trail-scroll{
+          display:flex;gap:clamp(8px,1.5vw,12px);
+          overflow-x:auto;padding-right:clamp(16px,5vw,48px);
+          scroll-snap-type:x mandatory;
+          -webkit-overflow-scrolling:touch;
+          scrollbar-width:none;
+        }
+        .hp-trail-scroll::-webkit-scrollbar{display:none}
+        .hp-trail-card{
+          flex-shrink:0;
+          width:clamp(90px,22vw,130px);
+          scroll-snap-align:start;
+          text-decoration:none;
+          display:flex;flex-direction:column;gap:5px;
+        }
+        .hp-trail-thumb{
+          position:relative;
+          aspect-ratio:9/16;
+          border-radius:6px;
+          overflow:hidden;
+          border:1px solid rgba(255,255,255,.08);
+          background:#111;
+        }
+        .hp-trail-card:hover .hp-trail-thumb{
+          border-color:rgba(201,168,76,.5);
+          transform:scale(1.02);
+        }
+        .hp-trail-thumb--wide{aspect-ratio:16/9}
+        .hp-trail-name{
+          font-family:var(--font-cormorant,Georgia,serif);
+          font-size:.78rem;color:#c8c0dc;
+          line-height:1.2;overflow:hidden;
+          display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;
+        }
       `}</style>
 
       <div className="hp">
 
         {/* ════════════════════════════════════════════
-            HERO — compact, starts from very top of image
+            HERO — full image no crop, body overlays bottom
         ════════════════════════════════════════════ */}
         <section className="hp-hero">
           {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -444,6 +520,11 @@ export default async function Home() {
             </div>
           </div>
         </section>
+
+        {/* ════════════════════════════════════════════
+            STREAK BAR — client-side, days visited
+        ════════════════════════════════════════════ */}
+        <StreakBar />
 
         {/* ════════════════════════════════════════════
             NEW THIS WEEK
@@ -621,6 +702,11 @@ export default async function Home() {
             </div>
           </section>
         )}
+
+        {/* ════════════════════════════════════════════
+            YOUR TRAIL — netflix-style recently viewed
+        ════════════════════════════════════════════ */}
+        <TrailSection />
 
         {/* ════════════════════════════════════════════
             CTA
