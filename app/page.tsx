@@ -1,10 +1,4 @@
 // app/page.tsx — Haunted Wallpapers Homepage
-// FIXES:
-//   1. BUILD FIX: WallpaperCardGrid moved to a client wrapper to allow ssr:false
-//   2. HERO FIX: Full-bleed 16:9 on desktop, full-width portrait on mobile
-//      No cropping — image scales to fill without cutting content
-//   3. HERO SHRINK: Desktop hero capped at 55vh so "New This Week" is visible above fold
-//   4. WORLDS SHRINK: Narrower column cards
 
 import type { Metadata } from "next";
 import { unstable_cache } from "next/cache";
@@ -15,14 +9,6 @@ import { db, getWallpaperOfTheDay, getPageContent } from "@/lib/db";
 import { getPublicUrl } from "@/lib/r2";
 import PremiumCountdown from "@/components/PremiumCountdown";
 import StreakBar from "@/components/StreakBar";
-
-// ── FIX: wrap in a Client Component so ssr:false is legal ────────────────────
-// Create /components/WallpaperCardGridClient.tsx with:
-//   "use client";
-//   import dynamic from "next/dynamic";
-//   const WallpaperCardGrid = dynamic(() => import("@/components/WallpaperCardGrid"), { ssr: false });
-//   export default WallpaperCardGrid;
-// Then import that here:
 import WallpaperCardGridClient from "@/components/WallpaperCardGridClient";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
@@ -134,31 +120,35 @@ export default async function Home() {
         .hp{background:#070510;min-height:100vh;color:#e8e4f0}
 
         /* ── HERO ─────────────────────────────────────────────────────────
-           Mobile  : 16:9 aspect ratio, full width, image fills it
-           Desktop : capped at 55vh so "New This Week" is visible above fold
-           The image is positioned center-top so characters stay visible.   */
+           Mobile  : full width, aspect-ratio:16/9, no clipping
+           Desktop : constrained in a narrower wrapper so image is smaller
+                     but never cropped — aspect-ratio does the height work   */
         .hp-hero{
           position:relative;
           width:100%;
           aspect-ratio:16/9;
-          min-height:320px;
-          max-height:90vh;
+          min-height:220px;
           background:#000;
           overflow:hidden;
         }
 
-        /* Desktop: shrink the hero so content below is visible above fold */
+        /* Desktop: put the hero in a width-limited column so 16:9 makes it
+           naturally shorter without ever cutting the image */
         @media(min-width:768px){
+          .hp-hero-wrap{
+            max-width:860px;
+            margin:0 auto;
+            padding:0 clamp(16px,3vw,40px);
+          }
           .hp-hero{
-            max-height:55vh;
-            min-height:320px;
+            /* no max-height — let aspect-ratio:16/9 control height */
+            border-radius:4px;
+            overflow:hidden;
           }
         }
 
-        /* On very small phones (< 480px) a 16:9 box is only ~170px tall
-           which is too short for the text. Floor it so it never collapses. */
         @media(max-width:479px){
-          .hp-hero{ min-height:220px; }
+          .hp-hero{ min-height:200px; }
         }
 
         .hp-hero-img{
@@ -171,51 +161,51 @@ export default async function Home() {
           position:absolute;inset:0;pointer-events:none;
           background:linear-gradient(to bottom,
             rgba(7,5,16,.0) 0%,
-            rgba(7,5,16,.15) 35%,
-            rgba(7,5,16,.70) 65%,
+            rgba(7,5,16,.10) 30%,
+            rgba(7,5,16,.65) 60%,
             rgba(7,5,16,.97) 100%);
         }
 
         .hp-hero-body{
           position:absolute;bottom:0;left:0;right:0;z-index:1;
-          padding:clamp(14px,2.5vw,28px) clamp(20px,4vw,52px) clamp(18px,3vw,36px);
-          max-width:800px;
-          display:flex;flex-direction:column;gap:clamp(6px,1.2vw,12px);
+          padding:clamp(14px,2.5vw,28px) clamp(20px,4vw,36px) clamp(18px,3vw,28px);
+          max-width:700px;
+          display:flex;flex-direction:column;gap:clamp(6px,1.2vw,10px);
         }
 
         .hp-eyebrow{
-          font-family:monospace;font-size:clamp(.5rem,.8vw,.6rem);
+          font-family:monospace;font-size:clamp(.55rem,.9vw,.7rem);
           letter-spacing:.28em;text-transform:uppercase;color:#c0001a;margin:0;
         }
         .hp-hero-tagline{
           font-family:var(--font-cormorant,Georgia,serif);font-style:italic;
-          font-size:clamp(1rem,2vw,1.35rem);color:#c0b8d8;line-height:1.45;margin:0;
-          max-width:500px;
+          font-size:clamp(1.05rem,2.2vw,1.45rem);color:#d0c8e8;line-height:1.45;margin:0;
+          max-width:480px;
         }
-        .hp-hero-stat{display:flex;align-items:center;gap:clamp(14px,2.5vw,32px);flex-wrap:wrap}
+        .hp-hero-stat{display:flex;align-items:center;gap:clamp(14px,2.5vw,28px);flex-wrap:wrap}
         .hp-hero-num{
           font-family:var(--font-cinzel,Georgia,serif);
-          font-size:clamp(1.1rem,2.5vw,1.75rem);font-weight:900;color:#f0ecff;
+          font-size:clamp(1.2rem,2.8vw,1.9rem);font-weight:900;color:#f0ecff;
         }
         .hp-hero-numlabel{
-          font-family:monospace;font-size:.44rem;letter-spacing:.2em;
+          font-family:monospace;font-size:clamp(.44rem,.55vw,.52rem);letter-spacing:.2em;
           text-transform:uppercase;color:#5a4e78;display:block;margin-top:2px;
         }
         .hp-hero-cta{display:flex;gap:10px;flex-wrap:wrap;margin-top:2px}
 
         /* BUTTONS */
         .hp-btn-red{
-          font-family:monospace;font-size:.62rem;letter-spacing:.15em;
+          font-family:monospace;font-size:clamp(.6rem,.75vw,.72rem);letter-spacing:.15em;
           text-transform:uppercase;color:#f0ecff;
           background:#b8001a;border:1px solid #b8001a;
-          padding:12px 24px;text-decoration:none;display:inline-flex;align-items:center;
+          padding:11px 22px;text-decoration:none;display:inline-flex;align-items:center;
         }
         .hp-btn-red:hover{background:#8f0013}
         .hp-btn-ghost{
-          font-family:monospace;font-size:.62rem;letter-spacing:.15em;
+          font-family:monospace;font-size:clamp(.6rem,.75vw,.72rem);letter-spacing:.15em;
           text-transform:uppercase;color:#c9a84c;
           background:transparent;border:1px solid rgba(201,168,76,.3);
-          padding:12px 24px;text-decoration:none;display:inline-flex;align-items:center;
+          padding:11px 22px;text-decoration:none;display:inline-flex;align-items:center;
         }
         .hp-btn-ghost:hover{border-color:#c9a84c}
 
@@ -227,19 +217,19 @@ export default async function Home() {
         }
         @media(max-width:540px){.hp-section-head{flex-direction:column;align-items:flex-start}}
         .hp-section-eye{
-          font-family:monospace;font-size:.5rem;letter-spacing:.28em;
+          font-family:monospace;font-size:clamp(.52rem,.65vw,.62rem);letter-spacing:.28em;
           text-transform:uppercase;margin:0 0 5px;
         }
         .hp-section-title{
           font-family:var(--font-cinzel,Georgia,serif);
-          font-size:clamp(.95rem,2vw,1.4rem);font-weight:900;color:#f0ecff;margin:0;
+          font-size:clamp(1rem,2.2vw,1.5rem);font-weight:900;color:#f0ecff;margin:0;
         }
         .hp-section-sub{
           font-family:var(--font-cormorant,Georgia,serif);font-style:italic;
-          font-size:clamp(.8rem,1.3vw,.92rem);color:#8a7fa0;margin:5px 0 0;
+          font-size:clamp(.85rem,1.3vw,.98rem);color:#8a7fa0;margin:5px 0 0;
         }
         .hp-see-all{
-          font-family:monospace;font-size:.48rem;letter-spacing:.16em;
+          font-family:monospace;font-size:clamp(.5rem,.62vw,.58rem);letter-spacing:.16em;
           text-transform:uppercase;color:#c9a84c;text-decoration:none;
           border-bottom:1px solid rgba(201,168,76,.25);padding-bottom:2px;
           white-space:nowrap;flex-shrink:0;
@@ -250,31 +240,36 @@ export default async function Home() {
         .hp-new{background:#06050e}
         .hp-premium{background:#080710}
 
-        /* STATIC card grid */
+        /* ── STATIC CARD GRID ──────────────────────────────────────────────
+           Mobile: unchanged (auto-fill minmax ~90px)
+           Desktop: narrower min so more columns but smaller images → LCP ↓  */
         .hp-sgrid{
           display:grid;
           grid-template-columns:repeat(auto-fill,minmax(clamp(90px,20vw,130px),1fr));
           gap:clamp(6px,1.2vw,10px);
         }
+        @media(min-width:768px){
+          .hp-sgrid{
+            grid-template-columns:repeat(auto-fill,minmax(90px,1fr));
+            gap:7px;
+          }
+        }
+
         .hp-scard{
           display:flex;flex-direction:column;text-decoration:none;
-          border:1px solid rgba(255,255,255,.06);background:#0a0818;
+          border:1px solid rgba(255,255,255,.07);background:#0a0818;
           overflow:hidden;
         }
         .hp-scard-thumb{position:relative;aspect-ratio:9/16;overflow:hidden;background:#0d0b18}
         .hp-scard-thumb--wide{aspect-ratio:16/9}
-        .hp-scard-info{padding:6px 8px 8px;display:flex;flex-direction:column;gap:2px}
+        .hp-scard-info{padding:5px 7px 7px;display:flex;flex-direction:column;gap:2px}
         .hp-scard-badge{
-          font-family:monospace;font-size:.38rem;letter-spacing:.18em;
+          font-family:monospace;font-size:clamp(.42rem,.52vw,.5rem);letter-spacing:.16em;
           text-transform:uppercase;margin-bottom:1px;
         }
         .hp-scard-title{
           font-family:var(--font-cormorant,Georgia,serif);
-          font-size:.8rem;color:#ddd8f0;font-weight:600;line-height:1.2;
-        }
-        .hp-scard-sub{
-          font-family:monospace;font-size:.38rem;letter-spacing:.12em;
-          text-transform:uppercase;color:rgba(255,255,255,.3);
+          font-size:clamp(.82rem,.95vw,.92rem);color:#ddd8f0;font-weight:600;line-height:1.25;
         }
 
         /* WORLDS */
@@ -285,16 +280,18 @@ export default async function Home() {
         .hp-worlds-head{text-align:center;margin-bottom:clamp(16px,2.5vw,26px)}
         .hp-worlds-title{
           font-family:var(--font-cinzel,Georgia,serif);
-          font-size:clamp(.9rem,2.2vw,1.5rem);font-weight:900;color:#f0ecff;margin:0 0 6px;
+          font-size:clamp(.95rem,2.2vw,1.5rem);font-weight:900;color:#f0ecff;margin:0 0 6px;
         }
         .hp-worlds-sub{
-          font-family:monospace;font-size:.48rem;letter-spacing:.26em;
+          font-family:monospace;font-size:clamp(.5rem,.6vw,.58rem);letter-spacing:.26em;
           text-transform:uppercase;color:#d01030;margin:0 0 4px;
         }
-        /* SHRUNK: narrower cards, tighter max-width */
         .hp-worlds-grid{
           display:grid;grid-template-columns:repeat(5,1fr);
           gap:clamp(4px,0.8vw,8px);max-width:560px;margin:0 auto;
+        }
+        @media(min-width:768px){
+          .hp-worlds-grid{ max-width:440px; gap:5px; }
         }
         .hp-world-card{
           display:flex;flex-direction:column;align-items:center;
@@ -305,17 +302,17 @@ export default async function Home() {
         }
         .hp-world-card:hover{background:rgba(0,0,0,.55);border-color:var(--wg)}
         .hp-world-orb{
-          display:block;width:clamp(14px,2vw,24px);height:clamp(14px,2vw,24px);
-          border-radius:50%;background:var(--wd);box-shadow:0 0 10px var(--wg);flex-shrink:0;
+          display:block;width:clamp(14px,2vw,22px);height:clamp(14px,2vw,22px);
+          border-radius:50%;background:var(--wd);box-shadow:0 0 9px var(--wg);flex-shrink:0;
         }
         .hp-world-label{
           font-family:var(--font-cinzel,Georgia,serif);
-          font-size:clamp(.46rem,.65vw,.58rem);font-weight:700;color:#f0ecff;text-align:center;
+          font-size:clamp(.48rem,.65vw,.58rem);font-weight:700;color:#f0ecff;text-align:center;
         }
         .hp-world-sub{
-          font-family:monospace;font-size:clamp(.3rem,.4vw,.38rem);
+          font-family:monospace;font-size:clamp(.32rem,.42vw,.4rem);
           letter-spacing:.1em;text-transform:uppercase;
-          color:rgba(255,255,255,.35);text-align:center;display:none;
+          color:rgba(255,255,255,.38);text-align:center;display:none;
         }
         @media(min-width:480px){.hp-world-sub{display:block}}
 
@@ -329,7 +326,7 @@ export default async function Home() {
         .hp-wotd-rule{display:flex;align-items:center;gap:1rem;margin-bottom:clamp(14px,3vw,24px)}
         .hp-wotd-rule-line{flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(224,0,31,.3),transparent)}
         .hp-wotd-label{
-          font-family:monospace;font-size:.52rem;letter-spacing:.22em;
+          font-family:monospace;font-size:clamp(.54rem,.65vw,.62rem);letter-spacing:.22em;
           text-transform:uppercase;color:#e0001f;white-space:nowrap;
         }
         .hp-wotd-body{
@@ -342,6 +339,9 @@ export default async function Home() {
           flex-shrink:0;border-radius:12px;overflow:hidden;
           border:1px solid rgba(224,0,31,.3);display:block;text-decoration:none;
         }
+        @media(min-width:768px){
+          .hp-wotd-img{ width:clamp(90px,11vw,130px); }
+        }
         .hp-wotd-corners{position:absolute;inset:0;pointer-events:none}
         .hp-wotd-corners span{position:absolute;width:12px;height:12px;border-color:rgba(224,0,31,.5);border-style:solid}
         .hp-wotd-corners span:nth-child(1){top:7px;left:7px;border-width:1px 0 0 1px}
@@ -351,11 +351,11 @@ export default async function Home() {
         .hp-wotd-info{flex:1;display:flex;flex-direction:column;gap:10px;text-align:left}
         .hp-wotd-title{
           font-family:var(--font-cinzel,Georgia,serif);
-          font-size:clamp(.9rem,2vw,1.4rem);font-weight:700;color:#f0e8d8;margin:0;line-height:1.25;
+          font-size:clamp(.95rem,2.2vw,1.5rem);font-weight:700;color:#f0e8d8;margin:0;line-height:1.25;
         }
         .hp-wotd-note{
           font-family:var(--font-cormorant,Georgia,serif);font-style:italic;
-          font-size:clamp(.82rem,1.3vw,.94rem);color:#8a7fa0;margin:0;line-height:1.6;
+          font-size:clamp(.88rem,1.3vw,1rem);color:#8a7fa0;margin:0;line-height:1.6;
         }
 
         /* COLLECTIONS */
@@ -365,6 +365,12 @@ export default async function Home() {
           grid-template-columns:repeat(auto-fill,minmax(clamp(90px,18vw,130px),1fr));
           gap:clamp(5px,1vw,10px);max-width:1100px;margin:0 auto;
         }
+        @media(min-width:768px){
+          .hp-cols-grid{
+            grid-template-columns:repeat(auto-fill,minmax(90px,1fr));
+            gap:7px;
+          }
+        }
         .hp-col-card{
           display:flex;flex-direction:column;text-decoration:none;overflow:hidden;
           border:1px solid rgba(255,255,255,.06);background:#0a0818;
@@ -372,71 +378,73 @@ export default async function Home() {
         .hp-col-card:hover{border-color:rgba(201,168,76,.35)}
         .hp-col-thumb{position:relative;aspect-ratio:9/16;overflow:hidden;background:#0d0b18}
         .hp-col-thumb--wide{aspect-ratio:16/9}
-        .hp-col-info{padding:7px 9px 9px;display:flex;flex-direction:column;gap:2px}
+        .hp-col-info{padding:6px 8px 8px;display:flex;flex-direction:column;gap:2px}
         .hp-col-cat{
-          font-family:monospace;font-size:.38rem;letter-spacing:.2em;
+          font-family:monospace;font-size:clamp(.4rem,.5vw,.48rem);letter-spacing:.2em;
           text-transform:uppercase;color:#b0001a;
         }
         .hp-col-title{
           font-family:var(--font-cormorant,Georgia,serif);
-          font-size:.82rem;color:#e8e4f0;font-weight:600;line-height:1.2;
+          font-size:clamp(.84rem,.98vw,.94rem);color:#e8e4f0;font-weight:600;line-height:1.2;
         }
         .hp-col-count{
-          font-family:monospace;font-size:.38rem;letter-spacing:.13em;
-          text-transform:uppercase;color:rgba(255,255,255,.28);
+          font-family:monospace;font-size:clamp(.4rem,.5vw,.48rem);letter-spacing:.13em;
+          text-transform:uppercase;color:rgba(255,255,255,.3);
         }
       `}</style>
 
       <div className="hp">
 
-        {/* ══ HERO — full-bleed, capped at 55vh on desktop ════════════════ */}
-        <section className="hp-hero">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={HERO_IMG}
-            alt=""
-            aria-hidden="true"
-            className="hp-hero-img"
-            fetchPriority="high"
-            decoding="sync"
-            loading="eager"
-            width="1600"
-            height="900"
-          />
-          <div className="hp-hero-veil" />
-          <div className="hp-hero-body">
-            <h1 style={{
-              position: "absolute", width: "1px", height: "1px", padding: 0,
-              margin: "-1px", overflow: "hidden", clip: "rect(0,0,0,0)",
-              whiteSpace: "nowrap", border: 0,
-            }}>
-              Haunted Wallpapers — Free Dark Fantasy &amp; Horror Wallpapers
-            </h1>
-            <p className="hp-eyebrow">New drops every day</p>
-            <p className="hp-hero-tagline">
-              You&rsquo;ve arrived in Haunted Town — where every wallpaper has a secret
-            </p>
-            <div className="hp-hero-stat">
-              <div>
-                <span className="hp-hero-num">{fmt(totalImages)}</span>
-                <span className="hp-hero-numlabel">Wallpapers</span>
+        {/* ══ HERO — width-constrained on desktop so image never clips ════ */}
+        <div className="hp-hero-wrap">
+          <section className="hp-hero">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={HERO_IMG}
+              alt=""
+              aria-hidden="true"
+              className="hp-hero-img"
+              fetchPriority="high"
+              decoding="sync"
+              loading="eager"
+              width="1600"
+              height="900"
+            />
+            <div className="hp-hero-veil" />
+            <div className="hp-hero-body">
+              <h1 style={{
+                position: "absolute", width: "1px", height: "1px", padding: 0,
+                margin: "-1px", overflow: "hidden", clip: "rect(0,0,0,0)",
+                whiteSpace: "nowrap", border: 0,
+              }}>
+                Haunted Wallpapers — Free Dark Fantasy &amp; Horror Wallpapers
+              </h1>
+              <p className="hp-eyebrow">New drops every day</p>
+              <p className="hp-hero-tagline">
+                You&rsquo;ve arrived in Haunted Town — where every wallpaper has a secret
+              </p>
+              <div className="hp-hero-stat">
+                <div>
+                  <span className="hp-hero-num">{fmt(totalImages)}</span>
+                  <span className="hp-hero-numlabel">Wallpapers</span>
+                </div>
+                <div>
+                  <span className="hp-hero-num">4K</span>
+                  <span className="hp-hero-numlabel">Quality</span>
+                </div>
+                <div>
+                  <span className="hp-hero-num">Free</span>
+                  <span className="hp-hero-numlabel">Always</span>
+                </div>
               </div>
-              <div>
-                <span className="hp-hero-num">4K</span>
-                <span className="hp-hero-numlabel">Quality</span>
-              </div>
-              <div>
-                <span className="hp-hero-num">Free</span>
-                <span className="hp-hero-numlabel">Always</span>
+              <div className="hp-hero-cta">
+                <Link prefetch={false} href="/all" className="hp-btn-red">Browse All →</Link>
+                <Link prefetch={false} href="/iphone" className="hp-btn-ghost">iPhone</Link>
+                <Link prefetch={false} href="/android" className="hp-btn-ghost">Android</Link>
               </div>
             </div>
-            <div className="hp-hero-cta">
-              <Link prefetch={false} href="/all" className="hp-btn-red">Browse All →</Link>
-              <Link prefetch={false} href="/iphone" className="hp-btn-ghost">iPhone</Link>
-              <Link prefetch={false} href="/android" className="hp-btn-ghost">Android</Link>
-            </div>
-          </div>
-        </section>
+          </section>
+        </div>
 
         <StreakBar />
 
@@ -471,7 +479,7 @@ export default async function Home() {
                         loading={i < 4 ? "eager" : "lazy"}
                         priority={i < 2}
                         unoptimized
-                        sizes="(max-width:640px) 44vw, (max-width:1024px) 22vw, 140px"
+                        sizes="(max-width:767px) 44vw, 100px"
                         style={{ objectFit: "cover", objectPosition: "center top" }}
                       />
                     </div>
@@ -553,7 +561,7 @@ export default async function Home() {
                 <Link href={wotdHref} className="hp-wotd-img" aria-label={wotd.title}>
                   <Image
                     src={wotdUrl} alt={wotd.title} fill loading="lazy" unoptimized
-                    sizes="(max-width:560px) 26vw, 180px"
+                    sizes="(max-width:767px) 26vw, 130px"
                     style={{ objectFit: "cover", objectPosition: "center top" }}
                   />
                   <div className="hp-wotd-corners" aria-hidden="true">
@@ -590,37 +598,33 @@ export default async function Home() {
               </Link>
             </div>
             <div className="hp-cols-grid">
-              {obsessions.filter((obs) => WIDE_SLUGS.has(obs.slug)).map((obs) => {
-                const isWide = true;
-                const showThumb = true;
-                return (
-                  <Link
-                    key={obs.id}
-                    prefetch={false}
-                    href={`/obsessions/${encodeURIComponent(obs.slug)}`}
-                    className="hp-col-card"
-                  >
-                    {showThumb && obs.thumbnail && (
-                      <div className="hp-col-thumb hp-col-thumb--wide">
-                        <Image
-                          src={getPublicUrl(obs.thumbnail)}
-                          alt={obs.title}
-                          fill unoptimized loading="lazy"
-                          sizes="(max-width:640px) 42vw, (max-width:1024px) 20vw, 150px"
-                          style={{ objectFit: "cover", objectPosition: "center top" }}
-                        />
-                      </div>
-                    )}
-                    <div className="hp-col-info">
-                      {obs.tag && <span className="hp-col-cat">{obs.tag}</span>}
-                      <span className="hp-col-title">{obs.title}</span>
-                      {obs._count.images > 0 && (
-                        <span className="hp-col-count">{obs._count.images} wallpapers</span>
-                      )}
+              {obsessions.filter((obs) => WIDE_SLUGS.has(obs.slug)).map((obs) => (
+                <Link
+                  key={obs.id}
+                  prefetch={false}
+                  href={`/obsessions/${encodeURIComponent(obs.slug)}`}
+                  className="hp-col-card"
+                >
+                  {obs.thumbnail && (
+                    <div className="hp-col-thumb hp-col-thumb--wide">
+                      <Image
+                        src={getPublicUrl(obs.thumbnail)}
+                        alt={obs.title}
+                        fill unoptimized loading="lazy"
+                        sizes="(max-width:767px) 42vw, 130px"
+                        style={{ objectFit: "cover", objectPosition: "center top" }}
+                      />
                     </div>
-                  </Link>
-                );
-              })}
+                  )}
+                  <div className="hp-col-info">
+                    {obs.tag && <span className="hp-col-cat">{obs.tag}</span>}
+                    <span className="hp-col-title">{obs.title}</span>
+                    {obs._count.images > 0 && (
+                      <span className="hp-col-count">{obs._count.images} wallpapers</span>
+                    )}
+                  </div>
+                </Link>
+              ))}
             </div>
           </section>
         )}
