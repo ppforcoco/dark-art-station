@@ -174,10 +174,13 @@ export default async function Home() {
         @media (min-width: 768px) {
           .hp-hero {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            /* text gets 55%, image gets 45% — shifts image left naturally */
+            grid-template-columns: 55% 45%;
             align-items: center;
             min-height: 420px;
             max-height: 520px;
+            /* right padding so image doesn't bleed to browser edge */
+            padding-right: clamp(40px, 6vw, 100px);
           }
 
           .hp-hero-body {
@@ -191,8 +194,6 @@ export default async function Home() {
             height: 100%;
             min-height: 420px;
             max-height: 520px;
-            /* Pull image away from right edge */
-            padding-right: clamp(24px, 4vw, 60px);
           }
         }
 
