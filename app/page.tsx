@@ -84,7 +84,7 @@ export default async function Home() {
           NOT: { tags: { has: "badge-premium" } },
         },
         orderBy: { createdAt: "desc" },
-        take: 8,
+        take: 16,
         select: { id: true, slug: true, title: true, r2Key: true, deviceType: true, tags: true },
       }),
       db.image.findMany({
@@ -522,7 +522,6 @@ export default async function Home() {
                 <h2 className="hp-section-title">New This Week</h2>
                 <p className="hp-section-sub">Just surfaced — gone in 48 hrs.</p>
               </div>
-              <Link prefetch={false} href="/all" className="hp-see-all">See all →</Link>
             </div>
 
             {/* Mobile: horizontal scroll slider / Desktop: grid */}
@@ -583,7 +582,6 @@ export default async function Home() {
                 <h2 className="hp-section-title">Premium This Week</h2>
                 <p className="hp-section-sub">Surfaces for 24 hrs, then sealed away.</p>
               </div>
-              <Link prefetch={false} href="/all" className="hp-see-all">Browse →</Link>
             </div>
             <div style={{ marginBottom:"clamp(12px,2vw,20px)" }}>
               <PremiumCountdown updatedAt={countdownDate} />
