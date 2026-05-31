@@ -468,17 +468,10 @@ export default async function Home() {
 
           {/* LEFT: text content */}
           <div className="hp-hero-body">
-            <h1 style={{
-              position:"absolute",width:"1px",height:"1px",padding:0,
-              margin:"-1px",overflow:"hidden",clip:"rect(0,0,0,0)",
-              whiteSpace:"nowrap",border:0,
-            }}>
-              Haunted Wallpapers — Free Dark Fantasy &amp; Horror Wallpapers
-            </h1>
             <p className="hp-eyebrow">New drops every day</p>
-            <p className="hp-hero-tagline">
+            <h1 className="hp-hero-tagline">
               You&rsquo;ve arrived in Haunted Town —<br />where every wallpaper has a secret
-            </p>
+            </h1>
             <div className="hp-hero-stat">
               <div>
                 <span className="hp-hero-num">{fmt(totalImages)}</span>
@@ -508,9 +501,9 @@ export default async function Home() {
               alt=""
               aria-hidden="true"
               className="hp-hero-img"
-              fetchPriority="high"
-              decoding="sync"
-              loading="eager"
+              fetchPriority="low"
+              decoding="async"
+              loading="lazy"
               width="1600"
               height="900"
             />
