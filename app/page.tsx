@@ -3,6 +3,8 @@
 //   1. BUILD FIX: WallpaperCardGrid moved to a client wrapper to allow ssr:false
 //   2. HERO FIX: Full-bleed 16:9 on desktop, full-width portrait on mobile
 //      No cropping — image scales to fill without cutting content
+//   3. HERO SHRINK: Desktop hero capped at 55vh so "New This Week" is visible above fold
+//   4. WORLDS SHRINK: Narrower column cards
 
 import type { Metadata } from "next";
 import { unstable_cache } from "next/cache";
@@ -133,19 +135,24 @@ export default async function Home() {
 
         /* ── HERO ─────────────────────────────────────────────────────────
            Mobile  : 16:9 aspect ratio, full width, image fills it
-           Desktop : still 16:9 but at least 480px tall so it breathes
-           The image is positioned center-top so characters stay visible.
-           No hard clip — aspect-ratio does the work.                      */
+           Desktop : capped at 55vh so "New This Week" is visible above fold
+           The image is positioned center-top so characters stay visible.   */
         .hp-hero{
           position:relative;
           width:100%;
-          /* 16:9 on all screen sizes */
           aspect-ratio:16/9;
-          /* But never too short on very wide monitors */
           min-height:320px;
           max-height:90vh;
           background:#000;
           overflow:hidden;
+        }
+
+        /* Desktop: shrink the hero so content below is visible above fold */
+        @media(min-width:768px){
+          .hp-hero{
+            max-height:55vh;
+            min-height:320px;
+          }
         }
 
         /* On very small phones (< 480px) a 16:9 box is only ~170px tall
@@ -157,7 +164,6 @@ export default async function Home() {
         .hp-hero-img{
           position:absolute;top:0;left:0;width:100%;height:100%;
           object-fit:cover;
-          /* Keep characters' heads/faces in frame on all ratios */
           object-position:center top;
         }
 
@@ -170,7 +176,6 @@ export default async function Home() {
             rgba(7,5,16,.97) 100%);
         }
 
-        /* Text sits in the bottom-left, no longer floating mid-screen */
         .hp-hero-body{
           position:absolute;bottom:0;left:0;right:0;z-index:1;
           padding:clamp(14px,2.5vw,28px) clamp(20px,4vw,52px) clamp(18px,3vw,36px);
@@ -286,28 +291,29 @@ export default async function Home() {
           font-family:monospace;font-size:.48rem;letter-spacing:.26em;
           text-transform:uppercase;color:#d01030;margin:0 0 4px;
         }
+        /* SHRUNK: narrower cards, tighter max-width */
         .hp-worlds-grid{
           display:grid;grid-template-columns:repeat(5,1fr);
-          gap:clamp(6px,1.2vw,12px);max-width:860px;margin:0 auto;
+          gap:clamp(4px,0.8vw,8px);max-width:560px;margin:0 auto;
         }
         .hp-world-card{
           display:flex;flex-direction:column;align-items:center;
-          justify-content:center;gap:7px;
-          padding:clamp(12px,2.2vw,20px) 6px;
+          justify-content:center;gap:5px;
+          padding:clamp(8px,1.5vw,14px) 4px;
           border:1px solid var(--wb);background:rgba(0,0,0,.35);
           text-decoration:none;
         }
         .hp-world-card:hover{background:rgba(0,0,0,.55);border-color:var(--wg)}
         .hp-world-orb{
-          display:block;width:clamp(22px,3vw,36px);height:clamp(22px,3vw,36px);
-          border-radius:50%;background:var(--wd);box-shadow:0 0 14px var(--wg);flex-shrink:0;
+          display:block;width:clamp(14px,2vw,24px);height:clamp(14px,2vw,24px);
+          border-radius:50%;background:var(--wd);box-shadow:0 0 10px var(--wg);flex-shrink:0;
         }
         .hp-world-label{
           font-family:var(--font-cinzel,Georgia,serif);
-          font-size:clamp(.52rem,.78vw,.68rem);font-weight:700;color:#f0ecff;text-align:center;
+          font-size:clamp(.46rem,.65vw,.58rem);font-weight:700;color:#f0ecff;text-align:center;
         }
         .hp-world-sub{
-          font-family:monospace;font-size:clamp(.36rem,.48vw,.44rem);
+          font-family:monospace;font-size:clamp(.3rem,.4vw,.38rem);
           letter-spacing:.1em;text-transform:uppercase;
           color:rgba(255,255,255,.35);text-align:center;display:none;
         }
@@ -383,7 +389,7 @@ export default async function Home() {
 
       <div className="hp">
 
-        {/* ══ HERO — full-bleed 16:9, no empty space ══════════════════════ */}
+        {/* ══ HERO — full-bleed, capped at 55vh on desktop ════════════════ */}
         <section className="hp-hero">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
@@ -584,8 +590,9 @@ export default async function Home() {
               </Link>
             </div>
             <div className="hp-cols-grid">
-              {obsessions.map((obs) => {
-                const isWide = WIDE_SLUGS.has(obs.slug);
+              {obsessions.filter((obs) => WIDE_SLUGS.has(obs.slug)).map((obs) => {
+                const isWide = true;
+                const showThumb = true;
                 return (
                   <Link
                     key={obs.id}
@@ -593,8 +600,8 @@ export default async function Home() {
                     href={`/obsessions/${encodeURIComponent(obs.slug)}`}
                     className="hp-col-card"
                   >
-                    {obs.thumbnail && (
-                      <div className={`hp-col-thumb${isWide ? " hp-col-thumb--wide" : ""}`}>
+                    {showThumb && obs.thumbnail && (
+                      <div className="hp-col-thumb hp-col-thumb--wide">
                         <Image
                           src={getPublicUrl(obs.thumbnail)}
                           alt={obs.title}
