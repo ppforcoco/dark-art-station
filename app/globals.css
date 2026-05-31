@@ -4845,3 +4845,120 @@ no text ────────────────────────
 }.mockup-monitor-bezel { filter: none !important; }
 
 /* lazy section — CSS handled by LazySection.tsx */
+/* ══════════════════════════════════════════════════════════════
+   GLOBAL ANIMATION KILL — keep only header + essential UI
+   ══════════════════════════════════════════════════════════════ */
+
+/* Kill coffin float + row fade */
+.dt-coffin-row { animation: none !important; }
+.dt-coffin      { animation: none !important; transition: border-color 0.2s, background 0.2s !important; }
+
+/* Kill fog drift */
+.dt-fog__layer, .dt-fog__layer--1, .dt-fog__layer--2, .dt-fog__layer--3 {
+  animation: none !important;
+  opacity: 0.15 !important;
+  transform: none !important;
+}
+
+/* Kill dt-gate collection badge fadeup */
+.dt-gate__collection-badge { animation: none !important; }
+
+/* Kill phone card enter + float + aura breath (hidden sections, but still) */
+.dt-phone-card       { animation: none !important; transition: none !important; }
+.dt-phone-card--hero { animation: none !important; }
+.dt-phone-card__aura { animation: none !important; }
+
+/* Kill monitor flicker */
+.dt-monitor__screen::after { animation: none !important; }
+
+/* Kill dt-obs-card stagger */
+.dt-obs-card { animation: none !important; }
+
+/* Kill horror countdown ember */
+.hc-bar-fill, .hc-bar-fill--critical { animation: none !important; }
+
+/* Kill download button glow pulse */
+.hw-glow-btn-wrap--download::after,
+.hw-glow-btn-wrap--preview::after { animation: none !important; opacity: 0.4 !important; }
+
+/* Kill hw2 glitch + fade-up (obsessions page) */
+[class*="hw2-"] { animation: none !important; }
+
+/* Kill hw-spin (loading) — keep it, it's functional */
+/* .hw-spin intentionally NOT killed */
+
+/* Kill hfPulse (HorrorFact dot) */
+.hf-dot { animation: none !important; }
+
+/* Kill dtFlicker on obsession cards */
+.dt-obs-card__bg img { animation: none !important; }
+
+/* ══════════════════════════════════════════════════════════════
+   COLOR WORLD THEMES — hero color filter click
+   Applied to <html> via data-color-world="purple" etc.
+   Transitions only bg gradient overlay — no reflow
+   ══════════════════════════════════════════════════════════════ */
+
+/* Smooth world switch */
+html { transition: background-color 0.5s ease; }
+
+/* ── Purple World ── */
+[data-color-world="purple"] body { background: #0a0614 !important; }
+[data-color-world="purple"] .site-header { background: rgba(10,6,20,0.96) !important; border-color: rgba(147,51,234,0.25) !important; }
+[data-color-world="purple"] .dt-gate, [data-color-world="purple"] section { background-color: #0a0614 !important; }
+[data-color-world="purple"] .dt-gate__eyebrow, [data-color-world="purple"] .dt-eyebrow { color: #c084fc !important; }
+[data-color-world="purple"] .dt-gate__collection-num, [data-color-world="purple"] .dt-section-title { color: #e9d5ff !important; }
+[data-color-world="purple"] .dt-btn--enter { background: #7c3aed !important; border-color: #7c3aed !important; color: #fff !important; }
+[data-color-world="purple"] .dt-coffin { border-color: rgba(147,51,234,0.3) !important; background: rgba(15,5,30,0.6) !important; }
+[data-color-world="purple"] .dt-coffin--accent, [data-color-world="purple"] .dt-coffin--gold { border-color: rgba(192,132,252,0.4) !important; }
+[data-color-world="purple"] .hw-color-world-bar { background: linear-gradient(90deg, transparent, rgba(147,51,234,0.4), transparent) !important; opacity: 1 !important; }
+[data-color-world="purple"] .hw-color-world-overlay { background: radial-gradient(ellipse 80% 50% at 50% 0%, rgba(88,28,135,0.18) 0%, transparent 70%) !important; opacity: 1 !important; }
+
+/* ── Green World ── */
+[data-color-world="green"] body { background: #030a04 !important; }
+[data-color-world="green"] .site-header { background: rgba(3,10,4,0.96) !important; border-color: rgba(34,197,94,0.2) !important; }
+[data-color-world="green"] .dt-gate, [data-color-world="green"] section { background-color: #030a04 !important; }
+[data-color-world="green"] .dt-gate__eyebrow, [data-color-world="green"] .dt-eyebrow { color: #4ade80 !important; }
+[data-color-world="green"] .dt-gate__collection-num, [data-color-world="green"] .dt-section-title { color: #dcfce7 !important; }
+[data-color-world="green"] .dt-btn--enter { background: #16a34a !important; border-color: #16a34a !important; color: #fff !important; }
+[data-color-world="green"] .dt-coffin { border-color: rgba(34,197,94,0.25) !important; background: rgba(3,20,8,0.6) !important; }
+[data-color-world="green"] .hw-color-world-bar { background: linear-gradient(90deg, transparent, rgba(34,197,94,0.35), transparent) !important; opacity: 1 !important; }
+[data-color-world="green"] .hw-color-world-overlay { background: radial-gradient(ellipse 80% 50% at 50% 0%, rgba(20,83,45,0.18) 0%, transparent 70%) !important; opacity: 1 !important; }
+
+/* ── Blue World ── */
+[data-color-world="blue"] body { background: #030614 !important; }
+[data-color-world="blue"] .site-header { background: rgba(3,6,20,0.96) !important; border-color: rgba(59,130,246,0.2) !important; }
+[data-color-world="blue"] .dt-gate, [data-color-world="blue"] section { background-color: #030614 !important; }
+[data-color-world="blue"] .dt-gate__eyebrow, [data-color-world="blue"] .dt-eyebrow { color: #60a5fa !important; }
+[data-color-world="blue"] .dt-gate__collection-num, [data-color-world="blue"] .dt-section-title { color: #dbeafe !important; }
+[data-color-world="blue"] .dt-btn--enter { background: #2563eb !important; border-color: #2563eb !important; color: #fff !important; }
+[data-color-world="blue"] .dt-coffin { border-color: rgba(59,130,246,0.25) !important; background: rgba(3,8,30,0.6) !important; }
+[data-color-world="blue"] .hw-color-world-bar { background: linear-gradient(90deg, transparent, rgba(59,130,246,0.35), transparent) !important; opacity: 1 !important; }
+[data-color-world="blue"] .hw-color-world-overlay { background: radial-gradient(ellipse 80% 50% at 50% 0%, rgba(29,78,216,0.18) 0%, transparent 70%) !important; opacity: 1 !important; }
+
+/* ── Red World (reset / default) ── */
+[data-color-world="red"] body { background: #0d0d14 !important; }
+[data-color-world="red"] .site-header { background: rgba(10,8,18,0.96) !important; border-color: rgba(192,0,26,0.2) !important; }
+[data-color-world="red"] .hw-color-world-bar { background: linear-gradient(90deg, transparent, rgba(224,0,31,0.4), transparent) !important; opacity: 1 !important; }
+[data-color-world="red"] .hw-color-world-overlay { background: radial-gradient(ellipse 80% 50% at 50% 0%, rgba(139,0,0,0.15) 0%, transparent 70%) !important; opacity: 1 !important; }
+
+/* ── Black World ── */
+[data-color-world="black"] body { background: #000 !important; }
+[data-color-world="black"] .site-header { background: rgba(0,0,0,0.98) !important; border-color: rgba(255,255,255,0.08) !important; }
+[data-color-world="black"] .dt-gate, [data-color-world="black"] section { background-color: #000 !important; }
+[data-color-world="black"] .dt-gate__collection-num, [data-color-world="black"] .dt-section-title { color: #e8e8e8 !important; }
+[data-color-world="black"] .dt-btn--enter { background: #fff !important; border-color: #fff !important; color: #000 !important; }
+[data-color-world="black"] .dt-coffin { border-color: rgba(255,255,255,0.12) !important; background: rgba(20,20,20,0.6) !important; }
+[data-color-world="black"] .hw-color-world-bar { background: linear-gradient(90deg, transparent, rgba(200,200,200,0.2), transparent) !important; opacity: 1 !important; }
+[data-color-world="black"] .hw-color-world-overlay { background: radial-gradient(ellipse 80% 50% at 50% 0%, rgba(30,30,30,0.3) 0%, transparent 70%) !important; opacity: 1 !important; }
+
+/* World transition overlay — thin colored line at top + radial bg tint */
+.hw-color-world-bar {
+  position: fixed; top: 0; left: 0; right: 0; height: 2px;
+  pointer-events: none; z-index: 9999; opacity: 0;
+  transition: opacity 0.4s ease, background 0.4s ease;
+}
+.hw-color-world-overlay {
+  position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  opacity: 0; transition: opacity 0.5s ease, background 0.5s ease;
+}

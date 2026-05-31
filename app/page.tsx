@@ -5,15 +5,14 @@ import Image from "next/image";
 import { db, getWallpaperOfTheDay, getPageContent } from "@/lib/db";
 import { getPublicUrl } from "@/lib/r2";
 import RecentlyViewed from "@/components/RecentlyViewed";
-import HorrorFact from "@/components/HorrorFact";
 import WallpaperCardGrid from "@/components/WallpaperCardGrid";
 import ProtectedImg from "@/components/ProtectedImg";
 import ProtectionOverlay from "@/components/ProtectionOverlay";
 import PremiumCountdown from "@/components/PremiumCountdown";
-import LazySection from "@/components/LazySection";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
 const OG_IMAGE = `${SITE_URL}/og-image.jpg`;
+const CDN = "https://assets.hauntedwallpapers.com";
 
 const getCachedWotd = () => {
   const todayKey = new Date().toISOString().slice(0, 10);
@@ -23,33 +22,6 @@ const getCachedWotd = () => {
     { revalidate: 86400 },
   )();
 };
-
-/* TRENDING-HIDDEN: restore by uncommenting this block
-const getCachedTrending = unstable_cache(
-  async () => {
-    const topDownloads = await db.download.groupBy({
-      by: ["imageId"],
-      where: { imageId: { not: null } },
-      _count: { imageId: true },
-      orderBy: { _count: { imageId: "desc" } },
-      take: 20,
-    });
-    const topImageIds = topDownloads.map(d => d.imageId).filter(Boolean) as string[];
-    if (topImageIds.length === 0) return [];
-    const trendingImages = await db.image.findMany({
-      where: { id: { in: topImageIds }, isAdult: false, deviceType: { in: ["IPHONE", "ANDROID"] } },
-      select: { id: true, slug: true, title: true, r2Key: true, deviceType: true, tags: true,
-        _count: { select: { downloads: true } } },
-    });
-    return topImageIds
-      .map(id => trendingImages.find(img => img.id === id))
-      .filter(Boolean)
-      .slice(0, 6) as Array<{ id: string; slug: string; title: string; r2Key: string; deviceType: string | null; tags: string[]; _count: { downloads: number } }>;
-  },
-  ["trending-wallpapers"],
-  { revalidate: 3600 },
-);
-TRENDING-HIDDEN */
 
 export async function generateMetadata(): Promise<Metadata> {
   const pageContent = await getPageContent("home");
@@ -80,15 +52,13 @@ export async function generateMetadata(): Promise<Metadata> {
 export const revalidate = 3600;
 
 export default async function Home() {
-  let wotd:             Awaited<ReturnType<typeof getWallpaperOfTheDay>> = null;
-  let totalImages       = 0;
-  let obsessions:       Array<{ id: string; slug: string; title: string; thumbnail: string; tag: string | null; icon: string | null; bgClass: string | null; _count: { images: number } }> = [];
-  let newThisWeek:      Array<{ id: string; slug: string; title: string; r2Key: string; deviceType: string | null; tags: string[] }> = [];
-  let premiumThisWeek:  Array<{ id: string; slug: string; title: string; r2Key: string; deviceType: string | null; tags: string[]; updatedAt: Date | null }> = [];
-  /* TRENDING-HIDDEN */ // let trendingThisWeek: Array<{ id: string; slug: string; title: string; r2Key: string; deviceType: string | null; tags: string[]; _count: { downloads: number } }> = [];
+  let wotd:            Awaited<ReturnType<typeof getWallpaperOfTheDay>> = null;
+  let totalImages      = 0;
+  let obsessions:      Array<{ id: string; slug: string; title: string; thumbnail: string; tag: string | null; icon: string | null; bgClass: string | null; _count: { images: number } }> = [];
+  let newThisWeek:     Array<{ id: string; slug: string; title: string; r2Key: string; deviceType: string | null; tags: string[] }> = [];
+  let premiumThisWeek: Array<{ id: string; slug: string; title: string; r2Key: string; deviceType: string | null; tags: string[]; updatedAt: Date | null }> = [];
 
   try {
-    /* TRENDING-HIDDEN: restore trendingThisWeek and getCachedTrending() here */
     [
       [wotd, totalImages],
       obsessions,
@@ -124,7 +94,6 @@ export default async function Home() {
           select: { id: true, slug: true, title: true, r2Key: true, deviceType: true, tags: true, updatedAt: true },
         }),
       ]),
-      /* TRENDING-HIDDEN: getCachedTrending(), */
     ]);
   } catch (err) {
     console.error("[home/page] DB error:", err);
@@ -135,18 +104,7 @@ export default async function Home() {
     return `${Math.floor(n / 50) * 50}+`;
   }
 
-  const CDN = "https://assets.hauntedwallpapers.com";
-
-  // heroPhones defined but not currently rendered — kept for future use
-  const heroPhones = [
-    { src: `${CDN}/haunted-cat-grin-dark-iphone-android.webp`,            alt: "Creepy Cat",     featured: false, edgePhone: true  },
-    { src: `${CDN}/wallpapers/shadows-have-eyes-android.webp`,            alt: "Shadow Eyes",    featured: false, edgePhone: false },
-    { src: `${CDN}/new/dark-horror-man-cosplay-makeup-idea.webp`,         alt: "Horror Cosplay", featured: true,  edgePhone: false },
-    { src: `${CDN}/new/gothic-crimson-rose-dark-art-wallpaper.webp`,      alt: "Gothic Rose",    featured: false, edgePhone: false },
-    { src: `${CDN}/new/skeleton-drinking-haunted-energy-drink-art.webp`,  alt: "Skeleton Art",   featured: false, edgePhone: true  },
-  ];
-
-  const countdownDate  = new Date(Date.UTC(2025, 0, 1)).toISOString();
+  const countdownDate = new Date(Date.UTC(2025, 0, 1)).toISOString();
 
   const premiumItems = premiumThisWeek.map((img) => {
     const devicePath = img.deviceType === "IPHONE" ? "iphone" : img.deviceType === "ANDROID" ? "android" : "pc";
@@ -163,19 +121,186 @@ export default async function Home() {
 
   return (
     <>
-      {/* ── ATMOSPHERIC FOG — desktop only ── */}
-      <div className="dt-fog dt-fog--desktop-only" aria-hidden="true">
-        <div className="dt-fog__layer dt-fog__layer--1" />
-        <div className="dt-fog__layer dt-fog__layer--2" />
-        <div className="dt-fog__layer dt-fog__layer--3" />
-      </div>
+      {/* ── GLOBAL: kill every animation/glow/bounce/particle outside header ── */}
+      <style>{`
+        /* ─── NUCLEAR ANIMATION KILL — everything except header ─── */
+        body *:not(header):not(header *) {
+          animation: none !important;
+          transition: none !important;
+        }
+        /* Restore safe hover transitions only on interactive elements */
+        body a:not(header a):hover,
+        body button:not(header button):hover {
+          transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease, opacity 0.2s ease !important;
+        }
+        /* Kill all glows, box-shadows on non-header */
+        body *:not(header):not(header *) {
+          box-shadow: none !important;
+          text-shadow: none !important;
+        }
+        /* Kill particles */
+        .wotd-particle,
+        .hw-new-particle,
+        .dt-fog,
+        .dt-gate__crack,
+        .hw-nav__drip,
+        .wotd-img-frame__eye,
+        .wotd-img-frame__scanlines,
+        .dt-obs-card__glitch,
+        .dt-obs-card__drip,
+        .dt-obs-card__glow,
+        .hw-new-particles {
+          display: none !important;
+        }
+        /* Kill scroll fade — everything visible immediately */
+        .hw-fade-up {
+          opacity: 1 !important;
+          transform: none !important;
+          transition: none !important;
+        }
+        /* Kill kit card premium badge glow */
+        .hw-kit-card__premium { animation: none !important; }
+
+        /* ─── COLOR WORLD DOTS ─── */
+        #hw-color-worlds button {
+          transition: transform 0.18s ease, box-shadow 0.18s ease !important;
+        }
+        #hw-color-worlds button:hover {
+          transform: scale(1.2) !important;
+        }
+
+        /* ─── HERO layout ─── */
+        .hw-hero-gate-override {
+          padding-top: 8px !important;
+          padding-bottom: 0 !important;
+          overflow: visible !important;
+          background: #000 !important;
+        }
+        .hw-hero-split { display: grid; grid-template-columns: 1fr; background: #000; }
+
+        /* Mobile: hide hero image entirely — no empty block, no LCP penalty */
+        .hw-hero-img { display: none !important; }
+
+        @media (min-width: 860px) {
+          .hw-hero-split {
+            grid-template-columns: 420px 1fr !important;
+            align-items: stretch !important;
+            min-height: 580px;
+          }
+          .hw-hero-img {
+            display: block !important;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center center;
+            pointer-events: none;
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-user-drag: none;
+            mask-image: linear-gradient(to right, transparent 0%, black 12%);
+            -webkit-mask-image: linear-gradient(to right, transparent 0%, black 12%);
+          }
+        }
+
+        @media (max-width: 859px) { .hw-hero-vault-text { display: none !important; } }
+
+        /* ─── DEFIANT MANIFESTO ─── */
+        .hw-defiant-wrap {
+          position: relative; width: 100%; overflow: hidden;
+          border: 1px solid rgba(224,0,31,0.5); background: #080510;
+          aspect-ratio: 16/9; max-width: 900px;
+        }
+        @media (max-width: 640px) {
+          .hw-defiant-wrap  { aspect-ratio: unset; height: 130px; max-width: unset; }
+          .hw-defiant-title { font-size: clamp(0.8rem,5vw,1.1rem) !important; }
+          .hw-defiant-body  { display: none !important; }
+        }
+
+        /* ─── OBSESSION GRID ─── */
+        @media (max-width: 767px) {
+          .hw-desktop-section-mobile-hidden { display: none !important; }
+          .dt-obs-grid { grid-template-columns: repeat(4,1fr) !important; gap: 4px !important; }
+          .dt-obs-card__title { font-size: 0.44rem !important; padding: 3px 4px !important; letter-spacing: 0.03em !important; }
+        }
+        @media (min-width: 768px) and (max-width: 1199px) {
+          .dt-obs-grid { grid-template-columns: repeat(7,1fr) !important; gap: 5px !important; }
+          .dt-obs-card__title { font-size: 0.42rem !important; padding: 3px 4px !important; }
+        }
+        @media (min-width: 1200px) {
+          .dt-obs-grid { grid-template-columns: repeat(10,1fr) !important; gap: 6px !important; }
+          .dt-obs-card__title { font-size: 0.44rem !important; padding: 3px 5px !important; }
+        }
+
+        /* ─── KIT CARDS — no animation, clean hover only ─── */
+        .hw-kit-card--anim {
+          opacity: 1 !important;
+          transform: none !important;
+          animation: none !important;
+        }
+        .hw-kit-card:hover {
+          border-color: rgba(var(--kit-accent,224,0,31),0.5) !important;
+          transform: translateY(-2px) !important;
+          transition: border-color 0.2s ease, transform 0.2s ease !important;
+        }
+        .hw-kit-card__thumb::after { display: none !important; }
+        .hw-kit-card::before { display: none !important; }
+        .hw-kit-card__img { transition: none !important; }
+
+        /* ─── WOTD — static, no eye pulse, no particles ─── */
+        .wotd-section::before { display: none !important; }
+        .wotd-img-frame__corners span { border-color: rgba(224,0,31,0.5); }
+        .wotd-img-frame:hover { transform: translateY(-3px) !important; transition: transform 0.2s ease !important; }
+        .wotd-color-dot:hover { transform: scale(1.3) !important; transition: transform 0.2s ease !important; }
+
+        /* ─── RecentlyViewed — no animation ─── */
+        [class*="recently"] *, [class*="RecentlyViewed"] *, .hw-recently-viewed * {
+          animation: none !important;
+          transition: none !important;
+        }
+      `}</style>
+
+      {/* ── COLOR WORLD SWITCHER — vanilla JS, no deps ── */}
+      <script dangerouslySetInnerHTML={{ __html: `(function(){
+        var STORAGE_KEY = 'hw-color-world';
+        var html = document.documentElement;
+
+        function applyWorld(world) {
+          if (world && world !== 'none') {
+            html.setAttribute('data-color-world', world);
+          } else {
+            html.removeAttribute('data-color-world');
+          }
+          // Highlight active dot
+          document.querySelectorAll('#hw-color-worlds button').forEach(function(btn) {
+            var active = btn.getAttribute('data-color-world') === world;
+            btn.style.transform = active ? 'scale(1.35)' : '';
+            btn.style.boxShadow = active ? '0 0 0 3px rgba(255,255,255,0.4)' : '';
+          });
+        }
+
+        // Restore saved world
+        try {
+          var saved = localStorage.getItem(STORAGE_KEY);
+          if (saved) applyWorld(saved);
+        } catch(e) {}
+
+        // Wire up clicks
+        document.addEventListener('click', function(e) {
+          var btn = e.target.closest('#hw-color-worlds button');
+          if (!btn) return;
+          var world = btn.getAttribute('data-color-world');
+          var current = html.getAttribute('data-color-world');
+          // Toggle off if clicking same world
+          var next = (current === world) ? null : world;
+          applyWorld(next);
+          try { localStorage.setItem(STORAGE_KEY, next || 'none'); } catch(e) {}
+        });
+      })();`}} />
 
       {/* ══════════════════════════════════════════════════════════
-          HERO  — no LazySection; renders immediately
+          HERO — renders immediately
       ══════════════════════════════════════════════════════════ */}
       <section className="dt-gate dt-gate--collage hw-hero-gate-override" style={{ padding: "0", minHeight: "unset", background: "#000" }}>
-        <div className="dt-gate__crack" aria-hidden="true" />
-
         <div className="hw-hero-split" style={{
           display: "grid", gridTemplateColumns: "1fr",
           alignItems: "center", width: "100%", maxWidth: "100%", overflow: "visible",
@@ -216,8 +341,7 @@ export default async function Home() {
             }}>
               <span style={{
                 display: "inline-block", width: "6px", height: "6px", borderRadius: "50%",
-                background: "#e0001f", boxShadow: "0 0 8px rgba(224,0,31,0.8)",
-                animation: "hw-hero-pulse 2.4s ease-in-out infinite", flexShrink: 0,
+                background: "#e0001f", flexShrink: 0,
               }} />
               New drops added every day
             </p>
@@ -235,6 +359,41 @@ export default async function Home() {
               </span>
             </div>
 
+            {/* ── COLOR WORLD FILTER — enter a new world ── */}
+            <div id="hw-color-worlds" style={{ display: "flex", flexDirection: "column", gap: "10px", marginTop: "4px" }}>
+              <span style={{
+                fontFamily: "var(--font-space, monospace)", fontSize: "0.52rem",
+                letterSpacing: "0.24em", textTransform: "uppercase",
+                color: "rgba(224,224,248,0.35)",
+              }}>Enter a World</span>
+              <div style={{ display: "flex", gap: "14px", alignItems: "center", flexWrap: "wrap" }}>
+                {[
+                  { color: "#e0001f", world: "red",    label: "Crimson",  border: "#e0001f" },
+                  { color: "#7c3aed", world: "purple",  label: "Void",     border: "#7c3aed" },
+                  { color: "#16a34a", world: "green",   label: "Haunted",  border: "#16a34a" },
+                  { color: "#1d4ed8", world: "blue",    label: "Abyss",    border: "#1d4ed8" },
+                  { color: "#050505", world: "black",   label: "Shadow",   border: "rgba(255,255,255,0.25)" },
+                ].map(({ color, world, label, border }) => (
+                  <button
+                    key={world}
+                    data-color-world={world}
+                    aria-label={`Enter ${label} world`}
+                    title={label}
+                    onClick={undefined}
+                    style={{
+                      width: "28px", height: "28px", borderRadius: "50%",
+                      background: color,
+                      border: `2px solid ${border}`,
+                      cursor: "pointer",
+                      padding: 0,
+                      flexShrink: 0,
+                      outline: "none",
+                    }}
+                  />
+                ))}
+              </div>
+            </div>
+
             <div className="dt-coffin-row dt-coffin-row--compact">
               <div className="dt-coffin"><span className="dt-coffin__num">{fmt(totalImages)}</span><span className="dt-coffin__label">The Archive</span></div>
               <div className="dt-coffin dt-coffin--accent"><span className="dt-coffin__num">4K</span><span className="dt-coffin__label">Retina Optimized</span></div>
@@ -243,10 +402,10 @@ export default async function Home() {
             </div>
           </div>
 
-          {/* HERO IMAGE — locked via CSS: pointer-events:none blocks all clicks, drags, and opens */}
+          {/* HERO IMAGE — desktop only, hidden on mobile to kill empty-block LCP */}
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src="https://assets.hauntedwallpapers.com/extras/the-haunted-wallpapers-hero-section-image-mobile-dark-wallpapers-thumbnail.avif"
+            src={`${CDN}/extras/the-haunted-wallpapers-hero-section-image-mobile-dark-wallpapers-thumbnail.avif`}
             alt="Haunted Wallpapers Hero"
             className="hw-hero-img"
             loading="eager"
@@ -254,157 +413,18 @@ export default async function Home() {
             decoding="sync"
             width="1200"
             height="800"
-            style={{ display: "block" }}
           />
         </div>
       </section>
 
-      <style>{`
-        @keyframes hw-hero-pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
-        @keyframes hw-hero-img-reveal {
-          from { opacity:0; transform:scale(1.06) translateY(8px); }
-          to   { opacity:1; transform:scale(1)    translateY(0); }
-        }
-
-        /* ── Hero layout ── */
-        .hw-hero-gate-override { padding-top:8px !important; padding-bottom:0 !important; overflow:visible !important; background:#000 !important; }
-        .hw-hero-split { display:grid; grid-template-columns:1fr; background:#000; }
-
-        /* Image: mobile stacks below text */
-        .hw-hero-img {
-          width:100%;
-          height:auto;
-          max-height:220px;
-          object-fit:contain;
-          object-position:center center;
-          display:block;
-          pointer-events:none;
-          user-select:none;
-          -webkit-user-select:none;
-          -webkit-user-drag:none;
-        }
-
-        /* Desktop: text left, image right, full height */
-        @media (min-width:860px) {
-          .hw-hero-split {
-            grid-template-columns: 420px 1fr !important;
-            align-items: stretch !important;
-            min-height: 580px;
-          }
-          .hw-hero-img {
-            height:100%;
-            max-height:none;
-            object-fit:cover;
-            object-position:center center;
-            /* gradient fade on left edge so image bleeds into black text panel */
-            mask-image: linear-gradient(to right, transparent 0%, black 12%);
-            -webkit-mask-image: linear-gradient(to right, transparent 0%, black 12%);
-          }
-        }
-
-        @media (max-width:859px) { .hw-hero-vault-text { display:none !important; } }
-
-        /* ── Kill ALL kit card entrance animations globally ── */
-        .hw-kit-card--anim {
-          opacity: 1 !important;
-          transform: none !important;
-          animation: none !important;
-          transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease !important;
-        }
-
-        /* ── Kill recently viewed / RecentlyViewed animations ── */
-        [class*="recently"] *,
-        [class*="RecentlyViewed"] *,
-        .hw-recently-viewed * {
-          animation: none !important;
-          transition: none !important;
-        }
-
-        /* ── Scroll fade-in: add class hw-fade-up to any section/element ── */
-        .hw-fade-up {
-          opacity: 0;
-          transform: translateY(36px);
-          transition: opacity 0.7s ease, transform 0.7s ease;
-        }
-        .hw-fade-up.hw-visible {
-          opacity: 1;
-          transform: translateY(0);
-        }
-        .hw-fade-up:nth-child(2) { transition-delay:0.08s; }
-        .hw-fade-up:nth-child(3) { transition-delay:0.16s; }
-        .hw-fade-up:nth-child(4) { transition-delay:0.24s; }
-        .hw-fade-up:nth-child(5) { transition-delay:0.32s; }
-        .hw-fade-up:nth-child(6) { transition-delay:0.40s; }
-
-        /* ── DEFIANT MANIFESTO ── */
-        .hw-defiant-wrap {
-          position:relative; width:100%; overflow:hidden;
-          border:1px solid rgba(224,0,31,0.5); background:#080510;
-          aspect-ratio:16/9; max-width:900px;
-        }
-        @media (max-width:640px) {
-          .hw-defiant-wrap  { aspect-ratio:unset; height:130px; max-width:unset; }
-          .hw-defiant-title { font-size:clamp(0.8rem,5vw,1.1rem) !important; }
-          .hw-defiant-body  { display:none !important; }
-        }
-
-        /* ── OBSESSION GRID ── */
-        @media (max-width:767px) {
-          .hw-desktop-section-mobile-hidden { display:none !important; }
-          .dt-obs-grid { grid-template-columns:repeat(4,1fr) !important; gap:4px !important; }
-          .dt-obs-card__title { font-size:0.44rem !important; padding:3px 4px !important; letter-spacing:0.03em !important; }
-        }
-        @media (min-width:768px) and (max-width:1199px) {
-          .dt-obs-grid { grid-template-columns:repeat(7,1fr) !important; gap:5px !important; }
-          .dt-obs-card__title { font-size:0.42rem !important; padding:3px 4px !important; }
-        }
-        @media (min-width:1200px) {
-          .dt-obs-grid { grid-template-columns:repeat(10,1fr) !important; gap:6px !important; }
-          .dt-obs-card__title { font-size:0.44rem !important; padding:3px 5px !important; }
-        }
-
-        /* ── Reduce decorative animations on mobile ── */
-        @media (max-width:767px) {
-          .wotd-particle { display:none !important; }
-          .dt-fog        { display:none !important; }
-          .hw-nav__drip  { display:none !important; }
-        }
-      `}</style>
-
-      {/* Scroll-fade IntersectionObserver — vanilla JS, no deps */}
-      <script dangerouslySetInnerHTML={{ __html: `(function(){
-        if(typeof IntersectionObserver==='undefined')return;
-        var io=new IntersectionObserver(function(entries){
-          entries.forEach(function(e){
-            if(e.isIntersecting){e.target.classList.add('hw-visible');io.unobserve(e.target);}
-          });
-        },{threshold:0.1,rootMargin:'0px 0px -40px 0px'});
-        function run(){document.querySelectorAll('.hw-fade-up').forEach(function(el){io.observe(el);});}
-        document.readyState==='loading'?document.addEventListener('DOMContentLoaded',run):run();
-      })();`}} />
-
-      {/* ══════════════════════════════════════════════════════════
-          NEW THIS WEEK
-          reveal="up" — cards rise from below (ROG default)
-      ══════════════════════════════════════════════════════════ */}
+      {/* NEW THIS WEEK */}
       {newThisWeek.length > 0 && (
-        <LazySection
-          revealDirection="up"
-          rootMargin="0px 0px -100px 0px"
-          staggerChildren
-        >
-          <section style={{ padding: "clamp(32px,5vw,64px) clamp(16px,5vw,72px)", background: "#07050f", position: "relative", overflow: "hidden" }} className="hw-fade-up hw-new-section">
-            {/* Animated green particles */}
-            <div className="hw-new-particles" aria-hidden="true">
-              {Array.from({ length: 12 }).map((_, i) => (
-                <span key={i} className="hw-new-particle" style={{ "--npi": i } as React.CSSProperties} />
-              ))}
-            </div>
-            <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse 60% 40% at 50% 0%,rgba(76,175,80,0.06) 0%,transparent 70%)", pointerEvents: "none" }} />
+        
+          <section style={{ padding: "clamp(32px,5vw,64px) clamp(16px,5vw,72px)", background: "#07050f", position: "relative" }}>
             <div className="dt-section-head dt-section-head--center" style={{ marginBottom: "clamp(24px,4vw,40px)" }}>
-              <span className="dt-eyebrow hw-section-eyebrow-anim" style={{ color: "#4caf50" }}>Fresh From The Vault</span>
-              <h2 className="dt-section-title hw-section-title-anim">New This Week</h2>
-              <p className="dt-section-sub hw-section-sub-anim" style={{ maxWidth: "480px", margin: "0 auto" }}>
+              <span className="dt-eyebrow" style={{ color: "#4caf50" }}>Fresh From The Vault</span>
+              <h2 className="dt-section-title">New This Week</h2>
+              <p className="dt-section-sub" style={{ maxWidth: "480px", margin: "0 auto" }}>
                 Just surfaced. These disappear from this section in 48 hours.
               </p>
             </div>
@@ -416,59 +436,18 @@ export default async function Home() {
                 devicePath: img.deviceType === "IPHONE" ? "iphone" : img.deviceType === "ANDROID" ? "android" : "pc",
               }))}
             />
-            <style>{`
-              /* ── New This Week floating particles ── */
-              .hw-new-particles{position:absolute;inset:0;pointer-events:none;overflow:hidden}
-              .hw-new-particle{position:absolute;display:block;width:2px;height:2px;border-radius:50%;background:rgba(76,175,80,0.35);left:calc(var(--npi,0)*8.5% + 2%);bottom:-8px;animation:hwNewFloat calc(7s + var(--npi,0)*0.6s) ease-in infinite;animation-delay:calc(var(--npi,0)*0.55s);opacity:0}
-              .hw-new-particle:nth-child(odd){background:rgba(120,210,100,0.25);width:1.5px}
-              @keyframes hwNewFloat{0%{transform:translate3d(0,0,0);opacity:0}8%{opacity:0.5}80%{opacity:0.2}100%{transform:translate3d(calc((var(--npi,0)-6)*5px),-100vh,0);opacity:0}}
-
-              /* ── Section header entrance animations ── */
-              .hw-ls--on .hw-section-eyebrow-anim {
-                animation: hwSectionEyebrow 0.6s 0.1s cubic-bezier(0.16,1,0.3,1) both;
-              }
-              .hw-ls--on .hw-section-title-anim {
-                animation: hwSectionTitle 0.7s 0.2s cubic-bezier(0.16,1,0.3,1) both;
-              }
-              .hw-ls--on .hw-section-sub-anim {
-                animation: hwSectionSub 0.7s 0.32s cubic-bezier(0.16,1,0.3,1) both;
-              }
-              @keyframes hwSectionEyebrow {
-                from { opacity:0; transform:translateY(-10px); letter-spacing:0.45em; }
-                to   { opacity:1; transform:none; }
-              }
-              @keyframes hwSectionTitle {
-                from { opacity:0; transform:translateY(16px); }
-                to   { opacity:1; transform:none; }
-              }
-              @keyframes hwSectionSub {
-                from { opacity:0; transform:translateY(10px); }
-                to   { opacity:1; transform:none; }
-              }
-              @media(max-width:767px){
-                .hw-new-particle{display:none}
-                .hw-section-eyebrow-anim,.hw-section-title-anim,.hw-section-sub-anim{animation:none!important}
-              }
-            `}</style>
           </section>
-        </LazySection>
+        
       )}
 
-      {/* PREMIUM THIS WEEK — reveal from left (alternating direction like ROG) */}
+      {/* PREMIUM THIS WEEK */}
       {premiumThisWeek.length > 0 && (
-        <LazySection
-          revealDirection="left"
-          rootMargin="0px 0px -100px 0px"
-          staggerChildren
-        >
-          <section style={{ padding: "clamp(32px,5vw,64px) clamp(16px,5vw,72px)", background: "#0a0810", position: "relative", overflow: "hidden" }} className="hw-fade-up">
-            <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse 60% 40% at 50% 0%,rgba(201,168,76,0.07) 0%,transparent 70%)", pointerEvents: "none" }} />
+        
+          <section style={{ padding: "clamp(32px,5vw,64px) clamp(16px,5vw,72px)", background: "#0a0810", position: "relative" }}>
             <div className="dt-section-head dt-section-head--center" style={{ marginBottom: "clamp(24px,4vw,40px)" }}>
-              <span className="dt-eyebrow hw-section-eyebrow-anim" style={{ color: "#c9a84c" }}>
-                Hand-Picked Excellence
-              </span>
-              <h2 className="dt-section-title hw-section-title-anim">Premium This Week</h2>
-              <p className="dt-section-sub hw-section-sub-anim" style={{ maxWidth: "480px", margin: "0 auto" }}>
+              <span className="dt-eyebrow" style={{ color: "#c9a84c" }}>Hand-Picked Excellence</span>
+              <h2 className="dt-section-title">Premium This Week</h2>
+              <p className="dt-section-sub" style={{ maxWidth: "480px", margin: "0 auto" }}>
                 The finest pieces from the archive. Surfaces for 24 hours, then sealed away.
               </p>
               <div style={{ marginTop: "1rem", display: "flex", justifyContent: "center" }}>
@@ -480,126 +459,63 @@ export default async function Home() {
               items={premiumItems}
             />
           </section>
-        </LazySection>
+        
       )}
 
-      {/* WOTD — fade reveal (centred spotlight feel) */}
+      {/* WOTD */}
       {wotd && (() => {
         const devicePath = wotd.deviceType === "IPHONE" ? "iphone" : wotd.deviceType === "ANDROID" ? "android" : "pc";
         const wotdUrl    = getPublicUrl(wotd.r2Key);
         const wotdHref   = `/${devicePath}/${wotd.slug}`;
         return (
-          <LazySection
-            revealDirection="fade"
-            rootMargin="0px 0px -80px 0px"
-          >
-            <section className="wotd-section">
-              <div className="wotd-particles" aria-hidden="true">
-                {Array.from({ length: 18 }).map((_, i) => (
-                  <span key={i} className="wotd-particle" style={{ "--pi": i } as React.CSSProperties} />
-                ))}
+          
+            <section className="wotd-section" style={{ position: "relative", padding: "clamp(24px,4vw,48px) clamp(16px,5vw,72px)", background: "#080508" }}>
+              <div className="wotd-header" style={{ display: "flex", alignItems: "center", gap: "1.25rem", marginBottom: "clamp(12px,2vw,24px)", maxWidth: "1100px", marginLeft: "auto", marginRight: "auto" }}>
+                <span style={{ flex: 1, height: "1px", background: "linear-gradient(90deg,transparent,rgba(224,0,31,0.5),transparent)" }} />
+                <span style={{ display: "flex", alignItems: "center", gap: "0.6rem", fontSize: "0.72rem", letterSpacing: "0.22em", textTransform: "uppercase", color: "#e0001f", fontFamily: "var(--font-space,monospace)" }}>
+                  <span style={{ display: "inline-block", width: "5px", height: "5px", borderRadius: "50%", background: "#e0001f" }} />
+                  Tonight&rsquo;s Pick
+                  <span style={{ display: "inline-block", width: "5px", height: "5px", borderRadius: "50%", background: "#e0001f" }} />
+                </span>
+                <span style={{ flex: 1, height: "1px", background: "linear-gradient(90deg,transparent,rgba(224,0,31,0.5),transparent)" }} />
               </div>
-              <div className="wotd-header">
-                <span className="wotd-header__rule" aria-hidden="true" />
-                <div className="wotd-header__center">
-                  <span className="wotd-eyebrow">
-                    <span className="wotd-eyebrow__dot" />
-                    Tonight&rsquo;s Pick
-                    <span className="wotd-eyebrow__dot" />
-                  </span>
-                </div>
-                <span className="wotd-header__rule" aria-hidden="true" />
-              </div>
-              <div className="wotd-top-frame">
-                <Link prefetch={false} href={wotdHref} className="wotd-img-frame" aria-label={wotd.title}>
-                  <div className="wotd-img-frame__wrap">
+              <div style={{ display: "flex", justifyContent: "center", marginBottom: "1.5rem" }}>
+                <Link prefetch={false} href={wotdHref} className="wotd-img-frame" aria-label={wotd.title} style={{ position: "relative", display: "block", aspectRatio: "9/16", width: "clamp(160px,22vw,280px)", borderRadius: "16px", overflow: "hidden", border: "1.5px solid rgba(224,0,31,0.4)", textDecoration: "none" }}>
+                  <div style={{ position: "absolute", inset: 0 }}>
                     <Image src={wotdUrl} alt={wotd.title} fill loading="lazy" className="object-cover"
-                      unoptimized
-                      sizes="(max-width:480px) 38vw,(max-width:768px) 40vw,280px"
+                      unoptimized sizes="(max-width:480px) 38vw,(max-width:768px) 40vw,280px"
                       style={{ objectPosition: "center top" }} />
                   </div>
-                  <div className="wotd-img-frame__scanlines" aria-hidden="true" />
-                  <div className="wotd-img-frame__corners" aria-hidden="true"><span /><span /><span /><span /></div>
+                  <div style={{ position: "absolute", inset: 0, pointer: "none" }} className="wotd-img-frame__corners" aria-hidden="true"><span /><span /><span /><span /></div>
                   {wotd.deviceType && (
-                    <span className="wotd-img-frame__badge">{wotd.deviceType.charAt(0) + wotd.deviceType.slice(1).toLowerCase()}</span>
+                    <span style={{ position: "absolute", top: "12px", left: "12px", fontSize: "0.6rem", letterSpacing: "0.18em", textTransform: "uppercase", padding: "3px 8px", background: "rgba(0,0,0,0.75)", border: "1px solid rgba(224,0,31,0.4)", color: "#e0001f", borderRadius: "2px", fontFamily: "var(--font-space,monospace)" }}>
+                      {wotd.deviceType.charAt(0) + wotd.deviceType.slice(1).toLowerCase()}
+                    </span>
                   )}
-                  <div className="wotd-img-frame__hover" aria-hidden="true">
-                    <span className="wotd-img-frame__hover-text">View Wallpaper</span>
-                  </div>
-                  <div className="wotd-img-frame__eye" aria-hidden="true" />
                 </Link>
               </div>
-              <div className="wotd-below">
-                <h2 className="wotd-title">{wotd.title}</h2>
-              </div>
-              <div className="wotd-color-filter" aria-label="Filter by color">
-                <span className="wotd-color-filter__label">Filter by Color</span>
-                <div className="wotd-color-filter__dots">
-                  {[
-                    { color: "#e0001f", tag: "red",    label: "Red",    glow: "rgba(224,0,31,0.6)"   },
-                    { color: "#9333ea", tag: "purple",  label: "Purple", glow: "rgba(147,51,234,0.6)" },
-                    { color: "#22c55e", tag: "green",   label: "Green",  glow: "rgba(34,197,94,0.6)"  },
-                    { color: "#111111", tag: "black",   label: "Black",  glow: "rgba(180,180,180,0.4)", border: "rgba(255,255,255,0.2)" },
-                  ].map(({ color, tag, label, glow, border }) => (
-                    <a key={tag} href={`/search?q=${encodeURIComponent(tag)}`}
-                      className="wotd-color-dot" aria-label={label} title={label}
-                      style={{ "--dot-color": color, "--dot-glow": glow, "--dot-border": border ?? color, background: color } as React.CSSProperties}
-                    />
-                  ))}
-                </div>
+              <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "1rem", textAlign: "center" }}>
+                <h2 style={{ fontSize: "clamp(1.2rem,2.2vw,1.9rem)", lineHeight: 1.12, margin: 0, color: "#f0e8d8", fontFamily: "var(--font-cinzel,serif)", letterSpacing: "0.02em" }}>{wotd.title}</h2>
               </div>
               <style>{`
-                .wotd-section{position:relative;padding:clamp(24px,4vw,48px) clamp(16px,5vw,72px);background:#080508;overflow:hidden}
-                .wotd-section::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 50% at 50% 100%,rgba(224,0,31,0.12) 0%,transparent 65%),radial-gradient(ellipse 40% 30% at 20% 30%,rgba(80,0,10,0.15) 0%,transparent 60%);pointer-events:none}
-                .wotd-particles{position:absolute;inset:0;pointer-events:none;overflow:hidden}
-                .wotd-particle{position:absolute;display:block;width:2px;height:2px;border-radius:50%;background:rgba(224,0,31,0.4);left:calc(var(--pi,0)*5.8% + 2%);bottom:-10px;will-change:transform,opacity;animation:wotdFloat calc(6s + var(--pi,0)*0.7s) ease-in infinite;animation-delay:calc(var(--pi,0)*0.4s);opacity:0}
-                .wotd-particle:nth-child(odd){background:rgba(150,100,50,0.3);width:1.5px;height:1.5px}
-                @keyframes wotdFloat{0%{transform:translate3d(0,0,0);opacity:0}10%{opacity:0.6}80%{opacity:0.3}100%{transform:translate3d(calc((var(--pi,0)-9)*4px),-100vh,0);opacity:0}}
-                .wotd-header{display:flex;align-items:center;gap:1.25rem;margin-bottom:clamp(12px,2vw,24px);max-width:1100px;margin-left:auto;margin-right:auto}
-                .wotd-header__rule{flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(224,0,31,0.5),transparent)}
-                .wotd-header__center{flex-shrink:0}
-                .wotd-eyebrow{display:flex;align-items:center;gap:0.6rem;font-size:0.72rem;letter-spacing:0.22em;text-transform:uppercase;color:#e0001f;font-family:var(--font-space,monospace)}
-                .wotd-eyebrow__dot{display:inline-block;width:5px;height:5px;border-radius:50%;background:#e0001f;will-change:opacity;animation:wotdPulse 2.4s ease-in-out infinite;transition:box-shadow 0.3s ease,transform 0.3s ease}
-                @keyframes wotdPulse{0%,100%{opacity:1}50%{opacity:0.6}}
-                .wotd-eyebrow:hover .wotd-eyebrow__dot{box-shadow:0 0 12px 4px rgba(224,0,31,0.9),0 0 24px rgba(224,0,31,0.4);transform:scale(1.8);animation:none}
-                .wotd-color-filter{display:flex;flex-direction:column;align-items:center;gap:10px;margin-top:22px}
-                .wotd-color-filter__label{font-family:var(--font-space,monospace);font-size:0.55rem;letter-spacing:0.28em;text-transform:uppercase;color:rgba(224,224,224,0.28)}
-                .wotd-color-filter__dots{display:flex;gap:16px;align-items:center}
-                .wotd-color-dot{display:block;width:15px;height:15px;border-radius:50%;border:1.5px solid var(--dot-border,var(--dot-color));transition:box-shadow 0.22s ease,transform 0.22s ease}
-                .wotd-color-dot:hover{transform:scale(1.5);box-shadow:0 0 12px 4px var(--dot-glow),0 0 28px var(--dot-glow)}
-                .wotd-top-frame{display:flex;justify-content:center;margin-bottom:1.5rem}
-                .wotd-top-frame .wotd-img-frame{width:clamp(160px,22vw,280px)}
-                .wotd-below{display:flex;flex-direction:column;align-items:center;gap:1rem;text-align:center}
-                .wotd-img-frame{position:relative;display:block;aspect-ratio:9/16;width:100%;border-radius:16px;overflow:hidden;border:1.5px solid rgba(224,0,31,0.4);box-shadow:0 0 0 1px rgba(255,34,51,0.06),0 8px 40px rgba(0,0,0,0.8),0 0 60px rgba(224,0,31,0.15);text-decoration:none;transition:transform 0.35s ease,box-shadow 0.35s ease;flex-shrink:0}
-                .wotd-img-frame:hover{transform:translateY(-6px) scale(1.015);box-shadow:0 0 0 1px rgba(255,34,51,0.18),0 20px 70px rgba(0,0,0,0.9),0 0 90px rgba(224,0,31,0.28)}
-                .wotd-img-frame__wrap{position:absolute;inset:0}
-                .wotd-img-frame__scanlines{position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,0.06) 3px,rgba(0,0,0,0.06) 4px);pointer-events:none}
                 .wotd-img-frame__corners{position:absolute;inset:0;pointer-events:none}
-                .wotd-img-frame__corners span{position:absolute;width:16px;height:16px;border-color:rgba(224,0,31,0.7);border-style:solid}
+                .wotd-img-frame__corners span{position:absolute;width:16px;height:16px;border-color:rgba(224,0,31,0.6);border-style:solid}
                 .wotd-img-frame__corners span:nth-child(1){top:8px;left:8px;border-width:1.5px 0 0 1.5px}
                 .wotd-img-frame__corners span:nth-child(2){top:8px;right:8px;border-width:1.5px 1.5px 0 0}
                 .wotd-img-frame__corners span:nth-child(3){bottom:8px;left:8px;border-width:0 0 1.5px 1.5px}
                 .wotd-img-frame__corners span:nth-child(4){bottom:8px;right:8px;border-width:0 1.5px 1.5px 0}
-                .wotd-img-frame__badge{position:absolute;top:12px;left:12px;font-size:0.6rem;letter-spacing:0.18em;text-transform:uppercase;padding:3px 8px;background:rgba(0,0,0,0.75);border:1px solid rgba(224,0,31,0.4);color:#e0001f;border-radius:2px;font-family:var(--font-space,monospace)}
-                .wotd-img-frame__hover{position:absolute;inset:0;background:rgba(224,0,31,0.15);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 0.25s ease;backdrop-filter:blur(2px)}
-                .wotd-img-frame:hover .wotd-img-frame__hover{opacity:1}
-                .wotd-img-frame__hover-text{font-size:0.8rem;letter-spacing:0.2em;text-transform:uppercase;color:#fff;font-family:var(--font-space,monospace);padding:8px 16px;border:1px solid rgba(255,255,255,0.3);border-radius:2px}
-                .wotd-img-frame__eye{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:70%;height:2px;background:rgba(224,0,31,0.7);box-shadow:0 0 18px 6px rgba(224,0,31,0.4);will-change:transform,opacity;animation:wotdEyePulse 3s ease-in-out infinite;border-radius:50%;transform-origin:center}
-                @keyframes wotdEyePulse{0%,100%{opacity:0.5;transform:translateX(-50%) scaleX(0.57)}50%{opacity:1;transform:translateX(-50%) scaleX(1)}}
-                .wotd-title{font-size:clamp(1.2rem,2.2vw,1.9rem);line-height:1.12;margin:0;color:#f0e8d8;font-family:var(--font-cinzel,serif);text-shadow:0 2px 20px rgba(224,0,31,0.2);letter-spacing:0.02em}
                 @media(max-width:680px){
-                  .wotd-top-frame .wotd-img-frame{width:clamp(100px,38vw,150px)}
-                  .wotd-title{font-size:clamp(0.95rem,3.5vw,1.3rem)}
+                  .wotd-img-frame{width:clamp(100px,38vw,150px) !important}
                 }
               `}</style>
             </section>
-          </LazySection>
+          
         );
       })()}
 
       {/* ── MOBILE WALLPAPERS — hidden ── */}
       <div style={{ display: "none" }} aria-hidden="true">
-        <LazySection revealDirection="up" minHeight="520px" className="hw-desktop-section-mobile-hidden">
+        
           <section className="dt-mobile">
             <div className="dt-section-head dt-section-head--center">
               <span className="dt-eyebrow">Pocket-Sized Darkness</span>
@@ -608,11 +524,11 @@ export default async function Home() {
             </div>
             <div className="dt-phone-showcase">
               {[
-                { src: `${CDN}/12/always-watching-wallpaper.webp`,                                                 alt: "Always Watching",  label: "Always Watching"  },
-                { src: `${CDN}/12/funny-lockscreen-wallpaper.webp`,                                                alt: "Funny Lockscreen",  label: "Funny Lockscreen" },
-                { src: `${CDN}/12/vampire-man-and-woman-couple-dance-under-the-moon-wallpaper.webp`,               alt: "Vampire Couple",    label: "Vampire Dance"    },
-                { src: `${CDN}/12/paper-cut-witch-red-backdrop-staff.webp`,                                        alt: "Paper Cut Witch",   label: "Paper Cut Witch"  },
-                { src: `${CDN}/12/hip-hop-haunted-skeleton-phone-wallpaper.webp`,                                  alt: "Hip Hop Skeleton",  label: "Hip Hop Skeleton" },
+                { src: `${CDN}/12/always-watching-wallpaper.webp`,                                               alt: "Always Watching",  label: "Always Watching"  },
+                { src: `${CDN}/12/funny-lockscreen-wallpaper.webp`,                                              alt: "Funny Lockscreen",  label: "Funny Lockscreen" },
+                { src: `${CDN}/12/vampire-man-and-woman-couple-dance-under-the-moon-wallpaper.webp`,             alt: "Vampire Couple",    label: "Vampire Dance"    },
+                { src: `${CDN}/12/paper-cut-witch-red-backdrop-staff.webp`,                                      alt: "Paper Cut Witch",   label: "Paper Cut Witch"  },
+                { src: `${CDN}/12/hip-hop-haunted-skeleton-phone-wallpaper.webp`,                                alt: "Hip Hop Skeleton",  label: "Hip Hop Skeleton" },
               ].map((phone, i) => (
                 <div key={i} className={`dt-phone-card${i === 2 ? " dt-phone-card--hero" : ""}`} style={{ "--card-i": i } as React.CSSProperties}>
                   <div className="dt-phone-card__aura" aria-hidden="true" />
@@ -636,12 +552,12 @@ export default async function Home() {
               <Link prefetch={false} href="/android" className="dt-btn dt-btn--ghost">Android Wallpapers →</Link>
             </div>
           </section>
-        </LazySection>
+        
       </div>
 
       {/* ── DESKTOP WALLPAPERS — hidden ── */}
       <div style={{ display: "none" }} aria-hidden="true">
-        <LazySection revealDirection="right" minHeight="440px" className="hw-desktop-section-mobile-hidden">
+        
           <section className="dt-desktop">
             <div className="dt-section-head dt-section-head--center">
               <span className="dt-eyebrow">The Haunted Square</span>
@@ -669,28 +585,23 @@ export default async function Home() {
               <Link prefetch={false} href="/pc" className="dt-btn dt-btn--enter">Browse PC Wallpapers →</Link>
             </div>
           </section>
-        </LazySection>
+        
       </div>
 
-      {/* MATCHING KITS — reveal from right (alternates with Premium's left) */}
-      <LazySection
-        revealDirection="right"
-        rootMargin="0px 0px -100px 0px"
-        staggerChildren
-      >
-        <section style={{ padding: "clamp(40px,6vw,72px) clamp(16px,5vw,72px)", background: "#07050f", position: "relative", overflow: "hidden" }}>
-          <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse 70% 40% at 50% 0%,rgba(224,0,31,0.06) 0%,transparent 70%)", pointerEvents: "none" }} />
+      {/* MATCHING KITS */}
+      
+        <section style={{ padding: "clamp(40px,6vw,72px) clamp(16px,5vw,72px)", background: "#07050f", position: "relative" }}>
           <div style={{ maxWidth: "1200px", margin: "0 auto", position: "relative" }}>
             <div style={{ marginBottom: "clamp(24px,4vw,40px)" }}>
-              <span style={{ display: "block", fontFamily: "var(--font-space,monospace)", fontSize: "0.58rem", letterSpacing: "0.28em", textTransform: "uppercase", color: "#e0001f", marginBottom: "10px" }} className="hw-section-eyebrow-anim">Full Digital Identity</span>
-              <h2 style={{ fontFamily: "var(--font-cinzel,serif)", fontSize: "clamp(1.4rem,3vw,2.2rem)", fontWeight: 700, color: "#f0e8d8", margin: "0 0 10px", letterSpacing: "0.04em" }} className="hw-section-title-anim">Matching Setup Kits</h2>
-              <p style={{ fontFamily: "var(--font-cormorant,serif)", fontSize: "clamp(0.95rem,1.5vw,1.1rem)", lineHeight: 1.65, color: "rgba(224,224,248,0.6)", margin: 0, maxWidth: "520px" }} className="hw-section-sub-anim">One dark aesthetic across every screen. Phone, watch, desktop, and avatar — unified.</p>
+              <span style={{ display: "block", fontFamily: "var(--font-space,monospace)", fontSize: "0.58rem", letterSpacing: "0.28em", textTransform: "uppercase", color: "#e0001f", marginBottom: "10px" }}>Full Digital Identity</span>
+              <h2 style={{ fontFamily: "var(--font-cinzel,serif)", fontSize: "clamp(1.4rem,3vw,2.2rem)", fontWeight: 700, color: "#f0e8d8", margin: "0 0 10px", letterSpacing: "0.04em" }}>Matching Setup Kits</h2>
+              <p style={{ fontFamily: "var(--font-cormorant,serif)", fontSize: "clamp(0.95rem,1.5vw,1.1rem)", lineHeight: 1.65, color: "rgba(224,224,248,0.6)", margin: 0, maxWidth: "520px" }}>One dark aesthetic across every screen. Phone, watch, desktop, and avatar — unified.</p>
             </div>
             <div className="hw-kits-row3">
               {[
-                { href: "/sets/ghost-pitch",          num: "03", title: "The Ghost Pitch",       sub: "Dark Soccer Setup Kit",   tag: "Sports", img: `${CDN}/12/sets_The%20Ghost%20Pitch_%20A%20Matching%20Dark%20Soccer%20Setup%20Kit_Haunted_soccer_stadium_midnight_soccer-kit.webp`,                                                                                                      alt: "Ghost Pitch haunted soccer stadium dark horror matching wallpaper set",                                                      accent: "232,124,30" },
-                { href: "/sets/cyberpunk-gaming-hero", num: "05", title: "Cyberpunk Gaming Hero",   sub: "Neon Horror Gaming Kit",  tag: "Gaming", img: `${CDN}/sets/Cyberpunk%20Gaming%20Hero%20Matching%20Wallpaper%20Set/terminal-paradox-cyber-neon-phantom-pointing-homescreen-mobile-thumbnail-cover.webp`,                                                                           alt: "Terminal Paradox 4K cyberpunk gaming hero — OLED neon horror matching wallpaper set for PC phone and smartwatch",            accent: "139,92,246", premium: true },
-                { href: "/sets/crimson-sovereign",    num: "04", title: "The Crimson Sovereign",   sub: "Dark Fantasy Gaming Kit", tag: "Gaming", img: `${CDN}/sets/The%20Crimson%20Sovereign%20%7C%20Dark%20Fantasy%20Gaming%20Character%20Matching%20Setup%20Kit/ark-fantasy-gaming-character-4k-wallpaper-pc-setup-aesthetic.webp`,                                                       alt: "Crimson Sovereign dark fantasy gaming character 4K wallpaper PC setup aesthetic",                                            accent: "224,0,31",  premium: true },
+                { href: "/sets/ghost-pitch",          num: "03", title: "The Ghost Pitch",      sub: "Dark Soccer Setup Kit",   tag: "Sports", img: `${CDN}/12/sets_The%20Ghost%20Pitch_%20A%20Matching%20Dark%20Soccer%20Setup%20Kit_Haunted_soccer_stadium_midnight_soccer-kit.webp`,                                                                                                     alt: "Ghost Pitch haunted soccer stadium dark horror matching wallpaper set",                                                     accent: "232,124,30" },
+                { href: "/sets/cyberpunk-gaming-hero", num: "05", title: "Cyberpunk Gaming Hero", sub: "Neon Horror Gaming Kit",  tag: "Gaming", img: `${CDN}/sets/Cyberpunk%20Gaming%20Hero%20Matching%20Wallpaper%20Set/terminal-paradox-cyber-neon-phantom-pointing-homescreen-mobile-thumbnail-cover.webp`,                                                                          alt: "Terminal Paradox 4K cyberpunk gaming hero — OLED neon horror matching wallpaper set for PC phone and smartwatch",           accent: "139,92,246", premium: true },
+                { href: "/sets/crimson-sovereign",    num: "04", title: "The Crimson Sovereign", sub: "Dark Fantasy Gaming Kit", tag: "Gaming", img: `${CDN}/sets/The%20Crimson%20Sovereign%20%7C%20Dark%20Fantasy%20Gaming%20Character%20Matching%20Setup%20Kit/ark-fantasy-gaming-character-4k-wallpaper-pc-setup-aesthetic.webp`,                                                      alt: "Crimson Sovereign dark fantasy gaming character 4K wallpaper PC setup aesthetic",                                           accent: "224,0,31",  premium: true },
               ].map((kit, i) => (
                 <a key={kit.href} href={kit.href} className="hw-kit-card hw-kit-card--sm hw-kit-card--anim" style={{ "--kit-accent": kit.accent, "--kit-i": i } as React.CSSProperties}>
                   <div className="hw-kit-card__thumb">
@@ -725,117 +636,23 @@ export default async function Home() {
             }
             .hw-kit-card--sm .hw-kit-card__title{font-size:clamp(0.85rem,1.5vw,1.05rem)}
             .hw-kit-card__tag{position:absolute;bottom:10px;right:10px;font-family:var(--font-space,monospace);font-size:0.5rem;letter-spacing:0.16em;text-transform:uppercase;color:#fff;background:rgba(0,0,0,0.8);border:1px solid rgba(255,255,255,0.3);padding:4px 10px;border-radius:2px;font-weight:700}
-            .hw-kit-card{display:flex;flex-direction:column;text-decoration:none;color:inherit;border:1px solid rgba(var(--kit-accent,224,0,31),0.18);background:rgba(255,255,255,0.02);overflow:hidden;transition:border-color 0.3s ease,box-shadow 0.3s ease,transform 0.3s ease;cursor:pointer}
-            .hw-kit-card:hover{border-color:rgba(var(--kit-accent,224,0,31),0.5);box-shadow:0 0 40px rgba(var(--kit-accent,224,0,31),0.1);transform:translateY(-4px)}
+            .hw-kit-card{display:flex;flex-direction:column;text-decoration:none;color:inherit;border:1px solid rgba(var(--kit-accent,224,0,31),0.18);background:rgba(255,255,255,0.02);overflow:hidden;cursor:pointer;position:relative}
             .hw-kit-card__thumb{position:relative;aspect-ratio:16/9;overflow:hidden;background:#08060e}
-            .hw-kit-card__img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.55s ease}
-            .hw-kit-card:hover .hw-kit-card__img{transform:scale(1.05)}
+            .hw-kit-card__img{width:100%;height:100%;object-fit:cover;display:block}
             .hw-kit-card__overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(7,5,15,0.85) 0%,transparent 55%);pointer-events:none}
             .hw-kit-card__num{position:absolute;top:10px;left:12px;font-family:var(--font-space,monospace);font-size:0.5rem;letter-spacing:0.2em;text-transform:uppercase;color:rgb(var(--kit-accent,224,0,31));background:rgba(0,0,0,0.7);border:1px solid rgba(var(--kit-accent,224,0,31),0.4);padding:2px 8px;border-radius:2px}
-            .hw-kit-card__premium{position:absolute;top:10px;right:10px;font-family:var(--font-space,monospace);font-size:0.46rem;letter-spacing:0.16em;text-transform:uppercase;color:#ff6a00;background:linear-gradient(135deg,rgba(255,106,0,0.14) 0%,rgba(224,0,31,0.14) 100%);border:1px solid rgba(255,106,0,0.42);padding:2px 7px;border-radius:2px;font-weight:700;animation:hw-kit-premium-glow 3s ease-in-out infinite}
-            @keyframes hw-kit-premium-glow{0%,100%{box-shadow:0 0 10px rgba(255,106,0,0.15)}50%{box-shadow:0 0 20px rgba(255,106,0,0.3),0 0 36px rgba(224,0,31,0.12)}}
+            .hw-kit-card__premium{position:absolute;top:10px;right:10px;font-family:var(--font-space,monospace);font-size:0.46rem;letter-spacing:0.16em;text-transform:uppercase;color:#ff6a00;background:rgba(255,106,0,0.12);border:1px solid rgba(255,106,0,0.42);padding:2px 7px;border-radius:2px;font-weight:700}
             .hw-kit-card__body{padding:clamp(14px,2vw,20px);display:flex;flex-direction:column;gap:8px;background:rgba(0,0,0,0.6);border-top:1px solid rgba(var(--kit-accent,224,0,31),0.25)}
             .hw-kit-card__sub{font-family:var(--font-space,monospace);font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;color:rgb(var(--kit-accent,224,0,31));margin:0}
             .hw-kit-card__title{font-family:var(--font-cinzel,serif);font-size:clamp(1rem,1.5vw,1.2rem);font-weight:700;color:#f0e8d8;margin:0;letter-spacing:0.04em}
-            .hw-kit-card__cta{font-family:var(--font-space,monospace);font-size:0.58rem;letter-spacing:0.14em;text-transform:uppercase;color:rgb(var(--kit-accent,224,0,31));transition:letter-spacing 0.2s ease;display:flex;align-items:center;gap:6px}
-            .hw-kit-card:hover .hw-kit-card__cta{letter-spacing:0.22em}
-
-            /* ── Kit card entrance animation — DISABLED ── */
-            .hw-kit-card--anim {
-              opacity: 1 !important;
-              transform: none !important;
-              animation: none !important;
-            }
-
-            /* ── Kit thumb reveal sweep ── */
-            .hw-kit-card__thumb::after {
-              content: '';
-              position: absolute;
-              inset: 0;
-              background: linear-gradient(90deg, transparent 0%, rgba(224,0,31,0.12) 50%, transparent 100%);
-              background-size: 200% 100%;
-              background-position: 200% 0;
-              pointer-events: none;
-              opacity: 0;
-              transition: opacity 0.2s;
-            }
-            .hw-kit-card:hover .hw-kit-card__thumb::after {
-              opacity: 1;
-              animation: hw-kit-sweep 0.8s ease forwards;
-            }
-            @keyframes hw-kit-sweep {
-              from { background-position: 200% 0; }
-              to   { background-position: -200% 0; }
-            }
-
-            /* ── Kit card red bottom glow on hover ── */
-            .hw-kit-card::before {
-              content: '';
-              position: absolute;
-              bottom: 0; left: 10%; right: 10%;
-              height: 2px;
-              background: linear-gradient(90deg, transparent, rgb(var(--kit-accent,224,0,31)), transparent);
-              opacity: 0;
-              transition: opacity 0.35s ease;
-              pointer-events: none;
-              z-index: 2;
-            }
-            .hw-kit-card:hover::before { opacity: 1; }
-
-            /* mobile: no special override needed — animations already killed globally */
+            .hw-kit-card__cta{font-family:var(--font-space,monospace);font-size:0.58rem;letter-spacing:0.14em;text-transform:uppercase;color:rgb(var(--kit-accent,224,0,31));display:flex;align-items:center;gap:6px}
           `}</style>
         </section>
-      </LazySection>
+      
 
-      {/* TRENDING-HIDDEN: uncomment this entire block to restore Most Downloaded section
-      {trendingThisWeek.length > 0 && (
-        <LazySection
-          revealDirection="up"
-          minHeight="480px"
-          rootMargin="0px 0px -60px 0px"
-        >
-          <section style={{ padding: "clamp(32px,5vw,64px) clamp(16px,5vw,72px)", background: "#060410", position: "relative", overflow: "hidden" }}>
-            <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse 60% 40% at 50% 0%,rgba(224,0,31,0.07) 0%,transparent 70%)", pointerEvents: "none" }} />
-            <div className="dt-section-head dt-section-head--center" style={{ marginBottom: "clamp(24px,4vw,40px)" }}>
-              <span className="dt-eyebrow" style={{ color: "#c0453a" }}>🔥 Most Downloaded</span>
-              <h2 className="dt-section-title">Most Downloaded</h2>
-              <p className="dt-section-sub" style={{ maxWidth: "480px", margin: "0 auto" }}>The most downloaded wallpapers of all time.</p>
-            </div>
-            <WallpaperCardGrid
-              accentRgb="224,0,31" badge="🔥" badgeColor="#c0453a"
-              items={trendingThisWeek.map(img => ({
-                id: img.id, slug: img.slug, title: img.title,
-                src: getPublicUrl(img.r2Key),
-                devicePath: img.deviceType === "IPHONE" ? "iphone" : img.deviceType === "ANDROID" ? "android" : "pc",
-                downloadCount: img._count.downloads,
-              }))}
-            />
-          </section>
-        </LazySection>
-      )}
-      TRENDING-HIDDEN */}
-
-      {/* COLLECTIONS — reveal from left (alternate) */}
-      <LazySection
-        revealDirection="left"
-        rootMargin="0px 0px -100px 0px"
-      >
-        <section className="dt-obsessions hw-fade-up">
-          <div style={{ display: "none" }} aria-hidden="true">
-            <div className="dt-section-head">
-              <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", flexWrap: "wrap", marginBottom: "0.5rem" }}>
-                <span className="dt-eyebrow" style={{ margin: 0 }}>The Ones We Hid From The Feed</span>
-                <span style={{ fontFamily: "var(--font-space,monospace)", fontSize: "0.55rem", letterSpacing: "0.12em", textTransform: "uppercase", color: "#7a0000", border: "1px solid #7a0000", padding: "2px 8px", borderRadius: "2px", whiteSpace: "nowrap", background: "#ffffff", fontWeight: 700 }}>
-                  Not in New · Not in Trending · Not in Premium
-                </span>
-              </div>
-              <h2 className="dt-section-title">What Haunts You?</h2>
-              <p className="dt-section-sub" style={{ maxWidth: "560px", marginTop: "0.5rem" }}>
-                These collections never surface in New, Trending, or Premium. The only way in is through here — choose your obsession.
-              </p>
-            </div>
-          </div>
-
+      {/* COLLECTIONS */}
+      
+        <section className="dt-obsessions">
           {obsessions.some(o => o.slug === "the-defiant-manifesto") && (() => {
             const defiant = obsessions.find(o => o.slug === "the-defiant-manifesto")!;
             return (
@@ -845,31 +662,23 @@ export default async function Home() {
                   <div className="hw-defiant-wrap">
                     <Image
                       unoptimized
-                      src="https://assets.hauntedwallpapers.com/extras/the-defiant-crew-team-members-collection.webp"
+                      src={`${CDN}/extras/the-defiant-crew-team-members-collection.webp`}
                       alt="The Defiant Manifesto — Crew Collection"
-                      fill
-                      loading="lazy"
-                      className="object-cover"
+                      fill loading="lazy" className="object-cover"
                       sizes="(max-width:640px) 200px, 800px"
                       style={{ objectFit: "cover", objectPosition: "center center" }}
                       quality={50}
                     />
                     <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top,rgba(0,0,0,0.97) 0%,rgba(0,0,0,0.75) 40%,rgba(0,0,0,0.2) 70%,transparent 100%)", pointerEvents: "none" }} />
                     <div style={{ position: "absolute", top: "12px", right: "12px" }}>
-                      <span style={{ fontFamily: "var(--font-space,monospace)", fontSize: "0.5rem", letterSpacing: "0.2em", textTransform: "uppercase", color: "#ff6a00", background: "linear-gradient(135deg,rgba(255,106,0,0.18),rgba(224,0,31,0.18))", border: "1px solid rgba(255,106,0,0.5)", padding: "3px 8px", borderRadius: "2px", fontWeight: 700 }}>⚡ Limited</span>
+                      <span style={{ fontFamily: "var(--font-space,monospace)", fontSize: "0.5rem", letterSpacing: "0.2em", textTransform: "uppercase", color: "#ff6a00", background: "rgba(255,106,0,0.12)", border: "1px solid rgba(255,106,0,0.5)", padding: "3px 8px", borderRadius: "2px", fontWeight: 700 }}>⚡ Limited</span>
                     </div>
                     <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "clamp(14px,3vw,40px)" }}>
                       <span style={{ display: "block", fontFamily: "var(--font-space,monospace)", fontSize: "0.52rem", letterSpacing: "0.26em", textTransform: "uppercase", color: "#e0001f", marginBottom: "8px" }}>Featured Collection</span>
-                      <h3
-                        className="hw-defiant-title"
-                        style={{ fontFamily: "var(--font-cinzel,serif)", fontSize: "clamp(1.3rem,4vw,3rem)", fontWeight: 700, color: "#f0e8d8", margin: "0 0 8px", letterSpacing: "0.04em", lineHeight: 1.1, textShadow: "0 2px 30px rgba(224,0,31,0.4)" }}
-                      >
+                      <h3 className="hw-defiant-title" style={{ fontFamily: "var(--font-cinzel,serif)", fontSize: "clamp(1.3rem,4vw,3rem)", fontWeight: 700, color: "#f0e8d8", margin: "0 0 8px", letterSpacing: "0.04em", lineHeight: 1.1 }}>
                         {defiant.title}
                       </h3>
-                      <p
-                        className="hw-defiant-body"
-                        style={{ fontFamily: "var(--font-cormorant,serif)", fontSize: "clamp(0.82rem,1.4vw,1rem)", color: "rgba(224,224,248,0.6)", margin: "0 0 14px", maxWidth: "500px", lineHeight: 1.55 }}
-                      >
+                      <p className="hw-defiant-body" style={{ fontFamily: "var(--font-cormorant,serif)", fontSize: "clamp(0.82rem,1.4vw,1rem)", color: "rgba(224,224,248,0.6)", margin: "0 0 14px", maxWidth: "500px", lineHeight: 1.55 }}>
                         The art they tried to ban. The skeleton that went viral on every platform — then got rejected. Now it lives here.
                       </p>
                       <span style={{ display: "inline-flex", alignItems: "center", gap: "6px", fontFamily: "var(--font-space,monospace)", fontSize: "0.58rem", letterSpacing: "0.14em", textTransform: "uppercase", color: "#fff", background: "#e0001f", padding: "8px 16px", borderRadius: "2px" }}>
@@ -883,31 +692,22 @@ export default async function Home() {
           })()}
 
           <div className="dt-obs-grid">
-            {obsessions.filter(o => o.slug !== "the-defiant-manifesto").map((obs, i) => {
-              return (
-                <Link prefetch={false} key={obs.id} href={`/obsessions/${encodeURIComponent(obs.slug)}`}
-                  className="dt-obs-card" style={{ "--delay": `${i * 0.07}s` } as React.CSSProperties}>
-                  <div className="dt-obs-card__bg">
-                    <div className="dt-obs-card__veil" />
-                  </div>
-                  <div className="dt-obs-card__glitch" aria-hidden="true" />
-                  <div className="dt-obs-card__drip" aria-hidden="true" />
-                  <div className="dt-obs-card__body"><h3 className="dt-obs-card__title">{obs.title}</h3></div>
-                  <div className="dt-obs-card__glow" aria-hidden="true" />
-                  <span className="dt-obs-card__corner dt-obs-card__corner--tl">†</span>
-                  <span className="dt-obs-card__corner dt-obs-card__corner--br">†</span>
-                </Link>
-              );
-            })}
+            {obsessions.filter(o => o.slug !== "the-defiant-manifesto").map((obs, i) => (
+              <Link prefetch={false} key={obs.id} href={`/obsessions/${encodeURIComponent(obs.slug)}`}
+                className="dt-obs-card" style={{ "--delay": `${i * 0.07}s` } as React.CSSProperties}>
+                <div className="dt-obs-card__bg"><div className="dt-obs-card__veil" /></div>
+                <div className="dt-obs-card__body"><h3 className="dt-obs-card__title">{obs.title}</h3></div>
+                <span className="dt-obs-card__corner dt-obs-card__corner--tl">†</span>
+                <span className="dt-obs-card__corner dt-obs-card__corner--br">†</span>
+              </Link>
+            ))}
           </div>
 
           <div className="dt-obsessions__footer">
             <Link prefetch={false} href="/obsessions" className="dt-btn dt-btn--ghost">All Obsessions →</Link>
           </div>
         </section>
-      </LazySection>
-
-      <HorrorFact />
+      
 
       <RecentlyViewed />
 

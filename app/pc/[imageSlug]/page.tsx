@@ -12,7 +12,6 @@ import SocialShare from "@/components/SocialShare";
 import PageTracker from "@/components/PageTracker";
 import FavoriteButton from "@/components/FavoriteButton";
 import Breadcrumbs from "@/components/Breadcrumbs";
-import LazySection from "@/components/LazySection";
 
 export const dynamicParams = true;
 export const revalidate = 3600;
@@ -205,7 +204,7 @@ export default async function PcImagePage({ params }: PageProps) {
 
               {/* ── More You'll Like strip (mobile) — lazy loaded ── */}
               {tagSortedStrip.length > 0 && (
-                <LazySection skeletonVariant="default" minHeight="80px" rootMargin="100px 0px" className="hw-more-strip hw-more-strip--mobile">
+                
                   <span className="hw-more-strip__label">More ▸</span>
                   <div className="hw-more-strip__thumbs">
                     {tagSortedStrip.map((img) => (
@@ -216,7 +215,7 @@ export default async function PcImagePage({ params }: PageProps) {
                       </Link>
                     ))}
                   </div>
-                </LazySection>
+                
               )}
             </div>
           </div>
@@ -272,7 +271,7 @@ export default async function PcImagePage({ params }: PageProps) {
 
             {/* ── More You'll Like strip (desktop) — lazy loaded ── */}
             {tagSortedStrip.length > 0 && (
-              <LazySection skeletonVariant="default" minHeight="90px" rootMargin="100px 0px" className="hw-more-strip hw-more-strip--desktop">
+              
                 <span className="hw-more-strip__label">More ▸</span>
                 <div className="hw-more-strip__thumbs">
                   {tagSortedStrip.map((img) => (
@@ -283,16 +282,16 @@ export default async function PcImagePage({ params }: PageProps) {
                     </Link>
                   ))}
                 </div>
-              </LazySection>
+              
             )}
           </div>
         </div>
       </section>
 
       {/* ── RecentlyViewed — ONLY loads when user scrolls to bottom ── */}
-      <LazySection skeletonVariant="default" minHeight="120px" rootMargin="50px 0px">
+      
         <RecentlyViewed currentSlug={image.slug} />
-      </LazySection>
+      
 
       <style>{`
         /* ── Mobile detail scaling ── */
