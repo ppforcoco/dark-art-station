@@ -358,7 +358,7 @@ export default async function Home() {
         }
         .hp-worlds-sub {
           font-family:monospace; font-size:clamp(.5rem,.6vw,.58rem);
-          letter-spacing:.26em; text-transform:uppercase; color:#e8001f; margin:0 0 4px;
+          letter-spacing:.26em; text-transform:uppercase; color:#ef0014; margin:0 0 4px;
         }
         .hp-worlds-grid {
           display:grid; grid-template-columns:repeat(5,1fr);
@@ -398,7 +398,7 @@ export default async function Home() {
         .hp-wotd-rule-line { flex:1; height:1px; background:linear-gradient(90deg,transparent,rgba(224,0,31,.3),transparent) }
         .hp-wotd-label {
           font-family:monospace; font-size:clamp(.54rem,.65vw,.62rem);
-          letter-spacing:.22em; text-transform:uppercase; color:#e0001f; white-space:nowrap;
+          letter-spacing:.22em; text-transform:uppercase; color:#ef0014; white-space:nowrap;
         }
         .hp-wotd-body {
           display:flex; align-items:center; gap:clamp(20px,4vw,48px);
@@ -447,7 +447,7 @@ export default async function Home() {
         .hp-col-info { padding:6px 8px 8px; display:flex; flex-direction:column; gap:2px }
         .hp-col-cat {
           font-family:monospace; font-size:clamp(.4rem,.5vw,.48rem);
-          letter-spacing:.2em; text-transform:uppercase; color:#d4001f;
+          letter-spacing:.2em; text-transform:uppercase; color:#ef0014;
         }
         .hp-col-title {
           font-family:var(--font-cormorant,Georgia,serif);
@@ -618,7 +618,7 @@ export default async function Home() {
                   </div>
                 </Link>
                 <div className="hp-wotd-info">
-                  <p className="hp-section-eye" style={{ color:"#e0001f", margin:0 }}>Wallpaper of the Day</p>
+                  <p className="hp-section-eye" style={{ color:"#ef0014", margin:0 }}>Wallpaper of the Day</p>
                   <h2 className="hp-wotd-title">{wotd.title}</h2>
                   <p className="hp-wotd-note">One vision pulled daily from the vault. Download before the clock resets.</p>
                   <Link href={wotdHref} className="hp-btn-red" style={{ alignSelf:"flex-start" }}>

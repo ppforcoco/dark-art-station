@@ -226,8 +226,8 @@ export default function Header() {
           flex-shrink: 0;
         }
         .hw-nav__link:hover { color: #f0f0ff; }
-        .hw-nav__link--sets { color: rgba(192,0,26,0.8) !important; }
-        .hw-nav__link--sets:hover { color: #c0001a !important; }
+        .hw-nav__link--sets { color: #ef0014 !important; }
+        .hw-nav__link--sets:hover { color: #ff2030 !important; }
 
         /* ── ACTIONS ── */
         .hw-nav__actions {

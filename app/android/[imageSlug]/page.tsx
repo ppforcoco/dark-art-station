@@ -267,21 +267,7 @@ export default async function AndroidImagePage({ params }: PageProps) {
                 <FavoriteButton size="md" className="detail-fav-inline" item={{ slug: image.slug, title: image.title, thumb: thumbUrl, href: `/android/${imageSlug}`, device: "android" }} />
               </div>
 
-              {/* ── More You'll Like strip (mobile) — lazy loaded ── */}
-              {tagSortedStrip.length > 0 && (
-                <>
-                  <span className="hw-more-strip__label">More ▸</span>
-                  <div className="hw-more-strip__thumbs">
-                    {tagSortedStrip.map((img) => (
-                      <Link key={img.slug} href={`/android/${img.slug}`} className="more-strip-link">
-                        <div className="hw-more-strip__thumb" style={{ position: "relative" }}>
-                          <Image src={getPublicUrl(img.r2Key)} alt={img.title} fill className="object-cover" loading="lazy" sizes="44px" />
-                        </div>
-                      </Link>
-                    ))}
-                  </div>
-                </>
-              )}
+
             </div>
           </div>
 

@@ -275,8 +275,8 @@ export default function TrailSection() {
           align-self: flex-end;
         }
         .ts-clear-btn:hover {
-          color: #e0001f;
-          border-color: rgba(224,0,31,.4);
+          color: #ef0014;
+          border-color: rgba(239,0,20,.4);
         }
       `}</style>
     </section>
