@@ -166,7 +166,7 @@ export default async function WorldPage({
     device === "iphone"  ? { deviceType: "IPHONE"  as const } :
     device === "android" ? { deviceType: "ANDROID" as const } :
     // Default: iPhone + Android only, exclude PC
-    { deviceType: { in: ["IPHONE", "ANDROID"] as const } };
+    { deviceType: { in: ["IPHONE" as const, "ANDROID" as const] } };
 
   // ── Tag matching — use `has` (exact per tag) not `hasSome` (any in array) ──
   // Each tag becomes its own OR condition so Prisma does:
