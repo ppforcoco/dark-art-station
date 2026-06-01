@@ -292,17 +292,14 @@ export default async function Home() {
                            desktop: grid (unchanged)
         ═══════════════════════════════════════════════════════════════════ */
 
-        /* Mobile slider: horizontally scrollable row */
         .hp-new-slider {
           display: flex;
           gap: clamp(6px,1.2vw,10px);
           overflow-x: auto;
           scroll-snap-type: x mandatory;
           -webkit-overflow-scrolling: touch;
-          /* hide scrollbar */
           scrollbar-width: none;
           -ms-overflow-style: none;
-          /* bleed to edges on mobile */
           margin: 0 calc(-1 * clamp(16px,5vw,48px));
           padding: 0 clamp(16px,5vw,48px) 12px;
         }
@@ -313,7 +310,6 @@ export default async function Home() {
           scroll-snap-align: start;
         }
 
-        /* On desktop, revert to grid */
         @media (min-width: 768px) {
           .hp-new-slider {
             display: grid;
@@ -513,18 +509,17 @@ export default async function Home() {
 
         <StreakBar />
 
-        {/* ══ NEW THIS WEEK ════════════════════════════════════════════════ */}
+        {/* ══ FRESH FROM THE TOWN ══════════════════════════════════════════ */}
         {newThisWeek.length > 0 && (
           <section className="hp-section hp-new">
             <div className="hp-section-head">
               <div>
-                <p className="hp-section-eye" style={{ color:"#4caf50" }}>Fresh From The Vault</p>
-                <h2 className="hp-section-title">New This Week</h2>
-                <p className="hp-section-sub">Just surfaced — gone in 48 hrs.</p>
+                <p className="hp-section-eye" style={{ color:"#4caf50" }}>Fresh From The Town</p>
+                <h2 className="hp-section-title">Tonight&rsquo;s Haunting</h2>
+                <p className="hp-section-sub">Arrived since midnight — gone by dawn.</p>
               </div>
             </div>
 
-            {/* Mobile: horizontal scroll slider / Desktop: grid */}
             <div className="hp-new-slider">
               {newThisWeek.map((img, i) => {
                 const devicePath = img.deviceType === "IPHONE" ? "iphone"
