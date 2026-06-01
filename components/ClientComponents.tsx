@@ -1,10 +1,10 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 
 // ── PERF FIX: All non-critical client components are loaded lazily.
-// Cursor is now ONLY loaded on pointer:fine (desktop/mouse) devices.
+// Cursor is ONLY loaded on pointer:fine (desktop/mouse) devices.
 // On mobile (pointer:coarse) we skip it entirely — saves:
 //   • The Cursor.tsx bundle (~8KB parsed + executed)
 //   • The external hand image fetch from R2 (~30KB)
@@ -14,8 +14,10 @@ import { useEffect } from "react";
 // the cursor module ran cursor:none on ALL elements including iOS tap targets,
 // which confused Safari's hit-testing and triggered a navigation abort.
 
-// ✅ CURSOR REMOVED — browser native cursor restored
-// const Cursor = dynamic(() => import("@/components/Cursor"), { ssr: false });
+// ✅ CURSOR RE-ENABLED — loaded only on pointer:fine devices (mouse/trackpad)
+// The Cursor component itself also listens for pointer media changes at runtime,
+// so plugging in a mouse after page load activates it without a reload.
+const Cursor            = dynamic(() => import("@/components/Cursor"),             { ssr: false });
 const ScrollReset       = dynamic(() => import("@/components/ScrollReset"),        { ssr: false });
 const ScrollToTopButton = dynamic(() => import("@/components/ScrollToTopButton"),  { ssr: false });
 const CookieBanner      = dynamic(() => import("@/components/CookieBanner"),       { ssr: false });
@@ -25,13 +27,25 @@ const FeedbackWidget    = dynamic(() => import("@/components/FeedbackWidget"),  
 export default function ClientComponents() {
   // ── Detect pointer type on the client ──────────────────────────────────────
   // We can't do this at SSR time — the server has no concept of pointer device.
-  // useState(null) = "unknown until client hydrates"
+  // null = "unknown until client hydrates"
   // We only render <Cursor> after we confirm pointer:fine (mouse/trackpad).
   // pointer:coarse = touchscreen (mobile/tablet) → skip cursor entirely.
-  // Cursor removed — no pointer detection needed
+  const [isFinePonter, setIsFinePointer] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(pointer: fine)");
+    setIsFinePointer(mq.matches);
+    // Also update if pointer type changes (e.g. mouse plugged in while on page)
+    const handler = (e: MediaQueryListEvent) => setIsFinePointer(e.matches);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
 
   return (
     <>
+      {/* Custom cursor — desktop/mouse only, never on mobile */}
+      {isFinePonter === true && <Cursor />}
+
       {/* These run on all devices */}
       <ScrollReset />
       <CookieBanner />
