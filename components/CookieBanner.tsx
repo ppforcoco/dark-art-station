@@ -114,17 +114,16 @@ export default function CookieBanner() {
     if (hasChecked.current) return;
     hasChecked.current = true;
 
+    // ✅ PERF FIX: Show banner immediately if no local consent found.
+    // Previously: waited for a DB roundtrip (/api/consent) before showing banner.
+    // Now: show instantly from cookie/localStorage. DB is only written on accept/decline.
+    // This eliminates the API call delay on first visit entirely.
     const sync = readConsentSync();
-    if (sync !== null) {
-      return;
+    if (sync === null) {
+      setVisible(true);
     }
-
-    readConsentFull().then((result) => {
-      if (result !== null) {
-      } else {
-        setVisible(true);
-      }
-    });
+    // Still sync to DB in background on accept/decline (via writeConsent)
+    // No need to read from DB on mount — local storage is source of truth.
   }, []);
 
   function accept() {

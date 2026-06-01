@@ -1,43 +1,14 @@
 import type { Metadata, Viewport } from "next";
-import { Cinzel_Decorative, Cormorant_Garamond } from "next/font/google";
-// ✅ REMOVED: Space_Mono — replaced with system monospace stack in CSS
-// Cutting from 3 Google Font families → 2 saves ~30-40KB + 1 fewer font request
+// ✅ FONTS REMOVED: Using Arial (system font) — zero downloads, instant render
+// Previously: Cinzel Decorative + Cormorant Garamond (115KB, 2 Google requests)
+// Now: Arial / Arial Black — pre-installed on every device, no network cost
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ClientComponents from "@/components/ClientComponents";
 import PWARegister from "@/components/PWARegister";
 
-// ── FONT 1: Display / Headings ───────────────────────────────────────────────
-// Used for: logo, section titles, hero title, nav logo
-// preload: true  → fetched in the first HTTP request, never blocks LCP text
-// display: swap  → shows fallback font immediately, swaps when ready (no invisible text)
-const cinzel = Cinzel_Decorative({
-  weight: ["900"],           // only 900 used in practice — drops ~60KB
-  subsets: ["latin"],
-  variable: "--font-cinzel",
-  display: "swap",
-  preload: true,
-  adjustFontFallback: false, // manual fallback metrics in globals.css
-});
-
-// ── FONT 2: Body / Prose ─────────────────────────────────────────────────────
-// Used for: all body copy, card descriptions, footer links, blog content
-// This is the LCP font — preloading it directly drops LCP by ~800ms-1.5s
-const cormorant = Cormorant_Garamond({
-  weight: ["400", "600"],    // drop 300 — not used in hot paths
-  subsets: ["latin"],
-  style: ["normal", "italic"],
-  variable: "--font-cormorant",
-  display: "swap",
-  preload: true,
-  adjustFontFallback: false, // manual fallback metrics in globals.css
-});
-
-// ── Space Mono REMOVED ───────────────────────────────────────────────────────
-// All --font-space usages in CSS now fall back to: 'Courier New', 'Lucida Console', monospace
-// System monospace loads instantly — zero network request, zero render blocking
-// The visual difference is negligible for small UI labels (nav links, badges, pills)
+// ── No font config needed — Arial is a system font on all devices ────────────
 
 const SITE_URL  = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
 const SITE_NAME = "Haunted Wallpapers";
@@ -163,17 +134,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <meta name="google-site-verification" content={process.env.NEXT_PUBLIC_GSC_VERIFICATION} />
         )}
 
-        {/* Umami Analytics — defer so it never blocks rendering */}
-        <script
-          defer
-          src="https://cloud.umami.is/script.js"
-          data-website-id="8aa04b22-aab2-4f50-b5cc-d2602ad3739a"
-        />
+        {/* Umami Analytics moved to end of body — see below */}
       </head>
 
-      {/* ✅ Only 2 font variables — cinzel + cormorant
-          --font-space is gone. CSS falls back to system monospace automatically. */}
-      <body className={`${cormorant.variable} ${cinzel.variable}`}>
+      {/* ✅ No font variables — Arial is a system font, no loading needed */}
+      <body>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -209,6 +174,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Footer />
         <ClientComponents />
         <PWARegister />
+        {/* ✅ PERF: Umami moved from <head> to end of <body>
+            defer in <head> still opens DNS+TCP before first paint.
+            At end of body it only runs after everything else is rendered. */}
+        <script
+          async
+          src="https://cloud.umami.is/script.js"
+          data-website-id="8aa04b22-aab2-4f50-b5cc-d2602ad3739a"
+        />
       </body>
     </html>
   );

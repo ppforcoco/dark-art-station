@@ -208,13 +208,13 @@ export default async function Home() {
         }
 
         .hp-eyebrow {
-          font-family: monospace;
+          font-family: Arial, sans-serif;
           font-size: clamp(.58rem, .85vw, .7rem);
           letter-spacing: .28em; text-transform: uppercase;
           color: #c0001a; margin: 0;
         }
         .hp-hero-tagline {
-          font-family: var(--font-cormorant, Georgia, serif);
+          font-family: Arial, sans-serif;
           font-style: italic;
           font-size: clamp(1.1rem, 2.4vw, 1.55rem);
           color: #d8d0ee; line-height: 1.45; margin: 0;
@@ -224,12 +224,12 @@ export default async function Home() {
           gap: clamp(16px,3vw,32px); flex-wrap: wrap;
         }
         .hp-hero-num {
-          font-family: var(--font-cinzel, Georgia, serif);
+          font-family: 'Arial Black', Arial, sans-serif;
           font-size: clamp(1.3rem, 3vw, 2rem);
           font-weight: 900; color: #f0ecff;
         }
         .hp-hero-numlabel {
-          font-family: monospace;
+          font-family: Arial, sans-serif;
           font-size: clamp(.46rem,.56vw,.54rem);
           letter-spacing: .2em; text-transform: uppercase;
           color: #7a6e98; display: block; margin-top: 2px;
@@ -238,7 +238,7 @@ export default async function Home() {
 
         /* BUTTONS */
         .hp-btn-red {
-          font-family: monospace; font-size: clamp(.62rem,.78vw,.74rem);
+          font-family: Arial, sans-serif; font-size: clamp(.62rem,.78vw,.74rem);
           letter-spacing: .15em; text-transform: uppercase; color: #f0ecff;
           background: #b8001a; border: 1px solid #b8001a;
           padding: 12px 24px; text-decoration: none;
@@ -246,7 +246,7 @@ export default async function Home() {
         }
         .hp-btn-red:hover { background: #8f0013 }
         .hp-btn-ghost {
-          font-family: monospace; font-size: clamp(.62rem,.78vw,.74rem);
+          font-family: Arial, sans-serif; font-size: clamp(.62rem,.78vw,.74rem);
           letter-spacing: .15em; text-transform: uppercase; color: #c9a84c;
           background: transparent; border: 1px solid rgba(201,168,76,.3);
           padding: 12px 24px; text-decoration: none;
@@ -263,20 +263,20 @@ export default async function Home() {
         }
         @media(max-width:540px){ .hp-section-head { flex-direction:column; align-items:flex-start } }
         .hp-section-eye {
-          font-family: monospace; font-size: clamp(.52rem,.65vw,.62rem);
+          font-family: Arial, sans-serif; font-size: clamp(.52rem,.65vw,.62rem);
           letter-spacing: .28em; text-transform: uppercase; margin: 0 0 5px;
         }
         .hp-section-title {
-          font-family: var(--font-cinzel, Georgia, serif);
+          font-family: 'Arial Black', Arial, sans-serif;
           font-size: clamp(1.05rem,2.2vw,1.5rem);
           font-weight: 900; color: #f0ecff; margin: 0;
         }
         .hp-section-sub {
-          font-family: var(--font-cormorant, Georgia, serif); font-style: italic;
+          font-family: Arial, sans-serif; font-style: italic;
           font-size: clamp(.88rem,1.3vw,1rem); color: #9e94b8; margin: 5px 0 0;
         }
         .hp-see-all {
-          font-family: monospace; font-size: clamp(.5rem,.62vw,.58rem);
+          font-family: Arial, sans-serif; font-size: clamp(.5rem,.62vw,.58rem);
           letter-spacing: .16em; text-transform: uppercase;
           color: #d4b85c; text-decoration: none;
           border-bottom: 1px solid rgba(201,168,76,.4);
@@ -338,11 +338,11 @@ export default async function Home() {
         .hp-scard-thumb--wide { aspect-ratio:16/9 }
         .hp-scard-info { padding:5px 7px 7px; display:flex; flex-direction:column; gap:2px }
         .hp-scard-badge {
-          font-family:monospace; font-size:clamp(.44rem,.54vw,.52rem);
+          font-family:Arial, sans-serif; font-size:clamp(.44rem,.54vw,.52rem);
           letter-spacing:.16em; text-transform:uppercase; margin-bottom:1px;
         }
         .hp-scard-title {
-          font-family:var(--font-cormorant,Georgia,serif);
+          font-family:Arial, sans-serif;
           font-size:clamp(.84rem,.98vw,.94rem); color:#ddd8f0; font-weight:600; line-height:1.25;
         }
 
@@ -353,11 +353,11 @@ export default async function Home() {
         }
         .hp-worlds-head { text-align:center; margin-bottom:clamp(16px,2.5vw,26px) }
         .hp-worlds-title {
-          font-family:var(--font-cinzel,Georgia,serif);
+          font-family:'Arial Black', Arial, sans-serif;
           font-size:clamp(.95rem,2.2vw,1.5rem); font-weight:900; color:#f0ecff; margin:0 0 6px;
         }
         .hp-worlds-sub {
-          font-family:monospace; font-size:clamp(.5rem,.6vw,.58rem);
+          font-family:Arial, sans-serif; font-size:clamp(.5rem,.6vw,.58rem);
           letter-spacing:.26em; text-transform:uppercase; color:#ef0014; margin:0 0 4px;
         }
         .hp-worlds-grid {
@@ -377,11 +377,11 @@ export default async function Home() {
           border-radius:50%; background:var(--wd); box-shadow:0 0 9px var(--wg); flex-shrink:0;
         }
         .hp-world-label {
-          font-family:var(--font-cinzel,Georgia,serif);
+          font-family:'Arial Black', Arial, sans-serif;
           font-size:clamp(.48rem,.65vw,.58rem); font-weight:700; color:#f0ecff; text-align:center;
         }
         .hp-world-sub {
-          font-family:monospace; font-size:clamp(.32rem,.42vw,.4rem);
+          font-family:Arial, sans-serif; font-size:clamp(.32rem,.42vw,.4rem);
           letter-spacing:.1em; text-transform:uppercase;
           color:rgba(255,255,255,.55); text-align:center; display:none;
         }
@@ -397,7 +397,7 @@ export default async function Home() {
         .hp-wotd-rule { display:flex; align-items:center; gap:1rem; margin-bottom:clamp(14px,3vw,24px) }
         .hp-wotd-rule-line { flex:1; height:1px; background:linear-gradient(90deg,transparent,rgba(224,0,31,.3),transparent) }
         .hp-wotd-label {
-          font-family:monospace; font-size:clamp(.54rem,.65vw,.62rem);
+          font-family:Arial, sans-serif; font-size:clamp(.54rem,.65vw,.62rem);
           letter-spacing:.22em; text-transform:uppercase; color:#ef0014; white-space:nowrap;
         }
         .hp-wotd-body {
@@ -419,11 +419,11 @@ export default async function Home() {
         .hp-wotd-corners span:nth-child(4){ bottom:7px;right:7px;border-width:0 1px 1px 0 }
         .hp-wotd-info { flex:1; display:flex; flex-direction:column; gap:10px; text-align:left }
         .hp-wotd-title {
-          font-family:var(--font-cinzel,Georgia,serif);
+          font-family:'Arial Black', Arial, sans-serif;
           font-size:clamp(.95rem,2.2vw,1.5rem); font-weight:700; color:#f0e8d8; margin:0; line-height:1.25;
         }
         .hp-wotd-note {
-          font-family:var(--font-cormorant,Georgia,serif); font-style:italic;
+          font-family:Arial, sans-serif;
           font-size:clamp(.88rem,1.3vw,1rem); color:#9e94b8; margin:0; line-height:1.6;
         }
 
@@ -446,15 +446,15 @@ export default async function Home() {
         .hp-col-thumb--wide { aspect-ratio:16/9 }
         .hp-col-info { padding:6px 8px 8px; display:flex; flex-direction:column; gap:2px }
         .hp-col-cat {
-          font-family:monospace; font-size:clamp(.65rem,.75vw,.72rem);
+          font-family:Arial, sans-serif; font-size:clamp(.65rem,.75vw,.72rem);
           letter-spacing:.2em; text-transform:uppercase; color:#ff4d5a;
         }
         .hp-col-title {
-          font-family:var(--font-cormorant,Georgia,serif);
+          font-family:Arial, sans-serif;
           font-size:clamp(.84rem,.98vw,.94rem); color:#e8e4f0; font-weight:600; line-height:1.2;
         }
         .hp-col-count {
-          font-family:monospace; font-size:clamp(.6rem,.7vw,.65rem);
+          font-family:Arial, sans-serif; font-size:clamp(.6rem,.7vw,.65rem);
           letter-spacing:.13em; text-transform:uppercase; color:rgba(255,255,255,.55);
         }
       `}</style>

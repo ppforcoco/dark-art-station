@@ -186,7 +186,7 @@ export default function Header() {
 
         /* ── LOGO ── */
         .hw-nav__logo {
-          font-family: var(--font-cinzel, 'Cinzel Decorative', cursive);
+          font-family: 'Arial Black', Arial, sans-serif;
           font-size: 1.15rem;
           font-weight: 700;
           letter-spacing: 0.08em;
@@ -215,7 +215,7 @@ export default function Header() {
           overflow: hidden;
         }
         .hw-nav__link {
-          font-family: var(--font-space, 'Space Mono', monospace);
+          font-family: Arial, sans-serif;
           font-size: 0.75rem;
           letter-spacing: 0.12em;
           text-transform: uppercase;
@@ -232,8 +232,8 @@ export default function Header() {
           border-radius: 2px;
         }
         .hw-nav__link:hover { color: #f0f0ff; }
-        .hw-nav__link--sets { color: #ef0014 !important; }
-        .hw-nav__link--sets:hover { color: #ff2030 !important; }
+        .hw-nav__link--sets { color: #ff4d5a !important; }
+        .hw-nav__link--sets:hover { color: #ff6b75 !important; }
 
         /* ── ACTIONS ── */
         .hw-nav__actions {
@@ -300,15 +300,18 @@ export default function Header() {
         .hw-nav__drip-drop {
           display: inline-block;
           width: 3px;
+          height: 12px;
           background: #7878d8;
           border-radius: 0 0 3px 3px;
           margin-left: calc(var(--di, 0) * 12%);
+          transform-origin: top;
+          transform: scaleY(0.25);
           animation: hw-drip 2s ease-in-out calc(var(--di, 0) * 0.35s) infinite alternate;
           opacity: 0.6;
         }
         @keyframes hw-drip {
-          from { height: 3px; }
-          to   { height: 12px; }
+          from { transform: scaleY(0.25); }
+          to   { transform: scaleY(1); }
         }
 
         /* ── SEARCH OVERLAY ── */
@@ -346,7 +349,7 @@ export default function Header() {
           background: none;
           border: none;
           outline: none;
-          font-family: var(--font-space, 'Space Mono', monospace);
+          font-family: Arial, sans-serif;
           font-size: 0.85rem;
           color: #f0f0ff;
           letter-spacing: 0.04em;
@@ -359,7 +362,7 @@ export default function Header() {
           border-radius: 6px;
           padding: 7px 14px;
           cursor: pointer;
-          font-family: var(--font-space, monospace);
+          font-family: Arial, sans-serif;
           font-size: 0.65rem;
           letter-spacing: 0.1em;
           text-transform: uppercase;
@@ -388,7 +391,7 @@ export default function Header() {
         }
         .hw-live-loading {
           padding: 10px 14px;
-          font-family: var(--font-space, monospace);
+          font-family: Arial, sans-serif;
           font-size: 0.65rem;
           color: #60608a;
           letter-spacing: 0.08em;
@@ -417,7 +420,7 @@ export default function Header() {
           display: block;
         }
         .hw-live-title {
-          font-family: var(--font-space, monospace);
+          font-family: Arial, sans-serif;
           font-size: 0.68rem;
           color: #f0f0ff;
           letter-spacing: 0.03em;
@@ -426,7 +429,7 @@ export default function Header() {
         .hw-live-see-all {
           display: block;
           padding: 8px 14px;
-          font-family: var(--font-space, monospace);
+          font-family: Arial, sans-serif;
           font-size: 0.58rem;
           letter-spacing: 0.12em;
           text-transform: uppercase;
@@ -484,7 +487,7 @@ export default function Header() {
           align-items: center;
           padding: 0 20px;
           border-bottom: 1px solid rgba(120,120,216,0.1);
-          font-family: var(--font-cinzel, cursive);
+          font-family: 'Arial Black', Arial, sans-serif;
           font-size: 0.9rem;
           font-weight: 700;
           color: #e0e0f8;
@@ -502,7 +505,7 @@ export default function Header() {
           align-items: center;
           height: 50px;
           padding: 0 24px;
-          font-family: var(--font-cinzel, cursive);
+          font-family: 'Arial Black', Arial, sans-serif;
           font-size: 0.72rem;
           font-weight: 400;
           letter-spacing: 0.12em;
@@ -534,9 +537,9 @@ export default function Header() {
           outline: 2px solid #9090f0;
           outline-offset: -2px;
         }
-        .hw-menu-panel__link--sets { color: rgba(192,0,26,0.85) !important; }
+        .hw-menu-panel__link--sets { color: #ff4d5a !important; }
         .hw-menu-panel__link--sets:hover,
-        .hw-menu-panel__link--sets:active { color: #c0001a !important; }
+        .hw-menu-panel__link--sets:active { color: #ff6b75 !important; }
 
         /* ── BOTTOM NAV ── */
         .hw-bottom-nav {
@@ -566,7 +569,7 @@ export default function Header() {
           padding: 8px 2px;
           text-decoration: none;
           color: rgba(190,185,220,0.92);
-          font-family: var(--font-space, monospace);
+          font-family: Arial, sans-serif;
           font-size: 0.42rem;
           letter-spacing: 0.08em;
           text-transform: uppercase;

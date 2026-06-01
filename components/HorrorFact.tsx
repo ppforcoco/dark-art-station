@@ -1,5 +1,5 @@
-"use client";
-import { useState, useEffect } from "react";
+// ✅ PERF: Converted to server component — no useEffect, no client JS needed.
+// getDailyIndex() runs on the server at request time. Zero hydration cost.
 
 const FACTS = [
   "The average person walks past 36 people every day who have experienced sleep paralysis — where they wake up unable to move, certain something is in the room.",
@@ -55,21 +55,17 @@ const FACTS = [
 ];
 
 // Deterministic daily index — same fact all day, changes at midnight
+// Runs on the server — no client JS needed
 function getDailyIndex(): number {
   const now = new Date();
   const dayNumber = Math.floor(now.getTime() / (1000 * 60 * 60 * 24));
   return dayNumber % FACTS.length;
 }
 
+// ✅ Server component — renders on the server, zero hydration, no useEffect
 export default function HorrorFact() {
-  const [factIdx, setFactIdx] = useState<number | null>(null);
-  const [visible, setVisible]  = useState(true);
-
-  useEffect(() => {
-    setFactIdx(getDailyIndex());
-  }, []);
-
-  if (factIdx === null) return null;
+  const factIdx = getDailyIndex();
+  const fact = FACTS[factIdx];
 
   return (
     <section className="hf-section">
@@ -80,8 +76,8 @@ export default function HorrorFact() {
           <span className="hf-dot" aria-hidden="true" />
         </div>
         <h2 className="hf-heading">The World Is Stranger Than You Remember</h2>
-        <blockquote className={`hf-quote${visible ? " hf-in" : " hf-out"}`}>
-          &ldquo;{FACTS[factIdx]}&rdquo;
+        <blockquote className="hf-quote hf-in">
+          &ldquo;{fact}&rdquo;
         </blockquote>
         <div className="hf-footer">
           <span className="hf-counter">Fact {factIdx + 1} of {FACTS.length} — changes daily at midnight</span>

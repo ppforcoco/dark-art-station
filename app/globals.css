@@ -3,25 +3,9 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ── Font fallback metrics — kills CLS during Google Font swap ──────────────
-   Size-adjusted fallbacks that match Cinzel Decorative + Cormorant Garamond
-   closely so layout does not shift when real fonts arrive.                  */
-@font-face {
-  font-family: 'Cinzel Decorative Fallback';
-  src: local('Georgia');
-  ascent-override: 90%;
-  descent-override: 22%;
-  line-gap-override: 0%;
-  size-adjust: 112%;
-}
-@font-face {
-  font-family: 'Cormorant Garamond Fallback';
-  src: local('Georgia');
-  ascent-override: 85%;
-  descent-override: 20%;
-  line-gap-override: 0%;
-  size-adjust: 102%;
-}
+/* ── Fonts: Arial system font only — zero download, instant render ──────────
+   All var(--font-cinzel), var(--font-cormorant), var(--font-space) resolve
+   to Arial/system fonts via the :root definitions below.                   */
 
 
 
@@ -105,7 +89,7 @@ span {
 body {
   background-color: var(--bg-primary);
   color: var(--text-primary);
-  font-family: var(--font-cormorant), 'Cormorant Garamond', Georgia, serif;
+  font-family: Arial, sans-serif;
   font-size: clamp(16px, 1.2vw + 14px, 19px);
   overflow-x: hidden;
   cursor: auto; /* default on mobile/touch */
@@ -167,14 +151,14 @@ default 0px) */
 }/* ── Path Bar — breadcrumb strip below nav ──────────────────── */
 
 .nav-logo {
-  font-family: var(--font-cinzel), cursive;
+  font-family: 'Arial Black', Arial, sans-serif;
   font-size: 1.1rem;
   letter-spacing: 0.1em;
   color: #c9a84c;
   text-decoration: none;
   transition: color 0.2s;
 }.nav-logo:hover { color: #f0ecff; }.nav-logo .logo-red { color: #ff1a33; }.nav-links { display: flex; gap: 40px; list-style: none; }.nav-links a {
-  font-family: var(--font-space, 'Courier New', 'Lucida Console', monospace);
+  font-family: Arial, sans-serif;
   font-size: 0.75rem;
   letter-spacing: 0.15em;
   text-transform: uppercase;
@@ -255,14 +239,14 @@ and wide-format phones. Desktop nav shows at ≥ 1280px only.    */
 
 .hero-eyebrow {
   display: flex; align-items: center; gap: 16px;
-  font-family: var(--font-space, 'Courier New', 'Lucida Console', monospace);
+  font-family: Arial, sans-serif;
   font-size: 0.7rem;
   letter-spacing: 0.25em;
   text-transform: uppercase;
   color: #ff1a33;
   margin-bottom: 32px;
 }.hero-title {
-  font-family: var(--font-cinzel), cursive;
+  font-family: 'Arial Black', Arial, sans-serif;
   font-size: clamp(2.5rem, 5vw, 4.5rem);
   color: #f0ecff;
   line-height: 1.05;
@@ -280,7 +264,7 @@ and wide-format phones. Desktop nav shows at ≥ 1280px only.    */
   text-decoration: none;
   background: #ff1a33;
   color: #f0ecff;
-  font-family: var(--font-space, 'Courier New', 'Lucida Console', monospace);
+  font-family: Arial, sans-serif;
   font-size: 0.75rem;
   letter-spacing: 0.15em;
   text-transform: uppercase;
@@ -301,7 +285,7 @@ and wide-format phones. Desktop nav shows at ≥ 1280px only.    */
   text-decoration: none;
   background: transparent;
   color: #d4cde8;
-  font-family: var(--font-space, 'Courier New', 'Lucida Console', monospace);
+  font-family: Arial, sans-serif;
   font-size: 0.75rem;
   letter-spacing: 0.15em;
   text-transform: uppercase;
@@ -312,7 +296,7 @@ and wide-format phones. Desktop nav shows at ≥ 1280px only.    */
 @media (pointer: coarse) {
 .btn-secondary { cursor: pointer; }
 }.btn-secondary:hover { border-color: #d4cde8; color: #f0ecff; }.stat-label {
-  font-family: var(--font-space, 'Courier New', 'Lucida Console', monospace);
+  font-family: Arial, sans-serif;
   font-size: 0.65rem;
   letter-spacing: 0.15em;
   text-transform: uppercase;
@@ -322,17 +306,17 @@ and wide-format phones. Desktop nav shows at ≥ 1280px only.    */
 }/* Day of the Dead — deep emerald */
 .m4 { background: linear-gradient(180deg, #1a0808 0%, #2a0000 50%, #0e0000 100%); }
 .section-eyebrow {
-  font-family: var(--font-space, 'Courier New', 'Lucida Console', monospace);
+  font-family: Arial, sans-serif;
   font-size: 0.65rem; letter-spacing: 0.25em; text-transform: uppercase;
   color: #ff1a33; margin-bottom: 12px; display: block;
 }.section-title {
-  font-family: var(--font-cinzel), cursive;
+  font-family: 'Arial Black', Arial, sans-serif;
   font-size: clamp(1.8rem, 3vw, 3rem);
   font-weight: 900;
   color: #f0ecff;
   line-height: 1.1;
 }.section-link {
-  font-family: var(--font-space, 'Courier New', 'Lucida Console', monospace);
+  font-family: Arial, sans-serif;
   font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase;
   color: #8a8099; text-decoration: none;
   border-bottom: 1px solid #7a7490; padding-bottom: 4px;
@@ -388,7 +372,7 @@ and wide-format phones. Desktop nav shows at ≥ 1280px only.    */
     overflow-x: hidden;
   }
 }.ad-label {
-  font-family: var(--font-space, 'Courier New', 'Lucida Console', monospace);
+  font-family: Arial, sans-serif;
   font-size: 0.55rem; letter-spacing: 0.15em; text-transform: uppercase;
   color: #7a7490; flex-shrink: 0;
   word-break: break-word; /* Handle long text gracefully */
@@ -411,7 +395,7 @@ and wide-format phones. Desktop nav shows at ≥ 1280px only.    */
     overflow: hidden; /* Ensure ads don't overflow on mobile */
   }
 }.ad-slot-text {
-  font-family: var(--font-cormorant), serif;
+  font-family: Arial, sans-serif;
   font-size: 1rem; font-style: italic;
   color: #c9a84c; opacity: 0.35; text-align: center;
 }.product-grid {
@@ -461,7 +445,7 @@ works on all themes */
 .product-card { cursor: pointer; }
 }.product-card:hover { transform: translateY(-8px); }.product-card:hover .product-thumb-inner { transform: scale(1.05); }.p-bg-1 { background: radial-gradient(at 60% 30%, #2d0838, #0e0820); }.product-badge {
   position: absolute; top: 12px; left: 12px;
-  font-family: var(--font-space, 'Courier New', 'Lucida Console', monospace);
+  font-family: Arial, sans-serif;
   font-size: 0.55rem; letter-spacing: 0.15em; text-transform: uppercase;
   padding: 5px 10px; z-index: 2;
 }.badge-new { background: #ff1a33; color: #f0ecff; }.badge-hot { background: #ff3c00; color: #0a0a0a; }.product-card:hover .product-quick-view { bottom: 0; }/* ──────────────────────────────────────────────────────────── */
@@ -496,16 +480,16 @@ body:not(.sticky-ad-dismissed) .site-footer { padding-bottom: calc(58px + 24px +
 @media (max-width: 639px)  {
 .footer-grid { grid-template-columns: 1fr; }
 }.footer-brand-desc {
-  font-family: var(--font-cormorant), 'Cormorant Garamond', Georgia, serif;
+  font-family: Arial, sans-serif;
   font-size: 1.0rem; font-style: italic;
   color: #7a7490; line-height: 1.65; max-width: 320px;
   margin-top: 10px;
 }.footer-col-title {
-  font-family: var(--font-space, 'Courier New', 'Lucida Console', monospace);
+  font-family: Arial, sans-serif;
   font-size: 0.62rem; letter-spacing: 0.22em; text-transform: uppercase;
   color: #c0b8d8; margin-bottom: 12px;
 }.footer-col ul { list-style: none; }.footer-col li { margin-bottom: 6px; }.footer-col a {
-  font-family: var(--font-cormorant), 'Cormorant Garamond', Georgia, serif;
+  font-family: Arial, sans-serif;
   font-size: 1.0rem; font-style: italic;
   color: #7a7490; text-decoration: none;
   transition: color 0.2s;
@@ -514,13 +498,13 @@ body:not(.sticky-ad-dismissed) .site-footer { padding-bottom: calc(58px + 24px +
   padding-top: 16px; border-top: 1px solid #2a2535;
   flex-wrap: wrap; gap: 12px;
 }.footer-copy {
-  font-family: var(--font-space, 'Courier New', 'Lucida Console', monospace);
+  font-family: Arial, sans-serif;
   font-size: 0.6rem; letter-spacing: 0.1em; color: #7a7490;
 }.footer-bottom-right { display: flex; align-items: center; gap: 24px; flex-wrap: wrap; }.footer-report-btn {
   background: transparent;
   border: 1px solid rgba(192,0,26,0.35);
   color: #ff1a33;
-  font-family: var(--font-space, 'Courier New', 'Lucida Console', monospace);
+  font-family: Arial, sans-serif;
   font-size: 0.58rem; letter-spacing: 0.14em; text-transform: uppercase;
   padding: 7px 13px; cursor: pointer;
   display: flex; align-items: center; gap: 6px;
@@ -546,14 +530,14 @@ body:not(.sticky-ad-dismissed) .site-footer { padding-bottom: calc(58px + 24px +
 @media (max-width: 767px) {
 .search-header { padding: 40px 24px 32px; }
 }.search-header-label {
-  font-family: var(--font-space, 'Courier New', 'Lucida Console', monospace);
+  font-family: Arial, sans-serif;
   font-size: 0.62rem;
   letter-spacing: 0.28em;
   text-transform: uppercase;
   color: #ff1a33;
   margin-bottom: 16px;
 }.search-header-title {
-  font-family: var(--font-cinzel), cursive;
+  font-family: 'Arial Black', Arial, sans-serif;
   font-size: clamp(1.8rem, 3.5vw, 3rem);
   color: #f0ecff;
   line-height: 1.2;
@@ -561,7 +545,7 @@ body:not(.sticky-ad-dismissed) .site-footer { padding-bottom: calc(58px + 24px +
   color: #c9a84c;
   font-style: italic;
 }.search-header-count {
-  font-family: var(--font-space, 'Courier New', 'Lucida Console', monospace);
+  font-family: Arial, sans-serif;
   font-size: 0.65rem;
   letter-spacing: 0.15em;
   color: #7a7490;
@@ -582,7 +566,7 @@ body:not(.sticky-ad-dismissed) .site-footer { padding-bottom: calc(58px + 24px +
   }
 }/* ── Results column ── */
 .search-results-col { min-width: 0; }.search-no-query {
-  font-family: var(--font-cormorant), serif;
+  font-family: Arial, sans-serif;
   font-style: italic;
   color: #7a7490;
   font-size: 1.1rem;
@@ -619,7 +603,7 @@ body:not(.sticky-ad-dismissed) .site-footer { padding-bottom: calc(58px + 24px +
 }.search-card:hover .search-card-img { transform: scale(1.05); }.search-card-kind {
   position: absolute;
   bottom: 10px; right: 10px;
-  font-family: var(--font-space, 'Courier New', 'Lucida Console', monospace);
+  font-family: Arial, sans-serif;
   font-size: 0.52rem;
   letter-spacing: 0.15em;
   text-transform: uppercase;
@@ -628,7 +612,7 @@ body:not(.sticky-ad-dismissed) .site-footer { padding-bottom: calc(58px + 24px +
   padding: 4px 8px;
   backdrop-filter: blur(6px);
 }.search-card-info { padding: 14px 16px 16px; }.search-card-title {
-  font-family: var(--font-cormorant), serif;
+  font-family: Arial, sans-serif;
   font-size: 0.98rem;
   font-style: italic;
   color: #f0ecff;
@@ -643,7 +627,7 @@ body:not(.sticky-ad-dismissed) .site-footer { padding-bottom: calc(58px + 24px +
   gap: 4px;
   margin-top: 5px;
 }.search-card-tag-pill {
-  font-family: var(--font-space, 'Courier New', 'Lucida Console', monospace);
+  font-family: Arial, sans-serif;
   font-size: 0.44rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -669,7 +653,7 @@ body:not(.sticky-ad-dismissed) .site-footer { padding-bottom: calc(58px + 24px +
   color: #ff1a33;
   opacity: 0.4;
 }.search-empty-heading {
-  font-family: var(--font-cinzel), cursive;
+  font-family: 'Arial Black', Arial, sans-serif;
   font-size: clamp(1.4rem, 3vw, 2rem);
   color: #f0ecff;
   line-height: 1.3;
@@ -678,7 +662,7 @@ body:not(.sticky-ad-dismissed) .site-footer { padding-bottom: calc(58px + 24px +
   color: #c9a84c;
   font-style: italic;
 }.search-empty-sub {
-  font-family: var(--font-cormorant), serif;
+  font-family: Arial, sans-serif;
   font-style: italic;
   color: #7a7490;
   font-size: 1rem;
@@ -689,7 +673,7 @@ body:not(.sticky-ad-dismissed) .site-footer { padding-bottom: calc(58px + 24px +
   gap: 10px;
   margin-top: 8px;
 }.search-empty-tag {
-  font-family: var(--font-space, 'Courier New', 'Lucida Console', monospace);
+  font-family: Arial, sans-serif;
   font-size: 0.65rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -722,14 +706,14 @@ FAQ)     */
   padding-bottom: 48px;
   border-bottom: 1px solid #2a2535;
 }.static-page-label {
-  font-family: var(--font-space, 'Courier New', 'Lucida Console', monospace);
+  font-family: Arial, sans-serif;
   font-size: 0.62rem;
   letter-spacing: 0.28em;
   text-transform: uppercase;
   color: #ff1a33;
   margin-bottom: 20px;
 }.static-page-title {
-  font-family: var(--font-cinzel), cursive;
+  font-family: 'Arial Black', Arial, sans-serif;
   font-size: clamp(2rem, 4vw, 3.2rem);
   color: #f0ecff;
   line-height: 1.15;
@@ -737,7 +721,7 @@ FAQ)     */
   color: #c9a84c;
   font-style: italic;
 }.static-page-meta {
-  font-family: var(--font-space, 'Courier New', 'Lucida Console', monospace);
+  font-family: Arial, sans-serif;
   font-size: 0.65rem;
   letter-spacing: 0.1em;
   color: #7a7490;
@@ -751,7 +735,7 @@ FAQ)     */
 }/* ── Blog rendered HTML content ── */
 .blog-html-content {
   max-width: 100%;
-  font-family: var(--font-cormorant), serif;
+  font-family: Arial, sans-serif;
   font-size: 1.15rem;
   line-height: 1.9;
   color: #c8c0dc;
@@ -766,7 +750,7 @@ H4 = label.
 .blog-html-content h2,
 .blog-html-content h3,
 .blog-html-content h4 {
-  font-family: var(--font-cinzel), cursive;
+  font-family: 'Arial Black', Arial, sans-serif;
   color: #f0ecff;
   line-height: 1.25;
   margin: 2.2em 0 0.6em;
@@ -780,7 +764,7 @@ H4 = label.
   color: #c8c0dc;
 }.blog-html-content p:first-child::first-letter {
   font-size: 3.2em;
-  font-family: var(--font-cinzel), cursive;
+  font-family: 'Arial Black', Arial, sans-serif;
   color: #ff1a33;
   float: left;
   line-height: 0.8;
@@ -814,7 +798,7 @@ H4 = label.
   margin: 1.5em 0;
   border: 1px solid #2a2535;
 }.blog-html-content code {
-  font-family: monospace;
+  font-family: Arial, sans-serif;
   font-size: 0.88em;
   background: rgba(255,255,255,0.06);
   padding: 2px 6px;
@@ -829,21 +813,21 @@ H4 = label.
   flex-direction: column;
   gap: 16px;
 }.static-section h2 {
-  font-family: var(--font-cinzel), cursive;
+  font-family: 'Arial Black', Arial, sans-serif;
   font-size: 1.1rem;
   letter-spacing: 0.06em;
   color: #f0ecff;
   padding-bottom: 12px;
   border-bottom: 1px solid rgba(139,0,0,0.2);
 }.static-section h3 {
-  font-family: var(--font-space, 'Courier New', 'Lucida Console', monospace);
+  font-family: Arial, sans-serif;
   font-size: 0.72rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: #8a8099;
   margin-top: 8px;
 }.static-section p {
-  font-family: var(--font-cormorant), serif;
+  font-family: Arial, sans-serif;
   font-size: 1.05rem;
   line-height: 1.85;
   color: #8a8099;
@@ -854,7 +838,7 @@ H4 = label.
   flex-direction: column;
   gap: 8px;
 }.static-section li {
-  font-family: var(--font-cormorant), serif;
+  font-family: Arial, sans-serif;
   font-size: 1.05rem;
   line-height: 1.75;
   color: #8a8099;
@@ -867,7 +851,7 @@ H4 = label.
   color: #f0ecff;
   border-bottom-color: rgba(240,236,255,0.4);
 }.static-section code {
-  font-family: var(--font-space, 'Courier New', 'Lucida Console', monospace);
+  font-family: Arial, sans-serif;
   font-size: 0.82rem;
   color: #c9a84c;
   background: rgba(201,168,76,0.08);
@@ -895,7 +879,7 @@ H4 = label.
   flex-direction: column;
   gap: 8px;
 }.contact-label {
-  font-family: var(--font-space, 'Courier New', 'Lucida Console', monospace);
+  font-family: Arial, sans-serif;
   font-size: 0.62rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
@@ -904,7 +888,7 @@ H4 = label.
   background: #0e0c14;
   border: 1px solid #2a2535;
   color: #f0ecff;
-  font-family: var(--font-cormorant), serif;
+  font-family: Arial, sans-serif;
   font-size: 1rem;
   padding: 12px 16px;
   outline: none;
@@ -928,7 +912,7 @@ H4 = label.
   align-self: flex-start;
   margin-top: 8px;
 }.contact-error {
-  font-family: var(--font-space, 'Courier New', 'Lucida Console', monospace);
+  font-family: Arial, sans-serif;
   font-size: 0.65rem;
   letter-spacing: 0.1em;
   color: #ff3c00;
@@ -944,7 +928,7 @@ H4 = label.
   font-size: 2rem;
   color: #c9a84c;
 }.contact-success-msg {
-  font-family: var(--font-cormorant), serif;
+  font-family: Arial, sans-serif;
   font-style: italic;
   font-size: 1.1rem;
   color: #8a8099;
@@ -964,7 +948,7 @@ H4 = label.
   justify-content: space-between;
   gap: 24px;
   padding: 24px 0;
-  font-family: var(--font-cinzel), cursive;
+  font-family: 'Arial Black', Arial, sans-serif;
   font-size: 1.05rem;
   letter-spacing: 0.04em;
   color: #8a8099;
@@ -982,7 +966,7 @@ H4 = label.
   gap: 12px;
 }.faq-answer p,
 .faq-answer li {
-  font-family: var(--font-cormorant), serif;
+  font-family: Arial, sans-serif;
   font-size: 1.02rem;
   line-height: 1.82;
   color: #7a7490;
@@ -1014,7 +998,7 @@ H4 = label.
   min-width: 44px;
   height: 44px;
   padding: 0 14px;
-  font-family: var(--font-space, 'Courier New', 'Lucida Console', monospace);
+  font-family: Arial, sans-serif;
   font-size: 0.65rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -1040,7 +1024,7 @@ H4 = label.
   pointer-events: none;
   cursor: default;
 }.pagination-ellipsis {
-  font-family: var(--font-space, 'Courier New', 'Lucida Console', monospace);
+  font-family: Arial, sans-serif;
   font-size: 0.65rem;
   color: #2a2535;
   padding: 0 4px;
@@ -1065,13 +1049,13 @@ H4 = label.
 @media (max-width: 479px) {
 .wotd-section { padding: 48px 20px; }
 }.wotd-eyebrow {
-  font-family: var(--font-space, 'Courier New', 'Lucida Console', monospace);
+  font-family: Arial, sans-serif;
   font-size: 0.58rem;
   letter-spacing: 0.3em;
   text-transform: uppercase;
   color: #ff1a33;
 }.wotd-title {
-  font-family: var(--font-cinzel), cursive;
+  font-family: 'Arial Black', Arial, sans-serif;
   font-size: clamp(1.6rem, 3vw, 2.8rem);
   font-weight: 700;
   color: #f0ecff;
@@ -1086,7 +1070,7 @@ H4 = label.
   gap: 10px;
   margin-top: 4px;
 }.social-share-label {
-  font-family: var(--font-space, 'Courier New', 'Lucida Console', monospace);
+  font-family: Arial, sans-serif;
   font-size: 0.52rem;
   letter-spacing: 0.22em;
   text-transform: uppercase;
@@ -1099,7 +1083,7 @@ H4 = label.
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  font-family: var(--font-space, 'Courier New', 'Lucida Console', monospace);
+  font-family: Arial, sans-serif;
   font-size: 0.58rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -1162,7 +1146,7 @@ JS sets --topbar-h: 0px automatically. */
   align-items: baseline;
   gap: 3px;
 }.hc-num {
-  font-family: var(--font-cinzel), cursive;
+  font-family: 'Arial Black', Arial, sans-serif;
   font-size: 0.78rem;
   font-weight: 700;
   letter-spacing: 0.04em;
@@ -1172,19 +1156,19 @@ JS sets --topbar-h: 0px automatically. */
   text-align: right;
   text-shadow: 0 0 10px rgba(255,60,60,0.6);
 }.hc-label {
-  font-family: var(--font-space, 'Courier New', 'Lucida Console', monospace);
+  font-family: Arial, sans-serif;
   font-size: 0.48rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: #8a7080;
 }.hc-sep {
-  font-family: var(--font-cinzel), cursive;
+  font-family: 'Arial Black', Arial, sans-serif;
   font-size: 0.65rem;
   color: #6a4555;
   margin: 0 4px;
   align-self: center;
 }.hc-prefix {
-  font-family: var(--font-space, 'Courier New', 'Lucida Console', monospace);
+  font-family: Arial, sans-serif;
   font-size: 0.52rem;
   letter-spacing: 0.22em;
   text-transform: uppercase;
@@ -1194,7 +1178,7 @@ JS sets --topbar-h: 0px automatically. */
 
 /* ── Halloween Active ("zero state") message ── */
 .hc-active {
-  font-family: var(--font-cinzel), cursive;
+  font-family: 'Arial Black', Arial, sans-serif;
   font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 0.14em;
@@ -1228,13 +1212,13 @@ show days only ── */
 /* Thumbnail strip */
 
 .lb-grid-hover-text p {
-  font-family: var(--font-cormorant), Georgia, serif;
+  font-family: Arial, sans-serif;
   font-style: italic;
   font-size: 1rem;
   color: #fff;
   line-height: 1.3;
 }.lb-grid-hover-text span {
-  font-family: var(--font-space, 'Courier New', 'Lucida Console', monospace);
+  font-family: Arial, sans-serif;
   font-size: 0.5rem;
   letter-spacing: 0.15em;
   text-transform: uppercase;
@@ -1259,7 +1243,7 @@ show days only ── */
   font-size: 1.5rem;
   color: #7a7490;
 }.shop-page-count {
-  font-family: var(--font-cormorant), Georgia, serif;
+  font-family: Arial, sans-serif;
   font-style: italic;
   font-size: 1.05rem;
   color: #8a8099;
@@ -1273,7 +1257,7 @@ show days only ── */
   flex-wrap: wrap;
   align-items: center;
 }.filter-pill {
-  font-family: var(--font-space, 'Courier New', 'Lucida Console', monospace);
+  font-family: Arial, sans-serif;
   font-size: 0.65rem;
   letter-spacing: 0.15em;
   text-transform: uppercase;
@@ -1296,7 +1280,7 @@ show days only ── */
   text-align: center;
   padding: 120px 0;
 }.shop-empty-msg {
-  font-family: var(--font-cinzel), cursive;
+  font-family: 'Arial Black', Arial, sans-serif;
   font-size: 1.5rem;
   color: #2a2535;
   margin-bottom: 16px;
@@ -1331,7 +1315,7 @@ show days only ── */
   color: #2a1525;
   margin-bottom: 4px;
 }.error-code {
-  font-family: var(--font-space, 'Courier New', 'Lucida Console', monospace);
+  font-family: Arial, sans-serif;
   font-size: 0.65rem;
   letter-spacing: 0.4em;
   text-transform: uppercase;
@@ -1339,21 +1323,21 @@ show days only ── */
   border: 1px solid rgba(192, 0, 26, 0.3);
   padding: 6px 18px;
 }.error-title {
-  font-family: var(--font-cinzel), cursive;
+  font-family: 'Arial Black', Arial, sans-serif;
   font-size: clamp(1.8rem, 5vw, 3rem);
   font-weight: 700;
   color: #d4cde8;
   line-height: 1.2;
   margin: 0;
 }.error-desc {
-  font-family: var(--font-cormorant), Georgia, serif;
+  font-family: Arial, sans-serif;
   font-style: italic;
   font-size: 1.1rem;
   color: #8a7fa0;
   line-height: 1.7;
   max-width: 440px;
 }.error-digest {
-  font-family: var(--font-space, 'Courier New', 'Lucida Console', monospace);
+  font-family: Arial, sans-serif;
   font-size: 0.5rem;
   letter-spacing: 0.1em;
   color: #2a2535;
@@ -1367,7 +1351,7 @@ show days only ── */
   justify-content: center;
   margin-top: 8px;
 }.error-btn-primary {
-  font-family: var(--font-space, 'Courier New', 'Lucida Console', monospace);
+  font-family: Arial, sans-serif;
   font-size: 0.65rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
@@ -1379,7 +1363,7 @@ show days only ── */
   cursor: pointer;
   transition: background 0.2s, color 0.2s;
 }.error-btn-primary:hover { background: #a00016; border-color: #a00016; }.error-btn-secondary {
-  font-family: var(--font-space, 'Courier New', 'Lucida Console', monospace);
+  font-family: Arial, sans-serif;
   font-size: 0.65rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
@@ -1575,13 +1559,13 @@ decorative */
   gap: 16px;
   margin-bottom: 28px;
 }.related-eyebrow {
-  font-family: var(--font-space, 'Courier New', 'Lucida Console', monospace);
+  font-family: Arial, sans-serif;
   font-size: 0.6rem;
   letter-spacing: 0.3em;
   text-transform: uppercase;
   color: #ff1a33;
 }.related-title {
-  font-family: var(--font-cinzel), cursive;
+  font-family: 'Arial Black', Arial, sans-serif;
   font-size: 1.1rem;
   font-weight: 700;
   color: #d4cde8;
@@ -1640,7 +1624,7 @@ grid on desktop */
   opacity: 0;
   transition: opacity 0.25s;
 }.related-card:hover .related-card-cap { opacity: 1; }.related-card-cap-title {
-  font-family: var(--font-cormorant), Georgia, serif;
+  font-family: Arial, sans-serif;
   font-style: italic;
   font-size: 0.75rem;
   color: #f0ecff;
@@ -1908,7 +1892,7 @@ hero-left should center its content */
   border: none;
   outline: none;
   color: #f0ecff;
-  font-family: var(--font-cinzel), cursive;
+  font-family: 'Arial Black', Arial, sans-serif;
   font-size: clamp(1rem, 5vw, 2.8rem);
   letter-spacing: 0.04em;
   caret-color: #ff1a33;
@@ -1931,7 +1915,7 @@ hero-left should center its content */
   background: #ff1a33;
   border: none;
   color: #f0ecff;
-  font-family: var(--font-space, 'Courier New', 'Lucida Console', monospace);
+  font-family: Arial, sans-serif;
   font-size: 0.6rem;
   letter-spacing: 0.15em;
   text-transform: uppercase;
@@ -1955,7 +1939,7 @@ hero-left should center its content */
   background: transparent;
   border: 1px solid #2a2535;
   color: #8a8099;
-  font-family: var(--font-space, 'Courier New', 'Lucida Console', monospace);
+  font-family: Arial, sans-serif;
   font-size: 0.6rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -1982,7 +1966,7 @@ hero-left should center its content */
   background: transparent;
   border: 1px solid #2a2535;
   color: #8a8099;
-  font-family: var(--font-space, 'Courier New', 'Lucida Console', monospace);
+  font-family: Arial, sans-serif;
   font-size: 0.58rem;
   letter-spacing: 0.15em;
   text-transform: uppercase;
@@ -2001,7 +1985,7 @@ hero-left should center its content */
   background: transparent;
   border: 1px solid #2a2535;
   color: #7a7490;
-  font-family: var(--font-space, 'Courier New', 'Lucida Console', monospace);
+  font-family: Arial, sans-serif;
   font-size: 0.65rem;
   letter-spacing: 0.15em;
   padding: 8px 16px;
@@ -2044,7 +2028,7 @@ body.sticky-ad-dismissed .scroll-top-btn { bottom: 80px; }
 @media (max-width: 767px) {
 .recently-viewed { padding: 40px 20px; }
 }.rv-header { margin-bottom: 28px; }.rv-title {
-  font-family: var(--font-cinzel), cursive;
+  font-family: 'Arial Black', Arial, sans-serif;
   font-size: clamp(1.2rem, 2.5vw, 1.8rem);
   color: var(--text-primary, #f0ecff);
   margin-top: 8px;
@@ -2064,7 +2048,7 @@ fewer per row */
 
 @media (max-width: 639px) {.rv-grid--portrait { grid-template-columns: repeat(2, 1fr); }.rv-grid--landscape { grid-template-columns: repeat(2, 1fr); }
 }.rv-section-label {
-  font-family: var(--font-space, 'Courier New', 'Lucida Console', monospace);
+  font-family: Arial, sans-serif;
   font-size: 0.55rem;
   letter-spacing: 0.2em;
   text-transform: uppercase;
@@ -2111,7 +2095,7 @@ not cropped */
   right: 0;
   background: linear-gradient(transparent, rgba(0,0,0,0.88) 30%, rgba(0,0,0,0.97));
   padding: 40px 10px 14px;
-  font-family: var(--font-cormorant), serif;
+  font-family: Arial, sans-serif;
   font-size: 0.88rem;
   font-style: italic;
   line-height: 1.35;
@@ -2177,13 +2161,13 @@ mobile sizing
   justify-content: space-between;
   min-height: 20px;
 }.download-stat {
-  font-family: var(--font-space, 'Courier New', 'Lucida Console', monospace);
+  font-family: Arial, sans-serif;
   font-size: 0.6rem;
   letter-spacing: 0.15em;
   text-transform: uppercase;
   color: #7a7490;
 }.download-saved-msg {
-  font-family: var(--font-space, 'Courier New', 'Lucida Console', monospace);
+  font-family: Arial, sans-serif;
   font-size: 0.6rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -2207,7 +2191,7 @@ no paint) */
   box-sizing: border-box;
   /* background-color & border-color injected via inline style */
   color: #ffffff !important;
-  font-family: var(--font-space, 'Courier New', 'Lucida Console', monospace);
+  font-family: Arial, sans-serif;
   font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.2em;
@@ -2280,7 +2264,7 @@ a.download-btn {
   flex: 1;
   margin-bottom: 12px;
 }.product-card-category {
-  font-family: var(--font-space, 'Courier New', 'Lucida Console', monospace);
+  font-family: Arial, sans-serif;
   font-size: 0.6rem;
   letter-spacing: 0.15em;
   text-transform: uppercase;
@@ -2288,7 +2272,7 @@ a.download-btn {
   display: block;
   margin-bottom: 6px;
 }.product-card-title {
-  font-family: var(--font-cormorant), serif;
+  font-family: Arial, sans-serif;
   font-style: italic;
   font-size: 1.05rem;
   color: #f0ecff;
@@ -2303,7 +2287,7 @@ a.download-btn {
   padding-top: 12px;
   border-top: 1px solid rgba(42,37,53,0.5);
 }.product-card-price {
-  font-family: var(--font-space, 'Courier New', 'Lucida Console', monospace);
+  font-family: Arial, sans-serif;
   font-size: 0.95rem;
   font-weight: 700;
   color: #c9a84c;
@@ -2321,7 +2305,7 @@ a.download-btn {
   line-height: 44px;
   padding: 0 10px;
   box-sizing: border-box;
-  font-family: var(--font-space, 'Courier New', 'Lucida Console', monospace);
+  font-family: Arial, sans-serif;
   font-size: 0.62rem;
   font-weight: 700;
   letter-spacing: 0.13em;
@@ -2406,7 +2390,7 @@ no broken blank boxes ───────────────*/
   border: 1px solid rgba(192,0,26,0.18);
   background: rgba(255,255,255,0.02);
 }.device-page-intro p {
-  font-family: var(--font-cormorant), Georgia, serif;
+  font-family: Arial, sans-serif;
   font-size: 1.05rem;
   line-height: 1.78;
   color: #b8b0cc;
@@ -2420,13 +2404,13 @@ no broken blank boxes ───────────────*/
   align-items: center;
   flex-wrap: wrap;
 }.device-page-guide-link span {
-  font-family: var(--font-space, 'Courier New', 'Lucida Console', monospace);
+  font-family: Arial, sans-serif;
   font-size: 0.58rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: #7a7490;
 }.device-page-guide-link a {
-  font-family: var(--font-space, 'Courier New', 'Lucida Console', monospace);
+  font-family: Arial, sans-serif;
   font-size: 0.6rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -2483,7 +2467,7 @@ no broken blank boxes ───────────────*/
   right: auto !important;
   flex-shrink: 0;
 }.detail-fav-label {
-  font-family: var(--font-space, 'Courier New', 'Lucida Console', monospace);
+  font-family: Arial, sans-serif;
   font-size: 0.62rem;
   font-weight: 700;
   letter-spacing: 0.14em;
@@ -2531,7 +2515,7 @@ no broken blank boxes ───────────────*/
   flex-wrap: nowrap;
   overflow-x: auto;
 }.blog-topnav-link {
-  font-family: var(--font-space, 'Courier New', 'Lucida Console', monospace);
+  font-family: Arial, sans-serif;
   font-size: 0.55rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
@@ -2565,14 +2549,14 @@ no broken blank boxes ───────────────*/
 .blog-index-hero-inner { padding: 0 20px; }
   .blog-index-hero { padding: 40px 0 32px; }
 }.blog-index-eyebrow {
-  font-family: var(--font-space, 'Courier New', 'Lucida Console', monospace);
+  font-family: Arial, sans-serif;
   font-size: 0.6rem;
   letter-spacing: 0.28em;
   text-transform: uppercase;
   color: #ff1a33;
   margin-bottom: 16px;
 }.blog-index-title {
-  font-family: var(--font-cinzel), cursive;
+  font-family: 'Arial Black', Arial, sans-serif;
   font-size: clamp(2.2rem, 5vw, 3.8rem);
   color: #f0ecff;
   line-height: 1.1;
@@ -2581,14 +2565,14 @@ no broken blank boxes ───────────────*/
   color: #c9a84c;
   font-style: italic;
 }.blog-index-subtitle {
-  font-family: var(--font-cormorant), serif;
+  font-family: Arial, sans-serif;
   font-size: 1.1rem;
   color: #8a8099;
   font-style: italic;
   margin-bottom: 12px;
   max-width: 520px;
 }.blog-index-count {
-  font-family: var(--font-space, 'Courier New', 'Lucida Console', monospace);
+  font-family: Arial, sans-serif;
   font-size: 0.6rem;
   letter-spacing: 0.15em;
   text-transform: uppercase;
@@ -2628,25 +2612,25 @@ no broken blank boxes ───────────────*/
 .blog-featured-card { padding: 20px 20px; }
 }.blog-featured-eyebrow {
   display: block;
-  font-family: var(--font-space, 'Courier New', 'Lucida Console', monospace);
+  font-family: Arial, sans-serif;
   font-size: 0.58rem;
   letter-spacing: 0.2em;
   text-transform: uppercase;
   margin-bottom: 12px;
 }.blog-featured-title {
-  font-family: var(--font-cinzel), cursive;
+  font-family: 'Arial Black', Arial, sans-serif;
   font-size: clamp(1.4rem, 2.5vw, 2rem);
   color: #f0ecff;
   line-height: 1.25;
   margin-bottom: 16px;
 }.blog-featured-excerpt {
-  font-family: var(--font-cormorant), serif;
+  font-family: Arial, sans-serif;
   font-size: 1.05rem;
   color: #a89bc0;
   line-height: 1.7;
   margin-bottom: 20px;
 }.blog-featured-cta {
-  font-family: var(--font-space, 'Courier New', 'Lucida Console', monospace);
+  font-family: Arial, sans-serif;
   font-size: 0.65rem;
   letter-spacing: 0.15em;
   text-transform: uppercase;
@@ -2669,24 +2653,24 @@ no broken blank boxes ───────────────*/
   text-decoration: none;
   transition: border-color 0.2s;
 }.blog-post-card:hover { border-color: rgba(192,0,26,0.4); }.blog-post-card-label {
-  font-family: var(--font-space, 'Courier New', 'Lucida Console', monospace);
+  font-family: Arial, sans-serif;
   font-size: 0.55rem;
   letter-spacing: 0.2em;
   text-transform: uppercase;
 }.blog-post-card-title {
-  font-family: var(--font-cinzel), cursive;
+  font-family: 'Arial Black', Arial, sans-serif;
   font-size: 1rem;
   color: #f0ecff;
   line-height: 1.3;
   flex: 1;
 }.blog-post-card-excerpt {
-  font-family: var(--font-cormorant), serif;
+  font-family: Arial, sans-serif;
   font-size: 1rem;
   color: #6b6480;
   line-height: 1.6;
   flex: 1;
 }.blog-post-card-date {
-  font-family: var(--font-space, 'Courier New', 'Lucida Console', monospace);
+  font-family: Arial, sans-serif;
   font-size: 0.55rem;
   letter-spacing: 0.15em;
   color: #7a7490;
@@ -2698,7 +2682,7 @@ no broken blank boxes ───────────────*/
   padding-top: 40px;
   margin-bottom: 48px;
 }.blog-categories-heading {
-  font-family: var(--font-cinzel), cursive;
+  font-family: 'Arial Black', Arial, sans-serif;
   font-size: 1.2rem;
   color: #f0ecff;
   margin-bottom: 28px;
@@ -2711,7 +2695,7 @@ no broken blank boxes ───────────────*/
   flex-direction: column;
   gap: 0;
 }.blog-category-label {
-  font-family: var(--font-space, 'Courier New', 'Lucida Console', monospace);
+  font-family: Arial, sans-serif;
   font-size: 0.6rem;
   letter-spacing: 0.2em;
   text-transform: uppercase;
@@ -2736,13 +2720,13 @@ no broken blank boxes ───────────────*/
   text-decoration: none;
   transition: padding-left 0.15s;
 }.blog-category-item:hover { padding-left: 6px; }.blog-category-item:last-child { border-bottom: none; }.blog-category-item-title {
-  font-family: var(--font-cormorant), serif;
+  font-family: Arial, sans-serif;
   font-size: 1rem;
   color: #c9c4dd;
   line-height: 1.4;
   flex: 1;
 }.blog-category-item:hover .blog-category-item-title { color: #f0ecff; }.blog-category-item-date {
-  font-family: var(--font-space, 'Courier New', 'Lucida Console', monospace);
+  font-family: Arial, sans-serif;
   font-size: 0.55rem;
   letter-spacing: 0.1em;
   color: #7a7490;
@@ -3144,14 +3128,14 @@ hide desktop actions ── */
   opacity: 0.4;
   letter-spacing: 0.3em;
 }.hw-coming-soon__title {
-  font-family: var(--font-cinzel), cursive;
+  font-family: 'Arial Black', Arial, sans-serif;
   font-size: 1.4rem;
   font-weight: 700;
   letter-spacing: 0.15em;
   text-transform: uppercase;
   color: var(--text-primary, #f0ecff);
 }.hw-coming-soon__sub {
-  font-family: var(--font-space, 'Courier New', 'Lucida Console', monospace);
+  font-family: Arial, sans-serif;
   font-size: 0.68rem;
   letter-spacing: 0.2em;
   text-transform: uppercase;
@@ -4428,7 +4412,7 @@ pop glow */
   0%,100% { opacity: 1; transform: scale(1); }
   50%      { opacity: 0.4; transform: scale(0.6); }
 }.hf-label {
-  font-family: var(--font-space, monospace);
+  font-family: Arial, sans-serif;
   font-size: 0.5rem;
   letter-spacing: 0.3em;
   text-transform: uppercase;
@@ -4456,7 +4440,7 @@ pop glow */
   display: flex;
   justify-content: flex-end;
 }.hf-counter {
-  font-family: var(--font-space, monospace);
+  font-family: Arial, sans-serif;
   font-size: 0.48rem;
   letter-spacing: 0.15em;
   text-transform: uppercase;
@@ -4792,7 +4776,7 @@ no animation */
   left: 6px;
   background: rgba(0,0,0,0.72);
   color: rgba(255,255,255,0.85);
-  font-family: var(--font-space, monospace);
+  font-family: Arial, sans-serif;
   font-size: 0.52rem;
   font-weight: 700;
   letter-spacing: 0.06em;

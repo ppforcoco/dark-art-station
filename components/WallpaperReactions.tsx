@@ -1,10 +1,9 @@
 // components/WallpaperReactions.tsx
 // Emoji reaction buttons with counts for wallpaper pages
-// Placed ABOVE the download button, BELOW the preview image
+// ✅ PERF: Replaced 4 R2 image fetches with Unicode emoji — zero network cost
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import Image from "next/image";
 
 interface Props {
   imageId: string;
@@ -12,14 +11,13 @@ interface Props {
 
 type ReactionKey = "skull" | "fire" | "heart" | "thumbsdown";
 
-const REACTIONS: { key: ReactionKey; label: string; src: string; baseMin: number; baseMax: number; zeroChance: number }[] = [
-  { key: "skull",     label: "Haunted",   src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/emojis/skull-with-red-glowing-eyes.webp", baseMin: 12, baseMax: 24, zeroChance: 0.08 },
-  { key: "fire",      label: "Fire",      src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/emojis/the-fire-icon.webp",              baseMin: 8,  baseMax: 15, zeroChance: 0.12 },
-  { key: "heart",     label: "Love",      src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/emojis/the-heart-icon.webp",             baseMin: 5,  baseMax: 10, zeroChance: 0.15 },
-  { key: "thumbsdown",label: "Meh",       src: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/emojis/the-thumbs-down-emoji.webp",      baseMin: 0,  baseMax: 4,  zeroChance: 0.30 },
+const REACTIONS: { key: ReactionKey; label: string; emoji: string; baseMin: number; baseMax: number; zeroChance: number }[] = [
+  { key: "skull",      label: "Haunted", emoji: "💀", baseMin: 12, baseMax: 24, zeroChance: 0.08 },
+  { key: "fire",       label: "Fire",    emoji: "🔥", baseMin: 8,  baseMax: 15, zeroChance: 0.12 },
+  { key: "heart",      label: "Love",    emoji: "❤️", baseMin: 5,  baseMax: 10, zeroChance: 0.15 },
+  { key: "thumbsdown", label: "Meh",     emoji: "👎", baseMin: 0,  baseMax: 4,  zeroChance: 0.30 },
 ];
 
-// Deterministic seeded random based on imageId so base counts are stable per image
 function seededRand(seed: string, salt: number): number {
   let h = salt;
   for (let i = 0; i < seed.length; i++) { h = Math.imul(31, h) + seed.charCodeAt(i) | 0; }
@@ -49,9 +47,7 @@ export default function WallpaperReactions({ imageId }: Props) {
 
   const [voted, setVoted] = useState<ReactionKey | null>(null);
   const [animating, setAnimating] = useState<ReactionKey | null>(null);
-  const [glowing, setGlowing] = useState(false);
 
-  // Load saved vote + deltas from localStorage
   useEffect(() => {
     try {
       const saved = localStorage.getItem(storageKey);
@@ -70,8 +66,7 @@ export default function WallpaperReactions({ imageId }: Props) {
   }, [storageKey]);
 
   const handleVote = useCallback((key: ReactionKey) => {
-    if (voted === key) return; // already voted this
-
+    if (voted === key) return;
     setCounts(prev => {
       const next = { ...prev };
       const deltas: Partial<Record<ReactionKey, number>> = {};
@@ -83,13 +78,13 @@ export default function WallpaperReactions({ imageId }: Props) {
     });
     setVoted(key);
     setAnimating(key);
-    setTimeout(() => setAnimating(null), 700);
+    setTimeout(() => setAnimating(null), 500);
   }, [voted, storageKey]);
 
   return (
     <>
       <p style={{
-        fontFamily: "var(--font-space, monospace)",
+        fontFamily: "Arial, sans-serif",
         fontSize: "0.55rem",
         letterSpacing: "0.22em",
         textTransform: "uppercase",
@@ -99,23 +94,18 @@ export default function WallpaperReactions({ imageId }: Props) {
         ▸ Tap to react
       </p>
       <div className="hw-reactions">
-        {REACTIONS.map(({ key, label, src }) => {
+        {REACTIONS.map(({ key, label, emoji }) => {
           const isVoted = voted === key;
           const isAnim  = animating === key;
-          const isSkull = key === "skull";
           return (
             <button
               key={key}
-              className={`hw-reaction-btn${isVoted ? " hw-reaction-btn--voted" : ""}${isAnim ? ` hw-reaction-btn--anim-${key}` : ""}${isSkull ? " hw-reaction-skull" : ""}`}
+              className={`hw-reaction-btn${isVoted ? " hw-reaction-btn--voted" : ""}${isAnim ? " hw-reaction-btn--anim" : ""}`}
               onClick={() => handleVote(key)}
-              onMouseEnter={() => isSkull && setGlowing(true)}
-              onMouseLeave={() => isSkull && setGlowing(false)}
               aria-label={`React with ${label}`}
               aria-pressed={isVoted}
             >
-              <span className={`hw-reaction-img-wrap${isSkull && glowing ? " hw-skull-glow" : ""}`}>
-                <Image src={src} alt={label} width={44} height={44} unoptimized className="hw-reaction-img" />
-              </span>
+              <span className="hw-reaction-emoji" aria-hidden="true">{emoji}</span>
               <span className="hw-reaction-label">{label}</span>
               <span className="hw-reaction-count">{fmtCount(counts[key])}</span>
             </button>
@@ -156,22 +146,17 @@ export default function WallpaperReactions({ imageId }: Props) {
           background: rgba(192,0,26,0.12);
           border-color: rgba(192,0,26,0.6);
         }
-        .hw-reaction-img-wrap {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          width: 44px;
-          height: 44px;
-          transition: filter 0.2s;
-        }
-        .hw-reaction-img {
-          width: 44px;
-          height: 44px;
-          object-fit: contain;
+        .hw-reaction-emoji {
+          font-size: 2rem;
+          line-height: 1;
           display: block;
+          transition: transform 0.15s;
+        }
+        .hw-reaction-btn--anim .hw-reaction-emoji {
+          transform: scale(1.3);
         }
         .hw-reaction-label {
-          font-family: var(--font-space, monospace);
+          font-family: Arial, sans-serif;
           font-size: 0.5rem;
           letter-spacing: 0.12em;
           text-transform: uppercase;
@@ -180,56 +165,18 @@ export default function WallpaperReactions({ imageId }: Props) {
           margin-top: 2px;
         }
         .hw-reaction-btn--voted .hw-reaction-label { color: rgba(255,255,255,0.7); }
-        .hw-skull-glow .hw-reaction-img {
-          filter: drop-shadow(0 0 8px rgba(220,0,0,0.9)) drop-shadow(0 0 16px rgba(220,0,0,0.6)) brightness(1.2);
-        }
         .hw-reaction-count {
-          font-family: var(--font-space, monospace);
+          font-family: Arial, sans-serif;
           font-size: 0.68rem;
           letter-spacing: 0.06em;
           color: rgba(200,200,220,0.8);
           line-height: 1;
         }
         .hw-reaction-btn--voted .hw-reaction-count { color: #fff; }
-
-        /* Skull glow animation on vote */
-        @keyframes skullPulse {
-          0%   { filter: drop-shadow(0 0 4px rgba(220,0,0,0.5)); }
-          50%  { filter: drop-shadow(0 0 16px rgba(220,0,0,1)) drop-shadow(0 0 30px rgba(220,0,0,0.7)) brightness(1.3); }
-          100% { filter: drop-shadow(0 0 4px rgba(220,0,0,0.5)); }
-        }
-        .hw-reaction-btn--anim-skull .hw-reaction-img { animation: skullPulse 0.7s ease; }
-
-        /* Fire flicker */
-        @keyframes fireFX {
-          0%,100% { transform: scale(1) rotate(0deg); }
-          25%  { transform: scale(1.15) rotate(-4deg); }
-          50%  { transform: scale(1.25) rotate(3deg); }
-          75%  { transform: scale(1.1) rotate(-2deg); }
-        }
-        .hw-reaction-btn--anim-fire .hw-reaction-img { animation: fireFX 0.7s ease; }
-
-        /* Heart beat */
-        @keyframes heartBeat {
-          0%,100% { transform: scale(1); }
-          30%  { transform: scale(1.35); }
-          60%  { transform: scale(1.1); }
-        }
-        .hw-reaction-btn--anim-heart .hw-reaction-img { animation: heartBeat 0.7s ease; }
-
-        /* Thumbs down wobble */
-        @keyframes thumbsWobble {
-          0%,100% { transform: rotate(0deg); }
-          25%  { transform: rotate(-15deg); }
-          75%  { transform: rotate(10deg); }
-        }
-        .hw-reaction-btn--anim-thumbsdown .hw-reaction-img { animation: thumbsWobble 0.7s ease; }
-
         @media (max-width: 480px) {
           .hw-reactions { gap: 8px; }
           .hw-reaction-btn { padding: 12px 12px; min-width: 64px; }
-          .hw-reaction-img-wrap { width: 40px; height: 40px; }
-          .hw-reaction-img { width: 40px; height: 40px; }
+          .hw-reaction-emoji { font-size: 1.75rem; }
         }
       `}</style>
     </>
