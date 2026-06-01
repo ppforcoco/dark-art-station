@@ -446,16 +446,16 @@ export default async function Home() {
         .hp-col-thumb--wide { aspect-ratio:16/9 }
         .hp-col-info { padding:6px 8px 8px; display:flex; flex-direction:column; gap:2px }
         .hp-col-cat {
-          font-family:monospace; font-size:clamp(.4rem,.5vw,.48rem);
-          letter-spacing:.2em; text-transform:uppercase; color:#ef0014;
+          font-family:monospace; font-size:clamp(.65rem,.75vw,.72rem);
+          letter-spacing:.2em; text-transform:uppercase; color:#ff4d5a;
         }
         .hp-col-title {
           font-family:var(--font-cormorant,Georgia,serif);
           font-size:clamp(.84rem,.98vw,.94rem); color:#e8e4f0; font-weight:600; line-height:1.2;
         }
         .hp-col-count {
-          font-family:monospace; font-size:clamp(.4rem,.5vw,.48rem);
-          letter-spacing:.13em; text-transform:uppercase; color:rgba(255,255,255,.5);
+          font-family:monospace; font-size:clamp(.6rem,.7vw,.65rem);
+          letter-spacing:.13em; text-transform:uppercase; color:rgba(255,255,255,.55);
         }
       `}</style>
 

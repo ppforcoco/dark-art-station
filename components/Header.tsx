@@ -224,6 +224,12 @@ export default function Header() {
           white-space: nowrap;
           transition: color 0.2s;
           flex-shrink: 0;
+          /* ✅ Accessibility: ensure visible focus ring for keyboard users */
+        }
+        .hw-nav__link:focus-visible {
+          outline: 2px solid #9090f0;
+          outline-offset: 3px;
+          border-radius: 2px;
         }
         .hw-nav__link:hover { color: #f0f0ff; }
         .hw-nav__link--sets { color: #ef0014 !important; }
@@ -253,6 +259,12 @@ export default function Header() {
           flex-shrink: 0;
         }
         .hw-nav__icon-btn:hover { color: #f0f0ff; }
+        /* ✅ Accessibility: keyboard focus rings */
+        .hw-nav__icon-btn:focus-visible,
+        .hw-nav__hamburger:focus-visible {
+          outline: 2px solid #9090f0;
+          outline-offset: 2px;
+        }
         .hw-nav__icon-btn--spin svg { animation: hw-spin 0.7s linear; }
         @keyframes hw-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
@@ -514,6 +526,14 @@ export default function Header() {
           color: #fff;
           background: rgba(144,144,184,0.08);
         }
+        .hw-menu-panel__link:focus-visible {
+          outline: 2px solid #9090f0;
+          outline-offset: -2px;
+        }
+        .hw-menu-panel__link:focus-visible {
+          outline: 2px solid #9090f0;
+          outline-offset: -2px;
+        }
         .hw-menu-panel__link--sets { color: rgba(192,0,26,0.85) !important; }
         .hw-menu-panel__link--sets:hover,
         .hw-menu-panel__link--sets:active { color: #c0001a !important; }
@@ -561,6 +581,14 @@ export default function Header() {
           overflow: hidden;
         }
         .hw-bottom-nav__item:active { color: #fff; }
+        .hw-bottom-nav__item:focus-visible {
+          outline: 2px solid #9090f0;
+          outline-offset: -2px;
+        }
+        .hw-bottom-nav__item:focus-visible {
+          outline: 2px solid #9090f0;
+          outline-offset: -2px;
+        }
         .hw-bottom-nav__icon {
           display: flex;
           align-items: center;
