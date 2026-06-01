@@ -84,17 +84,17 @@ export default function Cursor() {
   const elRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Only run on pointer:fine (desktop with mouse)
-    if (!window.matchMedia("(pointer: fine)").matches) return;
+    // ── FIX: Re-check pointer:fine dynamically at runtime ─────────────────
+    // Instead of bailing out immediately, we watch for pointer media changes
+    // so switching from touch/trackpad to a real mouse activates the cursor.
+    const mq = window.matchMedia("(pointer: fine)");
+
     const el = elRef.current;
     if (!el) return;
 
     // Preload hand image so it's ready instantly
     const img = new window.Image();
     img.src = HAND_URL;
-
-    el.style.display = "block";
-    el.innerHTML = trustedHtml(DAGGER_SVG) as string;
 
     let mx = -300, my = -300;
     let visible = false;
@@ -103,6 +103,7 @@ export default function Cursor() {
     let rafId = 0, rafRunning = false;
     let idleTimer: ReturnType<typeof setTimeout> | null = null;
     let scrollTimer: ReturnType<typeof setTimeout> | null = null;
+    let active = false;
 
     const startRaf = () => {
       if (rafRunning) return;
@@ -195,18 +196,42 @@ export default function Cursor() {
       if (visible) el.style.opacity = "1";
     };
 
-    document.addEventListener("mousemove",   onMove,   { passive: true });
-    document.addEventListener("mouseover",   onOver,   { passive: true });
-    document.addEventListener("mouseleave",  hide);
-    document.addEventListener("mouseenter",  show);
-    document.addEventListener("scroll",      onScroll, { passive: true });
-    document.addEventListener("contextmenu", hide);
-    window.addEventListener("blur", hide);
+    // ── Activate / deactivate the custom cursor ────────────────────────────
+    const activate = () => {
+      if (active) return;
+      active = true;
+      el.style.display = "block";
+      el.innerHTML = trustedHtml(DAGGER_SVG) as string;
+      // Restore cursor:none style in case it was removed
+      const existing = document.getElementById("hw-cur-none");
+      if (!existing) {
+        const s = document.createElement("style");
+        s.id = "hw-cur-none";
+        s.textContent =
+          "@media(pointer:fine){html,body,*,*::before,*::after," +
+          "a,button,[role=button],input,select,textarea,label," +
+          "[tabindex],summary{cursor:none!important}}";
+        document.head.appendChild(s);
+      }
+      document.addEventListener("mousemove",   onMove,   { passive: true });
+      document.addEventListener("mouseover",   onOver,   { passive: true });
+      document.addEventListener("mouseleave",  hide);
+      document.addEventListener("mouseenter",  show);
+      document.addEventListener("scroll",      onScroll, { passive: true });
+      document.addEventListener("contextmenu", hide);
+      window.addEventListener("blur", hide);
+    };
 
-    return () => {
+    const deactivate = () => {
+      if (!active) return;
+      active = false;
+      el.style.display = "none";
+      el.style.opacity = "0";
+      visible = false;
       stopRaf();
-      if (idleTimer)   clearTimeout(idleTimer);
-      if (scrollTimer) clearTimeout(scrollTimer);
+      // Restore native cursor when not on pointer:fine device
+      const s = document.getElementById("hw-cur-none");
+      if (s) s.remove();
       document.removeEventListener("mousemove",   onMove);
       document.removeEventListener("mouseover",   onOver);
       document.removeEventListener("mouseleave",  hide);
@@ -214,6 +239,26 @@ export default function Cursor() {
       document.removeEventListener("scroll",      onScroll);
       document.removeEventListener("contextmenu", hide);
       window.removeEventListener("blur", hide);
+    };
+
+    // Initial activation
+    if (mq.matches) activate();
+
+    // ── FIX: Listen for pointer device changes (e.g. mouse plugged in) ────
+    const onPointerChange = (e: MediaQueryListEvent) => {
+      if (e.matches) {
+        activate();
+      } else {
+        deactivate();
+      }
+    };
+    mq.addEventListener("change", onPointerChange);
+
+    return () => {
+      deactivate();
+      mq.removeEventListener("change", onPointerChange);
+      if (idleTimer)   clearTimeout(idleTimer);
+      if (scrollTimer) clearTimeout(scrollTimer);
     };
   }, []);
 

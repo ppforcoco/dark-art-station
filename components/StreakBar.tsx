@@ -3,10 +3,14 @@
 import { useEffect, useState } from "react";
 
 const STREAK_KEY = "hw-visit-streak";
+// ── FIX: Bump this version whenever you need to reset all users' streaks ──
+// Changing STREAK_VERSION wipes any stale/incorrect stored data on next visit.
+const STREAK_VERSION = 2;
 
 interface StreakData {
   count: number;
   lastVisit: string; // ISO date string YYYY-MM-DD
+  v: number;        // version — stale data missing this is discarded
 }
 
 function todayStr() {
@@ -16,22 +20,32 @@ function todayStr() {
 function getStreak(): StreakData {
   try {
     const raw = localStorage.getItem(STREAK_KEY);
-    if (!raw) return { count: 1, lastVisit: todayStr() };
-    const data: StreakData = JSON.parse(raw);
-    const today = todayStr();
-    if (data.lastVisit === today) return data; // already counted today
 
-    // Check if yesterday
-    const last = new Date(data.lastVisit);
-    const now = new Date(today);
-    const diffDays = Math.round((now.getTime() - last.getTime()) / 86400000);
-    if (diffDays === 1) {
-      return { count: data.count + 1, lastVisit: today };
+    // ── FIX: Discard data from older versions (e.g. the runaway 22-day streak) ──
+    if (raw) {
+      const data: StreakData = JSON.parse(raw);
+      if (!data.v || data.v < STREAK_VERSION) {
+        // Stale version — treat as brand new visitor
+        return { count: 1, lastVisit: todayStr(), v: STREAK_VERSION };
+      }
+
+      const today = todayStr();
+      if (data.lastVisit === today) return data; // already counted today
+
+      // Check if yesterday
+      const last = new Date(data.lastVisit);
+      const now = new Date(today);
+      const diffDays = Math.round((now.getTime() - last.getTime()) / 86400000);
+      if (diffDays === 1) {
+        return { count: data.count + 1, lastVisit: today, v: STREAK_VERSION };
+      }
+      // streak broken — reset to 1
+      return { count: 1, lastVisit: today, v: STREAK_VERSION };
     }
-    // streak broken — reset to 1
-    return { count: 1, lastVisit: today };
+
+    return { count: 1, lastVisit: todayStr(), v: STREAK_VERSION };
   } catch {
-    return { count: 1, lastVisit: todayStr() };
+    return { count: 1, lastVisit: todayStr(), v: STREAK_VERSION };
   }
 }
 
