@@ -202,22 +202,20 @@ export default async function PcImagePage({ params }: PageProps) {
                 <DownloadButton href={`/api/download/image/${image.id}`} slug={image.slug} downloadCount={image._count.downloads} />
               </div>
 
-              {/* ── More You'll Like strip (mobile) — lazy loaded ── */}
+              {/* ── More You'll Like strip — shown on all devices ── */}
               {tagSortedStrip.length > 0 && (
-                
-                <>
+                <div className="hw-more-strip">
                   <span className="hw-more-strip__label">More ▸</span>
                   <div className="hw-more-strip__thumbs">
                     {tagSortedStrip.map((img) => (
                       <Link key={img.slug} href={`/pc/${img.slug}`} className="more-strip-link">
                         <div className="hw-more-strip__thumb" style={{ position: "relative" }}>
-                          <Image src={getPublicUrl(img.r2Key)} alt={img.title} fill className="object-cover" loading="lazy" sizes="80px" unoptimized />
+                          <Image src={getPublicUrl(img.r2Key)} alt={img.title} fill className="object-cover" loading="lazy" sizes="100px" unoptimized />
                         </div>
                       </Link>
                     ))}
                   </div>
-                
-                </>
+                </div>
               )}
             </div>
           </div>
@@ -270,24 +268,6 @@ export default async function PcImagePage({ params }: PageProps) {
                 item={{ slug: image.slug, title: image.title, thumb: thumbUrl, href: `/pc/${imageSlug}`, device: "pc" }}
               />
             </div>
-
-            {/* ── More You'll Like strip (desktop) — lazy loaded ── */}
-            {tagSortedStrip.length > 0 && (
-              
-              <>
-                <span className="hw-more-strip__label">More ▸</span>
-                <div className="hw-more-strip__thumbs">
-                  {tagSortedStrip.map((img) => (
-                    <Link key={img.slug} href={`/pc/${img.slug}`} className="more-strip-link">
-                      <div className="hw-more-strip__thumb" style={{ position: "relative" }}>
-                        <Image src={getPublicUrl(img.r2Key)} alt={img.title} fill className="object-cover" loading="lazy" sizes="100px" unoptimized />
-                      </div>
-                    </Link>
-                  ))}
-                </div>
-              
-              </>
-            )}
           </div>
         </div>
       </section>
@@ -429,20 +409,9 @@ export default async function PcImagePage({ params }: PageProps) {
             height: 56px;
           }
         }
-        /* Show/hide more strip by device */
-        .hw-more-strip--mobile {
+        /* More strip always visible */
+        .hw-more-strip {
           display: flex;
-        }
-        .hw-more-strip--desktop {
-          display: none;
-        }
-        @media (min-width: 768px) {
-          .hw-more-strip--mobile {
-            display: none;
-          }
-          .hw-more-strip--desktop {
-            display: flex;
-          }
         }
 
         /* ── Image wrap ── */
