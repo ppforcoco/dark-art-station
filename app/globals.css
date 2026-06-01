@@ -4683,25 +4683,7 @@ exempt
 
 /* ── END PAGESPEED CONTRAST FIX PATCH ──────────────────────────────── */
 
-/* ── CURSOR OVERRIDE: dagger cursor on all pointer:fine devices ─────────────
-   Appended last so it beats every cursor:pointer rule above.
-   The dagger SVG is the cursor — no system cursor should ever show.
-   On touch/coarse devices this block doesn't apply (they have no cursor).  */
-@media (pointer: fine) {*,
-  *::before,
-  *::after,
-  a,
-  button,
-  [role="button"],
-  input,
-  select,
-  textarea,
-  label,
-  [tabindex],
-  summary,
-  [cursor],
-  .cursor-pointer { cursor: none !important; }
-}/* ── More ▸ thumbnail strip — hover glow so users know it's clickable ───── */
+/* Custom cursor removed — using native browser cursor *//* ── More ▸ thumbnail strip — hover glow so users know it's clickable ───── */
 .more-strip-link {
   display: block;
   flex-shrink: 0;
