@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 const STREAK_KEY = "hw-visit-streak";
 // ── FIX: Bump this version whenever you need to reset all users' streaks ──
 // Changing STREAK_VERSION wipes any stale/incorrect stored data on next visit.
-const STREAK_VERSION = 2;
+const STREAK_VERSION = 3;
 
 interface StreakData {
   count: number;
