@@ -9,6 +9,7 @@ import { getPublicUrl } from "@/lib/r2";
 import PremiumCountdown from "@/components/PremiumCountdown";
 import StreakBar from "@/components/StreakBar";
 import WallpaperCardGridClient from "@/components/WallpaperCardGridClient";
+import TonightSlider from "@/components/TonightSlider";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
 const OG_IMAGE = `${SITE_URL}/og-image.jpg`;
@@ -113,13 +114,15 @@ export default async function Home() {
     updatedAt: img.updatedAt ? new Date(img.updatedAt).toISOString() : null,
   }));
 
-  const newItems = newThisWeek.map((img) => ({
-    id: img.id, slug: img.slug, title: img.title,
-    src: getPublicUrl(img.r2Key),
-    devicePath: img.deviceType === "IPHONE" ? "iphone" : img.deviceType === "ANDROID" ? "android" : "pc",
-    isLocked: false,
-    updatedAt: null,
-  }));
+  const newItems = newThisWeek.map((img) => {
+    const devicePath = img.deviceType === "IPHONE" ? "iphone" : img.deviceType === "ANDROID" ? "android" : "pc";
+    return {
+      id: img.id, slug: img.slug, title: img.title,
+      src: getPublicUrl(img.r2Key),
+      devicePath, isWide: devicePath === "pc",
+      isNew: true, isLocked: false, updatedAt: null,
+    };
+  });
 
   return (
     <>
@@ -286,61 +289,6 @@ export default async function Home() {
 
         .hp-new     { background: #06050e }
         .hp-premium { background: #080710 }
-
-        /* ═══════════════════════════════════════════════════════════════════
-           NEW THIS WEEK — mobile: horizontal scroll slider
-                           desktop: grid (unchanged)
-        ═══════════════════════════════════════════════════════════════════ */
-
-        .hp-new-slider {
-          display: flex;
-          gap: clamp(6px,1.2vw,10px);
-          overflow-x: auto;
-          scroll-snap-type: x mandatory;
-          -webkit-overflow-scrolling: touch;
-          scrollbar-width: none;
-          -ms-overflow-style: none;
-          margin: 0 calc(-1 * clamp(16px,5vw,48px));
-          padding: 0 clamp(16px,5vw,48px) 12px;
-        }
-        .hp-new-slider::-webkit-scrollbar { display: none }
-
-        .hp-new-slider .hp-scard {
-          flex: 0 0 clamp(110px, 42vw, 150px);
-          scroll-snap-align: start;
-        }
-
-        @media (min-width: 768px) {
-          .hp-new-slider {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
-            gap: 7px;
-            overflow-x: visible;
-            scroll-snap-type: unset;
-            margin: 0;
-            padding: 0;
-          }
-          .hp-new-slider .hp-scard {
-            flex: unset;
-          }
-        }
-
-        /* CARD (shared by new + collections) */
-        .hp-scard {
-          display: flex; flex-direction: column; text-decoration: none;
-          border: 1px solid rgba(255,255,255,.07); background: #0a0818; overflow: hidden;
-        }
-        .hp-scard-thumb { position:relative; aspect-ratio:9/16; overflow:hidden; background:#0d0b18 }
-        .hp-scard-thumb--wide { aspect-ratio:16/9 }
-        .hp-scard-info { padding:5px 7px 7px; display:flex; flex-direction:column; gap:2px }
-        .hp-scard-badge {
-          font-family:Arial, sans-serif; font-size:clamp(.44rem,.54vw,.52rem);
-          letter-spacing:.16em; text-transform:uppercase; margin-bottom:1px;
-        }
-        .hp-scard-title {
-          font-family:Arial, sans-serif;
-          font-size:clamp(.84rem,.98vw,.94rem); color:#ddd8f0; font-weight:600; line-height:1.25;
-        }
 
         /* WORLDS */
         .hp-worlds {
@@ -520,29 +468,7 @@ export default async function Home() {
               </div>
             </div>
 
-            <div className="hp-new-slider">
-              {newThisWeek.map((img, i) => {
-                const devicePath = img.deviceType === "IPHONE" ? "iphone"
-                  : img.deviceType === "ANDROID" ? "android" : "pc";
-                const isWide = devicePath === "pc";
-                return (
-                  <Link key={img.id} prefetch={false} href={`/${devicePath}/${img.slug}`} className="hp-scard">
-                    <div className={`hp-scard-thumb${isWide ? " hp-scard-thumb--wide" : ""}`}>
-                      <Image
-                        src={getPublicUrl(img.r2Key)} alt={img.title} fill
-                        loading={i < 4 ? "eager" : "lazy"} priority={i < 2} unoptimized
-                        sizes="(max-width:767px) 44vw, 100px"
-                        style={{ objectFit:"cover", objectPosition:"center top" }}
-                      />
-                    </div>
-                    <div className="hp-scard-info">
-                      <span className="hp-scard-badge" style={{ color:"#4caf50" }}>New</span>
-                      <span className="hp-scard-title">{img.title}</span>
-                    </div>
-                  </Link>
-                );
-              })}
-            </div>
+            <TonightSlider items={newItems} />
           </section>
         )}
 
