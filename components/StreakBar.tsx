@@ -3,49 +3,56 @@
 import { useEffect, useState } from "react";
 
 const STREAK_KEY = "hw-visit-streak";
-// ── FIX: Bump this version whenever you need to reset all users' streaks ──
-// Changing STREAK_VERSION wipes any stale/incorrect stored data on next visit.
-const STREAK_VERSION = 3;
+const STREAK_VERSION = 4;
 
 interface StreakData {
   count: number;
-  lastVisit: string; // ISO date string YYYY-MM-DD
-  v: number;        // version — stale data missing this is discarded
+  lastVisit: string; // YYYY-MM-DD in LOCAL time
+  v: number;
 }
 
-function todayStr() {
-  return new Date().toISOString().slice(0, 10);
+// Use local date, NOT UTC — avoids timezone day-boundary bugs
+function todayLocal(): string {
+  const d = new Date();
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+}
+
+function diffDays(a: string, b: string): number {
+  // a and b are YYYY-MM-DD strings
+  return Math.round(
+    (new Date(b).getTime() - new Date(a).getTime()) / 86_400_000
+  );
 }
 
 function getStreak(): StreakData {
+  const fresh = { count: 1, lastVisit: todayLocal(), v: STREAK_VERSION };
   try {
     const raw = localStorage.getItem(STREAK_KEY);
+    if (!raw) return fresh;
 
-    // ── FIX: Discard data from older versions (e.g. the runaway 22-day streak) ──
-    if (raw) {
-      const data: StreakData = JSON.parse(raw);
-      if (!data.v || data.v < STREAK_VERSION) {
-        // Stale version — treat as brand new visitor
-        return { count: 1, lastVisit: todayStr(), v: STREAK_VERSION };
-      }
+    const data: StreakData = JSON.parse(raw);
 
-      const today = todayStr();
-      if (data.lastVisit === today) return data; // already counted today
+    // Wipe any data from older versions
+    if (!data.v || data.v < STREAK_VERSION) return fresh;
 
-      // Check if yesterday
-      const last = new Date(data.lastVisit);
-      const now = new Date(today);
-      const diffDays = Math.round((now.getTime() - last.getTime()) / 86400000);
-      if (diffDays === 1) {
-        return { count: data.count + 1, lastVisit: today, v: STREAK_VERSION };
-      }
-      // streak broken — reset to 1
-      return { count: 1, lastVisit: today, v: STREAK_VERSION };
+    const today = todayLocal();
+
+    // Already visited today — no change
+    if (data.lastVisit === today) return data;
+
+    const diff = diffDays(data.lastVisit, today);
+
+    if (diff === 1) {
+      // Consecutive day — increment
+      return { count: data.count + 1, lastVisit: today, v: STREAK_VERSION };
     }
-
-    return { count: 1, lastVisit: todayStr(), v: STREAK_VERSION };
+    // Missed a day or more — reset
+    return fresh;
   } catch {
-    return { count: 1, lastVisit: todayStr(), v: STREAK_VERSION };
+    return fresh;
   }
 }
 
@@ -58,7 +65,6 @@ export default function StreakBar() {
     setStreak(data.count);
   }, []);
 
-  // Don't render until client hydrates (avoids SSR mismatch)
   if (streak === null) return null;
 
   const emoji =
@@ -82,7 +88,6 @@ export default function StreakBar() {
   return (
     <div className="hp-streak">
       <span className="hp-streak-fire">{emoji}</span>
-      {/* Only show the number badge from day 2 onwards */}
       {streak > 1 && (
         <span className="hp-streak-days">{streak}</span>
       )}

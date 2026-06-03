@@ -207,17 +207,7 @@ export default function WallpaperCardGrid({ items, accentRgb, badge, badgeColor 
                 {/* Home indicator */}
                 <div style={{ position: "absolute", bottom: "6px", left: "50%", transform: "translateX(-50%)", width: "38px", height: "3px", background: "rgba(255,255,255,0.28)", borderRadius: "2px", zIndex: 4 }} />
               </div>
-              {/* Title + download count footer */}
-              <div style={{ padding: "10px 10px 12px", background: "#0d0b14", borderTop: `1px solid rgba(${accentRgb},0.1)` }}>
-                <p style={{ color: "#e8e4dc", fontSize: "0.7rem", fontFamily: "monospace", margin: 0, lineHeight: 1.3, overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" as const }}>
-                  {img.title}
-                </p>
-                {/* REMOVE BEFORE ADSENSE: the <p> below */}
-                <p style={{ color: "rgba(255,255,255,0.72)", fontSize: "0.62rem", fontFamily: "monospace", margin: "5px 0 0", lineHeight: 1.2, display: "flex", alignItems: "center", gap: "3px" }}>
-                  <span style={{ opacity: 0.6 }}>↓</span>
-                  {fmtDownloads(displayCount)} downloads
-                </p>
-              </div>
+
             </div>
           </Link>
         );
