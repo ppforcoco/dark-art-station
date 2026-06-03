@@ -127,7 +127,32 @@ export default async function Home() {
 
   return (
     <>
-      
+      {/*
+        ── CRITICAL: preload the hero AVIF so the browser fetches it
+           in parallel with HTML parsing, before CSS even executes.
+           This is the single biggest LCP lever available server-side.
+      */}
+      <link
+        rel="preload"
+        as="image"
+        href={HERO_IMG}
+        type="image/avif"
+        // @ts-expect-error — fetchpriority is valid but not yet in React types
+        fetchpriority="high"
+      />
+
+      {/*
+        ── CRITICAL INLINE CSS: painted before ANY external stylesheet.
+           Gives the browser a dark background + hero shell to show
+           at 0ms — kills the white/black flash entirely.
+      */}
+      <style dangerouslySetInnerHTML={{ __html: `
+        body{background:#000;margin:0}
+        .hp{background:#070510}
+        .hp-hero{background:#000;min-height:50vw}
+        @media(min-width:768px){.hp-hero{min-height:420px}}
+        .hp-hero-img-wrap{background:#000}
+      ` }} />
 
       <div className="hp">
 
@@ -163,7 +188,7 @@ export default async function Home() {
             </div>
           </div>
 
-          {/* RIGHT: image */}
+          {/* RIGHT: image — fetchPriority HIGH + eager loading */}
           <div className="hp-hero-img-wrap">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
@@ -171,9 +196,9 @@ export default async function Home() {
               alt=""
               aria-hidden="true"
               className="hp-hero-img"
-              fetchPriority="low"
-              decoding="async"
-              loading="lazy"
+              fetchPriority="high"
+              decoding="sync"
+              loading="eager"
               width="1600"
               height="900"
             />
