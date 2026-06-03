@@ -9,12 +9,16 @@ const CSP = [
   `default-src 'self'`,
   `script-src 'self' 'unsafe-inline' https://cloud.umami.is https://static.cloudflareinsights.com`,
   `script-src-elem 'self' 'unsafe-inline' https://cloud.umami.is https://static.cloudflareinsights.com`,
+  // No Google Fonts — app uses system fonts only (Arial/system-ui)
   `style-src 'self' 'unsafe-inline'`,
+  `style-src-elem 'self' 'unsafe-inline'`,
+  // No gstatic — no web fonts loaded
   `font-src 'self' data:`,
   `img-src 'self' data: blob: ${R2_CDN} ${ASSETS}`,
-  `connect-src 'self' ${R2_CDN} ${ASSETS} https://cloud.umami.is https://api-gateway.umami.dev https://cloudflareinsights.com`,
+  `connect-src 'self' ${R2_CDN} ${ASSETS} https://cloud.umami.is https://api-gateway.umami.dev https://cloudflareinsights.com https://api.anthropic.com`,
   `media-src 'self' ${R2_CDN} ${ASSETS}`,
-  `frame-src 'self'`,
+  `frame-src 'self' blob:`,
+  `worker-src 'self' blob:`,
   `frame-ancestors 'none'`,
   `object-src 'none'`,
   `base-uri 'self'`,
@@ -42,10 +46,9 @@ const nextConfig: NextConfig = {
   compress: true,
   serverExternalPackages: ["@prisma/client"],
 
-  // optimizeCss: true was removed — it crashes SSR in production causing a
-  // blank page. The CSS preload warnings it fixed are cosmetic (dev/console only)
-  // and not worth the build instability. critters remains in devDependencies
-  // in case we revisit this later.
+  // Disable Next.js font optimization AND automatic Inter injection.
+  // The app uses system fonts (Arial/system-ui) — no web fonts needed.
+  optimizeFonts: false,
   experimental: {},
 
   async headers() {

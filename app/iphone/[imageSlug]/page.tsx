@@ -180,8 +180,7 @@ export default async function IphoneImagePage({ params }: PageProps) {
                     fill
                     unoptimized
                     className="object-cover"
-                    priority
-                    fetchPriority="high"
+                    loading="eager"
                     sizes="(max-width: 480px) 280px, (max-width: 768px) 340px, 480px"
                   />
                 </div>

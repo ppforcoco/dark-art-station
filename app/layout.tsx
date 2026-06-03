@@ -1,14 +1,9 @@
 import type { Metadata, Viewport } from "next";
-// ✅ FONTS REMOVED: Using Arial (system font) — zero downloads, instant render
-// Previously: Cinzel Decorative + Cormorant Garamond (115KB, 2 Google requests)
-// Now: Arial / Arial Black — pre-installed on every device, no network cost
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ClientComponents from "@/components/ClientComponents";
 import PWARegister from "@/components/PWARegister";
-
-// ── No font config needed — Arial is a system font on all devices ────────────
 
 const SITE_URL  = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
 const SITE_NAME = "Haunted Wallpapers";
@@ -62,15 +57,14 @@ export const metadata: Metadata = {
   verification: { google: process.env.NEXT_PUBLIC_GSC_VERIFICATION || undefined },
 };
 
+// NOTE: CSP is set via response headers in next.config.ts only.
+// No meta CSP tag here — the HTTP header always wins.
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" dir="ltr" suppressHydrationWarning style={{ backgroundColor: "#0c0b14", color: "#e8e4dc" }}>
       <head>
-        {/* ── Critical inline CSS ─────────────────────────────────────────────
-            Only the flicker keyframe — no cursor:none here.
-            Cursor hiding is now done ONLY in the Cursor component (pointer:fine only)
-            and in globals.css. This prevents mobile users from ever getting
-            cursor:none applied (which caused the "site can't load" flash on iOS). */}
+        {/* ── Critical inline CSS ─────────────────────────────────────────── */}
         <style dangerouslySetInnerHTML={{ __html: `
           @keyframes hw-flicker {
             0%,100%{opacity:1}
@@ -83,36 +77,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           }
         ` }} />
 
-        {/* ── Theme init — must run before paint ─────────────────────────────
-            Sets background/text color from localStorage before first paint.
-            This prevents the white flash on dark-theme sites.
-            IMPORTANT: This is correct and necessary — do not remove. */}
+        {/* ── Theme init — must run before paint ───────────────────────────── */}
         <script dangerouslySetInnerHTML={{ __html: `(function(){try{var t=localStorage.getItem('hw-theme');if(t){document.documentElement.setAttribute('data-theme',t);if(t==='fog'){document.documentElement.style.backgroundColor='#ece9e2';document.documentElement.style.color='#1c1a17';}else if(t==='ghost'){document.documentElement.style.backgroundColor='#0d0d14';document.documentElement.style.color='#e0e0f8';}else{document.documentElement.style.backgroundColor='#0c0b14';document.documentElement.style.color='#e8e4dc';}}else{document.documentElement.style.backgroundColor='#0c0b14';document.documentElement.style.color='#e8e4dc';}}catch(e){}})();` }} />
         <script dangerouslySetInnerHTML={{ __html: `(function(){try{var h=new Date().getHours();if(h>=20||h<6)document.documentElement.setAttribute('data-night','true');}catch(e){}})();` }} />
-
-        {/* ── CSS preload consumer ────────────────────────────────────────────
-            Promotes preloaded CSS chunks to stylesheets immediately.
-            Silences "preloaded but not used" console warnings. */}
-        <script dangerouslySetInnerHTML={{ __html: `(function(){function f(){document.querySelectorAll('link[rel="preload"][as="style"]').forEach(function(l){l.rel='stylesheet';});}if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',f,{once:true});}else{f();}window.addEventListener('load',f,{once:true});})();` }} />
-
-        {/* ── CDN preconnect ──────────────────────────────────────────────────
-            Establishes TCP+TLS handshake to image CDN before first image request.
-            Only 2 preconnects — Lighthouse warns at >4. */}
-        <link rel="preconnect" href="https://assets.hauntedwallpapers.com" crossOrigin="anonymous" />
-        <link rel="dns-prefetch" href="https://assets.hauntedwallpapers.com" />
-
-        {/* ── LCP Hero image preload ──────────────────────────────────────────
-            ✅ KEPT: This tells the browser to fetch the hero image IMMEDIATELY
-            alongside HTML — before CSS/JS is even parsed.
-            Result: hero image is ready by the time React renders it → LCP drops.
-            fetchPriority="high" puts it at the top of the browser's fetch queue. */}
-        <link
-          rel="preload"
-          as="image"
-          href="https://assets.hauntedwallpapers.com/extras/the-haunted-wallpapers-hero-section-image-mobile-dark-wallpapers-thumbnail.avif"
-          type="image/avif"
-          fetchPriority="high"
-        />
 
         {/* ── PWA ─────────────────────────────────────────────────────────── */}
         <link rel="manifest" href="/manifest.webmanifest" />
@@ -133,11 +100,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {process.env.NEXT_PUBLIC_GSC_VERIFICATION && (
           <meta name="google-site-verification" content={process.env.NEXT_PUBLIC_GSC_VERIFICATION} />
         )}
-
-        {/* Umami Analytics moved to end of body — see below */}
       </head>
 
-      {/* ✅ No font variables — Arial is a system font, no loading needed */}
       <body>
         <script
           type="application/ld+json"
@@ -174,9 +138,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Footer />
         <ClientComponents />
         <PWARegister />
-        {/* ✅ PERF: Umami moved from <head> to end of <body>
-            defer in <head> still opens DNS+TCP before first paint.
-            At end of body it only runs after everything else is rendered. */}
         <script
           async
           src="https://cloud.umami.is/script.js"

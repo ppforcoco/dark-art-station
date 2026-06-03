@@ -160,8 +160,7 @@ export default async function PcImagePage({ params }: PageProps) {
                     alt={image.title}
                     fill
                     className="object-contain"
-                    priority
-                    fetchPriority="high"
+                    loading="eager"
                     quality={85}
                     sizes="(max-width: 768px) 100vw, 760px"
                   />

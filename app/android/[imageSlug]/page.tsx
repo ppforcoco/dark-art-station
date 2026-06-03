@@ -217,8 +217,7 @@ export default async function AndroidImagePage({ params }: PageProps) {
                     fill
                     unoptimized
                     className="object-cover"
-                    priority
-                    fetchPriority="high"
+                    loading="eager"
                     sizes="(max-width: 480px) 280px, (max-width: 768px) 340px, 480px"
                   />
                 </div>
