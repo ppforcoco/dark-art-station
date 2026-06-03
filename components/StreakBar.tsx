@@ -21,7 +21,6 @@ function todayLocal(): string {
 }
 
 function diffDays(a: string, b: string): number {
-  // a and b are YYYY-MM-DD strings
   return Math.round(
     (new Date(b).getTime() - new Date(a).getTime()) / 86_400_000
   );
@@ -41,16 +40,24 @@ function getStreak(): StreakData {
     const today = todayLocal();
 
     // Already visited today — no change
-    if (data.lastVisit === today) return data;
+    if (data.lastVisit === today) {
+      // Sanity check: if count is impossibly high vs lastVisit date,
+      // it means old buggy data survived. Reset it.
+      const daysSinceEpoch = diffDays("2026-06-03", today);
+      if (data.count > daysSinceEpoch + 1) return fresh;
+      return data;
+    }
 
     const diff = diffDays(data.lastVisit, today);
 
-    if (diff === 1) {
-      // Consecutive day — increment
-      return { count: data.count + 1, lastVisit: today, v: STREAK_VERSION };
-    }
-    // Missed a day or more — reset
-    return fresh;
+    // Streak broken — reset
+    if (diff !== 1) return fresh;
+
+    // Consecutive day — increment, but cap at days since we launched this fix
+    const maxPossible = diffDays("2026-06-03", today) + 1;
+    const newCount = Math.min(data.count + 1, maxPossible);
+    return { count: newCount, lastVisit: today, v: STREAK_VERSION };
+
   } catch {
     return fresh;
   }
