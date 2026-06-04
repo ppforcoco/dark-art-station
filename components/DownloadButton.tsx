@@ -11,18 +11,7 @@ interface Props {
   children?: ReactNode;
 }
 
-// ─── Seeded fake download count ───────────────────────────────────────────────
-// Hashes the slug into a stable integer. Range: 12–97 (never round, believable).
-// TO REMOVE BEFORE ADSENSE: delete this function + all fakeDownloads usages.
-function seededFakeDownloads(slug: string): number {
-  let h = 0x811c9dc5;
-  for (let i = 0; i < slug.length; i++) {
-    h ^= slug.charCodeAt(i);
-    h = (h * 0x01000193) >>> 0;
-  }
-  const t = Math.sqrt((h % 10000) / 10000);
-  return Math.floor(12 + t * 88);
-}
+
 
 // ── Sticky "Keep Exploring" bar shown after download ─────────────────────────
 function KeepExploringBar({ visible }: { visible: boolean }) {
@@ -206,33 +195,9 @@ export default function DownloadButton({ href, slug, viewCount, downloadCount, l
     : state === "loading" ? "#6b0000"
     : "#8b0000";
 
-  // REMOVE BEFORE ADSENSE: use seeded fake count instead of real DB count.
-  // Replace the line below with: const displayDownloadCount = downloadCount;
-  const displayDownloadCount = slug ? seededFakeDownloads(slug) : downloadCount;
-
   return (
     <>
       <div className="download-btn-wrap">
-        {(viewCount !== undefined || displayDownloadCount !== undefined) && (
-          <div className="download-stats-row">
-            <span style={{ display: "flex", gap: "12px", alignItems: "center" }}>
-              {viewCount !== undefined && (
-                <span className="download-stat">👁 {viewCount.toLocaleString()} views</span>
-              )}
-              {/* REMOVE BEFORE ADSENSE: replace displayDownloadCount with downloadCount below */}
-              {displayDownloadCount !== undefined && displayDownloadCount > 0 && (
-                <span className="download-stat" style={{ color: "#c0453a" }}>↓ {displayDownloadCount.toLocaleString()} downloads</span>
-              )}
-            </span>
-            <span
-              className="download-saved-msg"
-              style={{ opacity: state === "done" ? 1 : 0 }}
-              aria-live="polite"
-            >
-              ✓ Check your downloads folder
-            </span>
-          </div>
-        )}
 
         <div style={{ display: "flex", gap: "10px" }}>
           <a

@@ -116,20 +116,6 @@ export default async function Home() {
   return (
     <>
       {/*
-        ── CRITICAL: preload the hero AVIF so the browser fetches it
-           in parallel with HTML parsing, before CSS even executes.
-           This is the single biggest LCP lever available server-side.
-      */}
-      <link
-        rel="preload"
-        as="image"
-        href={HERO_IMG}
-        type="image/avif"
-        // @ts-expect-error — fetchpriority is valid but not yet in React types
-        fetchpriority="high"
-      />
-
-      {/*
         ── CRITICAL INLINE CSS: painted before ANY external stylesheet.
            Gives the browser a dark background + hero shell to show
            at 0ms — kills the white/black flash entirely.
