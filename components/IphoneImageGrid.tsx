@@ -26,23 +26,7 @@ function toggleFav(item: FavItem): boolean {
   return idx === -1;
 }
 
-// ─── Seeded fake download count ───────────────────────────────────────────────
-// Hashes the slug into a stable integer. Range: 12–97 (never round, believable).
-// TO REMOVE BEFORE ADSENSE: delete this function + all fakeDownloads usages.
-function seededFakeDownloads(slug: string): number {
-  let h = 0x811c9dc5;
-  for (let i = 0; i < slug.length; i++) {
-    h ^= slug.charCodeAt(i);
-    h = (h * 0x01000193) >>> 0;
-  }
-  // sqrt curve weights toward lower numbers — most land 15–50, outliers up to 97
-  const t = Math.sqrt((h % 10000) / 10000);
-  return Math.floor(12 + t * 85);
-}
 
-function fmtDownloads(n: number): string {
-  return String(n);
-}
 
 // ─── Heart button — self-contained, reads/writes localStorage ─────────────────
 function HeartBtn({ slug, title, thumb, href, device }: FavItem) {
@@ -248,9 +232,6 @@ export default function IphoneImageGrid({
         const isNew     = img.tags.includes("badge-new");
         const showVault = isPremium && isLockedGlobal;
 
-        // REMOVE BEFORE ADSENSE: seededFakeDownloads line below
-        const fakeDownloads = seededFakeDownloads(img.slug);
-
         return (
             <Link prefetch={false}
               key={img.id}
@@ -389,46 +370,6 @@ export default function IphoneImageGrid({
                 </span>
               )}
 
-              {/* ── FAKE DOWNLOAD COUNT — REMOVE BEFORE ADSENSE ── */}
-              {!showVault && (
-                <div style={{
-                  position: "absolute",
-                  bottom: 0,
-                  left: 0,
-                  right: 0,
-                  padding: isPremium ? "0 6px 28px" : "18px 6px 5px",
-                  background: isPremium
-                    ? "none"
-                    : "linear-gradient(to top, rgba(0,0,0,0.72) 0%, transparent 100%)",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "3px",
-                  zIndex: 8,
-                  pointerEvents: "none",
-                }}>
-                  <svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth={2}
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    style={{ width: 9, height: 9, color: "rgba(255,255,255,0.45)", flexShrink: 0 }}
-                    aria-hidden="true"
-                  >
-                    <path d="M12 4v12m0 0l-4-4m4 4l4-4M4 20h16" />
-                  </svg>
-                  <span style={{
-                    fontFamily: "var(--font-space, monospace)",
-                    fontSize: "0.48rem",
-                    color: "rgba(255,255,255,0.45)",
-                    letterSpacing: "0.06em",
-                    lineHeight: 1,
-                  }}>
-                    {fmtDownloads(fakeDownloads)}
-                  </span>
-                </div>
-              )}
             </Link>
         );
       })}

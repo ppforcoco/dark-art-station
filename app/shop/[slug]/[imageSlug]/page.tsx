@@ -156,9 +156,6 @@ export default async function CollectionImagePage({ params }: PageProps) {
       <KeyboardNav
         prevHref={prevImage ? `/shop/${slug}/${prevImage.slug}` : null}
         nextHref={nextImage ? `/shop/${slug}/${nextImage.slug}` : null}
-        showHint
-        prevImage={prevImage ? { href: `/shop/${slug}/${prevImage.slug}`, title: prevImage.title, thumb: getPublicUrl(prevImage.r2Key) } : null}
-        nextImage={nextImage ? { href: `/shop/${slug}/${nextImage.slug}`, title: nextImage.title, thumb: getPublicUrl(nextImage.r2Key) } : null}
       />
 
       <Breadcrumbs
@@ -191,6 +188,32 @@ export default async function CollectionImagePage({ params }: PageProps) {
                 sizes="(max-width: 768px) 100vw, 420px"
                 style={{ objectFit: "cover", objectPosition: "center" }}
               />
+              {prevImage && (
+                <Link
+                  href={`/shop/${slug}/${prevImage.slug}`}
+                  prefetch={true}
+                  className="hw-img-arrow hw-img-arrow--prev"
+                  aria-label={`Previous: ${prevImage.title}`}
+                  title={prevImage.title}
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="15 18 9 12 15 6" />
+                  </svg>
+                </Link>
+              )}
+              {nextImage && (
+                <Link
+                  href={`/shop/${slug}/${nextImage.slug}`}
+                  prefetch={true}
+                  className="hw-img-arrow hw-img-arrow--next"
+                  aria-label={`Next: ${nextImage.title}`}
+                  title={nextImage.title}
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="9 18 15 12 9 6" />
+                  </svg>
+                </Link>
+              )}
             </div>
 
             <div style={{ marginTop: "16px", display: "flex", flexDirection: "column", gap: "10px" }}>

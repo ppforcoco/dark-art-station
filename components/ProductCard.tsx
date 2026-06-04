@@ -264,16 +264,6 @@ export default function ProductCard({
               </span>
             )}
 
-            {/* Download count badge */}
-            {downloadCount !== undefined && downloadCount > 0 && (
-              <span
-                className="absolute top-3 right-3 font-mono text-[0.5rem] tracking-[0.1em] uppercase px-[8px] py-[4px] z-10"
-                style={{ background: "rgba(7,7,16,0.75)", color: "#c9a84c", backdropFilter: "blur(4px)" }}
-              >
-                ↓ {formatCount(downloadCount)}
-              </span>
-            )}
-
             {/* Heart / Favorite button */}
             {thumbnail && (
               <FavoriteButton

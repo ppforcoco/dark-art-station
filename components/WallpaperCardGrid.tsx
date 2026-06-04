@@ -43,24 +43,6 @@ function VaultCountdown() {
   return <>{display}</>;
 }
 
-// ─── Seeded fake download count ───────────────────────────────────────────────
-// Hashes the slug into a stable integer. Range: 12–97 (never round, believable).
-// TO REMOVE BEFORE ADSENSE: delete this function + all fakeDownloads usages.
-function seededFakeDownloads(slug: string): number {
-  let h = 0x811c9dc5;
-  for (let i = 0; i < slug.length; i++) {
-    h ^= slug.charCodeAt(i);
-    h = (h * 0x01000193) >>> 0;
-  }
-  // sqrt curve weights toward lower numbers — most land 15–50, outliers up to 97
-  const t = Math.sqrt((h % 10000) / 10000);
-  return Math.floor(12 + t * 85);
-}
-
-function fmtDownloads(n: number): string {
-  return String(n);
-}
-
 export interface WallpaperCardItem {
   id: string;
   slug: string;
@@ -94,9 +76,6 @@ export default function WallpaperCardGrid({ items, accentRgb, badge, badgeColor 
   return (
     <div className={styles.outer}>
       {items.map((img) => {
-        // REMOVE BEFORE ADSENSE: seededFakeDownloads line below
-        const displayCount = img.downloadCount ?? seededFakeDownloads(img.slug);
-
         /* LOCKED CARD */
         if (img.isLocked && isLockedNow) {
           return (
