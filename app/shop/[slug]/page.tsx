@@ -93,6 +93,7 @@ export default async function CollectionPage({ params }: PageProps) {
       icon: true,
       category: true,
       isAdult: true,
+      isPublished: true,
       images: {
         orderBy: { sortOrder: "asc" },
         select: {
@@ -111,6 +112,9 @@ export default async function CollectionPage({ params }: PageProps) {
   });
 
   if (!collection) notFound();
+
+  // Treat unpublished collections as not found for public visitors
+  if (!collection.isPublished) notFound();
 
   // Fetch standalone district images by tag (if this collection has a matching district tag)
   const districtTag = DISTRICT_TAG_MAP[slug];
@@ -144,7 +148,7 @@ export default async function CollectionPage({ params }: PageProps) {
 
   // Related collections
   const relatedRaw = await db.collection.findMany({
-    where: { slug: { not: slug } },
+    where: { slug: { not: slug }, isPublished: true },
     select: {
       slug: true,
       title: true,
@@ -207,7 +211,7 @@ export default async function CollectionPage({ params }: PageProps) {
           color: "#4a445a",
           marginBottom: "24px",
         }}>
-          — {mergedImages.length} wallpaper{mergedImages.length !== 1 ? "s" : ""} · {collection._count.downloads} downloads · {collection.category}
+          — {mergedImages.length} wallpaper{mergedImages.length !== 1 ? "s" : ""} · {collection.category}
         </p>
 
         {/* Description from admin — rendered in iframe, supports any HTML */}

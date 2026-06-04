@@ -46,6 +46,7 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
   const skip = (page - 1) * PAGE_SIZE;
 
   const where = {
+    isPublished: true,
     ...(category ? { category: { contains: category, mode: "insensitive" as const } } : {}),
     ...(filter === "free" ? { isFree: true } : {}),
   };

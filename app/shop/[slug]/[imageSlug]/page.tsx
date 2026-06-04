@@ -12,7 +12,6 @@ import RelatedWallpapers from "@/components/RelatedWallpapers";
 import SocialShare from "@/components/SocialShare";
 import FavoriteButton from "@/components/FavoriteButton";
 import PageTracker from "@/components/PageTracker";
-import WallpaperReactions from "@/components/WallpaperReactions";
 import RecentlyViewed from "@/components/RecentlyViewed";
 import { shouldCountPageView } from "@/lib/analytics-filter";
 
@@ -195,9 +194,8 @@ export default async function CollectionImagePage({ params }: PageProps) {
             </div>
 
             <div style={{ marginTop: "16px", display: "flex", flexDirection: "column", gap: "10px" }}>
-              <WallpaperReactions imageId={image.id} />
               <div className="hw-glow-btn-wrap hw-glow-btn-wrap--download">
-                <DownloadButton href={`/api/download/image/${image.id}`} slug={image.slug} downloadCount={image._count?.downloads ?? 0} />
+                <DownloadButton href={`/api/download/image/${image.id}`} slug={image.slug} downloadCount={0} />
               </div>
               <Link href="/blog/the-dark-aesthetic-a-complete-guide-to-customizing-your-devices" className="setup-guide-link">
                 How to set wallpaper on iPhone, Android & PC →

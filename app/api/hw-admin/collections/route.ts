@@ -27,6 +27,7 @@ export async function GET(req: NextRequest) {
     select: {
       id: true, slug: true, title: true, category: true,
       description: true, metaDescription: true, thumbnail: true,
+      isPublished: true,
       _count: { select: { images: true } },
     },
   });
@@ -86,7 +87,7 @@ export async function PATCH(req: NextRequest) {
   if (!checkAuth(req)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   try {
-    const { slug, description, metaDescription } = await req.json();
+    const { slug, description, metaDescription, isPublished } = await req.json();
     if (!slug) return NextResponse.json({ error: "slug is required" }, { status: 400 });
 
     const updated = await db.collection.update({
@@ -94,8 +95,9 @@ export async function PATCH(req: NextRequest) {
       data: {
         ...(description !== undefined ? { description } : {}),
         ...(metaDescription !== undefined ? { metaDescription: metaDescription || null } : {}),
+        ...(isPublished !== undefined ? { isPublished: Boolean(isPublished) } : {}),
       },
-      select: { id: true, slug: true, title: true, description: true, metaDescription: true },
+      select: { id: true, slug: true, title: true, description: true, metaDescription: true, isPublished: true },
     });
 
     return NextResponse.json({ ok: true, collection: updated });

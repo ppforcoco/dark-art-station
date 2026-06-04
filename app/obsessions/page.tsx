@@ -35,6 +35,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function ObsessionsPage() {
   const [collections, pageContent] = await Promise.all([
     db.collection.findMany({
+      where: { isPublished: true },
       orderBy: [{ featured: "desc" }, { createdAt: "asc" }],
       select: {
         id: true, slug: true, title: true, category: true,

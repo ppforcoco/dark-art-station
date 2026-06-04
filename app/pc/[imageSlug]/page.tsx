@@ -198,7 +198,7 @@ export default async function PcImagePage({ params }: PageProps) {
 
             <div style={{ marginTop: "12px", width: "100%", display: "flex", flexDirection: "column", gap: "8px" }}>
               <div className="hw-glow-btn-wrap hw-glow-btn-wrap--download">
-                <DownloadButton href={`/api/download/image/${image.id}`} slug={image.slug} downloadCount={image._count.downloads} />
+                <DownloadButton href={`/api/download/image/${image.id}`} slug={image.slug} downloadCount={0} />
               </div>
 
               {/* ── More You'll Like strip — shown on all devices ── */}

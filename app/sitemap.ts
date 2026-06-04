@@ -46,6 +46,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         orderBy: { createdAt: "desc" },
       }),
       db.collection.findMany({
+        where: { isPublished: true },
         select: { slug: true, title: true, thumbnail: true, updatedAt: true },
         orderBy: { updatedAt: "desc" },
       }),
@@ -54,7 +55,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
           slug: true, title: true, r2Key: true, updatedAt: true,
           collection: { select: { slug: true } },
         },
-        where: { collectionId: { not: null }, isAdult: false },
+        where: { collectionId: { not: null }, isAdult: false, collection: { isPublished: true } },
         orderBy: { updatedAt: "desc" },
       }),
       db.image.findMany({

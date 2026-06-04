@@ -7,7 +7,7 @@ import { db } from "@/lib/db";
 import { getPublicUrl } from "@/lib/r2";
 import DeviceMockup from "@/components/DeviceMockup";
 import DownloadButton from "@/components/DownloadButton";
-import WallpaperReactions from "@/components/WallpaperReactions";
+
 import RecentlyViewed from "@/components/RecentlyViewed";
 import SocialShare from "@/components/SocialShare";
 import PageTracker from "@/components/PageTracker";
@@ -253,9 +253,8 @@ export default async function AndroidImagePage({ params }: PageProps) {
             </div>
 
             <div style={{ marginTop: "12px", width: "100%", display: "flex", flexDirection: "column", gap: "8px" }}>
-              <WallpaperReactions imageId={image.id} />
               <div className="hw-glow-btn-wrap hw-glow-btn-wrap--download">
-                <DownloadButton href={`/api/download/image/${image.id}`} slug={image.slug} downloadCount={image._count.downloads} />
+                <DownloadButton href={`/api/download/image/${image.id}`} slug={image.slug} downloadCount={0} />
               </div>
               <div className="hw-glow-btn-wrap hw-glow-btn-wrap--preview">
                 <PreviewButton src={thumbUrl} title={image.title} />

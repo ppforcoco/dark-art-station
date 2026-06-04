@@ -4,7 +4,7 @@ import React, { useState, useEffect, useCallback, useRef } from "react";
 export const dynamic = "force-dynamic";
 
 interface Analytics { totalDownloads:number;todayDownloads:number;weekDownloads:number;monthDownloads:number;imageDownloads:number;collectionDownloads:number;downloadsPerDay:{date:string;count:number}[];totalPageViews:number;topPageViews:{title:string;slug:string;device:string|null;views:number}[];topWallpapers:{title:string;slug:string;device:string|null;downloads:number}[];topCollections:{title:string;slug:string;downloads:number}[];totalBlogPosts:number;publishedBlogPosts:number;blogPosts:{title:string;slug:string;label:string;date:string;wordCount:number}[];deviceBreakdown:{IPHONE:number;ANDROID:number;PC:number;OTHER:number};recentActivity:{time:string;title:string;slug:string;device:string|null;type:string}[]; }
-interface Post { slug:string;title:string;label:string;content?:string;featuredImage?:string|null;createdAt:string; }
+interface Post { slug:string;title:string;label:string;content?:string;featuredImage?:string|null;createdAt:string;published?:boolean; }
 interface ImageRecord { id:string;slug:string;title:string;r2Key:string;highResKey:string|null;description:string|null;altText:string|null;metaDescription:string|null;tags:string[];isAdult:boolean;deviceType:string|null;viewCount:number;sortOrder?:number|null;collection?:{title:string}|null; }
 interface PageContentRecord { id:string;slug:string;title:string|null;body:string;metaDesc:string|null;updatedAt:string; }
 
@@ -389,6 +389,7 @@ function BlogTab({password,prefillTitle,prefillLabel,onPrefillUsed}:{password:st
   function openEdit(p:Post){setEditPost(p);setTitle(p.title);setSlug(p.slug);setLabel(p.label);setContent(p.content??"");setFeatImg(p.featuredImage??"");setMsg(null);setMode("edit");}
   async function handleSave(){if(!title||!slug||!content){setMsg({type:"err",text:"Title, slug, and content are required."});return;}setSaving(true);setMsg(null);const isEdit=mode==="edit"&&editPost;try{const res=await fetch("/api/hw-admin/blogs",{method:isEdit?"PATCH":"POST",headers:{"Content-Type":"application/json","x-admin-password":password},body:JSON.stringify({slug,title,content,label,featuredImage:featImg||null})});const j=await res.json();if(res.ok){await load();setMode("list");setMsg({type:"ok",text:`✓ ${isEdit?"Updated":"Published"}: "${title}"`});}else setMsg({type:"err",text:j.error??"Save failed."});}catch{setMsg({type:"err",text:"Network error."});}setSaving(false);}
   async function handleDelete(p:Post){if(!confirm(`Delete "${p.title}"?`))return;setDeleting(p.slug);try{await fetch("/api/hw-admin/blogs",{method:"DELETE",headers:{"Content-Type":"application/json","x-admin-password":password},body:JSON.stringify({slug:p.slug})});load();}catch{}setDeleting(null);}
+  async function handleTogglePost(p:Post){setMsg(null);try{const newVal=!(p as Post&{published?:boolean}).published;const res=await fetch("/api/hw-admin/blogs",{method:"PATCH",headers:{"Content-Type":"application/json","x-admin-password":password},body:JSON.stringify({slug:p.slug,published:newVal})});if(res.ok){setMsg({type:"ok",text:newVal?`✓ "${p.title}" is now LIVE`:`✓ "${p.title}" UNPUBLISHED`});setPosts(prev=>prev.map(x=>x.slug===p.slug?{...x,published:newVal}:x));}else setMsg({type:"err",text:"Toggle failed."});}catch{setMsg({type:"err",text:"Network error."});}}
   const wordCount=content.replace(/<[^>]*>/g," ").split(/\s+/).filter(Boolean).length;
   if(mode==="new"||mode==="edit")return<div style={{display:"flex",flexDirection:"column",gap:"16px"}}>
     <div style={{display:"flex",alignItems:"center",gap:"16px",marginBottom:"4px"}}><Btn onClick={()=>{setMode("list");setMsg(null);}} variant="ghost">← Back</Btn><h2 style={{color:C.textPri,fontSize:"1rem",fontWeight:400,margin:0}}>{mode==="edit"?`Editing: ${editPost?.title}`:"New Blog Post"}</h2></div>
@@ -418,7 +419,7 @@ function BlogTab({password,prefillTitle,prefillLabel,onPrefillUsed}:{password:st
   return<div>
     <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:"24px"}}><div><p style={eyebrow}>Blog Posts</p><p style={{color:C.textSec,fontSize:"0.82rem"}}>{posts.length} posts published</p></div><Btn onClick={openNew}>+ New Post</Btn></div>
     <Msg msg={msg}/>
-    {loading?<p style={{color:C.textSec}}>Loading posts…</p>:posts.length===0?<Card style={{textAlign:"center",padding:"48px"}}><p style={{color:C.textMut,marginBottom:"16px"}}>No posts yet.</p><Btn onClick={openNew}>Write Your First Post</Btn></Card>:<div style={{display:"flex",flexDirection:"column",gap:"8px"}}>{posts.map(p=><Card key={p.slug} style={{padding:"16px 18px",display:"flex",alignItems:"center",justifyContent:"space-between",gap:"16px",flexWrap:"wrap"}}><div style={{flex:1,minWidth:0}}><p style={{color:C.textPri,fontWeight:500,marginBottom:"4px",whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{p.title}</p><div style={{display:"flex",gap:"12px",fontSize:"0.7rem",color:C.textMut}}><span style={{background:"rgba(124,58,237,0.2)",color:C.purple,padding:"1px 8px"}}>{p.label}</span><span>{new Date(p.createdAt).toLocaleDateString()}</span><span>/blog/{p.slug}</span></div></div><div style={{display:"flex",gap:"8px",flexShrink:0}}><Btn onClick={()=>openEdit(p)} variant="ghost" style={{padding:"7px 14px",fontSize:"0.68rem"}}>✏️ Edit</Btn><Btn onClick={()=>handleDelete(p)} disabled={deleting===p.slug} variant="danger" style={{padding:"7px 14px",fontSize:"0.68rem"}}>{deleting===p.slug?"…":"Delete"}</Btn></div></Card>)}</div>}
+    {loading?<p style={{color:C.textSec}}>Loading posts…</p>:posts.length===0?<Card style={{textAlign:"center",padding:"48px"}}><p style={{color:C.textMut,marginBottom:"16px"}}>No posts yet.</p><Btn onClick={openNew}>Write Your First Post</Btn></Card>:<div style={{display:"flex",flexDirection:"column",gap:"8px"}}>{posts.map(p=><Card key={p.slug} style={{padding:"16px 18px",display:"flex",alignItems:"center",justifyContent:"space-between",gap:"16px",flexWrap:"wrap",borderColor:p.published===false?"rgba(192,0,26,0.4)":C.border,background:p.published===false?"rgba(192,0,26,0.04)":C.surface}}><div style={{flex:1,minWidth:0}}><p style={{color:C.textPri,fontWeight:500,marginBottom:"4px",whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{p.title}</p><div style={{display:"flex",gap:"12px",fontSize:"0.7rem",color:C.textMut,flexWrap:"wrap"}}><span style={{background:"rgba(124,58,237,0.2)",color:C.purple,padding:"1px 8px"}}>{p.label}</span><span>{new Date(p.createdAt).toLocaleDateString()}</span><span>/blog/{p.slug}</span>{p.published===false&&<span style={{background:"rgba(192,0,26,0.15)",color:C.red,padding:"1px 8px",fontSize:"0.6rem"}}>● HIDDEN</span>}</div></div><div style={{display:"flex",gap:"8px",flexShrink:0}}><Btn onClick={()=>handleTogglePost(p)} variant={p.published===false?"success":"danger"} style={{padding:"7px 14px",fontSize:"0.68rem"}}>{p.published===false?"⬆ Publish":"⬇ Unpublish"}</Btn><Btn onClick={()=>openEdit(p)} variant="ghost" style={{padding:"7px 14px",fontSize:"0.68rem"}}>✏️ Edit</Btn><Btn onClick={()=>handleDelete(p)} disabled={deleting===p.slug} variant="danger" style={{padding:"7px 14px",fontSize:"0.68rem"}}>{deleting===p.slug?"…":"Delete"}</Btn></div></Card>)}</div>}
   </div>;
 }
 
@@ -537,7 +538,7 @@ function LivePreviewTab(){
   </div>;
 }
 
-interface CollectionRecord{id:string;slug:string;title:string;category:string;description:string;metaDescription:string|null;thumbnail:string|null;_count:{images:number};}
+interface CollectionRecord{id:string;slug:string;title:string;category:string;description:string;metaDescription:string|null;thumbnail:string|null;isPublished:boolean;_count:{images:number};}
 
 function CollectionsTab({password}:{password:string}){
   const[collections,setCollections]=useState<CollectionRecord[]>([]);
@@ -590,6 +591,17 @@ function CollectionsTab({password}:{password:string}){
     setMsg(null);setDescMode("html");
     setThumbFile(null);setThumbPreview("");setThumbMsg(null);
     if(thumbInputRef.current)thumbInputRef.current.value="";
+  }
+
+  const[toggling,setToggling]=useState(false);
+
+  async function handleTogglePublish(){
+    if(!selected)return;setToggling(true);setMsg(null);
+    try{const res=await fetch("/api/hw-admin/collections",{method:"PATCH",headers:{"Content-Type":"application/json","x-admin-password":password},body:JSON.stringify({slug:selected.slug,isPublished:!selected.isPublished})});
+      const j=await res.json();
+      if(res.ok){const newVal=!selected.isPublished;setMsg({type:"ok",text:newVal?`✓ "${selected.title}" is now LIVE`:`✓ "${selected.title}" UNPUBLISHED — hidden from site & sitemap`});setCollections(prev=>prev.map(c=>c.slug===selected.slug?{...c,isPublished:newVal}:c));setSelected(s=>s?{...s,isPublished:newVal}:null);}
+      else setMsg({type:"err",text:j.error??"Toggle failed."});}
+    catch{setMsg({type:"err",text:"Network error."});}setToggling(false);
   }
 
   async function handleSave(){
@@ -666,6 +678,7 @@ function CollectionsTab({password}:{password:string}){
                 <p style={{color:active?C.textPri:C.textSec,fontSize:"0.78rem",fontWeight:active?600:400,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{c.title}</p>
                 <p style={{color:C.textMut,fontSize:"0.6rem",marginTop:"2px"}}>{c._count.images} images · {c.category}</p>
                 <div style={{display:"flex",gap:"6px",marginTop:"2px",flexWrap:"wrap"}}>
+                  {!c.isPublished&&<p style={{color:C.red,fontSize:"0.55rem",margin:0,background:"rgba(192,0,26,0.15)",padding:"1px 5px"}}>● HIDDEN</p>}
                   {hasThumb&&<p style={{color:C.gold,fontSize:"0.55rem",margin:0}}>🖼 thumb</p>}
                   {hasContent&&<p style={{color:hasHtml?C.purple:C.green,fontSize:"0.55rem",margin:0}}>{hasHtml?"● HTML":"● desc"}</p>}
                 </div>
@@ -689,7 +702,12 @@ function CollectionsTab({password}:{password:string}){
               <a href={`https://hauntedwallpapers.com/shop/${selected.slug}`} target="_blank" rel="noopener noreferrer" style={{color:C.textMut,fontSize:"0.65rem",textDecoration:"none"}}>↗ View Live</a>
             </div>
           </div>
-          <Btn onClick={handleSave} disabled={saving}>{saving?"Saving…":"💾 Save Description"}</Btn>
+          <div style={{display:"flex",gap:"8px",flexWrap:"wrap"}}>
+            <Btn onClick={handleTogglePublish} disabled={toggling} variant={selected.isPublished?"danger":"success"} style={{minWidth:"140px"}}>
+              {toggling?"…":selected.isPublished?"⬇ Unpublish":"⬆ Publish"}
+            </Btn>
+            <Btn onClick={handleSave} disabled={saving}>{saving?"Saving…":"💾 Save Description"}</Btn>
+          </div>
         </div>
         <Msg msg={msg}/>
 

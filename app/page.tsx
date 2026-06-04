@@ -56,28 +56,16 @@ const WORLDS = [
   { key: "black",  label: "Shadow",  sub: "AMOLED void",     dot: "#1a1a1a", glow: "rgba(100,100,100,0.3)", border: "rgba(255,255,255,0.15)" },
 ] as const;
 
-const WIDE_SLUGS = new Set(["the-defiant-manifesto", "defiant-manifesto"]);
 
 export default async function Home() {
   let wotd:            Awaited<ReturnType<typeof getWallpaperOfTheDay>> = null;
   let totalImages      = 0;
-  let obsessions:      Array<{ id: string; slug: string; title: string; thumbnail: string; tag: string | null; icon: string | null; bgClass: string | null; _count: { images: number } }> = [];
   let newThisWeek:     Array<{ id: string; slug: string; title: string; r2Key: string; deviceType: string | null; tags: string[] }> = [];
   let premiumThisWeek: Array<{ id: string; slug: string; title: string; r2Key: string; deviceType: string | null; tags: string[]; updatedAt: Date | null }> = [];
 
   try {
-    [[wotd, totalImages], obsessions, newThisWeek, premiumThisWeek] = await Promise.all([
+    [[wotd, totalImages], newThisWeek, premiumThisWeek] = await Promise.all([
       Promise.all([getCachedWotd(), db.image.count()]),
-      db.collection.findMany({
-        orderBy: [{ featured: "desc" }, { createdAt: "asc" }],
-        where: { isAdult: false },
-        take: 10,
-        select: {
-          id: true, slug: true, title: true, thumbnail: true,
-          tag: true, icon: true, bgClass: true,
-          _count: { select: { images: { where: { deviceType: "IPHONE" } } } },
-        },
-      }),
       db.image.findMany({
         where: {
           isAdult: false,
@@ -302,59 +290,7 @@ export default async function Home() {
           );
         })()}
 
-        {/* ══ COLLECTIONS ════════════════════════════════════════════════ */}
-        {obsessions.length > 0 && (
-          <section className="hp-cols">
-            <div className="hp-section-head" style={{ marginBottom:"clamp(16px,2.5vw,24px)" }}>
-              <div>
-                <p className="hp-section-eye" style={{ color:"#c9a84c" }}>Curated Sets</p>
-                <h2 className="hp-section-title">Collections</h2>
-              </div>
-              <Link prefetch={false} href="/obsessions" className="hp-see-all">View all →</Link>
-            </div>
-            <div className="hp-cols-grid">
-              {obsessions.filter((obs) => WIDE_SLUGS.has(obs.slug)).map((obs) => (
-                <Link
-                  key={obs.id} prefetch={false}
-                  href={`/obsessions/${encodeURIComponent(obs.slug)}`}
-                  className="hp-col-card"
-                >
-                  {obs.thumbnail && (
-                    <div className="hp-col-thumb hp-col-thumb--wide">
-                      <Image
-                        src={getPublicUrl(obs.thumbnail)} alt={obs.title}
-                        fill unoptimized loading="lazy"
-                        sizes="(max-width:767px) 42vw, 130px"
-                        style={{ objectFit:"cover", objectPosition:"center top" }}
-                      />
-                    </div>
-                  )}
-                  <div className="hp-col-info">
-                    {obs.tag && <span className="hp-col-cat">{obs.tag}</span>}
-                    <span className="hp-col-title">{obs.title}</span>
-                    {obs._count.images > 0 && (
-                      <span className="hp-col-count">{obs._count.images} wallpapers</span>
-                    )}
-                  </div>
-                </Link>
-              ))}
-            </div>
-          </section>
-        )}
-
       </div>
-
-      <script type="application/ld+json" dangerouslySetInnerHTML={{
-        __html: JSON.stringify({
-          "@context":"https://schema.org","@type":"ItemList",
-          name:"Haunted Wallpapers Collections",
-          url:SITE_URL, numberOfItems:obsessions.length,
-          itemListElement:obsessions.map((o,i) => ({
-            "@type":"ListItem",position:i+1,
-            url:`${SITE_URL}/obsessions/${o.slug}`,name:o.title,
-          })),
-        })
-      }} />
     </>
   );
 }

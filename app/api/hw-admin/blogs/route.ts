@@ -68,6 +68,17 @@ export async function PATCH(req: NextRequest) {
   try {
     const body = await req.json();
 
+    // ── Publish/unpublish toggle: { slug, published } ──
+    if (body.slug && "published" in body && !body.content && !body.updates && !("featuredImage" in body)) {
+      const { slug, published } = body;
+      const updated = await prisma.blogPost.update({
+        where: { slug },
+        data: { published: Boolean(published) },
+        select: { slug: true, published: true },
+      });
+      return NextResponse.json({ ok: true, slug: updated.slug, published: updated.published });
+    }
+
     // ── Full content edit: { slug, title, content, label, featuredImage } ──
     if (body.slug && body.content && !body.updates) {
       const { slug, title, content, label, featuredImage } = body;
