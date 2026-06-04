@@ -401,30 +401,6 @@ export default async function CollectionPage({ params }: PageProps) {
         </section>
       )}
 
-      <style>{`
-        .coll-img-card:hover {
-          border-color: rgba(192,0,26,0.5) !important;
-          transform: translateY(-3px);
-        }
-        .coll-card-overlay {
-          position: absolute;
-          inset: 0;
-          background: linear-gradient(to top, rgba(5,5,14,0.92) 0%, transparent 55%);
-          display: flex;
-          align-items: flex-end;
-          padding: 12px;
-          opacity: 0;
-          transition: opacity 0.25s;
-        }
-        .coll-img-card:hover .coll-card-overlay { opacity: 1; }
-        [data-theme="fog"] .coll-img-card {
-          background: #f0ebe0 !important;
-          border-color: rgba(0,0,0,0.07) !important;
-        }
-        [data-theme="fog"] .coll-img-card:hover {
-          border-color: rgba(192,0,26,0.35) !important;
-        }
-      `}</style>
     </main>
   );
 }

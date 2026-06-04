@@ -265,35 +265,6 @@ export default async function CollectionImagePage({ params }: PageProps) {
         </div>
       </section>
 
-      <style>{`
-        .image-detail-grid { display: flex; flex-direction: column; gap: 32px; align-items: flex-start; }
-        @media (min-width: 768px) {
-          .image-detail-grid { flex-direction: row; align-items: flex-start; gap: 48px; }
-          .shop-detail-image-wrap { flex: 0 0 380px; position: sticky; top: 100px; z-index: 1; align-self: flex-start; }
-          .image-detail-grid > *:last-child { flex: 1; min-width: 0; }
-        }
-        @media (min-width: 1024px) { .shop-detail-image-wrap { flex: 0 0 420px; } }
-        .hw-glow-btn-wrap--download { animation: hwDlGlowPulse 2.8s ease-in-out infinite; border-radius: 2px; }
-        @keyframes hwDlGlowPulse {
-          0%, 100% { box-shadow: 0 0 12px rgba(192,0,26,0.35), 0 0 28px rgba(192,0,26,0.15); }
-          50%       { box-shadow: 0 0 22px rgba(192,0,26,0.65), 0 0 50px rgba(192,0,26,0.28); }
-        }
-        .social-share { border: 1px solid rgba(192,0,26,0.25); border-radius: 6px; padding: 12px 14px; background: rgba(192,0,26,0.04); }
-        .social-share-label { font-family: var(--font-space, monospace); font-size: 0.55rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px; }
-        .social-share-btns { display: flex; flex-wrap: wrap; gap: 8px; }
-        .social-btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: 4px; font-size: 0.72rem; font-family: var(--font-space, monospace); letter-spacing: 0.06em; text-decoration: none; border: 1px solid var(--border-dim, rgba(255,255,255,0.1)); color: var(--text-primary); background: transparent; cursor: pointer; transition: border-color 0.2s, background 0.2s; white-space: nowrap; }
-        .social-btn svg { width: 14px; height: 14px; fill: currentColor; flex-shrink: 0; }
-        .social-btn:hover { border-color: rgba(255,255,255,0.25); background: rgba(255,255,255,0.04); }
-        .social-btn--native { border-color: rgba(192,0,26,0.4); color: #f0e8e8; }
-        .social-btn--pinterest { color: #e60023; border-color: rgba(230,0,35,0.3); }
-        .social-btn--x { color: var(--text-primary); }
-        .social-btn--whatsapp { color: #25d366; border-color: rgba(37,211,102,0.3); }
-        .setup-guide-link { font-family: var(--font-space), monospace; font-size: 0.65rem; letter-spacing: 0.1em; color: #9a90a9; text-decoration: underline; text-underline-offset: 2px; transition: color 0.2s ease; text-align: center; display: inline-block; }
-        .setup-guide-link:hover { color: #f0ecff; }
-        .detail-fav-row { display: flex; align-items: center; gap: 10px; }
-        .detail-fav-label { font-family: var(--font-space), monospace; font-size: 0.6rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-muted, #6b6480); }
-      `}</style>
-
       <PageTracker item={{ slug: image.slug, title: image.title, thumb: thumbUrl, href: `/shop/${slug}/${imageSlug}` }} />
       <RecentlyViewed currentSlug={image.slug} />
       <RelatedWallpapers images={related} />
