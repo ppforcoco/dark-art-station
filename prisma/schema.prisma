@@ -35,6 +35,9 @@ model Collection {
   /// Set to true for collections with mature/16+ content.
   isAdult     Boolean  @default(false)
 
+  /// Set to false to hide from all public pages and sitemap without deleting.
+  isPublished Boolean  @default(true)
+
   images      Image[]
   downloads   Download[]
 

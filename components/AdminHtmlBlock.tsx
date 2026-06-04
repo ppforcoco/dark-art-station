@@ -6,8 +6,15 @@ import { useEffect, useRef } from "react";
  * Replaced iframe (which caused "allow-scripts + allow-same-origin" browser warnings)
  * with a simple div. Admin HTML is already sanitized server-side.
  */
+function stripExternalStylesheets(html: string): string {
+  // Remove any <link rel="stylesheet"> tags (e.g. Google Fonts injected via admin)
+  return html.replace(/<link[^>]+rel=["']stylesheet["'][^>]*\/?>/gi, "")
+             .replace(/<link[^>]+href=["'][^"']*fonts\.googleapis[^"']*["'][^>]*\/?>/gi, "");
+}
+
 export default function AdminHtmlBlock({ html }: { html: string }) {
   const ref = useRef<HTMLDivElement>(null);
+  const cleanHtml = stripExternalStylesheets(html);
 
   useEffect(() => {
     // Apply dark theme styles to any nested elements
@@ -23,7 +30,7 @@ export default function AdminHtmlBlock({ html }: { html: string }) {
   return (
     <div
       ref={ref}
-      dangerouslySetInnerHTML={{ __html: html }}
+      dangerouslySetInnerHTML={{ __html: cleanHtml }}
       style={{
         width: "100%",
         marginBottom: "32px",
