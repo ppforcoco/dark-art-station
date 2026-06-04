@@ -70,30 +70,6 @@ export default function Footer(): JSX.Element {
           </button>
         </div>
       </div>
-
-      <style>{`
-        /* ── contrast fixes: all footer links/text pass WCAG AA 4.5:1 on dark bg ── */
-        .footer-col a         { color: #b8b0d0 !important; }
-        .footer-col a:hover   { color: #e0d8f0 !important; }
-        .footer-col-title     { color: #d0c8e8 !important; }
-        .footer-brand-desc    { color: #b0a8c8 !important; }
-        .footer-copy          { color: #b0a8c8 !important; }
-        .footer-ai-disclosure {
-          font-family: var(--font-space), monospace;
-          font-size: 0.52rem;
-          letter-spacing: 0.08em;
-          color: #9890b0;
-          line-height: 1.5;
-          display: block;
-          margin-top: 3px;
-        }
-        /* fog theme */
-        [data-theme="fog"] .footer-col a       { color: #3a3450 !important; }
-        [data-theme="fog"] .footer-col a:hover { color: #1a1230 !important; }
-        [data-theme="fog"] .footer-col-title   { color: #2a2440 !important; }
-        [data-theme="fog"] .footer-brand-desc  { color: #3a3450 !important; }
-        [data-theme="fog"] .footer-copy        { color: #3a3450 !important; }
-      `}</style>
     </footer>
   );
 }

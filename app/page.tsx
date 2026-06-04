@@ -115,18 +115,6 @@ export default async function Home() {
 
   return (
     <>
-      {/*
-        ── CRITICAL INLINE CSS: painted before ANY external stylesheet.
-           Gives the browser a dark background + hero shell to show
-           at 0ms — kills the white/black flash entirely.
-      */}
-      <style dangerouslySetInnerHTML={{ __html: `
-        body{background:#000;margin:0}
-        .hp{background:#070510}
-        .hp-hero{background:#000;min-height:50vw}
-        @media(min-width:768px){.hp-hero{min-height:420px}}
-        .hp-hero-img-wrap{background:#000}
-      ` }} />
 
       <div className="hp">
 

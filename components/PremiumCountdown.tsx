@@ -134,13 +134,6 @@ export default function PremiumCountdown({ isLocked, updatedAt }: PremiumCountdo
       <span style={{ color: accent, fontWeight: 600 }}>
         {h} HRS · {m} MIN · {s} SEC
       </span>
-
-      <style>{`
-        @keyframes premCountPulse {
-          0%, 100% { opacity: 1; }
-          50%       { opacity: 0.3; }
-        }
-      `}</style>
     </div>
   );
 }

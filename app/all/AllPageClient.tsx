@@ -268,18 +268,6 @@ export default function AllPageClient({
 
       {/* Sentinel — fires only after user scrolls past description */}
       <div ref={sentinelRef} style={{ height: "1px" }} />
-
-      <style>{`
-        @media (min-width: 640px)  { .hw-all-mobile-grid  { grid-template-columns: repeat(4, 1fr) !important; } }
-        @media (min-width: 1024px) { .hw-all-mobile-grid  { grid-template-columns: repeat(6, 1fr) !important; } }
-        @media (min-width: 768px)  { .hw-all-desktop-grid { grid-template-columns: repeat(3, 1fr) !important; } }
-        .hw-wall-card:hover .hw-wall-card-img { transform: scale(1.05); }
-        .hw-wall-card:hover { border-color: rgba(255,255,255,0.18) !important; box-shadow: 0 8px 32px rgba(0,0,0,0.6); }
-        @keyframes hwDotPulse {
-          0%, 100% { opacity: 0.2; transform: scale(0.8); }
-          50%       { opacity: 1;   transform: scale(1.2); box-shadow: 0 0 8px rgba(192,0,26,0.6); }
-        }
-      `}</style>
     </main>
   );
 }

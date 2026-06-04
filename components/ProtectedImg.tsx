@@ -70,12 +70,6 @@ export default function ProtectedImg({
           textAlign: "center",
         }}>
           ↓ Use the <span style={{ color: "#c0001a", fontWeight: 700 }}>Download button</span> below
-          <style>{`
-            @keyframes hwToastIn {
-              from { opacity: 0; transform: translateX(-50%) translateY(6px); }
-              to   { opacity: 1; transform: translateX(-50%) translateY(0); }
-            }
-          `}</style>
         </div>
       )}
     </div>

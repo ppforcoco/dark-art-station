@@ -84,12 +84,6 @@ export default function DeviceImageCard({
   if (isAdult && !revealed) {
     return (
       <>
-        <style>{`
-          @keyframes adultPulse {
-            0%, 100% { opacity: 0.7; transform: scale(1);    }
-            50%       { opacity: 1;   transform: scale(1.08); }
-          }
-        `}</style>
         <div
           className="dic-wrap"
           style={{
@@ -217,35 +211,6 @@ export default function DeviceImageCard({
   // ── Normal card ───────────────────────────────────────────────────────────
   return (
     <>
-      <style>{`
-        .dic-preview-btn {
-          position: absolute;
-          top: 8px; left: 8px;
-          z-index: 10;
-          padding: 5px 10px;
-          background: rgba(0,0,0,0.72);
-          border: 1px solid rgba(255,255,255,0.18);
-          border-radius: 4px;
-          color: #fff;
-          font-family: var(--font-space), monospace;
-          font-size: 0.48rem;
-          letter-spacing: 0.14em;
-          text-transform: uppercase;
-          cursor: pointer;
-          opacity: 0;
-          transform: translateY(-4px);
-          transition: opacity 0.22s ease, transform 0.22s ease, background 0.2s;
-          backdrop-filter: blur(4px);
-        }
-        .dic-preview-btn:hover {
-          background: rgba(160,24,24,0.75);
-          border-color: rgba(255,255,255,0.3);
-        }
-        .dic-wrap:hover .dic-preview-btn {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      `}</style>
 
       {previewOpen && (
         <LockScreenPreviewModal

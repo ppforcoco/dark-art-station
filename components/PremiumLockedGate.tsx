@@ -210,21 +210,6 @@ export default function PremiumLockedGate({ tags, devicePath = "iphone", childre
       >
         ← Browse Free Wallpapers
       </Link>
-
-      <style>{`
-        @keyframes vaultRune {
-          0%, 100% { opacity: 0.25; }
-          50% { opacity: 0.6; }
-        }
-        @keyframes vaultFloat {
-          0%, 100% { transform: translateY(0); }
-          50% { transform: translateY(-8px); }
-        }
-        @keyframes premCountPulse {
-          0%, 100% { opacity: 1; }
-          50% { opacity: 0.3; }
-        }
-      `}</style>
     </main>
   );
 }
