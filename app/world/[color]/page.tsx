@@ -82,7 +82,6 @@ const WORLDS = {
       faqs: [
         { q: "Why do red wallpapers look different on my screen vs the preview?", a: "Red is the most colour-profile-sensitive tone on phone displays. If your display is set to a warm or sRGB-clamped profile, deep crimsons may shift toward orange. Switch to the widest colour gamut setting your phone supports — on iPhone this is P3, on Samsung it is Vivid — for the most accurate rendering." },
         { q: "Are these suitable for lock screens or just home screens?", a: "Both. The high-contrast dark backgrounds work particularly well on lock screens where the always-on display or lock screen clock needs to remain readable. The dark areas ensure text legibility without needing a separate overlay." },
-        { q: "Do you have matching red desktop wallpapers?", a: "The Crimson World currently focuses on portrait wallpapers for iPhone and Android. For desktop and PC wallpapers in a dark red aesthetic, browse the PC section and filter by the crimson tag." },
         { q: "How is the Crimson World different from just searching 'red'?", a: "The Crimson World is curated — not every image with a hint of red qualifies. These are wallpapers where red is the dominant emotional and visual tone, not an accent. Think of it as a strict editorial selection rather than a keyword search." },
       ],
     },
@@ -148,7 +147,7 @@ const WORLDS = {
       ],
       themes: [
         { name: "Ice & Arctic", desc: "Frozen wastelands, glacial formations, blizzard aesthetics. Pale blue light on black. The cold rendered visually rather than emotionally." },
-        { name: "Deep Ocean", desc: "Abyssal trench imagery, bioluminescent deep-sea life, the crushing dark blue of extreme depths. Horror through scale rather than threat." },
+        { name: "Deep Ocean", desc: "Deep-sea trench imagery, bioluminescent deep-sea life, the crushing dark blue of extreme depths. Horror through scale rather than threat." },
         { name: "Neon Blue Electric", desc: "Electric blue against black urban environments. High voltage aesthetics, lightning, plasma. Blue as a dangerous energy rather than a calming one." },
         { name: "Cosmic Blue", desc: "Nebulae, star fields, deep space rendered in blue. The universe at its largest and most indifferent. Wallpapers that make your phone feel small." },
       ],
@@ -156,7 +155,6 @@ const WORLDS = {
       faqs: [
         { q: "Does True Tone affect how these blue wallpapers look?", a: "Yes, significantly. True Tone on iPhone and similar features on Android devices adjust display colour temperature based on ambient light — which can push dark blues toward teal in warm environments. For accurate rendering, switch True Tone off while using these as wallpapers, or accept that the warmth shift will occur." },
         { q: "What is the difference between the Deep World and just browsing blue wallpapers?", a: "Curation. The Deep World only includes images where dark blue is the primary emotional and visual tone — not images with a blue accent or blue sky. Think of the difference between a blue-tinted image and an image that is fundamentally, inescapably blue." },
-        { q: "Are there desktop blue wallpapers too?", a: "Yes. Browse the PC section and filter by blue or dark blue tags for landscape-format desktop wallpapers in the same aesthetic. The Deep World itself focuses on portrait format for mobile." },
         { q: "Why do my blue wallpapers look slightly purple sometimes?", a: "AMOLED displays boost blue channel saturation to compensate for the natural dimming of blue OLEDs over time. This can push deep blues toward indigo or violet, particularly on older Samsung devices. Switching from Vivid to Natural display mode will correct this." },
       ],
     },
@@ -194,7 +192,6 @@ const WORLDS = {
         { q: "How much battery do black AMOLED wallpapers actually save?", a: "The savings are real but context-dependent. On a fully black screen with nothing displayed, an AMOLED display uses approximately 60–70% less power than displaying full white at the same brightness. A wallpaper with large true-black areas will reduce display power draw proportionally. The effect is most noticeable at high brightness settings." },
         { q: "What is the difference between black and dark wallpapers?", a: "Black wallpapers use true #000000 or near-true-black as the dominant background — these are the ones that benefit from AMOLED pixel shutdown. Dark wallpapers may use deep navy, charcoal, or dark grey which still light the pixels at reduced intensity. The Shadow World focuses on true black, not just dark." },
         { q: "Will these wallpapers show burn-in on AMOLED screens?", a: "Static wallpapers carry some theoretical burn-in risk on any AMOLED screen over extremely long exposure periods, but modern AMOLED panels use pixel shifting and refresh patterns to mitigate this. Using true-black wallpapers actually reduces this risk compared to static bright-colour wallpapers, since pixels displaying black are off rather than running at constant brightness." },
-        { q: "Do you have black wallpapers for PC and desktop?", a: "Yes. The PC section includes desktop-format wallpapers with dark and true-black aesthetics. Filter by the amoled or black tag in the PC gallery to find landscape format versions." },
       ],
     },
   },

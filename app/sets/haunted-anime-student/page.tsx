@@ -582,14 +582,14 @@ export default function CursedStudentPage() {
         </section>
 
         {/* ── DOWNLOAD ALL CTA ── */}
-        <section id="download-kit"<section
+        <section id="download-kit"
           style={{
             maxWidth: "1100px",
             margin: "clamp(48px,7vw,80px) auto clamp(64px,10vw,120px)",
             padding: "0 clamp(20px,5vw,60px)",
           }}
         >
-          <div id="download-kit" className="cs-cta-block">
+          <div className="cs-cta-block">
             <div className="cs-cta-block__glow" aria-hidden="true" />
             <span className="cs-cta-block__eyebrow">Free. No account. No watermarks.</span>
             <h2 className="cs-cta-block__title">Download the Complete Kit</h2>
