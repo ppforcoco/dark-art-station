@@ -1391,28 +1391,7 @@ export default function ToolsPage() {
   return (
     <main className="tools-page">
 
-      {/* ── SEO content block — gives Google readable text about these tools ── */}
-      <section className="tools-seo-section">
-        <div className="tools-seo-inner">
-          <h1 className="tools-seo-title">Free Wallpaper Tools</h1>
-          <p className="tools-seo-intro">
-            Browser-based tools for resizing, darkening, and customising wallpapers.
-            Everything runs locally in your browser — no files are uploaded to any server,
-            no account is required, and all processing is instant.
-          </p>
-          <div className="tools-seo-grid">
-            {TOOL_DESCRIPTIONS.map(tool => (
-              <div key={tool.id} className="tools-seo-card">
-                <h2 className="tools-seo-card-title">{tool.name}</h2>
-                <p className="tools-seo-card-desc">{tool.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       <div className="tools-hero">
-        <span className="tools-eyebrow">Free Utilities</span>
         <h1 className="tools-title">Wallpaper<br /><em>Tools</em></h1>
         <p className="tools-sub">Browser-based tools for customising wallpapers. Nothing is uploaded — everything runs on your device.</p>
       </div>
