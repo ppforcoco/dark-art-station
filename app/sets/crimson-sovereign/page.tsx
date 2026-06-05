@@ -325,6 +325,7 @@ export default function CrimsonSovereignPage() {
 
         {/* ── QUICK DOWNLOAD — top of page ── */}
         <section
+          id="download-kit"
           style={{
             maxWidth: "1100px",
             margin: "clamp(32px,5vw,48px) auto 0",
@@ -556,38 +557,8 @@ export default function CrimsonSovereignPage() {
           </div>
         </section>
 
-        {/* ── DOWNLOAD ALL CTA ── */}
-        <section id="download-kit"
-          style={{
-            maxWidth: "1100px",
-            margin: "clamp(48px,7vw,80px) auto clamp(64px,10vw,120px)",
-            padding: "0 clamp(20px,5vw,60px)",
-          }}
-        >
-          <div className="cs-cta-block">
-            <div className="cs-cta-block__glow" aria-hidden="true" />
-            <span className="cs-cta-block__eyebrow">Free. No account. No watermarks.</span>
-            <h2 className="cs-cta-block__title">Download the Complete Kit</h2>
-            <p className="cs-cta-block__sub">
-              All 8 wallpapers. Full 4K resolution. Every device covered.
-            </p>
-            <div className="cs-cta-block__btns">
-              {WALLPAPERS.map((w) => (
-                <a
-                  key={w.id}
-                  href={w.download}
-                  download={w.filename}
-                  className="cs-cta-btn"
-                >
-                  {w.label}
-                </a>
-              ))}
-            </div>
-          </div>
-        </section>
-
         {/* ── EXPLORE MORE ── */}
-        <section style={{ maxWidth: "1100px", margin: "0 auto", padding: "0 clamp(20px,5vw,60px)" }}>
+        <section style={{ maxWidth: "1100px", margin: "clamp(64px,8vw,96px) auto clamp(64px,10vw,120px)", padding: "0 clamp(20px,5vw,60px)" }}>
           <div className="cs-section-head">
             <span className="cs-section-eyebrow">Keep Exploring</span>
             <h2 className="cs-section-title">Explore More Matching Sets</h2>
