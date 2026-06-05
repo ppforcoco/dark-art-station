@@ -1,6 +1,7 @@
 // app/sets/page.tsx
 import type { Metadata } from "next";
 import Link from "next/link";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 export const dynamic = "force-dynamic";
 
@@ -135,6 +136,11 @@ export default function SetsPage() {
           padding: "clamp(48px,8vw,96px) clamp(20px,5vw,60px) clamp(32px,5vw,56px)",
         }}
       >
+        <Breadcrumbs items={[
+          { label: "Home", href: "/" },
+          { label: "Matching Sets" },
+        ]} />
+
         <span
           style={{
             display: "block",

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 // AdSlot removed — disabled pending AdSense approval
 import { getPageContent } from "@/lib/db";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 export const dynamic = "force-dynamic";
 
@@ -16,6 +17,11 @@ export default async function AboutPage() {
   return (
     <main className="static-page">
       <div className="static-page-inner">
+
+        <Breadcrumbs items={[
+          { label: "Home", href: "/" },
+          { label: "About" },
+        ]} />
 
         <header className="static-page-header">
           <h1 className="static-page-title">Born in the Dark,<br /><em>Built for the Dark</em></h1>

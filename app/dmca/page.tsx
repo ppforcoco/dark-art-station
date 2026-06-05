@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 export const dynamic = "force-dynamic";
 
@@ -18,6 +19,11 @@ export default function DmcaPage() {
   return (
     <main className="static-page">
       <div className="static-page-inner">
+
+        <Breadcrumbs items={[
+          { label: "Home", href: "/" },
+          { label: "DMCA & Copyright" },
+        ]} />
 
         <header className="static-page-header">
           <h1 className="static-page-title">DMCA &amp;<br /><em>Copyright Policy</em></h1>

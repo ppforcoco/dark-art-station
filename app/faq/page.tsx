@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 // AdSlot removed — disabled pending AdSense approval
 import { getPageContent } from "@/lib/db";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 export const dynamic = "force-dynamic";
 
@@ -189,6 +190,12 @@ export default async function FaqPage() {
         }}
       />
       <div className="static-page-inner">
+
+        <Breadcrumbs items={[
+          { label: "Home", href: "/" },
+          { label: "FAQ" },
+        ]} />
+
         <header className="static-page-header">
           <h1 className="static-page-title">
             Frequently<br /><em>Asked Questions</em>

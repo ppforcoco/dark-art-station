@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 export const dynamic = "force-dynamic";
 
@@ -17,6 +18,11 @@ export default function LicensingPage() {
   return (
     <main className="static-page">
       <div className="static-page-inner">
+
+        <Breadcrumbs items={[
+          { label: "Home", href: "/" },
+          { label: "Licensing & Usage" },
+        ]} />
 
         <header className="static-page-header">
           <h1 className="static-page-title">Licensing &amp;<br /><em>Terms of Use</em></h1>

@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import { db } from "@/lib/db";
 import { getPublicUrl } from "@/lib/r2";
 import AllPageClient from "./AllPageClient";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 export const dynamic = "force-dynamic";
 
@@ -73,11 +74,17 @@ export default async function AllPage() {
   });
 
   return (
-    <AllPageClient
-      initialMobile={mobileRaw.map(toItem)}
-      initialDesktop={desktopRaw.map(toItem)}
-      totalMobile={totalMobile}
-      totalDesktop={totalDesktop}
-    />
+    <>
+      <Breadcrumbs items={[
+        { label: "Home", href: "/" },
+        { label: "All Wallpapers" },
+      ]} />
+      <AllPageClient
+        initialMobile={mobileRaw.map(toItem)}
+        initialDesktop={desktopRaw.map(toItem)}
+        totalMobile={totalMobile}
+        totalDesktop={totalDesktop}
+      />
+    </>
   );
 }

@@ -5,6 +5,7 @@ import { getPublicUrl } from "@/lib/r2";
 import MoodClient from "./MoodClient";
 import { MOODS } from "./moods";
 import type { MoodId, MoodImage } from "./moods";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 export const dynamic = "force-dynamic";
 
@@ -58,5 +59,13 @@ export default async function MoodPage() {
     results.map(({ moodId, images }) => [moodId, images])
   ) as Record<MoodId, MoodImage[]>;
 
-  return <MoodClient moods={MOODS} imagesByMood={imagesByMood} />;
+  return (
+    <>
+      <Breadcrumbs items={[
+        { label: "Home", href: "/" },
+        { label: "Mood" },
+      ]} />
+      <MoodClient moods={MOODS} imagesByMood={imagesByMood} />
+    </>
+  );
 }

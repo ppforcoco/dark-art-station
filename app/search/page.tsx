@@ -4,6 +4,7 @@ import Image from "next/image";
 import { searchWallpapers, type SearchResultItem } from "@/lib/db";
 import Pagination from "@/components/Pagination";
 import SearchPageClient from "@/components/SearchPageClient";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 export const dynamic = "force-dynamic";
 
@@ -164,6 +165,11 @@ export default async function SearchPage({
 
   return (
     <main className="search-page">
+
+      <Breadcrumbs items={[
+        { label: "Home", href: "/" },
+        { label: "Search" },
+      ]} />
 
       {/* Big live search bar */}
       <SearchPageClient initialQuery={query} />

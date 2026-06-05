@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 export const dynamic = "force-dynamic";
 
@@ -16,6 +17,12 @@ export default function PrivacyPage() {
   return (
     <main className="static-page">
       <div className="static-page-inner">
+
+        <Breadcrumbs items={[
+          { label: "Home", href: "/" },
+          { label: "Privacy Policy" },
+        ]} />
+
         <header className="static-page-header">
           <h1 className="static-page-title">Privacy Policy</h1>
           <p className="static-page-meta">Last updated: {LAST_UPDATED}</p>

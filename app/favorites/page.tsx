@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { getFavorites, toggleFavorite, type FavoriteItem } from "@/components/FavoriteButton";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 export const dynamic = "force-dynamic";
 
@@ -38,6 +39,11 @@ export default function FavoritesPage() {
 
   return (
     <main className="fav-page">
+
+      <Breadcrumbs items={[
+        { label: "Home", href: "/" },
+        { label: "Saved Wallpapers" },
+      ]} />
 
       {/* Header */}
       <div className="fav-header">
