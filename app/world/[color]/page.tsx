@@ -64,16 +64,16 @@ const WORLDS = {
     textMuted:  "#ffb3b3",
     tags:       ["red", "crimson", "scarlet", "dark red"],
     titleWords: ["red", "crimson", "scarlet"],
-    desc:       "Blood and fire. The darkest reds the dark has to offer.",
+    desc:       "Fire and darkness. The deepest reds the dark has to offer.",
     eyebrow:    "BLEED INTO CRIMSON",
     content: {
       intro: [
-        "Red is the most visceral colour in dark art. It carries blood, fire, rage, and warning all at once — and when you strip away the brightness and push it into deep crimson, something else emerges. A controlled violence. A heat that feels cold. That is the Crimson World.",
+        "Red is the most visceral colour in dark art. It carries fire, rage, and warning all at once — and when you strip away the brightness and push it into deep crimson, something else emerges. A controlled violence. A heat that feels cold. That is the Crimson World.",
         "Every image here exists at the intersection of intensity and restraint. Dark red tones against near-black backgrounds create wallpapers that feel dangerous without being loud. Scarlet eyes in the dark. Burning embers in an empty space. A red that has been burning so long it has forgotten why.",
         "The Crimson World is for those who want a phone screen that commands attention without performing it. Power, not decoration. Danger, not spectacle."
       ],
       themes: [
-        { name: "Blood Horror", desc: "Crimson splatter aesthetics, gothic figures, dark medical imagery. High contrast, deeply unsettling. Not for the faint of heart." },
+        { name: "Dark Horror", desc: "Crimson splatter aesthetics, gothic figures, dark medical imagery. High contrast, deeply unsettling. Not for the faint of heart." },
         { name: "Fire & Ember", desc: "Burning landscapes, ember trails, volcanic aesthetics. Red-orange gradients pushed toward pure crimson. Heat rendered cold." },
         { name: "Dark Fantasy Combat", desc: "Warriors, demons, and gods rendered in red. Battle scenes stripped of heroism, leaving only the violence and the silence after." },
         { name: "Scarlet Eyes", desc: "Portraits and characters defined by red eyes — a recurring motif across anime, horror, and dark fantasy that signals something fundamentally other." },

@@ -8415,3 +8415,18 @@ body:has(.blog-post-page) .site-header,
           line-height: 1.7;
           margin: 0;
         }
+/* ── Sets pages — per-image download hint ─────────────────────────────────── */
+.sets-dl-hint {
+  display: block;
+  margin-top: 6px;
+  font-family: var(--font-space, monospace);
+  font-size: 0.55rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(192, 0, 26, 0.7);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.sets-dl-hint:hover {
+  color: #c0001a;
+}

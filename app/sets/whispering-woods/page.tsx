@@ -387,7 +387,7 @@ export default function WhisperingWoodsPage() {
               <div className="cs-wall-item__footer">
                 <span className="cs-wall-item__phase" style={{ color: WALLPAPERS[0].phaseColor, borderColor: `${WALLPAPERS[0].phaseColor}44` }}>{WALLPAPERS[0].phase}</span>
                 <span className="cs-wall-item__label">{WALLPAPERS[0].label}</span>
-              </div>
+              <a href="#download-kit" className="sets-dl-hint">↓ Download 4K</a></div>
             </div>
 
             {/* ── ROW 2: Two 9:16 mobile + one square-stack column ── */}
@@ -404,7 +404,7 @@ export default function WhisperingWoodsPage() {
                 <div className="cs-wall-item__footer">
                   <span className="cs-wall-item__phase" style={{ color: WALLPAPERS[1].phaseColor, borderColor: `${WALLPAPERS[1].phaseColor}44` }}>{WALLPAPERS[1].phase}</span>
                   <span className="cs-wall-item__label">{WALLPAPERS[1].label}</span>
-                </div>
+                <a href="#download-kit" className="sets-dl-hint">↓ Download 4K</a></div>
               </div>
 
               {/* Mobile Home Screen — 9:16 */}
@@ -418,7 +418,7 @@ export default function WhisperingWoodsPage() {
                 <div className="cs-wall-item__footer">
                   <span className="cs-wall-item__phase" style={{ color: WALLPAPERS[2].phaseColor, borderColor: `${WALLPAPERS[2].phaseColor}44` }}>{WALLPAPERS[2].phase}</span>
                   <span className="cs-wall-item__label">{WALLPAPERS[2].label}</span>
-                </div>
+                <a href="#download-kit" className="sets-dl-hint">↓ Download 4K</a></div>
               </div>
 
               {/* Square column: Avatar + Watch stacked */}
@@ -435,7 +435,7 @@ export default function WhisperingWoodsPage() {
                   <div className="cs-wall-item__footer">
                     <span className="cs-wall-item__phase" style={{ color: WALLPAPERS[3].phaseColor, borderColor: `${WALLPAPERS[3].phaseColor}44` }}>{WALLPAPERS[3].phase}</span>
                     <span className="cs-wall-item__label">{WALLPAPERS[3].label}</span>
-                  </div>
+                  <a href="#download-kit" className="sets-dl-hint">↓ Download 4K</a></div>
                 </div>
 
                 {/* Smartwatch — 1:1 */}
@@ -449,7 +449,7 @@ export default function WhisperingWoodsPage() {
                   <div className="cs-wall-item__footer">
                     <span className="cs-wall-item__phase" style={{ color: WALLPAPERS[4].phaseColor, borderColor: `${WALLPAPERS[4].phaseColor}44` }}>{WALLPAPERS[4].phase}</span>
                     <span className="cs-wall-item__label">{WALLPAPERS[4].label}</span>
-                  </div>
+                  <a href="#download-kit" className="sets-dl-hint">↓ Download 4K</a></div>
                 </div>
 
               </div>{/* end squares column */}
@@ -539,14 +539,14 @@ export default function WhisperingWoodsPage() {
         </section>
 
         {/* ── DOWNLOAD ALL CTA ── */}
-        <section
+        <section id="download-kit"<section
           style={{
             maxWidth: "1100px",
             margin: "clamp(48px,7vw,80px) auto clamp(64px,10vw,120px)",
             padding: "0 clamp(20px,5vw,60px)",
           }}
         >
-          <div className="cs-cta-block">
+          <div id="download-kit" className="cs-cta-block">
             <div className="cs-cta-block__glow" aria-hidden="true" />
             <span className="cs-cta-block__eyebrow">Free. No account. No watermarks.</span>
             <h2 className="cs-cta-block__title">Download the Complete Kit</h2>
