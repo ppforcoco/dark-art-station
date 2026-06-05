@@ -82,7 +82,7 @@ export default function manifest(): MetadataRoute.Manifest {
     ],
     screenshots: [
       {
-        src:         `${SITE_URL}/_next/static/media/og-image.webp`,
+        src:         `https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/og-image.webp`,
         sizes:       "1200x630",
         type:        "image/webp",
         form_factor: "wide",

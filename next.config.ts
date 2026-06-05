@@ -15,7 +15,7 @@ const CSP = [
   // No gstatic — no web fonts loaded
   `font-src 'self' data:`,
   `img-src 'self' data: blob: ${R2_CDN} ${ASSETS}`,
-  `connect-src 'self' ${R2_CDN} ${ASSETS} https://cloud.umami.is https://api-gateway.umami.dev https://cloudflareinsights.com https://api.anthropic.com`,
+  `connect-src 'self' ${R2_CDN} ${ASSETS} https://cloud.umami.is https://gateway.umami.is https://api-gateway.umami.dev https://cloudflareinsights.com https://api.anthropic.com`,
   `media-src 'self' ${R2_CDN} ${ASSETS}`,
   `frame-src 'self' blob:`,
   `worker-src 'self' blob:`,
