@@ -645,6 +645,8 @@ export default function CrimsonSovereignPage() {
           </div>
         </section>
 
+      </div>
+
       {/* ── STYLES ── */}
       <style>{`
         /* ── Premium badge ── */

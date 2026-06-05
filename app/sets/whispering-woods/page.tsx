@@ -617,6 +617,8 @@ export default function WhisperingWoodsPage() {
           </div>
         </section>
 
+      </div>
+
       {/* ── STYLES ── */}
       <style>{`
         /* ── WALLPAPER LAYOUT ───────────────────────────────────────── */

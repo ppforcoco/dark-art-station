@@ -457,6 +457,8 @@ export default function GhostPitchPage() {
           </div>
         </section>
 
+      </div>
+
       <style>{`
         /* ── EMBER THEME OVERRIDES ── */
         .gp-wall-item__frame { position: relative; overflow: hidden; border: 1px solid rgba(232,124,30,0.2); background: #080810; transition: border-color 0.3s ease, box-shadow 0.3s ease; cursor: pointer; }

@@ -667,6 +667,8 @@ export default function CursedStudentPage() {
           </div>
         </section>
 
+      </div>
+
       {/* ── STYLES ── */}
       <style>{`
         /* ── WALLPAPER LAYOUT ───────────────────────────────────────── */
