@@ -54,37 +54,18 @@ export default async function AboutPage() {
               and the entity would stay, crying through the night, keeping him from
               sleep. He told us these stories like they were ordinary. They were not.
             </p>
-            <p>
-              Our aunt&apos;s house sat on the edge of a graveyard. She told us
-              about the abandoned hospital nearby — the strange sounds that came
-              from empty corridors at hours when no one should be there.
-            </p>
-            <p>
-              And then there was the witch. She was sitting in a wheelchair on a
-              rooftop. Hair covering her face, head tilted down, completely still.
-              The kind of image that burns itself into you at a young age and never
-              fully leaves. You don&apos;t forget something like that.
-            </p>
-            <p>
-              We didn&apos;t grow up reading about horror. We grew up <em>inside</em> it.
-              That&apos;s the difference.
-            </p>
           </section>
 
           <section className="static-section">
-            <h2>What We Build</h2>
+            <h2>What We Create</h2>
             <p>
-              HauntedWallpapers is an independent dark art studio. Every image is
+              HauntedWallpapers is an independent wallpaper project created by two siblings who love horror, dark fantasy, and atmospheric artwork. Every image is
               crafted using AI generation pipelines — diffusion models, custom-trained
               style embeddings, iterative curation — shaped by people who have a
-              genuine sense of what dark art should <em>feel</em> like. Not just
-              look like. Feel like.
+              genuine sense of what dark art should <em>feel</em> like.
             </p>
             <p>
-              We cover dark fantasy, horror aesthetics, street art, cyberpunk decay,
-              cosmic dread, gothic atmosphere, and everything living in the shadows
-              between those genres. iPhone, Android, PC — every screen. Thousands
-              of wallpapers. All free.
+              Our collection includes dark fantasy, gothic, cyberpunk, horror, street art, and atmospheric wallpapers for iPhone, Android, tablets, laptops, and desktop computers. Thousands of wallpapers are available to download for free.
             </p>
           </section>
 
@@ -99,7 +80,7 @@ export default async function AboutPage() {
             </p>
             <p>
               We are funded by advertising. No paywalls. No subscriptions.
-              No dark patterns. Great dark art should be free.
+              No dark patterns. We believe great wallpapers should be accessible to everyone.
             </p>
           </section>
 

@@ -42,13 +42,9 @@ export default function DmcaPage() {
               property laws.
             </p>
             <p>
-              All images on this site are generated using AI tools and curated by
-              us. Our generation process utilises licensed datasets and
-              custom-trained embeddings designed to produce unique, transformative
-              works of art that do not infringe upon the specific copyright of
-              individual artists. We make every effort to ensure our content does
-              not infringe third-party rights. If you believe otherwise, please
-              follow the process below.
+              All images on HauntedWallpapers are reviewed before publication. If
+              you believe any content on this site infringes your copyright or other
+              intellectual property rights, please notify us using the process below.
             </p>
           </section>
 
@@ -98,11 +94,9 @@ export default function DmcaPage() {
             <ul>
               <li>Review the notice for completeness and validity.</li>
               <li>Remove or disable access to the allegedly infringing content promptly if the notice is valid.</li>
-              <li>Notify the uploader (if applicable) that the content has been removed.</li>
-              <li>Retain a copy of the notice for our records.</li>
             </ul>
             <p>
-              We aim to respond to all valid DMCA notices within <strong>3 business days</strong>.
+              We review all valid DMCA notices as promptly as possible.
             </p>
           </section>
 

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import ContactForm from "@/components/ContactForm";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 export const dynamic = "force-dynamic";
 
@@ -18,8 +19,12 @@ export default function ContactPage() {
     <main className="static-page">
       <div className="static-page-inner static-page-inner--narrow">
 
+        <Breadcrumbs items={[
+          { label: "Home", href: "/" },
+          { label: "Contact" },
+        ]} />
+
         <header className="static-page-header">
-          <p className="static-page-label">Reach Out</p>
           <h1 className="static-page-title">Contact<br /><em>Us</em></h1>
         </header>
 
@@ -29,15 +34,15 @@ export default function ContactPage() {
             <h2>What We Can Help With</h2>
             <ul>
               <li>Technical issues with downloads or file formats</li>
-              <li>Commercial and editorial licensing enquiries</li>
+              <li>Commercial, editorial, and licensing enquiries</li>
               <li>Custom commission requests</li>
               <li>Press and collaboration proposals</li>
               <li>Reporting a broken page or missing file</li>
               <li>Privacy and data requests (GDPR / CCPA)</li>
             </ul>
             <p>
-              For answers to common questions, check our{" "}
-              <a href="/faq">FAQ page</a> first — it may save you the wait.
+              For common questions about downloads, licensing, and wallpapers, please visit our{" "}
+              <a href="/faq">FAQ page</a>.
             </p>
           </section>
 

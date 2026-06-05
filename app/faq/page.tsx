@@ -71,8 +71,7 @@ const FAQS: { q: string; a: React.ReactNode; text: string }[] = [
         <p><strong>Windows:</strong> Right-click the desktop → Personalise →
           Background → Browse → select your downloaded image.</p>
         <p><strong>Mac:</strong> System Settings → Wallpaper → Add Photo →
-          select your downloaded image. For a multi-monitor setup, you can
-          assign different wallpapers to each display.</p>
+          select your downloaded image.</p>
       </>
     ),
   },
@@ -123,14 +122,12 @@ const FAQS: { q: string; a: React.ReactNode; text: string }[] = [
   },
   {
     q: "Are these images AI-generated?",
-    text: "Yes. Every image is created using AI generation tools guided by our own prompts and creative direction. Each image is individually reviewed and curated — we discard the vast majority of outputs.",
+    text: "Yes. Wallpapers on HauntedWallpapers are created using AI-assisted tools and creative editing workflows. Every image is reviewed and curated before publication.",
     a: (
       <>
-        Yes. Every image on HauntedWallpapers is created using AI generation
-        tools, guided by our own prompts and creative direction. Each image is
-        individually reviewed and curated — we discard the vast majority of
-        outputs. What you see on the Site represents a small fraction of what
-        was generated.
+        Yes. Wallpapers on HauntedWallpapers are created using AI-assisted tools
+        and creative editing workflows. Every image is reviewed and curated
+        before publication.
       </>
     ),
   },
@@ -157,11 +154,11 @@ const FAQS: { q: string; a: React.ReactNode; text: string }[] = [
   },
   {
     q: "How often is new art added?",
-    text: "We aim to release new collections and standalone images on a regular basis. Check back often to stay up to date with new drops.",
+    text: "We regularly add new wallpapers and collections. Visit often to discover the latest artwork.",
     a: (
       <>
-        We aim to release new collections and standalone images on a regular
-        basis. Check back often to stay up to date with new drops.
+        We regularly add new wallpapers and collections. Visit often to discover
+        the latest artwork.
       </>
     ),
   },
@@ -220,9 +217,8 @@ export default async function FaqPage() {
           <section className="static-section" style={{ marginTop: "60px" }}>
             <h2>Still need help?</h2>
             <p>
-              If your question isn&apos;t answered above, reach out via our{" "}
-              <a href="/contact">contact page</a> and we will get back to you
-              within 1–3 business days.
+              If you cannot find the answer you need, please{" "}
+              <a href="/contact">contact us</a> and we will respond as soon as possible.
             </p>
           </section>
         </div>

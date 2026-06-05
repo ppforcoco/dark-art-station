@@ -34,8 +34,8 @@ export default function LicensingPage() {
           <section className="static-section">
             <h2>Overview</h2>
             <p>
-              All artwork available on HauntedWallpapers is created by us using
-              AI generation tools. Unless otherwise stated, all images are our
+              All artwork available on HauntedWallpapers is created and curated
+              by HauntedWallpapers. Unless otherwise stated, all images are our
               intellectual property. By downloading any image from this Site, you
               agree to the terms below.
             </p>
@@ -71,9 +71,9 @@ export default function LicensingPage() {
               <li>Using our images in paid products, apps, or services</li>
               <li>Using our images in advertising or promotional material
                 for a business</li>
-              <li>Removing or obscuring any watermark or attribution</li>
               <li>Claiming our artwork as your own original creation</li>
-              <li>Uploading our images to stock photo or AI training datasets</li>
+              <li>Uploading our images to stock media platforms, wallpaper
+                websites, or AI training datasets</li>
             </ul>
           </section>
 
@@ -85,9 +85,8 @@ export default function LicensingPage() {
               <a href={`mailto:${CONTACT_EMAIL}`}> contact us</a> to discuss a commercial licence.
             </p>
             <p>
-              Commercial licences are granted on a per-image or per-collection
-              basis. Pricing is determined by intended use, distribution scale,
-              and exclusivity.
+              Commercial licensing requests are reviewed individually. Please
+              contact us with details about your intended use.
             </p>
           </section>
 

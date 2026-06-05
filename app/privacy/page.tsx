@@ -39,13 +39,12 @@ export default function PrivacyPage() {
             <p>We may collect personal information you provide when you:</p>
             <ul>
               <li>Send us an email enquiry via our contact form</li>
-              <li>Complete a download</li>
             </ul>
-            <p>This information may include your name, email address, and any message content you choose to send us.</p>
+            <p>If you contact us, we may receive your name, email address, and the information you include in your message.</p>
             <h3>Information Collected Automatically</h3>
             <p>When you visit the Site, certain information is collected automatically by our servers and third-party services, including:</p>
             <ul>
-              <li>IP address (stored as a one-way hash for fraud prevention)</li>
+              <li>IP address</li>
               <li>Browser type and version</li>
               <li>Pages visited and time spent on those pages</li>
               <li>Referring URL</li>
@@ -58,7 +57,7 @@ export default function PrivacyPage() {
             <p>We use cookies — small text files stored on your device — and similar technologies to operate the Site and deliver advertising. Cookies do not contain personally identifiable information unless you have provided that information to us directly.</p>
             <h3>Types of Cookies We Use</h3>
             <ul>
-              <li><strong>Essential cookies:</strong> Required for the Site to function correctly (e.g. session management, download tracking).</li>
+              <li><strong>Essential cookies:</strong> Required for basic site functionality and user preferences.</li>
               <li><strong>Analytics cookies:</strong> Used to understand traffic patterns and page performance. We may use Google Analytics for this purpose.</li>
               <li><strong>Advertising cookies:</strong> Used by our advertising partners to serve relevant ads. See the AdSense section below for full details.</li>
             </ul>
@@ -66,15 +65,13 @@ export default function PrivacyPage() {
             <p>Advertising cookies are enabled by default to allow us to serve ads and keep the Site free. When you first visit the Site, a cookie consent banner is displayed. If you click &quot;Decline,&quot; ad personalisation will be disabled — you may still see ads, but they will not be tailored to your interests.</p>
             <p>You can also opt out of personalised advertising at any time via <a href="https://www.google.com/settings/ads" target="_blank" rel="noopener noreferrer">Google&apos;s Ads Settings</a>.</p>
             <h3>Managing Cookies</h3>
-            <p>You can control and/or delete cookies at any time through your browser settings. Disabling cookies may affect certain functionality of the Site, including the ability to download files. For more information visit <a href="https://www.allaboutcookies.org" target="_blank" rel="noopener noreferrer">allaboutcookies.org</a>.</p>
+            <p>You can control and/or delete cookies at any time through your browser settings. Disabling cookies may affect certain functionality of the Site. For more information visit <a href="https://www.allaboutcookies.org" target="_blank" rel="noopener noreferrer">allaboutcookies.org</a>.</p>
           </section>
           <section className="static-section" id="adsense">
             <h2>4. Google AdSense &amp; Advertising</h2>
             <p>{SITE_NAME} uses Google AdSense, an advertising service provided by Google LLC (&quot;Google&quot;), to display advertisements on our Site. Google AdSense uses cookies and web beacons to serve ads based on your prior visits to this Site or other websites on the internet.</p>
             <h3>How Google Uses Your Data</h3>
             <p>Google&apos;s use of advertising cookies enables it and its partners to serve ads based on your visit to our Site and/or other sites on the internet. You may opt out of personalised advertising by visiting <a href="https://www.google.com/settings/ads" target="_blank" rel="noopener noreferrer">Google&apos;s Ads Settings</a> or <a href="https://www.aboutads.info/choices/" target="_blank" rel="noopener noreferrer">aboutads.info</a>.</p>
-            <h3>Publisher ID</h3>
-            <p>Our Google AdSense Publisher ID is <code>ca-pub-4048523199842586</code>.</p>
             <h3>No Sale of Personal Data to Advertisers</h3>
             <p>We do not sell your personal data to advertisers. Ad targeting is managed entirely by Google&apos;s systems. For full details on how Google collects and uses data, see <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">Google&apos;s Privacy Policy</a> and <a href="https://policies.google.com/technologies/ads" target="_blank" rel="noopener noreferrer">Google&apos;s Advertising Policies</a>.</p>
           </section>
@@ -83,10 +80,9 @@ export default function PrivacyPage() {
             <p>We use the information we collect to:</p>
             <ul>
               <li>Operate and maintain the Site</li>
-              <li>Process downloads</li>
               <li>Respond to email enquiries</li>
               <li>Monitor and analyse usage trends to improve the Site</li>
-              <li>Prevent fraudulent downloads and abuse</li>
+              <li>Prevent abuse and protect the security of the Site</li>
               <li>Comply with legal obligations</li>
             </ul>
             <p>We do not use your information for automated decision-making or profiling that produces legal or similarly significant effects.</p>
@@ -102,18 +98,14 @@ export default function PrivacyPage() {
           </section>
           <section className="static-section">
             <h2>7. Data Retention</h2>
-            <p>We retain personal information only for as long as necessary to fulfil the purposes described in this policy, or as required by law. Contact form submissions are retained for up to 6 months, after which they are permanently deleted.</p>
+            <p>We retain personal information only for as long as necessary to fulfil the purposes described in this policy, or as required by law.</p>
           </section>
           <section className="static-section">
-            <h2>8. User-Submitted Content</h2>
-            <p>At this time, HauntedWallpapers does not accept user-submitted content, artwork, or uploads from visitors. All images on the Site are created and curated by us. If you wish to get in touch, please use our <a href="/contact">contact page</a>.</p>
-          </section>
-          <section className="static-section">
-            <h2>9. Children&apos;s Privacy</h2>
+            <h2>8. Children&apos;s Privacy</h2>
             <p>The Site is not directed at children under the age of 13. We do not knowingly collect personal information from children under 13. If you believe we have inadvertently collected such information, please contact us immediately and we will delete it.</p>
           </section>
           <section className="static-section">
-            <h2>10. Your Rights</h2>
+            <h2>9. Your Rights</h2>
             <p>Depending on your location, you may have the following rights regarding your personal data:</p>
             <ul>
               <li>The right to access the personal data we hold about you</li>
@@ -125,15 +117,15 @@ export default function PrivacyPage() {
             <p>To exercise any of these rights, please contact us at <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>.</p>
           </section>
           <section className="static-section">
-            <h2>11. Third-Party Links</h2>
+            <h2>10. Third-Party Links</h2>
             <p>Our Site may contain links to third-party websites. We have no control over the content, privacy policies, or practices of those sites and accept no responsibility for them.</p>
           </section>
           <section className="static-section">
-            <h2>12. Security</h2>
+            <h2>11. Security</h2>
             <p>We use reasonable administrative, technical, and physical safeguards to protect your information. However, no method of transmission over the internet is 100% secure, and we cannot guarantee absolute security.</p>
           </section>
           <section className="static-section">
-            <h2>13. Contact Us</h2>
+            <h2>12. Contact Us</h2>
             <p>If you have any questions about this Privacy Policy, please contact us:</p>
             <ul>
               <li>Email: <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a></li>
