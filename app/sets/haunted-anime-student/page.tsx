@@ -666,7 +666,6 @@ export default function CursedStudentPage() {
             </Link>
           </div>
         </section>
-      </div>
 
       {/* ── STYLES ── */}
       <style>{`

@@ -456,7 +456,6 @@ export default function GhostPitchPage() {
             </Link>
           </div>
         </section>
-      </div>
 
       <style>{`
         /* ── EMBER THEME OVERRIDES ── */

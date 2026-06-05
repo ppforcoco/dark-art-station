@@ -616,7 +616,6 @@ export default function WhisperingWoodsPage() {
             </Link>
           </div>
         </section>
-      </div>
 
       {/* ── STYLES ── */}
       <style>{`

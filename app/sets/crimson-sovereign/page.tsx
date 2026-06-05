@@ -644,7 +644,6 @@ export default function CrimsonSovereignPage() {
             </Link>
           </div>
         </section>
-      </div>
 
       {/* ── STYLES ── */}
       <style>{`

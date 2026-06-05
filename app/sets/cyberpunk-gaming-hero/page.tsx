@@ -436,12 +436,6 @@ export default function CyberpunkGamingHeroPage() {
           </div>
         </section>
 
-        {/* BACK LINK */}
-        <div style={{ maxWidth: "1100px", margin: "0 auto", padding: "0 clamp(20px,5vw,60px) 48px", borderTop: "1px solid rgba(139,92,246,0.15)", paddingTop: "32px", marginTop: "clamp(48px,7vw,80px)" }}>
-          <Link href="/sets" style={{ fontFamily: "var(--font-space, monospace)", fontSize: "0.65rem", letterSpacing: "0.18em", textTransform: "uppercase", color: "#60608a", textDecoration: "none" }}>
-            ← All Matching Sets
-          </Link>
-        </div>
       </div>
 
       <style>{`
