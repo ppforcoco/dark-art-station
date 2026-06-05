@@ -15,9 +15,9 @@ const CSP = [
   // No gstatic — no web fonts loaded
   `font-src 'self' data:`,
   `img-src 'self' data: blob: ${R2_CDN} ${ASSETS} https://pagead2.googlesyndication.com https://googleads.g.doubleclick.net https://www.google.com https://www.gstatic.com`,
-  `connect-src 'self' ${R2_CDN} ${ASSETS} https://cloud.umami.is https://gateway.umami.is https://api-gateway.umami.dev https://cloudflareinsights.com https://api.anthropic.com https://pagead2.googlesyndication.com https://googleads.g.doubleclick.net https://adservice.google.com https://ep1.adtrafficquality.google`,
+  `connect-src 'self' ${R2_CDN} ${ASSETS} https://cloud.umami.is https://gateway.umami.is https://api-gateway.umami.dev https://cloudflareinsights.com https://api.anthropic.com https://pagead2.googlesyndication.com https://googleads.g.doubleclick.net https://adservice.google.com https://ep1.adtrafficquality.google https://ep2.adtrafficquality.google`,
   `media-src 'self' ${R2_CDN} ${ASSETS}`,
-  `frame-src 'self' blob: https://googleads.g.doubleclick.net https://tpc.googlesyndication.com`,
+  `frame-src 'self' blob: https://googleads.g.doubleclick.net https://tpc.googlesyndication.com https://ep2.adtrafficquality.google https://www.google.com`,
   `worker-src 'self' blob:`,
   `frame-ancestors 'none'`,
   `object-src 'none'`,
