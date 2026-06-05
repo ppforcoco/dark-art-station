@@ -81,12 +81,9 @@ export default function LicensingPage() {
             <h2>Commercial Licence</h2>
             <p>
               If you wish to use our artwork for commercial purposes — including
-              product mockups, brand assets, merchandise, or editorial use — please
-              <a href={`mailto:${CONTACT_EMAIL}`}> contact us</a> to discuss a commercial licence.
-            </p>
-            <p>
-              Commercial licensing requests are reviewed individually. Please
-              contact us with details about your intended use.
+              product mockups, brand assets, merchandise, or editorial use —
+              please email <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a> to
+              discuss a commercial licence. Requests are reviewed individually.
             </p>
           </section>
 
@@ -116,14 +113,6 @@ export default function LicensingPage() {
               use of the Site following any changes constitutes acceptance of
               the revised terms. The date at the top of this page reflects the
               most recent update.
-            </p>
-          </section>
-
-          <section className="static-section">
-            <h2>Questions?</h2>
-            <p>
-              If you have any questions about licensing, please reach out at{" "}
-              <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>.
             </p>
           </section>
 

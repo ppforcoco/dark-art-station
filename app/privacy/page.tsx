@@ -38,7 +38,7 @@ export default function PrivacyPage() {
             <h3>Information You Provide Voluntarily</h3>
             <p>We may collect personal information you provide when you:</p>
             <ul>
-              <li>Send us an email enquiry via our contact form</li>
+              <li>Send us an email enquiry</li>
             </ul>
             <p>If you contact us, we may receive your name, email address, and the information you include in your message.</p>
             <h3>Information Collected Automatically</h3>
@@ -126,10 +126,7 @@ export default function PrivacyPage() {
           </section>
           <section className="static-section">
             <h2>12. Contact Us</h2>
-            <p>If you have any questions about this Privacy Policy, please contact us:</p>
-            <ul>
-              <li>Email: <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a></li>
-            </ul>
+            <p>If you have any questions about this Privacy Policy, email us at <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>.</p>
           </section>
         </div>
       </div>

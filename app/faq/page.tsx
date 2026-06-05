@@ -89,14 +89,13 @@ const FAQS: { q: string; a: React.ReactNode; text: string }[] = [
   },
   {
     q: "Can I use these wallpapers commercially?",
-    text: "No — downloads are licensed for personal use only. Commercial use requires a separate licence. See the Licensing and Terms page for full details or contact us to discuss a commercial licence.",
+    text: "No — downloads are licensed for personal use only. Commercial use requires a separate licence. See the Licensing and Terms page for full details.",
     a: (
       <>
         No — downloads from HauntedWallpapers are licensed for personal use only.
         Commercial use (merchandise, resale, advertising, etc.) requires a
         separate licence. See our{" "}
-        <a href="/licensing">Licensing &amp; Terms</a> page for full details, or{" "}
-        <a href="/contact">contact us</a> to discuss a commercial licence.
+        <a href="/licensing">Licensing &amp; Terms</a> page for full details.
       </>
     ),
   },
@@ -113,9 +112,9 @@ const FAQS: { q: string; a: React.ReactNode; text: string }[] = [
             reliable).</li>
           <li>Check your device&apos;s available storage — downloads will fail
             silently if there is insufficient space.</li>
-          <li>If the issue persists, use our{" "}
-            <a href="/contact">contact form</a> and include the image name —
-            we will resolve it promptly.</li>
+          <li>If the issue persists, email us at{" "}
+            <a href="mailto:hello@hauntedwallpapers.com">hello@hauntedwallpapers.com</a>{" "}
+            and include the image name — we will resolve it promptly.</li>
         </ol>
       </>
     ),
@@ -217,8 +216,9 @@ export default async function FaqPage() {
           <section className="static-section" style={{ marginTop: "60px" }}>
             <h2>Still need help?</h2>
             <p>
-              If you cannot find the answer you need, please{" "}
-              <a href="/contact">contact us</a> and we will respond as soon as possible.
+              If you cannot find the answer you need, email us at{" "}
+              <a href="mailto:hello@hauntedwallpapers.com">hello@hauntedwallpapers.com</a>{" "}
+              and we will respond as soon as possible.
             </p>
           </section>
         </div>

@@ -75,7 +75,7 @@ const WORLDS = {
       themes: [
         { name: "Dark Horror", desc: "Crimson splatter aesthetics, gothic figures, dark medical imagery. High contrast, deeply unsettling. Not for the faint of heart." },
         { name: "Fire & Ember", desc: "Burning landscapes, ember trails, volcanic aesthetics. Red-orange gradients pushed toward pure crimson. Heat rendered cold." },
-        { name: "Dark Fantasy Combat", desc: "Warriors, demons, and gods rendered in red. Battle scenes stripped of heroism, leaving only the violence and the silence after." },
+        { name: "Dark Fantasy Combat", desc: "Armoured figures and shadowed knights rendered in deep crimson. Scenes of conflict stripped back to atmosphere — tension, stillness, and the weight of the moment." },
         { name: "Scarlet Eyes", desc: "Portraits and characters defined by red eyes — a recurring motif across anime, horror, and dark fantasy that signals something fundamentally other." },
       ],
       deviceTips: "Crimson and dark red tones render differently across screen types. On AMOLED displays, the deep near-black backgrounds drop to true zero, making the red tones pop with unusual intensity — similar to how red looks against a darkroom. On LCD screens, the same images will appear slightly warmer. Either way, avoid applying a blue light filter while viewing these wallpapers as it will shift the reds toward orange and flatten the contrast.",

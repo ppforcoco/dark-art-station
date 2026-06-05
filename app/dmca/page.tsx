@@ -52,7 +52,7 @@ export default function DmcaPage() {
             <h2>2. How to File a DMCA Takedown Notice</h2>
             <p>
               If you believe that content on our site infringes your copyright,
-              please send a written notice to our designated agent at{" "}
+              please send a written notice to{" "}
               <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a> with the
               subject line <strong>DMCA Takedown Request</strong> and include all
               of the following:
@@ -121,14 +121,6 @@ export default function DmcaPage() {
               </li>
               <li>Your physical or electronic signature.</li>
             </ol>
-          </section>
-
-          <section className="static-section">
-            <h2>5. Contact</h2>
-            <p>
-              All DMCA notices and related correspondence should be sent to:{" "}
-              <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
-            </p>
           </section>
 
         </div>
