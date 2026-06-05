@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useCallback, useEffect } from "react";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 export const dynamic = "force-dynamic";
 
@@ -1317,6 +1318,11 @@ export default function ToolsPage() {
 
   return (
     <main className="tools-page">
+
+      <Breadcrumbs items={[
+        { label: "Home", href: "/" },
+        { label: "Tools" },
+      ]} />
 
       <div className="tools-hero">
         <h1 className="tools-title">Wallpaper<br /><em>Tools</em></h1>

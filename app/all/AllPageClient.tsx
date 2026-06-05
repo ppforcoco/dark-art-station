@@ -159,7 +159,7 @@ export default function AllPageClient({
           color: "rgba(224,224,248,0.55)",
           margin: "0 0 32px",
           maxWidth: "560px",
-        }}>Every dark wallpaper we have ever made. Free. No sign-up. Updated daily.</p>
+        }}>Browse every wallpaper published on HauntedWallpapers. Free downloads for iPhone, Android, PC, and desktop devices. Updated regularly.</p>
 
         <div style={{ display: "flex", gap: "8px", marginBottom: "32px", flexWrap: "wrap" }}>
           {(["mobile", "desktop"] as DeviceTab[]).map((t) => {

@@ -70,13 +70,6 @@ export default async function ObsessionsPage() {
         </h1>
       </section>
 
-      {/* Admin HTML — full width, outside max-w-7xl constraint */}
-      {pageContent?.body && (
-        <div className="w-full px-6 md:px-16 pb-8">
-          <AdminHtmlBlock html={pageContent.body} />
-        </div>
-      )}
-
       {/* ── Collections Grid ── */}
       <section className="max-w-7xl mx-auto px-6 md:px-[60px] py-10">
         {collections.length === 0 ? (
@@ -193,6 +186,13 @@ export default async function ObsessionsPage() {
           </>
         )}
       </section>
+
+      {/* Admin HTML — below the grid */}
+      {pageContent?.body && (
+        <div className="w-full px-6 md:px-16 pb-8">
+          <AdminHtmlBlock html={pageContent.body} />
+        </div>
+      )}
 
       <script
         type="application/ld+json"
