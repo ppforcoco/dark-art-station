@@ -7,8 +7,8 @@ const ASSETS = "https://assets.hauntedwallpapers.com";
 // ─── Content Security Policy ─────────────────────────────────────────────────
 const CSP = [
   `default-src 'self'`,
-  `script-src 'self' 'unsafe-inline' https://cloud.umami.is https://static.cloudflareinsights.com https://pagead2.googlesyndication.com https://partner.googleadservices.com https://adservice.google.com`,
-  `script-src-elem 'self' 'unsafe-inline' https://cloud.umami.is https://static.cloudflareinsights.com https://pagead2.googlesyndication.com https://partner.googleadservices.com https://adservice.google.com`,
+  `script-src 'self' 'unsafe-inline' https://cloud.umami.is https://static.cloudflareinsights.com https://pagead2.googlesyndication.com https://partner.googleadservices.com https://adservice.google.com https://ep1.adtrafficquality.google https://ep2.adtrafficquality.google`,
+  `script-src-elem 'self' 'unsafe-inline' https://cloud.umami.is https://static.cloudflareinsights.com https://pagead2.googlesyndication.com https://partner.googleadservices.com https://adservice.google.com https://ep1.adtrafficquality.google https://ep2.adtrafficquality.google`,
   // No Google Fonts — app uses system fonts only (Arial/system-ui)
   `style-src 'self' 'unsafe-inline'`,
   `style-src-elem 'self' 'unsafe-inline'`,
