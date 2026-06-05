@@ -347,6 +347,7 @@ export default function CursedStudentPage() {
               backgrounds that tell a terrifying transformation story across every screen you own.
             </p>
           </div>
+        </header>
 
         {/* ── QUICK DOWNLOAD — top of page ── */}
         <section
@@ -377,6 +378,7 @@ export default function CursedStudentPage() {
             </div>
           </div>
         </section>
+
 
         {/* ── LORE SECTION ── */}
         <section
@@ -666,7 +668,6 @@ export default function CursedStudentPage() {
             </Link>
           </div>
         </section>
-
       </div>
 
       {/* ── STYLES ── */}

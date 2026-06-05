@@ -211,6 +211,7 @@ export default function GhostPitchPage() {
               Download the complete Ghost Pitch matching wallpaper set. 4K dark athletic backgrounds for iPhone, PC, and Smartwatch — the ultimate horror aesthetic for football fans who refuse to leave the field.
             </p>
           </div>
+        </header>
 
         {/* ── QUICK DOWNLOAD — top of page ── */}
         <section
@@ -241,6 +242,7 @@ export default function GhostPitchPage() {
             </div>
           </div>
         </section>
+
 
         {/* ── LORE ── */}
         <section style={{ maxWidth: "1100px", margin: "clamp(48px,7vw,80px) auto 0", padding: "0 clamp(20px,5vw,60px)" }}>
@@ -456,7 +458,6 @@ export default function GhostPitchPage() {
             </Link>
           </div>
         </section>
-
       </div>
 
       <style>{`

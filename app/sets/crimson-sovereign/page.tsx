@@ -321,6 +321,7 @@ export default function CrimsonSovereignPage() {
               and every device in your ecosystem — from desktop to smartwatch.
             </p>
           </div>
+        </header>
 
         {/* ── QUICK DOWNLOAD — top of page ── */}
         <section
@@ -351,6 +352,7 @@ export default function CrimsonSovereignPage() {
             </div>
           </div>
         </section>
+
 
         {/* ── LORE SECTION ── */}
         <section
@@ -644,7 +646,6 @@ export default function CrimsonSovereignPage() {
             </Link>
           </div>
         </section>
-
       </div>
 
       {/* ── STYLES ── */}

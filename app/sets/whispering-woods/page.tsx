@@ -327,6 +327,7 @@ export default function WhisperingWoodsPage() {
               that never sleeps — and the predator that watches from within it.
             </p>
           </div>
+        </header>
 
         {/* ── QUICK DOWNLOAD — top of page ── */}
         <section
@@ -357,6 +358,7 @@ export default function WhisperingWoodsPage() {
             </div>
           </div>
         </section>
+
 
         {/* ── LORE ── */}
         <section
@@ -616,7 +618,6 @@ export default function WhisperingWoodsPage() {
             </Link>
           </div>
         </section>
-
       </div>
 
       {/* ── STYLES ── */}
