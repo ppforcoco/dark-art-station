@@ -259,8 +259,8 @@ export default async function AndroidImagePage({ params }: PageProps) {
                 <PreviewButton src={thumbUrl} title={image.title} />
               </div>
 
-              {/* ── Save to Favorites (mobile) ── */}
-              <div className="detail-fav-row hw-mobile-fav">
+              {/* ── Save to Favorites ── */}
+              <div className="detail-fav-row">
                 <FavoriteButton size="md" className="detail-fav-inline" item={{ slug: image.slug, title: image.title, thumb: thumbUrl, href: `/android/${imageSlug}`, device: "android" }} />
               </div>
 
@@ -328,10 +328,7 @@ export default async function AndroidImagePage({ params }: PageProps) {
               </div>
             )}
 
-            {/* ── Save to Favorites (desktop) ── */}
-            <div className="detail-fav-row hw-desktop-fav">
-              <FavoriteButton size="md" className="detail-fav-inline" item={{ slug: image.slug, title: image.title, thumb: thumbUrl, href: `/android/${imageSlug}`, device: "android" }} />
-            </div>
+
 
 
           </div>

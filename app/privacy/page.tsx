@@ -95,7 +95,7 @@ export default function PrivacyPage() {
           </section>
           <section className="static-section">
             <h2>7. Data Retention</h2>
-            <p>We retain personal information only for as long as necessary to fulfil the purposes described in this policy, or as required by law. Download records are retained for up to 12 months for fraud prevention purposes. Contact form submissions are retained for up to 6 months, after which they are permanently deleted.</p>
+            <p>We retain personal information only for as long as necessary to fulfil the purposes described in this policy, or as required by law. Contact form submissions are retained for up to 6 months, after which they are permanently deleted.</p>
           </section>
           <section className="static-section">
             <h2>8. User-Submitted Content</h2>

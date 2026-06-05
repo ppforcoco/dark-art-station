@@ -124,15 +124,7 @@ export default function DmcaPage() {
           </section>
 
           <section className="static-section">
-            <h2>5. Repeat Infringers</h2>
-            <p>
-              {SITE_NAME} reserves the right to terminate accounts or access of users
-              who are found to be repeat infringers of intellectual property rights.
-            </p>
-          </section>
-
-          <section className="static-section">
-            <h2>6. Contact</h2>
+            <h2>5. Contact</h2>
             <p>
               All DMCA notices and related correspondence should be sent to:{" "}
               <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>

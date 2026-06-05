@@ -5292,7 +5292,6 @@ img[loading="eager"] {
 .social-btn svg { width: 14px; height: 14px; fill: currentColor; flex-shrink: 0; }
 .social-btn:hover { border-color: rgba(255,255,255,0.25); background: rgba(255,255,255,0.04); }
 .social-btn--native { border-color: rgba(192,0,26,0.4); color: #f0e8e8; }
-.social-btn--pinterest { color: #e60023; border-color: rgba(230,0,35,0.3); }
 .social-btn--x { color: var(--text-primary); }
 .social-btn--whatsapp { color: #25d366; border-color: rgba(37,211,102,0.3); }
 .setup-guide-link { font-family: var(--font-space), monospace; font-size: 0.65rem; letter-spacing: 0.1em; color: #9a90a9; text-decoration: underline; text-underline-offset: 2px; transition: color 0.2s ease; text-align: center; display: inline-block; }
@@ -8198,7 +8197,6 @@ body:has(.blog-post-page) .site-header,
         .social-btn:hover { border-color: rgba(255,255,255,0.25); background: rgba(255,255,255,0.04); }
         .social-btn--native { border-color: rgba(192,0,26,0.4); color: #f0e8e8; }
         .social-btn--native:hover { background: rgba(192,0,26,0.1); }
-        .social-btn--pinterest { color: #e60023; border-color: rgba(230,0,35,0.3); }
         .social-btn--x { color: var(--text-primary); }
         .social-btn--whatsapp { color: #25d366; border-color: rgba(37,211,102,0.3); }
 

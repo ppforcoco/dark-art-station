@@ -157,15 +157,11 @@ const FAQS: { q: string; a: React.ReactNode; text: string }[] = [
   },
   {
     q: "How often is new art added?",
-    text: "We aim to release new collections and standalone images on a regular basis. Check back often or follow us on Pinterest to stay up to date with new drops.",
+    text: "We aim to release new collections and standalone images on a regular basis. Check back often to stay up to date with new drops.",
     a: (
       <>
         We aim to release new collections and standalone images on a regular
-        basis. Check back often or follow us on{" "}
-        <a href="https://www.pinterest.com/TheFreemiumWallpapers/" target="_blank" rel="noopener noreferrer">
-          Pinterest
-        </a>{" "}
-        to stay up to date with new drops.
+        basis. Check back often to stay up to date with new drops.
       </>
     ),
   },

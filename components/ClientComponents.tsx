@@ -1,16 +1,13 @@
 "use client";
 
 import dynamic from "next/dynamic";
-
-// Cursor intentionally disabled — using native browser cursor.
-// The custom dagger cursor (Cursor.tsx) can be re-enabled by uncommenting
-// the lines below if needed in future.
-// const Cursor = dynamic(() => import("@/components/Cursor"), { ssr: false });
+import { Suspense } from "react";
 
 const ScrollReset       = dynamic(() => import("@/components/ScrollReset"),        { ssr: false });
 const ScrollToTopButton = dynamic(() => import("@/components/ScrollToTopButton"),  { ssr: false });
 const CookieBanner      = dynamic(() => import("@/components/CookieBanner"),       { ssr: false });
 const FeedbackWidget    = dynamic(() => import("@/components/FeedbackWidget"),     { ssr: false });
+const LoadingSpinner    = dynamic(() => import("@/components/LoadingSpinner"),     { ssr: false });
 
 export default function ClientComponents() {
   return (
@@ -19,6 +16,10 @@ export default function ClientComponents() {
       <CookieBanner />
       <ScrollToTopButton />
       <FeedbackWidget />
+      {/* LoadingSpinner needs Suspense because it uses useSearchParams */}
+      <Suspense fallback={null}>
+        <LoadingSpinner />
+      </Suspense>
     </>
   );
 }

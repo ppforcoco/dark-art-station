@@ -227,8 +227,8 @@ export default async function IphoneImagePage({ params }: PageProps) {
                 <PreviewButton src={thumbUrl} title={image.title} />
               </div>
 
-              {/* ── Save to Favorites (mobile) ── */}
-              <div className="detail-fav-row hw-mobile-fav">
+              {/* ── Save to Favorites ── */}
+              <div className="detail-fav-row">
                 <FavoriteButton
                   size="md"
                   className="detail-fav-inline"
@@ -320,21 +320,7 @@ export default async function IphoneImagePage({ params }: PageProps) {
               <BirthdayComments imageId={image.id} imageTitle={image.title} />
             )}
 
-            {/* ── Save to Favorites (desktop) ── */}
-            <div className="detail-fav-row hw-desktop-fav">
-              <FavoriteButton
-                size="md"
-                className="detail-fav-inline"
-                item={{
-                  slug:   image.slug,
-                  title:  image.title,
-                  thumb:  thumbUrl,
-                  href:   `/iphone/${imageSlug}`,
-                  device: "iphone",
-                }}
-              />
-              <span className="hw-fav-tooltip">Saved ♥</span>
-            </div>
+
 
 
           </div>
@@ -493,19 +479,7 @@ export default async function IphoneImagePage({ params }: PageProps) {
         }
 
         /* ── Fav button show/hide ── */
-        .hw-mobile-fav {
-          display: flex;
-        }
-        .hw-desktop-fav {
-          display: none;
-        }
         @media (min-width: 768px) {
-          .hw-mobile-fav {
-            display: none;
-          }
-          .hw-desktop-fav {
-            display: flex;
-          }
         }
 
         /* ── Image wrap ── */

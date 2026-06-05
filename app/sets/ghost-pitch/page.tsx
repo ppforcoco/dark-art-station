@@ -119,21 +119,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export const revalidate = 86400;
 
-const PinIcon = () => (
-  <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
-    <path d="M12 0C5.373 0 0 5.373 0 12c0 5.084 3.163 9.426 7.627 11.174-.105-.949-.2-2.405.042-3.441.218-.937 1.407-5.965 1.407-5.965s-.359-.719-.359-1.782c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.69 0 1.029-.655 2.568-.994 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 1.031.397 2.138.893 2.738a.36.36 0 0 1 .083.345l-.333 1.36c-.053.22-.174.267-.402.161-1.499-.698-2.436-2.889-2.436-4.649 0-3.785 2.75-7.262 7.929-7.262 4.163 0 7.398 2.967 7.398 6.931 0 4.136-2.607 7.464-6.227 7.464-1.216 0-2.359-.632-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0z" />
-  </svg>
-);
 
-function PinButton({ preview, seoAlt }: { preview: string; seoAlt: string }) {
-  const url = `https://pinterest.com/pin/create/button/?url=https://hauntedwallpapers.com/sets/ghost-pitch&media=${encodeURIComponent(preview)}&description=${encodeURIComponent(seoAlt)}`;
-  return (
-    <a href={url} target="_blank" rel="noopener noreferrer" className="gp-pin-btn" aria-label="Pin to Pinterest">
-      <PinIcon />
-      Save
-    </a>
-  );
-}
 
 export default function GhostPitchPage() {
   const jsonLd = JSON.stringify({
@@ -260,7 +246,6 @@ export default function GhostPitchPage() {
                 <img src={WALLPAPERS[0].preview} alt={WALLPAPERS[0].seoAlt} className="gp-wall-item__img" loading="eager" />
                 <div className="gp-wall-item__corners" aria-hidden="true"><span /><span /><span /><span /></div>
                 <span className="gp-wall-item__ratio-badge">{WALLPAPERS[0].ratio}</span>
-                <div className="gp-wall-item__overlay"><PinButton preview={WALLPAPERS[0].preview} seoAlt={WALLPAPERS[0].seoAlt} /></div>
               </div>
               <div className="gp-wall-item__footer">
                 <span className="gp-wall-item__phase" style={{ color: WALLPAPERS[0].phaseColor, borderColor: `${WALLPAPERS[0].phaseColor}44` }}>{WALLPAPERS[0].phase}</span>
@@ -278,7 +263,6 @@ export default function GhostPitchPage() {
                   <img src={WALLPAPERS[1].preview} alt={WALLPAPERS[1].seoAlt} className="gp-wall-item__img" loading="lazy" />
                   <div className="gp-wall-item__corners" aria-hidden="true"><span /><span /><span /><span /></div>
                   <span className="gp-wall-item__ratio-badge">{WALLPAPERS[1].ratio}</span>
-                  <div className="gp-wall-item__overlay"><PinButton preview={WALLPAPERS[1].preview} seoAlt={WALLPAPERS[1].seoAlt} /></div>
                 </div>
                 <div className="gp-wall-item__footer">
                   <span className="gp-wall-item__phase" style={{ color: WALLPAPERS[1].phaseColor, borderColor: `${WALLPAPERS[1].phaseColor}44` }}>{WALLPAPERS[1].phase}</span>
@@ -293,7 +277,6 @@ export default function GhostPitchPage() {
                   <img src={WALLPAPERS[2].preview} alt={WALLPAPERS[2].seoAlt} className="gp-wall-item__img" loading="lazy" />
                   <div className="gp-wall-item__corners" aria-hidden="true"><span /><span /><span /><span /></div>
                   <span className="gp-wall-item__ratio-badge">{WALLPAPERS[2].ratio}</span>
-                  <div className="gp-wall-item__overlay"><PinButton preview={WALLPAPERS[2].preview} seoAlt={WALLPAPERS[2].seoAlt} /></div>
                 </div>
                 <div className="gp-wall-item__footer">
                   <span className="gp-wall-item__phase" style={{ color: WALLPAPERS[2].phaseColor, borderColor: `${WALLPAPERS[2].phaseColor}44` }}>{WALLPAPERS[2].phase}</span>
@@ -309,7 +292,6 @@ export default function GhostPitchPage() {
                     <img src={WALLPAPERS[3].preview} alt={WALLPAPERS[3].seoAlt} className="gp-wall-item__img" loading="lazy" />
                     <div className="gp-wall-item__corners" aria-hidden="true"><span /><span /><span /><span /></div>
                     <span className="gp-wall-item__ratio-badge">{WALLPAPERS[3].ratio}</span>
-                    <div className="gp-wall-item__overlay"><PinButton preview={WALLPAPERS[3].preview} seoAlt={WALLPAPERS[3].seoAlt} /></div>
                   </div>
                   <div className="gp-wall-item__footer">
                     <span className="gp-wall-item__phase" style={{ color: WALLPAPERS[3].phaseColor, borderColor: `${WALLPAPERS[3].phaseColor}44` }}>{WALLPAPERS[3].phase}</span>
@@ -322,7 +304,6 @@ export default function GhostPitchPage() {
                     <img src={WALLPAPERS[4].preview} alt={WALLPAPERS[4].seoAlt} className="gp-wall-item__img" loading="lazy" />
                     <div className="gp-wall-item__corners" aria-hidden="true"><span /><span /><span /><span /></div>
                     <span className="gp-wall-item__ratio-badge">{WALLPAPERS[4].ratio}</span>
-                    <div className="gp-wall-item__overlay"><PinButton preview={WALLPAPERS[4].preview} seoAlt={WALLPAPERS[4].seoAlt} /></div>
                   </div>
                   <div className="gp-wall-item__footer">
                     <span className="gp-wall-item__phase" style={{ color: WALLPAPERS[4].phaseColor, borderColor: `${WALLPAPERS[4].phaseColor}44` }}>{WALLPAPERS[4].phase}</span>
@@ -480,9 +461,6 @@ export default function GhostPitchPage() {
         .gp-wall-layout { display: flex; flex-direction: column; gap: 12px; }
         .gp-wall-row2 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; align-items: start; }
         .gp-wall-squares { display: flex; flex-direction: column; gap: 12px; }
-
-        /* Pinterest button — ember colored */
-        .gp-pin-btn { display: inline-flex; align-items: center; gap: 5px; padding: 5px 10px; background: #e60023; color: #fff; border: none; border-radius: 2px; font-family: var(--font-space, monospace); font-size: 0.52rem; letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none; transition: background 0.2s, transform 0.15s; cursor: pointer; }
         .gp-pin-btn:hover { background: #c0001b; transform: translateY(-1px); }
 
         /* Collage */

@@ -20,7 +20,7 @@ function _writeCookieRaw(name: string, value: string, maxAge: number) {
   document.cookie = `${name}=${value}; max-age=${maxAge}; path=/; SameSite=Lax${secure}`;
 }
 
-// ── Stable anon ID ────────────────────────────────────────────────────────────
+// ── Stable anon ID — only created after explicit accept ──────────────────────
 function getAnonId(): string {
   let id = _readCookieRaw(ANON_ID_COOKIE);
   if (!id) {
@@ -97,7 +97,11 @@ async function readConsentFull(): Promise<ConsentState> {
 function writeConsent(value: "accepted" | "declined") {
   _writeConsentCookie(value);
   _writeLS(value);
-  _writeDB(value);
+  // Only write to DB (and create anon ID) when user explicitly accepts.
+  // When declining, we must not create tracking identifiers — GDPR compliant.
+  if (value === "accepted") {
+    _writeDB(value);
+  }
   window.dispatchEvent(new CustomEvent("hw-consent-change", { detail: value }));
 }
 

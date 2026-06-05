@@ -76,35 +76,12 @@ export default function LicensingPage() {
             <p>
               If you wish to use our artwork for commercial purposes — including
               product mockups, brand assets, merchandise, or editorial use — please
-              contact us to discuss a commercial licence.
+              <a href={`mailto:${CONTACT_EMAIL}`}> contact us</a> to discuss a commercial licence.
             </p>
             <p>
               Commercial licences are granted on a per-image or per-collection
               basis. Pricing is determined by intended use, distribution scale,
               and exclusivity.
-            </p>
-            <p>
-              Contact:{" "}
-              <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
-            </p>
-          </section>
-
-          <section className="static-section">
-            <h2>Premium Downloads</h2>
-            <p>
-              Some images and collections are available as paid &quot;Premium&quot;
-              downloads. Purchasing a premium download grants you an extended
-              personal licence, which includes:
-            </p>
-            <ul>
-              <li>Access to the highest available resolution file</li>
-              <li>Use across all of your personal devices</li>
-              <li>Use in personal print-on-demand items (for personal use only,
-                not for resale)</li>
-            </ul>
-            <p>
-              Premium downloads do not grant commercial rights unless a separate
-              commercial licence has been purchased.
             </p>
           </section>
 

@@ -112,7 +112,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 "@id": `${SITE_URL}/#organization`,
                 name: SITE_NAME, url: SITE_URL,
                 logo: { "@type": "ImageObject", url: OG_IMAGE, width: 1200, height: 630 },
-                sameAs: ["https://www.pinterest.com/TheFreemiumWallpapers/"],
+                sameAs: [],
                 description: "Free dark fantasy wallpapers for iPhone, Android and PC. Bold original AI art.",
                 contactPoint: { "@type": "ContactPoint", url: `${SITE_URL}/contact`, contactType: "Customer Support", availableLanguage: "en" },
               },
