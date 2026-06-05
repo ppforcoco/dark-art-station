@@ -393,12 +393,12 @@ export default function GhostPitchPage() {
         {/* ── WHY MATCHING SETS ── */}
         <section style={{ maxWidth: "1100px", margin: "clamp(64px,8vw,96px) auto 0", padding: "0 clamp(20px,5vw,60px)" }}>
           <div className="gp-why">
-            <h2 className="gp-why__title">Why Matching Sets Matter</h2>
+            <h2 className="gp-why__title">The Cursed Arena in Your Hands</h2>
             <p className="gp-why__body">
-              Your digital aesthetic should be as relentless as a striker who never stops running. Whether you are checking your watch before the final whistle, glancing at your phone at half-time, or commanding your PC setup from the dugout, the Ghost Pitch follows you. This collection is built for football fans who live in the dark hours — for anyone who believes the beautiful game never truly ends.
+              The floodlights of the Ghost Pitch do not just illuminate an empty stadium; they cast a permanent shadow across your screens. This collection is a digital haunting for football fans who find beauty in the sport&apos;s coldest, quietest hours. The spectral purple smoke, the frosted grass, and the unblinking eyes of the keeper are designed to turn your devices into active windows looking out onto a match that ended decades ago.
             </p>
             <p className="gp-why__body">
-              Season after season, the lights flicker on at 3 AM. Let your screens remind everyone — and yourself — that the pitch is always calling.
+              Every layout in this kit has been manually aligned to preserve the curse. The desktop background places you in the empty stands, watching the fog roll over the cold turf. When you look at your phone or your wrist, the perspective shifts closer to the action, confronting you with the tattered jersey of the striker and the glowing gaze of the goalkeeper. The game never ends, and now your screens are part of the stadium.
             </p>
             <div className="gp-why__tags">
               {["dark sports aesthetic", "horror football", "ghost pitch", "dark soccer wallpaper", "haunted stadium", "football horror", "dark athletic setup"].map((t) => (

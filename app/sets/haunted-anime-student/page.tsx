@@ -359,7 +359,6 @@ export default function CursedStudentPage() {
         >
           <div className="cs-cta-block">
             <div className="cs-cta-block__glow" aria-hidden="true" />
-            <span className="cs-cta-block__eyebrow">Free. No account. No watermarks.</span>
             <h2 className="cs-cta-block__title">Download the Complete Kit</h2>
             <p className="cs-cta-block__sub">
               All five wallpapers. Full 4K resolution. Every device covered.
@@ -577,7 +576,7 @@ export default function CursedStudentPage() {
           style={{
             maxWidth: "1100px",
             margin: "clamp(64px,8vw,96px) auto 0",
-            padding: "0 clamp(20px,5vw,60px)",
+            padding: "0 clamp(20px,5vw,60px) clamp(64px,8vw,96px)",
           }}
         >
           <div className="cs-why">
@@ -609,32 +608,6 @@ export default function CursedStudentPage() {
                 </span>
               ))}
             </div>
-          </div>
-        </section>
-        {/* ── EXPLORE MORE ── */}
-        <section style={{ maxWidth: "1100px", margin: "clamp(48px,7vw,80px) auto 0", padding: "0 clamp(20px,5vw,60px)" }}>
-          <div className="cs-section-head">
-            <span className="cs-section-eyebrow">Keep Exploring</span>
-            <h2 className="cs-section-title">Explore More Matching Sets</h2>
-          </div>
-          <div className="cs-explore-grid">
-            <Link href="/sets/whispering-woods" className="cs-explore-card cs-explore-card--link">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <div className="cs-explore-card__thumb">
-                <img
-                  src="https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/sets/The%20Whispering%20Woods%3A%20A%20Matching%20Dark%20Nature%20Setup%20Kit/whispering-woods-foggy-horror-forest-4k-deskto.webp"
-                  alt="The Whispering Woods matching dark nature horror wallpaper set"
-                  className="cs-explore-card__img"
-                  loading="lazy"
-                />
-                <span className="cs-explore-card__badge">Set No. 02</span>
-              </div>
-              <div className="cs-explore-card__body">
-                <h3 className="cs-explore-card__title">The Whispering Woods</h3>
-                <p className="cs-explore-card__desc">A dark nature horror aesthetic. The forest watches. Five 4K wallpapers for PC, phone, and smartwatch.</p>
-                <span className="cs-explore-card__cta">View Set →</span>
-              </div>
-            </Link>
           </div>
         </section>
       </div>
@@ -1125,16 +1098,6 @@ export default function CursedStudentPage() {
           background: radial-gradient(ellipse 60% 60% at 50% 50%, rgba(192,0,26,0.08), transparent);
           pointer-events: none;
         }
-        .cs-cta-block__eyebrow {
-          display: block;
-          font-family: var(--font-space, monospace);
-          font-size: 0.56rem;
-          letter-spacing: 0.24em;
-          text-transform: uppercase;
-          color: #60608a;
-          margin-bottom: 14px;
-          position: relative;
-        }
         .cs-cta-block__title {
           font-family: var(--font-cinzel, serif);
           font-size: clamp(1.4rem,3vw,2.2rem);
@@ -1178,75 +1141,6 @@ export default function CursedStudentPage() {
           color: #fff;
           background: rgba(192,0,26,0.1);
           box-shadow: 0 0 20px rgba(192,0,26,0.18);
-        }
-
-        /* ── Explore More Grid ── */
-        .cs-explore-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-          gap: clamp(16px,2.5vw,24px);
-        }
-        .cs-explore-card {
-          background: rgba(255,255,255,0.02);
-          border: 1px solid rgba(192,0,26,0.12);
-          overflow: hidden;
-          transition: border-color 0.3s, box-shadow 0.3s;
-          text-decoration: none;
-          display: block;
-        }
-        .cs-explore-card:hover {
-          border-color: rgba(192,0,26,0.35);
-          box-shadow: 0 0 30px rgba(192,0,26,0.05);
-        }
-        .cs-explore-card__thumb {
-          aspect-ratio: 16/9;
-          background: #08060e;
-          position: relative;
-          overflow: hidden;
-        }
-        .cs-explore-card__img {
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
-          display: block;
-          transition: transform 0.4s ease;
-        }
-        .cs-explore-card:hover .cs-explore-card__img { transform: scale(1.04); }
-        .cs-explore-card__badge {
-          position: absolute;
-          top: 8px; left: 10px;
-          font-family: var(--font-space, monospace);
-          font-size: 0.48rem;
-          letter-spacing: 0.18em;
-          text-transform: uppercase;
-          color: #c0001a;
-          background: rgba(0,0,0,0.75);
-          border: 1px solid rgba(192,0,26,0.35);
-          padding: 2px 7px;
-          border-radius: 2px;
-        }
-        .cs-explore-card__body { padding: clamp(14px,2vw,20px); }
-        .cs-explore-card__title {
-          font-family: var(--font-cinzel, serif);
-          font-size: 0.95rem;
-          font-weight: 700;
-          color: #f0e8d8;
-          margin: 0 0 8px;
-          letter-spacing: 0.04em;
-        }
-        .cs-explore-card__desc {
-          font-family: var(--font-cormorant, serif);
-          font-size: 0.9rem;
-          line-height: 1.65;
-          color: rgba(224,224,248,0.5);
-          margin: 0 0 10px;
-        }
-        .cs-explore-card__cta {
-          font-family: var(--font-space, monospace);
-          font-size: 0.56rem;
-          letter-spacing: 0.16em;
-          text-transform: uppercase;
-          color: #c0001a;
         }
 
         /* ── Set No Badge ── */

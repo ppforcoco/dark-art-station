@@ -255,7 +255,7 @@ export default function CyberpunkGamingHeroPage() {
             <span className="cs-cta-block__eyebrow">Free. No account. No watermarks.</span>
             <h2 className="cs-cta-block__title">Download the Complete Kit</h2>
             <p className="cs-cta-block__sub">
-              All five wallpapers. Full 4K resolution. Every device covered.
+              All six wallpapers. Full 4K resolution. Every device covered.
             </p>
             <div className="cs-cta-block__btns">
               {WALLPAPERS.map((w) => (
@@ -388,12 +388,12 @@ export default function CyberpunkGamingHeroPage() {
         {/* WHY SECTION */}
         <section style={{ maxWidth: "1100px", margin: "clamp(64px,8vw,96px) auto 0", padding: "0 clamp(20px,5vw,60px)" }}>
           <div className="cp-why">
-            <h2 className="cp-why__title">Why the Cyberpunk Hero Belongs on Every Screen</h2>
+            <h2 className="cp-why__title">Engineering the Cyberpunk Glitch Aesthetic</h2>
             <p className="cp-why__body">
-              Your gaming setup is more than hardware — it is a signal. The Terminal Paradox is built for those who live at the bleeding edge of digital culture, where aesthetics and performance are the same thing. Whether you are mid-session at your rig, glancing at your phone between rounds, or flexing your watch face in a Discord call, the Ghost follows you everywhere.
+              Cyberpunk horror thrives on high-contrast neon and digital corruption, which is why the Terminal Paradox set is designed to push your screens to their visual limits. This collection replaces standard, sterile wallpapers with high-voltage purple neon and deep obsidian values. Every image is designed to make your devices look like live terminals processing a system breach, rather than static corporate displays.
             </p>
             <p className="cp-why__body">
-              Every image in this kit has been manually crafted — not auto-cropped — so the neon phantom always lands in the right position on every form factor. The purple neon pops hardest on OLED screens, saving battery while delivering visual impact that generic wallpapers simply cannot match.
+              To maintain this visual identity across your entire ecosystem, each aspect ratio is handled individually. Rather than applying a single generic crop to every screen, the composition of the glitch phantom and the neon elements are repositioned specifically for widescreen monitors, vertical mobile lockscreens, and smartwatches. This manual optimization ensures that the deep black pixels preserve your battery on OLED displays while the neon elements pop with crisp detail.
             </p>
             <div className="cp-why__tags">
               {["cyberpunk", "neon gaming", "horror gaming", "OLED optimised", "glitch aesthetic", "4K wallpaper kit", "matching setup", "discord pfp", "gaming station"].map((t) => (

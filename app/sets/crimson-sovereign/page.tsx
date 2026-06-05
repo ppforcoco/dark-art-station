@@ -524,18 +524,21 @@ export default function CrimsonSovereignPage() {
           }}
         >
           <div className="cs-why">
-            <h2 className="cs-why__title">Why the Crimson Sovereign Belongs on Every Screen</h2>
+            <h2 className="cs-why__title">The Philosophy Behind the Sovereign's Aesthetic</h2>
             <p className="cs-why__body">
-              Your gaming setup is more than hardware — it is an identity. The Crimson Sovereign is
-              built for those who demand consistency across their entire digital ecosystem. Whether you
-              are mid-session at your fortress of a desk, checking notifications on your phone, or
-              glancing at your watch between rounds, the Sovereign's presence follows you.
+              Gothic fantasy is defined by its atmospheric weight, and the Crimson Sovereign collection
+              is built to bring that dark majesty to your hardware. Rather than standard digital
+              backgrounds, this set acts as a visual extension of the Crimson Fortress itself. The deep
+              obsidian shadows and vibrant red highlights are calibrated specifically to complement dark
+              mode interfaces, ensuring your desktop, mobile lockscreen, and smartwatch feel like
+              connected relics of a cohesive dark fantasy realm.
             </p>
             <p className="cs-why__body">
-              This collection is crafted for fans of Dark Fantasy, Gothic Gaming Aesthetics, and
-              high-impact OLED-first design. Every image in this kit has been manually tuned —
-              not auto-cropped — so the character always lands in the right position on every
-              form factor.
+              Every layout in this kit has been manually composed for its respective screen size. Instead
+              of relying on automated center-cropping — which often cuts out key environmental details —
+              the composition of the castle gates, the Sentinel, and the Sovereign are adjusted
+              individually to preserve the dramatic perspective on widescreen monitors, vertical mobile
+              displays, and square smartwatch faces alike.
             </p>
 
             <div className="cs-why__tags">
