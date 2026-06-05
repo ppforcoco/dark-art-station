@@ -100,6 +100,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {process.env.NEXT_PUBLIC_GSC_VERIFICATION && (
           <meta name="google-site-verification" content={process.env.NEXT_PUBLIC_GSC_VERIFICATION} />
         )}
+
+        {/* ── Google AdSense ───────────────────────────────────────────── */}
+        <script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4048523199842586"
+          crossOrigin="anonymous"
+        />
       </head>
 
       <body>
