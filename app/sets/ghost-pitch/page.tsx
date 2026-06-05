@@ -211,7 +211,36 @@ export default function GhostPitchPage() {
               Download the complete Ghost Pitch matching wallpaper set. 4K dark athletic backgrounds for iPhone, PC, and Smartwatch — the ultimate horror aesthetic for football fans who refuse to leave the field.
             </p>
           </div>
-        </header>
+
+        {/* ── QUICK DOWNLOAD — top of page ── */}
+        <section
+          style={{
+            maxWidth: "1100px",
+            margin: "clamp(32px,5vw,48px) auto 0",
+            padding: "0 clamp(20px,5vw,60px)",
+          }}
+        >
+          <div className="cs-cta-block">
+            <div className="cs-cta-block__glow" aria-hidden="true" />
+            <span className="cs-cta-block__eyebrow">Free. No account. No watermarks.</span>
+            <h2 className="cs-cta-block__title">Download the Complete Kit</h2>
+            <p className="cs-cta-block__sub">
+              All five wallpapers. Full 4K resolution. Every device covered.
+            </p>
+            <div className="cs-cta-block__btns">
+              {WALLPAPERS.map((w) => (
+                <a
+                  key={w.id}
+                  href={w.download}
+                  download={w.filename}
+                  className="cs-cta-btn"
+                >
+                  {w.label}
+                </a>
+              ))}
+            </div>
+          </div>
+        </section>
 
         {/* ── LORE ── */}
         <section style={{ maxWidth: "1100px", margin: "clamp(48px,7vw,80px) auto 0", padding: "0 clamp(20px,5vw,60px)" }}>
@@ -427,13 +456,6 @@ export default function GhostPitchPage() {
             </Link>
           </div>
         </section>
-
-        {/* ── BACK LINK ── */}
-        <div style={{ maxWidth: "1100px", margin: "clamp(48px,7vw,80px) auto 0", padding: "0 clamp(20px,5vw,60px) 48px", borderTop: "1px solid rgba(232,124,30,0.15)", paddingTop: "32px" }}>
-          <Link href="/sets" style={{ fontFamily: "var(--font-space, monospace)", fontSize: "0.65rem", letterSpacing: "0.18em", textTransform: "uppercase", color: "#60608a", textDecoration: "none" }}>
-            ← All Matching Sets
-          </Link>
-        </div>
       </div>
 
       <style>{`

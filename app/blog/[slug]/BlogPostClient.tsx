@@ -211,7 +211,6 @@ export default function BlogPostClient({ post, allPosts }: { post: Post; allPost
           <div className="blog-wallpaper-cta-links">
             <Link href="/shop/dark-creatures-world"  className="blog-wallpaper-cta-btn">Dark Creatures</Link>
             <Link href="/shop/the-anime-world"       className="blog-wallpaper-cta-btn">Anime World</Link>
-            <Link href="/shop/the-bone-street"       className="blog-wallpaper-cta-btn">Bone Street</Link>
             <Link href="/shop/the-character-ward"    className="blog-wallpaper-cta-btn">Character Ward</Link>
           </div>
         </div>
