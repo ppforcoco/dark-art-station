@@ -141,9 +141,6 @@ export default async function BlogPage() {
 
       <div className="blog-index-body">
 
-        <div className="blog-index-ad">
-        </div>
-
         {posts.length === 0 ? (
           <div className="blog-index-empty">
             <p className="blog-index-empty-glyph">✦</p>
@@ -247,9 +244,6 @@ export default async function BlogPage() {
             )}
           </>
         )}
-
-        <div className="blog-index-ad">
-        </div>
 
       </div>
 

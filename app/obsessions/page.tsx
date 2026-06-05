@@ -188,10 +188,6 @@ export default async function ObsessionsPage() {
                   })}
                 </div>
 
-                {groupIdx % 2 === 1 && (
-                  <div style={{ marginTop: "28px", display: "flex", justifyContent: "center" }}>
-                  </div>
-                )}
               </div>
             ))}
           </>

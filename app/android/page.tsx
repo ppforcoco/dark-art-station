@@ -16,9 +16,6 @@ export const revalidate = 3600;
 
 const PAGE_SIZE = 24;
 
-// Lock state is computed client-side only in WallpaperCardGrid to avoid
-// React hydration mismatch (error #418) from Date.now() differing SSR vs client.
-
 interface PageProps {
   searchParams: Promise<{ tag?: string; page?: string }>;
 }
@@ -63,10 +60,6 @@ export default async function AndroidPage({ searchParams }: PageProps) {
   const { tag, page: rawPage } = await searchParams;
   const page = Math.max(1, parseInt(rawPage ?? "1", 10) || 1);
   const skip = (page - 1) * PAGE_SIZE;
-
-  // true  = currently LOCKED   → premium images hidden, show "BACK IN [countdown]"
-  // false = currently UNLOCKED → premium images visible, show "GONE IN [countdown]"
-  // isLockedGlobal removed — WallpaperCardGrid handles lock state client-side
 
   const where = {
     collectionId: null,
@@ -247,7 +240,7 @@ export default async function AndroidPage({ searchParams }: PageProps) {
             <div className="hw-coming-soon__sigil">✦ ☽ ✦</div>
             <div className="hw-coming-soon__bar" />
             <h2 className="hw-coming-soon__title">Something went wrong</h2>
-            <p className="hw-coming-soon__title">Could not load wallpapers. Please try again shortly.</p>
+            <p className="hw-coming-soon__sub">Could not load wallpapers. Please try again shortly.</p>
           </div>
         ) : images.length === 0 ? (
           <div className="hw-coming-soon">
@@ -295,7 +288,7 @@ export default async function AndroidPage({ searchParams }: PageProps) {
           textTransform: "uppercase",
           color: "#4a445a",
           marginBottom: "20px",
-        }}>Too bright for you? Explore more darkness</p>
+        }}>Also available for</p>
         <div style={{ display: "flex", gap: "14px", justifyContent: "center", flexWrap: "wrap" }}>
           <Link href="/iphone" className="hw-crosslink-btn">📱 iPhone Wallpapers</Link>
           <Link href="/pc" className="hw-crosslink-btn">🖥 Desktop PC Nightmares</Link>

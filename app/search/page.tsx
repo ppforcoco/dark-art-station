@@ -229,10 +229,6 @@ export default async function SearchPage({
               {results.map((item, idx) => (
                 <>
                   <ResultCard key={item.id} item={item} index={idx} total={results.length} />
-                  {idx === 5 && (
-                    <div key="search-mid-ad" style={{ gridColumn: "1 / -1" }}>
-                    </div>
-                  )}
                 </>
               ))}
             </div>

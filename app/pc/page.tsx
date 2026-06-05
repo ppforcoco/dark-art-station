@@ -51,9 +51,6 @@ export default async function PcPage({ searchParams }: PageProps) {
   const page = Math.max(1, parseInt(rawPage ?? "1", 10) || 1);
   const skip = (page - 1) * PAGE_SIZE;
 
-  // NOTE: sortOrder removed — column not yet migrated in production DB.
-  // Using createdAt desc ordering instead. Re-add sortOrder after running:
-  //   npx prisma migrate deploy
   const where = {
     collectionId: null,
     deviceType: "PC" as const,
@@ -83,7 +80,6 @@ export default async function PcPage({ searchParams }: PageProps) {
     pageContent = content;
     images = imagesRaw;
 
-    // Count tag frequency and pick top 6 - replaced with hardcoded categories below
     topTags = ["skeletons","minimal","dark-humor","gaming","cyberpunk","lofi","anime","dark-fantasy","gothic"];
 
   } catch (err) {
@@ -212,7 +208,7 @@ export default async function PcPage({ searchParams }: PageProps) {
 
       <section style={{ maxWidth: "860px", margin: "0 auto", padding: "40px 24px 64px", borderTop: "1px solid rgba(192,0,26,0.18)", textAlign: "center" }}>
         <p style={{ fontFamily: "var(--font-space, monospace)", fontSize: "0.6rem", letterSpacing: "0.22em", textTransform: "uppercase", color: "#4a445a", marginBottom: "20px" }}>
-          Too bright for you? Explore more darkness
+          Also available for
         </p>
         <div style={{ display: "flex", gap: "14px", justifyContent: "center", flexWrap: "wrap" }}>
           <Link href="/iphone" className="hw-crosslink-btn">📱 iPhone Wallpapers</Link>
