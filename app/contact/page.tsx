@@ -21,9 +21,6 @@ export default function ContactPage() {
         <header className="static-page-header">
           <p className="static-page-label">Reach Out</p>
           <h1 className="static-page-title">Contact<br /><em>Us</em></h1>
-          <p className="static-page-meta">
-            We read every message. Response time is typically 1–3 business days.
-          </p>
         </header>
 
         <div className="static-page-body">

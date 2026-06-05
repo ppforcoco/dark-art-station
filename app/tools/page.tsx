@@ -3,7 +3,6 @@
 import { useState, useRef, useCallback, useEffect } from "react";
 
 export const dynamic = "force-dynamic";
-// AdSlot removed — disabled pending AdSense approval
 
 type ActiveTool = "resizer" | "darkener" | "upscaler" | "text" | "blur" | "split" | "oled" | "lockscreen";
 type ImgFormat = "jpeg" | "png" | "webp";
@@ -91,7 +90,6 @@ function ResizerTool() {
     }
   }, []);
 
-  // Render whenever img/preset/fit changes — useEffect runs after DOM update
   useEffect(() => {
     if (img) render(img, preset, fit);
   }, [img, preset, fit, render]);
@@ -127,7 +125,6 @@ function ResizerTool() {
     <div className="tool-body">
       <p className="tool-desc">Upload any image and export it at the exact resolution of your device. Runs entirely in your browser — nothing is uploaded anywhere.</p>
 
-      {/* Drop zone */}
       <div
         className={`tool-drop ${img ? "tool-drop--filled" : ""}`}
         onClick={() => document.getElementById("resizer-input")?.click()}
@@ -151,7 +148,7 @@ function ResizerTool() {
       </div>
 
       {img && <>
-        {/* Device presets */}
+
         <div className="tool-section">
           <p className="tool-label">Target Device</p>
           <div className="tool-preset-grid">
@@ -166,8 +163,6 @@ function ResizerTool() {
             ))}
           </div>
         </div>
-
-        {/* Fit mode */}
         <div className="tool-section">
           <p className="tool-label">Fit Mode</p>
           <div className="tool-fit-row">
@@ -231,7 +226,6 @@ function DarkenerTool() {
     ctx.fillRect(0, 0, canvas.width, canvas.height);
   }, []);
 
-  // Re-render when img first loads
   useEffect(() => {
     if (img) render(img, color, opacity, brightness);
   }, [img]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -287,7 +281,6 @@ function DarkenerTool() {
       </div>
 
       {img && <>
-        {/* Colour picker */}
         <div className="tool-section">
           <p className="tool-label">Overlay Colour</p>
           <div className="tool-color-row">
@@ -305,7 +298,6 @@ function DarkenerTool() {
           </div>
         </div>
 
-        {/* Sliders */}
         <div className="tool-section">
           <p className="tool-label">Overlay Intensity — <strong>{opacity}%</strong></p>
           <input type="range" min={0} max={90} value={opacity} className="tool-range"
@@ -376,13 +368,10 @@ function UpscalerTool() {
     if (!img) return;
     setStatus("processing");
 
-    // Use setTimeout so UI can update before heavy canvas work
     setTimeout(() => {
       const targetW = img.width  * factor;
       const targetH = img.height * factor;
 
-      // Step-up upscaling: always double in steps for best sharpness
-      // Each step uses high-quality smoothing to preserve detail
       let current: HTMLCanvasElement = document.createElement("canvas");
       current.width  = img.width;
       current.height = img.height;
@@ -542,7 +531,6 @@ function TextTool() {
     const scaledSize = Math.round(sz * scale);
 
     const doDraw = () => {
-      // Redraw image first (font load may have cleared it)
       ctx.drawImage(image, 0, 0, c.width, c.height);
       ctx.font = `bold ${scaledSize}px ${f}`;
       ctx.textAlign = al as CanvasTextAlign;
@@ -562,7 +550,6 @@ function TextTool() {
       ctx.globalAlpha = 1; ctx.shadowColor = "transparent"; ctx.shadowBlur = 0;
     };
 
-    // Wait for font to be ready, then draw
     if (document.fonts) {
       document.fonts.load(`bold ${scaledSize}px ${f}`).then(doDraw).catch(doDraw);
     } else {
@@ -858,7 +845,6 @@ function SplitTool() {
   const lockRef = useRef<HTMLCanvasElement>(null);
   const homeRef = useRef<HTMLCanvasElement>(null);
 
-  // Lock screen: left half | Home screen: right half
   const render = useCallback((image: HTMLImageElement) => {
     const half = image.width / 2;
     const h    = image.height;
@@ -973,49 +959,6 @@ function SplitTool() {
   );
 }
 
-// ─── Page ─────────────────────────────────────────────────────────────────────
-
-// ─── SEO intro block (server-renderable text for Google) ─────────────────────
-// This renders above the interactive tools. It gives Google real text content
-// to evaluate so the page is not treated as thin/empty.
-const TOOL_DESCRIPTIONS = [
-  {
-    id: "resizer",
-    name: "Wallpaper Resizer",
-    desc: "Upload any image and export it at the exact pixel dimensions of your phone or monitor. Supports iPhone 16 Pro, iPhone 14/15, Samsung Galaxy S24, Google Pixel 9, Android generic, PC 4K UHD, 1440p, and 1080p. Choose between fill (crop to fit), contain (letterbox), or stretch modes. Output as JPG, PNG, or WebP. Everything runs in your browser — nothing is uploaded to any server.",
-  },
-  {
-    id: "darkener",
-    name: "Dark Overlay Tool",
-    desc: "Add a colour-tinted dark overlay to any wallpaper. Choose from Crimson, Void, Midnight, Gold, Purple, Emerald, Slate, or Ember presets — or set a custom opacity. Ideal for creating AMOLED-optimised wallpapers with deeper blacks, or tinting a bright image into a dark aesthetic.",
-  },
-  {
-    id: "blur",
-    name: "Background Blur",
-    desc: "Apply a Gaussian blur effect to any wallpaper. Useful for creating soft, out-of-focus backgrounds for lock screens where you want a clean look without hard edges. Adjust blur intensity from subtle to heavy.",
-  },
-  {
-    id: "text",
-    name: "Text Overlay",
-    desc: "Add custom text on top of any wallpaper. Set the font size, colour, and position. Perfect for adding a quote, name, or phrase to your wallpaper before downloading.",
-  },
-  {
-    id: "split",
-    name: "Dual-Screen Splitter",
-    desc: "Split a wide image into two equal halves for dual-monitor setups. Upload a panoramic or ultrawide image and download both halves separately, perfectly aligned so they display as one continuous image across two screens.",
-  },
-  {
-    id: "oled",
-    name: "OLED Battery Savings Calculator",
-    desc: "Find out exactly how much battery life you save by switching to a true black (#000000) wallpaper. OLED and AMOLED displays power off individual pixels for black, consuming near-zero energy. This calculator uses your phone's battery capacity and screen-on hours to estimate real daily mAh savings and extra screen time gained.",
-  },
-  {
-    id: "lockscreen",
-    name: "Lock Screen Previewer",
-    desc: "Preview any wallpaper as a simulated iPhone or Android lock screen before downloading. Toggle the clock, date, notification banners, and app icon dock to see exactly what gets covered — so the eyes of the creature aren't hidden by the time widget.",
-  },
-];
-
 // ─── OLED Battery Savings Calculator ─────────────────────────────────────────
 const OLED_PHONES = [
   { label: "iPhone 15 Pro",        brand: "Apple",   nits: 2000, res: [1179,2556], ppi: 460, oled: true,  battMah: 3274, screenInch: 6.1 },
@@ -1030,17 +973,10 @@ const OLED_PHONES = [
   { label: "OnePlus 12",           brand: "OnePlus", nits: 4500, res: [1440,3168], ppi: 510, oled: true,  battMah: 5400, screenInch: 6.82 },
 ];
 
-// Research basis: OLED pixels consume ~0W for true black (#000000) vs full white which
-// can draw up to ~25-40% of total device power on OLED screens (source: DisplayMate).
-// Average reduction for true-black vs avg mixed-white wallpaper: ~8-18% screen power.
-// Screen typically consumes 30-40% of total battery on active use.
 function calcOledSavings(phone: typeof OLED_PHONES[0], hoursPerDay: number) {
-  // Screen % of battery (conservative)
   const screenBattPct = 0.35;
-  const screenMahPerHour = (phone.battMah * screenBattPct) / 24; // mAh screen uses per hour
-  // White wallpaper baseline — screen at ~80% brightness = high power
+  const screenMahPerHour = (phone.battMah * screenBattPct) / 24;
   const whitePixelPower = screenMahPerHour * hoursPerDay;
-  // True black saves ~30% of screen energy on OLED (conservative from DisplayMate data)
   const savingPct = 0.30;
   const savedMah = whitePixelPower * savingPct;
   const savedPct = (savedMah / phone.battMah) * 100;
@@ -1084,8 +1020,6 @@ function OledTool() {
           onChange={e => setHours(Number(e.target.value))} />
         <p className="tool-hint">Average smartphone user: 4–5 hrs/day screen-on time.</p>
       </div>
-
-      {/* Results card */}
       <div className="oled-result">
         <div className="oled-result-header">
           <span className="oled-result-phone">{selected.label}</span>
@@ -1133,7 +1067,6 @@ const LS_DEVICES = [
 ] as const;
 
 function LockScreenTool() {
-  // Support ?wallpaper=URL query param for direct-from-site preview
   const [imgUrl, setImgUrl]         = useState<string | null>(() => {
     if (typeof window !== "undefined") {
       const p = new URLSearchParams(window.location.search);
@@ -1154,7 +1087,6 @@ function LockScreenTool() {
   const [showNotif, setShowNotif]   = useState(false);
   const [clockPos, setClockPos]     = useState<"top"|"middle">("top");
 
-  // Also read URL params on mount
   useEffect(() => {
     const p = new URLSearchParams(window.location.search);
     const w = p.get("wallpaper");
@@ -1170,7 +1102,6 @@ function LockScreenTool() {
     setImgTitle(file.name.replace(/\.[^.]+$/, ""));
   }
 
-  // Scale the mock to fit panel
   const MOCK_W = 260;
   const MOCK_H = Math.round((device.h / device.w) * MOCK_W);
   const scale  = MOCK_W / device.w;
@@ -1211,8 +1142,6 @@ function LockScreenTool() {
           </button>
         </div>
       )}
-
-      {/* Upload */}
       {!imgUrl && (
         <div
           className="tool-drop"
@@ -1229,8 +1158,6 @@ function LockScreenTool() {
           </div>
         </div>
       )}
-
-      {/* Controls row */}
       <div className="tool-section">
         <p className="tool-label">Device Frame</p>
         <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
@@ -1397,8 +1324,6 @@ export default function ToolsPage() {
       </div>
 
       <div className="tools-layout">
-
-        {/* Sidebar */}
         <nav className="tools-nav">
           {TOOLS.map(t => (
             <button key={t.id}
@@ -1413,8 +1338,6 @@ export default function ToolsPage() {
             </button>
           ))}
         </nav>
-
-        {/* Panel */}
         <div className="tools-panel">
           <h2 className="tools-panel-title">
             {TOOLS.find(t => t.id === active)?.icon}{" "}

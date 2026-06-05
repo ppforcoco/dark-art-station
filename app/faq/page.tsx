@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-// AdSlot removed — disabled pending AdSense approval
 import { getPageContent } from "@/lib/db";
 import Breadcrumbs from "@/components/Breadcrumbs";
 

@@ -18,14 +18,9 @@ export default function PWARegister() {
       navigator.serviceWorker
         .register("/sw.js", { scope: "/" })
         .then((reg) => {
-          // Check for updates on every page load
           reg.update().catch(() => {});
-          console.log("[HW] SW registered:", reg.scope);
         })
-        .catch((err) => {
-          // SW failed to register — site still works, just without offline support
-          console.warn("[HW] SW registration failed:", err);
-        });
+        .catch(() => {});;
     };
 
     if (document.readyState === "complete") {
