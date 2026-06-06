@@ -31,11 +31,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${siteUrl}/contact`,       lastModified: new Date(), changeFrequency: "monthly" as const, priority: 0.4  },
     { url: `${siteUrl}/licensing`,     lastModified: new Date(), changeFrequency: "monthly" as const, priority: 0.4  },
     { url: `${siteUrl}/privacy`,       lastModified: new Date(), changeFrequency: "monthly" as const, priority: 0.3  },
-    { url: `${siteUrl}/terms`,         lastModified: new Date(), changeFrequency: "monthly" as const, priority: 0.3  },
     { url: `${siteUrl}/dmca`,          lastModified: new Date(), changeFrequency: "yearly"  as const, priority: 0.3  },
   ];
-
-
 
   // ✅ Wrap all DB calls in try/catch so a DB blip never breaks the sitemap response
   try {
