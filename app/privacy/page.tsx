@@ -62,7 +62,7 @@ export default function PrivacyPage() {
               <li><strong>Advertising cookies:</strong> Used by our advertising partners to serve relevant ads. See the AdSense section below for full details.</li>
             </ul>
             <h3>Advertising Cookies &amp; Your Choices</h3>
-            <p>Advertising cookies are enabled by default to allow us to serve ads and keep the Site free. When you first visit the Site, a cookie consent banner is displayed. If you click &quot;Decline,&quot; ad personalisation will be disabled — you may still see ads, but they will not be tailored to your interests.</p>
+            <p>Advertising cookies may be used to show ads and help keep the Site free. Your choices can be managed through our cookie banner, browser settings, and Google&apos;s advertising controls.</p>
             <p>You can also opt out of personalised advertising at any time via <a href="https://www.google.com/settings/ads" target="_blank" rel="noopener noreferrer">Google&apos;s Ads Settings</a>.</p>
             <h3>Managing Cookies</h3>
             <p>You can control and/or delete cookies at any time through your browser settings. Disabling cookies may affect certain functionality of the Site. For more information visit <a href="https://www.allaboutcookies.org" target="_blank" rel="noopener noreferrer">allaboutcookies.org</a>.</p>
@@ -114,7 +114,6 @@ export default function PrivacyPage() {
               <li>The right to withdraw consent where processing is based on consent</li>
               <li>The right to lodge a complaint with a supervisory authority</li>
             </ul>
-            <p>To exercise any of these rights, please contact us at <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>.</p>
           </section>
           <section className="static-section">
             <h2>10. Third-Party Links</h2>
