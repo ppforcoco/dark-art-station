@@ -54,7 +54,7 @@ export function sanitizeAdminHtml(raw: string): string {
   let match;
   while ((match = pRegex.exec(html)) !== null) {
     const inner = match[1]
-      .replace(/<(?!\\/?(em|strong|span|a|b|i|u|mark|code|abbr)\b)[^>]+>/gi, "")
+      .replace(/<(?!\/?(?:em|strong|span|a|b|i|u|mark|code|abbr)\b)[^>]+>/gi, "")
       .replace(/\s+style="[^"]*"/gi, "")
       .replace(/\s+style='[^']*'/gi, "")
       .replace(/\s+class="[^"]*"/gi, "")
