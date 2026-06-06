@@ -281,7 +281,7 @@ export default function GhostPitchPage() {
               <div className="gp-wall-item__footer">
                 <span className="gp-wall-item__phase" style={{ color: WALLPAPERS[0].phaseColor, borderColor: `${WALLPAPERS[0].phaseColor}44` }}>{WALLPAPERS[0].phase}</span>
                 <span className="gp-wall-item__label">{WALLPAPERS[0].label}</span>
-              <a href="#download-kit" className="sets-dl-hint">↓ Download 4K</a></div>
+              </div>
             </div>
 
             {/* Row 2: two 9:16 + square stack */}
@@ -298,7 +298,7 @@ export default function GhostPitchPage() {
                 <div className="gp-wall-item__footer">
                   <span className="gp-wall-item__phase" style={{ color: WALLPAPERS[1].phaseColor, borderColor: `${WALLPAPERS[1].phaseColor}44` }}>{WALLPAPERS[1].phase}</span>
                   <span className="gp-wall-item__label">{WALLPAPERS[1].label}</span>
-                <a href="#download-kit" className="sets-dl-hint">↓ Download 4K</a></div>
+                </div>
               </div>
 
               {/* Ball homescreen */}
@@ -312,7 +312,7 @@ export default function GhostPitchPage() {
                 <div className="gp-wall-item__footer">
                   <span className="gp-wall-item__phase" style={{ color: WALLPAPERS[2].phaseColor, borderColor: `${WALLPAPERS[2].phaseColor}44` }}>{WALLPAPERS[2].phase}</span>
                   <span className="gp-wall-item__label">{WALLPAPERS[2].label}</span>
-                <a href="#download-kit" className="sets-dl-hint">↓ Download 4K</a></div>
+                </div>
               </div>
 
               {/* Squares: keeper + avatar */}
@@ -327,7 +327,7 @@ export default function GhostPitchPage() {
                   <div className="gp-wall-item__footer">
                     <span className="gp-wall-item__phase" style={{ color: WALLPAPERS[3].phaseColor, borderColor: `${WALLPAPERS[3].phaseColor}44` }}>{WALLPAPERS[3].phase}</span>
                     <span className="gp-wall-item__label">{WALLPAPERS[3].label}</span>
-                  <a href="#download-kit" className="sets-dl-hint">↓ Download 4K</a></div>
+                  </div>
                 </div>
                 <div className="gp-wall-item">
                   <div className="gp-wall-item__frame gp-wall-item__frame--1-1">
@@ -339,7 +339,7 @@ export default function GhostPitchPage() {
                   <div className="gp-wall-item__footer">
                     <span className="gp-wall-item__phase" style={{ color: WALLPAPERS[4].phaseColor, borderColor: `${WALLPAPERS[4].phaseColor}44` }}>{WALLPAPERS[4].phase}</span>
                     <span className="gp-wall-item__label">{WALLPAPERS[4].label}</span>
-                  <a href="#download-kit" className="sets-dl-hint">↓ Download 4K</a></div>
+                  </div>
                 </div>
               </div>
 

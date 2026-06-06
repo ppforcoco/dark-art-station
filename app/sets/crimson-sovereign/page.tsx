@@ -411,7 +411,7 @@ export default function CrimsonSovereignPage() {
                   </div>
                   <div className="cs-wall-item__footer">
                     <span className="cs-wall-item__label">{w.label}</span>
-                  <a href="#download-kit" className="sets-dl-hint">↓ Download 4K</a></div>
+                  </div>
                 </div>
               ))}
             </div>
@@ -429,7 +429,7 @@ export default function CrimsonSovereignPage() {
                   </div>
                   <div className="cs-wall-item__footer">
                     <span className="cs-wall-item__label">{w.label}</span>
-                  <a href="#download-kit" className="sets-dl-hint">↓ Download 4K</a></div>
+                  </div>
                 </div>
               ))}
             </div>
@@ -447,7 +447,7 @@ export default function CrimsonSovereignPage() {
                   </div>
                   <div className="cs-wall-item__footer">
                     <span className="cs-wall-item__label">{w.label}</span>
-                  <a href="#download-kit" className="sets-dl-hint">↓ Download 4K</a></div>
+                  </div>
                 </div>
               ))}
             </div>

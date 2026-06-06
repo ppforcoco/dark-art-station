@@ -309,7 +309,7 @@ export default function CyberpunkGamingHeroPage() {
                 <img src={WALLPAPERS[0].preview} alt={WALLPAPERS[0].seoAlt} className="cp-wall-item__img" loading="eager" />
                 <div className="cp-wall-item__corners" aria-hidden="true"><span /><span /><span /><span /></div>
               </div>
-              <div className="cp-wall-item__footer"><span className="cp-wall-item__label">{WALLPAPERS[0].label}</span><a href="#download-kit" className="sets-dl-hint">↓ Download 4K</a></div>
+              <div className="cp-wall-item__footer"><span className="cp-wall-item__label">{WALLPAPERS[0].label}</span></div>
             </div>
 
             {/* Row 2: 3 portrait phone wallpapers — full-body, homescreen, lockscreen */}
@@ -321,7 +321,7 @@ export default function CyberpunkGamingHeroPage() {
                     <img src={w.preview} alt={w.seoAlt} className="cp-wall-item__img" loading="lazy" />
                     <div className="cp-wall-item__corners" aria-hidden="true"><span /><span /><span /><span /></div>
                   </div>
-                  <div className="cp-wall-item__footer"><span className="cp-wall-item__label">{w.label}</span><a href="#download-kit" className="sets-dl-hint">↓ Download 4K</a></div>
+                  <div className="cp-wall-item__footer"><span className="cp-wall-item__label">{w.label}</span></div>
                 </div>
               ))}
             </div>
@@ -335,7 +335,7 @@ export default function CyberpunkGamingHeroPage() {
                     <img src={w.preview} alt={w.seoAlt} className="cp-wall-item__img" loading="lazy" />
                     <div className="cp-wall-item__corners" aria-hidden="true"><span /><span /><span /><span /></div>
                   </div>
-                  <div className="cp-wall-item__footer"><span className="cp-wall-item__label">{w.label}</span><a href="#download-kit" className="sets-dl-hint">↓ Download 4K</a></div>
+                  <div className="cp-wall-item__footer"><span className="cp-wall-item__label">{w.label}</span></div>
                 </div>
               ))}
             </div>
