@@ -47,9 +47,6 @@ const nextConfig: NextConfig = {
   compress: true,
   serverExternalPackages: ["@prisma/client"],
 
-  // Disable Next.js font optimization AND automatic Inter injection.
-  // The app uses system fonts (Arial/system-ui) — no web fonts needed.
-  optimizeFonts: false,
   experimental: {},
 
   async headers() {
