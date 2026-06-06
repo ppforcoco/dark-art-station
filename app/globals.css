@@ -2891,7 +2891,23 @@ body:has([data-force-blog="true"]) .site-footer {
   background: #cdc8bc !important;
 /* ── Image description HTML renderer ─────────────────────────────────────────
    Styles for rich HTML descriptions written in the admin panel.             */
-.image-description-html { color: #a89bc0; line-height: 1.85; }.image-description-html p { margin-bottom: 0.9em; }.image-description-html strong,
+.image-description-html {
+  color: #a89bc0;
+  line-height: 1.85;
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  box-sizing: border-box;
+}
+.image-description-html * {
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+.image-description-html p { margin-bottom: 0.9em; }.image-description-html strong,
 .image-description-html b {
   color: #e8e4f8; font-weight: 600;
 }.image-description-html em,
@@ -8025,6 +8041,10 @@ body:has(.blog-post-page) .site-header,
         .hw-img-arrow--next {
           right: -18px;
         }
+        /* Allow arrows to overflow the image container on desktop */
+        .shop-detail-image-wrap > div {
+          overflow: visible !important;
+        }
         @media (max-width: 480px) {
           .hw-img-arrow--prev {
             left: 6px;
@@ -8036,6 +8056,10 @@ body:has(.blog-post-page) .site-header,
             width: 32px;
             height: 54px;
             background: rgba(0, 0, 0, 0.6);
+          }
+          /* Restore overflow hidden on mobile so arrows stay inside */
+          .shop-detail-image-wrap > div {
+            overflow: hidden !important;
           }
         }
         @media (min-width: 768px) {

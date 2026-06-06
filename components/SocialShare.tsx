@@ -1,6 +1,8 @@
 // components/SocialShare.tsx
 'use client';
 
+import { useState, useEffect } from "react";
+
 interface SocialShareProps {
   title:    string;
   imageUrl: string;
@@ -54,6 +56,11 @@ export default function SocialShare({ title, imageUrl, pageUrl }: SocialSharePro
     whatsapp:  `https://wa.me/?text=${encodeURIComponent(`${text} ${url}`)}`,
   };
 
+  // ── Hydration-safe: only detect navigator.share on the client ──
+  const [canShare, setCanShare] = useState(false);
+  useEffect(() => {
+    setCanShare(typeof navigator !== "undefined" && !!navigator.share);
+  }, []);
 
   // Web Share API — fires native share sheet on mobile
   const handleNativeShare = async () => {
@@ -65,8 +72,6 @@ export default function SocialShare({ title, imageUrl, pageUrl }: SocialSharePro
       }
     }
   };
-
-  const canShare = typeof navigator !== "undefined" && !!navigator.share;
 
   return (
     <div className="social-share">

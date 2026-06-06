@@ -19,18 +19,12 @@ export function sanitizeAdminHtml(raw: string): string {
 
   // ── Phase 1: Nuke entire block-level non-prose elements ──────────────────
 
-  // Remove <style>…</style>
   html = html.replace(/<style[\s\S]*?<\/style>/gi, "");
-  // Remove <script>…</script>
   html = html.replace(/<script[\s\S]*?<\/script>/gi, "");
-  // Remove <head>…</head>
   html = html.replace(/<head[\s\S]*?<\/head>/gi, "");
-  // Remove <svg>…</svg>  (kills ALL inline SVGs/illustrations)
   html = html.replace(/<svg[\s\S]*?<\/svg>/gi, "");
-  // Remove <noscript>
   html = html.replace(/<noscript[\s\S]*?<\/noscript>/gi, "");
 
-  // Remove paired non-prose tags AND their contents entirely
   const NUKE_PAIRED = [
     "canvas","video","audio","iframe","embed","object",
     "picture","figure","map","table","thead","tbody","tfoot",
@@ -40,7 +34,6 @@ export function sanitizeAdminHtml(raw: string): string {
     html = html.replace(new RegExp(`<${tag}[\\s\\S]*?<\\/${tag}>`, "gi"), "");
   }
 
-  // Remove self-closing / void non-prose tags
   const NUKE_VOID = ["img","input","br","hr","source","track","area","col","link","meta","base","wbr"];
   for (const tag of NUKE_VOID) {
     html = html.replace(new RegExp(`<${tag}[^>]*\\/?>`, "gi"), " ");
@@ -50,15 +43,18 @@ export function sanitizeAdminHtml(raw: string): string {
   const bodyMatch = html.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
   if (bodyMatch) html = bodyMatch[1];
 
-  // ── Phase 3: Collect all <p> paragraphs ─────────────────────────────────
+  // ── Phase 3: Strip block wrapper tags that cause React #418 hydration
+  //    mismatch — remove div/section/article/header/footer/main/nav open+close
+  //    tags but KEEP their inner content so text is preserved ────────────────
+  html = html.replace(/<\/?(?:div|section|article|aside|header|footer|main|nav|body|html)[^>]*>/gi, " ");
+
+  // ── Phase 4: Collect all <p> paragraphs ──────────────────────────────────
   const paragraphs: string[] = [];
   const pRegex = /<p[^>]*>([\s\S]*?)<\/p>/gi;
   let match;
   while ((match = pRegex.exec(html)) !== null) {
     const inner = match[1]
-      // strip any remaining tags inside <p> except em, strong, span, a
-      .replace(/<(?!\/?(em|strong|span|a|b|i|u|mark|code|abbr)\b)[^>]+>/gi, "")
-      // strip style/class/on* attributes from surviving inline tags
+      .replace(/<(?!\\/?(em|strong|span|a|b|i|u|mark|code|abbr)\b)[^>]+>/gi, "")
       .replace(/\s+style="[^"]*"/gi, "")
       .replace(/\s+style='[^']*'/gi, "")
       .replace(/\s+class="[^"]*"/gi, "")
@@ -72,15 +68,13 @@ export function sanitizeAdminHtml(raw: string): string {
     }
   }
 
-  // ── Phase 4: If no <p> tags found, fall back to h1-h6 / li text ─────────
+  // ── Phase 5: If no <p> tags found, fall back to h1-h6 / li text ─────────
   if (paragraphs.length === 0) {
-    // Try to grab heading text
     const headingRegex = /<h[1-6][^>]*>([\s\S]*?)<\/h[1-6]>/gi;
     while ((match = headingRegex.exec(html)) !== null) {
       const inner = match[1].replace(/<[^>]+>/g, "").trim();
       if (inner) paragraphs.push(`<p>${inner}</p>`);
     }
-    // Try list items
     const liRegex = /<li[^>]*>([\s\S]*?)<\/li>/gi;
     while ((match = liRegex.exec(html)) !== null) {
       const inner = match[1].replace(/<[^>]+>/g, "").trim();
@@ -88,7 +82,7 @@ export function sanitizeAdminHtml(raw: string): string {
     }
   }
 
-  // ── Phase 5: If still nothing, strip ALL tags and wrap in <p> ────────────
+  // ── Phase 6: If still nothing, strip ALL tags and wrap in <p> ────────────
   if (paragraphs.length === 0) {
     const text = html.replace(/<[^>]+>/g, " ").replace(/\s{2,}/g, " ").trim();
     if (text) paragraphs.push(`<p>${text}</p>`);

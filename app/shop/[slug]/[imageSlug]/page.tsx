@@ -14,6 +14,7 @@ import FavoriteButton from "@/components/FavoriteButton";
 import PageTracker from "@/components/PageTracker";
 import RecentlyViewed from "@/components/RecentlyViewed";
 import { shouldCountPageView } from "@/lib/analytics-filter";
+import { sanitizeAdminHtml } from "@/lib/sanitize-html";
 
 export const dynamic = "force-dynamic";
 export const dynamicParams = true;
@@ -260,7 +261,7 @@ export default async function CollectionImagePage({ params }: PageProps) {
             {image.description && (
               <div
                 className="font-body text-[1rem] text-[#a89bc0] leading-relaxed image-description-html"
-                dangerouslySetInnerHTML={{ __html: image.description }}
+                dangerouslySetInnerHTML={{ __html: sanitizeAdminHtml(image.description) }}
               />
             )}
 
