@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://hauntedwallpapers.com/sitemap.xml
