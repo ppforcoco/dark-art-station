@@ -51,9 +51,9 @@ const nextConfig: NextConfig = {
 
   async redirects() {
     return [
-      { source: "/shop", destination: "/collections", permanent: true },
-      { source: "/shop?filter=free", destination: "/collections", permanent: true },
-      { source: "/shop?category=:cat", destination: "/collections", permanent: true },
+      { source: "/shop", missing: [{ type: "query", key: "filter" }, { type: "query", key: "category" }], destination: "/collections", permanent: true },
+      { source: "/shop", has: [{ type: "query", key: "filter" }], destination: "/collections", permanent: true },
+      { source: "/shop", has: [{ type: "query", key: "category" }], destination: "/collections", permanent: true },
     ];
   },
 
