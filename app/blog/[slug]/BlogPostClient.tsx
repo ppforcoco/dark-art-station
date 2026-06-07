@@ -163,7 +163,6 @@ export default function BlogPostClient({ post, allPosts }: { post: Post; allPost
           </Link>
           <div className="blog-topnav-links">
             <Link href="/blog"    className="blog-topnav-link">← Blog</Link>
-            <Link href="/shop"    className="blog-topnav-link">Collections</Link>
             <Link href="/iphone"  className="blog-topnav-link">iPhone</Link>
             <Link href="/android" className="blog-topnav-link">Android</Link>
             <Link href="/pc"      className="blog-topnav-link">PC</Link>

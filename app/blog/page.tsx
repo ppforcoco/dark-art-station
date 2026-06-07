@@ -114,7 +114,6 @@ export default async function BlogPage() {
             <span className="blog-topnav-logo-text">HAUNTED<span>WALLPAPERS</span></span>
           </Link>
           <div className="blog-topnav-links">
-            <Link href="/obsessions" className="blog-topnav-link">The Archive</Link>
             <Link href="/iphone"      className="blog-topnav-link">iPhone</Link>
             <Link href="/android"     className="blog-topnav-link">Android</Link>
             <Link href="/pc"          className="blog-topnav-link">PC</Link>

@@ -49,6 +49,14 @@ const nextConfig: NextConfig = {
 
   experimental: {},
 
+  async redirects() {
+    return [
+      { source: "/shop", destination: "/collections", permanent: true },
+      { source: "/shop?filter=free", destination: "/collections", permanent: true },
+      { source: "/shop?category=:cat", destination: "/collections", permanent: true },
+    ];
+  },
+
   async headers() {
     return [
       {
