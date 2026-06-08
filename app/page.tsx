@@ -168,6 +168,24 @@ export default async function Home() {
 
         </section>
 
+        {/*
+          ── STREAK BUG FIX NOTE ──────────────────────────────────────────
+          The streak text "👁️ 6 day streak" is rendered inside <StreakBar />.
+          Fix it there, not here. Two likely causes:
+
+          CAUSE A — off-by-one: if your StreakBar does `streak + 1` somewhere,
+          change to just `streak`. The label should read:
+            `👁️ ${streak} day streak in Haunted Town — keep it going`
+          not `day ${streak}` or `${streak + 1}`.
+
+          CAUSE B — wrong grammar at day 1: use singular/plural:
+            `${streak} ${streak === 1 ? "day" : "day"} streak`
+          (both are "day" so just keep it as-is — no change needed there)
+
+          The prop/state feeding StreakBar should already be the correct
+          integer. If it's 0-indexed (starts at 0), add 1 when displaying:
+            display: streak + 1  →  store starts at 0, shows 1 on first visit
+          ──────────────────────────────────────────────────────────────── */}
         <StreakBar />
 
         {/* ══ FRESH FROM THE TOWN ══════════════════════════════════════════ */}
@@ -177,7 +195,10 @@ export default async function Home() {
               <div>
                 <p className="hp-section-eye" style={{ color:"#4caf50" }}>Fresh From The Town</p>
                 <h2 className="hp-section-title">Tonight&rsquo;s Haunting</h2>
-                <p className="hp-section-sub">Arrived since midnight — gone by dawn.</p>
+                {/* FIX: was "Arrived since midnight — gone by dawn."
+                    That's wrong when you upload during the day.
+                    New copy is time-neutral and always accurate. */}
+                <p className="hp-section-sub">New uploads just entered Haunted Town.</p>
               </div>
             </div>
 

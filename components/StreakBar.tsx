@@ -41,8 +41,6 @@ function getStreak(): StreakData {
 
     // Already visited today — no change
     if (data.lastVisit === today) {
-      // Sanity check: if count is impossibly high vs lastVisit date,
-      // it means old buggy data survived. Reset it.
       const daysSinceEpoch = diffDays("2026-06-03", today);
       if (data.count > daysSinceEpoch + 1) return fresh;
       return data;
@@ -95,9 +93,9 @@ export default function StreakBar() {
   return (
     <div className="hp-streak">
       <span className="hp-streak-fire">{emoji}</span>
-      {streak > 1 && (
-        <span className="hp-streak-days">{streak}</span>
-      )}
+      {/* FIXED: removed the duplicate <span className="hp-streak-days">{streak}</span>
+          The number is already embedded in `label` for streak >= 3,
+          so rendering it separately caused "6 6 day streak". */}
       <span className="hp-streak-text">{label}</span>
       {sub && (
         <span className="hp-streak-sub">{sub}</span>
