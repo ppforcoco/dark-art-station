@@ -77,6 +77,8 @@ model Image {
 
   @@index([collectionId])
   @@index([deviceType])
+  @@index([isAdult, createdAt])
+  @@index([tags])
 }
 
 model Download {
