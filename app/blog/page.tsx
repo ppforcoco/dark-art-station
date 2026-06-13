@@ -39,6 +39,11 @@ function readTime(html: string): string {
   return `${mins} min read`;
 }
 
+/** Remove a leading h1-h6 heading (e.g. duplicate title) from HTML content */
+function stripFirstHeading(html: string): string {
+  return html.replace(/^\s*<h[1-6][^>]*>[\s\S]*?<\/h[1-6]>\s*/i, "");
+}
+
 /** Strip <style>, <script>, and all tags, then collapse whitespace */
 function cleanExcerpt(html: string, len = 220): string {
   return html
@@ -150,7 +155,7 @@ export default async function BlogPage() {
             {/* ── Featured / latest post ─────────────────────────────────── */}
             {posts[0] && (() => {
               const p = posts[0];
-              const excerpt = cleanExcerpt(p.content, 220);
+              const excerpt = cleanExcerpt(stripFirstHeading(p.content), 220);
               const dateStr = new Date(p.createdAt).toLocaleDateString("en-US", {
                 year: "numeric", month: "long", day: "numeric",
               });
@@ -187,7 +192,7 @@ export default async function BlogPage() {
             {posts.length > 1 && (
               <div className="blog-index-grid">
                 {posts.slice(1).map((post) => {
-                  const excerpt = cleanExcerpt(post.content, 130);
+                  const excerpt = cleanExcerpt(stripFirstHeading(post.content), 130);
                   const dateStr = new Date(post.createdAt).toLocaleDateString("en-US", {
                     year: "numeric", month: "short", day: "numeric",
                   });
