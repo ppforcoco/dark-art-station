@@ -25,20 +25,11 @@ function getExcerpt(html: string, len = 120) {
   return html.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim().slice(0, len);
 }
 
-// ── Remove a leading heading/element that duplicates the post title ──────────
-function stripFirstHeading(html: string, title?: string): string {
-  let out = html.replace(/^\s*<h[1-6][^>]*>[\s\S]*?<\/h[1-6]>\s*/i, "");
-
-  if (title) {
-    const m = out.match(/^\s*<([a-z0-9]+)[^>]*>([\s\S]*?)<\/\1>\s*/i);
-    if (m) {
-      const text = m[2].replace(/<[^>]*>/g, "").trim();
-      if (text.toLowerCase() === title.trim().toLowerCase()) {
-        out = out.slice(m[0].length);
-      }
-    }
-  }
-  return out;
+// ── If content is a full HTML document, extract just the <body> ─────────────
+function extractBodyContent(html: string): string {
+  const bodyMatch = html.match(/<body[^>]*>([\s\S]*)<\/body>/i);
+  if (bodyMatch) return bodyMatch[1];
+  return html;
 }
 
 const LABEL_COLORS: Record<string, string> = {
@@ -99,7 +90,7 @@ function RelatedPosts({ posts, currentSlug }: { posts: Post[]; currentSlug: stri
       <div className="related-posts-grid">
         {related.map((p) => {
           const thumb   = p.featuredImage ?? extractFirstImage(p.content);
-          const excerpt = getExcerpt(stripFirstHeading(p.content, p.title), 100);
+          const excerpt = getExcerpt(extractBodyContent(p.content), 100);
           const dateStr = new Date(p.createdAt).toLocaleDateString("en-US", {
             month: "short", day: "numeric", year: "numeric",
             timeZone: "UTC",
@@ -208,7 +199,7 @@ export default function BlogPostClient({ post, allPosts }: { post: Post; allPost
 
         <div
           className="static-page-body blog-html-content"
-          dangerouslySetInnerHTML={{ __html: stripFirstHeading(post.content, post.title) }}
+          dangerouslySetInnerHTML={{ __html: extractBodyContent(post.content) }}
         />
 
         {/* ── Footer nav ── */}
