@@ -39,9 +39,20 @@ function readTime(html: string): string {
   return `${mins} min read`;
 }
 
-/** Remove a leading h1-h6 heading (e.g. duplicate title) from HTML content */
-function stripFirstHeading(html: string): string {
-  return html.replace(/^\s*<h[1-6][^>]*>[\s\S]*?<\/h[1-6]>\s*/i, "");
+/** Remove a leading heading/element that duplicates the post title */
+function stripFirstHeading(html: string, title?: string): string {
+  let out = html.replace(/^\s*<h[1-6][^>]*>[\s\S]*?<\/h[1-6]>\s*/i, "");
+
+  if (title) {
+    const m = out.match(/^\s*<([a-z0-9]+)[^>]*>([\s\S]*?)<\/\1>\s*/i);
+    if (m) {
+      const text = m[2].replace(/<[^>]*>/g, "").trim();
+      if (text.toLowerCase() === title.trim().toLowerCase()) {
+        out = out.slice(m[0].length);
+      }
+    }
+  }
+  return out;
 }
 
 /** Strip <style>, <script>, and all tags, then collapse whitespace */
@@ -155,7 +166,7 @@ export default async function BlogPage() {
             {/* ── Featured / latest post ─────────────────────────────────── */}
             {posts[0] && (() => {
               const p = posts[0];
-              const excerpt = cleanExcerpt(stripFirstHeading(p.content), 220);
+              const excerpt = cleanExcerpt(stripFirstHeading(p.content, p.title), 220);
               const dateStr = new Date(p.createdAt).toLocaleDateString("en-US", {
                 year: "numeric", month: "long", day: "numeric",
               });
@@ -192,7 +203,7 @@ export default async function BlogPage() {
             {posts.length > 1 && (
               <div className="blog-index-grid">
                 {posts.slice(1).map((post) => {
-                  const excerpt = cleanExcerpt(stripFirstHeading(post.content), 130);
+                  const excerpt = cleanExcerpt(stripFirstHeading(post.content, post.title), 130);
                   const dateStr = new Date(post.createdAt).toLocaleDateString("en-US", {
                     year: "numeric", month: "short", day: "numeric",
                   });
