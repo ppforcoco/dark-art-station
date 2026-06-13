@@ -25,6 +25,11 @@ function getExcerpt(html: string, len = 120) {
   return html.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim().slice(0, len);
 }
 
+// ── Remove the first heading tag from the content (avoids duplicate title) ───
+function stripFirstHeading(html: string): string {
+  return html.replace(/^\s*<h[1-3][^>]*>[\s\S]*?<\/h[1-3]>\s*/i, "");
+}
+
 const LABEL_COLORS: Record<string, string> = {
   "Wallpaper Guides":   "#c0001a",
   "How-To & Tutorials": "#c0001a",
@@ -192,7 +197,7 @@ export default function BlogPostClient({ post, allPosts }: { post: Post; allPost
 
         <div
           className="static-page-body blog-html-content"
-          dangerouslySetInnerHTML={{ __html: post.content }}
+          dangerouslySetInnerHTML={{ __html: stripFirstHeading(post.content) }}
         />
 
         {/* ── Footer nav ── */}
