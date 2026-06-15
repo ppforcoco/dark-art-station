@@ -12,6 +12,7 @@ import SocialShare from "@/components/SocialShare";
 import PageTracker from "@/components/PageTracker";
 import FavoriteButton from "@/components/FavoriteButton";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import WallpaperReactions from "@/components/WallpaperReactions";
 
 export const dynamicParams = true;
 export const revalidate = 3600;
@@ -267,6 +268,9 @@ export default async function PcImagePage({ params }: PageProps) {
                 item={{ slug: image.slug, title: image.title, thumb: thumbUrl, href: `/pc/${imageSlug}`, device: "pc" }}
               />
             </div>
+
+            {/* ── Reactions ── */}
+            <WallpaperReactions imageId={image.id} />
           </div>
         </div>
       </section>

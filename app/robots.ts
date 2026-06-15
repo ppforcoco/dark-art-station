@@ -11,11 +11,6 @@ export default function robots(): MetadataRoute.Robots {
         allow: "/",
         disallow: ["/api/", "/admin/", "/admin-secret-hw"],
       },
-      // ── AdsBot — needs full access for AdSense approval ─────────────
-      {
-        userAgent: "AdsBot-Google",
-        allow: "/",
-      },
       // ── All other crawlers ───────────────────────────────────────────
       {
         userAgent: "*",

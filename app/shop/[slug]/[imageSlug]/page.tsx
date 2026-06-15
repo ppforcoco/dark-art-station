@@ -13,6 +13,7 @@ import SocialShare from "@/components/SocialShare";
 import FavoriteButton from "@/components/FavoriteButton";
 import PageTracker from "@/components/PageTracker";
 import RecentlyViewed from "@/components/RecentlyViewed";
+import WallpaperReactions from "@/components/WallpaperReactions";
 import { shouldCountPageView } from "@/lib/analytics-filter";
 import { sanitizeAdminHtml } from "@/lib/sanitize-html";
 
@@ -283,6 +284,9 @@ export default async function CollectionImagePage({ params }: PageProps) {
               />
               
             </div>
+
+            {/* ── Reactions ── */}
+            <WallpaperReactions imageId={image.id} />
           </div>
         </div>
       </section>

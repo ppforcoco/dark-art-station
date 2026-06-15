@@ -15,6 +15,7 @@ import FavoriteButton from "@/components/FavoriteButton";
 import PreviewButton from "@/components/PreviewButton";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import PremiumCountdown from "@/components/PremiumCountdown";
+import WallpaperReactions from "@/components/WallpaperReactions";
 import PremiumLockedGateClient from "@/components/PremiumLockedGate";
 import BirthdayComments from "@/components/BirthdayComments";
 import SummonRandomTag from "@/components/SummonRandomTag";
@@ -263,6 +264,9 @@ export default async function AndroidImagePage({ params }: PageProps) {
               <div className="detail-fav-row">
                 <FavoriteButton size="md" className="detail-fav-inline" item={{ slug: image.slug, title: image.title, thumb: thumbUrl, href: `/android/${imageSlug}`, device: "android" }} />
               </div>
+
+              {/* ── Reactions ── */}
+              <WallpaperReactions imageId={image.id} />
 
               {/* ── More You'll Like strip (mobile) ── */}
               {tagSortedStrip.length > 0 && (

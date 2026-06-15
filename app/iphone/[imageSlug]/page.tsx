@@ -16,6 +16,7 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 import PremiumLockedGateClient from "@/components/PremiumLockedGate";
 import BirthdayComments from "@/components/BirthdayComments";
 import SummonRandomTag from "@/components/SummonRandomTag";
+import WallpaperReactions from "@/components/WallpaperReactions";
 
 // Premium lock is handled entirely client-side by PremiumLockedGateClient
 // to avoid React hydration mismatch (error #418) caused by Date.now() differing
@@ -241,6 +242,9 @@ export default async function IphoneImagePage({ params }: PageProps) {
                   }}
                 />
               </div>
+
+              {/* ── Reactions ── */}
+              <WallpaperReactions imageId={image.id} />
 
               {/* ── More You'll Like strip (mobile) ── */}
               {tagSortedStrip.length > 0 && (
