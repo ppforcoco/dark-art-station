@@ -11,7 +11,7 @@ const NAV_LINKS = [
   { label: "Matching Sets", href: "/sets"       },
   { label: "The Archive",   href: "/obsessions" },
   { label: "Mood",          href: "/mood"       },
-  { label: "The Secrets",   href: "/blog"       },
+  { label: "Live Wallpapers", href: "/live-wallpapers" },
 ];
 
 export default function Header() {

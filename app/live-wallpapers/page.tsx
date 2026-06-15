@@ -28,6 +28,28 @@ export default function LiveWallpapersPage() {
   const containerRef = useRef<HTMLDivElement>(null);
   const observerRef = useRef<IntersectionObserver | null>(null);
 
+  // Lock page scroll while on this page
+  useEffect(() => {
+    const html = document.documentElement;
+    const body = document.body;
+    const prevHtmlOverflow = html.style.overflow;
+    const prevBodyOverflow = body.style.overflow;
+    const prevBodyHeight = body.style.height;
+    const prevHtmlHeight = html.style.height;
+
+    html.style.overflow = "hidden";
+    body.style.overflow = "hidden";
+    body.style.height = "100%";
+    html.style.height = "100%";
+
+    return () => {
+      html.style.overflow = prevHtmlOverflow;
+      body.style.overflow = prevBodyOverflow;
+      body.style.height = prevBodyHeight;
+      html.style.height = prevHtmlHeight;
+    };
+  }, []);
+
   useEffect(() => {
     loadMore(null);
     const savedSound = localStorage.getItem("lw-sound") === "1";
@@ -120,6 +142,24 @@ export default function LiveWallpapersPage() {
     if (child) child.scrollIntoView({ behavior: "smooth" });
   }, []);
 
+  // Wheel handler: convert vertical scroll on the page into swipe-to-next/prev,
+  // without letting the scroll propagate to the outer page.
+  const wheelLockRef = useRef(false);
+  const handleWheel = useCallback((e: React.WheelEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (wheelLockRef.current) return;
+    if (Math.abs(e.deltaY) < 10) return;
+
+    wheelLockRef.current = true;
+    if (e.deltaY > 0) {
+      if (activeIndex < items.length - 1) scrollTo(activeIndex + 1);
+    } else {
+      if (activeIndex > 0) scrollTo(activeIndex - 1);
+    }
+    setTimeout(() => { wheelLockRef.current = false; }, 600);
+  }, [activeIndex, items.length, scrollTo]);
+
   if (items.length === 0 && loading) {
     return (
       <div style={{ minHeight: "100dvh", background: "#0d0b14", display: "flex", alignItems: "center", justifyContent: "center", color: "#8a809a", fontFamily: "monospace", fontSize: "0.85rem", letterSpacing: "0.1em" }}>
@@ -137,7 +177,10 @@ export default function LiveWallpapersPage() {
   }
 
   return (
-    <div style={{ height: "100dvh", background: "#000", display: "flex", alignItems: "center", justifyContent: "center", position: "relative", overflow: "hidden" }}>
+    <div
+      style={{ height: "100dvh", background: "#000", display: "flex", alignItems: "center", justifyContent: "center", position: "fixed", inset: 0, overflow: "hidden", touchAction: "none" }}
+      onWheel={handleWheel}
+    >
 
       {/* Sound toggle */}
       <button
@@ -165,7 +208,7 @@ export default function LiveWallpapersPage() {
       {/* 9:16 portrait scroll column */}
       <div
         ref={containerRef}
-        style={{ width: "min(100vw, calc(100dvh * 9 / 16))", height: "100dvh", overflowY: "scroll", scrollSnapType: "y mandatory", scrollbarWidth: "none", position: "relative" }}
+        style={{ width: "min(100vw, calc(100dvh * 9 / 16))", height: "100dvh", overflowY: "scroll", scrollSnapType: "y mandatory", scrollbarWidth: "none", position: "relative", touchAction: "pan-y" }}
         className="lw-scroll"
       >
         <style>{`.lw-scroll::-webkit-scrollbar{display:none}`}</style>
