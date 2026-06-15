@@ -398,7 +398,25 @@ and wide-format phones. Desktop nav shows at ≥ 1280px only.    */
   font-family: Arial, sans-serif;
   font-size: 1rem; font-style: italic;
   color: #c9a84c; opacity: 0.35; text-align: center;
-}.product-grid {
+}
+
+/* ── Adsterra units ──────────────────────────────────────────── */
+.ad-unit--desktop { display: block; }
+.ad-unit--mobile  { display: none; }
+@media (max-width: 767px) {
+  .ad-unit--desktop { display: none; }
+  .ad-unit--mobile  { display: block; }
+}
+
+/* Native Banner — let Adsterra's injected markup size itself */
+.ad-banner--native .ad-content {
+  display: block;
+  padding: 12px;
+  min-height: 0;
+}
+.ad-native-banner { width: 100%; }
+
+.product-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 24px;
