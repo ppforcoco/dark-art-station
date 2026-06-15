@@ -131,11 +131,9 @@ model PageContent {
 }
 
 // ── Cookie Consent (Safari ITP fallback) ─────────────────────────────────────
-// Stores anonymous consent decisions server-side so Safari's ITP can't wipe them.
-// anonId is generated client-side (crypto.randomUUID) and stored in localStorage.
 model CookieConsent {
   id        String   @id @default(uuid())
-  anonId    String   @unique   // anonymous client ID — no PII
+  anonId    String   @unique
   value     String             // "accepted" | "declined"
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -162,12 +160,30 @@ model Comment {
 // ── Vanity Redirects ──────────────────────────────────────────────────────────
 model VanityRedirect {
   id          String   @id @default(uuid())
-  slug        String   @unique   // e.g. "skeletons" → /go/skeletons
-  destination String             // full URL with UTM params
-  label       String?            // friendly name e.g. "Instagram Skeletons Post"
+  slug        String   @unique
+  destination String
+  label       String?
   clicks      Int      @default(0)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
   @@index([slug])
+}
+
+// ── Live Wallpapers ───────────────────────────────────────────────────────────
+model LiveWallpaper {
+  id           String   @id @default(uuid())
+  slug         String   @unique
+  title        String
+  description  String?
+  r2Key        String             // path in R2 e.g. live-wallpapers/slug.mp4
+  thumbnailKey String   @default("")   // poster image shown before video loads
+  hasSound     Boolean  @default(false)
+  tags         String[] @default([])
+  viewCount    Int      @default(0)
+  isPublished  Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([isPublished, createdAt])
 }

@@ -1355,8 +1355,95 @@ function CommentsTab({password}:{password:string}){
   </div>;
 }
 
-type Tab="analytics"|"pages"|"collections"|"districts"|"upload"|"published"|"bulkai"|"highres"|"blog"|"manage18"|"backdate"|"preview"|"feedback"|"nuke"|"pin"|"comments";
-const NAV_ITEMS:[Tab,string,string][]=[["analytics","📊","Analytics"],["pages","📝","Page Content"],["collections","🗂","Collections"],["districts","🏚️","Districts"],["upload","📤","Upload Image"],["published","📸","Published"],["bulkai","🤖","Bulk AI Update"],["highres","⬆️","Upload 4K"],["blog","✍️","Blog Posts"],["manage18","⚠","16+ Manage"],["backdate","📅","Backdate"],["preview","🌐","Live Preview"],["feedback","⚑","Reports"],["comments","💬","Wishes"],["pin","📌","Pin Wallpapers"],["nuke","💣","Nuke Everything"]];
+// ── Live Wallpapers Tab ───────────────────────────────────────────────────────
+const ALL_LW_TAGS=["dark","gothic","horror","fantasy","amoled","neon","cyberpunk","nature","abstract","skull","moon","forest","city","demon","anime","fire","space","ocean","aesthetic","minimal"];
+
+function LiveWallpapersTab({password}:{password:string}){
+  const[view,setView]=useState<"upload"|"manage">("upload");
+  const[videoFile,setVideoFile]=useState<File|null>(null);const[thumbFile,setThumbFile]=useState<File|null>(null);const[title,setTitle]=useState("");const[slug,setSlug]=useState("");const[description,setDescription]=useState("");const[hasSound,setHasSound]=useState(false);const[tags,setTags]=useState<string[]>([]);const[uploading,setUploading]=useState(false);const[uploadMsg,setUploadMsg]=useState<{type:"ok"|"err";text:string}|null>(null);const[progress,setProgress]=useState("");
+  const[items,setItems]=useState<{id:string;slug:string;title:string;videoUrl:string;thumbnailUrl:string|null;hasSound:boolean;tags:string[];viewCount:number;isPublished:boolean;createdAt:string}[]>([]);const[loadingList,setLoadingList]=useState(false);const[manageMsg,setManageMsg]=useState<{type:"ok"|"err";text:string}|null>(null);const[acting,setActing]=useState<string|null>(null);
+  const videoInputRef=useRef<HTMLInputElement>(null);const thumbInputRef=useRef<HTMLInputElement>(null);
+
+  function handleTitleChange(v:string){setTitle(v);setSlug(v.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,""));}
+  function toggleTag(tag:string){setTags(prev=>prev.includes(tag)?prev.filter(t=>t!==tag):[...prev,tag]);}
+
+  async function handleUpload(){
+    if(!videoFile||!title||!slug){setUploadMsg({type:"err",text:"Video file, title, and slug are required."});return;}
+    setUploading(true);setUploadMsg(null);setProgress("Uploading to R2…");
+    try{const form=new FormData();form.append("file",videoFile);if(thumbFile)form.append("thumbnail",thumbFile);form.append("title",title);form.append("slug",slug);form.append("description",description);form.append("hasSound",String(hasSound));form.append("tags",JSON.stringify(tags));
+      const res=await fetch("/api/hw-admin/live-wallpapers/upload",{method:"POST",headers:{"x-admin-password":password},body:form});const json=await res.json();
+      if(!res.ok)throw new Error(json.error??"Upload failed");
+      setUploadMsg({type:"ok",text:`✓ "${title}" uploaded!`});setTitle("");setSlug("");setDescription("");setVideoFile(null);setThumbFile(null);setHasSound(false);setTags([]);setProgress("");
+      if(videoInputRef.current)videoInputRef.current.value="";if(thumbInputRef.current)thumbInputRef.current.value="";
+    }catch(e){setUploadMsg({type:"err",text:e instanceof Error?e.message:"Upload failed."});setProgress("");}
+    setUploading(false);
+  }
+
+  async function loadManage(){setLoadingList(true);try{const res=await fetch("/api/hw-admin/live-wallpapers/manage",{headers:{"x-admin-password":password}});if(!res.ok)throw new Error("Failed");setItems(await res.json());}catch{setManageMsg({type:"err",text:"Could not load live wallpapers."});}setLoadingList(false);}
+  useEffect(()=>{if(view==="manage")loadManage();},[view]);
+
+  async function togglePublish(item:{id:string;title:string;isPublished:boolean}){
+    setActing(item.id);
+    try{const res=await fetch("/api/hw-admin/live-wallpapers/manage",{method:"PATCH",headers:{"Content-Type":"application/json","x-admin-password":password},body:JSON.stringify({id:item.id,isPublished:!item.isPublished})});
+      if(!res.ok)throw new Error("Failed");setItems(prev=>prev.map(w=>w.id===item.id?{...w,isPublished:!w.isPublished}:w));}catch{setManageMsg({type:"err",text:"Could not update."});}setActing(null);
+  }
+
+  async function deleteItem(item:{id:string;title:string}){
+    if(!confirm(`Delete "${item.title}"? Removes from R2 and database.`))return;setActing(item.id);
+    try{const res=await fetch("/api/hw-admin/live-wallpapers/manage",{method:"DELETE",headers:{"Content-Type":"application/json","x-admin-password":password},body:JSON.stringify({id:item.id})});
+      if(!res.ok)throw new Error("Failed");setItems(prev=>prev.filter(w=>w.id!==item.id));setManageMsg({type:"ok",text:`"${item.title}" deleted.`});}catch{setManageMsg({type:"err",text:"Delete failed."});}setActing(null);
+  }
+
+  return<div>
+    <div style={{display:"flex",gap:"8px",marginBottom:"28px"}}>
+      {(["upload","manage"] as const).map(v=><button key={v} onClick={()=>setView(v)} style={{background:view===v?C.red:"transparent",border:`1px solid ${view===v?C.red:C.border}`,color:view===v?"#fff":C.textSec,padding:"9px 22px",cursor:"pointer",fontSize:"0.72rem",fontFamily:"monospace",letterSpacing:"0.1em",textTransform:"uppercase"}}>{v==="upload"?"📤 Upload":"📋 Manage"}</button>)}
+      <a href="/live-wallpapers" target="_blank" rel="noopener noreferrer" style={{marginLeft:"auto",color:C.textMut,fontSize:"0.7rem",fontFamily:"monospace",textDecoration:"none",display:"flex",alignItems:"center"}}>View Feed →</a>
+    </div>
+
+    {view==="upload"&&<div style={{display:"flex",flexDirection:"column",gap:"20px",maxWidth:"640px"}}>
+      <Card style={{borderColor:"rgba(124,58,237,0.3)",background:"rgba(124,58,237,0.04)",padding:"14px 18px"}}><strong style={{color:C.purple}}>🎬 Live Wallpaper Upload</strong><span style={{color:C.textSec,marginLeft:"8px",fontSize:"0.82rem"}}>MP4, H.264, portrait 9:16, under 30MB</span></Card>
+      <Msg msg={uploadMsg}/>
+      <Card style={{padding:"16px"}}><label style={lbl}>MP4 Video File *</label><input ref={videoInputRef} type="file" accept="video/mp4,video/*" onChange={e=>setVideoFile(e.target.files?.[0]??null)} style={{...inp,padding:"8px"}}/>{videoFile&&<p style={{color:C.textMut,fontSize:"0.72rem",marginTop:"6px",fontFamily:"monospace"}}>{videoFile.name} — {(videoFile.size/1024/1024).toFixed(1)} MB</p>}</Card>
+      <Card style={{padding:"16px"}}><label style={lbl}>Poster / Thumbnail Image (optional)</label><input ref={thumbInputRef} type="file" accept="image/*" onChange={e=>setThumbFile(e.target.files?.[0]??null)} style={{...inp,padding:"8px"}}/></Card>
+      <Card style={{padding:"16px"}}><label style={lbl}>Title *</label><input style={inp} value={title} onChange={e=>handleTitleChange(e.target.value)} placeholder="Dark Abyss Loop"/></Card>
+      <Card style={{padding:"16px"}}><label style={lbl}>Slug * (auto-generated)</label><input style={inp} value={slug} onChange={e=>setSlug(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g,""))} placeholder="dark-abyss-loop"/></Card>
+      <Card style={{padding:"16px"}}><label style={lbl}>Description (optional)</label><textarea style={{...inp,minHeight:"80px",resize:"vertical"}} value={description} onChange={e=>setDescription(e.target.value)} placeholder="A looping dark animated wallpaper…"/></Card>
+      <Card style={{padding:"16px"}}><label style={lbl}>Tags</label><div style={{display:"flex",flexWrap:"wrap",gap:"6px"}}>{ALL_LW_TAGS.map(tag=><button key={tag} type="button" onClick={()=>toggleTag(tag)} style={{background:tags.includes(tag)?"rgba(192,0,26,0.2)":"transparent",border:`1px solid ${tags.includes(tag)?C.red:C.border}`,color:tags.includes(tag)?C.red:C.textSec,padding:"4px 10px",cursor:"pointer",fontSize:"0.68rem",fontFamily:"monospace"}}>{tag}</button>)}</div></Card>
+      <Card style={{padding:"16px"}}><label style={lbl}>Audio</label><div style={{display:"flex",alignItems:"center",gap:"12px"}}><input type="checkbox" id="lw-sound" checked={hasSound} onChange={e=>setHasSound(e.target.checked)} style={{cursor:"pointer",width:"16px",height:"16px"}}/><label htmlFor="lw-sound" style={{color:C.textSec,fontSize:"0.82rem",cursor:"pointer"}}>This video has sound / music</label></div></Card>
+      {progress&&<p style={{color:C.gold,fontSize:"0.8rem",fontFamily:"monospace"}}>{progress}</p>}
+      <Btn onClick={handleUpload} disabled={uploading||!videoFile||!title||!slug} style={{alignSelf:"flex-start"}}>{uploading?"Uploading…":"Upload Live Wallpaper"}</Btn>
+    </div>}
+
+    {view==="manage"&&<div style={{display:"flex",flexDirection:"column",gap:"16px"}}>
+      <Msg msg={manageMsg}/>
+      <div style={{display:"flex",justifyContent:"flex-end"}}><Btn variant="ghost" onClick={loadManage} disabled={loadingList}>↻ Refresh</Btn></div>
+      {loadingList&&<p style={{color:C.textSec,padding:"40px 0",textAlign:"center"}}>Loading…</p>}
+      {!loadingList&&items.length===0&&<Card style={{padding:"48px",textAlign:"center"}}><p style={{color:C.textMut}}>No live wallpapers uploaded yet.</p></Card>}
+      {items.map(item=><Card key={item.id} style={{padding:"16px 20px"}}>
+        <div style={{display:"flex",gap:"16px",alignItems:"flex-start"}}>
+          {item.thumbnailUrl?<img src={item.thumbnailUrl} alt={item.title} style={{width:"56px",height:"100px",objectFit:"cover",flexShrink:0,border:`1px solid ${C.border}`}}/>:<div style={{width:"56px",height:"100px",background:"#0a0812",border:`1px solid ${C.border}`,display:"flex",alignItems:"center",justifyContent:"center",color:C.textMut,fontSize:"1.4rem",flexShrink:0}}>🎬</div>}
+          <div style={{flex:1,minWidth:0}}>
+            <div style={{display:"flex",alignItems:"center",gap:"8px",marginBottom:"6px",flexWrap:"wrap"}}>
+              <span style={{color:C.textPri,fontWeight:600,fontSize:"0.88rem"}}>{item.title}</span>
+              {item.hasSound&&<span style={{fontSize:"0.6rem",color:C.gold}}>🎵 sound</span>}
+              <span style={{background:item.isPublished?"rgba(76,175,80,0.15)":"rgba(192,0,26,0.15)",border:`1px solid ${item.isPublished?C.green:C.red}`,color:item.isPublished?C.green:C.red,fontSize:"0.58rem",padding:"2px 8px",fontFamily:"monospace",textTransform:"uppercase"}}>{item.isPublished?"Published":"Hidden"}</span>
+            </div>
+            <p style={{color:C.textMut,fontFamily:"monospace",fontSize:"0.65rem",margin:"0 0 4px"}}>{item.slug} · {item.viewCount} views · {new Date(item.createdAt).toLocaleDateString()}</p>
+            <div style={{display:"flex",gap:"4px",flexWrap:"wrap"}}>{item.tags.map(t=><span key={t} style={{color:C.textMut,fontSize:"0.62rem",fontFamily:"monospace"}}>#{t}</span>)}</div>
+          </div>
+          <div style={{display:"flex",gap:"8px",flexShrink:0}}>
+            <Btn onClick={()=>togglePublish(item)} disabled={acting===item.id} variant={item.isPublished?"ghost":"success"} style={{fontSize:"0.65rem",padding:"7px 12px"}}>{acting===item.id?"…":item.isPublished?"Hide":"Publish"}</Btn>
+            <a href={item.videoUrl} target="_blank" rel="noopener noreferrer" style={{background:"transparent",border:`1px solid ${C.border}`,color:C.textSec,padding:"7px 12px",fontSize:"0.65rem",fontFamily:"monospace",textDecoration:"none",letterSpacing:"0.08em",textTransform:"uppercase"}}>Preview</a>
+            <Btn onClick={()=>deleteItem(item)} disabled={acting===item.id} variant="danger" style={{fontSize:"0.65rem",padding:"7px 12px"}}>{acting===item.id?"…":"Delete"}</Btn>
+          </div>
+        </div>
+      </Card>)}
+    </div>}
+  </div>;
+}
+
+type Tab="analytics"|"pages"|"collections"|"districts"|"upload"|"published"|"bulkai"|"highres"|"blog"|"manage18"|"backdate"|"preview"|"feedback"|"nuke"|"pin"|"comments"|"livewallpapers";
+const NAV_ITEMS:[Tab,string,string][]=[["analytics","📊","Analytics"],["pages","📝","Page Content"],["collections","🗂","Collections"],["districts","🏚️","Districts"],["upload","📤","Upload Image"],["published","📸","Published"],["bulkai","🤖","Bulk AI Update"],["highres","⬆️","Upload 4K"],["blog","✍️","Blog Posts"],["manage18","⚠","16+ Manage"],["backdate","📅","Backdate"],["preview","🌐","Live Preview"],["feedback","⚑","Reports"],["comments","💬","Wishes"],["pin","📌","Pin Wallpapers"],["livewallpapers","🎬","Live Wallpapers"],["nuke","💣","Nuke Everything"]];
 
 export default function AdminClient(){
   const[authed,setAuthed]=useState(false);const[password,setPw]=useState("");const[tab,setTab]=useState<Tab>("analytics");const[sidebarOpen,setSidebarOpen]=useState(true);const[prefillTitle,setPrefillTitle]=useState("");const[prefillLabel,setPrefillLabel]=useState("");
@@ -1404,6 +1491,7 @@ export default function AdminClient(){
         {tab==="feedback"&&<Card style={{padding:"48px",textAlign:"center"}}><p style={{color:C.textMut}}>Feedback reports will appear here when the feedback API route is connected.</p></Card>}
         {tab==="comments"&&<CommentsTab password={password}/>}
         {tab==="pin"&&<PinTab password={password}/>}
+        {tab==="livewallpapers"&&<LiveWallpapersTab password={password}/>}
         {tab==="nuke"&&<NukeTab password={password}/>}
       </div>
     </div>
