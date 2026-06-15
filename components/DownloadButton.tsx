@@ -11,6 +11,26 @@ interface Props {
   children?: ReactNode;
 }
 
+// ── Seeded fake stats — consistent per-slug, no network cost ─────────────────
+function seededRand(seed: string, salt: number): number {
+  let h = salt;
+  for (let i = 0; i < seed.length; i++) { h = Math.imul(31, h) + seed.charCodeAt(i) | 0; }
+  return (h >>> 0) / 0xffffffff;
+}
+
+function fmtCount(n: number): string {
+  if (n >= 1000) return (n / 1000).toFixed(1).replace(/\.0$/, "") + "k";
+  return String(n);
+}
+
+// Generates a believable download/view count seeded from the slug, so it's
+// stable across renders/visits but varies between wallpapers.
+function fakeStat(slug: string | undefined, salt: number, min: number, max: number, extra = 0): number {
+  if (!slug) return min + extra;
+  const r = seededRand(slug, salt);
+  return min + Math.floor(r * (max - min + 1)) + extra;
+}
+
 
 
 // ── Sticky "Keep Exploring" bar shown after download ─────────────────────────
@@ -106,9 +126,32 @@ export default function DownloadButton({ href, slug, viewCount, downloadCount, l
     : state === "loading" ? "#6b0000"
     : "#8b0000";
 
+  // ── Stats row figures ──────────────────────────────────────────────────
+  // Use real counts when provided and non-zero, otherwise fall back to a
+  // believable seeded number based on the slug. Download count ticks up by
+  // 1 once the user completes a download this session.
+  const baseDownloads = downloadCount && downloadCount > 0
+    ? downloadCount
+    : fakeStat(slug, 7, 180, 2400);
+  const displayDownloads = baseDownloads + (state === "done" ? 1 : 0);
+
+  const displayViews = viewCount && viewCount > 0
+    ? viewCount
+    : fakeStat(slug, 13, 800, 9600);
+
   return (
     <>
       <div className="download-btn-wrap">
+
+        <div className="download-stats-row">
+          <span style={{ display: "flex", gap: "12px" }}>
+            <span className="download-stat">↓ {fmtCount(displayDownloads)} downloads</span>
+            <span className="download-stat">👁 {fmtCount(displayViews)} views</span>
+          </span>
+          {state === "done" && (
+            <span className="download-saved-msg">✓ Saved</span>
+          )}
+        </div>
 
         <div style={{ display: "flex", gap: "10px" }}>
           <a
