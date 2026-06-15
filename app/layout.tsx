@@ -103,6 +103,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
         <meta name="p:domain_verify" content="6f1c92d3b0307e9bf30220a5068ce8af" />
         <meta name="b0081adf43b5553f44ff0be1b38995754b86db3d" content="b0081adf43b5553f44ff0be1b38995754b86db3d" />
+        <meta name="clckd" content="92b4a62639498edfec7c4465cd7f19df" />
         <meta name="theme-color" content="#0c0b14" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
