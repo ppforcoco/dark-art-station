@@ -27,8 +27,10 @@ export default function LiveWallpapersPage() {
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
   const observerRef = useRef<IntersectionObserver | null>(null);
+  const activeIndexRef = useRef(0);
+  const itemsLenRef = useRef(0);
 
-  // Lock page scroll while on this page
+  // Lock page (html/body) scroll while on this page
   useEffect(() => {
     const html = document.documentElement;
     const body = document.body;
@@ -75,6 +77,14 @@ export default function LiveWallpapersPage() {
     } catch {}
     setLoading(false);
   }
+
+  useEffect(() => {
+    activeIndexRef.current = activeIndex;
+  }, [activeIndex]);
+
+  useEffect(() => {
+    itemsLenRef.current = items.length;
+  }, [items]);
 
   useEffect(() => {
     if (observerRef.current) observerRef.current.disconnect();
@@ -138,27 +148,39 @@ export default function LiveWallpapersPage() {
   const scrollTo = useCallback((idx: number) => {
     const container = containerRef.current;
     if (!container) return;
-    const child = container.children[idx] as HTMLElement;
-    if (child) child.scrollIntoView({ behavior: "smooth" });
+    const clamped = Math.max(0, Math.min(idx, container.children.length - 1));
+    const child = container.children[clamped] as HTMLElement;
+    if (child) child.scrollIntoView({ behavior: "smooth", block: "start" });
   }, []);
 
-  // Wheel handler: convert vertical scroll on the page into swipe-to-next/prev,
-  // without letting the scroll propagate to the outer page.
-  const wheelLockRef = useRef(false);
-  const handleWheel = useCallback((e: React.WheelEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (wheelLockRef.current) return;
-    if (Math.abs(e.deltaY) < 10) return;
+  // Native non-passive wheel listener: lets us preventDefault (stopping the
+  // page from scrolling) and converts wheel deltas into one-step swipes.
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
 
-    wheelLockRef.current = true;
-    if (e.deltaY > 0) {
-      if (activeIndex < items.length - 1) scrollTo(activeIndex + 1);
-    } else {
-      if (activeIndex > 0) scrollTo(activeIndex - 1);
-    }
-    setTimeout(() => { wheelLockRef.current = false; }, 600);
-  }, [activeIndex, items.length, scrollTo]);
+    let locked = false;
+
+    const onWheel = (e: WheelEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      if (locked) return;
+      if (Math.abs(e.deltaY) < 4) return;
+
+      locked = true;
+      const idx = activeIndexRef.current;
+      const len = itemsLenRef.current;
+      if (e.deltaY > 0) {
+        if (idx < len - 1) scrollTo(idx + 1);
+      } else {
+        if (idx > 0) scrollTo(idx - 1);
+      }
+      setTimeout(() => { locked = false; }, 550);
+    };
+
+    container.addEventListener("wheel", onWheel, { passive: false });
+    return () => container.removeEventListener("wheel", onWheel);
+  }, [scrollTo]);
 
   if (items.length === 0 && loading) {
     return (
@@ -177,10 +199,7 @@ export default function LiveWallpapersPage() {
   }
 
   return (
-    <div
-      style={{ height: "100dvh", background: "#000", display: "flex", alignItems: "center", justifyContent: "center", position: "fixed", inset: 0, overflow: "hidden", touchAction: "none" }}
-      onWheel={handleWheel}
-    >
+    <div style={{ height: "100dvh", background: "#000", display: "flex", alignItems: "center", justifyContent: "center", position: "fixed", inset: 0, overflow: "hidden" }}>
 
       {/* Sound toggle */}
       <button
@@ -208,7 +227,7 @@ export default function LiveWallpapersPage() {
       {/* 9:16 portrait scroll column */}
       <div
         ref={containerRef}
-        style={{ width: "min(100vw, calc(100dvh * 9 / 16))", height: "100dvh", overflowY: "scroll", scrollSnapType: "y mandatory", scrollbarWidth: "none", position: "relative", touchAction: "pan-y" }}
+        style={{ width: "min(100vw, calc(100dvh * 9 / 16))", height: "100dvh", overflowY: "scroll", scrollSnapType: "y mandatory", scrollbarWidth: "none", position: "relative" }}
         className="lw-scroll"
       >
         <style>{`.lw-scroll::-webkit-scrollbar{display:none}`}</style>
