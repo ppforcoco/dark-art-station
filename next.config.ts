@@ -7,18 +7,18 @@ const ASSETS = "https://assets.hauntedwallpapers.com";
 // ─── Content Security Policy ─────────────────────────────────────────────────
 const CSP = [
   `default-src 'self'`,
-  `script-src 'self' 'unsafe-inline' https://cloud.umami.is https://static.cloudflareinsights.com https://pagead2.googlesyndication.com https://partner.googleadservices.com https://adservice.google.com https://ep1.adtrafficquality.google https://ep2.adtrafficquality.google https://fundingchoicesmessages.google.com https://www.highperformanceformat.com https://*.effectivecpmnetwork.com https://cmp.gatekeeperconsent.com https://the.gatekeeperconsent.com https://www.ezojs.com https://ezoicanalytics.com https://g.ezoic.net https://*.ezoic.net`,
-  `script-src-elem 'self' 'unsafe-inline' https://cloud.umami.is https://static.cloudflareinsights.com https://pagead2.googlesyndication.com https://partner.googleadservices.com https://adservice.google.com https://ep1.adtrafficquality.google https://ep2.adtrafficquality.google https://fundingchoicesmessages.google.com https://www.highperformanceformat.com https://*.effectivecpmnetwork.com https://cmp.gatekeeperconsent.com https://the.gatekeeperconsent.com https://www.ezojs.com https://ezoicanalytics.com https://g.ezoic.net https://*.ezoic.net`,
+  `script-src 'self' 'unsafe-inline' https://cloud.umami.is https://static.cloudflareinsights.com https://pagead2.googlesyndication.com https://partner.googleadservices.com https://adservice.google.com https://ep1.adtrafficquality.google https://ep2.adtrafficquality.google https://fundingchoicesmessages.google.com https://cmp.gatekeeperconsent.com https://the.gatekeeperconsent.com https://www.ezojs.com https://ezoicanalytics.com https://g.ezoic.net https://*.ezoic.net`,
+  `script-src-elem 'self' 'unsafe-inline' https://cloud.umami.is https://static.cloudflareinsights.com https://pagead2.googlesyndication.com https://partner.googleadservices.com https://adservice.google.com https://ep1.adtrafficquality.google https://ep2.adtrafficquality.google https://fundingchoicesmessages.google.com https://cmp.gatekeeperconsent.com https://the.gatekeeperconsent.com https://www.ezojs.com https://ezoicanalytics.com https://g.ezoic.net https://*.ezoic.net`,
   // No Google Fonts — app uses system fonts only (Arial/system-ui)
   `style-src 'self' 'unsafe-inline'`,
   `style-src-elem 'self' 'unsafe-inline'`,
   // No gstatic — no web fonts loaded
   `font-src 'self' data:`,
-  `img-src 'self' data: blob: ${R2_CDN} ${ASSETS} https://pagead2.googlesyndication.com https://googleads.g.doubleclick.net https://www.google.com https://www.gstatic.com https://ep1.adtrafficquality.google https://ep2.adtrafficquality.google https://www.highperformanceformat.com https://*.effectivecpmnetwork.com https://g.ezoic.net https://*.ezoic.net`,
+  `img-src 'self' data: blob: ${R2_CDN} ${ASSETS} https://pagead2.googlesyndication.com https://googleads.g.doubleclick.net https://www.google.com https://www.gstatic.com https://ep1.adtrafficquality.google https://ep2.adtrafficquality.google https://g.ezoic.net https://*.ezoic.net`,
   // Added https://csi.gstatic.com to fix Google Ads CSP console error
-  `connect-src 'self' ${R2_CDN} ${ASSETS} https://cloud.umami.is https://gateway.umami.is https://api-gateway.umami.dev https://cloudflareinsights.com https://api.anthropic.com https://pagead2.googlesyndication.com https://googleads.g.doubleclick.net https://adservice.google.com https://ep1.adtrafficquality.google https://ep2.adtrafficquality.google https://fundingchoicesmessages.google.com https://csi.gstatic.com https://www.highperformanceformat.com https://*.effectivecpmnetwork.com https://cmp.gatekeeperconsent.com https://the.gatekeeperconsent.com https://ezoicanalytics.com https://g.ezoic.net https://*.ezoic.net`,
+  `connect-src 'self' ${R2_CDN} ${ASSETS} https://cloud.umami.is https://gateway.umami.is https://api-gateway.umami.dev https://cloudflareinsights.com https://api.anthropic.com https://pagead2.googlesyndication.com https://googleads.g.doubleclick.net https://adservice.google.com https://ep1.adtrafficquality.google https://ep2.adtrafficquality.google https://fundingchoicesmessages.google.com https://csi.gstatic.com https://cmp.gatekeeperconsent.com https://the.gatekeeperconsent.com https://ezoicanalytics.com https://g.ezoic.net https://*.ezoic.net`,
   `media-src 'self' ${R2_CDN} ${ASSETS}`,
-  `frame-src 'self' blob: https://googleads.g.doubleclick.net https://tpc.googlesyndication.com https://ep2.adtrafficquality.google https://www.google.com https://fundingchoicesmessages.google.com https://www.highperformanceformat.com https://*.effectivecpmnetwork.com https://g.ezoic.net https://*.ezoic.net`,
+  `frame-src 'self' blob: https://googleads.g.doubleclick.net https://tpc.googlesyndication.com https://ep2.adtrafficquality.google https://www.google.com https://fundingchoicesmessages.google.com https://g.ezoic.net https://*.ezoic.net`,
   `worker-src 'self' blob:`,
   `frame-ancestors 'none'`,
   `object-src 'none'`,
@@ -41,6 +41,29 @@ const securityHeaders = [
   { key: "Cross-Origin-Resource-Policy", value: "cross-origin" },
 ];
 
+// ─── Relaxed CSP for isolated Adsterra ad pages (public/ads/*.html) ──────────
+// Adsterra serves creatives from rotating, unpredictable domains that cannot
+// be individually whitelisted. These pages are isolated in their own iframes
+// (see AdsterraBanner.tsx / AdsterraNativeBanner.tsx) so this relaxed policy
+// only applies to /ads/* and never to the main site.
+const ADS_CSP = [
+  `default-src 'self'`,
+  `script-src 'self' 'unsafe-inline' 'unsafe-eval' https: http:`,
+  `script-src-elem 'self' 'unsafe-inline' https: http:`,
+  `style-src 'self' 'unsafe-inline' https: http:`,
+  `img-src 'self' data: blob: https: http:`,
+  `connect-src 'self' https: http:`,
+  `frame-src 'self' https: http:`,
+  `font-src 'self' data: https: http:`,
+  `media-src 'self' https: http:`,
+].join("; ");
+
+const adsHeaders = [
+  { key: "Content-Security-Policy", value: ADS_CSP },
+  { key: "X-Frame-Options", value: "SAMEORIGIN" },
+  { key: "Cross-Origin-Resource-Policy", value: "cross-origin" },
+];
+
 const nextConfig: NextConfig = {
   eslint: { ignoreDuringBuilds: true },
   output: "standalone",
@@ -54,14 +77,20 @@ const nextConfig: NextConfig = {
       { source: "/shop", missing: [{ type: "query", key: "filter" }, { type: "query", key: "category" }], destination: "/collections", permanent: true },
       { source: "/shop", has: [{ type: "query", key: "filter" }], destination: "/collections", permanent: true },
       { source: "/shop", has: [{ type: "query", key: "category" }], destination: "/collections", permanent: true },
+      { source: "/ads.txt", destination: "https://srv.adstxtmanager.com/19390/hauntedwallpapers.com", permanent: true },
     ];
   },
 
   async headers() {
     return [
       {
-        source: "/(.*)",
+        source: "/((?!ads/).*)",
         headers: securityHeaders,
+      },
+      // Isolated, relaxed CSP for Adsterra ad pages only
+      {
+        source: "/ads/:path*",
+        headers: adsHeaders,
       },
       // Long-lived cache for hashed static assets
       {

@@ -1,45 +1,35 @@
 // components/AdsterraNativeBanner.tsx
 "use client";
 
-import { useEffect, useRef } from "react";
-
-const CONTAINER_ID = "container-f6d71292a397e72b239944c1e9cb70a6";
-const SCRIPT_SRC = `https://pl29749882.effectivecpmnetwork.com/f6d71292a397e72b239944c1e9cb70a6/invoke.js`;
-
 /**
  * Renders an Adsterra "Native Banner" ad unit.
  *
- * This format works by Adsterra's script finding a `<div id="...">` with a
- * specific id and injecting the ad creative into it, so we create that div
- * and load the invoke.js script on mount.
+ * This format's script injects ad creatives directly into the page that
+ * loads it, and pulls assets/tracking pixels from rotating third-party
+ * domains that can't be whitelisted in a strict CSP.
+ *
+ * To keep the main site's CSP strict, the native banner is loaded inside an
+ * iframe pointing at a static page (`public/ads/native.html`) that is served
+ * with its own relaxed CSP scoped to `/ads/:path*` (see next.config.ts).
+ *
+ * Note: native banners are typically responsive and size themselves based on
+ * the ad creatives Adsterra serves, so this iframe uses a generous fixed
+ * height. Adjust `height` below if the ad appears cut off or has extra empty
+ * space once live.
  */
 export default function AdsterraNativeBanner({ className = "" }: { className?: string }) {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const initialized = useRef(false);
-
-  useEffect(() => {
-    if (initialized.current) return;
-    const host = containerRef.current;
-    if (!host) return;
-    initialized.current = true;
-
-    // Target div the Adsterra script looks for
-    const adDiv = document.createElement("div");
-    adDiv.id = CONTAINER_ID;
-    host.appendChild(adDiv);
-
-    // Loader script
-    const script = document.createElement("script");
-    script.async = true;
-    script.setAttribute("data-cfasync", "false");
-    script.src = SCRIPT_SRC;
-    host.appendChild(script);
-
-    return () => {
-      host.innerHTML = "";
-      initialized.current = false;
-    };
-  }, []);
-
-  return <div ref={containerRef} className={`ad-native-banner ${className}`} />;
+  return (
+    <iframe
+      title="Advertisement"
+      src="/ads/native.html"
+      loading="lazy"
+      style={{
+        border: "none",
+        display: "block",
+        width: "100%",
+        height: "300px",
+      }}
+      className={`ad-native-banner ${className}`}
+    />
+  );
 }
