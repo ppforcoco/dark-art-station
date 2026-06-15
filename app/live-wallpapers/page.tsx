@@ -23,8 +23,8 @@ export default function LiveWallpapersPage() {
   const [activeIndex, setActiveIndex] = useState(0);
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
+  const observerRef = useRef<IntersectionObserver | null>(null);
 
-  // Load initial batch
   useEffect(() => {
     loadMore(null);
     const savedSound = localStorage.getItem("lw-sound") === "1";
@@ -48,9 +48,11 @@ export default function LiveWallpapersPage() {
     setLoading(false);
   }
 
-  // IntersectionObserver: play/pause as videos enter/leave viewport
+  // IntersectionObserver: play/pause — recreated only when items change
   useEffect(() => {
-    const observer = new IntersectionObserver(
+    if (observerRef.current) observerRef.current.disconnect();
+
+    observerRef.current = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           const video = entry.target as HTMLVideoElement;
@@ -67,16 +69,16 @@ export default function LiveWallpapersPage() {
       { threshold: 0.7 }
     );
 
-    videoRefs.current.forEach((v) => v && observer.observe(v));
-    return () => observer.disconnect();
-  }, [items, soundEnabled]);
+    videoRefs.current.forEach((v) => v && observerRef.current!.observe(v));
+    return () => observerRef.current?.disconnect();
+  }, [items]); // soundEnabled intentionally excluded to avoid re-registering on every toggle
 
   // Load more when near the end
   useEffect(() => {
     if (activeIndex >= items.length - 3 && cursor && !loading) {
       loadMore(cursor);
     }
-  }, [activeIndex]);
+  }, [activeIndex, cursor]);
 
   const toggleSound = useCallback(() => {
     const next = !soundEnabled;
@@ -89,11 +91,8 @@ export default function LiveWallpapersPage() {
   const handleVideoClick = useCallback(
     (e: React.MouseEvent<HTMLVideoElement>) => {
       const v = e.currentTarget;
-      if (v.paused) {
-        v.play().catch(() => {});
-      } else {
-        v.pause();
-      }
+      if (v.paused) v.play().catch(() => {});
+      else v.pause();
     },
     []
   );
@@ -138,17 +137,19 @@ export default function LiveWallpapersPage() {
   }
 
   return (
+    /* Full-screen black stage */
     <div
-      ref={containerRef}
       style={{
         height: "100dvh",
-        overflowY: "scroll",
-        scrollSnapType: "y mandatory",
         background: "#000",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
         position: "relative",
+        overflow: "hidden",
       }}
     >
-      {/* Sound toggle — fixed top-right */}
+      {/* Sound toggle — fixed top-right of stage */}
       <button
         onClick={toggleSound}
         title={soundEnabled ? "Mute" : "Unmute"}
@@ -156,15 +157,15 @@ export default function LiveWallpapersPage() {
           position: "fixed",
           top: "16px",
           right: "16px",
-          zIndex: 200,
-          background: "rgba(13,11,20,0.7)",
+          zIndex: 300,
+          background: "rgba(13,11,20,0.75)",
           border: "1px solid rgba(255,255,255,0.15)",
           color: "#e8e4f8",
           borderRadius: "50%",
-          width: "40px",
-          height: "40px",
+          width: "38px",
+          height: "38px",
           cursor: "pointer",
-          fontSize: "1.1rem",
+          fontSize: "1rem",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
@@ -174,165 +175,195 @@ export default function LiveWallpapersPage() {
         {soundEnabled ? "🔊" : "🔇"}
       </button>
 
-      {items.map((item, i) => (
-        <div
-          key={item.id}
-          style={{
-            height: "100dvh",
-            scrollSnapAlign: "start",
-            position: "relative",
-            background: "#000",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          {/* Video */}
-          <video
-            ref={(el) => {
-              videoRefs.current[i] = el;
-            }}
-            src={item.videoUrl}
-            poster={item.thumbnailUrl ?? undefined}
-            loop
-            muted
-            playsInline
-            onClick={handleVideoClick}
-            style={{
-              width: "100%",
-              height: "100%",
-              objectFit: "cover",
-              display: "block",
-              cursor: "pointer",
-            }}
-          />
+      {/*
+        9:16 portrait column — centred on desktop, full-width on mobile.
+        max-width keeps it phone-sized on wide screens.
+      */}
+      <div
+        ref={containerRef}
+        style={{
+          width: "min(100vw, calc(100dvh * 9 / 16))",
+          height: "100dvh",
+          overflowY: "scroll",
+          scrollSnapType: "y mandatory",
+          /* hide scrollbar */
+          scrollbarWidth: "none",
+          position: "relative",
+          borderRadius: "0",
+          boxShadow: "0 0 60px rgba(0,0,0,0.9)",
+        }}
+        // hide webkit scrollbar via inline className workaround
+        className="lw-scroll-container"
+      >
+        <style>{`.lw-scroll-container::-webkit-scrollbar{display:none}`}</style>
 
-          {/* Bottom overlay */}
+        {items.map((item, i) => (
           <div
+            key={item.id}
             style={{
-              position: "absolute",
-              bottom: 0,
-              left: 0,
-              right: 0,
-              padding: "80px 20px 32px",
-              background:
-                "linear-gradient(to top, rgba(0,0,0,0.75) 0%, transparent 100%)",
-              pointerEvents: "none",
+              height: "100dvh",
+              scrollSnapAlign: "start",
+              position: "relative",
+              background: "#0d0b14",
+              flexShrink: 0,
             }}
           >
-            <h2
+            {/* Video — lazy load off-screen ones */}
+            <video
+              ref={(el) => {
+                videoRefs.current[i] = el;
+              }}
+              src={item.videoUrl}
+              poster={item.thumbnailUrl ?? undefined}
+              loop
+              muted
+              playsInline
+              preload={i === 0 ? "auto" : "none"}
+              onClick={handleVideoClick}
               style={{
-                color: "#fff",
-                fontFamily: "monospace",
-                fontSize: "1rem",
-                fontWeight: 600,
-                margin: "0 0 8px",
-                textShadow: "0 1px 6px rgba(0,0,0,0.8)",
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+                display: "block",
+                cursor: "pointer",
+              }}
+            />
+
+            {/* Bottom gradient overlay */}
+            <div
+              style={{
+                position: "absolute",
+                bottom: 0,
+                left: 0,
+                right: 0,
+                padding: "80px 16px 24px",
+                background:
+                  "linear-gradient(to top, rgba(0,0,0,0.82) 0%, transparent 100%)",
+                pointerEvents: "none",
               }}
             >
-              {item.title}
-            </h2>
-
-            {item.hasSound && (
-              <span
+              <h2
                 style={{
-                  display: "inline-block",
-                  background: "rgba(255,255,255,0.12)",
-                  border: "1px solid rgba(255,255,255,0.2)",
                   color: "#fff",
                   fontFamily: "monospace",
-                  fontSize: "0.6rem",
-                  padding: "2px 8px",
-                  letterSpacing: "0.12em",
-                  textTransform: "uppercase",
-                  marginBottom: "8px",
+                  fontSize: "0.9rem",
+                  fontWeight: 600,
+                  margin: "0 0 6px",
+                  textShadow: "0 1px 6px rgba(0,0,0,0.9)",
                 }}
               >
-                🎵 has sound — tap 🔊
-              </span>
-            )}
+                {item.title}
+              </h2>
 
-            {item.tags.length > 0 && (
-              <div style={{ display: "flex", gap: "6px", flexWrap: "wrap" }}>
-                {item.tags.slice(0, 4).map((tag) => (
-                  <span
-                    key={tag}
-                    style={{
-                      color: "rgba(255,255,255,0.55)",
-                      fontFamily: "monospace",
-                      fontSize: "0.65rem",
-                    }}
-                  >
-                    #{tag}
-                  </span>
-                ))}
-              </div>
-            )}
-          </div>
+              {item.hasSound && (
+                <span
+                  style={{
+                    display: "inline-block",
+                    background: "rgba(255,255,255,0.1)",
+                    border: "1px solid rgba(255,255,255,0.18)",
+                    color: "#fff",
+                    fontFamily: "monospace",
+                    fontSize: "0.55rem",
+                    padding: "2px 7px",
+                    letterSpacing: "0.12em",
+                    textTransform: "uppercase",
+                    marginBottom: "6px",
+                  }}
+                >
+                  🎵 has sound — tap 🔊
+                </span>
+              )}
 
-          {/* Right side action buttons */}
-          <div
-            style={{
-              position: "absolute",
-              right: "16px",
-              bottom: "120px",
-              display: "flex",
-              flexDirection: "column",
-              gap: "20px",
-              alignItems: "center",
-            }}
-          >
-            <a
-              href={item.videoUrl}
-              download={`${item.slug}.mp4`}
+              {item.tags.length > 0 && (
+                <div style={{ display: "flex", gap: "6px", flexWrap: "wrap" }}>
+                  {item.tags.slice(0, 4).map((tag) => (
+                    <span
+                      key={tag}
+                      style={{
+                        color: "rgba(255,255,255,0.5)",
+                        fontFamily: "monospace",
+                        fontSize: "0.6rem",
+                      }}
+                    >
+                      #{tag}
+                    </span>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Right side actions */}
+            <div
               style={{
+                position: "absolute",
+                right: "12px",
+                bottom: "100px",
                 display: "flex",
                 flexDirection: "column",
+                gap: "18px",
                 alignItems: "center",
-                gap: "4px",
-                color: "#fff",
-                textDecoration: "none",
-                fontFamily: "monospace",
               }}
             >
-              <div
+              {/* Download button */}
+              <a
+                href={item.videoUrl}
+                download={`${item.slug}.mp4`}
                 style={{
-                  width: "44px",
-                  height: "44px",
-                  borderRadius: "50%",
-                  background: "rgba(192,0,26,0.85)",
                   display: "flex",
+                  flexDirection: "column",
                   alignItems: "center",
-                  justifyContent: "center",
-                  fontSize: "1.1rem",
+                  gap: "4px",
+                  color: "#fff",
+                  textDecoration: "none",
+                  fontFamily: "monospace",
                 }}
               >
-                ↓
-              </div>
-              <span style={{ fontSize: "0.55rem", letterSpacing: "0.08em" }}>
-                Save
-              </span>
-            </a>
+                <div
+                  style={{
+                    width: "42px",
+                    height: "42px",
+                    borderRadius: "50%",
+                    background: "rgba(192,0,26,0.9)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontSize: "1.1rem",
+                    boxShadow: "0 2px 12px rgba(192,0,26,0.5)",
+                  }}
+                >
+                  ↓
+                </div>
+                <span
+                  style={{
+                    fontSize: "0.5rem",
+                    letterSpacing: "0.1em",
+                    textTransform: "uppercase",
+                  }}
+                >
+                  Download
+                </span>
+              </a>
+            </div>
           </div>
-        </div>
-      ))}
+        ))}
 
-      {/* Loading more indicator */}
-      {loading && items.length > 0 && (
-        <div
-          style={{
-            height: "60px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            color: "#8a809a",
-            fontFamily: "monospace",
-            fontSize: "0.75rem",
-          }}
-        >
-          Loading…
-        </div>
-      )}
+        {/* Loading more */}
+        {loading && items.length > 0 && (
+          <div
+            style={{
+              height: "60px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              color: "#8a809a",
+              fontFamily: "monospace",
+              fontSize: "0.7rem",
+            }}
+          >
+            Loading…
+          </div>
+        )}
+      </div>
     </div>
   );
 }
