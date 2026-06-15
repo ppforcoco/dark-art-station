@@ -12,9 +12,6 @@ import { isPremiumLocked } from "@/lib/premium-lock";
 
 export const dynamic = "force-dynamic";
 
-// District slug → tag mapping
-// When a collection slug matches a district, standalone images with the
-// district tag are merged in so they appear on the /shop/[slug] page.
 const DISTRICT_TAG_MAP: Record<string, string> = {
   "the-classic-district": "classic-district",
   "the-city-center":      "city-center",
@@ -112,49 +109,30 @@ export default async function CollectionPage({ params }: PageProps) {
   });
 
   if (!collection) notFound();
-
-  // Treat unpublished collections as not found for public visitors
   if (!collection.isPublished) notFound();
 
-  // Fetch standalone district images by tag (if this collection has a matching district tag)
   const districtTag = DISTRICT_TAG_MAP[slug];
   const districtImages = districtTag
     ? await db.image.findMany({
-        where: {
-          collectionId: null,
-          tags: { has: districtTag },
-        },
+        where: { collectionId: null, tags: { has: districtTag } },
         orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
         select: {
-          id: true,
-          slug: true,
-          title: true,
-          altText: true,
-          r2Key: true,
-          tags: true,
-          sortOrder: true,
-          updatedAt: true,
-          deviceType: true,
+          id: true, slug: true, title: true, altText: true,
+          r2Key: true, tags: true, sortOrder: true, updatedAt: true, deviceType: true,
         },
       })
     : [];
 
-  // Merge: collection-linked images first, then district tag images (deduped by id)
   const collectionImageIds = new Set(collection.images.map((i) => i.id));
   const mergedImages = [
     ...collection.images,
     ...districtImages.filter((i) => !collectionImageIds.has(i.id)),
   ];
 
-  // Related collections
   const relatedRaw = await db.collection.findMany({
     where: { slug: { not: slug }, isPublished: true },
     select: {
-      slug: true,
-      title: true,
-      category: true,
-      thumbnail: true,
-      thumbnailAlt: true,
+      slug: true, title: true, category: true, thumbnail: true, thumbnailAlt: true,
       _count: { select: { images: true } },
     },
     orderBy: { createdAt: "desc" },
@@ -168,15 +146,221 @@ export default async function CollectionPage({ params }: PageProps) {
 
   const fallbackDesc =
     `${collection.title} is a curated collection of free dark art wallpapers from Haunted Wallpapers. ` +
-    `Each piece in this ${collection.category ?? "dark"} collection is available as an instant free download ` +
-    `— no account required, no watermarks. Images are formatted for mobile portrait screens (9:16) ` +
-    `and look exceptional on AMOLED displays where true blacks create maximum contrast.`;
+    `Each piece is available as an instant free download — no account required, no watermarks. ` +
+    `Formatted for mobile portrait screens (9:16) and optimised for AMOLED displays.`;
+
+  // First 4 images used in the hero preview strip
+  const heroPreviewImages = mergedImages.slice(0, 4);
 
   return (
     <main
       className="min-h-screen"
       style={{ backgroundColor: "var(--bg-primary)", color: "var(--text-primary)" }}
     >
+      <style>{`
+        /* ── Hero two-column layout ── */
+        .coll-hero {
+          max-width: 1280px;
+          margin: 0 auto;
+          padding: 24px 24px 0;
+          display: grid;
+          grid-template-columns: 1fr;
+          gap: 32px;
+          align-items: start;
+        }
+
+        @media (min-width: 900px) {
+          .coll-hero {
+            grid-template-columns: 1fr 380px;
+            padding: 32px 60px 0;
+            gap: 48px;
+          }
+        }
+
+        /* Left: image preview strip */
+        .coll-hero-images {
+          display: grid;
+          grid-template-columns: repeat(2, 1fr);
+          gap: 8px;
+        }
+
+        @media (min-width: 480px) {
+          .coll-hero-images { grid-template-columns: repeat(4, 1fr); gap: 10px; }
+        }
+
+        @media (min-width: 900px) {
+          .coll-hero-images { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+        }
+
+        .coll-hero-thumb {
+          position: relative;
+          aspect-ratio: 9 / 16;
+          overflow: hidden;
+          border-radius: 6px;
+          border: 1px solid rgba(255,255,255,0.06);
+          background: #1a1825;
+          transition: border-color 0.2s, transform 0.2s;
+        }
+
+        .coll-hero-thumb:hover {
+          border-color: rgba(192,0,26,0.4);
+          transform: translateY(-2px);
+        }
+
+        .coll-hero-thumb-overlay {
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(to top, rgba(10,8,18,0.7) 0%, transparent 60%);
+          opacity: 0;
+          transition: opacity 0.2s;
+          display: flex;
+          align-items: flex-end;
+          padding: 10px;
+        }
+
+        .coll-hero-thumb:hover .coll-hero-thumb-overlay { opacity: 1; }
+
+        .coll-hero-thumb-label {
+          font-family: monospace;
+          font-size: 0.48rem;
+          letter-spacing: 0.14em;
+          text-transform: uppercase;
+          color: #c9a84c;
+        }
+
+        /* Right: info panel */
+        .coll-hero-info {
+          display: flex;
+          flex-direction: column;
+          gap: 20px;
+          position: sticky;
+          top: 80px;
+        }
+
+        .coll-hero-eyebrow {
+          font-family: monospace;
+          font-size: 0.55rem;
+          letter-spacing: 0.22em;
+          text-transform: uppercase;
+          color: #4a445a;
+          margin: 0;
+        }
+
+        .coll-hero-title {
+          font-family: var(--font-cinzel, serif);
+          font-size: clamp(1.6rem, 4vw, 2.4rem);
+          font-weight: 700;
+          line-height: 1.15;
+          margin: 0;
+          color: var(--text-primary, #e8e4f8);
+        }
+
+        .coll-hero-meta {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          flex-wrap: wrap;
+        }
+
+        .coll-hero-count {
+          font-family: monospace;
+          font-size: 0.6rem;
+          letter-spacing: 0.18em;
+          text-transform: uppercase;
+          color: #8a809a;
+          border: 1px solid rgba(255,255,255,0.08);
+          padding: 4px 10px;
+          border-radius: 3px;
+        }
+
+        .coll-hero-badge-adult {
+          background: rgba(192,0,26,0.12);
+          border: 1px solid rgba(192,0,26,0.35);
+          color: #c0001a;
+          font-size: 0.55rem;
+          font-family: monospace;
+          letter-spacing: 0.1em;
+          padding: 4px 10px;
+          border-radius: 3px;
+        }
+
+        .coll-hero-desc {
+          font-family: monospace;
+          font-size: 0.8rem;
+          line-height: 1.8;
+          color: #8a809a;
+        }
+
+        .coll-hero-desc p { margin: 0 0 12px; }
+        .coll-hero-desc p:last-child { margin: 0; }
+
+        .coll-hero-view-all {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          background: rgba(192,0,26,0.9);
+          color: #fff;
+          font-family: monospace;
+          font-size: 0.65rem;
+          letter-spacing: 0.18em;
+          text-transform: uppercase;
+          padding: 12px 22px;
+          border-radius: 4px;
+          text-decoration: none;
+          border: none;
+          cursor: pointer;
+          align-self: flex-start;
+          transition: background 0.2s;
+        }
+
+        .coll-hero-view-all:hover { background: rgba(192,0,26,1); }
+
+        /* ── Full grid below ── */
+        .coll-grid-section {
+          max-width: 1280px;
+          margin: 0 auto;
+          padding: 48px 24px 64px;
+        }
+
+        @media (min-width: 900px) {
+          .coll-grid-section { padding: 56px 60px 80px; }
+        }
+
+        .coll-grid-divider {
+          display: flex;
+          align-items: center;
+          gap: 16px;
+          margin-bottom: 28px;
+        }
+
+        .coll-grid-divider-line {
+          flex: 1;
+          height: 1px;
+          background: rgba(255,255,255,0.06);
+        }
+
+        .coll-grid-divider-label {
+          font-family: monospace;
+          font-size: 0.55rem;
+          letter-spacing: 0.22em;
+          text-transform: uppercase;
+          color: #4a445a;
+          white-space: nowrap;
+        }
+
+        /* card hover */
+        .coll-img-card { border-radius: 4px; }
+        .coll-img-card:hover { border-color: rgba(192,0,26,0.3) !important; transform: translateY(-2px); }
+
+        .coll-card-overlay {
+          position: absolute; inset: 0;
+          background: linear-gradient(to top, rgba(10,8,18,0.85) 0%, transparent 55%);
+          display: flex; align-items: flex-end;
+          padding: 10px;
+          opacity: 0; transition: opacity 0.2s;
+        }
+        .coll-img-card:hover .coll-card-overlay { opacity: 1; }
+      `}</style>
 
       <Breadcrumbs items={[
         { label: "Home",       href: "/" },
@@ -184,50 +368,97 @@ export default async function CollectionPage({ params }: PageProps) {
         { label: collection.title },
       ]} />
 
-      {/* ── Title + Description — matches iPhone/Android page style ── */}
-      <section className="max-w-7xl mx-auto px-6 md:px-[60px] pt-10 pb-8">
-        <h1 className="font-display text-3xl md:text-4xl font-bold leading-tight mb-6">
-          {collection.title}
-          {collection.isAdult && (
-            <span style={{
-              marginLeft: "12px",
-              background: "rgba(192,0,26,0.12)",
-              border: "1px solid rgba(192,0,26,0.35)",
-              color: "#c0001a",
-              fontSize: "0.6rem",
-              fontFamily: "var(--font-space, monospace)",
-              letterSpacing: "0.1em",
-              padding: "2px 8px",
-              verticalAlign: "middle",
-            }}>16+</span>
+      {/* ════════════════════════════════════════════════════════
+          HERO — images left, info right
+      ════════════════════════════════════════════════════════ */}
+      <div className="coll-hero">
+
+        {/* LEFT: preview thumbnails */}
+        <div className="coll-hero-images">
+          {heroPreviewImages.length === 0 ? (
+            <div style={{
+              gridColumn: "1 / -1",
+              aspectRatio: "9/5",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              color: "rgba(192,0,26,0.2)",
+              fontSize: "3rem",
+              border: "1px solid rgba(255,255,255,0.05)",
+              borderRadius: "6px",
+            }}>✦</div>
+          ) : (
+            heroPreviewImages.map((img, idx) => {
+              const href = !collectionImageIds.has(img.id) && (img as any).deviceType
+                ? `/${(img as any).deviceType.toLowerCase()}/${img.slug}`
+                : `/shop/${slug}/${img.slug}`;
+              return (
+                <Link key={img.id} href={href} className="coll-hero-thumb">
+                  <Image
+                    src={getPublicUrl(img.r2Key)}
+                    alt={img.altText ?? img.title}
+                    fill
+                    unoptimized
+                    className="object-cover"
+                    sizes="(max-width: 900px) 25vw, 180px"
+                    priority={idx < 2}
+                  />
+                  <div className="coll-hero-thumb-overlay">
+                    <span className="coll-hero-thumb-label">View →</span>
+                  </div>
+                </Link>
+              );
+            })
           )}
-        </h1>
+        </div>
 
-        <p style={{
-          fontFamily: "var(--font-space, monospace)",
-          fontSize: "0.6rem",
-          letterSpacing: "0.2em",
-          textTransform: "uppercase",
-          color: "#4a445a",
-          marginBottom: "24px",
-        }}>
-          — {mergedImages.length} wallpaper{mergedImages.length !== 1 ? "s" : ""} · {collection.category}
-        </p>
+        {/* RIGHT: info */}
+        <div className="coll-hero-info">
+          <p className="coll-hero-eyebrow">
+            {collection.category ?? "Collection"} · Haunted Wallpapers
+          </p>
 
-        {/* Description from admin — rendered in iframe, supports any HTML */}
-        {collection.description && (
-          <AdminHtmlBlock html={collection.description} />
-        )}
-        {!collection.description && (
-          <div className="device-page-intro">
-            <p>{fallbackDesc}</p>
+          <h1 className="coll-hero-title">
+            {collection.title}
+          </h1>
+
+          <div className="coll-hero-meta">
+            <span className="coll-hero-count">
+              {mergedImages.length} wallpaper{mergedImages.length !== 1 ? "s" : ""}
+            </span>
+            {collection.isAdult && (
+              <span className="coll-hero-badge-adult">16+</span>
+            )}
           </div>
-        )}
-      </section>
 
+          <div className="coll-hero-desc">
+            {collection.description ? (
+              <AdminHtmlBlock html={collection.description} />
+            ) : (
+              <p>{fallbackDesc}</p>
+            )}
+          </div>
 
-      {/* ── Image Grid — full-width 9:16, matches iPhone/Android page ── */}
-      <section className="max-w-7xl mx-auto px-6 md:px-[60px] py-10">
+          {mergedImages.length > 4 && (
+            <a href="#all-wallpapers" className="coll-hero-view-all">
+              View all {mergedImages.length} wallpapers ↓
+            </a>
+          )}
+        </div>
+      </div>
+
+      {/* ════════════════════════════════════════════════════════
+          FULL GRID
+      ════════════════════════════════════════════════════════ */}
+      <section id="all-wallpapers" className="coll-grid-section">
+        <div className="coll-grid-divider">
+          <div className="coll-grid-divider-line" />
+          <span className="coll-grid-divider-label">
+            All {mergedImages.length} wallpaper{mergedImages.length !== 1 ? "s" : ""}
+          </span>
+          <div className="coll-grid-divider-line" />
+        </div>
+
         {mergedImages.length === 0 ? (
           <div className="hw-coming-soon">
             <div className="hw-coming-soon__sigil">✦ ☽ ✦</div>
@@ -238,29 +469,23 @@ export default async function CollectionPage({ params }: PageProps) {
             </p>
           </div>
         ) : (
-          <>
-            <p className="font-mono text-[0.6rem] tracking-[0.2em] uppercase text-[#4a445a] mb-6">
-              — {mergedImages.length} wallpaper{mergedImages.length !== 1 ? "s" : ""}
-            </p>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
-              {mergedImages.map((img, idx) => {
-                const thumbUrl = getPublicUrl(img.r2Key);
-                const imgAlt =
-                  img.altText ??
-                  `${img.title} — free dark wallpaper from ${collection.title}`;
-                const imgLocked = (img.tags ?? []).includes("badge-premium") && isPremiumLocked((img as {updatedAt?: Date|null}).updatedAt);
-                return (
-                  <Link
-                    key={img.id}
-                    href={
-                      // District standalone images link to their device page
-                      !collectionImageIds.has(img.id) && (img as {deviceType?: string|null}).deviceType
-                        ? `/${(img as {deviceType?: string|null}).deviceType!.toLowerCase()}/${img.slug}`
-                        : `/shop/${slug}/${img.slug}`
-                    }
-                    style={{ textDecoration: "none", display: "block", pointerEvents: imgLocked ? "none" : "auto" }}
-                  >
-                    <div style={{
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+            {mergedImages.map((img, idx) => {
+              const thumbUrl = getPublicUrl(img.r2Key);
+              const imgAlt = img.altText ?? `${img.title} — free dark wallpaper from ${collection.title}`;
+              const imgLocked = (img.tags ?? []).includes("badge-premium") && isPremiumLocked((img as { updatedAt?: Date | null }).updatedAt);
+              const href = !collectionImageIds.has(img.id) && (img as any).deviceType
+                ? `/${(img as any).deviceType.toLowerCase()}/${img.slug}`
+                : `/shop/${slug}/${img.slug}`;
+
+              return (
+                <Link
+                  key={img.id}
+                  href={href}
+                  style={{ textDecoration: "none", display: "block", pointerEvents: imgLocked ? "none" : "auto" }}
+                >
+                  <div
+                    style={{
                       position: "relative",
                       aspectRatio: "9/16",
                       overflow: "hidden",
@@ -268,64 +493,64 @@ export default async function CollectionPage({ params }: PageProps) {
                       border: "1px solid rgba(255,255,255,0.05)",
                       transition: "border-color 0.2s, transform 0.2s",
                     }}
-                      className="coll-img-card"
-                    >
-                      <Image
-                        src={thumbUrl}
-                        alt={imgAlt}
-                        fill
-                        unoptimized
-                        className="object-cover"
-                        sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 20vw"
-                        priority={idx < 10}
-                        style={{ filter: imgLocked ? "blur(10px) brightness(0.25)" : "none" }}
-                      />
-                      {imgLocked ? (
-                        <div style={{
-                          position: "absolute", inset: 0, zIndex: 5,
-                          display: "flex", flexDirection: "column",
-                          alignItems: "center", justifyContent: "center",
-                          gap: "8px", textAlign: "center",
-                          background: "rgba(10,8,16,0.5)",
-                        }}>
-                          <span style={{ fontSize: "1.6rem" }}>🔒</span>
-                          <span style={{ fontSize: "0.5rem", letterSpacing: "0.2em", textTransform: "uppercase", color: "#c9a84c", fontFamily: "monospace", fontWeight: 700 }}>Back in the Vault</span>
-                          <span style={{ fontSize: "0.45rem", color: "rgba(201,168,76,0.6)", fontFamily: "monospace" }}>Returns in 24h</span>
-                        </div>
-                      ) : (
-                        <div className="coll-card-overlay">
-                          <span style={{
-                            fontFamily: "var(--font-space, monospace)",
-                            fontSize: "0.48rem",
-                            letterSpacing: "0.12em",
-                            textTransform: "uppercase",
-                            color: "#c9a84c",
-                          }}>View & Download →</span>
-                        </div>
-                      )}
-                    </div>
-                    <div style={{ padding: "8px 4px 4px" }}>
-                      <span style={{
-                        fontFamily: "var(--font-cormorant, serif)",
-                        fontStyle: "italic",
-                        fontSize: "0.82rem",
-                        color: "var(--text-secondary, #8a809a)",
-                        display: "-webkit-box",
-                        WebkitLineClamp: 2,
-                        WebkitBoxOrient: "vertical" as const,
-                        overflow: "hidden",
-                      }}>{img.title}</span>
-                    </div>
-                  </Link>
-                );
-              })}
-            </div>
-          </>
+                    className="coll-img-card"
+                  >
+                    <Image
+                      src={thumbUrl}
+                      alt={imgAlt}
+                      fill
+                      unoptimized
+                      className="object-cover"
+                      sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 20vw"
+                      priority={idx < 10}
+                      style={{ filter: imgLocked ? "blur(10px) brightness(0.25)" : "none" }}
+                    />
+                    {imgLocked ? (
+                      <div style={{
+                        position: "absolute", inset: 0, zIndex: 5,
+                        display: "flex", flexDirection: "column",
+                        alignItems: "center", justifyContent: "center",
+                        gap: "8px", textAlign: "center",
+                        background: "rgba(10,8,16,0.5)",
+                      }}>
+                        <span style={{ fontSize: "1.6rem" }}>🔒</span>
+                        <span style={{ fontSize: "0.5rem", letterSpacing: "0.2em", textTransform: "uppercase", color: "#c9a84c", fontFamily: "monospace", fontWeight: 700 }}>Back in the Vault</span>
+                        <span style={{ fontSize: "0.45rem", color: "rgba(201,168,76,0.6)", fontFamily: "monospace" }}>Returns in 24h</span>
+                      </div>
+                    ) : (
+                      <div className="coll-card-overlay">
+                        <span style={{
+                          fontFamily: "var(--font-space, monospace)",
+                          fontSize: "0.48rem",
+                          letterSpacing: "0.12em",
+                          textTransform: "uppercase",
+                          color: "#c9a84c",
+                        }}>View & Download →</span>
+                      </div>
+                    )}
+                  </div>
+                  <div style={{ padding: "8px 4px 4px" }}>
+                    <span style={{
+                      fontFamily: "var(--font-cormorant, serif)",
+                      fontStyle: "italic",
+                      fontSize: "0.82rem",
+                      color: "var(--text-secondary, #8a809a)",
+                      display: "-webkit-box",
+                      WebkitLineClamp: 2,
+                      WebkitBoxOrient: "vertical" as const,
+                      overflow: "hidden",
+                    }}>{img.title}</span>
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
         )}
       </section>
 
-
-      {/* ── You May Also Like ── */}
+      {/* ════════════════════════════════════════════════════════
+          YOU MAY ALSO LIKE
+      ════════════════════════════════════════════════════════ */}
       {relatedCollections.length > 0 && (
         <section style={{
           borderTop: "1px solid rgba(255,255,255,0.06)",
@@ -404,7 +629,6 @@ export default async function CollectionPage({ params }: PageProps) {
           </div>
         </section>
       )}
-
     </main>
   );
 }
