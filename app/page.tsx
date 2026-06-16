@@ -282,7 +282,7 @@ export default async function Home() {
                 <div className="hp-wotd-info">
                   <p className="hp-section-eye" style={{ color:"#ef0014", margin:0 }}>Wallpaper of the Day</p>
                   <h2 className="hp-wotd-title">{wotd.title}</h2>
-                  <p className="hp-wotd-note">One vision pulled daily from the vault. Download before the clock resets.</p>
+                  <p className="hp-wotd-note">One secret pulled daily from the town. Download before it disappears.</p>
                   <Link href={wotdHref} className="hp-btn-red" style={{ alignSelf:"flex-start" }}>
                     Download Free →
                   </Link>

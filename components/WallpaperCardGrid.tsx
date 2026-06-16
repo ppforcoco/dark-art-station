@@ -94,7 +94,7 @@ export default function WallpaperCardGrid({ items, accentRgb, badge, badgeColor 
                   unoptimized />
                 <div className={styles.vaultOverlay}>
                   <span className={styles.vaultLock} style={{ filter: `drop-shadow(0 0 8px rgba(${accentRgb},0.6))` }}>🔒</span>
-                  <span className={styles.vaultLabel} style={{ color: accent }}>Back in the Vault</span>
+                  <span className={styles.vaultLabel} style={{ color: accent }}>Back in the Town</span>
                   <span className={styles.vaultTimer} style={{ color: `rgba(${accentRgb},0.55)` }}>BACK IN <VaultCountdown /></span>
                 </div>
                 <div className={styles.homeBar} style={{ background: "rgba(255,255,255,0.12)" }} />

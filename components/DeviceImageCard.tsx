@@ -198,7 +198,7 @@ export default function DeviceImageCard({
             fontSize: "0.55rem", letterSpacing: "0.2em",
             textTransform: "uppercase", color: "#c9a84c",
             fontFamily: "monospace", fontWeight: 700,
-          }}>Back in the Vault</span>
+          }}>Back in the Town</span>
           <span style={{
             fontSize: "0.5rem", color: "rgba(201,168,76,0.6)",
             fontFamily: "monospace", lineHeight: 1.4,
