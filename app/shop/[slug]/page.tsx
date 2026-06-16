@@ -48,8 +48,6 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     collection.description ??
     `Download ${collection.title} wallpapers free for iPhone, Android and PC. High-quality dark art wallpapers, instant download.`;
 
-  const ogAlt = collection.thumbnailAlt ?? collection.title;
-
   return {
     title: `${collection.title} | Haunted Wallpapers`,
     description: metaDesc,
@@ -58,7 +56,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       description: metaDesc,
       url: `${siteUrl}/shop/${slug}`,
       siteName: "Haunted Wallpapers",
-      images: [{ url: ogImage, width: 1200, height: 630, alt: ogAlt }],
+      images: [{ url: ogImage, width: 1200, height: 630, alt: collection.thumbnailAlt ?? collection.title }],
       type: "website",
     },
     twitter: {
@@ -81,27 +79,14 @@ export default async function CollectionPage({ params }: PageProps) {
   const collection = await db.collection.findUnique({
     where: { slug },
     select: {
-      id: true,
-      slug: true,
-      title: true,
-      description: true,
-      thumbnail: true,
-      thumbnailAlt: true,
-      icon: true,
-      category: true,
-      isAdult: true,
-      isPublished: true,
+      id: true, slug: true, title: true, description: true,
+      thumbnail: true, thumbnailAlt: true, icon: true,
+      category: true, isAdult: true, isPublished: true,
       images: {
         orderBy: { sortOrder: "asc" },
         select: {
-          id: true,
-          slug: true,
-          title: true,
-          altText: true,
-          r2Key: true,
-          tags: true,
-          sortOrder: true,
-          updatedAt: true,
+          id: true, slug: true, title: true, altText: true,
+          r2Key: true, tags: true, sortOrder: true, updatedAt: true,
         },
       },
       _count: { select: { downloads: true } },
@@ -139,7 +124,7 @@ export default async function CollectionPage({ params }: PageProps) {
     take: 30,
   });
   const sameCategory = relatedRaw.filter((c) => c.category === collection.category);
-  const others = relatedRaw.filter((c) => c.category !== collection.category);
+  const others      = relatedRaw.filter((c) => c.category !== collection.category);
   const relatedCollections = [...sameCategory, ...others].slice(0, 3);
 
   const r2Base = process.env.NEXT_PUBLIC_R2_PUBLIC_URL ?? "";
@@ -149,123 +134,112 @@ export default async function CollectionPage({ params }: PageProps) {
     `Each piece is available as an instant free download — no account required, no watermarks. ` +
     `Formatted for mobile portrait screens (9:16) and optimised for AMOLED displays.`;
 
-  // First 4 images used in the hero preview strip
-  const heroPreviewImages = mergedImages.slice(0, 4);
-
   return (
     <main
       className="min-h-screen"
       style={{ backgroundColor: "var(--bg-primary)", color: "var(--text-primary)" }}
     >
       <style>{`
-        /* ── Hero two-column layout ── */
-        .coll-hero {
+        /* ─── Desktop two-column layout ─── */
+        /* On desktop: left = wallpaper grid (2-col masonry), right = sticky info panel */
+        /* On mobile: info first, then full grid — untouched */
+
+        .coll-layout {
           max-width: 1280px;
           margin: 0 auto;
-          padding: 24px 24px 0;
-          display: grid;
-          grid-template-columns: 1fr;
-          gap: 32px;
-          align-items: start;
+          padding: 24px 24px 80px;
         }
 
+        /* MOBILE: single column, info on top, grid below */
+        .coll-desktop-split { display: none; }
+        .coll-mobile-info   { display: block; padding-bottom: 28px; }
+        .coll-mobile-grid   { display: block; }
+
         @media (min-width: 900px) {
-          .coll-hero {
-            grid-template-columns: 1fr 380px;
-            padding: 32px 60px 0;
+          .coll-layout { padding: 32px 60px 80px; }
+          /* Hide mobile stacks */
+          .coll-mobile-info { display: none; }
+          .coll-mobile-grid { display: none; }
+          /* Show desktop split */
+          .coll-desktop-split {
+            display: grid;
+            grid-template-columns: 1fr 340px;
             gap: 48px;
+            align-items: start;
           }
         }
 
-        /* Left: image preview strip */
-        .coll-hero-images {
+        @media (min-width: 1100px) {
+          .coll-desktop-split { grid-template-columns: 1fr 380px; gap: 56px; }
+        }
+
+        /* ── Left: 2-col wallpaper grid ── */
+        .coll-left-grid {
           display: grid;
-          grid-template-columns: repeat(2, 1fr);
-          gap: 8px;
+          grid-template-columns: 1fr 1fr;
+          gap: 10px;
         }
 
-        @media (min-width: 480px) {
-          .coll-hero-images { grid-template-columns: repeat(4, 1fr); gap: 10px; }
-        }
-
-        @media (min-width: 900px) {
-          .coll-hero-images { grid-template-columns: repeat(2, 1fr); gap: 10px; }
-        }
-
-        .coll-hero-thumb {
+        .coll-img-card {
           position: relative;
           aspect-ratio: 9 / 16;
           overflow: hidden;
-          border-radius: 6px;
-          border: 1px solid rgba(255,255,255,0.06);
           background: #1a1825;
+          border: 1px solid rgba(255,255,255,0.05);
+          border-radius: 4px;
           transition: border-color 0.2s, transform 0.2s;
+          display: block;
         }
-
-        .coll-hero-thumb:hover {
-          border-color: rgba(192,0,26,0.4);
-          transform: translateY(-2px);
+        .coll-img-card:hover {
+          border-color: rgba(192,0,26,0.35);
+          transform: translateY(-3px);
         }
-
-        .coll-hero-thumb-overlay {
-          position: absolute;
-          inset: 0;
-          background: linear-gradient(to top, rgba(10,8,18,0.7) 0%, transparent 60%);
-          opacity: 0;
-          transition: opacity 0.2s;
-          display: flex;
-          align-items: flex-end;
-          padding: 10px;
+        .coll-card-overlay {
+          position: absolute; inset: 0;
+          background: linear-gradient(to top, rgba(10,8,18,0.85) 0%, transparent 55%);
+          display: flex; align-items: flex-end; padding: 10px;
+          opacity: 0; transition: opacity 0.2s;
         }
+        .coll-img-card:hover .coll-card-overlay { opacity: 1; }
 
-        .coll-hero-thumb:hover .coll-hero-thumb-overlay { opacity: 1; }
-
-        .coll-hero-thumb-label {
-          font-family: monospace;
-          font-size: 0.48rem;
-          letter-spacing: 0.14em;
-          text-transform: uppercase;
-          color: #c9a84c;
-        }
-
-        /* Right: info panel */
-        .coll-hero-info {
+        /* ── Right: sticky info panel ── */
+        .coll-info-panel {
+          position: sticky;
+          top: 88px;
           display: flex;
           flex-direction: column;
-          gap: 20px;
-          position: sticky;
-          top: 80px;
+          gap: 18px;
         }
 
-        .coll-hero-eyebrow {
+        .coll-info-eyebrow {
           font-family: monospace;
           font-size: 0.55rem;
-          letter-spacing: 0.22em;
+          letter-spacing: 0.24em;
           text-transform: uppercase;
           color: #4a445a;
           margin: 0;
         }
 
-        .coll-hero-title {
+        .coll-info-title {
           font-family: var(--font-cinzel, serif);
-          font-size: clamp(1.6rem, 4vw, 2.4rem);
+          font-size: clamp(1.5rem, 2.5vw, 2.2rem);
           font-weight: 700;
           line-height: 1.15;
           margin: 0;
           color: var(--text-primary, #e8e4f8);
         }
 
-        .coll-hero-meta {
+        .coll-info-meta {
           display: flex;
           align-items: center;
-          gap: 12px;
+          gap: 10px;
           flex-wrap: wrap;
         }
 
-        .coll-hero-count {
+        .coll-info-count {
           font-family: monospace;
-          font-size: 0.6rem;
-          letter-spacing: 0.18em;
+          font-size: 0.58rem;
+          letter-spacing: 0.16em;
           text-transform: uppercase;
           color: #8a809a;
           border: 1px solid rgba(255,255,255,0.08);
@@ -273,93 +247,66 @@ export default async function CollectionPage({ params }: PageProps) {
           border-radius: 3px;
         }
 
-        .coll-hero-badge-adult {
+        .coll-info-adult {
           background: rgba(192,0,26,0.12);
           border: 1px solid rgba(192,0,26,0.35);
           color: #c0001a;
-          font-size: 0.55rem;
           font-family: monospace;
+          font-size: 0.55rem;
           letter-spacing: 0.1em;
           padding: 4px 10px;
           border-radius: 3px;
         }
 
-        .coll-hero-desc {
+        .coll-info-desc {
           font-family: monospace;
-          font-size: 0.8rem;
-          line-height: 1.8;
+          font-size: 0.78rem;
+          line-height: 1.85;
           color: #8a809a;
+          border-top: 1px solid rgba(255,255,255,0.06);
+          padding-top: 18px;
         }
+        .coll-info-desc p { margin: 0 0 10px; }
+        .coll-info-desc p:last-child { margin: 0; }
 
-        .coll-hero-desc p { margin: 0 0 12px; }
-        .coll-hero-desc p:last-child { margin: 0; }
-
-        .coll-hero-view-all {
-          display: inline-flex;
-          align-items: center;
-          gap: 8px;
-          background: rgba(192,0,26,0.9);
-          color: #fff;
-          font-family: monospace;
-          font-size: 0.65rem;
-          letter-spacing: 0.18em;
-          text-transform: uppercase;
-          padding: 12px 22px;
-          border-radius: 4px;
-          text-decoration: none;
-          border: none;
-          cursor: pointer;
-          align-self: flex-start;
-          transition: background 0.2s;
-        }
-
-        .coll-hero-view-all:hover { background: rgba(192,0,26,1); }
-
-        /* ── Full grid below ── */
-        .coll-grid-section {
-          max-width: 1280px;
-          margin: 0 auto;
-          padding: 48px 24px 64px;
-        }
-
-        @media (min-width: 900px) {
-          .coll-grid-section { padding: 56px 60px 80px; }
-        }
-
-        .coll-grid-divider {
-          display: flex;
-          align-items: center;
-          gap: 16px;
-          margin-bottom: 28px;
-        }
-
-        .coll-grid-divider-line {
-          flex: 1;
+        .coll-info-divider {
           height: 1px;
           background: rgba(255,255,255,0.06);
         }
 
-        .coll-grid-divider-label {
+        /* ── Mobile info (top, before grid) ── */
+        .coll-mobile-title {
+          font-family: var(--font-cinzel, serif);
+          font-size: 1.7rem;
+          font-weight: 700;
+          line-height: 1.2;
+          margin: 0 0 8px;
+          color: var(--text-primary, #e8e4f8);
+        }
+        .coll-mobile-eyebrow {
           font-family: monospace;
           font-size: 0.55rem;
           letter-spacing: 0.22em;
           text-transform: uppercase;
           color: #4a445a;
-          white-space: nowrap;
+          margin: 0 0 12px;
+        }
+        .coll-mobile-count {
+          font-family: monospace;
+          font-size: 0.6rem;
+          letter-spacing: 0.14em;
+          text-transform: uppercase;
+          color: #8a809a;
+          margin-bottom: 20px;
+          display: block;
         }
 
-        /* card hover */
-        .coll-img-card { border-radius: 4px; }
-        .coll-img-card:hover { border-color: rgba(192,0,26,0.3) !important; transform: translateY(-2px); }
-
-        .coll-card-overlay {
-          position: absolute; inset: 0;
-          background: linear-gradient(to top, rgba(10,8,18,0.85) 0%, transparent 55%);
-          display: flex; align-items: flex-end;
-          padding: 10px;
-          opacity: 0; transition: opacity 0.2s;
+        /* ── Mobile grid (below info) ── */
+        .coll-mobile-grid-inner {
+          display: grid;
+          grid-template-columns: repeat(2, 1fr);
+          gap: 8px;
         }
-        .coll-img-card:hover .coll-card-overlay { opacity: 1; }
       `}</style>
 
       <Breadcrumbs items={[
@@ -368,189 +315,139 @@ export default async function CollectionPage({ params }: PageProps) {
         { label: collection.title },
       ]} />
 
-      {/* ════════════════════════════════════════════════════════
-          HERO — images left, info right
-      ════════════════════════════════════════════════════════ */}
-      <div className="coll-hero">
+      <div className="coll-layout">
 
-        {/* LEFT: preview thumbnails */}
-        <div className="coll-hero-images">
-          {heroPreviewImages.length === 0 ? (
-            <div style={{
-              gridColumn: "1 / -1",
-              aspectRatio: "9/5",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              color: "rgba(192,0,26,0.2)",
-              fontSize: "3rem",
-              border: "1px solid rgba(255,255,255,0.05)",
-              borderRadius: "6px",
-            }}>✦</div>
+        {/* ══════════════════════════════════════
+            MOBILE LAYOUT (< 900px)
+            Info panel first, then full grid
+        ══════════════════════════════════════ */}
+        <div className="coll-mobile-info">
+          <p className="coll-mobile-eyebrow">{collection.category ?? "Collection"}</p>
+          <h1 className="coll-mobile-title">
+            {collection.title}
+            {collection.isAdult && (
+              <span className="coll-info-adult" style={{ marginLeft: "10px", verticalAlign: "middle" }}>16+</span>
+            )}
+          </h1>
+          <span className="coll-mobile-count">
+            {mergedImages.length} wallpaper{mergedImages.length !== 1 ? "s" : ""}
+          </span>
+        </div>
+
+        <div className="coll-mobile-grid">
+          {mergedImages.length === 0 ? (
+            <div className="hw-coming-soon">
+              <div className="hw-coming-soon__sigil">✦ ☽ ✦</div>
+              <div className="hw-coming-soon__bar" />
+              <h2 className="hw-coming-soon__title">Coming Soon</h2>
+              <p className="hw-coming-soon__sub">Dark art is being assembled. Check back soon.</p>
+            </div>
           ) : (
-            heroPreviewImages.map((img, idx) => {
-              const href = !collectionImageIds.has(img.id) && (img as any).deviceType
-                ? `/${(img as any).deviceType.toLowerCase()}/${img.slug}`
-                : `/shop/${slug}/${img.slug}`;
-              return (
-                <Link key={img.id} href={href} className="coll-hero-thumb">
-                  <Image
-                    src={getPublicUrl(img.r2Key)}
-                    alt={img.altText ?? img.title}
-                    fill
-                    unoptimized
-                    className="object-cover"
-                    sizes="(max-width: 900px) 25vw, 180px"
-                    priority={idx < 2}
-                  />
-                  <div className="coll-hero-thumb-overlay">
-                    <span className="coll-hero-thumb-label">View →</span>
-                  </div>
-                </Link>
-              );
-            })
+            <div className="coll-mobile-grid-inner">
+              {mergedImages.map((img, idx) => {
+                const locked = (img.tags ?? []).includes("badge-premium") && isPremiumLocked((img as any).updatedAt);
+                const href = !collectionImageIds.has(img.id) && (img as any).deviceType
+                  ? `/${(img as any).deviceType.toLowerCase()}/${img.slug}`
+                  : `/shop/${slug}/${img.slug}`;
+                return (
+                  <Link key={img.id} href={href} className="coll-img-card"
+                    style={{ pointerEvents: locked ? "none" : "auto", textDecoration: "none" }}>
+                    <Image
+                      src={getPublicUrl(img.r2Key)}
+                      alt={img.altText ?? img.title}
+                      fill unoptimized className="object-cover"
+                      sizes="50vw"
+                      priority={idx < 6}
+                      style={{ filter: locked ? "blur(10px) brightness(0.25)" : "none" }}
+                    />
+                    {locked ? <LockedOverlay /> : (
+                      <div className="coll-card-overlay">
+                        <span style={{ fontFamily: "monospace", fontSize: "0.48rem", letterSpacing: "0.12em", textTransform: "uppercase", color: "#c9a84c" }}>View →</span>
+                      </div>
+                    )}
+                  </Link>
+                );
+              })}
+            </div>
           )}
         </div>
 
-        {/* RIGHT: info */}
-        <div className="coll-hero-info">
-          <p className="coll-hero-eyebrow">
-            {collection.category ?? "Collection"} · Haunted Wallpapers
-          </p>
+        {/* ══════════════════════════════════════
+            DESKTOP LAYOUT (≥ 900px)
+            Left: 2-col grid | Right: sticky info
+        ══════════════════════════════════════ */}
+        <div className="coll-desktop-split">
 
-          <h1 className="coll-hero-title">
-            {collection.title}
-          </h1>
-
-          <div className="coll-hero-meta">
-            <span className="coll-hero-count">
-              {mergedImages.length} wallpaper{mergedImages.length !== 1 ? "s" : ""}
-            </span>
-            {collection.isAdult && (
-              <span className="coll-hero-badge-adult">16+</span>
-            )}
-          </div>
-
-          <div className="coll-hero-desc">
-            {collection.description ? (
-              <AdminHtmlBlock html={collection.description} />
+          {/* LEFT — full wallpaper grid, 2 columns */}
+          <div>
+            {mergedImages.length === 0 ? (
+              <div className="hw-coming-soon">
+                <div className="hw-coming-soon__sigil">✦ ☽ ✦</div>
+                <div className="hw-coming-soon__bar" />
+                <h2 className="hw-coming-soon__title">Coming Soon</h2>
+                <p className="hw-coming-soon__sub">Dark art is being assembled. Check back soon.</p>
+              </div>
             ) : (
-              <p>{fallbackDesc}</p>
+              <div className="coll-left-grid">
+                {mergedImages.map((img, idx) => {
+                  const locked = (img.tags ?? []).includes("badge-premium") && isPremiumLocked((img as any).updatedAt);
+                  const href = !collectionImageIds.has(img.id) && (img as any).deviceType
+                    ? `/${(img as any).deviceType.toLowerCase()}/${img.slug}`
+                    : `/shop/${slug}/${img.slug}`;
+                  return (
+                    <Link key={img.id} href={href} className="coll-img-card"
+                      style={{ pointerEvents: locked ? "none" : "auto", textDecoration: "none" }}>
+                      <Image
+                        src={getPublicUrl(img.r2Key)}
+                        alt={img.altText ?? img.title}
+                        fill unoptimized className="object-cover"
+                        sizes="(max-width: 1280px) 30vw, 360px"
+                        priority={idx < 4}
+                        style={{ filter: locked ? "blur(10px) brightness(0.25)" : "none" }}
+                      />
+                      {locked ? <LockedOverlay /> : (
+                        <div className="coll-card-overlay">
+                          <span style={{ fontFamily: "monospace", fontSize: "0.48rem", letterSpacing: "0.12em", textTransform: "uppercase", color: "#c9a84c" }}>View & Download →</span>
+                        </div>
+                      )}
+                    </Link>
+                  );
+                })}
+              </div>
             )}
           </div>
 
-          {mergedImages.length > 4 && (
-            <a href="#all-wallpapers" className="coll-hero-view-all">
-              View all {mergedImages.length} wallpapers ↓
-            </a>
-          )}
+          {/* RIGHT — sticky info panel */}
+          <div className="coll-info-panel">
+            <p className="coll-info-eyebrow">{collection.category ?? "Collection"} · Haunted Wallpapers</p>
+
+            <h1 className="coll-info-title">
+              {collection.title}
+            </h1>
+
+            <div className="coll-info-meta">
+              <span className="coll-info-count">
+                {mergedImages.length} wallpaper{mergedImages.length !== 1 ? "s" : ""}
+              </span>
+              {collection.isAdult && <span className="coll-info-adult">16+</span>}
+            </div>
+
+            <div className="coll-info-divider" />
+
+            <div className="coll-info-desc">
+              {collection.description ? (
+                <AdminHtmlBlock html={collection.description} />
+              ) : (
+                <p>{fallbackDesc}</p>
+              )}
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* ════════════════════════════════════════════════════════
-          FULL GRID
-      ════════════════════════════════════════════════════════ */}
-      <section id="all-wallpapers" className="coll-grid-section">
-        <div className="coll-grid-divider">
-          <div className="coll-grid-divider-line" />
-          <span className="coll-grid-divider-label">
-            All {mergedImages.length} wallpaper{mergedImages.length !== 1 ? "s" : ""}
-          </span>
-          <div className="coll-grid-divider-line" />
-        </div>
-
-        {mergedImages.length === 0 ? (
-          <div className="hw-coming-soon">
-            <div className="hw-coming-soon__sigil">✦ ☽ ✦</div>
-            <div className="hw-coming-soon__bar" />
-            <h2 className="hw-coming-soon__title">Coming Soon</h2>
-            <p className="hw-coming-soon__sub">
-              Dark art is being assembled for this collection. Check back soon.
-            </p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
-            {mergedImages.map((img, idx) => {
-              const thumbUrl = getPublicUrl(img.r2Key);
-              const imgAlt = img.altText ?? `${img.title} — free dark wallpaper from ${collection.title}`;
-              const imgLocked = (img.tags ?? []).includes("badge-premium") && isPremiumLocked((img as { updatedAt?: Date | null }).updatedAt);
-              const href = !collectionImageIds.has(img.id) && (img as any).deviceType
-                ? `/${(img as any).deviceType.toLowerCase()}/${img.slug}`
-                : `/shop/${slug}/${img.slug}`;
-
-              return (
-                <Link
-                  key={img.id}
-                  href={href}
-                  style={{ textDecoration: "none", display: "block", pointerEvents: imgLocked ? "none" : "auto" }}
-                >
-                  <div
-                    style={{
-                      position: "relative",
-                      aspectRatio: "9/16",
-                      overflow: "hidden",
-                      background: "#1a1825",
-                      border: "1px solid rgba(255,255,255,0.05)",
-                      transition: "border-color 0.2s, transform 0.2s",
-                    }}
-                    className="coll-img-card"
-                  >
-                    <Image
-                      src={thumbUrl}
-                      alt={imgAlt}
-                      fill
-                      unoptimized
-                      className="object-cover"
-                      sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 20vw"
-                      priority={idx < 10}
-                      style={{ filter: imgLocked ? "blur(10px) brightness(0.25)" : "none" }}
-                    />
-                    {imgLocked ? (
-                      <div style={{
-                        position: "absolute", inset: 0, zIndex: 5,
-                        display: "flex", flexDirection: "column",
-                        alignItems: "center", justifyContent: "center",
-                        gap: "8px", textAlign: "center",
-                        background: "rgba(10,8,16,0.5)",
-                      }}>
-                        <span style={{ fontSize: "1.6rem" }}>🔒</span>
-                        <span style={{ fontSize: "0.5rem", letterSpacing: "0.2em", textTransform: "uppercase", color: "#c9a84c", fontFamily: "monospace", fontWeight: 700 }}>Back in the Vault</span>
-                        <span style={{ fontSize: "0.45rem", color: "rgba(201,168,76,0.6)", fontFamily: "monospace" }}>Returns in 24h</span>
-                      </div>
-                    ) : (
-                      <div className="coll-card-overlay">
-                        <span style={{
-                          fontFamily: "var(--font-space, monospace)",
-                          fontSize: "0.48rem",
-                          letterSpacing: "0.12em",
-                          textTransform: "uppercase",
-                          color: "#c9a84c",
-                        }}>View & Download →</span>
-                      </div>
-                    )}
-                  </div>
-                  <div style={{ padding: "8px 4px 4px" }}>
-                    <span style={{
-                      fontFamily: "var(--font-cormorant, serif)",
-                      fontStyle: "italic",
-                      fontSize: "0.82rem",
-                      color: "var(--text-secondary, #8a809a)",
-                      display: "-webkit-box",
-                      WebkitLineClamp: 2,
-                      WebkitBoxOrient: "vertical" as const,
-                      overflow: "hidden",
-                    }}>{img.title}</span>
-                  </div>
-                </Link>
-              );
-            })}
-          </div>
-        )}
-      </section>
-
-      {/* ════════════════════════════════════════════════════════
+      {/* ══════════════════════════════════════
           YOU MAY ALSO LIKE
-      ════════════════════════════════════════════════════════ */}
+      ══════════════════════════════════════ */}
       {relatedCollections.length > 0 && (
         <section style={{
           borderTop: "1px solid rgba(255,255,255,0.06)",
@@ -560,68 +457,28 @@ export default async function CollectionPage({ params }: PageProps) {
           <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
             <h2 style={{
               fontFamily: "var(--font-cinzel, serif)",
-              fontSize: "1rem",
-              fontWeight: 700,
-              letterSpacing: "0.22em",
-              textTransform: "uppercase",
-              color: "#ffffff",
-              marginBottom: "24px",
-              display: "flex",
-              alignItems: "center",
-              gap: "10px",
+              fontSize: "1rem", fontWeight: 700,
+              letterSpacing: "0.22em", textTransform: "uppercase",
+              color: "#ffffff", marginBottom: "24px",
+              display: "flex", alignItems: "center", gap: "10px",
             }}>
               <span style={{ color: "#c0001a" }}>✦</span> You May Also Like
             </h2>
-            <div style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))",
-              gap: "16px",
-            }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))", gap: "16px" }}>
               {relatedCollections.map((rc) => {
                 const thumb = rc.thumbnail ? `${r2Base}/${rc.thumbnail}` : null;
                 return (
                   <Link key={rc.slug} href={`/shop/${rc.slug}`} style={{ textDecoration: "none", display: "block" }}>
-                    <div style={{
-                      position: "relative",
-                      aspectRatio: "9/16",
-                      overflow: "hidden",
-                      background: "#0f0c1a",
-                      border: "1px solid rgba(255,255,255,0.06)",
-                      marginBottom: "10px",
-                    }}>
-                      {thumb ? (
+                    <div style={{ position: "relative", aspectRatio: "9/16", overflow: "hidden", background: "#0f0c1a", border: "1px solid rgba(255,255,255,0.06)", marginBottom: "10px" }}>
+                      {thumb
                         // eslint-disable-next-line @next/next/no-img-element
-                        <img src={thumb} alt={rc.thumbnailAlt ?? rc.title}
-                          style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
-                          loading="lazy" />
-                      ) : (
-                        <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", color: "rgba(192,0,26,0.25)", fontSize: "2rem" }}>✦</div>
-                      )}
+                        ? <img src={thumb} alt={rc.thumbnailAlt ?? rc.title} style={{ width: "100%", height: "100%", objectFit: "cover" }} loading="lazy" />
+                        : <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", color: "rgba(192,0,26,0.25)", fontSize: "2rem" }}>✦</div>
+                      }
                     </div>
-                    <span style={{
-                      fontFamily: "var(--font-space, monospace)",
-                      fontSize: "0.48rem",
-                      letterSpacing: "0.18em",
-                      textTransform: "uppercase",
-                      color: "#c0001a",
-                      display: "block",
-                      marginBottom: "4px",
-                    }}>{rc.category}</span>
-                    <h3 style={{
-                      fontFamily: "var(--font-cinzel, serif)",
-                      fontSize: "0.85rem",
-                      fontWeight: 700,
-                      color: "#e8e4f8",
-                      margin: "0 0 4px",
-                      lineHeight: 1.3,
-                    }}>{rc.title}</h3>
-                    <span style={{
-                      fontFamily: "var(--font-space, monospace)",
-                      fontSize: "0.5rem",
-                      letterSpacing: "0.1em",
-                      textTransform: "uppercase",
-                      color: "#4a445a",
-                    }}>{rc._count.images} wallpapers</span>
+                    <span style={{ fontFamily: "monospace", fontSize: "0.48rem", letterSpacing: "0.18em", textTransform: "uppercase", color: "#c0001a", display: "block", marginBottom: "4px" }}>{rc.category}</span>
+                    <h3 style={{ fontFamily: "var(--font-cinzel, serif)", fontSize: "0.85rem", fontWeight: 700, color: "#e8e4f8", margin: "0 0 4px", lineHeight: 1.3 }}>{rc.title}</h3>
+                    <span style={{ fontFamily: "monospace", fontSize: "0.5rem", letterSpacing: "0.1em", textTransform: "uppercase", color: "#4a445a" }}>{rc._count.images} wallpapers</span>
                   </Link>
                 );
               })}
@@ -630,5 +487,21 @@ export default async function CollectionPage({ params }: PageProps) {
         </section>
       )}
     </main>
+  );
+}
+
+function LockedOverlay() {
+  return (
+    <div style={{
+      position: "absolute", inset: 0, zIndex: 5,
+      display: "flex", flexDirection: "column",
+      alignItems: "center", justifyContent: "center",
+      gap: "8px", textAlign: "center",
+      background: "rgba(10,8,16,0.5)",
+    }}>
+      <span style={{ fontSize: "1.6rem" }}>🔒</span>
+      <span style={{ fontSize: "0.5rem", letterSpacing: "0.2em", textTransform: "uppercase", color: "#c9a84c", fontFamily: "monospace", fontWeight: 700 }}>Back in the Vault</span>
+      <span style={{ fontSize: "0.45rem", color: "rgba(201,168,76,0.6)", fontFamily: "monospace" }}>Returns in 24h</span>
+    </div>
   );
 }
