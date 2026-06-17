@@ -189,6 +189,7 @@ export default async function CollectionPage({ params }: PageProps) {
           border-radius: 4px;
           transition: border-color 0.2s, transform 0.2s;
           display: block;
+          contain: layout style paint;
         }
         .coll-img-card:hover {
           border-color: rgba(192,0,26,0.35);
@@ -355,9 +356,9 @@ export default async function CollectionPage({ params }: PageProps) {
                     <Image
                       src={getPublicUrl(img.r2Key)}
                       alt={img.altText ?? img.title}
-                      fill unoptimized className="object-cover"
+                      fill className="object-cover"
                       sizes="50vw"
-                      priority={idx < 6}
+                      priority={idx < 2}
                       style={{ filter: locked ? "blur(10px) brightness(0.25)" : "none" }}
                     />
                     {locked ? <LockedOverlay /> : (
@@ -400,9 +401,9 @@ export default async function CollectionPage({ params }: PageProps) {
                       <Image
                         src={getPublicUrl(img.r2Key)}
                         alt={img.altText ?? img.title}
-                        fill unoptimized className="object-cover"
+                        fill className="object-cover"
                         sizes="(max-width: 1280px) 30vw, 360px"
-                        priority={idx < 4}
+                        priority={idx < 2}
                         style={{ filter: locked ? "blur(10px) brightness(0.25)" : "none" }}
                       />
                       {locked ? <LockedOverlay /> : (

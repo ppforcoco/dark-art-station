@@ -78,11 +78,10 @@ export default function TonightSlider({ items }: TonightSliderProps) {
                   src={item.src}
                   alt={item.title}
                   fill
-                  loading={i < 4 ? "eager" : "lazy"}
-                  priority={i < 2}
+                  loading={i < 2 ? "eager" : "lazy"}
                   unoptimized
                   sizes="(max-width:767px) 44vw, 145px"
-                  style={{ objectFit: "cover", objectPosition: "center top" }}
+                  style={{ objectFit: "cover", objectPosition: "center top", contentVisibility: "auto" }}
                 />
                 {/* Hover overlay with title */}
                 <div className="ts-overlay">

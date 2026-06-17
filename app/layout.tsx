@@ -65,16 +65,23 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" dir="ltr" suppressHydrationWarning style={{ backgroundColor: "#0c0b14", color: "#e8e4dc" }}>
       <head>
-        {/* ── Ezoic — privacy scripts must load before the header script ───── */}
-        <script data-cfasync="false" src="https://cmp.gatekeeperconsent.com/min.js" />
-        <script data-cfasync="false" src="https://the.gatekeeperconsent.com/cmp.min.js" />
-        <script async src="//www.ezojs.com/ezoic/sa.min.js" />
+        {/* ── Hero image preload — LCP hint ───────────────────────────────── */}
+        <link
+          rel="preload"
+          as="image"
+          href="https://assets.hauntedwallpapers.com/extras/the-haunted-wallpapers-hero-section-image-mobile-dark-wallpapers-thumbnail.avif"
+          type="image/avif"
+          fetchPriority="high"
+        />
+
+        {/* ── Hilltop Ads — deferred after LCP ────────────────────────────── */}
+        {/* Loads only once browser is idle (requestIdleCallback / setTimeout) */}
+        {/* Saves ~1.3 s on LCP by not blocking first paint.                   */}
         <script
           dangerouslySetInnerHTML={{
-            __html: `window.ezstandalone = window.ezstandalone || {}; ezstandalone.cmd = ezstandalone.cmd || [];`,
+            __html: `(function(){function loadHilltopAds(){(function(fzzm){var d=document,s=d.createElement('script'),l=d.scripts[d.scripts.length-1];s.settings=fzzm||{};s.src="\/\/quarrelsomebitter.com\/b\/X-V.sddwGLls0qY\/W\/cD\/eesmp9IupZwULlCkLPaTFcfxoMUzlgn4gM\/jGEAtlNvzEErz\/OPDCg\/yPNhQe";s.async=true;s.referrerPolicy='no-referrer-when-downgrade';l.parentNode.insertBefore(s,l);})({});(function(fzzm){var d=document,s=d.createElement('script'),l=d.scripts[d.scripts.length-1];s.settings=fzzm||{};s.src="\/\/quarrelsomebitter.com\/bcX.VNsCdNGql\/0WYqWxcI\/yeLmN9gukZzUJl-k\/P\/TNc\/xEMxzQgU3oORDLknttNnzqE\/zjOwDdcQ5TM\/wu";s.async=true;s.referrerPolicy='no-referrer-when-downgrade';l.parentNode.insertBefore(s,l);})({});}if('requestIdleCallback' in window){requestIdleCallback(loadHilltopAds,{timeout:3000});}else{setTimeout(loadHilltopAds,2000);}})();`,
           }}
         />
-        <script src="//ezoicanalytics.com/analytics.js" />
 
         {/* ── Critical inline CSS ─────────────────────────────────────────── */}
         <style dangerouslySetInnerHTML={{ __html: `
