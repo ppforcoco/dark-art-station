@@ -382,6 +382,8 @@ function ImageUploaderTab({password}:{password:string}){
 
 function BlogTab({password,prefillTitle,prefillLabel,onPrefillUsed}:{password:string;prefillTitle:string;prefillLabel:string;onPrefillUsed:()=>void}){
   const[mode,setMode]=useState<"list"|"new"|"edit">("list");const[posts,setPosts]=useState<Post[]>([]);const[loading,setLoading]=useState(true);const[editPost,setEditPost]=useState<Post|null>(null);const[title,setTitle]=useState("");const[slug,setSlug]=useState("");const[label,setLabel]=useState("Wallpaper Guides");const[content,setContent]=useState("");const[featImg,setFeatImg]=useState("");const[saving,setSaving]=useState(false);const[deleting,setDeleting]=useState<string|null>(null);const[msg,setMsg]=useState<{type:"ok"|"err";text:string}|null>(null);const[contentMode,setContentMode]=useState<"html"|"preview">("html");
+  const[blogImgFile,setBlogImgFile]=useState<File|null>(null);const[blogImgUploading,setBlogImgUploading]=useState(false);const[blogImgMsg,setBlogImgMsg]=useState<{type:"ok"|"err";text:string}|null>(null);const blogImgInputRef=useRef<HTMLInputElement>(null);
+  async function handleBlogImageUpload(file:File){setBlogImgUploading(true);setBlogImgMsg(null);try{const form=new FormData();form.append("file",file);const res=await fetch("/api/hw-admin/upload-blog-image",{method:"POST",headers:{"x-admin-password":password},body:form});const j=await res.json();if(res.ok){setFeatImg(j.url);setBlogImgMsg({type:"ok",text:"✓ Image uploaded — URL filled in below"});}else setBlogImgMsg({type:"err",text:j.error??"Upload failed"});}catch{setBlogImgMsg({type:"err",text:"Network error."});}setBlogImgUploading(false);}
   const load=useCallback(async()=>{setLoading(true);try{const res=await fetch("/api/hw-admin/blogs",{headers:{"x-admin-password":password}});if(res.ok){const j=await res.json();setPosts(j.posts??[]);}}catch{}setLoading(false);},[password]);
   useEffect(()=>{load();},[load]);
   useEffect(()=>{if(prefillTitle){setTitle(prefillTitle);setSlug(prefillTitle.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,""));setLabel(prefillLabel||"Wallpaper Guides");setMode("new");onPrefillUsed();}},[prefillTitle,prefillLabel,onPrefillUsed]);
@@ -400,7 +402,20 @@ function BlogTab({password,prefillTitle,prefillLabel,onPrefillUsed}:{password:st
     </div>
     <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"16px"}}>
       <Card style={{padding:"16px"}}><label style={lbl}>Category Label</label><select value={label} onChange={e=>setLabel(e.target.value)} style={{...inp,appearance:"none"}}>{ALL_LABELS.map(l=><option key={l} value={l}>{l}</option>)}</select></Card>
-      <Card style={{padding:"16px"}}><label style={lbl}>Featured Image URL (optional)</label><input value={featImg} onChange={e=>setFeatImg(e.target.value)} placeholder="https://assets.hauntedwallpapers.com/..." style={inp}/></Card>
+      <Card style={{padding:"16px",borderColor:featImg?"rgba(201,168,76,0.4)":C.border,background:featImg?"rgba(201,168,76,0.04)":C.surface}}>
+        <label style={{...lbl,marginBottom:"10px",color:C.gold}}>🖼 Featured Image (optional)</label>
+        <p style={{color:C.textMut,fontSize:"0.65rem",marginBottom:"12px",lineHeight:1.6}}>Upload directly from your local machine → gets stored in R2 → public URL filled in automatically.</p>
+        {blogImgMsg&&<Msg msg={blogImgMsg}/>}
+        <div style={{display:"flex",alignItems:"center",gap:"10px",marginBottom:"10px",flexWrap:"wrap"}}>
+          <input ref={blogImgInputRef} type="file" accept="image/*" style={{display:"none"}} onChange={e=>{const f=e.target.files?.[0];if(f){setBlogImgFile(f);handleBlogImageUpload(f);}}}/>
+          <label onClick={()=>blogImgInputRef.current?.click()} style={{display:"inline-flex",alignItems:"center",gap:"8px",background:"transparent",border:`1px solid ${blogImgFile?C.gold:C.border}`,color:blogImgFile?C.gold:C.textSec,padding:"8px 16px",cursor:"pointer",fontSize:"0.7rem",fontFamily:"monospace",letterSpacing:"0.08em",flexShrink:0}}>
+            {blogImgUploading?"⏳ Uploading…":blogImgFile?"✓ "+blogImgFile.name:"📁 Choose Image File"}
+          </label>
+          {featImg&&<a href={featImg} target="_blank" rel="noopener noreferrer" style={{color:C.gold,fontSize:"0.65rem",textDecoration:"none",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap",maxWidth:"240px"}}>↗ {featImg}</a>}
+        </div>
+        <label style={{...lbl,marginBottom:"4px",color:C.textMut}}>Or paste URL manually</label>
+        <input value={featImg} onChange={e=>setFeatImg(e.target.value)} placeholder="https://assets.hauntedwallpapers.com/blog/..." style={inp}/>
+      </Card>
     </div>
     <Card style={{padding:"16px"}}>
       <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:"8px",flexWrap:"wrap",gap:"8px"}}>
