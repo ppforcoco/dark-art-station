@@ -55,9 +55,30 @@ function Card({children,style}:{children:React.ReactNode;style?:React.CSSPropert
 function Msg({msg}:{msg:{type:"ok"|"err";text:string}|null}){if(!msg)return null;return<div style={{padding:"10px 14px",marginBottom:"16px",border:`1px solid ${msg.type==="ok"?C.green:C.red}`,color:msg.type==="ok"?C.green:"#ffd080",fontSize:"0.82rem",background:msg.type==="ok"?"rgba(76,175,80,0.08)":"rgba(192,0,26,0.08)"}}>{msg.text}</div>;}
 function AdultBadge(){return<span style={{display:"inline-flex",alignItems:"center",background:C.red,color:"#fff",fontFamily:"monospace",fontWeight:900,fontSize:"0.6rem",padding:"2px 7px",border:"1px solid #ff2040",textTransform:"uppercase"}}>⚠ 16+</span>;}
 
-function HtmlToolbar({textareaId,value,onChange}:{textareaId:string;value:string;onChange:(v:string)=>void;}){
+function HtmlToolbar({textareaId,value,onChange,password}:{textareaId:string;value:string;onChange:(v:string)=>void;password?:string;}){
   const tags=[{label:"B",wrap:["<strong>","</strong>"]},{label:"I",wrap:["<em>","</em>"]},{label:"H2",wrap:["<h2>","</h2>"]},{label:"H3",wrap:["<h3>","</h3>"]},{label:"P",wrap:["<p>","</p>"]},{label:"UL",wrap:["<ul>\n  <li>","</li>\n</ul>"]},{label:"LI",wrap:["<li>","</li>"]},{label:"A",wrap:['<a href="">','</a>']},{label:"Red",wrap:['<span style="color:#c0001a">','</span>']},{label:"Gold",wrap:['<span style="color:#c9a84c">','</span>']},{label:"BQ",wrap:['<blockquote style="border-left:3px solid #c0001a;padding:8px 16px;margin:12px 0;font-style:italic;">','</blockquote>']}];
-  return<div style={{display:"flex",flexWrap:"wrap",gap:"4px",marginBottom:"6px"}}>{tags.map(({label,wrap})=><button key={label} type="button" onClick={()=>{const el=document.getElementById(textareaId) as HTMLTextAreaElement|null;if(!el){onChange(value+wrap[0]+wrap[1]);return;}const start=el.selectionStart,end=el.selectionEnd;const selected=value.slice(start,end);const next=value.slice(0,start)+wrap[0]+selected+wrap[1]+value.slice(end);onChange(next);setTimeout(()=>{el.focus();const pos=start+wrap[0].length+selected.length+wrap[1].length;el.setSelectionRange(pos,pos);},10);}} style={{background:"rgba(124,58,237,0.15)",border:`1px solid ${C.border}`,color:C.purple,padding:"3px 9px",cursor:"pointer",fontSize:"0.62rem",fontFamily:"monospace"}}>{label}</button>)}</div>;
+  const imgInputRef=useRef<HTMLInputElement>(null);const[imgUploading,setImgUploading]=useState(false);
+  async function handleInlineImageUpload(file:File){
+    if(!password)return;
+    setImgUploading(true);
+    try{
+      const form=new FormData();form.append("file",file);
+      const res=await fetch("/api/hw-admin/upload-blog-image",{method:"POST",headers:{"x-admin-password":password},body:form});
+      const j=await res.json();
+      if(res.ok&&j.url){
+        const imgTag=`<img src="${j.url}" alt="" style="max-width:100%;height:auto;margin:16px 0;" />`;
+        const el=document.getElementById(textareaId) as HTMLTextAreaElement|null;
+        if(el){const start=el.selectionStart;const next=value.slice(0,start)+imgTag+value.slice(start);onChange(next);setTimeout(()=>{el.focus();el.setSelectionRange(start+imgTag.length,start+imgTag.length);},10);}
+        else onChange(value+imgTag);
+      }
+    }catch{}
+    setImgUploading(false);
+    if(imgInputRef.current)imgInputRef.current.value="";
+  }
+  return<div style={{display:"flex",flexWrap:"wrap",gap:"4px",marginBottom:"6px"}}>
+    {tags.map(({label,wrap})=><button key={label} type="button" onClick={()=>{const el=document.getElementById(textareaId) as HTMLTextAreaElement|null;if(!el){onChange(value+wrap[0]+wrap[1]);return;}const start=el.selectionStart,end=el.selectionEnd;const selected=value.slice(start,end);const next=value.slice(0,start)+wrap[0]+selected+wrap[1]+value.slice(end);onChange(next);setTimeout(()=>{el.focus();const pos=start+wrap[0].length+selected.length+wrap[1].length;el.setSelectionRange(pos,pos);},10);}} style={{background:"rgba(124,58,237,0.15)",border:`1px solid ${C.border}`,color:C.purple,padding:"3px 9px",cursor:"pointer",fontSize:"0.62rem",fontFamily:"monospace"}}>{label}</button>)}
+    {password&&<><input ref={imgInputRef} type="file" accept="image/*" style={{display:"none"}} onChange={e=>{const f=e.target.files?.[0];if(f)handleInlineImageUpload(f);}}/><button type="button" onClick={()=>imgInputRef.current?.click()} disabled={imgUploading} style={{background:imgUploading?"rgba(201,168,76,0.25)":"rgba(201,168,76,0.15)",border:`1px solid ${imgUploading?C.gold:"rgba(201,168,76,0.4)"}`,color:C.gold,padding:"3px 9px",cursor:imgUploading?"not-allowed":"pointer",fontSize:"0.62rem",fontFamily:"monospace",opacity:imgUploading?0.7:1}}>{imgUploading?"⏳":"📷 Img"}</button></>}
+  </div>;
 }
 
 function PasswordGate({onAuth}:{onAuth:()=>void}){
@@ -422,7 +443,7 @@ function BlogTab({password,prefillTitle,prefillLabel,onPrefillUsed}:{password:st
         <label style={{...lbl,marginBottom:0}}>Content (HTML) <span style={{color:wordCount>=800?C.green:wordCount>0?C.gold:C.textMut}}>({wordCount} words{wordCount>=800?" ✓":" — aim for 800+"})</span></label>
         <div style={{display:"flex",gap:"4px"}}>{(["html","preview"] as const).map(m=><button key={m} onClick={()=>setContentMode(m)} style={{background:contentMode===m?(m==="preview"?C.red:"#2a2535"):"transparent",border:`1px solid ${C.border}`,color:contentMode===m?C.white:C.textSec,padding:"3px 10px",cursor:"pointer",fontSize:"0.65rem",fontFamily:"monospace"}}>{m==="preview"?"👁 Preview":"HTML"}</button>)}</div>
       </div>
-      <HtmlToolbar textareaId="blog-content-ta" value={content} onChange={setContent}/>
+      <HtmlToolbar textareaId="blog-content-ta" value={content} onChange={setContent} password={password}/>
       {contentMode==="html"?<textarea id="blog-content-ta" value={content} onChange={e=>setContent(e.target.value)} placeholder={"<h2>Introduction</h2>\n<p>Your article content here…</p>"} rows={20} spellCheck={false} style={{...inp,resize:"vertical",lineHeight:"1.6",fontFamily:"monospace",fontSize:"0.8rem"}}/>:<div style={{minHeight:"400px",border:`1px solid ${C.border}`,padding:"24px",background:"#08060f",lineHeight:"1.9",color:C.textPri}} dangerouslySetInnerHTML={{__html:content||`<p style='color:${C.textMut}'>Nothing to preview yet…</p>`}}/>}
     </Card>
     <div style={{display:"flex",gap:"10px"}}>
