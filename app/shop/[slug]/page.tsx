@@ -7,8 +7,6 @@ import { db } from "@/lib/db";
 import { getPublicUrl } from "@/lib/r2";
 import AdminHtmlBlock from "@/components/AdminHtmlBlock";
 import Breadcrumbs from "@/components/Breadcrumbs";
-import DeviceMockup from "@/components/DeviceMockup";
-import { sanitizeAdminHtml } from "@/lib/sanitize-html";
 import { isPremiumLocked } from "@/lib/premium-lock";
 
 export const dynamic = "force-dynamic";
@@ -125,7 +123,7 @@ export default async function CollectionPage({ params }: PageProps) {
     take: 30,
   });
   const sameCategory = relatedRaw.filter((c) => c.category === collection.category);
-  const others      = relatedRaw.filter((c) => c.category !== collection.category);
+  const others       = relatedRaw.filter((c) => c.category !== collection.category);
   const relatedCollections = [...sameCategory, ...others].slice(0, 3);
 
   const r2Base = process.env.NEXT_PUBLIC_R2_PUBLIC_URL ?? "";
@@ -141,25 +139,25 @@ export default async function CollectionPage({ params }: PageProps) {
       style={{ backgroundColor: "var(--bg-primary)", color: "var(--text-primary)" }}
     >
       <style>{`
-        /* ─── Desktop two-column layout ─── */
         .coll-layout {
           max-width: 1280px;
           margin: 0 auto;
           padding: 24px 24px 80px;
         }
 
-        /* MOBILE: single column, info on top, grid below — UNTOUCHED */
-        .coll-desktop-only  { display: none; }
-        .coll-mobile-info   { display: block; padding-bottom: 28px; }
-        .coll-mobile-grid   { display: block; }
+        /* ── Mobile: untouched ── */
+        .coll-desktop-only { display: none; }
+        .coll-mobile-info  { display: block; padding-bottom: 28px; }
+        .coll-mobile-grid  { display: block; }
 
         @media (min-width: 900px) {
-          .coll-layout { padding: 32px 60px 80px; }
-          .coll-mobile-info { display: none; }
-          .coll-mobile-grid { display: none; }
+          .coll-layout       { padding: 32px 60px 80px; }
+          .coll-mobile-info  { display: none; }
+          .coll-mobile-grid  { display: none; }
           .coll-desktop-only { display: block; }
         }
 
+        /* ── Mobile card ── */
         .coll-img-card {
           position: relative;
           aspect-ratio: 9 / 16;
@@ -169,7 +167,6 @@ export default async function CollectionPage({ params }: PageProps) {
           border-radius: 4px;
           transition: border-color 0.2s, transform 0.2s;
           display: block;
-          contain: layout style paint;
         }
         .coll-img-card:hover {
           border-color: rgba(192,0,26,0.35);
@@ -187,9 +184,8 @@ export default async function CollectionPage({ params }: PageProps) {
         .coll-desktop-header {
           text-align: center;
           max-width: 760px;
-          margin: 0 auto 40px;
+          margin: 0 auto 48px;
         }
-
         .coll-info-eyebrow {
           font-family: monospace;
           font-size: 0.55rem;
@@ -198,7 +194,6 @@ export default async function CollectionPage({ params }: PageProps) {
           color: #4a445a;
           margin: 0;
         }
-
         .coll-desktop-title {
           font-family: var(--font-cinzel, serif);
           font-size: clamp(1.8rem, 3vw, 2.6rem);
@@ -207,7 +202,6 @@ export default async function CollectionPage({ params }: PageProps) {
           margin: 12px 0 16px;
           color: var(--text-primary, #e8e4f8);
         }
-
         .coll-desktop-count {
           display: inline-block;
           font-family: monospace;
@@ -219,7 +213,6 @@ export default async function CollectionPage({ params }: PageProps) {
           padding: 5px 12px;
           border-radius: 3px;
         }
-
         .coll-info-adult {
           background: rgba(192,0,26,0.12);
           border: 1px solid rgba(192,0,26,0.35);
@@ -231,66 +224,123 @@ export default async function CollectionPage({ params }: PageProps) {
           border-radius: 3px;
         }
 
-        /* ── Small phone-mockup preview grid (desktop) ── */
+        /* ══════════════════════════════════════════════
+           PHONE MOCKUP — self-contained, no DeviceMockup
+           The image sits edge-to-edge inside the screen.
+           The bezel is CSS-only, always visible.
+        ══════════════════════════════════════════════ */
         .coll-mockup-grid {
           display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-          gap: 36px 22px;
-          padding: 4px 10px 0;
+          grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+          gap: 32px 20px;
         }
 
-        .coll-mockup-item {
+        .coll-mockup-link {
           display: block;
-          max-width: 200px;
-          margin: 0 auto;
           text-decoration: none;
-          transition: transform 0.25s ease;
-          /* Ensure the mockup frame is visible against the dark background */
-          filter: drop-shadow(0 8px 24px rgba(0,0,0,0.7));
+          transition: transform 0.22s ease;
         }
-        .coll-mockup-item:hover {
-          transform: translateY(-5px);
-          filter: drop-shadow(0 14px 32px rgba(0,0,0,0.85));
+        .coll-mockup-link:hover { transform: translateY(-6px); }
+
+        /* The outer phone shell */
+        .coll-phone {
+          position: relative;
+          width: 100%;
+          aspect-ratio: 9 / 19.5;
+          background: #080810;
+          border-radius: 28px;
+          border: 2px solid rgba(255,255,255,0.12);
+          box-shadow:
+            0 0 0 1px rgba(0,0,0,0.9),
+            0 16px 48px rgba(0,0,0,0.85),
+            0 4px 12px rgba(0,0,0,0.6),
+            inset 0 1px 0 rgba(255,255,255,0.08);
+          overflow: hidden; /* clip the image to phone shape */
         }
 
-        /*
-          CRITICAL FIX: DeviceMockup internally applies filter:none via its
-          global .device-mockup class to avoid double-filtering on wallpaper
-          pages. On this grid we need to override that so the bezel/shadow
-          inherited from .coll-mockup-item actually renders.
-        */
-        .coll-mockup-item .device-mockup {
-          filter: none !important;
-          /* Re-apply the border so the frame reads as a distinct object */
-          outline: 1.5px solid rgba(255,255,255,0.10);
-          border-radius: 38px;
-          overflow: hidden;
+        /* Dynamic Island notch */
+        .coll-phone-notch {
+          position: absolute;
+          top: 8px;
+          left: 50%;
+          transform: translateX(-50%);
+          width: 36%;
+          height: 14px;
+          background: #04040c;
+          border-radius: 10px;
+          z-index: 10;
+          border: 1px solid rgba(255,255,255,0.05);
         }
 
-        .coll-mockup-overlay {
-          position: absolute; inset: 0;
-          background: linear-gradient(to top, rgba(10,8,18,0.85) 0%, transparent 55%);
-          display: flex; align-items: flex-end; justify-content: center;
-          padding-bottom: 16px;
-          opacity: 0; transition: opacity 0.2s;
+        /* The wallpaper image — fills the whole phone, behind the notch */
+        .coll-phone-img {
+          position: absolute;
+          inset: 0;
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          border-radius: 26px;
         }
-        .coll-mockup-item:hover .coll-mockup-overlay { opacity: 1; }
-        .coll-mockup-overlay span {
+
+        /* Glass sheen overlay */
+        .coll-phone-glass {
+          position: absolute;
+          inset: 0;
+          border-radius: 26px;
+          background: linear-gradient(
+            135deg,
+            rgba(255,255,255,0.06) 0%,
+            rgba(255,255,255,0.01) 35%,
+            transparent 60%
+          );
+          pointer-events: none;
+          z-index: 5;
+        }
+
+        /* Hover CTA */
+        .coll-phone-overlay {
+          position: absolute;
+          inset: 0;
+          border-radius: 26px;
+          background: linear-gradient(to top, rgba(10,8,18,0.82) 0%, transparent 50%);
+          display: flex;
+          align-items: flex-end;
+          justify-content: center;
+          padding-bottom: 18px;
+          opacity: 0;
+          transition: opacity 0.2s;
+          z-index: 8;
+        }
+        .coll-mockup-link:hover .coll-phone-overlay { opacity: 1; }
+        .coll-phone-overlay span {
           font-family: monospace;
-          font-size: 0.48rem;
-          letter-spacing: 0.14em;
+          font-size: 0.5rem;
+          letter-spacing: 0.16em;
           text-transform: uppercase;
           color: #c9a84c;
         }
 
-        /* ── Description — sits below the grid ── */
+        /* Title under each phone */
+        .coll-phone-label {
+          margin-top: 10px;
+          font-family: monospace;
+          font-size: 0.52rem;
+          letter-spacing: 0.1em;
+          text-transform: uppercase;
+          color: #4a445a;
+          text-align: center;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        /* ── Description ── */
         .coll-desc-section {
           max-width: 720px;
-          margin: 64px auto 0;
+          margin: 72px auto 0;
           padding-top: 36px;
           border-top: 1px solid rgba(255,255,255,0.07);
         }
-
         .coll-desc-heading {
           display: flex;
           align-items: center;
@@ -305,18 +355,14 @@ export default async function CollectionPage({ params }: PageProps) {
           margin: 0 0 24px;
         }
         .coll-desc-heading .coll-desc-accent { color: #c0001a; }
-
         .coll-desc-body {
           font-family: monospace;
           font-size: 0.85rem;
           line-height: 1.9;
           color: #a89bc0;
-          text-align: left;
         }
         .coll-desc-body p { margin: 0 0 14px; }
         .coll-desc-body p:last-child { margin: 0; }
-
-        /* Hard reset for any inline multi-column markup baked into descriptions */
         .coll-desc-body .admin-html-block {
           column-count: 1 !important;
           columns: auto !important;
@@ -359,8 +405,6 @@ export default async function CollectionPage({ params }: PageProps) {
           margin-bottom: 20px;
           display: block;
         }
-
-        /* ── Mobile grid ── */
         .coll-mobile-grid-inner {
           display: grid;
           grid-template-columns: repeat(2, 1fr);
@@ -376,9 +420,7 @@ export default async function CollectionPage({ params }: PageProps) {
 
       <div className="coll-layout">
 
-        {/* ══════════════════════════════════════
-            MOBILE LAYOUT (< 900px) — UNTOUCHED
-        ══════════════════════════════════════ */}
+        {/* ══ MOBILE (< 900px) — untouched ══ */}
         <div className="coll-mobile-info">
           <p className="coll-mobile-eyebrow">{collection.category ?? "Collection"}</p>
           <h1 className="coll-mobile-title">
@@ -431,10 +473,7 @@ export default async function CollectionPage({ params }: PageProps) {
           )}
         </div>
 
-        {/* ══════════════════════════════════════
-            DESKTOP LAYOUT (≥ 900px)
-            Header → phone-mockup grid → description
-        ══════════════════════════════════════ */}
+        {/* ══ DESKTOP (≥ 900px) ══ */}
         <div className="coll-desktop-only">
 
           {/* HEADER */}
@@ -451,7 +490,7 @@ export default async function CollectionPage({ params }: PageProps) {
             </span>
           </div>
 
-          {/* PHONE-MOCKUP PREVIEW GRID */}
+          {/* PHONE MOCKUP GRID */}
           {mergedImages.length === 0 ? (
             <div className="hw-coming-soon">
               <div className="hw-coming-soon__sigil">✦ ☽ ✦</div>
@@ -466,36 +505,43 @@ export default async function CollectionPage({ params }: PageProps) {
                 const href = !collectionImageIds.has(img.id) && (img as any).deviceType
                   ? `/${(img as any).deviceType.toLowerCase()}/${img.slug}`
                   : `/shop/${slug}/${img.slug}`;
-                const frame = (img as any).deviceType === "ANDROID" ? "ANDROID" : "IPHONE";
+                const imgUrl = getPublicUrl(img.r2Key);
+
                 return (
-                  <Link key={img.id} href={href} className="coll-mockup-item"
+                  <Link key={img.id} href={href} className="coll-mockup-link"
                     style={{ pointerEvents: locked ? "none" : "auto" }}>
-                    <DeviceMockup deviceType={frame} seed={img.id}>
-                      <div style={{ position: "relative", width: "100%", height: "100%" }}>
-                        <Image
-                          src={getPublicUrl(img.r2Key)}
-                          alt={img.altText ?? img.title}
-                          fill
-                          className="object-cover"
-                          sizes="200px"
-                          priority={idx < 4}
-                          unoptimized
-                          style={{ filter: locked ? "blur(10px) brightness(0.25)" : "none" }}
-                        />
-                        {locked ? <LockedOverlay /> : (
-                          <div className="coll-mockup-overlay">
-                            <span>View →</span>
-                          </div>
-                        )}
-                      </div>
-                    </DeviceMockup>
+                    {/* Self-contained phone frame — no DeviceMockup dependency */}
+                    <div className="coll-phone">
+                      <div className="coll-phone-notch" aria-hidden="true" />
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={imgUrl}
+                        alt={img.altText ?? img.title}
+                        className="coll-phone-img"
+                        loading={idx < 6 ? "eager" : "lazy"}
+                        style={{
+                          filter: locked ? "blur(10px) brightness(0.25)" : "none",
+                        }}
+                      />
+                      <div className="coll-phone-glass" aria-hidden="true" />
+                      {locked ? (
+                        <div style={{ position: "absolute", inset: 0, zIndex: 9 }}>
+                          <LockedOverlay />
+                        </div>
+                      ) : (
+                        <div className="coll-phone-overlay">
+                          <span>View →</span>
+                        </div>
+                      )}
+                    </div>
+                    <p className="coll-phone-label">{img.title}</p>
                   </Link>
                 );
               })}
             </div>
           )}
 
-          {/* DESCRIPTION — bottom, single clean column */}
+          {/* DESCRIPTION */}
           <div className="coll-desc-section">
             <h2 className="coll-desc-heading">
               <span className="coll-desc-accent">✦</span> About This Collection
@@ -512,9 +558,7 @@ export default async function CollectionPage({ params }: PageProps) {
         </div>
       </div>
 
-      {/* ══════════════════════════════════════
-          YOU MAY ALSO LIKE
-      ══════════════════════════════════════ */}
+      {/* ══ YOU MAY ALSO LIKE ══ */}
       {relatedCollections.length > 0 && (
         <section style={{
           borderTop: "1px solid rgba(255,255,255,0.06)",
