@@ -337,8 +337,8 @@ export default async function CollectionPage({ params }: PageProps) {
         /* ── Description ── */
         .coll-desc-section {
           max-width: 720px;
-          margin: 72px auto 0;
-          padding-top: 36px;
+          margin: 48px auto 0;
+          padding-top: 32px;
           border-top: 1px solid rgba(255,255,255,0.07);
         }
         .coll-desc-heading {
@@ -541,21 +541,22 @@ export default async function CollectionPage({ params }: PageProps) {
             </div>
           )}
 
-          {/* DESCRIPTION */}
-          <div className="coll-desc-section">
-            <h2 className="coll-desc-heading">
-              <span className="coll-desc-accent">✦</span> About This Collection
-            </h2>
-            <div className="coll-desc-body">
-              {collection.description ? (
-                <AdminHtmlBlock html={collection.description} />
-              ) : (
-                <p>{fallbackDesc}</p>
-              )}
-            </div>
-          </div>
-
         </div>
+
+        {/* DESCRIPTION — visible on both mobile and desktop */}
+        <div className="coll-desc-section">
+          <h2 className="coll-desc-heading">
+            <span className="coll-desc-accent">✦</span> About This Collection
+          </h2>
+          <div className="coll-desc-body">
+            {collection.description ? (
+              <AdminHtmlBlock html={collection.description} />
+            ) : (
+              <p>{fallbackDesc}</p>
+            )}
+          </div>
+        </div>
+
       </div>
 
       {/* ══ YOU MAY ALSO LIKE ══ */}
