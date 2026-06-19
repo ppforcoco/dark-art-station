@@ -1437,22 +1437,25 @@ const COLLAGE_LAYOUTS = [
 type CollageLayout = typeof COLLAGE_LAYOUTS[number]["id"];
 
 function CollageTool() {
-  const [walls,    setWalls]    = useState<{url:string;title:string}[]>([]);
-  const [loading,  setLoading]  = useState(false);
-  const [selected, setSelected] = useState<string[]>([]);
-  const [layout,   setLayout]   = useState<CollageLayout>("2x2");
-  const [done,     setDone]     = useState(false);
-  const previewRef = useRef<HTMLCanvasElement>(null);
+  const [walls,      setWalls]      = useState<{url:string;r2Key:string;title:string}[]>([]);
+  const [loading,    setLoading]    = useState(false);
+  const [selected,   setSelected]   = useState<string[]>([]);
+  const [layout,     setLayout]     = useState<CollageLayout>("2x2");
+  const [previewing, setPreviewing] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState<string|null>(null);
+  const [done,       setDone]       = useState(false);
+  const [error,      setError]      = useState<string|null>(null);
 
   const currentLayout = COLLAGE_LAYOUTS.find(l => l.id === layout)!;
 
   async function fetchWalls() {
     setLoading(true);
     try {
-      const res = await fetch("/api/wallpapers-public?limit=48");
+      const res  = await fetch("/api/wallpapers-public?limit=48");
       const data = await res.json();
-      setWalls((data.images ?? []).map((img: {r2Key: string; title: string}) => ({
-        url: `https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/${img.r2Key}`,
+      setWalls((data.images ?? []).map((img: {r2Key:string;title:string}) => ({
+        r2Key: img.r2Key,
+        url:   `/api/img-proxy?key=${encodeURIComponent(img.r2Key)}`,
         title: img.title,
       })));
     } catch { setWalls([]); }
@@ -1461,127 +1464,140 @@ function CollageTool() {
 
   useEffect(() => { fetchWalls(); }, []);
 
-  function toggleSelect(url: string) {
+  function toggleSelect(r2Key: string) {
     setSelected(prev => {
-      if (prev.includes(url)) return prev.filter(u => u !== url);
-      if (prev.length >= currentLayout.count) return [...prev.slice(1), url];
-      return [...prev, url];
+      if (prev.includes(r2Key)) return prev.filter(k => k !== r2Key);
+      if (prev.length >= currentLayout.count) return [...prev.slice(1), r2Key];
+      return [...prev, r2Key];
+    });
+    setPreviewUrl(null);
+    setError(null);
+  }
+
+  function loadProxied(r2Key: string): Promise<HTMLImageElement> {
+    return new Promise((res, rej) => {
+      const img = new Image();
+      img.onload  = () => res(img);
+      img.onerror = rej;
+      img.src = `/api/img-proxy?key=${encodeURIComponent(r2Key)}`;
     });
   }
 
-  async function makeCollage() {
-    if (selected.length < currentLayout.count) return;
-    const c = previewRef.current; if (!c) return;
-
-    const W = 1080, H = 1920;
+  async function renderToCanvas(c: HTMLCanvasElement) {
+    const W = 1080, H = 1920, gap = 12;
     c.width = W; c.height = H;
     const ctx = c.getContext("2d")!;
     ctx.fillStyle = "#06040e";
     ctx.fillRect(0, 0, W, H);
 
-    const imgs = await Promise.all(selected.slice(0, currentLayout.count).map(url =>
-      new Promise<HTMLImageElement>((res, rej) => {
-        const img = new Image();
-        img.crossOrigin = "anonymous";
-        img.onload = () => res(img);
-        img.onerror = () => { img.crossOrigin = ""; img.src = url; img.onload = () => res(img); img.onerror = rej; };
-        img.src = url;
-      })
-    ));
-
-    const gap = 12;
+    const imgs = await Promise.all(selected.slice(0, currentLayout.count).map(loadProxied));
 
     if (layout === "2x2") {
-      const cw = (W - gap * 3) / 2, ch = (H - gap * 3) / 2;
-      [[0,0],[1,0],[0,1],[1,1]].forEach(([col,row], i) => {
+      const cw = (W-gap*3)/2, ch = (H-gap*3)/2;
+      [[0,0],[1,0],[0,1],[1,1]].forEach(([col,row],i) => {
         if (!imgs[i]) return;
-        const x = gap + col * (cw + gap), y = gap + row * (ch + gap);
-        ctx.drawImage(imgs[i], x, y, cw, ch);
+        ctx.drawImage(imgs[i], gap+col*(cw+gap), gap+row*(ch+gap), cw, ch);
       });
     } else if (layout === "3col") {
-      const cw = (W - gap * 4) / 3;
-      imgs.forEach((img, i) => {
-        const x = gap + i * (cw + gap);
-        ctx.drawImage(img, x, gap, cw, H - gap * 2);
-      });
+      const cw = (W-gap*4)/3;
+      imgs.forEach((img,i) => ctx.drawImage(img, gap+i*(cw+gap), gap, cw, H-gap*2));
     } else if (layout === "feature") {
-      const featW = W * 0.6 - gap * 1.5, featH = H - gap * 2;
-      const smallW = W * 0.4 - gap * 1.5, smallH = (H - gap * 3) / 2;
+      const featW=W*0.6-gap*1.5, featH=H-gap*2, smallW=W*0.4-gap*1.5, smallH=(H-gap*3)/2;
       ctx.drawImage(imgs[0], gap, gap, featW, featH);
-      ctx.drawImage(imgs[1], gap + featW + gap, gap, smallW, smallH);
-      ctx.drawImage(imgs[2], gap + featW + gap, gap + smallH + gap, smallW, smallH);
+      ctx.drawImage(imgs[1], gap+featW+gap, gap, smallW, smallH);
+      ctx.drawImage(imgs[2], gap+featW+gap, gap+smallH+gap, smallW, smallH);
     } else if (layout === "strip") {
-      const cw = (W - gap * 6) / 5;
-      imgs.forEach((img, i) => {
-        ctx.drawImage(img, gap + i * (cw + gap), gap, cw, H - gap * 2);
-      });
+      const cw = (W-gap*6)/5;
+      imgs.forEach((img,i) => ctx.drawImage(img, gap+i*(cw+gap), gap, cw, H-gap*2));
     } else if (layout === "diagonal") {
-      const cw = (W - gap * 3) / 2, ch = (H - gap * 3) / 2;
-      const offsets = [[0,0],[1,0.15],[0,1],[1,0.85]];
-      offsets.forEach(([col, rowFrac], i) => {
+      const cw=(W-gap*3)/2, ch=(H-gap*3)/2;
+      [[0,0],[1,0.15],[0,1],[1,0.85]].forEach(([col,rowFrac],i) => {
         if (!imgs[i]) return;
-        const x = gap + col * (cw + gap);
-        const y = (rowFrac > 0.5 ? gap + ch + gap : gap) + (rowFrac % 0.5) * ch * 0.3;
-        ctx.drawImage(imgs[i], x, y, cw, ch * 0.7);
+        const x = gap+col*(cw+gap);
+        const y = (rowFrac>0.5 ? gap+ch+gap : gap)+(rowFrac%0.5)*ch*0.3;
+        ctx.drawImage(imgs[i], x, y, cw, ch*0.7);
       });
     }
 
-    // Watermark
     ctx.font = "20px monospace";
     ctx.fillStyle = "rgba(255,255,255,0.25)";
     ctx.textAlign = "center";
-    ctx.fillText("hauntedwallpapers.com", W/2, H - 14);
+    ctx.fillText("hauntedwallpapers.com", W/2, H-14);
+  }
+
+  async function buildPreview() {
+    if (selected.length < currentLayout.count) return;
+    setPreviewing(true); setPreviewUrl(null); setError(null);
+    try {
+      const c = document.createElement("canvas");
+      await renderToCanvas(c);
+      const thumb = document.createElement("canvas");
+      thumb.width = 270; thumb.height = 480;
+      thumb.getContext("2d")!.drawImage(c, 0, 0, 270, 480);
+      thumb.toBlob(blob => {
+        if (blob) setPreviewUrl(URL.createObjectURL(blob));
+      }, "image/jpeg", 0.85);
+    } catch(e) {
+      console.error(e);
+      setError("Preview failed — try downloading directly.");
+    }
+    setPreviewing(false);
   }
 
   async function download() {
-    await makeCollage();
-    const c = previewRef.current; if (!c) return;
-    downloadCanvas(c, `haunted-collage-${layout}.jpg`, "jpeg");
-    setDone(true); setTimeout(() => setDone(false), 2500);
+    if (selected.length < currentLayout.count) return;
+    setError(null);
+    try {
+      const c = document.createElement("canvas");
+      await renderToCanvas(c);
+      downloadCanvas(c, `haunted-collage-${layout}.jpg`, "jpeg");
+      setDone(true); setTimeout(() => setDone(false), 2500);
+    } catch(e) {
+      console.error(e);
+      setError("Download failed. Make sure /api/img-proxy is deployed.");
+    }
   }
+
+  const ready = selected.length === currentLayout.count;
 
   return (
     <div className="tool-body">
-      <p className="tool-desc">Pick up to {currentLayout.count} wallpapers from the collection, choose a layout, and download a ready-made collage. Great for Pinterest shares and aesthetic posts.</p>
+      <p className="tool-desc">Pick {currentLayout.count} wallpapers, choose a layout, preview, then download. Great for Pinterest and aesthetic posts.</p>
 
       <div className="tool-section">
         <p className="tool-label">Collage Layout</p>
         <div style={{ display:"flex", flexWrap:"wrap", gap:"6px" }}>
           {COLLAGE_LAYOUTS.map(l => (
             <button key={l.id}
-              className={`tool-fit-btn ${layout === l.id ? "tool-fit-btn--active" : ""}`}
+              className={`tool-fit-btn ${layout===l.id ? "tool-fit-btn--active" : ""}`}
               style={{ flexDirection:"column", alignItems:"flex-start", minWidth:"110px" }}
-              onClick={() => { setLayout(l.id); setSelected([]); }}
+              onClick={() => { setLayout(l.id); setSelected([]); setPreviewUrl(null); }}
             >
               <span style={{ fontSize:"1.1rem" }}>{l.icon} {l.label}</span>
-              <span style={{ fontFamily:"monospace", fontSize:"0.42rem", color: layout === l.id ? "#c9a84c" : "#4a445a", letterSpacing:"0.08em", textTransform:"uppercase" }}>{l.desc}</span>
+              <span style={{ fontFamily:"monospace", fontSize:"0.42rem", color:layout===l.id?"#c9a84c":"#4a445a", letterSpacing:"0.08em", textTransform:"uppercase" }}>{l.desc}</span>
             </button>
           ))}
         </div>
       </div>
 
       <div className="tool-section">
-        <p className="tool-label">Select {currentLayout.count} Wallpapers <span style={{ color:"#4a445a" }}>({selected.length} / {currentLayout.count} selected)</span></p>
-
+        <p className="tool-label">Select {currentLayout.count} Wallpapers <span style={{color:"#4a445a"}}>({selected.length}/{currentLayout.count})</span></p>
         {loading ? (
-          <p style={{ fontFamily:"monospace", fontSize:"0.6rem", color:"#4a445a", letterSpacing:"0.1em" }}>Loading wallpapers…</p>
+          <p style={{ fontFamily:"monospace", fontSize:"0.6rem", color:"#4a445a" }}>Loading wallpapers…</p>
         ) : (
           <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill, minmax(72px, 1fr))", gap:"6px", maxHeight:"320px", overflowY:"auto" }}>
             {walls.map(w => (
-              <div key={w.url}
-                onClick={() => toggleSelect(w.url)}
-                style={{
-                  position:"relative", aspectRatio:"9/16", cursor:"pointer",
-                  border: selected.includes(w.url) ? "2px solid #c0001a" : "2px solid transparent",
-                  borderRadius:"4px", overflow:"hidden", transition:"border-color 0.15s",
-                }}
-              >
+              <div key={w.r2Key} onClick={() => toggleSelect(w.r2Key)} style={{
+                position:"relative", aspectRatio:"9/16", cursor:"pointer",
+                border: selected.includes(w.r2Key) ? "2px solid #c0001a" : "2px solid transparent",
+                borderRadius:"4px", overflow:"hidden", transition:"border-color 0.15s",
+              }}>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={w.url} alt={w.title} style={{ width:"100%", height:"100%", objectFit:"cover" }} loading="lazy" />
-                {selected.includes(w.url) && (
-                  <div style={{ position:"absolute", inset:0, background:"rgba(192,0,26,0.25)", display:"flex", alignItems:"center", justifyContent:"center" }}>
+                {selected.includes(w.r2Key) && (
+                  <div style={{ position:"absolute", inset:0, background:"rgba(192,0,26,0.3)", display:"flex", alignItems:"center", justifyContent:"center" }}>
                     <span style={{ fontFamily:"monospace", fontSize:"1rem", color:"#fff", fontWeight:700 }}>
-                      {selected.indexOf(w.url) + 1}
+                      {selected.indexOf(w.r2Key)+1}
                     </span>
                   </div>
                 )}
@@ -1591,13 +1607,34 @@ function CollageTool() {
         )}
       </div>
 
-      {selected.length === currentLayout.count && (
-        <>
-          <canvas ref={previewRef} style={{ display:"none" }} />
-          <button className="tool-action" onClick={download}>
-            {done ? "✓ Downloaded!" : `↓ Download ${currentLayout.label} Collage`}
-          </button>
-        </>
+      {ready && (
+        <div className="tool-section">
+          <div style={{ display:"flex", gap:"10px", flexWrap:"wrap" }}>
+            <button className="tool-action" style={{ background:"#2a2535", borderColor:"#2a2535" }} onClick={buildPreview} disabled={previewing}>
+              {previewing ? "⏳ Rendering…" : "👁 Preview Collage"}
+            </button>
+            <button className="tool-action" onClick={download}>
+              {done ? "✓ Downloaded!" : `↓ Download ${currentLayout.label}`}
+            </button>
+          </div>
+
+          {error && (
+            <p style={{ fontFamily:"monospace", fontSize:"0.58rem", color:"#c0001a", marginTop:"10px" }}>{error}</p>
+          )}
+
+          {previewUrl && (
+            <div style={{ marginTop:"16px" }}>
+              <p className="tool-label" style={{ marginBottom:"8px" }}>Preview — tap to open full size</p>
+              <a href={previewUrl} target="_blank" rel="noreferrer">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={previewUrl} alt="Collage preview" style={{
+                  width:"100%", maxWidth:"270px", aspectRatio:"9/16", objectFit:"cover",
+                  border:"1px solid rgba(192,0,26,0.4)", borderRadius:"4px", cursor:"zoom-in",
+                }} />
+              </a>
+            </div>
+          )}
+        </div>
       )}
     </div>
   );
