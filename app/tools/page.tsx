@@ -5,7 +5,7 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 
 export const dynamic = "force-dynamic";
 
-type ActiveTool = "resizer" | "darkener" | "upscaler" | "text" | "blur" | "split" | "oled" | "lockscreen";
+type ActiveTool = "resizer" | "darkener" | "upscaler" | "text" | "blur" | "split" | "oled" | "lockscreen" | "haunted-name" | "collage" | "timer";
 type ImgFormat = "jpeg" | "png" | "webp";
 
 const FORMATS: { value: ImgFormat; label: string; ext: string }[] = [
@@ -1302,6 +1302,455 @@ function LockScreenTool() {
   );
 }
 
+
+// ─── Haunted Name Generator ───────────────────────────────────────────────────
+const HAUNT_STYLES = [
+  { id: "strikethrough", label: "Strikethrough", fn: (s: string) => [...s].map(c => c + "\u0336").join("") },
+  { id: "dots",          label: "Void Dots",     fn: (s: string) => [...s].map(c => c + "\u0307").join("") },
+  { id: "underline",     label: "Underline",     fn: (s: string) => [...s].map(c => c + "\u0332").join("") },
+  { id: "tilde",         label: "Tilde",         fn: (s: string) => [...s].map(c => c + "\u0334").join("") },
+  { id: "mirror",        label: "Mirror Spaces",  fn: (s: string) => [...s].toReversed ? [...s].toReversed().join(" ") : s.split("").reverse().join(" ") },
+  { id: "runes",         label: "Rune Mix",      fn: (s: string) => {
+    const runes = "ᚠᚢᚦᚨᚱᚲᚷᚹᚺᚾᛁᛃᛇᛈᛉᛊᛏᛒᛖᛗᛚᛜᛞᛟ";
+    return [...s].map((c, i) => i % 2 === 0 ? c + "\u0336" : runes[c.charCodeAt(0) % runes.length]).join("");
+  }},
+] as const;
+
+function HauntedNameTool() {
+  const [name,    setName]    = useState("Your Name");
+  const [style,   setStyle]   = useState(HAUNT_STYLES[0]);
+  const [haunted, setHaunted] = useState("");
+  const [done,    setDone]    = useState(false);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  function haunt(n = name, s = style) {
+    setName(n); setStyle(s);
+    const h = s.fn(n.toUpperCase());
+    setHaunted(h);
+    renderCanvas(h);
+  }
+
+  function renderCanvas(text: string) {
+    const c = canvasRef.current; if (!c) return;
+    c.width = 1080; c.height = 1920;
+    const ctx = c.getContext("2d")!;
+
+    // Background gradient
+    const grad = ctx.createLinearGradient(0, 0, 0, 1920);
+    grad.addColorStop(0, "#0a0414");
+    grad.addColorStop(0.5, "#140820");
+    grad.addColorStop(1, "#0a0414");
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, 1080, 1920);
+
+    // Red glow
+    const radGrad = ctx.createRadialGradient(540, 960, 0, 540, 960, 600);
+    radGrad.addColorStop(0, "rgba(192,0,26,0.12)");
+    radGrad.addColorStop(1, "transparent");
+    ctx.fillStyle = radGrad;
+    ctx.fillRect(0, 0, 1080, 1920);
+
+    // Draw text
+    const fontSize = Math.max(60, Math.min(160, Math.floor(1080 / (text.length * 0.55 + 1))));
+    ctx.font = `bold ${fontSize}px monospace`;
+    ctx.textAlign = "center";
+    ctx.shadowColor = "#c0001a";
+    ctx.shadowBlur = 40;
+    ctx.fillStyle = "#f0ecff";
+    ctx.fillText(text, 540, 960);
+    ctx.shadowBlur = 0;
+
+    // Eyebrow
+    ctx.font = "28px monospace";
+    ctx.fillStyle = "rgba(192,0,26,0.7)";
+    ctx.letterSpacing = "0.3em";
+    ctx.fillText("✦ HAUNTED NAME ✦", 540, 860);
+
+    // Footer
+    ctx.font = "22px monospace";
+    ctx.fillStyle = "rgba(255,255,255,0.15)";
+    ctx.fillText("hauntedwallpapers.com", 540, 1820);
+  }
+
+  function download() {
+    const c = canvasRef.current; if (!c) return;
+    downloadCanvas(c, `haunted-${name.toLowerCase().replace(/\s+/g,"-")}.jpg`, "jpeg");
+    setDone(true); setTimeout(() => setDone(false), 2500);
+  }
+
+  return (
+    <div className="tool-body">
+      <p className="tool-desc">Type your name, pick a Unicode corruption style, and download a 1080×1920 haunted wallpaper with your name on it. Pure client-side — nothing leaves your device.</p>
+
+      <div className="tool-section">
+        <p className="tool-label">Your Name</p>
+        <input
+          type="text" value={name} maxLength={20}
+          onChange={e => haunt(e.target.value)}
+          placeholder="Type your name…"
+          style={{ width:"100%", background:"rgba(255,255,255,0.04)", border:"1px solid rgba(255,255,255,0.1)", color:"#f0ecff", padding:"10px 14px", fontFamily:"monospace", fontSize:"1rem", outline:"none" }}
+        />
+      </div>
+
+      <div className="tool-section">
+        <p className="tool-label">Haunt Style</p>
+        <div style={{ display:"flex", flexWrap:"wrap", gap:"6px" }}>
+          {HAUNT_STYLES.map(s => (
+            <button key={s.id}
+              className={`tool-fit-btn ${style.id === s.id ? "tool-fit-btn--active" : ""}`}
+              onClick={() => haunt(name, s)}
+            >{s.label}</button>
+          ))}
+        </div>
+      </div>
+
+      {haunted && (
+        <>
+          <div className="tool-section" style={{ textAlign:"center" }}>
+            <p className="tool-label">Preview</p>
+            <div style={{ padding:"24px 16px", background:"rgba(192,0,26,0.06)", border:"1px solid rgba(192,0,26,0.2)", borderRadius:"6px" }}>
+              <p style={{ fontFamily:"monospace", fontSize:"clamp(1rem,5vw,2.2rem)", color:"#f0ecff", margin:0, textShadow:"0 0 20px rgba(192,0,26,0.6)", letterSpacing:"0.08em", wordBreak:"break-all" }}>
+                {haunted}
+              </p>
+            </div>
+          </div>
+
+          <canvas ref={canvasRef} style={{ display:"none" }} />
+
+          <button className="tool-action" onClick={download}>
+            {done ? "✓ Downloaded!" : "↓ Download as Wallpaper (1080×1920)"}
+          </button>
+        </>
+      )}
+    </div>
+  );
+}
+
+// ─── Collage Maker ────────────────────────────────────────────────────────────
+const COLLAGE_LAYOUTS = [
+  { id: "2x2",     label: "2×2 Grid",      icon: "⊞", count: 4, desc: "Classic 4-phone square grid"         },
+  { id: "3col",    label: "3 Column",       icon: "⫴", count: 3, desc: "3 phones side by side"              },
+  { id: "feature", label: "Feature + 2",   icon: "▣", count: 3, desc: "1 large + 2 small phones"           },
+  { id: "strip",   label: "5 Strip",        icon: "≡", count: 5, desc: "5 phones in a horizontal strip"     },
+  { id: "diagonal",label: "Diagonal",       icon: "◪", count: 4, desc: "4 phones arranged diagonally"       },
+] as const;
+type CollageLayout = typeof COLLAGE_LAYOUTS[number]["id"];
+
+function CollageTool() {
+  const [walls,    setWalls]    = useState<{url:string;title:string}[]>([]);
+  const [loading,  setLoading]  = useState(false);
+  const [selected, setSelected] = useState<string[]>([]);
+  const [layout,   setLayout]   = useState<CollageLayout>("2x2");
+  const [done,     setDone]     = useState(false);
+  const previewRef = useRef<HTMLCanvasElement>(null);
+
+  const currentLayout = COLLAGE_LAYOUTS.find(l => l.id === layout)!;
+
+  async function fetchWalls() {
+    setLoading(true);
+    try {
+      const res = await fetch("/api/wallpapers-public?limit=48");
+      const data = await res.json();
+      setWalls((data.images ?? []).map((img: {r2Key: string; title: string}) => ({
+        url: `https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/${img.r2Key}`,
+        title: img.title,
+      })));
+    } catch { setWalls([]); }
+    setLoading(false);
+  }
+
+  useEffect(() => { fetchWalls(); }, []);
+
+  function toggleSelect(url: string) {
+    setSelected(prev => {
+      if (prev.includes(url)) return prev.filter(u => u !== url);
+      if (prev.length >= currentLayout.count) return [...prev.slice(1), url];
+      return [...prev, url];
+    });
+  }
+
+  async function makeCollage() {
+    if (selected.length < currentLayout.count) return;
+    const c = previewRef.current; if (!c) return;
+
+    const W = 1080, H = 1920;
+    c.width = W; c.height = H;
+    const ctx = c.getContext("2d")!;
+    ctx.fillStyle = "#06040e";
+    ctx.fillRect(0, 0, W, H);
+
+    const imgs = await Promise.all(selected.slice(0, currentLayout.count).map(url =>
+      new Promise<HTMLImageElement>((res, rej) => {
+        const img = new Image();
+        img.crossOrigin = "anonymous";
+        img.onload = () => res(img);
+        img.onerror = () => { img.crossOrigin = ""; img.src = url; img.onload = () => res(img); img.onerror = rej; };
+        img.src = url;
+      })
+    ));
+
+    const gap = 12;
+
+    if (layout === "2x2") {
+      const cw = (W - gap * 3) / 2, ch = (H - gap * 3) / 2;
+      [[0,0],[1,0],[0,1],[1,1]].forEach(([col,row], i) => {
+        if (!imgs[i]) return;
+        const x = gap + col * (cw + gap), y = gap + row * (ch + gap);
+        ctx.drawImage(imgs[i], x, y, cw, ch);
+      });
+    } else if (layout === "3col") {
+      const cw = (W - gap * 4) / 3;
+      imgs.forEach((img, i) => {
+        const x = gap + i * (cw + gap);
+        ctx.drawImage(img, x, gap, cw, H - gap * 2);
+      });
+    } else if (layout === "feature") {
+      const featW = W * 0.6 - gap * 1.5, featH = H - gap * 2;
+      const smallW = W * 0.4 - gap * 1.5, smallH = (H - gap * 3) / 2;
+      ctx.drawImage(imgs[0], gap, gap, featW, featH);
+      ctx.drawImage(imgs[1], gap + featW + gap, gap, smallW, smallH);
+      ctx.drawImage(imgs[2], gap + featW + gap, gap + smallH + gap, smallW, smallH);
+    } else if (layout === "strip") {
+      const cw = (W - gap * 6) / 5;
+      imgs.forEach((img, i) => {
+        ctx.drawImage(img, gap + i * (cw + gap), gap, cw, H - gap * 2);
+      });
+    } else if (layout === "diagonal") {
+      const cw = (W - gap * 3) / 2, ch = (H - gap * 3) / 2;
+      const offsets = [[0,0],[1,0.15],[0,1],[1,0.85]];
+      offsets.forEach(([col, rowFrac], i) => {
+        if (!imgs[i]) return;
+        const x = gap + col * (cw + gap);
+        const y = (rowFrac > 0.5 ? gap + ch + gap : gap) + (rowFrac % 0.5) * ch * 0.3;
+        ctx.drawImage(imgs[i], x, y, cw, ch * 0.7);
+      });
+    }
+
+    // Watermark
+    ctx.font = "20px monospace";
+    ctx.fillStyle = "rgba(255,255,255,0.25)";
+    ctx.textAlign = "center";
+    ctx.fillText("hauntedwallpapers.com", W/2, H - 14);
+  }
+
+  async function download() {
+    await makeCollage();
+    const c = previewRef.current; if (!c) return;
+    downloadCanvas(c, `haunted-collage-${layout}.jpg`, "jpeg");
+    setDone(true); setTimeout(() => setDone(false), 2500);
+  }
+
+  return (
+    <div className="tool-body">
+      <p className="tool-desc">Pick up to {currentLayout.count} wallpapers from the collection, choose a layout, and download a ready-made collage. Great for Pinterest shares and aesthetic posts.</p>
+
+      <div className="tool-section">
+        <p className="tool-label">Collage Layout</p>
+        <div style={{ display:"flex", flexWrap:"wrap", gap:"6px" }}>
+          {COLLAGE_LAYOUTS.map(l => (
+            <button key={l.id}
+              className={`tool-fit-btn ${layout === l.id ? "tool-fit-btn--active" : ""}`}
+              style={{ flexDirection:"column", alignItems:"flex-start", minWidth:"110px" }}
+              onClick={() => { setLayout(l.id); setSelected([]); }}
+            >
+              <span style={{ fontSize:"1.1rem" }}>{l.icon} {l.label}</span>
+              <span style={{ fontFamily:"monospace", fontSize:"0.42rem", color: layout === l.id ? "#c9a84c" : "#4a445a", letterSpacing:"0.08em", textTransform:"uppercase" }}>{l.desc}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="tool-section">
+        <p className="tool-label">Select {currentLayout.count} Wallpapers <span style={{ color:"#4a445a" }}>({selected.length} / {currentLayout.count} selected)</span></p>
+
+        {loading ? (
+          <p style={{ fontFamily:"monospace", fontSize:"0.6rem", color:"#4a445a", letterSpacing:"0.1em" }}>Loading wallpapers…</p>
+        ) : (
+          <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill, minmax(72px, 1fr))", gap:"6px", maxHeight:"320px", overflowY:"auto" }}>
+            {walls.map(w => (
+              <div key={w.url}
+                onClick={() => toggleSelect(w.url)}
+                style={{
+                  position:"relative", aspectRatio:"9/16", cursor:"pointer",
+                  border: selected.includes(w.url) ? "2px solid #c0001a" : "2px solid transparent",
+                  borderRadius:"4px", overflow:"hidden", transition:"border-color 0.15s",
+                }}
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={w.url} alt={w.title} style={{ width:"100%", height:"100%", objectFit:"cover" }} loading="lazy" />
+                {selected.includes(w.url) && (
+                  <div style={{ position:"absolute", inset:0, background:"rgba(192,0,26,0.25)", display:"flex", alignItems:"center", justifyContent:"center" }}>
+                    <span style={{ fontFamily:"monospace", fontSize:"1rem", color:"#fff", fontWeight:700 }}>
+                      {selected.indexOf(w.url) + 1}
+                    </span>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {selected.length === currentLayout.count && (
+        <>
+          <canvas ref={previewRef} style={{ display:"none" }} />
+          <button className="tool-action" onClick={download}>
+            {done ? "✓ Downloaded!" : `↓ Download ${currentLayout.label} Collage`}
+          </button>
+        </>
+      )}
+    </div>
+  );
+}
+
+// ─── Wallpaper Timer ──────────────────────────────────────────────────────────
+const CALENDAR_INTERVALS = [
+  { label: "Every day",     days: 1  },
+  { label: "Every 3 days",  days: 3  },
+  { label: "Every week",    days: 7  },
+  { label: "Every 2 weeks", days: 14 },
+  { label: "Every month",   days: 30 },
+];
+
+const RRULE_MAP: Record<number, string> = {
+  1:  "RRULE:FREQ=DAILY;INTERVAL=1",
+  3:  "RRULE:FREQ=DAILY;INTERVAL=3",
+  7:  "RRULE:FREQ=WEEKLY;INTERVAL=1",
+  14: "RRULE:FREQ=WEEKLY;INTERVAL=2",
+  30: "RRULE:FREQ=MONTHLY;INTERVAL=1",
+};
+
+function pad(n: number) { return String(n).padStart(2, "0"); }
+
+function toIcsDate(d: Date) {
+  return `${d.getUTCFullYear()}${pad(d.getUTCMonth()+1)}${pad(d.getUTCDate())}T${pad(d.getUTCHours())}${pad(d.getUTCMinutes())}${pad(d.getUTCSeconds())}Z`;
+}
+
+function TimerTool() {
+  const [days,  setDays]  = useState(7);
+  const [time,  setTime]  = useState("09:00");
+  const [done,  setDone]  = useState(false);
+
+  function downloadIcs() {
+    const now   = new Date();
+    const [hh, mm] = time.split(":").map(Number);
+
+    // First alarm: next occurrence at chosen time
+    const start = new Date(Date.UTC(
+      now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), hh, mm, 0
+    ));
+    if (start <= now) start.setUTCDate(start.getUTCDate() + days);
+
+    const end = new Date(start.getTime() + 30 * 60 * 1000); // 30-min event
+
+    const uid = `hw-${Date.now()}@hauntedwallpapers.com`;
+    const stamp = toIcsDate(now);
+    const dtstart = toIcsDate(start);
+    const dtend   = toIcsDate(end);
+    const rrule   = RRULE_MAP[days] ?? `RRULE:FREQ=DAILY;INTERVAL=${days}`;
+    const intervalLabel = CALENDAR_INTERVALS.find(c => c.days === days)?.label ?? `every ${days} days`;
+
+    const ics = [
+      "BEGIN:VCALENDAR",
+      "VERSION:2.0",
+      "PRODID:-//Haunted Wallpapers//Wallpaper Reminder//EN",
+      "CALSCALE:GREGORIAN",
+      "METHOD:PUBLISH",
+      "BEGIN:VEVENT",
+      `UID:${uid}`,
+      `DTSTAMP:${stamp}`,
+      `DTSTART:${dtstart}`,
+      `DTEND:${dtend}`,
+      rrule,
+      "SUMMARY:👻 Change your wallpaper",
+      `DESCRIPTION:Time to summon a fresh haunted wallpaper. Browse at https://hauntedwallpapers.com/all — new drops every day.`,
+      "URL:https://hauntedwallpapers.com/all",
+      "BEGIN:VALARM",
+      "TRIGGER:-PT0M",
+      "ACTION:DISPLAY",
+      "DESCRIPTION:Change your wallpaper 👻",
+      "END:VALARM",
+      "END:VEVENT",
+      "END:VCALENDAR",
+    ].join("\r\n");
+
+    const blob = new Blob([ics], { type: "text/calendar;charset=utf-8" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = `haunted-wallpaper-reminder-${intervalLabel.replace(/\s+/g, "-")}.ics`;
+    a.click();
+    URL.revokeObjectURL(a.href);
+
+    setDone(true);
+    setTimeout(() => setDone(false), 3000);
+  }
+
+  const intervalLabel = CALENDAR_INTERVALS.find(c => c.days === days)?.label ?? "";
+
+  return (
+    <div className="tool-body">
+      <p className="tool-desc">
+        Downloads a <strong>.ics calendar file</strong> — tap it and your phone asks which calendar app to add it to (iPhone Calendar, Google Calendar, Android Calendar). You get a real repeating alarm on your phone, not just a website banner.
+      </p>
+
+      {/* How it works */}
+      <div style={{ padding:"14px 16px", background:"rgba(201,168,76,0.07)", border:"1px solid rgba(201,168,76,0.2)", borderRadius:"6px", marginBottom:"24px", display:"flex", gap:"12px", alignItems:"flex-start" }}>
+        <span style={{ fontSize:"1.3rem", flexShrink:0 }}>📅</span>
+        <div>
+          <p style={{ fontFamily:"monospace", fontSize:"0.55rem", letterSpacing:"0.14em", textTransform:"uppercase", color:"#c9a84c", margin:"0 0 6px" }}>How it works</p>
+          <p style={{ fontFamily:"monospace", fontSize:"0.6rem", color:"#a89bc0", margin:0, lineHeight:1.8 }}>
+            1. Pick how often + what time<br />
+            2. Hit Download — a .ics file saves to your phone<br />
+            3. Tap the file → it opens in your Calendar app<br />
+            4. Tap "Add" — done. Real alarm, every time.
+          </p>
+        </div>
+      </div>
+
+      <div className="tool-section">
+        <p className="tool-label">Reminder Frequency</p>
+        <div style={{ display:"flex", flexWrap:"wrap", gap:"6px" }}>
+          {CALENDAR_INTERVALS.map(c => (
+            <button key={c.days}
+              className={`tool-fit-btn ${days === c.days ? "tool-fit-btn--active" : ""}`}
+              onClick={() => setDays(c.days)}
+            >{c.label}</button>
+          ))}
+        </div>
+      </div>
+
+      <div className="tool-section">
+        <p className="tool-label">Reminder Time</p>
+        <input
+          type="time"
+          value={time}
+          onChange={e => setTime(e.target.value)}
+          style={{
+            background: "rgba(255,255,255,0.04)",
+            border: "1px solid rgba(255,255,255,0.1)",
+            color: "#f0ecff",
+            padding: "8px 14px",
+            fontFamily: "monospace",
+            fontSize: "1rem",
+            outline: "none",
+            borderRadius: "4px",
+            cursor: "pointer",
+          }}
+        />
+        <p className="tool-hint">You'll get an alarm at this time, {intervalLabel.toLowerCase()}.</p>
+      </div>
+
+      <button className="tool-action" onClick={downloadIcs}>
+        {done ? "✓ File downloaded — tap it on your phone!" : `↓ Download Calendar Reminder (${intervalLabel})`}
+      </button>
+
+      <p style={{ fontFamily:"monospace", fontSize:"0.52rem", color:"#3a3452", marginTop:"14px", lineHeight:1.8 }}>
+        Works with: iPhone Calendar · Google Calendar · Android Calendar · Outlook · Any app that supports .ics files.
+      </p>
+    </div>
+  );
+}
+
 export default function ToolsPage() {
   const [active, setActive] = useState<ActiveTool>("resizer");
 
@@ -1314,6 +1763,9 @@ export default function ToolsPage() {
     { id: "split"    as const, icon: "⊟",  label: "Split Wallpaper",   sub: "Lock + home screen"    },
     { id: "oled"     as const, icon: "🔋", label: "OLED Battery Calc", sub: "How much battery saved?" },
     { id: "lockscreen" as const, icon: "📱", label: "Lock Screen Preview", sub: "See it before you set it" },
+    { id: "haunted-name" as const, icon: "💀", label: "Haunted Name", sub: "Your name, corrupted" },
+    { id: "collage"      as const, icon: "🖼", label: "Collage Maker", sub: "Multi-layout collages" },
+    { id: "timer"        as const, icon: "⏰", label: "Wallpaper Timer", sub: "Reminder to change it" },
   ];
 
   return (
@@ -1356,7 +1808,10 @@ export default function ToolsPage() {
           {active === "blur"       && <BlurTool />}
           {active === "split"      && <SplitTool />}
           {active === "oled"       && <OledTool />}
-          {active === "lockscreen" && <LockScreenTool />}
+          {active === "lockscreen"  && <LockScreenTool />}
+          {active === "haunted-name" && <HauntedNameTool />}
+          {active === "collage"      && <CollageTool />}
+          {active === "timer"        && <TimerTool />}
         </div>
       </div>
     </main>

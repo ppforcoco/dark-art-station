@@ -12,6 +12,7 @@ const NAV_LINKS = [
   { label: "The Archive",   href: "/obsessions" },
   { label: "Mood",          href: "/mood"       },
   { label: "Live Wallpapers", href: "/live-wallpapers" },
+  { label: "Tools",          href: "/tools"          },
 ];
 
 export default function Header() {
@@ -269,6 +270,9 @@ export default function Header() {
           </button>
           <Link href="/favorites" prefetch={false} className="hw-menu-panel__link" onClick={closeMenu} tabIndex={menuOpen ? 0 : -1}>
             Saved Wallpapers
+          </Link>
+          <Link href="/tools" prefetch={false} className="hw-menu-panel__link" onClick={closeMenu} tabIndex={menuOpen ? 0 : -1}>
+            🛠 Tools
           </Link>
         </nav>
       </div>
