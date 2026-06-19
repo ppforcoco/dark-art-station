@@ -12,7 +12,6 @@ import WallpaperCardGridClient from "@/components/WallpaperCardGridClient";
 import TonightSlider from "@/components/TonightSlider";
 import AdsterraAdSlot from "@/components/AdsterraAdSlot";
 import "./homepage.css";
-import AmbientPlayer from "@/components/AmbientPlayer";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
 const OG_IMAGE = `${SITE_URL}/og-image.jpg`;
@@ -296,7 +295,6 @@ export default async function Home() {
         })()}
 
       </div>
-      <AmbientPlayer />
     </>
   );
 }
