@@ -1309,7 +1309,7 @@ const HAUNT_STYLES = [
   { id: "dots",          label: "Void Dots",     fn: (s: string) => [...s].map(c => c + "\u0307").join("") },
   { id: "underline",     label: "Underline",     fn: (s: string) => [...s].map(c => c + "\u0332").join("") },
   { id: "tilde",         label: "Tilde",         fn: (s: string) => [...s].map(c => c + "\u0334").join("") },
-  { id: "mirror",        label: "Mirror Spaces",  fn: (s: string) => [...s].toReversed ? [...s].toReversed().join(" ") : s.split("").reverse().join(" ") },
+  { id: "mirror",        label: "Mirror Spaces",  fn: (s: string) => s.split("").reverse().join(" ") },
   { id: "runes",         label: "Rune Mix",      fn: (s: string) => {
     const runes = "ᚠᚢᚦᚨᚱᚲᚷᚹᚺᚾᛁᛃᛇᛈᛉᛊᛏᛒᛖᛗᛚᛜᛞᛟ";
     return [...s].map((c, i) => i % 2 === 0 ? c + "\u0336" : runes[c.charCodeAt(0) % runes.length]).join("");
