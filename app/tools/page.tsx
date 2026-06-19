@@ -1314,11 +1314,11 @@ const HAUNT_STYLES = [
     const runes = "ᚠᚢᚦᚨᚱᚲᚷᚹᚺᚾᛁᛃᛇᛈᛉᛊᛏᛒᛖᛗᛚᛜᛞᛟ";
     return [...s].map((c, i) => i % 2 === 0 ? c + "\u0336" : runes[c.charCodeAt(0) % runes.length]).join("");
   }},
-] as const;
+];
 
 function HauntedNameTool() {
   const [name,    setName]    = useState("Your Name");
-  const [style,   setStyle]   = useState(HAUNT_STYLES[0]);
+  const [style,   setStyle]   = useState<typeof HAUNT_STYLES[number]>(HAUNT_STYLES[0]);
   const [haunted, setHaunted] = useState("");
   const [done,    setDone]    = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
