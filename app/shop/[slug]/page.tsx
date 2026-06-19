@@ -7,6 +7,7 @@ import { db } from "@/lib/db";
 import { getPublicUrl } from "@/lib/r2";
 import AdminHtmlBlock from "@/components/AdminHtmlBlock";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import DeviceMockup from "@/components/DeviceMockup";
 import { sanitizeAdminHtml } from "@/lib/sanitize-html";
 import { isPremiumLocked } from "@/lib/premium-lock";
 
@@ -86,7 +87,7 @@ export default async function CollectionPage({ params }: PageProps) {
         orderBy: { sortOrder: "asc" },
         select: {
           id: true, slug: true, title: true, altText: true,
-          r2Key: true, tags: true, sortOrder: true, updatedAt: true,
+          r2Key: true, tags: true, sortOrder: true, updatedAt: true, deviceType: true,
         },
       },
       _count: { select: { downloads: true } },
@@ -150,8 +151,8 @@ export default async function CollectionPage({ params }: PageProps) {
           padding: 24px 24px 80px;
         }
 
-        /* MOBILE: single column, info on top, grid below */
-        .coll-desktop-split { display: none; }
+        /* MOBILE: single column, info on top, grid below — UNTOUCHED */
+        .coll-desktop-only  { display: none; }
         .coll-mobile-info   { display: block; padding-bottom: 28px; }
         .coll-mobile-grid   { display: block; }
 
@@ -160,24 +161,8 @@ export default async function CollectionPage({ params }: PageProps) {
           /* Hide mobile stacks */
           .coll-mobile-info { display: none; }
           .coll-mobile-grid { display: none; }
-          /* Show desktop split */
-          .coll-desktop-split {
-            display: grid;
-            grid-template-columns: 1fr 340px;
-            gap: 48px;
-            align-items: start;
-          }
-        }
-
-        @media (min-width: 1100px) {
-          .coll-desktop-split { grid-template-columns: 1fr 380px; gap: 56px; }
-        }
-
-        /* ── Left: 2-col wallpaper grid ── */
-        .coll-left-grid {
-          display: grid;
-          grid-template-columns: 1fr 1fr;
-          gap: 10px;
+          /* Show desktop layout: header → small phone-mockup grid → description */
+          .coll-desktop-only { display: block; }
         }
 
         .coll-img-card {
@@ -203,13 +188,11 @@ export default async function CollectionPage({ params }: PageProps) {
         }
         .coll-img-card:hover .coll-card-overlay { opacity: 1; }
 
-        /* ── Right: sticky info panel ── */
-        .coll-info-panel {
-          position: sticky;
-          top: 88px;
-          display: flex;
-          flex-direction: column;
-          gap: 18px;
+        /* ── Desktop header (eyebrow / title / count) ── */
+        .coll-desktop-header {
+          text-align: center;
+          max-width: 760px;
+          margin: 0 auto 40px;
         }
 
         .coll-info-eyebrow {
@@ -221,30 +204,24 @@ export default async function CollectionPage({ params }: PageProps) {
           margin: 0;
         }
 
-        .coll-info-title {
+        .coll-desktop-title {
           font-family: var(--font-cinzel, serif);
-          font-size: clamp(1.5rem, 2.5vw, 2.2rem);
+          font-size: clamp(1.8rem, 3vw, 2.6rem);
           font-weight: 700;
-          line-height: 1.15;
-          margin: 0;
+          line-height: 1.18;
+          margin: 12px 0 16px;
           color: var(--text-primary, #e8e4f8);
         }
 
-        .coll-info-meta {
-          display: flex;
-          align-items: center;
-          gap: 10px;
-          flex-wrap: wrap;
-        }
-
-        .coll-info-count {
+        .coll-desktop-count {
+          display: inline-block;
           font-family: monospace;
           font-size: 0.58rem;
           letter-spacing: 0.16em;
           text-transform: uppercase;
           color: #8a809a;
           border: 1px solid rgba(255,255,255,0.08);
-          padding: 4px 10px;
+          padding: 5px 12px;
           border-radius: 3px;
         }
 
@@ -259,20 +236,89 @@ export default async function CollectionPage({ params }: PageProps) {
           border-radius: 3px;
         }
 
-        .coll-info-desc {
-          font-family: monospace;
-          font-size: 0.78rem;
-          line-height: 1.85;
-          color: #8a809a;
-          border-top: 1px solid rgba(255,255,255,0.06);
-          padding-top: 18px;
+        /* ── Small phone-mockup preview grid (desktop) ── */
+        .coll-mockup-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+          gap: 36px 22px;
+          padding: 4px 10px 0;
         }
-        .coll-info-desc p { margin: 0 0 10px; }
-        .coll-info-desc p:last-child { margin: 0; }
 
-        .coll-info-divider {
-          height: 1px;
-          background: rgba(255,255,255,0.06);
+        .coll-mockup-item {
+          display: block;
+          max-width: 200px;
+          margin: 0 auto;
+          text-decoration: none;
+          transition: transform 0.25s ease;
+        }
+        .coll-mockup-item:hover { transform: translateY(-5px); }
+
+        .coll-mockup-overlay {
+          position: absolute; inset: 0;
+          background: linear-gradient(to top, rgba(10,8,18,0.85) 0%, transparent 55%);
+          display: flex; align-items: flex-end; justify-content: center;
+          padding-bottom: 16px;
+          opacity: 0; transition: opacity 0.2s;
+        }
+        .coll-mockup-item:hover .coll-mockup-overlay { opacity: 1; }
+        .coll-mockup-overlay span {
+          font-family: monospace;
+          font-size: 0.48rem;
+          letter-spacing: 0.14em;
+          text-transform: uppercase;
+          color: #c9a84c;
+        }
+
+        /* ── Description — now sits below the grid, full width, single readable column ── */
+        .coll-desc-section {
+          max-width: 720px;
+          margin: 64px auto 0;
+          padding-top: 36px;
+          border-top: 1px solid rgba(255,255,255,0.07);
+        }
+
+        .coll-desc-heading {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 10px;
+          font-family: var(--font-cinzel, serif);
+          font-size: 0.9rem;
+          font-weight: 700;
+          letter-spacing: 0.2em;
+          text-transform: uppercase;
+          color: #ffffff;
+          margin: 0 0 24px;
+        }
+        .coll-desc-heading .coll-desc-accent { color: #c0001a; }
+
+        .coll-desc-body {
+          font-family: monospace;
+          font-size: 0.85rem;
+          line-height: 1.9;
+          color: #a89bc0;
+          text-align: left;
+        }
+        .coll-desc-body p { margin: 0 0 14px; }
+        .coll-desc-body p:last-child { margin: 0; }
+
+        /* Hard reset — some saved descriptions carry their own inline
+           multi-column / float markup. Force them back into one clean
+           column no matter what styling shipped with the HTML itself. */
+        .coll-desc-body .admin-html-block {
+          column-count: 1 !important;
+          columns: auto !important;
+          display: block !important;
+        }
+        .coll-desc-body .admin-html-block div,
+        .coll-desc-body .admin-html-block section,
+        .coll-desc-body .admin-html-block span[style*="column"] {
+          display: block !important;
+          float: none !important;
+          width: 100% !important;
+          max-width: 100% !important;
+          column-count: 1 !important;
+          columns: auto !important;
         }
 
         /* ── Mobile info (top, before grid) ── */
@@ -375,67 +421,72 @@ export default async function CollectionPage({ params }: PageProps) {
 
         {/* ══════════════════════════════════════
             DESKTOP LAYOUT (≥ 900px)
-            Left: 2-col grid | Right: sticky info
+            Header → small phone-mockup preview grid → description (bottom)
         ══════════════════════════════════════ */}
-        <div className="coll-desktop-split">
+        <div className="coll-desktop-only">
 
-          {/* LEFT — full wallpaper grid, 2 columns */}
-          <div>
-            {mergedImages.length === 0 ? (
-              <div className="hw-coming-soon">
-                <div className="hw-coming-soon__sigil">✦ ☽ ✦</div>
-                <div className="hw-coming-soon__bar" />
-                <h2 className="hw-coming-soon__title">Coming Soon</h2>
-                <p className="hw-coming-soon__sub">Dark art is being assembled. Check back soon.</p>
-              </div>
-            ) : (
-              <div className="coll-left-grid">
-                {mergedImages.map((img, idx) => {
-                  const locked = (img.tags ?? []).includes("badge-premium") && isPremiumLocked((img as any).updatedAt);
-                  const href = !collectionImageIds.has(img.id) && (img as any).deviceType
-                    ? `/${(img as any).deviceType.toLowerCase()}/${img.slug}`
-                    : `/shop/${slug}/${img.slug}`;
-                  return (
-                    <Link key={img.id} href={href} className="coll-img-card"
-                      style={{ pointerEvents: locked ? "none" : "auto", textDecoration: "none" }}>
-                      <Image
-                        src={getPublicUrl(img.r2Key)}
-                        alt={img.altText ?? img.title}
-                        fill className="object-cover"
-                        sizes="(max-width: 1280px) 30vw, 360px"
-                        priority={idx < 2}
-                        style={{ filter: locked ? "blur(10px) brightness(0.25)" : "none" }}
-                      />
-                      {locked ? <LockedOverlay /> : (
-                        <div className="coll-card-overlay">
-                          <span style={{ fontFamily: "monospace", fontSize: "0.48rem", letterSpacing: "0.12em", textTransform: "uppercase", color: "#c9a84c" }}>View & Download →</span>
-                        </div>
-                      )}
-                    </Link>
-                  );
-                })}
-              </div>
-            )}
+          {/* HEADER */}
+          <div className="coll-desktop-header">
+            <p className="coll-info-eyebrow">{collection.category ?? "Collection"} · Haunted Wallpapers</p>
+            <h1 className="coll-desktop-title">
+              {collection.title}
+              {collection.isAdult && (
+                <span className="coll-info-adult" style={{ marginLeft: "10px", verticalAlign: "middle" }}>16+</span>
+              )}
+            </h1>
+            <span className="coll-desktop-count">
+              {mergedImages.length} wallpaper{mergedImages.length !== 1 ? "s" : ""}
+            </span>
           </div>
 
-          {/* RIGHT — sticky info panel */}
-          <div className="coll-info-panel">
-            <p className="coll-info-eyebrow">{collection.category ?? "Collection"} · Haunted Wallpapers</p>
-
-            <h1 className="coll-info-title">
-              {collection.title}
-            </h1>
-
-            <div className="coll-info-meta">
-              <span className="coll-info-count">
-                {mergedImages.length} wallpaper{mergedImages.length !== 1 ? "s" : ""}
-              </span>
-              {collection.isAdult && <span className="coll-info-adult">16+</span>}
+          {/* SMALL PHONE-MOCKUP PREVIEW GRID */}
+          {mergedImages.length === 0 ? (
+            <div className="hw-coming-soon">
+              <div className="hw-coming-soon__sigil">✦ ☽ ✦</div>
+              <div className="hw-coming-soon__bar" />
+              <h2 className="hw-coming-soon__title">Coming Soon</h2>
+              <p className="hw-coming-soon__sub">Dark art is being assembled. Check back soon.</p>
             </div>
+          ) : (
+            <div className="coll-mockup-grid">
+              {mergedImages.map((img, idx) => {
+                const locked = (img.tags ?? []).includes("badge-premium") && isPremiumLocked((img as any).updatedAt);
+                const href = !collectionImageIds.has(img.id) && (img as any).deviceType
+                  ? `/${(img as any).deviceType.toLowerCase()}/${img.slug}`
+                  : `/shop/${slug}/${img.slug}`;
+                const frame = (img as any).deviceType === "ANDROID" ? "ANDROID" : "IPHONE";
+                return (
+                  <Link key={img.id} href={href} className="coll-mockup-item"
+                    style={{ pointerEvents: locked ? "none" : "auto" }}>
+                    <DeviceMockup deviceType={frame} seed={img.id}>
+                      <div style={{ position: "relative", width: "100%", height: "100%" }}>
+                        <Image
+                          src={getPublicUrl(img.r2Key)}
+                          alt={img.altText ?? img.title}
+                          fill className="object-cover"
+                          sizes="200px"
+                          priority={idx < 2}
+                          style={{ filter: locked ? "blur(10px) brightness(0.25)" : "none" }}
+                        />
+                        {locked ? <LockedOverlay /> : (
+                          <div className="coll-mockup-overlay">
+                            <span>View →</span>
+                          </div>
+                        )}
+                      </div>
+                    </DeviceMockup>
+                  </Link>
+                );
+              })}
+            </div>
+          )}
 
-            <div className="coll-info-divider" />
-
-            <div className="coll-info-desc">
+          {/* DESCRIPTION — moved to the bottom, single clean column */}
+          <div className="coll-desc-section">
+            <h2 className="coll-desc-heading">
+              <span className="coll-desc-accent">✦</span> About This Collection
+            </h2>
+            <div className="coll-desc-body">
               {collection.description ? (
                 <AdminHtmlBlock html={collection.description} />
               ) : (
