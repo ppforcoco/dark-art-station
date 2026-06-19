@@ -142,9 +142,6 @@ export default async function CollectionPage({ params }: PageProps) {
     >
       <style>{`
         /* ─── Desktop two-column layout ─── */
-        /* On desktop: left = wallpaper grid (2-col masonry), right = sticky info panel */
-        /* On mobile: info first, then full grid — untouched */
-
         .coll-layout {
           max-width: 1280px;
           margin: 0 auto;
@@ -158,10 +155,8 @@ export default async function CollectionPage({ params }: PageProps) {
 
         @media (min-width: 900px) {
           .coll-layout { padding: 32px 60px 80px; }
-          /* Hide mobile stacks */
           .coll-mobile-info { display: none; }
           .coll-mobile-grid { display: none; }
-          /* Show desktop layout: header → small phone-mockup grid → description */
           .coll-desktop-only { display: block; }
         }
 
@@ -188,7 +183,7 @@ export default async function CollectionPage({ params }: PageProps) {
         }
         .coll-img-card:hover .coll-card-overlay { opacity: 1; }
 
-        /* ── Desktop header (eyebrow / title / count) ── */
+        /* ── Desktop header ── */
         .coll-desktop-header {
           text-align: center;
           max-width: 760px;
@@ -250,8 +245,27 @@ export default async function CollectionPage({ params }: PageProps) {
           margin: 0 auto;
           text-decoration: none;
           transition: transform 0.25s ease;
+          /* Ensure the mockup frame is visible against the dark background */
+          filter: drop-shadow(0 8px 24px rgba(0,0,0,0.7));
         }
-        .coll-mockup-item:hover { transform: translateY(-5px); }
+        .coll-mockup-item:hover {
+          transform: translateY(-5px);
+          filter: drop-shadow(0 14px 32px rgba(0,0,0,0.85));
+        }
+
+        /*
+          CRITICAL FIX: DeviceMockup internally applies filter:none via its
+          global .device-mockup class to avoid double-filtering on wallpaper
+          pages. On this grid we need to override that so the bezel/shadow
+          inherited from .coll-mockup-item actually renders.
+        */
+        .coll-mockup-item .device-mockup {
+          filter: none !important;
+          /* Re-apply the border so the frame reads as a distinct object */
+          outline: 1.5px solid rgba(255,255,255,0.10);
+          border-radius: 38px;
+          overflow: hidden;
+        }
 
         .coll-mockup-overlay {
           position: absolute; inset: 0;
@@ -269,7 +283,7 @@ export default async function CollectionPage({ params }: PageProps) {
           color: #c9a84c;
         }
 
-        /* ── Description — now sits below the grid, full width, single readable column ── */
+        /* ── Description — sits below the grid ── */
         .coll-desc-section {
           max-width: 720px;
           margin: 64px auto 0;
@@ -302,9 +316,7 @@ export default async function CollectionPage({ params }: PageProps) {
         .coll-desc-body p { margin: 0 0 14px; }
         .coll-desc-body p:last-child { margin: 0; }
 
-        /* Hard reset — some saved descriptions carry their own inline
-           multi-column / float markup. Force them back into one clean
-           column no matter what styling shipped with the HTML itself. */
+        /* Hard reset for any inline multi-column markup baked into descriptions */
         .coll-desc-body .admin-html-block {
           column-count: 1 !important;
           columns: auto !important;
@@ -321,7 +333,7 @@ export default async function CollectionPage({ params }: PageProps) {
           columns: auto !important;
         }
 
-        /* ── Mobile info (top, before grid) ── */
+        /* ── Mobile info ── */
         .coll-mobile-title {
           font-family: var(--font-cinzel, serif);
           font-size: 1.7rem;
@@ -348,7 +360,7 @@ export default async function CollectionPage({ params }: PageProps) {
           display: block;
         }
 
-        /* ── Mobile grid (below info) ── */
+        /* ── Mobile grid ── */
         .coll-mobile-grid-inner {
           display: grid;
           grid-template-columns: repeat(2, 1fr);
@@ -365,8 +377,7 @@ export default async function CollectionPage({ params }: PageProps) {
       <div className="coll-layout">
 
         {/* ══════════════════════════════════════
-            MOBILE LAYOUT (< 900px)
-            Info panel first, then full grid
+            MOBILE LAYOUT (< 900px) — UNTOUCHED
         ══════════════════════════════════════ */}
         <div className="coll-mobile-info">
           <p className="coll-mobile-eyebrow">{collection.category ?? "Collection"}</p>
@@ -405,6 +416,7 @@ export default async function CollectionPage({ params }: PageProps) {
                       fill className="object-cover"
                       sizes="50vw"
                       priority={idx < 2}
+                      unoptimized
                       style={{ filter: locked ? "blur(10px) brightness(0.25)" : "none" }}
                     />
                     {locked ? <LockedOverlay /> : (
@@ -421,7 +433,7 @@ export default async function CollectionPage({ params }: PageProps) {
 
         {/* ══════════════════════════════════════
             DESKTOP LAYOUT (≥ 900px)
-            Header → small phone-mockup preview grid → description (bottom)
+            Header → phone-mockup grid → description
         ══════════════════════════════════════ */}
         <div className="coll-desktop-only">
 
@@ -439,7 +451,7 @@ export default async function CollectionPage({ params }: PageProps) {
             </span>
           </div>
 
-          {/* SMALL PHONE-MOCKUP PREVIEW GRID */}
+          {/* PHONE-MOCKUP PREVIEW GRID */}
           {mergedImages.length === 0 ? (
             <div className="hw-coming-soon">
               <div className="hw-coming-soon__sigil">✦ ☽ ✦</div>
@@ -463,9 +475,11 @@ export default async function CollectionPage({ params }: PageProps) {
                         <Image
                           src={getPublicUrl(img.r2Key)}
                           alt={img.altText ?? img.title}
-                          fill className="object-cover"
+                          fill
+                          className="object-cover"
                           sizes="200px"
-                          priority={idx < 2}
+                          priority={idx < 4}
+                          unoptimized
                           style={{ filter: locked ? "blur(10px) brightness(0.25)" : "none" }}
                         />
                         {locked ? <LockedOverlay /> : (
@@ -481,7 +495,7 @@ export default async function CollectionPage({ params }: PageProps) {
             </div>
           )}
 
-          {/* DESCRIPTION — moved to the bottom, single clean column */}
+          {/* DESCRIPTION — bottom, single clean column */}
           <div className="coll-desc-section">
             <h2 className="coll-desc-heading">
               <span className="coll-desc-accent">✦</span> About This Collection
@@ -494,6 +508,7 @@ export default async function CollectionPage({ params }: PageProps) {
               )}
             </div>
           </div>
+
         </div>
       </div>
 
