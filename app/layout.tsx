@@ -168,6 +168,19 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           src="https://cloud.umami.is/script.js"
           data-website-id="8aa04b22-aab2-4f50-b5cc-d2602ad3739a"
         />
+
+        {/* ── Monetag ad tags ──────────────────────────────────────────────── */}
+        <script
+          src="https://quge5.com/88/tag.min.js"
+          data-zone="251881"
+          async
+          data-cfasync="false"
+        />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(s){s.dataset.zone='11177677',s.src='https://al5sm.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))`,
+          }}
+        />
       </body>
     </html>
   );
