@@ -67,12 +67,18 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" dir="ltr" suppressHydrationWarning style={{ backgroundColor: "#0c0b14", color: "#e8e4dc" }}>
       <head>
         {/* ── Hero image preload — LCP hint ───────────────────────────────── */}
+        {/* imagesizes + imagesrcset tell the browser exact pixel size so it */}
+        {/* can honour the preload on mobile without waiting for layout.      */}
         <link
           rel="preload"
           as="image"
           href="https://assets.hauntedwallpapers.com/extras/the-haunted-wallpapers-hero-section-image-mobile-dark-wallpapers-thumbnail.avif"
           type="image/avif"
-          fetchPriority="high"
+          // @ts-expect-error — fetchpriority is valid HTML but not yet in React types
+          fetchpriority="high"
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-expect-error
+          imagesizes="(max-width: 768px) 100vw, 50vw"
         />
 
         {/* ── Hilltop Ads — deferred after LCP ────────────────────────────── */}
@@ -80,7 +86,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {/* Saves ~1.3 s on LCP by not blocking first paint.                   */}
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){function loadHilltopAds(){(function(fzzm){var d=document,s=d.createElement('script'),l=d.scripts[d.scripts.length-1];s.settings=fzzm||{};s.src="\/\/quarrelsomebitter.com\/b\/X-V.sddwGLls0qY\/W\/cD\/eesmp9IupZwULlCkLPaTFcfxoMUzlgn4gM\/jGEAtlNvzEErz\/OPDCg\/yPNhQe";s.async=true;s.referrerPolicy='no-referrer-when-downgrade';l.parentNode.insertBefore(s,l);})({});(function(fzzm){var d=document,s=d.createElement('script'),l=d.scripts[d.scripts.length-1];s.settings=fzzm||{};s.src="\/\/quarrelsomebitter.com\/bcX.VNsCdNGql\/0WYqWxcI\/yeLmN9gukZzUJl-k\/P\/TNc\/xEMxzQgU3oORDLknttNnzqE\/zjOwDdcQ5TM\/wu";s.async=true;s.referrerPolicy='no-referrer-when-downgrade';l.parentNode.insertBefore(s,l);})({});}if('requestIdleCallback' in window){requestIdleCallback(loadHilltopAds,{timeout:3000});}else{setTimeout(loadHilltopAds,2000);}})();`,
+            __html: `(function(){function loadHilltopAds(){(function(fzzm){var d=document,s=d.createElement('script'),l=d.scripts[d.scripts.length-1];s.settings=fzzm||{};s.src="\/\/quarrelsomebitter.com\/b\/X-V.sddwGLls0qY\/W\/cD\/eesmp9IupZwULlCkLPaTFcfxoMUzlgn4gM\/jGEAtlNvzEErz\/OPDCg\/yPNhQe";s.async=true;s.referrerPolicy='no-referrer-when-downgrade';l.parentNode.insertBefore(s,l);})({});(function(fzzm){var d=document,s=d.createElement('script'),l=d.scripts[d.scripts.length-1];s.settings=fzzm||{};s.src="\/\/quarrelsomebitter.com\/bcX.VNsCdNGql\/0WYqWxcI\/yeLmN9gukZzUJl-k\/P\/TNc\/xEMxzQgU3oORDLknttNnzqE\/zjOwDdcQ5TM\/wu";s.async=true;s.referrerPolicy='no-referrer-when-downgrade';l.parentNode.insertBefore(s,l);})({});}if('requestIdleCallback' in window){requestIdleCallback(loadHilltopAds,{timeout:5000});}else{setTimeout(loadHilltopAds,4000);}})();`,
           }}
         />
 

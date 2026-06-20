@@ -64,8 +64,14 @@ const getCachedPremiumThisWeek = unstable_cache(
   { revalidate: 300 },
 );
 
+const getCachedPageContent = unstable_cache(
+  () => getPageContent("home"),
+  ["homepage-page-content"],
+  { revalidate: 3600 },
+);
+
 export async function generateMetadata(): Promise<Metadata> {
-  const pageContent = await getPageContent("home");
+  const pageContent = await getCachedPageContent();
   const desc = pageContent?.metaDesc ??
     "Free dark fantasy wallpapers for iPhone and Android. Gothic, horror, cosmic art — no sign-up, always free.";
   const title = pageContent?.title ??
@@ -183,7 +189,7 @@ export default async function Home() {
               aria-hidden="true"
               className="hp-hero-img"
               fetchPriority="high"
-              decoding="sync"
+              decoding="async"
               loading="eager"
               width="1600"
               height="900"
