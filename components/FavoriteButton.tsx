@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
+import { track } from "@/lib/track";
 
 const STORAGE_KEY = "hw-favorites";
 
@@ -66,6 +67,7 @@ export default function FavoriteButton({ item, size = "md", className = "" }: Pr
     e.stopPropagation();
     const nowSaved = toggleFavorite(item);
     setSaved(nowSaved);
+    track(nowSaved ? "favorite_save" : "favorite_remove", { slug: item.slug, title: item.title });
     if (nowSaved) { setPop(true); setTimeout(() => setPop(false), 600); }
   }, [item]);
 

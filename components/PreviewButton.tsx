@@ -4,6 +4,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { createPortal } from "react-dom";
 import Image from "next/image";
+import { track } from "@/lib/track";
 
 // ── Types ────────────────────────────────────────────────────────────────────
 type DeviceFrame = "iphone-di" | "iphone-notch" | "android-punch" | "android-full";
@@ -208,7 +209,7 @@ export default function PreviewButton({
       )}
 
       <button
-        onClick={() => setOpen(true)}
+        onClick={() => { setOpen(true); track("preview_open", { title }); }}
         style={{
           display: "flex",
           alignItems: "center",

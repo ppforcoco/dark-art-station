@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect, ReactNode } from "react";
 import Link from "next/link";
+import { track } from "@/lib/track";
 
 interface Props {
   href: string;
@@ -86,11 +87,10 @@ export default function DownloadButton({ href, slug, viewCount, downloadCount, l
     setState("loading");
     setTimeout(() => setState("done"), 1400);
 
-    if (typeof window !== "undefined" && typeof (window as any).umami === "object") {
-      (window as any).umami.track("download", {
-        file: href.split("/").pop() ?? href,
-      });
-    }
+    track("download", {
+      file: href.split("/").pop() ?? href,
+      slug: slug ?? "",
+    });
   }
 
   function triggerDownloadState() {
