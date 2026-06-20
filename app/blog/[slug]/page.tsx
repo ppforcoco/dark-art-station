@@ -1,11 +1,20 @@
 import type { Metadata } from "next";
+import { unstable_cache } from "next/cache";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { db } from "@/lib/db";
 import BlogPostClient from "./BlogPostClient";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 3600;
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
+
+function getCachedPost(slug: string) {
+  return unstable_cache(
+    () => db.blogPost.findUnique({ where: { slug } }),
+    [`blog-post-${slug}`],
+    { revalidate: 3600 },
+  )();
+}
 
 function extractFirstImageFromContent(html: string): string | null {
   const match = html.match(/<img[^>]+src=["']([^"']+)["']/i);
@@ -16,7 +25,7 @@ export async function generateMetadata(
   { params }: { params: Promise<{ slug: string }> }
 ): Promise<Metadata> {
   const { slug } = await params;
-  const post = await db.blogPost.findUnique({ where: { slug } });
+  const post = await getCachedPost(slug);
   if (!post) return { title: "Not Found" };
 
   const excerpt = post.content
@@ -58,7 +67,7 @@ export default async function BlogPostPage(
   const { slug } = await params;
 
   const [post, allPosts] = await Promise.all([
-    db.blogPost.findUnique({ where: { slug, published: true } }),
+    getCachedPost(slug),
     db.blogPost.findMany({
       where: { published: true },
       orderBy: { createdAt: "desc" },

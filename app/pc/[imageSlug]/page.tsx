@@ -1,5 +1,6 @@
 // app/pc/[imageSlug]/page.tsx
 import type { Metadata } from "next";
+import { unstable_cache } from "next/cache";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
@@ -21,6 +22,22 @@ interface PageProps {
   params: Promise<{ imageSlug: string }>;
 }
 
+function getCachedImage(slug: string) {
+  return unstable_cache(
+    () => db.image.findUnique({
+      where: { slug },
+      select: {
+        id: true, slug: true, title: true, description: true,
+        metaDescription: true, r2Key: true, highResKey: true, tags: true,
+        viewCount: true, sortOrder: true, deviceType: true, isAdult: true,
+        _count: { select: { downloads: true } },
+      },
+    }),
+    [`pc-image-${slug}`],
+    { revalidate: 3600 },
+  )();
+}
+
 function buildFallbackDescription(title: string, tags: string[]): string {
   const tagList = tags.length > 0 ? tags.slice(0, 5).join(", ") : "dark fantasy, atmospheric, gothic";
   const firstTag = tags[0] ?? "dark fantasy";
@@ -40,10 +57,7 @@ function buildFallbackDescription(title: string, tags: string[]): string {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { imageSlug } = await params;
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
-  const image = await db.image.findUnique({
-    where: { slug: imageSlug },
-    select: { title: true, description: true, metaDescription: true, r2Key: true, tags: true, isAdult: true, deviceType: true },
-  });
+  const image = await getCachedImage(imageSlug);
   if (!image || image.deviceType !== "PC") return { title: "Not Found | HAUNTED WALLPAPERS" };
   const tagLine = image.tags.slice(0, 3).map((t) => `#${t}`).join(" ");
   const plainDesc = (image.metaDescription ?? image.description ?? "")
@@ -83,15 +97,7 @@ export default async function PcImagePage({ params }: PageProps) {
   const { imageSlug } = await params;
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
 
-  const image = await db.image.findUnique({
-    where: { slug: imageSlug },
-    select: {
-      id: true, slug: true, title: true, description: true,
-      r2Key: true, highResKey: true, tags: true,
-      viewCount: true, sortOrder: true, deviceType: true,
-      _count: { select: { downloads: true } },
-    },
-  });
+  const image = await getCachedImage(imageSlug);
 
   if (!image || image.deviceType !== "PC") notFound();
 
