@@ -12,7 +12,6 @@ import IphoneImageGrid from "@/components/IphoneImageGrid";
 
 export const revalidate = 3600;
 
-export const revalidate = 3600;
 
 const PAGE_SIZE = 24;
 

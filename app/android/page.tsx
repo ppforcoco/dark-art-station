@@ -12,7 +12,6 @@ import AdminHtmlBlock from "@/components/AdminHtmlBlock";
 
 export const revalidate = 3600;
 
-export const revalidate = 3600;
 
 const PAGE_SIZE = 24;
 

@@ -10,7 +10,6 @@ import Pagination from "@/components/Pagination";
 import WorldTheme from "@/components/WorldTheme";
 
 export const revalidate = 3600;
-export const revalidate = 300;
 
 const WORLDS = {
   purple: {

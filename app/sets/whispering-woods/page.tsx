@@ -123,7 +123,6 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export const revalidate = 86400;
 
 
 

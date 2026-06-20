@@ -44,7 +44,6 @@ export const metadata: Metadata = {
   alternates: { canonical: `${SITE_URL}/sets` },
 };
 
-export const revalidate = 3600;
 
 const SETS = [
   {

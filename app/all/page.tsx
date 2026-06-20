@@ -8,7 +8,6 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 
 export const revalidate = 3600;
 
-export const revalidate = 300;
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
 

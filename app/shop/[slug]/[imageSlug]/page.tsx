@@ -19,7 +19,6 @@ import { sanitizeAdminHtml } from "@/lib/sanitize-html";
 
 export const revalidate = 3600;
 export const dynamicParams = true;
-export const revalidate = 0;
 
 interface PageProps {
   params: Promise<{ slug: string; imageSlug: string }>;
