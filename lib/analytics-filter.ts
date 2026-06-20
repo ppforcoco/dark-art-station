@@ -33,6 +33,21 @@ function getAdminIps(): Set<string> {
   );
 }
 
+// ── Countries to exclude from views, downloads, and analytics ───────────────
+// Defaults to PK since that's where testing/dev traffic comes from. Override
+// with BLOCKED_COUNTRIES=PK,XX in .env / Coolify env vars if that ever needs
+// to change. Relies on Cloudflare's cf-ipcountry header — only present if the
+// site is proxied through Cloudflare (orange cloud on).
+function getBlockedCountries(): Set<string> {
+  const raw = process.env.BLOCKED_COUNTRIES ?? "PK";
+  return new Set(
+    raw
+      .split(",")
+      .map((s) => s.trim().toUpperCase())
+      .filter(Boolean)
+  );
+}
+
 // ── Bot / crawler User-Agents to skip ───────────────────────────────────────
 const BOT_PATTERNS = [
   /googlebot/i,
@@ -100,9 +115,11 @@ function getClientIp(req?: NextRequest): string {
 export function shouldCountRequest(req: NextRequest): boolean {
   const ip = getClientIp(req);
   const ua = req.headers.get("user-agent") ?? "";
+  const country = req.headers.get("cf-ipcountry")?.toUpperCase() ?? "";
 
   if (getAdminIps().has(ip)) return false;
   if (isBot(ua)) return false;
+  if (country && getBlockedCountries().has(country)) return false;
 
   return true;
 }
@@ -116,9 +133,11 @@ export async function shouldCountPageView(): Promise<boolean> {
       hdrs.get("x-real-ip") ??
       "";
     const ua = hdrs.get("user-agent") ?? "";
+    const country = hdrs.get("cf-ipcountry")?.toUpperCase() ?? "";
 
     if (getAdminIps().has(ip)) return false;
     if (isBot(ua)) return false;
+    if (country && getBlockedCountries().has(country)) return false;
 
     return true;
   } catch {
