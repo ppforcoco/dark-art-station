@@ -170,6 +170,53 @@ model VanityRedirect {
   @@index([slug])
 }
 
+// ── First-party Analytics (replaces relying on Umami alone) ──────────────────
+// Session id is generated client-side (lib/track.ts) and stored in a
+// first-party cookie, so it survives ad-blockers that kill third-party
+// analytics scripts. No raw IP is ever stored — only a salted one-way hash,
+// same pattern already used on the Download model.
+model Session {
+  id        String    @id // client-generated UUID, not DB-generated
+  ipHash    String
+  userAgent String?
+  device    String?   // "iphone" | "android-mobile" | "tablet" | "desktop"
+  country   String?   // from cf-ipcountry header if behind Cloudflare proxy, else null
+  firstSeen DateTime  @default(now())
+  lastSeen  DateTime  @updatedAt
+
+  pageViews PageView[]
+  events    AnalyticsEvent[]
+
+  @@index([lastSeen])
+}
+
+model PageView {
+  id        String   @id @default(uuid())
+  sessionId String
+  session   Session  @relation(fields: [sessionId], references: [id])
+  path      String
+  enteredAt DateTime @default(now())
+  duration  Int?     // seconds, filled in via visibilitychange/pagehide beacon
+
+  @@index([sessionId])
+  @@index([path])
+  @@index([enteredAt])
+}
+
+model AnalyticsEvent {
+  id        String   @id @default(uuid())
+  sessionId String
+  session   Session  @relation(fields: [sessionId], references: [id])
+  path      String
+  type      String   // "download" | "preview_open" | "favorite_save" | "wallpaper_view" | "engaged_15s" | "engaged_60s" | ...
+  meta      Json?
+  createdAt DateTime @default(now())
+
+  @@index([sessionId])
+  @@index([type])
+  @@index([createdAt])
+}
+
 // ── Live Wallpapers ───────────────────────────────────────────────────────────
 model LiveWallpaper {
   id           String   @id @default(uuid())

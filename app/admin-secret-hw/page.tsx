@@ -1478,8 +1478,150 @@ function LiveWallpapersTab({password}:{password:string}){
   </div>;
 }
 
-type Tab="analytics"|"pages"|"collections"|"districts"|"upload"|"published"|"bulkai"|"highres"|"blog"|"manage18"|"backdate"|"preview"|"feedback"|"nuke"|"pin"|"comments"|"livewallpapers";
-const NAV_ITEMS:[Tab,string,string][]=[["analytics","📊","Analytics"],["pages","📝","Page Content"],["collections","🗂","Collections"],["districts","🏚️","Districts"],["upload","📤","Upload Image"],["published","📸","Published"],["bulkai","🤖","Bulk AI Update"],["highres","⬆️","Upload 4K"],["blog","✍️","Blog Posts"],["manage18","⚠","16+ Manage"],["backdate","📅","Backdate"],["preview","🌐","Live Preview"],["feedback","⚑","Reports"],["comments","💬","Wishes"],["pin","📌","Pin Wallpapers"],["livewallpapers","🎬","Live Wallpapers"],["nuke","💣","Nuke Everything"]];
+// ── Visitors Tab — first-party "who's here, what page, how long" ─────────────
+interface VisitorPage   { path:string; duration:number|null; enteredAt:string; }
+interface VisitorEvent  { type:string; path:string; meta:Record<string,unknown>|null; createdAt:string; }
+interface LiveVisitor   { id:string; device:string|null; country:string|null; path:string; lastSeen:string; }
+interface SessionRow    { id:string; device:string|null; country:string|null; firstSeen:string; lastSeen:string; pageCount:number; totalDuration:number; pages:VisitorPage[]; events:VisitorEvent[]; }
+interface TopPage       { path:string; views:number; avgDuration:number; }
+interface VisitorsData  { liveCount:number; live:LiveVisitor[]; sessionsToday:number; sessions:SessionRow[]; topPages:TopPage[]; recentEvents:VisitorEvent[]; }
+
+function fmtSecs(s:number|null|undefined):string{
+  if(!s||s<=0)return"—";
+  if(s<60)return`${s}s`;
+  return`${Math.floor(s/60)}m ${s%60}s`;
+}
+function timeAgo(iso:string):string{
+  const ms=Date.now()-new Date(iso).getTime();
+  const m=Math.floor(ms/60000);
+  if(m<1)return"just now";
+  if(m<60)return`${m}m ago`;
+  const h=Math.floor(m/60);
+  if(h<24)return`${h}h ago`;
+  return`${Math.floor(h/24)}d ago`;
+}
+
+function VisitorsTab({password}:{password:string}){
+  const[data,setData]=useState<VisitorsData|null>(null);
+  const[loading,setLoading]=useState(true);
+  const[error,setError]=useState("");
+  const[expanded,setExpanded]=useState<string|null>(null);
+  const[autoRefresh,setAutoRefresh]=useState(true);
+
+  const load=useCallback(async()=>{
+    try{
+      const res=await fetch("/api/hw-admin/visitors",{headers:{"x-admin-password":password}});
+      if(!res.ok)throw new Error("Failed");
+      setData(await res.json());
+      setError("");
+    }catch{setError("Could not load visitor data.");}
+    setLoading(false);
+  },[password]);
+
+  useEffect(()=>{load();},[load]);
+  useEffect(()=>{
+    if(!autoRefresh)return;
+    const t=setInterval(load,15000);
+    return()=>clearInterval(t);
+  },[autoRefresh,load]);
+
+  if(loading)return<p style={{color:C.textSec,padding:"40px 0",textAlign:"center"}}>Loading visitor data…</p>;
+  if(error)return<p style={{color:C.red}}>{error}</p>;
+  if(!data)return null;
+
+  return<div>
+    <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:"16px"}}>
+      <p style={{color:C.textMut,fontSize:"0.7rem"}}>This reads directly from your own database (Session / PageView / AnalyticsEvent) — not Umami — so it sees everyone, including visitors whose ad-blocker kills third-party trackers.</p>
+      <label style={{display:"flex",alignItems:"center",gap:"6px",color:C.textMut,fontSize:"0.65rem",flexShrink:0,marginLeft:"16px",cursor:"pointer"}}>
+        <input type="checkbox" checked={autoRefresh} onChange={e=>setAutoRefresh(e.target.checked)}/> Auto-refresh 15s
+      </label>
+    </div>
+
+    {/* KPI row */}
+    <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:"12px",marginBottom:"24px"}}>
+      <Card style={{textAlign:"center",padding:"20px 12px"}}><p style={{...eyebrow,marginBottom:"6px"}}>Live Now</p><p style={{color:C.green,fontSize:"1.8rem",fontWeight:700,lineHeight:1}}>{data.liveCount}</p><p style={{color:C.textMut,fontSize:"0.6rem",marginTop:"4px"}}>active in last 5 min</p></Card>
+      <Card style={{textAlign:"center",padding:"20px 12px"}}><p style={{...eyebrow,marginBottom:"6px"}}>Sessions Today</p><p style={{color:C.red,fontSize:"1.8rem",fontWeight:700,lineHeight:1}}>{data.sessionsToday}</p><p style={{color:C.textMut,fontSize:"0.6rem",marginTop:"4px"}}>distinct visitors</p></Card>
+      <Card style={{textAlign:"center",padding:"20px 12px"}}><p style={{...eyebrow,marginBottom:"6px"}}>Avg Time — Top Page</p><p style={{color:C.gold,fontSize:"1.8rem",fontWeight:700,lineHeight:1}}>{fmtSecs(data.topPages[0]?.avgDuration)}</p><p style={{color:C.textMut,fontSize:"0.6rem",marginTop:"4px"}}>{data.topPages[0]?.path??"—"}</p></Card>
+    </div>
+
+    {/* Live visitors */}
+    <Card style={{marginBottom:"24px"}}>
+      <p style={eyebrow}>👀 Live Now</p>
+      {data.live.length===0&&<p style={{color:C.textMut,fontSize:"0.78rem",padding:"8px 0"}}>Nobody active in the last 5 minutes.</p>}
+      {data.live.map(v=><div key={v.id} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"8px 0",borderBottom:`1px solid ${C.border}`,fontSize:"0.78rem"}}>
+        <div style={{display:"flex",alignItems:"center",gap:"10px",minWidth:0}}>
+          <span style={{width:"7px",height:"7px",borderRadius:"50%",background:C.green,flexShrink:0,boxShadow:`0 0 6px ${C.green}`}}/>
+          <code style={{color:C.textMut,fontSize:"0.68rem"}}>{v.id}</code>
+          <span style={{color:C.textSec,fontSize:"0.68rem"}}>{v.country??"?"} · {v.device??"?"}</span>
+        </div>
+        <code style={{color:C.textPri,fontSize:"0.72rem",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap",maxWidth:"260px"}}>{v.path}</code>
+      </div>)}
+    </Card>
+
+    {/* Top pages today */}
+    <Card style={{marginBottom:"24px"}}>
+      <p style={eyebrow}>Top Pages Today — views &amp; average time spent</p>
+      {data.topPages.length===0&&<p style={{color:C.textMut,fontSize:"0.78rem",padding:"8px 0"}}>No page views recorded yet today.</p>}
+      {data.topPages.map((p,i)=><div key={i} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"8px 0",borderBottom:`1px solid ${C.border}`,fontSize:"0.78rem"}}>
+        <code style={{color:C.textPri,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap",flex:1,marginRight:"12px"}}>{p.path}</code>
+        <span style={{display:"flex",gap:"16px",flexShrink:0}}>
+          <span style={{color:C.gold}}>{p.views} views</span>
+          <span style={{color:C.textSec}}>{fmtSecs(p.avgDuration)} avg</span>
+        </span>
+      </div>)}
+    </Card>
+
+    {/* Recent activity feed */}
+    <Card style={{marginBottom:"24px"}}>
+      <p style={eyebrow}>Recent Activity — downloads, previews, favorites</p>
+      {data.recentEvents.length===0&&<p style={{color:C.textMut,fontSize:"0.78rem",padding:"8px 0"}}>No events logged yet today.</p>}
+      {data.recentEvents.map((e,i)=><div key={i} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"7px 0",borderBottom:`1px solid ${C.border}`,fontSize:"0.76rem"}}>
+        <span style={{color:C.textPri}}>{e.type}</span>
+        <code style={{color:C.textMut,fontSize:"0.66rem",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap",maxWidth:"220px"}}>{e.path}</code>
+        <span style={{color:C.textMut,fontSize:"0.66rem",flexShrink:0}}>{timeAgo(e.createdAt)}</span>
+      </div>)}
+    </Card>
+
+    {/* Per-session breakdown — click to expand a visitor's full page trail */}
+    <Card>
+      <p style={eyebrow}>Today&apos;s Sessions — {data.sessions.length} visitors, click to expand</p>
+      {data.sessions.map(s=>{
+        const isOpen=expanded===s.id;
+        return<div key={s.id} style={{borderBottom:`1px solid ${C.border}`}}>
+          <button onClick={()=>setExpanded(isOpen?null:s.id)} style={{width:"100%",display:"flex",justifyContent:"space-between",alignItems:"center",padding:"10px 0",background:"transparent",border:"none",cursor:"pointer",textAlign:"left"}}>
+            <span style={{display:"flex",alignItems:"center",gap:"10px"}}>
+              <span style={{color:C.textMut,fontSize:"0.65rem"}}>{isOpen?"▾":"▸"}</span>
+              <code style={{color:C.textSec,fontSize:"0.7rem"}}>{s.id}</code>
+              <span style={{color:C.textMut,fontSize:"0.68rem"}}>{s.country??"?"} · {s.device??"?"}</span>
+            </span>
+            <span style={{display:"flex",gap:"16px",fontSize:"0.72rem"}}>
+              <span style={{color:C.textSec}}>{s.pageCount} pages</span>
+              <span style={{color:C.gold}}>{fmtSecs(s.totalDuration)} total</span>
+              <span style={{color:C.textMut}}>{timeAgo(s.lastSeen)}</span>
+            </span>
+          </button>
+          {isOpen&&<div style={{padding:"4px 0 14px 24px"}}>
+            <p style={{...eyebrow,marginBottom:"6px"}}>Pages visited</p>
+            {s.pages.map((p,i)=><div key={i} style={{display:"flex",justifyContent:"space-between",padding:"4px 0",fontSize:"0.72rem"}}>
+              <code style={{color:C.textPri}}>{p.path}</code>
+              <span style={{color:C.textMut}}>{fmtSecs(p.duration)}</span>
+            </div>)}
+            {s.events.length>0&&<>
+              <p style={{...eyebrow,marginTop:"10px",marginBottom:"6px"}}>Actions</p>
+              {s.events.map((e,i)=><div key={i} style={{display:"flex",justifyContent:"space-between",padding:"4px 0",fontSize:"0.72rem"}}>
+                <span style={{color:C.red}}>{e.type}</span>
+                <code style={{color:C.textMut}}>{e.path}</code>
+              </div>)}
+            </>}
+          </div>}
+        </div>;
+      })}
+    </Card>
+  </div>;
+}
+
+type Tab="analytics"|"visitors"|"pages"|"collections"|"districts"|"upload"|"published"|"bulkai"|"highres"|"blog"|"manage18"|"backdate"|"preview"|"feedback"|"nuke"|"pin"|"comments"|"livewallpapers";
+const NAV_ITEMS:[Tab,string,string][]=[["analytics","📊","Analytics"],["visitors","👀","Visitors"],["pages","📝","Page Content"],["collections","🗂","Collections"],["districts","🏚️","Districts"],["upload","📤","Upload Image"],["published","📸","Published"],["bulkai","🤖","Bulk AI Update"],["highres","⬆️","Upload 4K"],["blog","✍️","Blog Posts"],["manage18","⚠","16+ Manage"],["backdate","📅","Backdate"],["preview","🌐","Live Preview"],["feedback","⚑","Reports"],["comments","💬","Wishes"],["pin","📌","Pin Wallpapers"],["livewallpapers","🎬","Live Wallpapers"],["nuke","💣","Nuke Everything"]];
 
 export default function AdminClient(){
   const[authed,setAuthed]=useState(false);const[password,setPw]=useState("");const[tab,setTab]=useState<Tab>("analytics");const[sidebarOpen,setSidebarOpen]=useState(true);const[prefillTitle,setPrefillTitle]=useState("");const[prefillLabel,setPrefillLabel]=useState("");
@@ -1513,6 +1655,7 @@ export default function AdminClient(){
           <h1 style={{fontSize:"1.1rem",fontWeight:400,color:C.textPri,margin:0}}>{NAV_ITEMS.find(n=>n[0]===tab)?.[1]} {NAV_ITEMS.find(n=>n[0]===tab)?.[2]}</h1>
         </div>
         {tab==="analytics"&&<AnalyticsTab password={password}/>}
+        {tab==="visitors"&&<VisitorsTab password={password}/>}
         {tab==="pages"&&<PageContentTab password={password}/>}
         {tab==="collections"&&<CollectionsTab password={password}/>}
         {tab==="districts"&&<DistrictsTab password={password}/>}
