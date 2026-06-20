@@ -74,10 +74,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           as="image"
           href="https://assets.hauntedwallpapers.com/extras/the-haunted-wallpapers-hero-section-image-mobile-dark-wallpapers-thumbnail.avif"
           type="image/avif"
-          // @ts-expect-error — fetchpriority is valid HTML but not yet in React types
           fetchpriority="high"
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-expect-error
           imagesizes="(max-width: 768px) 100vw, 50vw"
         />
 
