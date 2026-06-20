@@ -180,14 +180,18 @@ export default async function Home() {
             </div>
           </div>
 
-          {/* RIGHT: image column — pure black background, image shown in full
-              (object-fit: contain) so nothing is cropped, native aspect 1672×941 */}
+          {/* RIGHT: image column — pure black background. The wrapper's
+              aspect-ratio is locked to the image's own ratio (1672×941),
+              so the box shrinks to exactly match the picture — no letterboxing,
+              no leftover black space, and still nothing gets cropped. */}
           <div
             className="hp-hero-img-wrap"
             style={{
               background: "#000",
               width: "100%",
-              height: "100%",
+              maxWidth: "1672px",
+              aspectRatio: "1672 / 941",
+              margin: "0 auto",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -208,8 +212,6 @@ export default async function Home() {
               style={{
                 width: "100%",
                 height: "100%",
-                maxWidth: "100%",
-                maxHeight: "100%",
                 objectFit: "contain",
                 objectPosition: "center",
                 background: "#000",
