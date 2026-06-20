@@ -7,7 +7,7 @@ import { MOODS } from "./moods";
 import type { MoodId, MoodImage } from "./moods";
 import Breadcrumbs from "@/components/Breadcrumbs";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 3600;
 
 export const revalidate = 300;
 

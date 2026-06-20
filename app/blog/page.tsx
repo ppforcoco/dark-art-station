@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { db, getPageContent } from "@/lib/db";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 3600;
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
 
 export const metadata: Metadata = {

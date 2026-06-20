@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { getPageContent } from "@/lib/db";
 import Breadcrumbs from "@/components/Breadcrumbs";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 3600;
 
 export const metadata: Metadata = {
   title: "About — HauntedWallpapers",

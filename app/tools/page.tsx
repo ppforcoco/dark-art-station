@@ -3,7 +3,7 @@
 import { useState, useRef, useCallback, useEffect } from "react";
 import Breadcrumbs from "@/components/Breadcrumbs";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 3600;
 
 type ActiveTool = "resizer" | "darkener" | "upscaler" | "text" | "blur" | "split" | "oled" | "lockscreen" | "haunted-name" | "collage" | "timer";
 type ImgFormat = "jpeg" | "png" | "webp";

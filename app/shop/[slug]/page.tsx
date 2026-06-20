@@ -9,7 +9,7 @@ import AdminHtmlBlock from "@/components/AdminHtmlBlock";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { isPremiumLocked } from "@/lib/premium-lock";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 3600;
 
 const DISTRICT_TAG_MAP: Record<string, string> = {
   "the-classic-district": "classic-district",

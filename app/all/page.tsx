@@ -6,7 +6,7 @@ import { getPublicUrl } from "@/lib/r2";
 import AllPageClient from "./AllPageClient";
 import Breadcrumbs from "@/components/Breadcrumbs";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 3600;
 
 export const revalidate = 300;
 

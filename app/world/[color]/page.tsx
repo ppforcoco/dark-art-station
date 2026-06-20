@@ -9,7 +9,7 @@ import { getPublicUrl } from "@/lib/r2";
 import Pagination from "@/components/Pagination";
 import WorldTheme from "@/components/WorldTheme";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 3600;
 export const revalidate = 300;
 
 const WORLDS = {

@@ -17,7 +17,7 @@ import WallpaperReactions from "@/components/WallpaperReactions";
 import { shouldCountPageView } from "@/lib/analytics-filter";
 import { sanitizeAdminHtml } from "@/lib/sanitize-html";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 3600;
 export const dynamicParams = true;
 export const revalidate = 0;
 

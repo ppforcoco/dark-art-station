@@ -10,7 +10,7 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 import AdminHtmlBlock from "@/components/AdminHtmlBlock";
 import ProgressiveGrid from "@/components/ProgressiveGrid";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 3600;
 
 export const revalidate = 3600;
 
