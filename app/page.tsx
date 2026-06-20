@@ -16,7 +16,7 @@ import "./homepage.css";
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
 const OG_IMAGE = `${SITE_URL}/og-image.jpg`;
 const CDN      = "https://assets.hauntedwallpapers.com";
-const HERO_IMG = `${CDN}/extras/the-haunted-wallpapers-hero-section-image-mobile-dark-wallpapers-thumbnail.avif`;
+const HERO_IMG = `${CDN}/haunted-wallpapers-hero-image.avif`;
 
 // ─── Cached DB queries — all revalidate every 5 minutes ──────────────────────
 // Previously these ran fresh on every request, causing ~1.5–2 s of TTFB.
@@ -149,11 +149,11 @@ export default async function Home() {
       <div className="hp">
 
         {/* ══ HERO ════════════════════════════════════════════════════════ */}
-        <section className="hp-hero">
+        <section className="hp-hero" style={{ background: "#000" }}>
 
           <div className="hp-hero-vignette" aria-hidden="true" />
 
-          {/* LEFT: text content */}
+          {/* LEFT: text content — own column, never overlaps the image */}
           <div className="hp-hero-body">
             <p className="hp-eyebrow">New drops every day</p>
             <h1 className="hp-hero-tagline">
@@ -180,8 +180,20 @@ export default async function Home() {
             </div>
           </div>
 
-          {/* RIGHT: image — fetchPriority HIGH + eager loading */}
-          <div className="hp-hero-img-wrap">
+          {/* RIGHT: image column — pure black background, image shown in full
+              (object-fit: contain) so nothing is cropped, native aspect 1672×941 */}
+          <div
+            className="hp-hero-img-wrap"
+            style={{
+              background: "#000",
+              width: "100%",
+              height: "100%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              overflow: "hidden",
+            }}
+          >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={HERO_IMG}
@@ -191,8 +203,17 @@ export default async function Home() {
               fetchPriority="high"
               decoding="async"
               loading="eager"
-              width="1600"
-              height="900"
+              width="1672"
+              height="941"
+              style={{
+                width: "100%",
+                height: "100%",
+                maxWidth: "100%",
+                maxHeight: "100%",
+                objectFit: "contain",
+                objectPosition: "center",
+                background: "#000",
+              }}
             />
           </div>
 
@@ -303,4 +324,4 @@ export default async function Home() {
       </div>
     </>
   );
-}
+}he
