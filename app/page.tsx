@@ -10,7 +10,6 @@ import PremiumCountdown from "@/components/PremiumCountdown";
 import StreakBar from "@/components/StreakBar";
 import WallpaperCardGridClient from "@/components/WallpaperCardGridClient";
 import TonightSlider from "@/components/TonightSlider";
-import AdsterraAdSlot from "@/components/AdsterraAdSlot";
 import "./homepage.css";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
@@ -260,9 +259,6 @@ export default async function Home() {
           </div>
         </section>
 
-        {/* ══ AD: Native Banner ════════════════════════════════════════════ */}
-        <AdsterraAdSlot variant="native" />
-
         {/* ══ PREMIUM THIS WEEK ════════════════════════════════════════════ */}
         {premiumThisWeek.length > 0 && (
           <section className="hp-section hp-premium">
@@ -282,9 +278,6 @@ export default async function Home() {
             />
           </section>
         )}
-
-        {/* ══ AD: Medium Rectangle ═════════════════════════════════════════ */}
-        <AdsterraAdSlot variant="rectangle" className="hp-ad-rectangle" />
 
         {/* ══ WALLPAPER OF THE DAY ════════════════════════════════════════ */}
         {wotd && (() => {
