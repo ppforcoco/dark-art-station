@@ -4,20 +4,14 @@ import { getSignedDownloadUrl } from "@/lib/r2";
 import { createHash } from "crypto";
 import { shouldCountRequest } from "@/lib/analytics-filter";
 
-// ─── Rate limiter config ───────────────────────────────────────────────────────
-// FIX: Emerging-market users (NG/KE/MM/IN) often share IPs via carrier-grade NAT
-// (CGNAT) — a single IP may represent hundreds of real users on mobile networks.
-// The old limits (5/hr, 15/day) were causing false-positive rate blocks.
-// New limits are more generous while still blocking bots.
-const HOURLY_LIMIT        = 15;                 // was 5 — raised for CGNAT networks
+const HOURLY_LIMIT        = 15;
 const HOURLY_WINDOW_MS    = 60 * 60 * 1000;
-const BURST_LIMIT         = 5;                  // was 3 — raised for CGNAT networks
+const BURST_LIMIT         = 5;
 const BURST_WINDOW_MS     = 60 * 1000;
-const DAILY_LIMIT         = 40;                 // was 15 — raised for CGNAT networks
+const DAILY_LIMIT         = 40;
 const SAME_IMAGE_COOLDOWN = 24 * 60 * 60 * 1000;
-const MIN_DELAY_MS        = 5_000;              // was 10_000 — halved; 10s felt broken on slow connections
+const MIN_DELAY_MS        = 5_000;
 
-// ─── In-memory stores ──────────────────────────────────────────────────────────
 const hourlyStore  = new Map<string, number[]>();
 const burstStore   = new Map<string, number[]>();
 const lastDownload = new Map<string, number>();
@@ -51,8 +45,6 @@ function hashIp(ip: string): string {
   return createHash("sha256").update(salt + ip).digest("hex");
 }
 
-// ─── Route ────────────────────────────────────────────────────────────────────
-
 export async function GET(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -64,94 +56,57 @@ export async function GET(
       return NextResponse.json({ error: "Missing image ID" }, { status: 400 });
     }
 
-    // ── Get IP + hash ─────────────────────────────────────────────────────────
     const rawIp =
       req.headers.get("x-forwarded-for")?.split(",")[0].trim() ??
       req.headers.get("x-real-ip") ??
       "unknown";
     const ipHash = hashIp(rawIp);
+    const referer = req.headers.get("referer") ?? null;
 
-    // ── 1. Minimum delay between downloads ────────────────────────────────────
     const last = lastDownload.get(ipHash);
     if (last && Date.now() - last < MIN_DELAY_MS) {
       return NextResponse.json(
         { error: "Please wait a moment before downloading again." },
-        {
-          status: 429,
-          headers: { "Retry-After": "5" },
-        }
+        { status: 429, headers: { "Retry-After": "5" } }
       );
     }
 
-    // ── 2. Per-minute burst limit ─────────────────────────────────────────────
     if (checkAndRecord(burstStore, ipHash, BURST_WINDOW_MS, BURST_LIMIT)) {
       return NextResponse.json(
         { error: "Too many downloads too quickly. Please slow down." },
-        {
-          status: 429,
-          headers: {
-            "Retry-After":       "60",
-            "X-RateLimit-Limit": String(BURST_LIMIT),
-          },
-        }
+        { status: 429, headers: { "Retry-After": "60", "X-RateLimit-Limit": String(BURST_LIMIT) } }
       );
     }
 
-    // ── 3. Hourly limit ───────────────────────────────────────────────────────
     if (checkAndRecord(hourlyStore, ipHash, HOURLY_WINDOW_MS, HOURLY_LIMIT)) {
       return NextResponse.json(
         { error: "Too many downloads. Please wait before trying again." },
-        {
-          status: 429,
-          headers: {
-            "Retry-After":       "3600",
-            "X-RateLimit-Limit": String(HOURLY_LIMIT),
-          },
-        }
+        { status: 429, headers: { "Retry-After": "3600", "X-RateLimit-Limit": String(HOURLY_LIMIT) } }
       );
     }
 
-    // ── 4. DB-backed daily cap (survives restarts) ────────────────────────────
     const todayDownloads = await db.download.count({
-      where: {
-        ipHash,
-        createdAt: { gte: new Date(Date.now() - 24 * 60 * 60 * 1000) },
-      },
+      where: { ipHash, createdAt: { gte: new Date(Date.now() - 24 * 60 * 60 * 1000) } },
     });
 
     if (todayDownloads >= DAILY_LIMIT) {
       return NextResponse.json(
         { error: "Daily download limit reached. Come back tomorrow!" },
-        {
-          status: 429,
-          headers: {
-            "Retry-After":       "86400",
-            "X-RateLimit-Limit": String(DAILY_LIMIT),
-          },
-        }
+        { status: 429, headers: { "Retry-After": "86400", "X-RateLimit-Limit": String(DAILY_LIMIT) } }
       );
     }
 
-    // ── 5. Same-image cooldown ────────────────────────────────────────────────
     const recentSameImage = await db.download.findFirst({
-      where: {
-        ipHash,
-        imageId: id,
-        createdAt: { gte: new Date(Date.now() - SAME_IMAGE_COOLDOWN) },
-      },
+      where: { ipHash, imageId: id, createdAt: { gte: new Date(Date.now() - SAME_IMAGE_COOLDOWN) } },
     });
 
     if (recentSameImage) {
       return NextResponse.json(
         { error: "You already downloaded this wallpaper recently." },
-        {
-          status: 429,
-          headers: { "Retry-After": "86400" },
-        }
+        { status: 429, headers: { "Retry-After": "86400" } }
       );
     }
 
-    // ── Fetch image ───────────────────────────────────────────────────────────
     const image = await db.image.findUnique({
       where: { id },
       select: { id: true, title: true, highResKey: true },
@@ -174,9 +129,8 @@ export async function GET(
 
     const signedUrl = await getSignedDownloadUrl(image.highResKey, 60 * 15, fileName);
 
-    // ── Fire-and-forget telemetry ─────────────────────────────────────────────
     db.download
-      .create({ data: { imageId: image.id, ipHash } })
+      .create({ data: { imageId: image.id, ipHash, referer } })
       .catch((err) => console.error("[IMAGE_DOWNLOAD_TELEMETRY]", err));
 
     if (shouldCountRequest(req)) {
@@ -185,9 +139,6 @@ export async function GET(
         .catch((err) => console.error("[IMAGE_VIEWCOUNT_INCREMENT]", err));
     }
 
-    // ── Fetch from R2 and stream back ─────────────────────────────────────────
-    // FIX: Added AbortController with 30s timeout — on slow connections in NG/KE/MM/IN
-    // the R2 fetch could hang indefinitely, leaving the user with a stalled download.
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 30_000);
 

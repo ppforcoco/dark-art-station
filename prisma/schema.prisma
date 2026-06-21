@@ -89,6 +89,7 @@ model Download {
   imageId      String?
   email        String?
   ipHash       String?
+  referer      String?
   createdAt    DateTime    @default(now())
 }
 

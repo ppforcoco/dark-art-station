@@ -1,4 +1,4 @@
-// app/api/analytics/event/route.ts
+// app/api/hw-sig/route.ts
 //
 // First-party analytics intake. Same-origin, so ad-blockers that kill
 // cloud.umami.is / google-analytics.com generally don't touch this — it
@@ -67,8 +67,6 @@ export async function POST(req: NextRequest) {
     "unknown";
   const ipHash = hashIp(rawIp);
   const ua = req.headers.get("user-agent") ?? "";
-  // Free if the site is behind Cloudflare's orange-cloud proxy. Null otherwise —
-  // that's fine, country just won't be shown for that visitor.
   const country = req.headers.get("cf-ipcountry") ?? null;
 
   try {
@@ -83,8 +81,6 @@ export async function POST(req: NextRequest) {
     } else if (type === "duration") {
       const seconds = typeof meta?.seconds === "number" ? Math.round(meta.seconds) : null;
       if (seconds !== null) {
-        // Find that session's most recent PageView for this exact path and
-        // fill in how long they stayed.
         const latest = await db.pageView.findFirst({
           where: { sessionId, path },
           orderBy: { enteredAt: "desc" },
@@ -100,8 +96,6 @@ export async function POST(req: NextRequest) {
     }
   } catch (err) {
     console.error("[ANALYTICS_EVENT]", err);
-    // Don't fail the beacon response either way — the browser doesn't care
-    // about the response body for sendBeacon.
   }
 
   return NextResponse.json({ ok: true });
