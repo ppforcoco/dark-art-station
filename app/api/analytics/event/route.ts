@@ -31,6 +31,12 @@ function detectDevice(ua: string): string {
   return "unknown";
 }
 
+const EXCLUDED_PATH_PREFIXES = ["/admin", "/api/hw-admin"];
+
+function isExcludedPath(path: string): boolean {
+  return EXCLUDED_PATH_PREFIXES.some((prefix) => path.startsWith(prefix));
+}
+
 export async function POST(req: NextRequest) {
   // Same bot/admin-IP filter already used for views and downloads.
   if (!shouldCountRequest(req)) {
@@ -50,6 +56,9 @@ export async function POST(req: NextRequest) {
   const { sessionId, type, path, meta } = payload;
   if (!sessionId || !type || !path) {
     return NextResponse.json({ ok: false }, { status: 400 });
+  }
+  if (isExcludedPath(path)) {
+    return NextResponse.json({ ok: true });
   }
 
   const rawIp =
