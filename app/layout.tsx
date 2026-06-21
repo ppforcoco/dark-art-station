@@ -75,15 +75,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           fetchPriority="high"
         />
 
-        {/* ── Hilltop Ads — deferred after LCP ────────────────────────────── */}
-        {/* Loads only once browser is idle (requestIdleCallback / setTimeout) */}
-        {/* Saves ~1.3 s on LCP by not blocking first paint.                   */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `(function(){function loadHilltopAds(){(function(fzzm){var d=document,s=d.createElement('script'),l=d.scripts[d.scripts.length-1];s.settings=fzzm||{};s.src="\/\/quarrelsomebitter.com\/b\/X-V.sddwGLls0qY\/W\/cD\/eesmp9IupZwULlCkLPaTFcfxoMUzlgn4gM\/jGEAtlNvzEErz\/OPDCg\/yPNhQe";s.async=true;s.referrerPolicy='no-referrer-when-downgrade';l.parentNode.insertBefore(s,l);})({});(function(fzzm){var d=document,s=d.createElement('script'),l=d.scripts[d.scripts.length-1];s.settings=fzzm||{};s.src="\/\/quarrelsomebitter.com\/bcX.VNsCdNGql\/0WYqWxcI\/yeLmN9gukZzUJl-k\/P\/TNc\/xEMxzQgU3oORDLknttNnzqE\/zjOwDdcQ5TM\/wu";s.async=true;s.referrerPolicy='no-referrer-when-downgrade';l.parentNode.insertBefore(s,l);})({});}if('requestIdleCallback' in window){requestIdleCallback(loadHilltopAds,{timeout:5000});}else{setTimeout(loadHilltopAds,4000);}})();`,
-          }}
-        />
-
         {/* ── Critical inline CSS ─────────────────────────────────────────── */}
         <style dangerouslySetInnerHTML={{ __html: `
           @keyframes hw-flicker {
@@ -167,19 +158,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           async
           src="https://cloud.umami.is/script.js"
           data-website-id="8aa04b22-aab2-4f50-b5cc-d2602ad3739a"
-        />
-
-        {/* ── Monetag ad tags ──────────────────────────────────────────────── */}
-        <script
-          src="https://quge5.com/88/tag.min.js"
-          data-zone="251881"
-          async
-          data-cfasync="false"
-        />
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `(function(s){s.dataset.zone='11177677',s.src='https://al5sm.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))`,
-          }}
         />
       </body>
     </html>
