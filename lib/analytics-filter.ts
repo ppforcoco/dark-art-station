@@ -34,12 +34,12 @@ function getAdminIps(): Set<string> {
 }
 
 // ── Countries to exclude from views, downloads, and analytics ───────────────
-// Defaults to PK since that's where testing/dev traffic comes from. Override
-// with BLOCKED_COUNTRIES=PK,XX in .env / Coolify env vars if that ever needs
-// to change. Relies on Cloudflare's cf-ipcountry header — only present if the
-// site is proxied through Cloudflare (orange cloud on).
+// Off by default — set BLOCKED_COUNTRIES=XX,YY in .env / Coolify env vars if
+// you ever need to exclude specific countries. Relies on Cloudflare's
+// cf-ipcountry header — only present if the site is proxied through
+// Cloudflare (orange cloud on).
 function getBlockedCountries(): Set<string> {
-  const raw = process.env.BLOCKED_COUNTRIES ?? "PK";
+  const raw = process.env.BLOCKED_COUNTRIES ?? "";
   return new Set(
     raw
       .split(",")
