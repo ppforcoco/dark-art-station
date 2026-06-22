@@ -148,11 +148,26 @@ export default async function Home() {
       <div className="hp">
 
         {/* ══ HERO ════════════════════════════════════════════════════════ */}
-        <section className="hp-hero" style={{ background: "#000" }}>
+        <section className="hp-hero">
 
+          {/* Full-bleed background image */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={HERO_IMG}
+            alt=""
+            aria-hidden="true"
+            className="hp-hero-img"
+            fetchPriority="high"
+            decoding="async"
+            loading="eager"
+            width="1672"
+            height="941"
+          />
+
+          {/* Gradient vignette so text is legible over the image */}
           <div className="hp-hero-vignette" aria-hidden="true" />
 
-          {/* LEFT: text content — own column, never overlaps the image */}
+          {/* Text overlay — bottom-left anchored */}
           <div className="hp-hero-body">
             <p className="hp-eyebrow">New drops every day</p>
             <h1 className="hp-hero-tagline">
@@ -177,45 +192,6 @@ export default async function Home() {
               <Link prefetch={false} href="/iphone" className="hp-btn-ghost">iPhone</Link>
               <Link prefetch={false} href="/android" className="hp-btn-ghost">Android</Link>
             </div>
-          </div>
-
-          {/* RIGHT: image column — pure black background. The wrapper's
-              aspect-ratio is locked to the image's own ratio (1672×941),
-              so the box shrinks to exactly match the picture — no letterboxing,
-              no leftover black space, and still nothing gets cropped. */}
-          <div
-            className="hp-hero-img-wrap"
-            style={{
-              background: "#000",
-              width: "100%",
-              maxWidth: "1672px",
-              aspectRatio: "1672 / 941",
-              margin: "0 auto",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              overflow: "hidden",
-            }}
-          >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={HERO_IMG}
-              alt=""
-              aria-hidden="true"
-              className="hp-hero-img"
-              fetchPriority="high"
-              decoding="async"
-              loading="eager"
-              width="1672"
-              height="941"
-              style={{
-                width: "100%",
-                height: "100%",
-                objectFit: "contain",
-                objectPosition: "center",
-                background: "#000",
-              }}
-            />
           </div>
 
         </section>
