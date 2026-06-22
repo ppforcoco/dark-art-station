@@ -5,7 +5,8 @@ export const dynamic = "force-dynamic";
 
 interface Analytics { totalDownloads:number;todayDownloads:number;weekDownloads:number;monthDownloads:number;imageDownloads:number;collectionDownloads:number;downloadsPerDay:{date:string;count:number}[];totalPageViews:number;topPageViews:{title:string;slug:string;device:string|null;views:number}[];topWallpapers:{title:string;slug:string;device:string|null;downloads:number}[];topCollections:{title:string;slug:string;downloads:number}[];totalBlogPosts:number;publishedBlogPosts:number;blogPosts:{title:string;slug:string;label:string;date:string;wordCount:number}[];deviceBreakdown:{IPHONE:number;ANDROID:number;PC:number;OTHER:number};recentActivity:{time:string;title:string;slug:string;device:string|null;type:string}[]; }
 interface Post { slug:string;title:string;label:string;content?:string;featuredImage?:string|null;createdAt:string;published?:boolean; }
-interface ImageRecord { id:string;slug:string;title:string;r2Key:string;highResKey:string|null;description:string|null;altText:string|null;metaDescription:string|null;tags:string[];isAdult:boolean;deviceType:string|null;viewCount:number;sortOrder?:number|null;collection?:{title:string}|null; }
+// UPDATED: added downloadCount field
+interface ImageRecord { id:string;slug:string;title:string;r2Key:string;highResKey:string|null;description:string|null;altText:string|null;metaDescription:string|null;tags:string[];isAdult:boolean;deviceType:string|null;viewCount:number;sortOrder?:number|null;collection?:{title:string}|null;downloadCount?:number; }
 interface PageContentRecord { id:string;slug:string;title:string|null;body:string;metaDesc:string|null;updatedAt:string; }
 
 const ALL_LABELS=["Wallpaper Guides","How-To & Tutorials","Device Setup","iPhone Wallpapers","Android Wallpapers","PC & Desktop Wallpapers","Dark Aesthetics","Gothic & Horror","Dark Fantasy","AMOLED Wallpapers","Minimalist Dark","Cyberpunk & Neon","Halloween Special","Seasonal Picks","Top Lists","New Releases","Community Spotlights","News & Updates","Free Wallpapers","HD Wallpapers","Lock Screen Ideas","Dark Psychology","16+ Mature Content"];
@@ -101,41 +102,29 @@ function AnalyticsTab({password}:{password:string}){
   if(!data)return null;
   const devTotal=data.deviceBreakdown.IPHONE+data.deviceBreakdown.ANDROID+data.deviceBreakdown.PC+data.deviceBreakdown.OTHER||1;
   return<div>
-    {/* KPI row */}
     <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:"12px",marginBottom:"24px"}}>
       {[{label:"Total Downloads",value:data.totalDownloads.toLocaleString(),sub:"all time"},{label:"This Month",value:data.monthDownloads.toLocaleString(),sub:"last 30 days"},{label:"This Week",value:data.weekDownloads.toLocaleString(),sub:"last 7 days"},{label:"Today",value:data.todayDownloads.toLocaleString(),sub:"since midnight"}].map(s=><Card key={s.label} style={{textAlign:"center",padding:"20px 12px"}}><p style={{...eyebrow,marginBottom:"6px"}}>{s.label}</p><p style={{color:C.red,fontSize:"1.8rem",fontWeight:700,lineHeight:1}}>{s.value}</p><p style={{color:C.textMut,fontSize:"0.6rem",marginTop:"4px"}}>{s.sub}</p></Card>)}
     </div>
     <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:"12px",marginBottom:"24px"}}>
       {[{label:"Image Downloads",value:data.imageDownloads.toLocaleString(),sub:"individual wallpapers"},{label:"Collection Downloads",value:data.collectionDownloads.toLocaleString(),sub:"full packs"},{label:"Total Page Views",value:data.totalPageViews.toLocaleString(),sub:"cumulative views"}].map(s=><Card key={s.label} style={{textAlign:"center",padding:"16px 12px"}}><p style={{...eyebrow,marginBottom:"4px"}}>{s.label}</p><p style={{color:C.gold,fontSize:"1.4rem",fontWeight:700,lineHeight:1}}>{s.value}</p><p style={{color:C.textMut,fontSize:"0.6rem",marginTop:"3px"}}>{s.sub}</p></Card>)}
     </div>
-
-    {/* Sparkline */}
     <Card style={{marginBottom:"24px",padding:"20px"}}>
       <p style={{...eyebrow,marginBottom:"12px"}}>Downloads — last 14 days</p>
       <Sparkline data={data.downloadsPerDay}/>
       <div style={{display:"flex",justifyContent:"space-between",marginTop:"4px"}}><span style={{color:C.textMut,fontSize:"0.58rem"}}>{data.downloadsPerDay[0]?.date}</span><span style={{color:C.textMut,fontSize:"0.58rem"}}>{data.downloadsPerDay[data.downloadsPerDay.length-1]?.date}</span></div>
     </Card>
-
-    {/* Section tabs */}
     <div style={{display:"flex",gap:"6px",marginBottom:"20px",flexWrap:"wrap"}}>
       {(["downloads","pages","blog","device"] as const).map(s=><button key={s} onClick={()=>setSection(s)} style={{background:section===s?C.red:"transparent",border:`1px solid ${section===s?C.red:C.border}`,color:section===s?"#fff":C.textSec,padding:"7px 16px",cursor:"pointer",fontSize:"0.7rem",fontFamily:"monospace",letterSpacing:"0.08em",textTransform:"uppercase"}}>{s==="downloads"?"🔽 Top Downloads":s==="pages"?"👁 Most Viewed":s==="blog"?"📖 Blog Posts":"📱 By Device"}</button>)}
     </div>
-
     {section==="downloads"&&<div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"20px",marginBottom:"24px"}}>
       <Card><p style={eyebrow}>Top Downloaded Wallpapers</p>{data.topWallpapers.map((w,i)=><div key={i} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"8px 0",borderBottom:`1px solid ${C.border}`,fontSize:"0.82rem"}}><div><span style={{color:C.textPri}}>{w.title}</span>{w.device&&<span style={{color:C.textMut,fontSize:"0.6rem",marginLeft:"8px"}}>{w.device}</span>}</div><span style={{color:C.red,fontWeight:700,flexShrink:0,marginLeft:"8px"}}>{w.downloads}</span></div>)}</Card>
       <Card><p style={eyebrow}>Top Downloaded Collections</p>{data.topCollections.map((c,i)=><div key={i} style={{display:"flex",justifyContent:"space-between",padding:"8px 0",borderBottom:`1px solid ${C.border}`,fontSize:"0.82rem"}}><span style={{color:C.textPri,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap",flex:1}}>{c.title}</span><span style={{color:C.red,fontWeight:700,flexShrink:0,marginLeft:"8px"}}>{c.downloads}</span></div>)}</Card>
     </div>}
-
     {section==="pages"&&<Card style={{marginBottom:"24px"}}><p style={eyebrow}>Most Viewed Wallpaper Pages</p><p style={{color:C.textMut,fontSize:"0.65rem",marginBottom:"12px"}}>View counts are incremented each time a wallpaper detail page loads.</p>{data.topPageViews.map((p,i)=><div key={i} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"9px 0",borderBottom:`1px solid ${C.border}`,fontSize:"0.82rem"}}><div style={{flex:1,minWidth:0}}><span style={{color:C.textPri}}>{p.title}</span>{p.device&&<span style={{color:C.textMut,fontSize:"0.6rem",marginLeft:"8px"}}>{p.device}</span>}<br/><code style={{color:C.textMut,fontSize:"0.58rem"}}>/{p.device?.toLowerCase()??""}/{p.slug}</code></div><div style={{textAlign:"right",flexShrink:0,marginLeft:"12px"}}><span style={{color:C.gold,fontWeight:700}}>{p.views.toLocaleString()}</span><span style={{color:C.textMut,fontSize:"0.6rem",display:"block"}}>views</span></div></div>)}</Card>}
-
     {section==="blog"&&<Card style={{marginBottom:"24px"}}><p style={eyebrow}>Blog Posts ({data.publishedBlogPosts} published)</p>{data.blogPosts.length===0?<p style={{color:C.textMut,padding:"20px 0",textAlign:"center"}}>No blog posts yet.</p>:data.blogPosts.map((p,i)=><div key={i} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"10px 0",borderBottom:`1px solid ${C.border}`,gap:"12px"}}><div style={{flex:1,minWidth:0}}><p style={{color:C.textPri,fontSize:"0.82rem",marginBottom:"3px",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{p.title}</p><div style={{display:"flex",gap:"8px",flexWrap:"wrap"}}><span style={{background:"rgba(124,58,237,0.2)",color:C.purple,padding:"1px 7px",fontSize:"0.58rem"}}>{p.label}</span><span style={{color:C.textMut,fontSize:"0.6rem"}}>{p.date}</span><span style={{color:p.wordCount>=800?C.green:C.gold,fontSize:"0.6rem"}}>{p.wordCount} words{p.wordCount>=800?" ✓":""}</span></div></div><a href={`https://hauntedwallpapers.com/blog/${p.slug}`} target="_blank" rel="noopener noreferrer" style={{color:C.textMut,fontSize:"0.65rem",textDecoration:"none",flexShrink:0}}>↗</a></div>)}</Card>}
-
     {section==="device"&&<Card style={{marginBottom:"24px"}}><p style={eyebrow}>Downloads by Device (last 30 days)</p><div style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:"16px",marginTop:"12px"}}>{[["📱 iPhone","IPHONE",C.red],["🤖 Android","ANDROID",C.purple],["🖥 PC","PC",C.gold],["❓ Other","OTHER",C.textMut]].map(([label,key,color])=>{const count=data.deviceBreakdown[key as keyof typeof data.deviceBreakdown];const pct=Math.round(count/devTotal*100);return<div key={key} style={{padding:"16px",border:`1px solid ${C.border}`,background:"rgba(255,255,255,0.02)"}}><p style={{color:C.textSec,fontSize:"0.7rem",marginBottom:"6px"}}>{label as string}</p><p style={{color:color as string,fontSize:"1.6rem",fontWeight:700,lineHeight:1}}>{count.toLocaleString()}</p><p style={{color:C.textMut,fontSize:"0.6rem",marginTop:"4px"}}>{pct}% of total</p></div>;})}
     </div></Card>}
-
-    {/* Recent downloads */}
     <Card style={{marginBottom:"24px"}}><p style={eyebrow}>Recent Downloads</p>{data.recentActivity.map((a,i)=><div key={i} style={{display:"flex",gap:"12px",padding:"8px 0",borderBottom:`1px solid ${C.border}`,fontSize:"0.78rem",alignItems:"center"}}><span style={{color:C.textMut,flexShrink:0,fontSize:"0.65rem"}}>{a.time}</span><span style={{flex:1,color:C.textPri,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{a.title}</span>{a.device&&<span style={{color:C.textMut,fontSize:"0.6rem",flexShrink:0}}>{a.device}</span>}<span style={{color:a.type==="image"?C.gold:C.purple,fontSize:"0.58rem",flexShrink:0}}>{a.type}</span></div>)}</Card>
-
     <div style={{display:"flex",gap:"12px",marginBottom:"32px"}}>
       <Btn onClick={load} variant="ghost">↻ Refresh</Btn>
       <a href="https://analytics.google.com" target="_blank" rel="noopener noreferrer" style={{display:"inline-flex",alignItems:"center",background:C.red,color:"#fff",padding:"10px 20px",textDecoration:"none",fontSize:"0.72rem",letterSpacing:"0.1em",textTransform:"uppercase",fontFamily:"monospace"}}>Open GA4 →</a>
@@ -199,7 +188,6 @@ function PageContentTab({password}:{password:string}){
   const liveUrl=pageInfo?.url?`https://hauntedwallpapers.com${pageInfo.url}`:null;
 
   return<div style={{display:"grid",gridTemplateColumns:"240px 1fr",gap:"24px",alignItems:"start"}}>
-    {/* Sidebar */}
     <div><Card style={{padding:"0",overflow:"hidden"}}>
       <div style={{padding:"14px 16px",borderBottom:`1px solid ${C.border}`}}><p style={eyebrow}>Static Pages</p></div>
       {PAGE_SLUGS.map(({slug,label})=>{
@@ -216,8 +204,6 @@ function PageContentTab({password}:{password:string}){
         <Btn onClick={()=>{setUseCustom(true);setMsg(null);}} variant="ghost" style={{width:"100%",padding:"7px"}}>Load Custom</Btn>
       </div>
     </Card></div>
-
-    {/* Editor */}
     <div>
       <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:"20px",flexWrap:"wrap",gap:"12px"}}>
         <div>
@@ -273,8 +259,6 @@ function ImageUploaderTab({password}:{password:string}){
   return<div style={{display:"flex",flexDirection:"column",gap:"20px"}}>
     <Card style={{padding:"14px 18px",borderColor:C.red}}><strong style={{color:C.gold}}>📤 Image Uploader</strong><span style={{color:C.textSec,marginLeft:"8px",fontSize:"0.82rem"}}>Drop thumbnail → optionally add 4K file → fill in details → upload.</span></Card>
     <Msg msg={message}/>
-
-    {/* Thumbnail drop zone */}
     <div>
       <label style={{...lbl,marginBottom:"8px"}}>Thumbnail Image (required — shown in gallery &amp; cards)</label>
       <div ref={dropRef} onDragOver={e=>{e.preventDefault();setDragging(true);}} onDragLeave={()=>setDragging(false)} onDrop={onDrop} onClick={()=>fileInputRef.current?.click()} style={{border:`2px dashed ${dragging?C.red:file?C.green:C.border}`,background:dragging?"rgba(192,0,26,0.06)":C.surface,padding:"32px 24px",textAlign:"center",cursor:"pointer",transition:"all 0.2s"}}>
@@ -282,8 +266,6 @@ function ImageUploaderTab({password}:{password:string}){
         {preview?<div style={{display:"flex",gap:"24px",alignItems:"flex-start",justifyContent:"center",flexWrap:"wrap"}}><img src={preview} alt="Preview" style={{maxHeight:"180px",maxWidth:"160px",objectFit:"contain",border:`1px solid ${C.border}`}}/><div style={{textAlign:"left"}}><p style={{color:C.green,fontSize:"0.75rem",marginBottom:"6px"}}>✓ Thumbnail ready</p><p style={{color:C.textPri,fontSize:"0.85rem",marginBottom:"4px"}}>{file?.name}</p><p style={{color:C.textSec,fontSize:"0.75rem"}}>{file?(file.size/1024/1024).toFixed(2)+" MB":""}</p><p style={{color:C.textMut,fontSize:"0.68rem",marginTop:"6px"}}>Used in gallery cards and image pages.<br/>Recommended: 720–1080px wide.</p><p style={{color:C.textMut,fontSize:"0.68rem",marginTop:"4px"}}>Click to replace</p></div></div>:<><p style={{fontSize:"2rem",marginBottom:"10px"}}>🖼️</p><p style={{color:C.textPri,fontSize:"0.9rem",marginBottom:"6px"}}>{dragging?"Drop it!":"Drag & drop thumbnail here"}</p><p style={{color:C.textSec,fontSize:"0.75rem"}}>or click to browse · JPG, PNG, WEBP</p></>}
       </div>
     </div>
-
-    {/* 4K / High-res upload */}
     <Card style={{padding:"16px",borderColor:highResFile?C.gold:C.border,background:highResFile?"rgba(201,168,76,0.05)":C.surface}}>
       <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",flexWrap:"wrap",gap:"12px"}}>
         <div>
@@ -303,7 +285,6 @@ function ImageUploaderTab({password}:{password:string}){
         <button onClick={()=>{setHighResFile(null);if(highResInputRef.current)highResInputRef.current.value="";}} style={{background:"transparent",border:`1px solid ${C.border}`,color:C.red,padding:"4px 10px",cursor:"pointer",fontSize:"0.65rem",fontFamily:"monospace"}}>Remove</button>
       </div>}
     </Card>
-
     {file&&<>
       <Card style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:"16px",flexWrap:"wrap",padding:"16px 18px",borderColor:"rgba(192,0,26,0.4)",background:"rgba(192,0,26,0.06)"}}>
         <div><p style={{color:C.gold,fontSize:"0.75rem",marginBottom:"4px"}}>✨ AI Auto-Fill (Claude Vision)</p><p style={{color:C.textSec,fontSize:"0.68rem"}}>Generates title, 200-word description, SEO alt text & tags.</p></div>
@@ -335,8 +316,6 @@ function ImageUploaderTab({password}:{password:string}){
         <input value={metaDescription} onChange={e=>setMetaDescription(e.target.value)} placeholder="130–155 chars · keyword-rich · what Google shows in search results" style={{...inp,borderColor:metaDescription.length>155?C.red:metaDescription.length>=130&&metaDescription.length<=155?C.green:C.border}}/>
         <p style={{color:C.textMut,fontSize:"0.62rem",marginTop:"6px"}}>Leave blank to auto-generate from the description. Visible in Google search results only.</p>
       </Card>
-      
-      {/* ── FOMO Badges ─────────────────────────────────── */}
       <Card style={{padding:"16px"}}>
         <label style={lbl}>FOMO Badges (optional)</label>
         <p style={{color:C.textMut,fontSize:"0.65rem",marginBottom:"10px"}}>Badges show on the wallpaper card to drive downloads. Pick one or more.</p>
@@ -358,7 +337,7 @@ function ImageUploaderTab({password}:{password:string}){
         <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:"16px"}}>
           <div>
             <p style={{color:commentsEnabled?C.gold:C.textSec,fontSize:"0.72rem",marginBottom:"4px"}}>💬 Birthday Wishes / Comments Section</p>
-            <p style={{color:C.textMut,fontSize:"0.68rem",lineHeight:1.6}}>Allow visitors to leave birthday wishes on this wallpaper's page.<br/>Wishes require your approval before appearing publicly.</p>
+            <p style={{color:C.textMut,fontSize:"0.68rem",lineHeight:1.6}}>Allow visitors to leave birthday wishes on this wallpaper&apos;s page.<br/>Wishes require your approval before appearing publicly.</p>
           </div>
           <Btn onClick={()=>setCommentsEnabled(!commentsEnabled)} variant={commentsEnabled?"success":"ghost"} style={{flexShrink:0}}>{commentsEnabled?"✓ Comments ON":"Enable Comments"}</Btn>
         </div>
@@ -384,8 +363,6 @@ function ImageUploaderTab({password}:{password:string}){
         </div>
       </Card>
       <Card style={{padding:"16px"}}><label style={lbl}>Collection (optional)</label><select value={collectionId} onChange={e=>setCollectionId(e.target.value)} style={{...inp,cursor:"pointer"}}><option value="">— Standalone (no collection) —</option>{collections.map(c=><option key={c.id} value={c.id}>{c.title} ({c.slug})</option>)}</select></Card>
-
-      {/* Upload summary */}
       <Card style={{padding:"14px 16px",background:"rgba(124,58,237,0.06)",borderColor:"rgba(124,58,237,0.3)"}}>
         <p style={{color:C.purple,fontSize:"0.72rem",marginBottom:"8px"}}>✦ Upload summary</p>
         <div style={{display:"flex",flexDirection:"column",gap:"4px",fontSize:"0.7rem",color:C.textSec}}>
@@ -394,7 +371,6 @@ function ImageUploaderTab({password}:{password:string}){
           <span style={{color:C.textMut,fontSize:"0.65rem",marginTop:"4px"}}>Users see the thumbnail everywhere. Clicking Download serves the 4K file via a secure signed URL.</span>
         </div>
       </Card>
-
       <Btn onClick={handleUpload} disabled={uploading} style={{padding:"14px 32px",fontSize:"0.82rem"}}>{uploading?"⏳ Uploading…":"📤 Upload Image"}</Btn>
       {uploadedUrl&&<Card style={{padding:"14px 16px",borderColor:C.green,background:"rgba(76,175,80,0.08)"}}><p style={{color:C.green,fontSize:"0.8rem",marginBottom:"6px"}}>✓ Uploaded successfully</p><a href={uploadedUrl} target="_blank" rel="noopener noreferrer" style={{color:C.gold,fontSize:"0.75rem",wordBreak:"break-all"}}>{uploadedUrl}</a></Card>}
     </>}
@@ -459,33 +435,85 @@ function BlogTab({password,prefillTitle,prefillLabel,onPrefillUsed}:{password:st
   </div>;
 }
 
+// ── UPDATED: PublishedImagesTab with Most Downloads sort ──────────────────────
 function PublishedImagesTab({password}:{password:string}){
-  const[images,setImages]=useState<ImageRecord[]>([]);const[total,setTotal]=useState(0);const[pages,setPages]=useState(1);const[page,setPage]=useState(1);const[q,setQ]=useState("");const[loading,setLoading]=useState(true);const[editing,setEditing]=useState<ImageRecord|null>(null);const[saving,setSaving]=useState(false);const[deleting,setDeleting]=useState<string|null>(null);const[msg,setMsg]=useState<{type:"ok"|"err";text:string}|null>(null);const[eTitle,setETitle]=useState("");const[eDesc,setEDesc]=useState("");const[eAlt,setEAlt]=useState("");const[eMetaDesc,setEMetaDesc]=useState("");const[eTags,setETags]=useState<string[]>([]);const[eAdult,setEAdult]=useState(false);const[eDevice,setEDevice]=useState("");const[aiLoading,setAiLoading]=useState(false);const[sortBy,setSortBy]=useState<"default"|"views-desc"|"views-asc">("default");const r2Base=process.env.NEXT_PUBLIC_R2_PUBLIC_URL??"";
+  const[images,setImages]=useState<ImageRecord[]>([]);
+  const[total,setTotal]=useState(0);
+  const[pages,setPages]=useState(1);
+  const[page,setPage]=useState(1);
+  const[q,setQ]=useState("");
+  const[loading,setLoading]=useState(true);
+  const[editing,setEditing]=useState<ImageRecord|null>(null);
+  const[saving,setSaving]=useState(false);
+  const[deleting,setDeleting]=useState<string|null>(null);
+  const[msg,setMsg]=useState<{type:"ok"|"err";text:string}|null>(null);
+  const[eTitle,setETitle]=useState("");
+  const[eDesc,setEDesc]=useState("");
+  const[eAlt,setEAlt]=useState("");
+  const[eMetaDesc,setEMetaDesc]=useState("");
+  const[eTags,setETags]=useState<string[]>([]);
+  const[eAdult,setEAdult]=useState(false);
+  const[eDevice,setEDevice]=useState("");
+  const[aiLoading,setAiLoading]=useState(false);
+  // UPDATED: expanded sort type to include downloads
+  const[sortBy,setSortBy]=useState<"default"|"views-desc"|"views-asc"|"downloads-desc">("default");
+  // NEW: download counts fetched from analytics
+  const[downloadCounts,setDownloadCounts]=useState<Record<string,number>>({});
+  const[loadingDownloads,setLoadingDownloads]=useState(false);
+  const r2Base=process.env.NEXT_PUBLIC_R2_PUBLIC_URL??"";
+
   const load=useCallback(async(p=page,search=q)=>{setLoading(true);try{const res=await fetch(`/api/hw-admin/images?page=${p}&q=${encodeURIComponent(search)}`,{headers:{"x-admin-password":password}});if(!res.ok)throw new Error("Failed");const data=await res.json();setImages(data.images??[]);setTotal(data.total??0);setPages(data.pages??1);}catch{setMsg({type:"err",text:"Could not load images."});}setLoading(false);},[password,page,q]);
+
   useEffect(()=>{load();},[load]);
+
+  // NEW: fetch download counts from analytics when downloads sort is selected
+  useEffect(()=>{
+    if(sortBy!=="downloads-desc")return;
+    setLoadingDownloads(true);
+    fetch("/api/hw-admin/analytics",{headers:{"x-admin-password":password}})
+      .then(r=>r.json())
+      .then(data=>{
+        const map:Record<string,number>={};
+        (data.topWallpapers??[]).forEach((w:{slug:string;downloads:number})=>{
+          map[w.slug]=w.downloads;
+        });
+        setDownloadCounts(map);
+      })
+      .catch(()=>{})
+      .finally(()=>setLoadingDownloads(false));
+  },[sortBy,password]);
+
   function openEdit(img:ImageRecord){setEditing(img);setETitle(img.title);setEDesc(img.description??"");setEAlt(img.altText??"");setEMetaDesc(img.metaDescription??"");setETags(img.tags.filter(t=>t!=="16plus"));setEAdult(img.isAdult);setEDevice(img.deviceType??"");setMsg(null);}
   async function handleAiRegenerate(){if(!editing)return;setAiLoading(true);try{const imgUrl=thumbUrl(editing.r2Key);const{data,mediaType}=await urlToBase64(imgUrl);const result=await analyzeImageWithClaude(data,mediaType);if(result.title)setETitle(result.title);if(result.description)setEDesc(result.description);if(result.altText)setEAlt(result.altText);if(result.tags?.length)setETags(result.tags.filter(t=>ALL_TAGS.includes(t)));setMsg({type:"ok",text:"✓ AI regenerated title, description, alt text & tags!"});}catch(err){setMsg({type:"err",text:`⚠ AI failed: ${(err as Error).message}`});}setAiLoading(false);}
   async function handleSave(){if(!editing)return;setSaving(true);const tags=eAdult?[...eTags,"16plus"]:eTags;try{const res=await fetch(`/api/hw-admin/images/${editing.id}`,{method:"PATCH",headers:{"Content-Type":"application/json","x-admin-password":password},body:JSON.stringify({title:eTitle,description:eDesc,altText:eAlt,metaDescription:eMetaDesc||null,tags,isAdult:eAdult,deviceType:eDevice||null})});if(!res.ok)throw new Error("Save failed");setMsg({type:"ok",text:`✓ Saved "${eTitle}"`});setEditing(null);load(page,q);}catch{setMsg({type:"err",text:"Save failed."});}setSaving(false);}
   async function handleDelete(img:ImageRecord){if(!confirm(`Delete "${img.title}"?\n\nThis removes from R2 and database permanently.`))return;setDeleting(img.id);try{const res=await fetch(`/api/hw-admin/images/${img.id}`,{method:"DELETE",headers:{"x-admin-password":password}});if(!res.ok)throw new Error("Delete failed");setMsg({type:"ok",text:`✓ Deleted "${img.title}"`});load(page,q);}catch{setMsg({type:"err",text:"Delete failed."});}setDeleting(null);}
   const thumbUrl=(key:string)=>r2Base?`${r2Base}/${key}`:`/api/r2-proxy/${key}`;
   const altOk=eAlt.length>=130&&eAlt.length<=150;
+
   return<div>
     <Card style={{padding:"14px 18px",marginBottom:"20px",borderColor:C.red}}><strong style={{color:C.gold}}>📸 Published Images</strong><span style={{color:C.textSec,marginLeft:"8px",fontSize:"0.82rem"}}>View, edit, or delete. Delete removes from R2 CDN + database permanently.</span></Card>
     <Msg msg={msg}/>
     <div style={{display:"flex",gap:"12px",marginBottom:"20px",flexWrap:"wrap",alignItems:"center"}}>
       <input value={q} onChange={e=>{setQ(e.target.value);setPage(1);}} onKeyDown={e=>e.key==="Enter"&&load(1,q)} placeholder="Search by title or slug…" style={{...inp,maxWidth:"320px",flex:1}}/>
       <Btn onClick={()=>load(1,q)}>Search</Btn>
-      <select value={sortBy} onChange={e=>setSortBy(e.target.value as "default"|"views-desc"|"views-asc")} style={{...inp,width:"auto",padding:"10px 12px",cursor:"pointer",color:sortBy!=="default"?C.gold:C.textSec,border:`1px solid ${sortBy!=="default"?"rgba(201,168,76,0.6)":C.border}`}}>
+      {/* UPDATED: expanded sort dropdown with downloads option */}
+      <select value={sortBy} onChange={e=>setSortBy(e.target.value as "default"|"views-desc"|"views-asc"|"downloads-desc")} style={{...inp,width:"auto",padding:"10px 12px",cursor:"pointer",color:sortBy!=="default"?C.gold:C.textSec,border:`1px solid ${sortBy!=="default"?"rgba(201,168,76,0.6)":C.border}`}}>
         <option value="default">Sort: Default</option>
         <option value="views-desc">👁 Most Views First</option>
         <option value="views-asc">👁 Least Views First</option>
+        <option value="downloads-desc">⬇ Most Downloads First</option>
       </select>
+      {loadingDownloads&&<span style={{color:C.textMut,fontSize:"0.7rem",fontFamily:"monospace"}}>Loading download data…</span>}
       <span style={{color:C.textMut,fontSize:"0.72rem",marginLeft:"auto",alignSelf:"center"}}>{total} images total</span>
     </div>
+
+    {/* Download sort info banner */}
+    {sortBy==="downloads-desc"&&!loadingDownloads&&<Card style={{padding:"10px 14px",marginBottom:"16px",borderColor:"rgba(192,0,26,0.3)",background:"rgba(192,0,26,0.06)"}}>
+      <p style={{color:C.textSec,fontSize:"0.7rem"}}>⬇ Showing your heroes — sorted by all-time downloads. Wallpapers with <span style={{color:C.red}}>0</span> may not appear in analytics yet or have no downloads recorded.</p>
+    </Card>}
+
     {editing&&<div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.85)",zIndex:1000,display:"flex",alignItems:"flex-start",justifyContent:"center",padding:"40px 16px",overflowY:"auto"}}><div style={{background:C.surface,border:`1px solid ${C.border}`,width:"100%",maxWidth:"720px",padding:"28px",fontFamily:"monospace"}}>
       <div style={{display:"flex",justifyContent:"space-between",marginBottom:"20px"}}><p style={{...eyebrow,marginBottom:0}}>✏️ Edit Image</p><button onClick={()=>setEditing(null)} style={{background:"none",border:"none",cursor:"pointer",color:C.textSec,fontSize:"1.4rem"}}>×</button></div>
-
-      {/* Image preview + AI button */}
       <div style={{display:"flex",gap:"16px",marginBottom:"20px",alignItems:"flex-start"}}>
         <img src={thumbUrl(editing.r2Key)} alt={editing.title} style={{width:"80px",height:"120px",objectFit:"cover",border:`1px solid ${C.border}`,flexShrink:0}} onError={e=>{(e.target as HTMLImageElement).style.display="none";}}/>
         <div style={{flex:1}}>
@@ -498,7 +526,6 @@ function PublishedImagesTab({password}:{password:string}){
           </div>
         </div>
       </div>
-
       <div style={{marginBottom:"14px"}}><label style={lbl}>Title</label><input value={eTitle} onChange={e=>setETitle(e.target.value)} style={inp}/></div>
       <div style={{marginBottom:"14px"}}><label style={lbl}>Device Type</label><div style={{display:"flex",gap:"8px"}}>{["","IPHONE","ANDROID","PC"].map(d=><button key={d} onClick={()=>setEDevice(d)} style={{background:eDevice===d?C.red:"transparent",border:`1px solid ${eDevice===d?C.red:C.border}`,color:eDevice===d?C.white:C.textSec,padding:"5px 14px",cursor:"pointer",fontSize:"0.7rem",fontFamily:"monospace"}}>{d||"Any"}</button>)}</div></div>
       <div style={{marginBottom:"14px"}}>
@@ -514,8 +541,6 @@ function PublishedImagesTab({password}:{password:string}){
       <div style={{marginBottom:"14px"}}><label style={lbl}>SEO Tags ({eTags.length})</label>
         <div style={{display:"flex",gap:"8px",marginBottom:"8px"}}><input placeholder="Paste tags by commas: dark, gothic, horror…" style={{...inp,flex:1,fontSize:"0.72rem",borderColor:"rgba(201,168,76,0.4)"}} onKeyDown={e=>{if(e.key==="Enter"){const raw=(e.target as HTMLInputElement).value;const parsed=raw.split(",").map(t=>t.trim().toLowerCase().replace(/\s+/g,"-")).filter(Boolean);setETags(prev=>[...new Set([...prev,...parsed])]);(e.target as HTMLInputElement).value="";e.preventDefault();}}} onPaste={e=>{setTimeout(()=>{const raw=(e.target as HTMLInputElement).value;const parsed=raw.split(",").map(t=>t.trim().toLowerCase().replace(/\s+/g,"-")).filter(Boolean);if(parsed.length>1){setETags(prev=>[...new Set([...prev,...parsed])]);(e.target as HTMLInputElement).value="";}},50);}}/><Btn onClick={()=>setETags([])} variant="ghost" style={{fontSize:"0.65rem",padding:"6px 10px",flexShrink:0}}>Clear</Btn></div>
         <div style={{display:"flex",flexWrap:"wrap",gap:"6px"}}>{ALL_TAGS.map(tag=><button key={tag} onClick={()=>setETags(prev=>prev.includes(tag)?prev.filter(t=>t!==tag):[...prev,tag])} style={{background:eTags.includes(tag)?C.red:"transparent",border:`1px solid ${eTags.includes(tag)?C.red:C.border}`,color:eTags.includes(tag)?C.white:C.textSec,padding:"4px 12px",cursor:"pointer",fontSize:"0.65rem",fontFamily:"monospace"}}>{eTags.includes(tag)?"✓ ":""}{tag}</button>)}</div></div>
-      
-      {/* ── FOMO Badges edit ── */}
       <div style={{marginBottom:"16px"}}>
         <label style={lbl}>FOMO Badges</label>
         <div style={{display:"flex",flexWrap:"wrap",gap:"8px",marginTop:"4px"}}>
@@ -528,8 +553,40 @@ function PublishedImagesTab({password}:{password:string}){
       <div style={{marginBottom:"20px",display:"flex",alignItems:"center",gap:"12px"}}><Btn onClick={()=>setEAdult(a=>!a)} variant={eAdult?"danger":"ghost"} style={{padding:"6px 16px"}}>{eAdult?"⚠ 16+ ON":"16+ OFF"}</Btn><span style={{color:C.textSec,fontSize:"0.7rem"}}>Mark as adult/mature</span></div>
       <div style={{display:"flex",gap:"10px"}}><Btn onClick={handleSave} disabled={saving}>{saving?"Saving…":"💾 Save"}</Btn><Btn onClick={()=>setEditing(null)} variant="ghost">Cancel</Btn></div>
     </div></div>}
-    {loading?<p style={{color:C.textSec,textAlign:"center",padding:"40px"}}>Loading images…</p>:images.length===0?<p style={{color:C.textSec}}>No images found.</p>:<div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(160px,1fr))",gap:"14px",marginBottom:"32px"}}>{[...images].sort((a,b)=>sortBy==="views-desc"?b.viewCount-a.viewCount:sortBy==="views-asc"?a.viewCount-b.viewCount:0).map(img=><div key={img.id} style={{border:`1px solid ${C.border}`,background:C.surface}}><div style={{position:"relative",aspectRatio:"9/16",background:"#0d0b14",overflow:"hidden"}}><img src={thumbUrl(img.r2Key)} alt={img.title} style={{width:"100%",height:"100%",objectFit:"cover",display:"block"}} onError={e=>{(e.target as HTMLImageElement).style.display="none";}}/>{img.isAdult&&<span style={{position:"absolute",top:"6px",left:"6px",background:C.red,color:"#fff",fontSize:"0.55rem",fontFamily:"monospace",fontWeight:900,padding:"2px 6px"}}>16+</span>}
-                    {BADGE_TAGS.filter(b=>img.tags.includes(b.tag)).slice(0,2).map(b=><span key={b.tag} style={{position:"absolute",bottom:"6px",left:"6px",background:b.bg,border:`1px solid ${b.color}`,color:b.color,fontSize:"0.5rem",fontFamily:"monospace",padding:"2px 5px",marginBottom:`${BADGE_TAGS.filter(bx=>img.tags.includes(bx.tag)).indexOf(b)*18}px`}}>{b.label}</span>)}{img.deviceType&&<span style={{position:"absolute",top:"6px",right:"6px",background:"rgba(0,0,0,0.7)",color:C.gold,fontSize:"0.55rem",fontFamily:"monospace",padding:"2px 6px"}}>{img.deviceType}</span>}{!img.altText&&<span style={{position:"absolute",bottom:"6px",left:"6px",background:"rgba(192,0,26,0.85)",color:"#fff",fontSize:"0.5rem",fontFamily:"monospace",padding:"2px 5px"}}>no alt</span>}</div><div style={{padding:"10px"}}><p style={{color:C.textPri,fontSize:"0.72rem",fontWeight:600,marginBottom:"4px",lineHeight:1.3,wordBreak:"break-word"}}>{img.title}</p><p style={{color:C.textMut,fontSize:"0.58rem",marginBottom:"6px"}}>👁 {img.viewCount}</p><div style={{display:"flex",gap:"6px"}}><button onClick={()=>openEdit(img)} style={{flex:1,background:"rgba(124,58,237,0.1)",border:`1px solid ${C.border}`,color:C.textSec,padding:"6px",cursor:"pointer",fontSize:"0.62rem",fontFamily:"monospace"}}>✏️ Edit</button><button onClick={()=>handleDelete(img)} disabled={deleting===img.id} style={{flex:1,background:"rgba(192,0,26,0.08)",border:"1px solid rgba(192,0,26,0.4)",color:C.red,padding:"6px",cursor:deleting===img.id?"not-allowed":"pointer",fontSize:"0.62rem",fontFamily:"monospace"}}>{deleting===img.id?"…":"🗑 Del"}</button></div></div></div>)}</div>}
+
+    {loading?<p style={{color:C.textSec,textAlign:"center",padding:"40px"}}>Loading images…</p>:images.length===0?<p style={{color:C.textSec}}>No images found.</p>:
+    <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(160px,1fr))",gap:"14px",marginBottom:"32px"}}>
+      {/* UPDATED: sort logic includes downloads-desc */}
+      {[...images].sort((a,b)=>
+        sortBy==="views-desc"?b.viewCount-a.viewCount:
+        sortBy==="views-asc"?a.viewCount-b.viewCount:
+        sortBy==="downloads-desc"?(downloadCounts[b.slug]??0)-(downloadCounts[a.slug]??0):
+        0
+      ).map((img,rank)=><div key={img.id} style={{border:`1px solid ${C.border}`,background:C.surface}}>
+        <div style={{position:"relative",aspectRatio:"9/16",background:"#0d0b14",overflow:"hidden"}}>
+          <img src={thumbUrl(img.r2Key)} alt={img.title} style={{width:"100%",height:"100%",objectFit:"cover",display:"block"}} onError={e=>{(e.target as HTMLImageElement).style.display="none";}}/>
+          {img.isAdult&&<span style={{position:"absolute",top:"6px",left:"6px",background:C.red,color:"#fff",fontSize:"0.55rem",fontFamily:"monospace",fontWeight:900,padding:"2px 6px"}}>16+</span>}
+          {/* NEW: rank badge when sorted by downloads */}
+          {sortBy==="downloads-desc"&&(downloadCounts[img.slug]??0)>0&&<span style={{position:"absolute",top:"6px",left:"6px",background:"rgba(192,0,26,0.9)",color:"#fff",fontSize:"0.55rem",fontFamily:"monospace",fontWeight:900,padding:"2px 6px"}}>#{rank+1}</span>}
+          {BADGE_TAGS.filter(b=>img.tags.includes(b.tag)).slice(0,2).map(b=><span key={b.tag} style={{position:"absolute",bottom:"6px",left:"6px",background:b.bg,border:`1px solid ${b.color}`,color:b.color,fontSize:"0.5rem",fontFamily:"monospace",padding:"2px 5px",marginBottom:`${BADGE_TAGS.filter(bx=>img.tags.includes(bx.tag)).indexOf(b)*18}px`}}>{b.label}</span>)}
+          {img.deviceType&&<span style={{position:"absolute",top:"6px",right:"6px",background:"rgba(0,0,0,0.7)",color:C.gold,fontSize:"0.55rem",fontFamily:"monospace",padding:"2px 6px"}}>{img.deviceType}</span>}
+          {!img.altText&&<span style={{position:"absolute",bottom:"6px",left:"6px",background:"rgba(192,0,26,0.85)",color:"#fff",fontSize:"0.5rem",fontFamily:"monospace",padding:"2px 5px"}}>no alt</span>}
+        </div>
+        <div style={{padding:"10px"}}>
+          <p style={{color:C.textPri,fontSize:"0.72rem",fontWeight:600,marginBottom:"4px",lineHeight:1.3,wordBreak:"break-word"}}>{img.title}</p>
+          {/* UPDATED: show download count badge when in downloads sort mode */}
+          <p style={{color:C.textMut,fontSize:"0.58rem",marginBottom:"6px"}}>
+            👁 {img.viewCount}
+            {sortBy==="downloads-desc"&&<span style={{color:(downloadCounts[img.slug]??0)>0?C.red:C.textMut,marginLeft:"8px",fontWeight:(downloadCounts[img.slug]??0)>0?700:400}}>⬇ {downloadCounts[img.slug]??0}</span>}
+          </p>
+          <div style={{display:"flex",gap:"6px"}}>
+            <button onClick={()=>openEdit(img)} style={{flex:1,background:"rgba(124,58,237,0.1)",border:`1px solid ${C.border}`,color:C.textSec,padding:"6px",cursor:"pointer",fontSize:"0.62rem",fontFamily:"monospace"}}>✏️ Edit</button>
+            <button onClick={()=>handleDelete(img)} disabled={deleting===img.id} style={{flex:1,background:"rgba(192,0,26,0.08)",border:"1px solid rgba(192,0,26,0.4)",color:C.red,padding:"6px",cursor:deleting===img.id?"not-allowed":"pointer",fontSize:"0.62rem",fontFamily:"monospace"}}>{deleting===img.id?"…":"🗑 Del"}</button>
+          </div>
+        </div>
+      </div>)}
+    </div>}
+
     {pages>1&&<div style={{display:"flex",gap:"8px",alignItems:"center",justifyContent:"center"}}><Btn onClick={()=>{const p=Math.max(1,page-1);setPage(p);load(p,q);}} disabled={page<=1} variant="ghost">← Prev</Btn><span style={{color:C.textSec,fontSize:"0.75rem"}}>Page {page} / {pages}</span><Btn onClick={()=>{const p=Math.min(pages,page+1);setPage(p);load(p,q);}} disabled={page>=pages} variant="ghost">Next →</Btn></div>}
   </div>;
 }
@@ -543,7 +600,8 @@ function Manage18Tab({password}:{password:string}){
   return<div>
     <Card style={{padding:"14px 18px",marginBottom:"24px",borderColor:"rgba(192,0,26,0.5)",background:"rgba(192,0,26,0.06)"}}><p style={{color:C.gold,fontSize:"0.78rem",marginBottom:"4px"}}>⚠ 16+ Content Manager</p><p style={{color:C.textSec,fontSize:"0.72rem"}}>Mark images as 16+ mature themes. Searches by title (partial match).</p></Card>
     <div style={{display:"flex",gap:"12px",marginBottom:"20px",flexWrap:"wrap",alignItems:"center"}}><Btn onClick={markAll} variant="danger">⚠ Mark All as 16+</Btn>{doneCount>0&&<span style={{color:C.green,fontSize:"0.75rem"}}>✓ {doneCount} / {ADULT_IMAGES_TO_MARK.length} done{allDone?" — All done!":""}</span>}</div>
-    <div style={{display:"flex",flexDirection:"column",gap:"8px",marginBottom:"32px"}}>{ADULT_IMAGES_TO_MARK.map(item=>{const res=results[item.title];const isLoading=loadingMap[item.title];return<Card key={item.title} style={{padding:"14px 16px",display:"flex",justifyContent:"space-between",alignItems:"center",gap:"16px",flexWrap:"wrap",borderColor:res?.status==="ok"?C.green:res?.status==="err"?C.red:C.border}}><div><p style={{color:C.textPri,marginBottom:"4px"}}>{item.title}</p><div style={{display:"flex",gap:"8px",alignItems:"center"}}><span style={{background:"rgba(124,58,237,0.2)",color:C.purple,padding:"2px 8px",fontSize:"0.62rem",fontFamily:"monospace"}}>{item.device}</span><AdultBadge/>{res&&<span style={{color:res.status==="ok"?C.green:"#ff8080",fontSize:"0.72rem"}}>{res.msg}</span>}</div></div><Btn onClick={()=>markAdult(item.title)} disabled={isLoading||res?.status==="ok"} variant={res?.status==="ok"?"success":"ghost"} style={{fontSize:"0.68rem"}}>{res?.status==="ok"?"✓ Done":isLoading?"Updating…":"Mark 16+"}</Btn></Card>;})}</div>
+    <div style={{display:"flex",flexDirection:"column",gap:"8px",marginBottom:"32px"}}>{ADULT_IMAGES_TO_MARK.map(item=>{const res=results[item.title];const isLoading=loadingMap[item.title];return<Card key={item.title} style={{padding:"14px 16px",display:"flex",justifyContent:"space-between",alignItems:"center",gap:"16px",flexWrap:"wrap",borderColor:res?.status==="ok"?C.green:res?.status==="err"?C.red:C.border}}><div><p style={{color:C.textPri,marginBottom:"4px"}}>{item.title}</p><div style={{display:"flex",gap:"8px",alignItems:"center"}}><span style={{background:"rgba(124,58,237,0.2)",color:C.purple,padding:"2px 8px",fontSize:"0.62rem",fontFamily:"monospace"}}>{item.device}</span><AdultBadge/>{res&&<span style={{color:res.status==="ok"?C.green:"#ff8080",fontSize:"0.72rem"}}>{res.msg}</span>}</div></div><Btn onClick={()=>markAdult(item.title)} disabled={isLoading||res?.status==="ok"} variant={res?.status==="ok"?"success":"ghost"} style={{fontSize:"0.68rem"}}>{res?.status==="ok"?"✓ Done":isLoading?"Updating…":"Mark 16+"}</Btn></Card>;})}
+    </div>
     <Card style={{padding:"20px"}}><p style={eyebrow}>Mark Any Image by Title</p><div style={{display:"flex",gap:"8px",flexWrap:"wrap",alignItems:"flex-end"}}><div style={{flex:1,minWidth:"200px"}}><label style={lbl}>Search by title (partial match)</label><input value={titleInput} onChange={e=>setTitleInput(e.target.value)} onKeyDown={e=>e.key==="Enter"&&handleManual()} placeholder="e.g. Skull King" style={inp}/></div><Btn onClick={handleManual} disabled={manualLoading}>{manualLoading?"Updating…":"Mark 16+"}</Btn>{manualResult&&<span style={{color:manualResult.status==="ok"?C.green:"#ff8080",fontSize:"0.78rem"}}>{manualResult.msg}</span>}</div></Card>
   </div>;
 }
@@ -746,12 +804,9 @@ function CollectionsTab({password}:{password:string}){
           </div>
         </div>
         <Msg msg={msg}/>
-
-        {/* ── OBSESSION THUMBNAIL ─────────────────────────────────────── */}
         <Card style={{padding:"16px",borderColor:selected.thumbnail?C.gold:"rgba(201,168,76,0.3)",background:selected.thumbnail?"rgba(201,168,76,0.04)":C.surface}}>
           <p style={{...lbl,marginBottom:"10px",color:C.gold}}>🖼 Obsession Card Thumbnail</p>
           <p style={{color:C.textMut,fontSize:"0.65rem",marginBottom:"14px",lineHeight:1.6}}>This image appears on the <strong style={{color:C.textSec}}>Homepage grid</strong> and <strong style={{color:C.textSec}}>/obsessions</strong> page as the card background. Recommended: portrait 3:4 ratio, min 600px wide. JPG/PNG/WEBP.</p>
-
           {selected.thumbnail&&thumbUrl(selected.thumbnail)&&(
             <div style={{display:"flex",gap:"16px",alignItems:"flex-start",marginBottom:"16px",padding:"12px",background:"rgba(0,0,0,0.3)",border:`1px solid ${C.border}`}}>
               <img src={thumbUrl(selected.thumbnail)} alt="Current thumbnail" style={{width:"60px",height:"80px",objectFit:"cover",border:`1px solid ${C.gold}`,flexShrink:0}} onError={e=>{(e.target as HTMLImageElement).style.opacity="0.2";}}/>
@@ -762,7 +817,6 @@ function CollectionsTab({password}:{password:string}){
               </div>
             </div>
           )}
-
           <div
             onDragOver={e=>{e.preventDefault();setThumbDragging(true);}}
             onDragLeave={()=>setThumbDragging(false)}
@@ -792,9 +846,7 @@ function CollectionsTab({password}:{password:string}){
               </>
             }
           </div>
-
           {thumbMsg&&<Msg msg={thumbMsg}/>}
-
           {thumbFile&&(
             <div style={{display:"flex",gap:"8px",alignItems:"center"}}>
               <Btn onClick={handleThumbUpload} disabled={thumbUploading} style={{background:C.gold,color:"#000"}}>
@@ -805,13 +857,10 @@ function CollectionsTab({password}:{password:string}){
               </Btn>
             </div>
           )}
-
           {!thumbFile&&!selected.thumbnail&&(
             <p style={{color:"rgba(192,0,26,0.7)",fontSize:"0.65rem",marginTop:"4px"}}>⚠ No thumbnail — card shows icon placeholder on homepage &amp; obsessions page.</p>
           )}
         </Card>
-
-        {/* ── DESCRIPTION & META ──────────────────────────────────────── */}
         <Card style={{padding:"16px"}}>
           <label style={lbl}>Meta Description (Google search snippet) <span style={{color:metaDesc.length>155?C.red:C.textMut}}>({metaDesc.length}/155)</span></label>
           <input value={metaDesc} onChange={e=>setMetaDesc(e.target.value)} placeholder="130–155 char keyword-rich description for Google" style={inp}/>
@@ -841,8 +890,6 @@ function CollectionsTab({password}:{password:string}){
   </div>;
 }
 
-
-// ── Districts Tab ─────────────────────────────────────────────────────────────
 const DISTRICTS_LIST=[{id:"classic",tag:"classic-district",label:"The Classic District",emoji:"🏚️",desc:"Old houses, vintage portraits, Victorian furniture.",accent:"#8B6914"},{id:"city",tag:"city-center",label:"The City Center",emoji:"🌆",desc:"Rainy streets, dark skyscrapers, neon signs.",accent:"#1a6ecf"},{id:"bone",tag:"bone-street",label:"Bone Street",emoji:"💀",desc:"Skulls, skeletons & anatomical art.",accent:"#c0c0c0"},{id:"nature",tag:"nature-trail",label:"The Nature Trail",emoji:"🌲",desc:"Dark forests, fog, dead trees.",accent:"#2d6a4f"},{id:"minimal",tag:"minimalist-row",label:"Minimalist Row",emoji:"◼",desc:"AMOLED blacks & thin lines.",accent:"#555555"},{id:"character",tag:"character-ward",label:"The Character Ward",emoji:"🎭",desc:"Hooded figures, masks, shadow people.",accent:"#7b2d8b"}] as const;
 type DistrictId=typeof DISTRICTS_LIST[number]["id"];
 interface DistrictImg{id:string;title:string|null;slug:string;r2Key:string;tags:string[];}
@@ -981,7 +1028,7 @@ function BulkAiTab({password}:{password:string}){
     let done=0,failed=0;
     for(const img of images){
       await runOnImage(img);
-      await new Promise(r=>setTimeout(r,600)); // rate limit buffer
+      await new Promise(r=>setTimeout(r,600));
       const st=statuses[img.id]?.state;
       if(st==="done")done++;else if(st==="err")failed++;
     }
@@ -998,7 +1045,6 @@ function BulkAiTab({password}:{password:string}){
   const thumbUrl=(key:string)=>r2Base?`${r2Base}/${key}`:`/api/r2-proxy/${key}`;
 
   return<div style={{display:"grid",gridTemplateColumns:"280px 1fr",gap:"24px",alignItems:"start"}}>
-    {/* Collection picker */}
     <div><Card style={{padding:"0",overflow:"hidden"}}>
       <div style={{padding:"12px 14px",borderBottom:`1px solid ${C.border}`}}>
         <p style={{...eyebrow,marginBottom:"8px"}}>Select Collection</p>
@@ -1014,8 +1060,6 @@ function BulkAiTab({password}:{password:string}){
           </button>;})}
         </div>}
     </Card></div>
-
-    {/* Right panel */}
     {!selectedColl?<Card style={{padding:"48px",textAlign:"center"}}><p style={{color:C.textMut,fontSize:"0.85rem"}}>← Pick a collection to bulk-update its images with AI</p></Card>:
     <div style={{display:"flex",flexDirection:"column",gap:"16px"}}>
       <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",flexWrap:"wrap",gap:"12px"}}>
@@ -1026,14 +1070,11 @@ function BulkAiTab({password}:{password:string}){
         </div>
         <Btn onClick={handleRunAll} disabled={running||loadingImgs||images.length===0} style={{background:running?"rgba(192,0,26,0.4)":C.red}}>{running?`⏳ Running (${doneCount}/${images.length})…`:`✨ AI Update All ${images.length} Images`}</Btn>
       </div>
-
       <Card style={{padding:"14px 16px",borderColor:"rgba(201,168,76,0.3)",background:"rgba(201,168,76,0.05)"}}>
         <p style={{color:C.gold,fontSize:"0.72rem",marginBottom:"4px"}}>⚠ What this does</p>
         <p style={{color:C.textSec,fontSize:"0.68rem",lineHeight:1.7}}>Claude Vision analyses each image and <strong style={{color:C.textPri}}>overwrites</strong> the title, description (~200 words), alt text (130–150 chars), and tags. It processes them one by one with a short delay. This cannot be undone — use with care.</p>
       </Card>
-
       <Msg msg={overallMsg}/>
-
       {loadingImgs?<p style={{color:C.textSec,textAlign:"center",padding:"40px"}}>Loading images…</p>:images.length===0?<Card style={{padding:"32px",textAlign:"center"}}><p style={{color:C.textMut}}>No images found in this collection.</p></Card>:
       <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(150px,1fr))",gap:"12px"}}>
         {images.map(img=>{
@@ -1060,8 +1101,7 @@ function BulkAiTab({password}:{password:string}){
 function HighResUploadTab({password}:{password:string}){
   const[collections,setCollections]=useState<CollectionRecord[]>([]);const[loadingColls,setLoadingColls]=useState(true);const[selectedColl,setSelectedColl]=useState<CollectionRecord|null>(null);const[images,setImages]=useState<ImageRecord[]>([]);const[loadingImgs,setLoadingImgs]=useState(false);const[search,setSearch]=useState("");const[uploadStates,setUploadStates]=useState<Record<string,{state:"idle"|"uploading"|"done"|"err";msg?:string}>>({});const[overallMsg,setOverallMsg]=useState<{type:"ok"|"err";text:string}|null>(null);const r2Base=process.env.NEXT_PUBLIC_R2_PUBLIC_URL??"";
 
-  useEffect(()=>{async function load(){setLoadingColls(true);try{const res=await fetch("/api/hw-admin/collections",{headers:{"x-admin-password":password}});if(res.ok){const j=await res.json();// only show iPhone + Android collections
-    const filtered=(j.collections??[]).filter((c:CollectionRecord)=>{const cat=c.category?.toLowerCase()??"";return cat.includes("iphone")||cat.includes("android")||cat.includes("mobile")||cat.includes("phone");});setCollections(filtered.length>0?filtered:j.collections??[]);}}catch{}setLoadingColls(false);}load();},[password]);
+  useEffect(()=>{async function load(){setLoadingColls(true);try{const res=await fetch("/api/hw-admin/collections",{headers:{"x-admin-password":password}});if(res.ok){const j=await res.json();const filtered=(j.collections??[]).filter((c:CollectionRecord)=>{const cat=c.category?.toLowerCase()??"";return cat.includes("iphone")||cat.includes("android")||cat.includes("mobile")||cat.includes("phone");});setCollections(filtered.length>0?filtered:j.collections??[]);}}catch{}setLoadingColls(false);}load();},[password]);
 
   async function loadCollectionImages(coll:CollectionRecord){setSelectedColl(coll);setImages([]);setLoadingImgs(true);setUploadStates({});setOverallMsg(null);try{const res=await fetch(`/api/hw-admin/images?collectionId=${coll.id}&limit=500`,{headers:{"x-admin-password":password}});if(res.ok){const j=await res.json();const imgs:ImageRecord[]=j.images??[];setImages(imgs);const init:Record<string,{state:"idle"}>={}; imgs.forEach(i=>{init[i.id]={state:"idle"};});setUploadStates(init);}}catch{}setLoadingImgs(false);}
 
@@ -1086,7 +1126,6 @@ function HighResUploadTab({password}:{password:string}){
   const has4k=(img:ImageRecord)=>img.highResKey?.includes("-4k");
 
   return<div style={{display:"grid",gridTemplateColumns:"280px 1fr",gap:"24px",alignItems:"start"}}>
-    {/* Collection picker */}
     <div><Card style={{padding:"0",overflow:"hidden"}}>
       <div style={{padding:"12px 14px",borderBottom:`1px solid ${C.border}`}}>
         <p style={{...eyebrow,marginBottom:"8px"}}>Collections</p>
@@ -1103,8 +1142,6 @@ function HighResUploadTab({password}:{password:string}){
           </button>;})}
         </div>}
     </Card></div>
-
-    {/* Right panel */}
     {!selectedColl
       ?<Card style={{padding:"48px",textAlign:"center"}}>
         <p style={{fontSize:"2rem",marginBottom:"12px"}}>🖼️</p>
@@ -1119,14 +1156,11 @@ function HighResUploadTab({password}:{password:string}){
             <p style={{color:C.textMut,fontSize:"0.65rem",marginTop:"4px"}}>{images.length} images · <span style={{color:C.green}}>{doneCount} uploaded this session</span>{errCount>0&&<span style={{color:C.red}}> · {errCount} errors</span>}</p>
           </div>
         </div>
-
         <Card style={{padding:"14px 16px",borderColor:"rgba(201,168,76,0.3)",background:"rgba(201,168,76,0.04)"}}>
           <p style={{color:C.gold,fontSize:"0.72rem",marginBottom:"4px"}}>ℹ How it works</p>
           <p style={{color:C.textSec,fontSize:"0.68rem",lineHeight:1.7}}>Drop or click a 4K file on any image card below. It uploads to <code style={{color:C.purple}}>high-res/{"{slug}"}/{"{slug}"}-4k.ext</code> on R2 and updates the database. Users downloading that wallpaper will now receive the 4K version via signed URL. Images already with a 4K file are marked <span style={{color:C.green}}>✓ 4K</span>.</p>
         </Card>
-
         <Msg msg={overallMsg}/>
-
         {loadingImgs
           ?<p style={{color:C.textSec,textAlign:"center",padding:"40px"}}>Loading images…</p>
           :images.length===0
@@ -1137,24 +1171,17 @@ function HighResUploadTab({password}:{password:string}){
                 const already4k=has4k(img);
                 const borderColor=st.state==="done"?C.green:st.state==="err"?C.red:already4k?"rgba(76,175,80,0.4)":C.border;
                 return<div key={img.id} style={{border:`1px solid ${borderColor}`,background:C.surface,transition:"border-color 0.3s"}}>
-                  {/* Thumbnail */}
                   <div style={{position:"relative",aspectRatio:"9/16",background:"#0d0b14",overflow:"hidden"}}>
                     <img src={thumbUrl(img.r2Key)} alt={img.title} style={{width:"100%",height:"100%",objectFit:"cover",display:"block",opacity:st.state==="uploading"?0.4:1,transition:"opacity 0.3s"}} onError={e=>{(e.target as HTMLImageElement).style.display="none";}}/>
-                    {/* Status overlays */}
                     {st.state==="uploading"&&<div style={{position:"absolute",inset:0,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",background:"rgba(0,0,0,0.6)",gap:"8px"}}><div style={{fontSize:"1.6rem"}}>⏳</div><p style={{color:C.gold,fontSize:"0.6rem",fontFamily:"monospace"}}>Uploading…</p></div>}
                     {st.state==="done"&&<div style={{position:"absolute",inset:0,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",background:"rgba(76,175,80,0.25)",gap:"4px"}}><div style={{fontSize:"1.6rem"}}>✓</div><p style={{color:C.green,fontSize:"0.6rem",fontFamily:"monospace"}}>Uploaded!</p></div>}
                     {st.state==="err"&&<div style={{position:"absolute",inset:0,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",background:"rgba(192,0,26,0.35)",gap:"4px",padding:"8px"}}><div style={{fontSize:"1.4rem"}}>✗</div><p style={{color:"#ff8080",fontSize:"0.58rem",fontFamily:"monospace",textAlign:"center",wordBreak:"break-word"}}>{st.msg}</p></div>}
-                    {/* 4K badge */}
                     {(already4k||st.state==="done")&&<span style={{position:"absolute",top:"6px",right:"6px",background:"rgba(76,175,80,0.9)",color:"#fff",fontSize:"0.5rem",fontFamily:"monospace",fontWeight:900,padding:"2px 6px",letterSpacing:"0.05em"}}>✓ 4K</span>}
                     {img.deviceType&&<span style={{position:"absolute",top:"6px",left:"6px",background:"rgba(0,0,0,0.7)",color:C.gold,fontSize:"0.5rem",fontFamily:"monospace",padding:"2px 6px"}}>{img.deviceType}</span>}
                   </div>
-
-                  {/* Info + drop zone */}
                   <div style={{padding:"10px"}}>
                     <p style={{color:C.textPri,fontSize:"0.7rem",fontWeight:600,lineHeight:1.3,marginBottom:"6px",wordBreak:"break-word"}}>{img.title}</p>
                     <p style={{color:C.textMut,fontSize:"0.58rem",marginBottom:"8px",fontFamily:"monospace"}}>{img.slug}</p>
-
-                    {/* File input styled as drop zone */}
                     <label style={{display:"block",border:`2px dashed ${st.state==="done"||already4k?C.green:C.border}`,padding:"10px 8px",textAlign:"center",cursor:st.state==="uploading"?"not-allowed":"pointer",background:st.state==="uploading"?"rgba(255,255,255,0.02)":"transparent",transition:"all 0.2s"}}>
                       <input type="file" accept="image/*" style={{display:"none"}} disabled={st.state==="uploading"} onChange={e=>{const f=e.target.files?.[0];if(f)handleFileUpload(img,f);e.target.value="";}}/>
                       <p style={{color:st.state==="done"||already4k?C.green:C.textSec,fontSize:"0.62rem",fontFamily:"monospace",lineHeight:1.5}}>
@@ -1171,7 +1198,6 @@ function HighResUploadTab({password}:{password:string}){
     }
   </div>;
 }
-
 
 function PinTab({password}:{password:string}){
   const DEVICES=["IPHONE","ANDROID","PC"] as const;
@@ -1202,8 +1228,7 @@ function PinTab({password}:{password:string}){
 
   async function pin(img:ImageRecord,slot:number){
     setSaving(img.id);setMsg(null);
-    // slot is 1-based position → sortOrder is -3,-2,-1 (slot 1 = -3 = highest priority)
-    const so=(slot-4); // slot 1 → -3, slot 2 → -2, slot 3 → -1
+    const so=(slot-4);
     try{
       const res=await fetch(`/api/hw-admin/images/${img.id}`,{method:"PATCH",headers:{"Content-Type":"application/json","x-admin-password":password},body:JSON.stringify({sortOrder:so})});
       if(!res.ok)throw new Error("Failed");
@@ -1229,17 +1254,12 @@ function PinTab({password}:{password:string}){
   return<div>
     <Card style={{padding:"14px 18px",marginBottom:"20px",borderColor:C.red}}>
       <strong style={{color:C.gold}}>📌 Pin Wallpapers — The Most Haunted</strong>
-      <span style={{color:C.textSec,marginLeft:"8px",fontSize:"0.82rem"}}>Pin up to 3 wallpapers per device. They appear at the top of the listing page under "The Most Haunted" heading.</span>
+      <span style={{color:C.textSec,marginLeft:"8px",fontSize:"0.82rem"}}>Pin up to 3 wallpapers per device. They appear at the top of the listing page under &quot;The Most Haunted&quot; heading.</span>
     </Card>
-
-    {/* Device selector */}
     <div style={{display:"flex",gap:"8px",marginBottom:"20px"}}>
       {DEVICES.map(d=><button key={d} onClick={()=>{setDevice(d);setSearch("");}} style={{background:device===d?C.red:"transparent",border:`1px solid ${device===d?C.red:C.border}`,color:device===d?"#fff":C.textSec,padding:"8px 20px",cursor:"pointer",fontSize:"0.72rem",fontFamily:"monospace",letterSpacing:"0.08em",textTransform:"uppercase"}}>{deviceLabel[d]}</button>)}
     </div>
-
     <Msg msg={msg}/>
-
-    {/* Currently pinned */}
     <Card style={{marginBottom:"24px"}}>
       <p style={eyebrow}>Currently Pinned — {deviceLabel[device]} (max 3)</p>
       {pinned.length===0
@@ -1262,8 +1282,6 @@ function PinTab({password}:{password:string}){
         </div>
       }
     </Card>
-
-    {/* Search & pin new */}
     <Card>
       <p style={eyebrow}>Search & Pin a Wallpaper</p>
       <div style={{display:"flex",gap:"8px",marginBottom:"16px"}}>
@@ -1324,16 +1342,13 @@ function NukeTab({password}:{password:string}){
   </div>;
 }
 
-// ── Comments / Birthday Wishes Tab ───────────────────────────────────────────
 function CommentsTab({password}:{password:string}){
   const[comments,setComments]=useState<{id:string;name:string;message:string;status:string;likes:number;createdAt:string;ipHash:string|null;image:{slug:string;title:string}|null}[]>([]);
   const[loading,setLoading]=useState(true);const[filter,setFilter]=useState<"pending"|"approved"|"all">("pending");const[msg,setMsg]=useState<{type:"ok"|"err";text:string}|null>(null);const[acting,setActing]=useState<string|null>(null);
-  const adminKey=process.env.NEXT_PUBLIC_ADMIN_COMMENTS_KEY??"";
 
   const load=useCallback(async()=>{
     setLoading(true);setMsg(null);
     try{
-      const status=filter==="all"?"pending":filter;
       const urls=filter==="all"?["/api/admin/comments?status=pending","/api/admin/comments?status=approved"]:[`/api/admin/comments?status=${filter}`];
       const results=await Promise.all(urls.map(u=>fetch(u,{headers:{"x-admin-password":password}}).then(r=>r.json())));
       setComments(results.flat());
@@ -1363,7 +1378,6 @@ function CommentsTab({password}:{password:string}){
       <span style={{color:C.textSec,marginLeft:"8px",fontSize:"0.82rem"}}>Approve or delete visitor wishes before they go public.</span>
     </Card>
     <Msg msg={msg}/>
-    {/* Filter tabs */}
     <div style={{display:"flex",gap:"8px",flexWrap:"wrap"}}>
       {(["pending","approved","all"] as const).map(f=><button key={f} onClick={()=>setFilter(f)} style={{background:filter===f?"rgba(192,0,26,0.15)":"transparent",border:`1px solid ${filter===f?C.red:C.border}`,color:filter===f?C.textPri:C.textSec,padding:"8px 18px",cursor:"pointer",fontSize:"0.72rem",fontFamily:"monospace",letterSpacing:"0.08em",textTransform:"uppercase"}}>{f==="pending"?`⏳ Pending (${pending.length})`:f==="approved"?`✓ Approved (${approved.length})`:"All"}</button>)}
       <button onClick={load} style={{background:"transparent",border:`1px solid ${C.border}`,color:C.textSec,padding:"8px 14px",cursor:"pointer",fontSize:"0.72rem",fontFamily:"monospace",marginLeft:"auto"}}>↻ Refresh</button>
@@ -1391,7 +1405,6 @@ function CommentsTab({password}:{password:string}){
   </div>;
 }
 
-// ── Live Wallpapers Tab ───────────────────────────────────────────────────────
 const ALL_LW_TAGS=["dark","gothic","horror","fantasy","amoled","neon","cyberpunk","nature","abstract","skull","moon","forest","city","demon","anime","fire","space","ocean","aesthetic","minimal"];
 
 function LiveWallpapersTab({password}:{password:string}){
@@ -1435,7 +1448,6 @@ function LiveWallpapersTab({password}:{password:string}){
       {(["upload","manage"] as const).map(v=><button key={v} onClick={()=>setView(v)} style={{background:view===v?C.red:"transparent",border:`1px solid ${view===v?C.red:C.border}`,color:view===v?"#fff":C.textSec,padding:"9px 22px",cursor:"pointer",fontSize:"0.72rem",fontFamily:"monospace",letterSpacing:"0.1em",textTransform:"uppercase"}}>{v==="upload"?"📤 Upload":"📋 Manage"}</button>)}
       <a href="/live-wallpapers" target="_blank" rel="noopener noreferrer" style={{marginLeft:"auto",color:C.textMut,fontSize:"0.7rem",fontFamily:"monospace",textDecoration:"none",display:"flex",alignItems:"center"}}>View Feed →</a>
     </div>
-
     {view==="upload"&&<div style={{display:"flex",flexDirection:"column",gap:"20px",maxWidth:"640px"}}>
       <Card style={{borderColor:"rgba(124,58,237,0.3)",background:"rgba(124,58,237,0.04)",padding:"14px 18px"}}><strong style={{color:C.purple}}>🎬 Live Wallpaper Upload</strong><span style={{color:C.textSec,marginLeft:"8px",fontSize:"0.82rem"}}>MP4, H.264, portrait 9:16, under 30MB</span></Card>
       <Msg msg={uploadMsg}/>
@@ -1449,7 +1461,6 @@ function LiveWallpapersTab({password}:{password:string}){
       {progress&&<p style={{color:C.gold,fontSize:"0.8rem",fontFamily:"monospace"}}>{progress}</p>}
       <Btn onClick={handleUpload} disabled={uploading||!videoFile||!title||!slug} style={{alignSelf:"flex-start"}}>{uploading?"Uploading…":"Upload Live Wallpaper"}</Btn>
     </div>}
-
     {view==="manage"&&<div style={{display:"flex",flexDirection:"column",gap:"16px"}}>
       <Msg msg={manageMsg}/>
       <div style={{display:"flex",justifyContent:"flex-end"}}><Btn variant="ghost" onClick={loadManage} disabled={loadingList}>↻ Refresh</Btn></div>
@@ -1478,7 +1489,6 @@ function LiveWallpapersTab({password}:{password:string}){
   </div>;
 }
 
-// ── Visitors Tab — first-party "who's here, what page, how long" ─────────────
 interface VisitorPage   { path:string; duration:number|null; enteredAt:string; }
 interface VisitorEvent  { type:string; path:string; meta:Record<string,unknown>|null; createdAt:string; }
 interface LiveVisitor   { id:string; device:string|null; country:string|null; path:string; lastSeen:string; }
@@ -1536,15 +1546,11 @@ function VisitorsTab({password}:{password:string}){
         <input type="checkbox" checked={autoRefresh} onChange={e=>setAutoRefresh(e.target.checked)}/> Auto-refresh 15s
       </label>
     </div>
-
-    {/* KPI row */}
     <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:"12px",marginBottom:"24px"}}>
       <Card style={{textAlign:"center",padding:"20px 12px"}}><p style={{...eyebrow,marginBottom:"6px"}}>Live Now</p><p style={{color:C.green,fontSize:"1.8rem",fontWeight:700,lineHeight:1}}>{data.liveCount}</p><p style={{color:C.textMut,fontSize:"0.6rem",marginTop:"4px"}}>active in last 5 min</p></Card>
       <Card style={{textAlign:"center",padding:"20px 12px"}}><p style={{...eyebrow,marginBottom:"6px"}}>Sessions Today</p><p style={{color:C.red,fontSize:"1.8rem",fontWeight:700,lineHeight:1}}>{data.sessionsToday}</p><p style={{color:C.textMut,fontSize:"0.6rem",marginTop:"4px"}}>distinct visitors</p></Card>
       <Card style={{textAlign:"center",padding:"20px 12px"}}><p style={{...eyebrow,marginBottom:"6px"}}>Avg Time — Top Page</p><p style={{color:C.gold,fontSize:"1.8rem",fontWeight:700,lineHeight:1}}>{fmtSecs(data.topPages[0]?.avgDuration)}</p><p style={{color:C.textMut,fontSize:"0.6rem",marginTop:"4px"}}>{data.topPages[0]?.path??"—"}</p></Card>
     </div>
-
-    {/* Live visitors */}
     <Card style={{marginBottom:"24px"}}>
       <p style={eyebrow}>👀 Live Now</p>
       {data.live.length===0&&<p style={{color:C.textMut,fontSize:"0.78rem",padding:"8px 0"}}>Nobody active in the last 5 minutes.</p>}
@@ -1557,8 +1563,6 @@ function VisitorsTab({password}:{password:string}){
         <code style={{color:C.textPri,fontSize:"0.72rem",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap",maxWidth:"260px"}}>{v.path}</code>
       </div>)}
     </Card>
-
-    {/* Top pages today */}
     <Card style={{marginBottom:"24px"}}>
       <p style={eyebrow}>Top Pages Today — views &amp; average time spent</p>
       {data.topPages.length===0&&<p style={{color:C.textMut,fontSize:"0.78rem",padding:"8px 0"}}>No page views recorded yet today.</p>}
@@ -1570,8 +1574,6 @@ function VisitorsTab({password}:{password:string}){
         </span>
       </div>)}
     </Card>
-
-    {/* Recent activity feed */}
     <Card style={{marginBottom:"24px"}}>
       <p style={eyebrow}>Recent Activity — downloads, previews, favorites</p>
       {data.recentEvents.length===0&&<p style={{color:C.textMut,fontSize:"0.78rem",padding:"8px 0"}}>No events logged yet today.</p>}
@@ -1581,8 +1583,6 @@ function VisitorsTab({password}:{password:string}){
         <span style={{color:C.textMut,fontSize:"0.66rem",flexShrink:0}}>{timeAgo(e.createdAt)}</span>
       </div>)}
     </Card>
-
-    {/* Per-session breakdown — click to expand a visitor's full page trail */}
     <Card>
       <p style={eyebrow}>Today&apos;s Sessions — {data.sessions.length} visitors, click to expand</p>
       {data.sessions.map(s=>{
@@ -1629,7 +1629,6 @@ export default function AdminClient(){
   function handleAuth(){const saved=sessionStorage.getItem("hw-admin-auth")??"";setPw(saved);setAuthed(true);}
   if(!authed)return<PasswordGate onAuth={handleAuth}/>;
   return<div style={{minHeight:"100vh",background:C.bg,fontFamily:"monospace",color:C.textPri,display:"flex",flexDirection:"column"}}>
-    {/* Top bar */}
     <div style={{borderBottom:`1px solid ${C.border}`,padding:"0 24px",height:"52px",display:"flex",alignItems:"center",justifyContent:"space-between",background:C.surface,flexShrink:0,position:"sticky",top:0,zIndex:100}}>
       <div style={{display:"flex",alignItems:"center",gap:"12px"}}>
         <button onClick={()=>setSidebarOpen(o=>!o)} style={{background:"transparent",border:"none",cursor:"pointer",color:C.textSec,fontSize:"1.1rem",padding:"4px"}}>☰</button>
@@ -1642,14 +1641,12 @@ export default function AdminClient(){
       </div>
     </div>
     <div style={{display:"flex",flex:1,overflow:"hidden"}}>
-      {/* Sidebar */}
       <div style={{width:sidebarOpen?"220px":"56px",flexShrink:0,background:C.surface,borderRight:`1px solid ${C.border}`,transition:"width 0.2s",overflow:"hidden",display:"flex",flexDirection:"column",position:"sticky",top:"52px",alignSelf:"flex-start",height:"calc(100vh - 52px)"}}>
         <nav style={{flex:1,overflowY:"auto",padding:"12px 0"}}>
           {NAV_ITEMS.map(([key,icon,label])=>{const active=tab===key;return<button key={key} onClick={()=>setTab(key)} style={{display:"flex",alignItems:"center",gap:"12px",width:"100%",padding:"11px 18px",background:active?"rgba(192,0,26,0.15)":"transparent",border:"none",borderLeft:`3px solid ${active?C.red:"transparent"}`,color:active?C.textPri:C.textSec,cursor:"pointer",fontSize:"0.78rem",textAlign:"left",transition:"all 0.15s",whiteSpace:"nowrap"}}><span style={{fontSize:"1rem",flexShrink:0}}>{icon}</span>{sidebarOpen&&<span>{label}</span>}</button>;})}
         </nav>
         {sidebarOpen&&<div style={{padding:"16px",borderTop:`1px solid ${C.border}`,fontSize:"0.6rem",color:C.textMut,lineHeight:1.7}}><p style={{color:C.red,marginBottom:"4px"}}>HAUNTED WALLPAPERS</p><p>Admin Panel v2</p></div>}
       </div>
-      {/* Main content */}
       <div style={{flex:1,overflowY:"auto",padding:"32px",minWidth:0}}>
         <div style={{marginBottom:"28px",paddingBottom:"16px",borderBottom:`1px solid ${C.border}`}}>
           <h1 style={{fontSize:"1.1rem",fontWeight:400,color:C.textPri,margin:0}}>{NAV_ITEMS.find(n=>n[0]===tab)?.[1]} {NAV_ITEMS.find(n=>n[0]===tab)?.[2]}</h1>
