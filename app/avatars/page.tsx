@@ -304,7 +304,6 @@ export default async function AvatarsPage() {
         .hw-avatar-card {
           background: #13111e;
           border: 1px solid #2a2535;
-          overflow: hidden;
           transition: border-color 0.2s ease, box-shadow 0.2s ease;
         }
         .hw-avatar-card:hover {
@@ -317,16 +316,20 @@ export default async function AvatarsPage() {
           position: relative;
           width: 100%;
           aspect-ratio: 1 / 1;
-          overflow: hidden;
           background: #0a0812;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          overflow: hidden;
         }
         .hw-avatar-card__img {
           width: 100%;
           height: 100%;
-          object-fit: cover;
+          object-fit: contain;
           object-position: center;
           display: block;
           transition: transform 0.35s ease;
+          padding: 4px;
         }
         .hw-avatar-card:hover .hw-avatar-card__img {
           transform: scale(1.03);
@@ -343,10 +346,6 @@ export default async function AvatarsPage() {
           color: var(--text-primary, #e8e4dc);
           margin-bottom: 8px;
           line-height: 1.3;
-          display: -webkit-box;
-          -webkit-line-clamp: 2;
-          -webkit-box-orient: vertical;
-          overflow: hidden;
         }
 
         /* ── Action buttons — always visible ── */
