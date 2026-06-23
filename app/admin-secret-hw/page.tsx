@@ -1564,7 +1564,7 @@ function VisitorsTab({password}:{password:string}){
   if(!data)return null;
 
   const t=data.traffic;
-  const sh=data.shares;
+  const sh=data.shares ?? { today: 0, week: 0, platforms: [], topWallpapers: [] };
   const activeSources=trafficRange==="today"?t.sourcesToday:t.sourcesWeek;
   const maxCount=activeSources[0]?.count??1;
   const knownSources=activeSources.filter(s=>s.source!=="Direct / Dark Social"&&s.source!=="Internal (own site)");

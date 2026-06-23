@@ -7,6 +7,8 @@
 // Also answers "where are these downloaders coming from?" by querying the
 // Download table's referer column — the only reliable signal for dark-social
 // and direct-link traffic that Google / Pinterest never see.
+//
+// Also returns share click stats from AnalyticsEvent where type = "share_click".
 
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
@@ -135,11 +137,6 @@ export async function GET(req: NextRequest) {
     }));
 
     // ── Traffic source breakdown from Download.referer ───────────────────────
-    // This is the key signal for understanding where downloaders actually come
-    // from. Google Search Console and Pinterest outbound clicks both miss
-    // dark-social sharing (WhatsApp, Telegram, Discord, direct links).
-    // The referer header on the download request is the most reliable proxy.
-
     const [downloadsToday, downloadsWeek] = await Promise.all([
       db.download.findMany({
         where:  { createdAt: { gte: todayStart } },
@@ -151,7 +148,6 @@ export async function GET(req: NextRequest) {
       }),
     ]);
 
-    // Aggregate by classified source label
     function aggregateSources(rows: { referer: string | null }[]) {
       const map = new Map<string, number>();
       for (const row of rows) {
@@ -166,8 +162,6 @@ export async function GET(req: NextRequest) {
     const trafficSourcesToday = aggregateSources(downloadsToday);
     const trafficSourcesWeek  = aggregateSources(downloadsWeek);
 
-    // Raw referer sample for today — the 20 most recent non-null ones so you
-    // can spot unknown aggregator domains without having to query the DB manually.
     const rawRefererSample = await db.download.findMany({
       where:   { createdAt: { gte: todayStart }, referer: { not: null } },
       orderBy: { createdAt: "desc" },
@@ -180,9 +174,45 @@ export async function GET(req: NextRequest) {
       createdAt: r.createdAt,
     }));
 
-    // Download count totals for the summary cards
     const totalDownloadsToday = downloadsToday.length;
     const nullRefererToday    = downloadsToday.filter((d) => d.referer === null).length;
+
+    // ── Share click stats from AnalyticsEvent ────────────────────────────────
+    // SocialShare component fires track("share_click", { platform, slug })
+    // which writes an AnalyticsEvent row with type = "share_click".
+    const [shareEventsToday, shareEventsWeek] = await Promise.all([
+      db.analyticsEvent.findMany({
+        where:   { type: "share_click", createdAt: { gte: todayStart } },
+        select:  { meta: true },
+      }),
+      db.analyticsEvent.findMany({
+        where:   { type: "share_click", createdAt: { gte: weekStart } },
+        select:  { meta: true, createdAt: true, path: true },
+      }),
+    ]);
+
+    // Platform breakdown (week — more data to show)
+    const platformMap = new Map<string, number>();
+    for (const e of shareEventsWeek) {
+      const meta = e.meta as Record<string, string> | null;
+      const platform = meta?.platform ?? "unknown";
+      platformMap.set(platform, (platformMap.get(platform) ?? 0) + 1);
+    }
+    const sharePlatforms = Array.from(platformMap.entries())
+      .sort((a, b) => b[1] - a[1])
+      .map(([platform, count]) => ({ platform, count }));
+
+    // Top shared wallpapers (by slug, week)
+    const slugMap = new Map<string, number>();
+    for (const e of shareEventsWeek) {
+      const meta = e.meta as Record<string, string> | null;
+      const slug = meta?.slug ?? e.path ?? "unknown";
+      slugMap.set(slug, (slugMap.get(slug) ?? 0) + 1);
+    }
+    const topSharedWallpapers = Array.from(slugMap.entries())
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 10)
+      .map(([slug, count]) => ({ slug, count }));
 
     return NextResponse.json({
       liveCount: live.length,
@@ -191,7 +221,7 @@ export async function GET(req: NextRequest) {
       sessions,
       topPages,
       recentEvents,
-      // New: traffic source intelligence
+      // Traffic source intelligence (from Download.referer)
       traffic: {
         downloadsToday:      totalDownloadsToday,
         darkSocialToday:     nullRefererToday,
@@ -201,6 +231,13 @@ export async function GET(req: NextRequest) {
         sourcesToday:        trafficSourcesToday,
         sourcesWeek:         trafficSourcesWeek,
         refererSample,
+      },
+      // Share click stats (from AnalyticsEvent type="share_click")
+      shares: {
+        today:          shareEventsToday.length,
+        week:           shareEventsWeek.length,
+        platforms:      sharePlatforms,
+        topWallpapers:  topSharedWallpapers,
       },
     });
   } catch (err) {
