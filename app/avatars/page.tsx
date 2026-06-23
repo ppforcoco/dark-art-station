@@ -10,7 +10,7 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 import AdminHtmlBlock from "@/components/AdminHtmlBlock";
 import { getPageContent } from "@/lib/db";
 
-export const revalidate = 300;
+export const revalidate = 60;
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
 
@@ -124,17 +124,7 @@ export default async function AvatarsPage() {
         </div>
       </section>
 
-      {/* ── Nav pills ── */}
-      <nav className="hw-avatars-nav" aria-label="Related pages">
-        <div className="hw-avatars-nav__inner">
-          <Link href="/avatars" className="hw-avatars-nav__pill hw-avatars-nav__pill--active">
-            👻 All Avatars
-          </Link>
-          <Link href="/iphone" className="hw-avatars-nav__pill">📱 iPhone Wallpapers</Link>
-          <Link href="/android" className="hw-avatars-nav__pill">🤖 Android</Link>
-          <Link href="/pc" className="hw-avatars-nav__pill">🖥 PC / Desktop</Link>
-        </div>
-      </nav>
+
 
       {/* ── Grid ── */}
       <section className="hw-avatars-section">

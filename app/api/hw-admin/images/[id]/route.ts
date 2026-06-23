@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { db } from "@/lib/db";
 
 function checkAuth(req: NextRequest) {
@@ -77,6 +78,10 @@ export async function PATCH(
       },
     });
 
+    // Revalidate avatar and wallpaper pages so changes show immediately
+    revalidatePath("/avatars");
+    revalidatePath(`/wallpaper/${updated.slug}`);
+    revalidatePath("/");
     return NextResponse.json({ ok: true, slug: updated.slug });
   } catch (err) {
     console.error("[images PATCH by id]", err);
