@@ -180,19 +180,15 @@ export default async function AvatarsPage() {
                       >
                         ↓ Download
                       </a>
-                      <button
+                      <a
+                        href={avatar.src}
+                        target="_blank"
+                        rel="noopener noreferrer"
                         className="hw-avatar-card__btn hw-avatar-card__btn--share"
-                        aria-label="Share"
-                        onClick={() => {
-                          if (navigator.share) {
-                            navigator.share({ title: avatar.title, url: avatar.src });
-                          } else {
-                            navigator.clipboard.writeText(avatar.src);
-                          }
-                        }}
+                        aria-label="Open full image"
                       >
-                        ↗ Share
-                      </button>
+                        ↗ Open
+                      </a>
                     </div>
 
                     {/* HTML description — tiny, collapsible column */}
