@@ -30,6 +30,7 @@ export async function POST(req: NextRequest) {
     const metaDescription = formData.get("metaDescription") as string | null;
     const isAdult      = formData.get("isAdult") === "true";
     const commentsEnabled = formData.get("commentsEnabled") === "true";
+    const isAvatar         = formData.get("isAvatar") === "true";
 
     if (!file || !slug || !title) {
       return NextResponse.json({ error: "file, slug, and title are required" }, { status: 400 });
@@ -111,6 +112,7 @@ export async function POST(req: NextRequest) {
         highResKey,
         isAdult,
         commentsEnabled,
+        isAvatar,
         deviceType:   (deviceType as "IPHONE" | "ANDROID" | "PC" | null) || null,
         tags:          parsedTags,
         collectionId:  collectionId || null,

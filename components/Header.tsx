@@ -13,6 +13,7 @@ const NAV_LINKS = [
   { label: "Mood",          href: "/mood"       },
   { label: "Live Wallpapers", href: "/live-wallpapers" },
   { label: "Tools",          href: "/tools"          },
+  { label: "Avatars",        href: "/avatars"       },
 ];
 
 export default function Header() {
