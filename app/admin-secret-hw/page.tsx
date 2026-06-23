@@ -1489,12 +1489,15 @@ function LiveWallpapersTab({password}:{password:string}){
   </div>;
 }
 
-interface VisitorPage   { path:string; duration:number|null; enteredAt:string; }
-interface VisitorEvent  { type:string; path:string; meta:Record<string,unknown>|null; createdAt:string; }
-interface LiveVisitor   { id:string; device:string|null; country:string|null; path:string; lastSeen:string; }
-interface SessionRow    { id:string; device:string|null; country:string|null; firstSeen:string; lastSeen:string; pageCount:number; totalDuration:number; pages:VisitorPage[]; events:VisitorEvent[]; }
-interface TopPage       { path:string; views:number; avgDuration:number; }
-interface VisitorsData  { liveCount:number; live:LiveVisitor[]; sessionsToday:number; sessions:SessionRow[]; topPages:TopPage[]; recentEvents:VisitorEvent[]; }
+interface VisitorPage    { path:string; duration:number|null; enteredAt:string; }
+interface VisitorEvent   { type:string; path:string; meta:Record<string,unknown>|null; createdAt:string; }
+interface LiveVisitor    { id:string; device:string|null; country:string|null; path:string; lastSeen:string; }
+interface SessionRow     { id:string; device:string|null; country:string|null; firstSeen:string; lastSeen:string; pageCount:number; totalDuration:number; pages:VisitorPage[]; events:VisitorEvent[]; }
+interface TopPage        { path:string; views:number; avgDuration:number; }
+interface TrafficSource  { source:string; count:number; }
+interface RefererSample  { referer:string; createdAt:string; }
+interface TrafficData    { downloadsToday:number; darkSocialToday:number; darkSocialPct:number; sourcesToday:TrafficSource[]; sourcesWeek:TrafficSource[]; refererSample:RefererSample[]; }
+interface VisitorsData   { liveCount:number; live:LiveVisitor[]; sessionsToday:number; sessions:SessionRow[]; topPages:TopPage[]; recentEvents:VisitorEvent[]; traffic:TrafficData; }
 
 function fmtSecs(s:number|null|undefined):string{
   if(!s||s<=0)return"—";
@@ -1511,12 +1514,29 @@ function timeAgo(iso:string):string{
   return`${Math.floor(h/24)}d ago`;
 }
 
+function TrafficBar({source,count,max,isTop}:{source:string;count:number;max:number;isTop:boolean}){
+  const pct=max>0?Math.round((count/max)*100):0;
+  const isDark=source==="Direct / Dark Social";
+  const color=isTop?C.red:isDark?"#7c3aed":C.gold;
+  return<div style={{marginBottom:"10px"}}>
+    <div style={{display:"flex",justifyContent:"space-between",alignItems:"baseline",marginBottom:"4px"}}>
+      <span style={{color:isDark?C.purple:C.textPri,fontSize:"0.8rem",fontWeight:isTop?700:400}}>{source}{isTop&&" 🏆"}</span>
+      <span style={{color:color,fontSize:"0.78rem",fontWeight:700,flexShrink:0,marginLeft:"12px"}}>{count} download{count!==1?"s":""}</span>
+    </div>
+    <div style={{height:"4px",background:"rgba(255,255,255,0.06)",borderRadius:"2px"}}>
+      <div style={{height:"100%",width:`${pct}%`,background:color,borderRadius:"2px",transition:"width 0.4s ease"}}/>
+    </div>
+  </div>;
+}
+
 function VisitorsTab({password}:{password:string}){
   const[data,setData]=useState<VisitorsData|null>(null);
   const[loading,setLoading]=useState(true);
   const[error,setError]=useState("");
   const[expanded,setExpanded]=useState<string|null>(null);
   const[autoRefresh,setAutoRefresh]=useState(true);
+  const[trafficRange,setTrafficRange]=useState<"today"|"week">("today");
+  const[showRawReferers,setShowRawReferers]=useState(false);
 
   const load=useCallback(async()=>{
     try{
@@ -1539,18 +1559,91 @@ function VisitorsTab({password}:{password:string}){
   if(error)return<p style={{color:C.red}}>{error}</p>;
   if(!data)return null;
 
+  const t=data.traffic;
+  const activeSources=trafficRange==="today"?t.sourcesToday:t.sourcesWeek;
+  const maxCount=activeSources[0]?.count??1;
+  const knownSources=activeSources.filter(s=>s.source!=="Direct / Dark Social"&&s.source!=="Internal (own site)");
+  const darkSocialRow=activeSources.find(s=>s.source==="Direct / Dark Social");
+
   return<div>
     <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:"16px"}}>
-      <p style={{color:C.textMut,fontSize:"0.7rem"}}>This reads directly from your own database (Session / PageView / AnalyticsEvent) — not Umami — so it sees everyone, including visitors whose ad-blocker kills third-party trackers.</p>
+      <p style={{color:C.textMut,fontSize:"0.7rem"}}>First-party tracking (Session / PageView / AnalyticsEvent + Download.referer). Immune to ad-blockers. The Traffic Sources section answers why Google Search Console shows almost no clicks.</p>
       <label style={{display:"flex",alignItems:"center",gap:"6px",color:C.textMut,fontSize:"0.65rem",flexShrink:0,marginLeft:"16px",cursor:"pointer"}}>
         <input type="checkbox" checked={autoRefresh} onChange={e=>setAutoRefresh(e.target.checked)}/> Auto-refresh 15s
       </label>
     </div>
-    <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:"12px",marginBottom:"24px"}}>
+
+    {/* ── Summary cards ── */}
+    <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:"12px",marginBottom:"24px"}}>
       <Card style={{textAlign:"center",padding:"20px 12px"}}><p style={{...eyebrow,marginBottom:"6px"}}>Live Now</p><p style={{color:C.green,fontSize:"1.8rem",fontWeight:700,lineHeight:1}}>{data.liveCount}</p><p style={{color:C.textMut,fontSize:"0.6rem",marginTop:"4px"}}>active in last 5 min</p></Card>
-      <Card style={{textAlign:"center",padding:"20px 12px"}}><p style={{...eyebrow,marginBottom:"6px"}}>Sessions Today</p><p style={{color:C.red,fontSize:"1.8rem",fontWeight:700,lineHeight:1}}>{data.sessionsToday}</p><p style={{color:C.textMut,fontSize:"0.6rem",marginTop:"4px"}}>distinct visitors</p></Card>
-      <Card style={{textAlign:"center",padding:"20px 12px"}}><p style={{...eyebrow,marginBottom:"6px"}}>Avg Time — Top Page</p><p style={{color:C.gold,fontSize:"1.8rem",fontWeight:700,lineHeight:1}}>{fmtSecs(data.topPages[0]?.avgDuration)}</p><p style={{color:C.textMut,fontSize:"0.6rem",marginTop:"4px"}}>{data.topPages[0]?.path??"—"}</p></Card>
+      <Card style={{textAlign:"center",padding:"20px 12px"}}><p style={{...eyebrow,marginBottom:"6px"}}>Sessions Today</p><p style={{color:C.red,fontSize:"1.8rem",fontWeight:700,lineHeight:1}}>{data.sessionsToday}</p><p style={{color:C.textMut,fontSize:"0.6rem",marginTop:"4px"}}>JS-tracked visitors</p></Card>
+      <Card style={{textAlign:"center",padding:"20px 12px"}}><p style={{...eyebrow,marginBottom:"6px"}}>Downloads Today</p><p style={{color:C.gold,fontSize:"1.8rem",fontWeight:700,lineHeight:1}}>{t.downloadsToday}</p><p style={{color:C.textMut,fontSize:"0.6rem",marginTop:"4px"}}>from Download table</p></Card>
+      <Card style={{textAlign:"center",padding:"20px 12px"}}><p style={{...eyebrow,marginBottom:"6px"}}>Dark Social</p><p style={{color:C.purple,fontSize:"1.8rem",fontWeight:700,lineHeight:1}}>{t.darkSocialPct}%</p><p style={{color:C.textMut,fontSize:"0.6rem",marginTop:"4px"}}>{t.darkSocialToday} downloads, no referer</p></Card>
     </div>
+
+    {/* ── Traffic Sources — the key panel ── */}
+    <Card style={{marginBottom:"24px"}}>
+      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:"16px"}}>
+        <div>
+          <p style={eyebrow}>🔍 Traffic Sources — where are downloaders coming from?</p>
+          <p style={{color:C.textMut,fontSize:"0.68rem",marginTop:"4px",lineHeight:1.5}}>
+            Based on the HTTP <code style={{color:C.purple}}>Referer</code> header logged on every download.
+            {t.darkSocialPct>=50&&<span style={{color:C.purple}}> {t.darkSocialPct}% have no referer — strong signal of dark-social sharing (WhatsApp / Telegram / Discord / direct links).</span>}
+            {t.darkSocialPct<50&&knownSources.length>0&&<span style={{color:C.gold}}> Top identified source: <strong>{knownSources[0]?.source}</strong>.</span>}
+            {t.downloadsToday===0&&<span style={{color:C.textMut}}> No downloads yet today — check the Week view.</span>}
+          </p>
+        </div>
+        <div style={{display:"flex",gap:"4px",flexShrink:0,marginLeft:"16px"}}>
+          {(["today","week"] as const).map(r=><button key={r} onClick={()=>setTrafficRange(r)} style={{background:trafficRange===r?C.red:"transparent",border:`1px solid ${trafficRange===r?C.red:C.border}`,color:trafficRange===r?"#fff":C.textSec,padding:"5px 12px",cursor:"pointer",fontSize:"0.65rem",fontFamily:"monospace",letterSpacing:"0.08em",textTransform:"uppercase"}}>{r==="today"?"Today":"7 Days"}</button>)}
+        </div>
+      </div>
+
+      {activeSources.length===0&&<p style={{color:C.textMut,fontSize:"0.78rem",padding:"12px 0"}}>No downloads in this period yet.</p>}
+
+      {/* Dark social callout first if dominant */}
+      {darkSocialRow&&<div style={{background:"rgba(124,58,237,0.08)",border:`1px solid rgba(124,58,237,0.3)`,padding:"12px 16px",marginBottom:"16px"}}>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:"6px"}}>
+          <span style={{color:C.purple,fontSize:"0.78rem",fontWeight:700}}>👻 Direct / Dark Social — {darkSocialRow.count} download{darkSocialRow.count!==1?"s":""}</span>
+          <span style={{color:C.purple,fontSize:"0.72rem"}}>{Math.round((darkSocialRow.count/Math.max(t.downloadsToday,1))*100)}% of today</span>
+        </div>
+        <p style={{color:C.textMut,fontSize:"0.68rem",lineHeight:1.5,margin:0}}>
+          No HTTP referer = the link was opened directly (typed, bookmarked, or pasted into a messaging app).
+          WhatsApp, Telegram, iMessage, and Discord all strip the referer header — this is your dark-social traffic.
+          Google Search Console will never show these. This is normal and expected if people are sharing your wallpapers.
+        </p>
+      </div>}
+
+      {/* Known sources bar chart */}
+      {activeSources.filter(s=>s.source!=="Direct / Dark Social").map((s,i)=>(
+        <TrafficBar key={s.source} source={s.source} count={s.count} max={maxCount} isTop={i===0&&s.source!=="Internal (own site)"}/>
+      ))}
+      {darkSocialRow&&<TrafficBar source={darkSocialRow.source} count={darkSocialRow.count} max={maxCount} isTop={false}/>}
+
+      {/* Diagnosis */}
+      <div style={{marginTop:"16px",padding:"12px 14px",background:"rgba(255,255,255,0.02)",borderLeft:`3px solid ${C.border}`}}>
+        <p style={{color:C.textMut,fontSize:"0.65rem",margin:0,lineHeight:1.7}}>
+          <strong style={{color:C.textSec}}>How to read this:</strong>{" "}
+          If "Direct / Dark Social" dominates → people are sharing links privately (WhatsApp groups, Discord servers, Telegram channels). Good sign.{" "}
+          If a social platform appears → that's your actual referral source. Check it manually.{" "}
+          If an unknown domain appears → it might be a wallpaper aggregator or scraper discovering your site — worth investigating.
+        </p>
+      </div>
+
+      {/* Raw referer sample toggle */}
+      {t.refererSample.length>0&&<>
+        <button onClick={()=>setShowRawReferers(v=>!v)} style={{marginTop:"14px",background:"transparent",border:`1px solid ${C.border}`,color:C.textMut,padding:"6px 12px",cursor:"pointer",fontSize:"0.65rem",fontFamily:"monospace"}}>
+          {showRawReferers?"▾ Hide":"▸ Show"} raw referer URLs ({t.refererSample.length} today)
+        </button>
+        {showRawReferers&&<div style={{marginTop:"10px"}}>
+          {t.refererSample.map((r,i)=><div key={i} style={{display:"flex",justifyContent:"space-between",padding:"5px 0",borderBottom:`1px solid ${C.border}`,fontSize:"0.68rem",gap:"12px"}}>
+            <code style={{color:C.textPri,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap",flex:1}}>{r.referer}</code>
+            <span style={{color:C.textMut,flexShrink:0}}>{timeAgo(r.createdAt)}</span>
+          </div>)}
+        </div>}
+      </>}
+    </Card>
+
+    {/* ── Live visitors ── */}
     <Card style={{marginBottom:"24px"}}>
       <p style={eyebrow}>👀 Live Now</p>
       {data.live.length===0&&<p style={{color:C.textMut,fontSize:"0.78rem",padding:"8px 0"}}>Nobody active in the last 5 minutes.</p>}
@@ -1563,6 +1656,8 @@ function VisitorsTab({password}:{password:string}){
         <code style={{color:C.textPri,fontSize:"0.72rem",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap",maxWidth:"260px"}}>{v.path}</code>
       </div>)}
     </Card>
+
+    {/* ── Top pages ── */}
     <Card style={{marginBottom:"24px"}}>
       <p style={eyebrow}>Top Pages Today — views &amp; average time spent</p>
       {data.topPages.length===0&&<p style={{color:C.textMut,fontSize:"0.78rem",padding:"8px 0"}}>No page views recorded yet today.</p>}
@@ -1574,6 +1669,8 @@ function VisitorsTab({password}:{password:string}){
         </span>
       </div>)}
     </Card>
+
+    {/* ── Recent events ── */}
     <Card style={{marginBottom:"24px"}}>
       <p style={eyebrow}>Recent Activity — downloads, previews, favorites</p>
       {data.recentEvents.length===0&&<p style={{color:C.textMut,fontSize:"0.78rem",padding:"8px 0"}}>No events logged yet today.</p>}
@@ -1583,8 +1680,14 @@ function VisitorsTab({password}:{password:string}){
         <span style={{color:C.textMut,fontSize:"0.66rem",flexShrink:0}}>{timeAgo(e.createdAt)}</span>
       </div>)}
     </Card>
+
+    {/* ── Session list ── */}
     <Card>
-      <p style={eyebrow}>Today&apos;s Sessions — {data.sessions.length} visitors, click to expand</p>
+      <p style={eyebrow}>Today&apos;s Sessions — {data.sessions.length} JS-tracked visitors, click to expand</p>
+      <p style={{color:C.textMut,fontSize:"0.65rem",marginBottom:"12px",lineHeight:1.5}}>
+        Note: This count is lower than Downloads Today because session tracking requires JavaScript to load first.
+        Downloads that happen before hydration, or via shared direct links with no page visit, won&apos;t appear here.
+      </p>
       {data.sessions.map(s=>{
         const isOpen=expanded===s.id;
         return<div key={s.id} style={{borderBottom:`1px solid ${C.border}`}}>

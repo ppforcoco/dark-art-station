@@ -3,6 +3,10 @@
 // Powers the "Visitors" tab in the admin panel — answers "who's on the site
 // right now, which page, and what are they doing" using our own first-party
 // Session / PageView / AnalyticsEvent tables instead of Umami.
+//
+// Also answers "where are these downloaders coming from?" by querying the
+// Download table's referer column — the only reliable signal for dark-social
+// and direct-link traffic that Google / Pinterest never see.
 
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
@@ -13,19 +17,49 @@ function checkAuth(req: NextRequest) {
   return pw === correct;
 }
 
+// Classify a raw referer string into a human-readable traffic source label.
+function classifyReferer(raw: string | null): string {
+  if (!raw) return "Direct / Dark Social";
+
+  try {
+    const url   = new URL(raw);
+    const host  = url.hostname.replace(/^www\./, "").toLowerCase();
+    const path  = url.pathname.toLowerCase();
+
+    if (host === "t.co" || host === "twitter.com" || host === "x.com")        return "Twitter / X";
+    if (host.includes("pinterest"))                                             return "Pinterest";
+    if (host.includes("reddit"))                                                return "Reddit";
+    if (host.includes("google"))                                                return path.includes("/imgres") ? "Google Images" : "Google Search";
+    if (host.includes("bing"))                                                  return "Bing";
+    if (host.includes("facebook") || host === "fb.me" || host === "l.facebook.com") return "Facebook";
+    if (host.includes("instagram"))                                             return "Instagram";
+    if (host.includes("tiktok"))                                                return "TikTok";
+    if (host.includes("discord"))                                               return "Discord";
+    if (host.includes("telegram"))                                              return "Telegram";
+    if (host.includes("whatsapp"))                                              return "WhatsApp";
+    if (host.includes("tumblr"))                                                return "Tumblr";
+    if (host.includes("hauntedwallpapers.com"))                                 return "Internal (own site)";
+
+    return host; // Unknown external domain — show it raw so you can spot aggregators
+  } catch {
+    return "Direct / Dark Social";
+  }
+}
+
 export async function GET(req: NextRequest) {
   if (!checkAuth(req)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   try {
-    const now         = new Date();
-    const fiveMinAgo  = new Date(now.getTime() - 5 * 60 * 1000);
-    const todayStart  = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const now        = new Date();
+    const fiveMinAgo = new Date(now.getTime() - 5  * 60 * 1000);
+    const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const weekStart  = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
 
     // ── Who's on the site right now (active in the last 5 minutes) ──────────
     const liveRaw = await db.session.findMany({
-      where: { lastSeen: { gte: fiveMinAgo } },
+      where:   { lastSeen: { gte: fiveMinAgo } },
       orderBy: { lastSeen: "desc" },
       include: { pageViews: { orderBy: { enteredAt: "desc" }, take: 1 } },
     });
@@ -40,7 +74,7 @@ export async function GET(req: NextRequest) {
 
     // ── Every session seen today, with their full page trail + events ───────
     const sessionsRaw = await db.session.findMany({
-      where: { lastSeen: { gte: todayStart } },
+      where:   { lastSeen: { gte: todayStart } },
       orderBy: { lastSeen: "desc" },
       take: 100,
       include: {
@@ -72,10 +106,10 @@ export async function GET(req: NextRequest) {
 
     // ── Which pages get viewed today, and the average time spent on each ────
     const pageStats = await db.pageView.groupBy({
-      by: ["path"],
-      where: { enteredAt: { gte: todayStart } },
-      _count: { path: true },
-      _avg: { duration: true },
+      by:      ["path"],
+      where:   { enteredAt: { gte: todayStart } },
+      _count:  { path: true },
+      _avg:    { duration: true },
       orderBy: { _count: { path: "desc" } },
       take: 15,
     });
@@ -88,7 +122,7 @@ export async function GET(req: NextRequest) {
 
     // ── Recent named events (downloads, previews, favorites) for a live feed ─
     const recentEventsRaw = await db.analyticsEvent.findMany({
-      where: { createdAt: { gte: todayStart } },
+      where:   { createdAt: { gte: todayStart } },
       orderBy: { createdAt: "desc" },
       take: 30,
     });
@@ -100,6 +134,56 @@ export async function GET(req: NextRequest) {
       createdAt: e.createdAt,
     }));
 
+    // ── Traffic source breakdown from Download.referer ───────────────────────
+    // This is the key signal for understanding where downloaders actually come
+    // from. Google Search Console and Pinterest outbound clicks both miss
+    // dark-social sharing (WhatsApp, Telegram, Discord, direct links).
+    // The referer header on the download request is the most reliable proxy.
+
+    const [downloadsToday, downloadsWeek] = await Promise.all([
+      db.download.findMany({
+        where:  { createdAt: { gte: todayStart } },
+        select: { referer: true },
+      }),
+      db.download.findMany({
+        where:  { createdAt: { gte: weekStart } },
+        select: { referer: true },
+      }),
+    ]);
+
+    // Aggregate by classified source label
+    function aggregateSources(rows: { referer: string | null }[]) {
+      const map = new Map<string, number>();
+      for (const row of rows) {
+        const label = classifyReferer(row.referer);
+        map.set(label, (map.get(label) ?? 0) + 1);
+      }
+      return Array.from(map.entries())
+        .sort((a, b) => b[1] - a[1])
+        .map(([source, count]) => ({ source, count }));
+    }
+
+    const trafficSourcesToday = aggregateSources(downloadsToday);
+    const trafficSourcesWeek  = aggregateSources(downloadsWeek);
+
+    // Raw referer sample for today — the 20 most recent non-null ones so you
+    // can spot unknown aggregator domains without having to query the DB manually.
+    const rawRefererSample = await db.download.findMany({
+      where:   { createdAt: { gte: todayStart }, referer: { not: null } },
+      orderBy: { createdAt: "desc" },
+      take: 20,
+      select:  { referer: true, createdAt: true },
+    });
+
+    const refererSample = rawRefererSample.map((r) => ({
+      referer:   r.referer!,
+      createdAt: r.createdAt,
+    }));
+
+    // Download count totals for the summary cards
+    const totalDownloadsToday = downloadsToday.length;
+    const nullRefererToday    = downloadsToday.filter((d) => d.referer === null).length;
+
     return NextResponse.json({
       liveCount: live.length,
       live,
@@ -107,6 +191,17 @@ export async function GET(req: NextRequest) {
       sessions,
       topPages,
       recentEvents,
+      // New: traffic source intelligence
+      traffic: {
+        downloadsToday:      totalDownloadsToday,
+        darkSocialToday:     nullRefererToday,
+        darkSocialPct:       totalDownloadsToday > 0
+          ? Math.round((nullRefererToday / totalDownloadsToday) * 100)
+          : 0,
+        sourcesToday:        trafficSourcesToday,
+        sourcesWeek:         trafficSourcesWeek,
+        refererSample,
+      },
     });
   } catch (err) {
     console.error("[admin/visitors]", err);
