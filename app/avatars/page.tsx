@@ -186,15 +186,11 @@ export default async function AvatarsPage() {
                       />
                     </div>
 
-                    {/* HTML description — strip inline styles, render tiny */}
+                    {/* HTML description — render as-is, trust the HTML */}
                     {avatar.description && (
                       <div
                         className="hw-avatar-card__desc"
-                        dangerouslySetInnerHTML={{
-                          __html: avatar.description
-                            .replace(/style="[^"]*"/gi, "")
-                            .replace(/style=\'[^\']*\'/gi, "")
-                        }}
+                        dangerouslySetInnerHTML={{ __html: avatar.description }}
                       />
                     )}
                   </div>
@@ -393,51 +389,12 @@ export default async function AvatarsPage() {
           background: rgba(201,168,76,0.06);
         }
 
-        /* ── HTML description — ultra-tiny, shows everything, no cut-off ── */
+        /* ── HTML description — no overrides, renders exactly as admin wrote it ── */
         .hw-avatar-card__desc {
-          font-size: 0.62rem;
-          color: rgba(232,228,220,0.4);
-          line-height: 1.5;
-          margin-top: 6px;
-          border-top: 1px solid rgba(255,255,255,0.05);
-          padding-top: 6px;
-          overflow-wrap: break-word;
-          word-break: break-word;
+          margin-top: 8px;
+          overflow: hidden;
+          border-radius: 0 0 4px 4px;
         }
-        /* Force ALL html tags to be tiny and muted — no drama, no big headings */
-        .hw-avatar-card__desc * {
-          font-size: 0.62rem !important;
-          line-height: 1.5 !important;
-          color: rgba(232,228,220,0.4) !important;
-          background: none !important;
-          margin: 0 0 3px !important;
-          padding: 0 !important;
-          font-family: var(--font-space, monospace) !important;
-        }
-        .hw-avatar-card__desc p  { display: block; }
-        .hw-avatar-card__desc h1,.hw-avatar-card__desc h2,
-        .hw-avatar-card__desc h3,.hw-avatar-card__desc h4 {
-          font-weight: 700 !important;
-          color: rgba(232,228,220,0.6) !important;
-          letter-spacing: 0.05em;
-          text-transform: uppercase;
-        }
-        .hw-avatar-card__desc ul,.hw-avatar-card__desc ol { padding-left: 12px !important; }
-        .hw-avatar-card__desc li { display: list-item; }
-        .hw-avatar-card__desc blockquote {
-          border-left: 2px solid rgba(192,0,26,0.5) !important;
-          padding-left: 6px !important;
-          font-style: italic;
-          opacity: 0.7;
-        }
-        .hw-avatar-card__desc a { color: rgba(192,0,26,0.8) !important; text-decoration: underline; }
-        .hw-avatar-card__desc strong,.hw-avatar-card__desc b {
-          font-weight: 700 !important;
-          color: rgba(232,228,220,0.55) !important;
-        }
-        .hw-avatar-card__desc em,.hw-avatar-card__desc i { font-style: italic; }
-        .hw-avatar-card__desc hr { border: none; border-top: 1px solid rgba(255,255,255,0.07); margin: 4px 0 !important; }
-        .hw-avatar-card__desc img { display: none; }
 
         /* ── Empty state ── */
         .hw-avatars-empty {
