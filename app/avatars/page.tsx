@@ -186,11 +186,15 @@ export default async function AvatarsPage() {
                       />
                     </div>
 
-                    {/* HTML description — tiny, collapsible column */}
+                    {/* HTML description — strip inline styles, render tiny */}
                     {avatar.description && (
                       <div
                         className="hw-avatar-card__desc"
-                        dangerouslySetInnerHTML={{ __html: avatar.description }}
+                        dangerouslySetInnerHTML={{
+                          __html: avatar.description
+                            .replace(/style="[^"]*"/gi, "")
+                            .replace(/style=\'[^\']*\'/gi, "")
+                        }}
                       />
                     )}
                   </div>
@@ -329,7 +333,7 @@ export default async function AvatarsPage() {
           object-position: center;
           display: block;
           transition: transform 0.35s ease;
-          padding: 4px;
+          padding: 10px;
         }
         .hw-avatar-card:hover .hw-avatar-card__img {
           transform: scale(1.03);
