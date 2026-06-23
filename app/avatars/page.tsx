@@ -9,6 +9,7 @@ import { getPublicUrl } from "@/lib/r2";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import AdminHtmlBlock from "@/components/AdminHtmlBlock";
 import { getPageContent } from "@/lib/db";
+import AvatarShareBtn from "@/components/AvatarShareBtn";
 
 export const revalidate = 60;
 
@@ -58,7 +59,7 @@ export default async function AvatarsPage() {
         orderBy: { createdAt: "desc" },
         select: {
           id: true, slug: true, title: true, description: true,
-          r2Key: true, tags: true,
+          r2Key: true, highResKey: true, tags: true,
         },
       }),
       getPageContent("avatars"),
@@ -173,22 +174,16 @@ export default async function AvatarsPage() {
                     {/* Always-visible action buttons */}
                     <div className="hw-avatar-card__actions">
                       <a
-                        href={avatar.src}
-                        download={`${avatar.slug}-haunted-pfp.jpg`}
+                        href={`/api/download/image/${avatar.id}`}
                         className="hw-avatar-card__btn hw-avatar-card__btn--dl"
                         aria-label={`Download ${avatar.title}`}
                       >
                         ↓ Download
                       </a>
-                      <a
-                        href={avatar.src}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="hw-avatar-card__btn hw-avatar-card__btn--share"
-                        aria-label="Open full image"
-                      >
-                        ↗ Open
-                      </a>
+                      <AvatarShareBtn
+                        url={avatar.src}
+                        title={avatar.title}
+                      />
                     </div>
 
                     {/* HTML description — tiny, collapsible column */}
@@ -395,32 +390,51 @@ export default async function AvatarsPage() {
           background: rgba(201,168,76,0.06);
         }
 
-        /* ── HTML description — tiny, narrow, shrinks to fit ── */
+        /* ── HTML description — ultra-tiny, shows everything, no cut-off ── */
         .hw-avatar-card__desc {
-          font-size: 0.68rem;
-          color: rgba(232,228,220,0.45);
-          line-height: 1.55;
-          max-height: 80px;
-          overflow: hidden;
-          position: relative;
+          font-size: 0.62rem;
+          color: rgba(232,228,220,0.4);
+          line-height: 1.5;
+          margin-top: 6px;
+          border-top: 1px solid rgba(255,255,255,0.05);
+          padding-top: 6px;
+          overflow-wrap: break-word;
+          word-break: break-word;
         }
-        .hw-avatar-card__desc::after {
-          content: "";
-          position: absolute;
-          bottom: 0;
-          left: 0;
-          right: 0;
-          height: 24px;
-          background: linear-gradient(transparent, #13111e);
+        /* Force ALL html tags to be tiny and muted — no drama, no big headings */
+        .hw-avatar-card__desc * {
+          font-size: 0.62rem !important;
+          line-height: 1.5 !important;
+          color: rgba(232,228,220,0.4) !important;
+          background: none !important;
+          margin: 0 0 3px !important;
+          padding: 0 !important;
+          font-family: var(--font-space, monospace) !important;
         }
-        /* Strip all dramatic styling from HTML, keep it tiny */
-        .hw-avatar-card__desc * { font-size: inherit !important; color: inherit !important; }
-        .hw-avatar-card__desc p  { margin-bottom: 4px; }
-        .hw-avatar-card__desc h1,.hw-avatar-card__desc h2,.hw-avatar-card__desc h3 { font-weight:600; margin-bottom:3px; }
-        .hw-avatar-card__desc ul { padding-left: 14px; margin-bottom: 4px; }
-        .hw-avatar-card__desc li { margin-bottom: 2px; }
-        .hw-avatar-card__desc blockquote { padding-left: 8px; border-left: 2px solid #c0001a; margin: 4px 0; font-style: italic; }
-        .hw-avatar-card__desc a { text-decoration: underline; }
+        .hw-avatar-card__desc p  { display: block; }
+        .hw-avatar-card__desc h1,.hw-avatar-card__desc h2,
+        .hw-avatar-card__desc h3,.hw-avatar-card__desc h4 {
+          font-weight: 700 !important;
+          color: rgba(232,228,220,0.6) !important;
+          letter-spacing: 0.05em;
+          text-transform: uppercase;
+        }
+        .hw-avatar-card__desc ul,.hw-avatar-card__desc ol { padding-left: 12px !important; }
+        .hw-avatar-card__desc li { display: list-item; }
+        .hw-avatar-card__desc blockquote {
+          border-left: 2px solid rgba(192,0,26,0.5) !important;
+          padding-left: 6px !important;
+          font-style: italic;
+          opacity: 0.7;
+        }
+        .hw-avatar-card__desc a { color: rgba(192,0,26,0.8) !important; text-decoration: underline; }
+        .hw-avatar-card__desc strong,.hw-avatar-card__desc b {
+          font-weight: 700 !important;
+          color: rgba(232,228,220,0.55) !important;
+        }
+        .hw-avatar-card__desc em,.hw-avatar-card__desc i { font-style: italic; }
+        .hw-avatar-card__desc hr { border: none; border-top: 1px solid rgba(255,255,255,0.07); margin: 4px 0 !important; }
+        .hw-avatar-card__desc img { display: none; }
 
         /* ── Empty state ── */
         .hw-avatars-empty {
