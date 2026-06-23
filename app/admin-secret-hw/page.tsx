@@ -1497,7 +1497,10 @@ interface TopPage        { path:string; views:number; avgDuration:number; }
 interface TrafficSource  { source:string; count:number; }
 interface RefererSample  { referer:string; createdAt:string; }
 interface TrafficData    { downloadsToday:number; darkSocialToday:number; darkSocialPct:number; sourcesToday:TrafficSource[]; sourcesWeek:TrafficSource[]; refererSample:RefererSample[]; }
-interface VisitorsData   { liveCount:number; live:LiveVisitor[]; sessionsToday:number; sessions:SessionRow[]; topPages:TopPage[]; recentEvents:VisitorEvent[]; traffic:TrafficData; }
+interface SharePlatform  { platform:string; count:number; }
+interface ShareSlug      { slug:string; count:number; }
+interface ShareData      { today:number; week:number; platforms:SharePlatform[]; topWallpapers:ShareSlug[]; }
+interface VisitorsData   { liveCount:number; live:LiveVisitor[]; sessionsToday:number; sessions:SessionRow[]; topPages:TopPage[]; recentEvents:VisitorEvent[]; shares:ShareData; traffic:TrafficData; }
 
 function fmtSecs(s:number|null|undefined):string{
   if(!s||s<=0)return"—";
@@ -1537,6 +1540,7 @@ function VisitorsTab({password}:{password:string}){
   const[autoRefresh,setAutoRefresh]=useState(true);
   const[trafficRange,setTrafficRange]=useState<"today"|"week">("today");
   const[showRawReferers,setShowRawReferers]=useState(false);
+  const[shareRange,setShareRange]=useState<"today"|"week">("today");
 
   const load=useCallback(async()=>{
     try{
@@ -1560,6 +1564,7 @@ function VisitorsTab({password}:{password:string}){
   if(!data)return null;
 
   const t=data.traffic;
+  const sh=data.shares;
   const activeSources=trafficRange==="today"?t.sourcesToday:t.sourcesWeek;
   const maxCount=activeSources[0]?.count??1;
   const knownSources=activeSources.filter(s=>s.source!=="Direct / Dark Social"&&s.source!=="Internal (own site)");
@@ -1574,11 +1579,12 @@ function VisitorsTab({password}:{password:string}){
     </div>
 
     {/* ── Summary cards ── */}
-    <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:"12px",marginBottom:"24px"}}>
+    <div style={{display:"grid",gridTemplateColumns:"repeat(5,1fr)",gap:"12px",marginBottom:"24px"}}>
       <Card style={{textAlign:"center",padding:"20px 12px"}}><p style={{...eyebrow,marginBottom:"6px"}}>Live Now</p><p style={{color:C.green,fontSize:"1.8rem",fontWeight:700,lineHeight:1}}>{data.liveCount}</p><p style={{color:C.textMut,fontSize:"0.6rem",marginTop:"4px"}}>active in last 5 min</p></Card>
       <Card style={{textAlign:"center",padding:"20px 12px"}}><p style={{...eyebrow,marginBottom:"6px"}}>Sessions Today</p><p style={{color:C.red,fontSize:"1.8rem",fontWeight:700,lineHeight:1}}>{data.sessionsToday}</p><p style={{color:C.textMut,fontSize:"0.6rem",marginTop:"4px"}}>JS-tracked visitors</p></Card>
       <Card style={{textAlign:"center",padding:"20px 12px"}}><p style={{...eyebrow,marginBottom:"6px"}}>Downloads Today</p><p style={{color:C.gold,fontSize:"1.8rem",fontWeight:700,lineHeight:1}}>{t.downloadsToday}</p><p style={{color:C.textMut,fontSize:"0.6rem",marginTop:"4px"}}>from Download table</p></Card>
-      <Card style={{textAlign:"center",padding:"20px 12px"}}><p style={{...eyebrow,marginBottom:"6px"}}>Dark Social</p><p style={{color:C.purple,fontSize:"1.8rem",fontWeight:700,lineHeight:1}}>{t.darkSocialPct}%</p><p style={{color:C.textMut,fontSize:"0.6rem",marginTop:"4px"}}>{t.darkSocialToday} downloads, no referer</p></Card>
+      <Card style={{textAlign:"center",padding:"20px 12px"}}><p style={{...eyebrow,marginBottom:"6px"}}>Dark Social</p><p style={{color:C.purple,fontSize:"1.8rem",fontWeight:700,lineHeight:1}}>{t.darkSocialPct}%</p><p style={{color:C.textMut,fontSize:"0.6rem",marginTop:"4px"}}>{t.darkSocialToday} no-referer</p></Card>
+      <Card style={{textAlign:"center",padding:"20px 12px"}}><p style={{...eyebrow,marginBottom:"6px"}}>Share Clicks</p><p style={{color:"#4fc3f7",fontSize:"1.8rem",fontWeight:700,lineHeight:1}}>{sh.today}</p><p style={{color:C.textMut,fontSize:"0.6rem",marginTop:"4px"}}>{sh.week} this week</p></Card>
     </div>
 
     {/* ── Traffic Sources — the key panel ── */}
@@ -1640,6 +1646,63 @@ function VisitorsTab({password}:{password:string}){
             <span style={{color:C.textMut,flexShrink:0}}>{timeAgo(r.createdAt)}</span>
           </div>)}
         </div>}
+      </>}
+    </Card>
+
+    {/* ── Share clicks panel ── */}
+    <Card style={{marginBottom:"24px"}}>
+      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:"16px"}}>
+        <div>
+          <p style={eyebrow}>🔗 Share Clicks — what people share &amp; where</p>
+          <p style={{color:C.textMut,fontSize:"0.68rem",marginTop:"4px",lineHeight:1.5}}>
+            Tracked when visitors click Pinterest, WhatsApp, X, or Copy Link on any wallpaper page.
+            {sh.week===0&&<span style={{color:C.textMut}}> No shares recorded yet — buttons are live, waiting for first click.</span>}
+            {sh.week>0&&sh.platforms[0]&&<span style={{color:"#4fc3f7"}}> Most used: <strong>{sh.platforms[0].platform}</strong> ({sh.platforms[0].count}×).</span>}
+          </p>
+        </div>
+        <div style={{display:"flex",gap:"4px",flexShrink:0,marginLeft:"16px"}}>
+          {(["today","week"] as const).map(r=><button key={r} onClick={()=>setShareRange(r)} style={{background:shareRange===r?C.red:"transparent",border:`1px solid ${shareRange===r?C.red:C.border}`,color:shareRange===r?"#fff":C.textSec,padding:"5px 12px",cursor:"pointer",fontSize:"0.65rem",fontFamily:"monospace",letterSpacing:"0.08em",textTransform:"uppercase"}}>{r==="today"?"Today":"7 Days"}</button>)}
+        </div>
+      </div>
+
+      {sh.week===0&&<p style={{color:C.textMut,fontSize:"0.78rem",padding:"8px 0"}}>No share clicks recorded yet. The buttons are live — they&apos;ll appear here as soon as someone clicks.</p>}
+
+      {sh.platforms.length>0&&<>
+        <p style={{...eyebrow,marginBottom:"10px"}}>By platform</p>
+        {(shareRange==="today"
+          ? sh.platforms.map(p=>({...p,count:0})) // today breakdown not stored separately; fall back to week
+          : sh.platforms
+        ).length===0
+          ? <p style={{color:C.textMut,fontSize:"0.75rem"}}>No shares yet today.</p>
+          : sh.platforms.map((p,i)=>{
+            const label:Record<string,string>={pinterest:"📌 Pinterest",x:"𝕏 Post on X",whatsapp:"💬 WhatsApp",copy_link:"🔗 Copy Link",native:"📤 Native Share",unknown:"❓ Unknown"};
+            const color:Record<string,string>={pinterest:C.red,x:C.textPri,whatsapp:"#25d366",copy_link:"#4fc3f7",native:C.gold};
+            const max=sh.platforms[0]?.count??1;
+            return<div key={p.platform} style={{marginBottom:"10px"}}>
+              <div style={{display:"flex",justifyContent:"space-between",marginBottom:"3px"}}>
+                <span style={{color:color[p.platform]??C.textSec,fontSize:"0.8rem"}}>{label[p.platform]??p.platform}</span>
+                <span style={{color:color[p.platform]??C.textSec,fontSize:"0.78rem",fontWeight:700}}>{p.count}×</span>
+              </div>
+              <div style={{height:"3px",background:"rgba(255,255,255,0.06)",borderRadius:"2px"}}>
+                <div style={{height:"100%",width:`${Math.round((p.count/max)*100)}%`,background:color[p.platform]??C.textMut,borderRadius:"2px"}}/>
+              </div>
+            </div>;
+          })
+        }
+      </>}
+
+      {sh.topWallpapers.length>0&&<>
+        <p style={{...eyebrow,marginTop:"16px",marginBottom:"10px"}}>Most shared wallpapers (7 days)</p>
+        {sh.topWallpapers.map((w,i)=><div key={w.slug} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"6px 0",borderBottom:`1px solid ${C.border}`,fontSize:"0.78rem"}}>
+          <span style={{display:"flex",alignItems:"center",gap:"8px"}}>
+            <span style={{color:C.textMut,fontSize:"0.65rem",minWidth:"16px"}}>{i+1}.</span>
+            <code style={{color:C.textPri}}>{w.slug}</code>
+          </span>
+          <span style={{color:"#4fc3f7",fontWeight:700,flexShrink:0}}>{w.count} share{w.count!==1?"s":""}</span>
+        </div>)}
+        <p style={{color:C.textMut,fontSize:"0.65rem",marginTop:"10px",lineHeight:1.5}}>
+          💡 Cross-reference these slugs with your Downloads Today data. High shares + high downloads on the same wallpaper = confirmed viral spread.
+        </p>
       </>}
     </Card>
 
