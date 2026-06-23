@@ -112,7 +112,6 @@ export default async function AvatarsPage() {
       {/* ── Hero ── */}
       <section className="hw-avatars-hero">
         <div className="hw-avatars-hero__inner">
-          <p className="hw-avatars-eyebrow">Profile Pictures</p>
           <h1 className="hw-avatars-title">
             {pageContent?.title ? (
               <span dangerouslySetInnerHTML={{ __html: pageContent.title }} />
@@ -122,30 +121,8 @@ export default async function AvatarsPage() {
               </>
             )}
           </h1>
-
-          {!pageContent?.body && (
-            <div className="hw-avatars-intro">
-              <p>
-                Your default pfp is doing you dirty. These were made specifically for Discord,
-                Steam, and anywhere else a tiny square needs to say something — 1:1 ratio,
-                sharp at every size, no white backgrounds, no cheerful gradients.
-              </p>
-              <p>
-                Pick one, right-click, save. That&apos;s the whole process. No account,
-                no watermark, no &ldquo;download our app first.&rdquo; Just dark art that
-                actually fits the vibe.
-              </p>
-            </div>
-          )}
         </div>
       </section>
-
-      {/* ── Admin HTML Block (overrides default intro if set) ── */}
-      {pageContent?.body && (
-        <div style={{ maxWidth: "900px", margin: "0 auto", padding: "0 24px 40px" }}>
-          <AdminHtmlBlock html={pageContent.body} />
-        </div>
-      )}
 
       {/* ── Nav pills ── */}
       <nav className="hw-avatars-nav" aria-label="Related pages">
@@ -186,7 +163,7 @@ export default async function AvatarsPage() {
             <div className="hw-avatars-grid">
               {avatars.map((avatar, i) => (
                 <article key={avatar.id} className="hw-avatar-card">
-                  {/* 1:1 square image wrapper */}
+                  {/* 1:1 square image */}
                   <div className="hw-avatar-card__img-wrap">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
@@ -197,38 +174,43 @@ export default async function AvatarsPage() {
                       decoding="async"
                       draggable={false}
                     />
-                    <div className="hw-avatar-card__overlay">
-                      <a
-                        href={avatar.src}
-                        download={`${avatar.slug}-haunted-avatar.jpg`}
-                        className="hw-avatar-card__dl"
-                        aria-label={`Download ${avatar.title}`}
-                      >
-                        ↓ Save
-                      </a>
-                    </div>
                   </div>
 
-                  {/* Description block — renders any HTML from admin */}
+                  {/* Card body */}
                   <div className="hw-avatar-card__body">
                     <h2 className="hw-avatar-card__title">{avatar.title}</h2>
+
+                    {/* Always-visible action buttons */}
+                    <div className="hw-avatar-card__actions">
+                      <a
+                        href={avatar.src}
+                        download={`${avatar.slug}-haunted-pfp.jpg`}
+                        className="hw-avatar-card__btn hw-avatar-card__btn--dl"
+                        aria-label={`Download ${avatar.title}`}
+                      >
+                        ↓ Download
+                      </a>
+                      <button
+                        className="hw-avatar-card__btn hw-avatar-card__btn--share"
+                        aria-label="Share"
+                        onClick={() => {
+                          if (navigator.share) {
+                            navigator.share({ title: avatar.title, url: avatar.src });
+                          } else {
+                            navigator.clipboard.writeText(avatar.src);
+                          }
+                        }}
+                      >
+                        ↗ Share
+                      </button>
+                    </div>
+
+                    {/* HTML description — tiny, collapsible column */}
                     {avatar.description && (
                       <div
                         className="hw-avatar-card__desc"
                         dangerouslySetInnerHTML={{ __html: avatar.description }}
                       />
-                    )}
-                    {avatar.tags.length > 0 && (
-                      <div className="hw-avatar-card__tags">
-                        {avatar.tags
-                          .filter((t) => !t.startsWith("badge-"))
-                          .slice(0, 4)
-                          .map((tag) => (
-                            <span key={tag} className="hw-avatar-card__tag">
-                              #{tag}
-                            </span>
-                          ))}
-                      </div>
                     )}
                   </div>
                 </article>
@@ -257,44 +239,27 @@ export default async function AvatarsPage() {
       <style>{`
         /* ── Hero ── */
         .hw-avatars-hero {
-          padding: clamp(40px, 8vw, 80px) clamp(20px, 5vw, 60px) 32px;
+          padding: clamp(32px, 6vw, 64px) clamp(20px, 5vw, 60px) 24px;
           max-width: 1280px;
           margin: 0 auto;
         }
         .hw-avatars-hero__inner { max-width: 680px; }
-        .hw-avatars-eyebrow {
-          font-family: var(--font-space, monospace);
-          font-size: 0.6rem;
-          letter-spacing: 0.25em;
-          text-transform: uppercase;
-          color: #c0001a;
-          margin-bottom: 12px;
-        }
         .hw-avatars-title {
           font-family: var(--font-display, serif);
-          font-size: clamp(2rem, 6vw, 3.5rem);
+          font-size: clamp(1.8rem, 5vw, 3rem);
           font-weight: 700;
           line-height: 1.1;
-          margin-bottom: 20px;
+          margin-bottom: 0;
           color: var(--text-primary, #e8e4dc);
         }
         .hw-avatars-title__accent {
           color: #c9a84c;
           font-style: italic;
         }
-        .hw-avatars-intro {
-          max-width: 580px;
-        }
-        .hw-avatars-intro p {
-          font-size: clamp(0.88rem, 2.2vw, 1rem);
-          color: rgba(232,228,220,0.75);
-          line-height: 1.75;
-          margin-bottom: 12px;
-        }
 
         /* ── Nav pills ── */
         .hw-avatars-nav {
-          padding: 0 clamp(20px, 5vw, 60px) 28px;
+          padding: 20px clamp(20px, 5vw, 60px) 24px;
           max-width: 1280px;
           margin: 0 auto;
         }
@@ -312,7 +277,7 @@ export default async function AvatarsPage() {
           color: rgba(232,228,220,0.6);
           border: 1px solid rgba(255,255,255,0.1);
           background: rgba(255,255,255,0.03);
-          padding: 9px 18px;
+          padding: 7px 14px;
           transition: all 0.2s ease;
         }
         .hw-avatars-nav__pill:hover {
@@ -324,10 +289,9 @@ export default async function AvatarsPage() {
           border-color: rgba(192,0,26,0.65);
           color: #fff;
           background: rgba(192,0,26,0.12);
-          box-shadow: 0 0 14px rgba(192,0,26,0.15);
         }
 
-        /* ── Section wrapper ── */
+        /* ── Section ── */
         .hw-avatars-section {
           max-width: 1280px;
           margin: 0 auto;
@@ -339,27 +303,23 @@ export default async function AvatarsPage() {
           letter-spacing: 0.2em;
           text-transform: uppercase;
           color: #4a445a;
-          margin-bottom: 24px;
+          margin-bottom: 20px;
         }
 
-        /* ── Grid — auto-fill, min 140px on mobile, max 260px on desktop ── */
+        /* ── Grid ── */
         .hw-avatars-grid {
           display: grid;
           grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-          gap: clamp(10px, 2vw, 20px);
+          gap: clamp(10px, 2vw, 18px);
         }
         @media (min-width: 640px) {
-          .hw-avatars-grid {
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-          }
+          .hw-avatars-grid { grid-template-columns: repeat(auto-fill, minmax(175px, 1fr)); }
         }
         @media (min-width: 1024px) {
-          .hw-avatars-grid {
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-          }
+          .hw-avatars-grid { grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); }
         }
 
-        /* ── Avatar card ── */
+        /* ── Card ── */
         .hw-avatar-card {
           background: #13111e;
           border: 1px solid #2a2535;
@@ -367,11 +327,11 @@ export default async function AvatarsPage() {
           transition: border-color 0.2s ease, box-shadow 0.2s ease;
         }
         .hw-avatar-card:hover {
-          border-color: rgba(192,0,26,0.55);
-          box-shadow: 0 0 20px rgba(192,0,26,0.12);
+          border-color: rgba(192,0,26,0.45);
+          box-shadow: 0 0 16px rgba(192,0,26,0.1);
         }
 
-        /* ── 1:1 square container — always perfect square, never cuts ── */
+        /* ── 1:1 image ── */
         .hw-avatar-card__img-wrap {
           position: relative;
           width: 100%;
@@ -388,100 +348,93 @@ export default async function AvatarsPage() {
           transition: transform 0.35s ease;
         }
         .hw-avatar-card:hover .hw-avatar-card__img {
-          transform: scale(1.04);
-        }
-
-        /* ── Download overlay ── */
-        .hw-avatar-card__overlay {
-          position: absolute;
-          inset: 0;
-          background: rgba(10,8,18,0.55);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          opacity: 0;
-          transition: opacity 0.2s ease;
-        }
-        .hw-avatar-card:hover .hw-avatar-card__overlay {
-          opacity: 1;
-        }
-        .hw-avatar-card__dl {
-          font-family: var(--font-space, monospace);
-          font-size: 0.7rem;
-          letter-spacing: 0.14em;
-          text-transform: uppercase;
-          text-decoration: none;
-          color: #fff;
-          border: 1px solid rgba(255,255,255,0.55);
-          padding: 10px 20px;
-          background: rgba(0,0,0,0.45);
-          transition: background 0.15s ease, border-color 0.15s ease;
-        }
-        .hw-avatar-card__dl:hover {
-          background: rgba(192,0,26,0.6);
-          border-color: rgba(192,0,26,0.9);
-        }
-        /* Touch devices — always show overlay */
-        @media (hover: none) {
-          .hw-avatar-card__overlay {
-            opacity: 1;
-            background: rgba(10,8,18,0.35);
-          }
+          transform: scale(1.03);
         }
 
         /* ── Card body ── */
         .hw-avatar-card__body {
-          padding: clamp(10px, 2vw, 16px);
+          padding: 10px 10px 12px;
         }
         .hw-avatar-card__title {
           font-family: var(--font-space, monospace);
-          font-size: clamp(0.7rem, 1.8vw, 0.82rem);
+          font-size: 0.7rem;
           font-weight: 600;
           color: var(--text-primary, #e8e4dc);
           margin-bottom: 8px;
-          line-height: 1.35;
-          /* Clamp to 2 lines */
+          line-height: 1.3;
           display: -webkit-box;
           -webkit-line-clamp: 2;
           -webkit-box-orient: vertical;
           overflow: hidden;
         }
-        .hw-avatar-card__desc {
-          font-size: clamp(0.72rem, 1.8vw, 0.82rem);
-          color: rgba(232,228,220,0.6);
-          line-height: 1.65;
-          margin-bottom: 10px;
-        }
-        /* All HTML tags from admin render nicely */
-        .hw-avatar-card__desc p  { margin-bottom: 8px; }
-        .hw-avatar-card__desc h2 { font-size: 0.88rem; color: #c9a84c; margin-bottom: 6px; }
-        .hw-avatar-card__desc h3 { font-size: 0.82rem; color: #c9a84c; margin-bottom: 6px; }
-        .hw-avatar-card__desc ul { padding-left: 18px; margin-bottom: 8px; }
-        .hw-avatar-card__desc li { margin-bottom: 4px; }
-        .hw-avatar-card__desc strong { color: var(--text-primary, #e8e4dc); font-weight: 600; }
-        .hw-avatar-card__desc em    { color: #c9a84c; font-style: italic; }
-        .hw-avatar-card__desc a     { color: #c0001a; text-underline-offset: 3px; }
-        .hw-avatar-card__desc blockquote {
-          border-left: 3px solid #c0001a;
-          padding: 6px 12px;
-          margin: 8px 0;
-          color: rgba(232,228,220,0.5);
-          font-style: italic;
-        }
-        .hw-avatar-card__tags {
+
+        /* ── Action buttons — always visible ── */
+        .hw-avatar-card__actions {
           display: flex;
-          flex-wrap: wrap;
-          gap: 5px;
+          gap: 6px;
+          margin-bottom: 8px;
         }
-        .hw-avatar-card__tag {
+        .hw-avatar-card__btn {
+          flex: 1;
           font-family: var(--font-space, monospace);
           font-size: 0.58rem;
           letter-spacing: 0.1em;
-          color: #4a445a;
-          background: rgba(255,255,255,0.03);
-          border: 1px solid #2a2535;
-          padding: 3px 8px;
+          text-transform: uppercase;
+          text-decoration: none;
+          text-align: center;
+          padding: 6px 4px;
+          border: 1px solid rgba(255,255,255,0.15);
+          background: rgba(255,255,255,0.04);
+          color: rgba(232,228,220,0.75);
+          cursor: pointer;
+          transition: all 0.15s ease;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 3px;
         }
+        .hw-avatar-card__btn--dl {
+          border-color: rgba(192,0,26,0.4);
+          background: rgba(192,0,26,0.08);
+          color: #e8e4dc;
+        }
+        .hw-avatar-card__btn--dl:hover {
+          background: rgba(192,0,26,0.22);
+          border-color: rgba(192,0,26,0.8);
+          color: #fff;
+        }
+        .hw-avatar-card__btn--share:hover {
+          border-color: rgba(201,168,76,0.5);
+          color: #c9a84c;
+          background: rgba(201,168,76,0.06);
+        }
+
+        /* ── HTML description — tiny, narrow, shrinks to fit ── */
+        .hw-avatar-card__desc {
+          font-size: 0.68rem;
+          color: rgba(232,228,220,0.45);
+          line-height: 1.55;
+          max-height: 80px;
+          overflow: hidden;
+          position: relative;
+        }
+        .hw-avatar-card__desc::after {
+          content: "";
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          height: 24px;
+          background: linear-gradient(transparent, #13111e);
+        }
+        /* Strip all dramatic styling from HTML, keep it tiny */
+        .hw-avatar-card__desc * { font-size: inherit !important; color: inherit !important; }
+        .hw-avatar-card__desc p  { margin-bottom: 4px; }
+        .hw-avatar-card__desc h1,.hw-avatar-card__desc h2,.hw-avatar-card__desc h3 { font-weight:600; margin-bottom:3px; }
+        .hw-avatar-card__desc ul { padding-left: 14px; margin-bottom: 4px; }
+        .hw-avatar-card__desc li { margin-bottom: 2px; }
+        .hw-avatar-card__desc blockquote { padding-left: 8px; border-left: 2px solid #c0001a; margin: 4px 0; font-style: italic; }
+        .hw-avatar-card__desc a { text-decoration: underline; }
 
         /* ── Empty state ── */
         .hw-avatars-empty {
@@ -539,7 +492,7 @@ export default async function AvatarsPage() {
           color: #e8e4dc;
           text-decoration: none;
           border: 1px solid rgba(192,0,26,0.35);
-          padding: 12px 24px;
+          padding: 10px 20px;
           background: rgba(192,0,26,0.05);
           transition: all 0.22s ease;
           display: inline-flex;
@@ -550,7 +503,6 @@ export default async function AvatarsPage() {
           border-color: rgba(192,0,26,0.75);
           background: rgba(192,0,26,0.12);
           color: #fff;
-          box-shadow: 0 0 20px rgba(192,0,26,0.18);
         }
       `}</style>
 
