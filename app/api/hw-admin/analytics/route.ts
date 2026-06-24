@@ -14,18 +14,30 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    const now       = new Date();
-    const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    const weekStart  = new Date(now.getTime() - 7  * 24 * 60 * 60 * 1000);
-    const monthStart = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+    const now         = new Date();
+    const todayStart  = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const weekStart   = new Date(now.getTime() - 7  * 24 * 60 * 60 * 1000);
+    const monthStart  = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+    const fiveMinAgo  = new Date(now.getTime() - 5  * 60 * 1000);
+    const thirtyMinAgo = new Date(now.getTime() - 30 * 60 * 1000);
+    const dayAgo      = new Date(now.getTime() - 24 * 60 * 60 * 1000);
 
     // ── Download counts ──────────────────────────────────────────────────────
-    const [totalDownloads, todayDownloads, weekDownloads, monthDownloads] = await Promise.all([
+    const [
+      totalDownloads, todayDownloads, weekDownloads, monthDownloads,
+      downloads5Min, downloads30Min, downloads24h,
+    ] = await Promise.all([
       db.download.count(),
       db.download.count({ where: { createdAt: { gte: todayStart } } }),
       db.download.count({ where: { createdAt: { gte: weekStart  } } }),
       db.download.count({ where: { createdAt: { gte: monthStart } } }),
+      db.download.count({ where: { createdAt: { gte: fiveMinAgo } } }),
+      db.download.count({ where: { createdAt: { gte: thirtyMinAgo } } }),
+      db.download.count({ where: { createdAt: { gte: dayAgo } } }),
     ]);
+    // 30-day download window — same window as monthDownloads above, aliased
+    // for a consistent set of "5 min / 30 min / 24h / 30 days" cards.
+    const downloads30Days = monthDownloads;
 
     // ── Downloads per day (last 14 days) for sparkline ───────────────────────
     const dailyRaw = await db.download.findMany({
@@ -110,6 +122,15 @@ export async function GET(req: NextRequest) {
     const totalViewsResult = await db.image.aggregate({ _sum: { viewCount: true } });
     const totalPageViews   = totalViewsResult._sum.viewCount ?? 0;
 
+    // ── Page views by time window (first-party PageView log — covers every
+    //    page on the site, not just wallpaper detail pages) ──────────────────
+    const [pageViews5Min, pageViews30Min, pageViews24h, pageViews30Days] = await Promise.all([
+      db.pageView.count({ where: { enteredAt: { gte: fiveMinAgo } } }),
+      db.pageView.count({ where: { enteredAt: { gte: thirtyMinAgo } } }),
+      db.pageView.count({ where: { enteredAt: { gte: dayAgo } } }),
+      db.pageView.count({ where: { enteredAt: { gte: monthStart } } }),
+    ]);
+
     // ── Blog stats ───────────────────────────────────────────────────────────
     const [totalBlogPosts, publishedBlogPosts] = await Promise.all([
       db.blogPost.count(),
@@ -179,11 +200,19 @@ export async function GET(req: NextRequest) {
       todayDownloads,
       weekDownloads,
       monthDownloads,
+      downloads5Min,
+      downloads30Min,
+      downloads24h,
+      downloads30Days,
       imageDownloads,
       collectionDownloads,
       downloadsPerDay,
       // Page views
       totalPageViews,
+      pageViews5Min,
+      pageViews30Min,
+      pageViews24h,
+      pageViews30Days,
       topPageViews,
       // Top performers
       topWallpapers,
