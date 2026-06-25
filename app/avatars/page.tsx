@@ -110,7 +110,7 @@ export default async function AvatarsPage() {
         // "Soulmates in the Dark — Him").
         title: avatar.title.replace(/\s+—\s+[^—]+$/, ""),
         description: avatar.description,
-        frames: partners.map((p) => ({ id: p.id, src: p.src, label: p.matchingLabel || "View" })),
+        frames: partners.slice().reverse().map((p) => ({ id: p.id, src: p.src, label: p.matchingLabel || "View" })),
       });
     } else {
       entries.push({ kind: "single", item: avatar });

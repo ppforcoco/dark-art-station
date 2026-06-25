@@ -63,6 +63,15 @@ export default function AvatarsGrid({ entries }: AvatarsGridProps) {
         — {visible.length} {tab === "singles" ? "avatar" : "matching pair"}{visible.length !== 1 ? "s" : ""} ready to use
       </p>
 
+      {/* ── Matching pairs tagline ── */}
+      {tab === "pairs" && pairs.length > 0 && (
+        <div className="hw-pairs-tagline">
+          <p className="hw-pairs-tagline__main">One for you. One for them. Both haunted.</p>
+          <p className="hw-pairs-tagline__sub">Download both. Set one each. No explanation needed.</p>
+          <p className="hw-pairs-tagline__whisper">Never meant to be separated.</p>
+        </div>
+      )}
+
       {/* ── Grid (or empty state for this tab) ── */}
       {visible.length === 0 ? (
         <div className="hw-avatars-empty">
@@ -174,6 +183,34 @@ export default function AvatarsGrid({ entries }: AvatarsGridProps) {
           background: rgba(255, 255, 255, 0.08);
           padding: 1px 7px;
           border-radius: 999px;
+        }
+        .hw-pairs-tagline {
+          margin: 0 0 28px;
+          padding: 16px 20px;
+          border-left: 2px solid rgba(236, 72, 153, 0.5);
+          background: rgba(236, 72, 153, 0.04);
+        }
+        .hw-pairs-tagline__main {
+          font-family: var(--font-cinzel, serif);
+          font-size: 1rem;
+          color: rgba(232, 228, 220, 0.92);
+          letter-spacing: 0.04em;
+          margin-bottom: 6px;
+        }
+        .hw-pairs-tagline__sub {
+          font-family: var(--font-space, monospace);
+          font-size: 0.68rem;
+          letter-spacing: 0.1em;
+          text-transform: uppercase;
+          color: rgba(232, 228, 220, 0.45);
+          margin-bottom: 6px;
+        }
+        .hw-pairs-tagline__whisper {
+          font-family: var(--font-cormorant, serif);
+          font-size: 0.82rem;
+          font-style: italic;
+          color: rgba(236, 72, 153, 0.6);
+          letter-spacing: 0.06em;
         }
       `}</style>
     </>
