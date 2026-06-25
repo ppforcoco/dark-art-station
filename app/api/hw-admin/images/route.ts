@@ -44,6 +44,7 @@ export async function GET(req: NextRequest) {
         description: true, altText: true, metaDescription: true, tags: true,
         deviceType: true, isAdult: true, createdAt: true,
         collectionId: true, viewCount: true, sortOrder: true, highResKey: true,
+        isAvatar: true, matchingGroupId: true, matchingLabel: true,
         collection: { select: { title: true, slug: true } },
       },
     }),

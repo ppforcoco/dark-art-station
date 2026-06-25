@@ -6,7 +6,7 @@ export const dynamic = "force-dynamic";
 interface Analytics { totalDownloads:number;todayDownloads:number;weekDownloads:number;monthDownloads:number;downloads5Min:number;downloads30Min:number;downloads24h:number;downloads30Days:number;imageDownloads:number;collectionDownloads:number;downloadsPerDay:{date:string;count:number}[];totalPageViews:number;pageViews5Min:number;pageViews30Min:number;pageViews24h:number;pageViews30Days:number;topPageViews:{title:string;slug:string;device:string|null;views:number}[];topWallpapers:{title:string;slug:string;device:string|null;downloads:number}[];topCollections:{title:string;slug:string;downloads:number}[];totalBlogPosts:number;publishedBlogPosts:number;blogPosts:{title:string;slug:string;label:string;date:string;wordCount:number}[];deviceBreakdown:{IPHONE:number;ANDROID:number;PC:number;OTHER:number};recentActivity:{time:string;title:string;slug:string;device:string|null;type:string}[]; }
 interface Post { slug:string;title:string;label:string;content?:string;featuredImage?:string|null;createdAt:string;published?:boolean; }
 // UPDATED: added downloadCount field
-interface ImageRecord { id:string;slug:string;title:string;r2Key:string;highResKey:string|null;description:string|null;altText:string|null;metaDescription:string|null;tags:string[];isAdult:boolean;isAvatar:boolean;deviceType:string|null;viewCount:number;sortOrder?:number|null;collection?:{title:string}|null;downloadCount?:number; }
+interface ImageRecord { id:string;slug:string;title:string;r2Key:string;highResKey:string|null;description:string|null;altText:string|null;metaDescription:string|null;tags:string[];isAdult:boolean;isAvatar:boolean;matchingGroupId:string|null;matchingLabel:string|null;deviceType:string|null;viewCount:number;sortOrder?:number|null;collection?:{title:string}|null;downloadCount?:number; }
 interface PageContentRecord { id:string;slug:string;title:string|null;body:string;metaDesc:string|null;updatedAt:string; }
 
 const ALL_LABELS=["Wallpaper Guides","How-To & Tutorials","Device Setup","iPhone Wallpapers","Android Wallpapers","PC & Desktop Wallpapers","Dark Aesthetics","Gothic & Horror","Dark Fantasy","AMOLED Wallpapers","Minimalist Dark","Cyberpunk & Neon","Halloween Special","Seasonal Picks","Top Lists","New Releases","Community Spotlights","News & Updates","Free Wallpapers","HD Wallpapers","Lock Screen Ideas","Dark Psychology","16+ Mature Content"];
@@ -255,18 +255,49 @@ function PageContentTab({password}:{password:string}){
 function ImageUploaderTab({password}:{password:string}){
   const[collections,setCollections]=useState<{id:string;title:string;slug:string}[]>([]);useEffect(()=>{fetch("/api/hw-admin/collections",{headers:{"x-admin-password":password}}).then(r=>r.json()).then(j=>setCollections(j.collections??[])).catch(()=>{});},[password]);
   const[file,setFile]=useState<File|null>(null);const[highResFile,setHighResFile]=useState<File|null>(null);const[preview,setPreview]=useState("");const[dragging,setDragging]=useState(false);const[slug,setSlug]=useState("");const[title,setTitle]=useState("");const[altText,setAltText]=useState("");const[metaDescription,setMetaDescription]=useState("");const[description,setDescription]=useState("");const[deviceType,setDeviceType]=useState<"IPHONE"|"ANDROID"|"PC"|"">("");const[selectedTags,setSelectedTags]=useState<string[]>([]);const[customTags,setCustomTags]=useState<string[]>([]);const[newTagInput,setNewTagInput]=useState("");const[collectionId,setCollectionId]=useState("");const[isAdult,setIsAdult]=useState(false);const[commentsEnabled,setCommentsEnabled]=useState(false);const[isAvatar,setIsAvatar]=useState(false);const[descMode,setDescMode]=useState<"html"|"preview">("html");const[uploading,setUploading]=useState(false);const[generating,setGenerating]=useState(false);const[message,setMessage]=useState<{type:"ok"|"err";text:string}|null>(null);const[uploadedUrl,setUploadedUrl]=useState("");const dropRef=useRef<HTMLDivElement>(null);const fileInputRef=useRef<HTMLInputElement>(null);const highResInputRef=useRef<HTMLInputElement>(null);
+  // ── Matching pair (e.g. "soulmate" / bestfriend avatars) — two files, one shared story ──
+  const[isPair,setIsPair]=useState(false);const[pairFile,setPairFile]=useState<File|null>(null);const[pairPreview,setPairPreview]=useState("");const[pairDragging,setPairDragging]=useState(false);const[labelA,setLabelA]=useState("Him");const[labelB,setLabelB]=useState("Her");const pairFileInputRef=useRef<HTMLInputElement>(null);
+  function handlePairFileSelect(f:File){setPairFile(f);setPairPreview(URL.createObjectURL(f));setMessage(null);}
+  function onPairDrop(e:React.DragEvent){e.preventDefault();setPairDragging(false);const f=e.dataTransfer.files[0];if(f?.type.startsWith("image/"))handlePairFileSelect(f);}
   function slugify(name:string){return name.toLowerCase().replace(/\.[^.]+$/,"").replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");}
   function handleFileSelect(f:File){setFile(f);setSlug(slugify(f.name));if(!title)setTitle(f.name.replace(/\.[^.]+$/,"").replace(/[-_]/g," ").replace(/\b\w/g,c=>c.toUpperCase()));setPreview(URL.createObjectURL(f));setMessage(null);setUploadedUrl("");}
   function onDrop(e:React.DragEvent){e.preventDefault();setDragging(false);const f=e.dataTransfer.files[0];if(f?.type.startsWith("image/"))handleFileSelect(f);}
   function toggleTag(tag:string){setSelectedTags(prev=>prev.includes(tag)?prev.filter(t=>t!==tag):[...prev,tag]);}
   async function handleGenerateAll(){if(!file)return;setGenerating(true);setMessage(null);try{const base64=await fileToBase64(file);const result=await analyzeImageWithClaude(base64,file.type);if(result.title){setTitle(result.title);setSlug(result.title.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,""));}if(result.description)setDescription(result.description);if(result.altText)setAltText(result.altText);if(result.tags?.length)setSelectedTags(result.tags.filter(t=>ALL_TAGS.includes(t)));setMessage({type:"ok",text:"✓ Claude AI generated title, description, alt text & tags!"});}catch(err){setMessage({type:"err",text:`⚠ AI generation failed: ${(err as Error).message}`});}setGenerating(false);}
-  async function handleUpload(){if(!file||!slug||!title){setMessage({type:"err",text:"File, slug, and title are required."});return;}setUploading(true);setMessage(null);try{const form=new FormData();form.append("file",file);if(highResFile)form.append("highResFile",highResFile);form.append("slug",slug);form.append("title",title);form.append("altText",altText);form.append("metaDescription",metaDescription);form.append("description",description);form.append("tags",JSON.stringify(selectedTags));form.append("isAdult",String(isAdult));form.append("commentsEnabled",String(commentsEnabled));form.append("isAvatar",String(isAvatar));if(deviceType)form.append("deviceType",deviceType);if(collectionId.trim())form.append("collectionId",collectionId.trim());const res=await fetch("/api/hw-admin/upload-image",{method:"POST",headers:{"x-admin-password":password},body:form});const json=await res.json();if(res.ok){setUploadedUrl(json.url);setMessage({type:"ok",text:`✓ Uploaded! Slug: ${json.slug}${json.hasHighRes?" | 4K upscaled stored":""}`});setFile(null);setHighResFile(null);setPreview("");setSlug("");setTitle("");setDescription("");setMetaDescription("");setAltText("");setDeviceType("");setSelectedTags([]);setCollectionId("");setIsAdult(false);setCommentsEnabled(false);setIsAvatar(false);if(fileInputRef.current)fileInputRef.current.value="";if(highResInputRef.current)highResInputRef.current.value="";}else setMessage({type:"err",text:json.error??"Upload failed."});}catch{setMessage({type:"err",text:"Network error."});}setUploading(false);}
+  async function postOneImage(f:File,hrFile:File|null,slugVal:string,titleVal:string,extra:{matchingGroupId?:string;matchingLabel?:string}={}){const form=new FormData();form.append("file",f);if(hrFile)form.append("highResFile",hrFile);form.append("slug",slugVal);form.append("title",titleVal);form.append("altText",altText);form.append("metaDescription",metaDescription);form.append("description",description);form.append("tags",JSON.stringify(selectedTags));form.append("isAdult",String(isAdult));form.append("commentsEnabled",String(commentsEnabled));form.append("isAvatar",String(isPair?true:isAvatar));if(extra.matchingGroupId)form.append("matchingGroupId",extra.matchingGroupId);if(extra.matchingLabel)form.append("matchingLabel",extra.matchingLabel);if(deviceType)form.append("deviceType",deviceType);if(collectionId.trim())form.append("collectionId",collectionId.trim());const res=await fetch("/api/hw-admin/upload-image",{method:"POST",headers:{"x-admin-password":password},body:form});const json=await res.json();if(!res.ok)throw new Error(json.error??"Upload failed.");return json;}
+  function resetUploadForm(){setFile(null);setHighResFile(null);setPreview("");setPairFile(null);setPairPreview("");setSlug("");setTitle("");setDescription("");setMetaDescription("");setAltText("");setDeviceType("");setSelectedTags([]);setCollectionId("");setIsAdult(false);setCommentsEnabled(false);setIsAvatar(false);setIsPair(false);setLabelA("Him");setLabelB("Her");if(fileInputRef.current)fileInputRef.current.value="";if(highResInputRef.current)highResInputRef.current.value="";if(pairFileInputRef.current)pairFileInputRef.current.value="";}
+  async function handleUpload(){
+    if(isPair){
+      if(!file||!pairFile||!slug||!title||!labelA.trim()||!labelB.trim()){setMessage({type:"err",text:"Both images, a shared title, slug, and both labels are required for a matching pair."});return;}
+      setUploading(true);setMessage(null);
+      try{
+        const groupId=(typeof crypto!=="undefined"&&"randomUUID"in crypto)?crypto.randomUUID():`pair-${Date.now()}`;
+        const slugBit=(s:string)=>s.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
+        const jsonA=await postOneImage(file,highResFile,`${slug}-${slugBit(labelA)}`,`${title} — ${labelA}`,{matchingGroupId:groupId,matchingLabel:labelA});
+        await postOneImage(pairFile,null,`${slug}-${slugBit(labelB)}`,`${title} — ${labelB}`,{matchingGroupId:groupId,matchingLabel:labelB});
+        setUploadedUrl(jsonA.url);
+        setMessage({type:"ok",text:`✓ Matching pair uploaded! "${labelA}" + "${labelB}" will appear together as one slideshow card on /avatars.`});
+        resetUploadForm();
+      }catch(err){setMessage({type:"err",text:(err as Error).message||"Upload failed."});}
+      setUploading(false);
+      return;
+    }
+    if(!file||!slug||!title){setMessage({type:"err",text:"File, slug, and title are required."});return;}
+    setUploading(true);setMessage(null);
+    try{
+      const json=await postOneImage(file,highResFile,slug,title);
+      setUploadedUrl(json.url);
+      setMessage({type:"ok",text:`✓ Uploaded! Slug: ${json.slug}${json.hasHighRes?" | 4K upscaled stored":""}`});
+      resetUploadForm();
+    }catch(err){setMessage({type:"err",text:(err as Error).message||"Upload failed."});}
+    setUploading(false);
+  }
   const altOk=altText.length>=130&&altText.length<=150;const descWords=description.replace(/<[^>]*>/g," ").split(/\s+/).filter(Boolean).length;const descOk=descWords>=180&&descWords<=220;
   return<div style={{display:"flex",flexDirection:"column",gap:"20px"}}>
     <Card style={{padding:"14px 18px",borderColor:C.red}}><strong style={{color:C.gold}}>📤 Image Uploader</strong><span style={{color:C.textSec,marginLeft:"8px",fontSize:"0.82rem"}}>Drop thumbnail → optionally add 4K file → fill in details → upload.</span></Card>
     <Msg msg={message}/>
     <div>
-      <label style={{...lbl,marginBottom:"8px"}}>Thumbnail Image (required — shown in gallery &amp; cards)</label>
+      <label style={{...lbl,marginBottom:"8px"}}>{isPair?`Partner A — "${labelA||"first"}" Image (required)`:"Thumbnail Image (required — shown in gallery & cards)"}</label>
       <div ref={dropRef} onDragOver={e=>{e.preventDefault();setDragging(true);}} onDragLeave={()=>setDragging(false)} onDrop={onDrop} onClick={()=>fileInputRef.current?.click()} style={{border:`2px dashed ${dragging?C.red:file?C.green:C.border}`,background:dragging?"rgba(192,0,26,0.06)":C.surface,padding:"32px 24px",textAlign:"center",cursor:"pointer",transition:"all 0.2s"}}>
         <input ref={fileInputRef} type="file" accept="image/*" style={{display:"none"}} onChange={e=>{const f=e.target.files?.[0];if(f)handleFileSelect(f);}}/>
         {preview?<div style={{display:"flex",gap:"24px",alignItems:"flex-start",justifyContent:"center",flexWrap:"wrap"}}><img src={preview} alt="Preview" style={{maxHeight:"180px",maxWidth:"160px",objectFit:"contain",border:`1px solid ${C.border}`}}/><div style={{textAlign:"left"}}><p style={{color:C.green,fontSize:"0.75rem",marginBottom:"6px"}}>✓ Thumbnail ready</p><p style={{color:C.textPri,fontSize:"0.85rem",marginBottom:"4px"}}>{file?.name}</p><p style={{color:C.textSec,fontSize:"0.75rem"}}>{file?(file.size/1024/1024).toFixed(2)+" MB":""}</p><p style={{color:C.textMut,fontSize:"0.68rem",marginTop:"6px"}}>Used in gallery cards and image pages.<br/>Recommended: 720–1080px wide.</p><p style={{color:C.textMut,fontSize:"0.68rem",marginTop:"4px"}}>Click to replace</p></div></div>:<><p style={{fontSize:"2rem",marginBottom:"10px"}}>🖼️</p><p style={{color:C.textPri,fontSize:"0.9rem",marginBottom:"6px"}}>{dragging?"Drop it!":"Drag & drop thumbnail here"}</p><p style={{color:C.textSec,fontSize:"0.75rem"}}>or click to browse · JPG, PNG, WEBP</p></>}
@@ -357,6 +388,29 @@ function ImageUploaderTab({password}:{password:string}){
           <Btn onClick={()=>setIsAvatar(!isAvatar)} variant={isAvatar?"success":"ghost"} style={{flexShrink:0,borderColor:isAvatar?"#63b3ed":undefined,color:isAvatar?"#63b3ed":undefined}}>{isAvatar?"✓ Avatar ON":"Mark as Avatar"}</Btn>
         </div>
       </Card>
+      <Card style={{padding:"14px 18px",borderColor:isPair?"rgba(236,72,153,0.5)":C.border,background:isPair?"rgba(236,72,153,0.06)":C.surface}}>
+        <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:"16px"}}>
+          <div>
+            <p style={{color:isPair?"#ec48a9":C.textSec,fontSize:"0.72rem",marginBottom:"4px"}}>💞 Matching Pair (soulmate / bestfriend avatars)</p>
+            <p style={{color:C.textMut,fontSize:"0.68rem",lineHeight:1.6}}>Upload two images that share one story. They show as a single card on <a href="/avatars" target="_blank" rel="noopener" style={{color:"#ec48a9"}}>/avatars</a> with a slideshow between them — each half downloads separately. Automatically marked as Avatar.</p>
+          </div>
+          <Btn onClick={()=>{const next=!isPair;setIsPair(next);if(next)setIsAvatar(true);}} variant={isPair?"success":"ghost"} style={{flexShrink:0,borderColor:isPair?"#ec48a9":undefined,color:isPair?"#ec48a9":undefined}}>{isPair?"✓ Pair ON":"Mark as Matching Pair"}</Btn>
+        </div>
+        {isPair&&<div style={{marginTop:"16px",display:"flex",flexDirection:"column",gap:"12px"}}>
+          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"12px"}}>
+            <div><label style={{...lbl,fontSize:"0.65rem"}}>Slideshow Label — Image 1 (above)</label><input value={labelA} onChange={e=>setLabelA(e.target.value)} placeholder="Him" style={inp}/></div>
+            <div><label style={{...lbl,fontSize:"0.65rem"}}>Slideshow Label — Image 2 (below)</label><input value={labelB} onChange={e=>setLabelB(e.target.value)} placeholder="Her" style={inp}/></div>
+          </div>
+          <div>
+            <label style={{...lbl,marginBottom:"8px"}}>{`Partner B — "${labelB||"second"}" Image (required)`}</label>
+            <div onDragOver={e=>{e.preventDefault();setPairDragging(true);}} onDragLeave={()=>setPairDragging(false)} onDrop={onPairDrop} onClick={()=>pairFileInputRef.current?.click()} style={{border:`2px dashed ${pairDragging?"#ec48a9":pairFile?C.green:C.border}`,background:pairDragging?"rgba(236,72,153,0.06)":C.surface,padding:"28px 24px",textAlign:"center",cursor:"pointer",transition:"all 0.2s"}}>
+              <input ref={pairFileInputRef} type="file" accept="image/*" style={{display:"none"}} onChange={e=>{const f=e.target.files?.[0];if(f)handlePairFileSelect(f);}}/>
+              {pairPreview?<div style={{display:"flex",gap:"24px",alignItems:"flex-start",justifyContent:"center",flexWrap:"wrap"}}><img src={pairPreview} alt="Partner B preview" style={{maxHeight:"160px",maxWidth:"140px",objectFit:"contain",border:`1px solid ${C.border}`}}/><div style={{textAlign:"left"}}><p style={{color:C.green,fontSize:"0.75rem",marginBottom:"6px"}}>✓ Partner B ready</p><p style={{color:C.textPri,fontSize:"0.85rem"}}>{pairFile?.name}</p><p style={{color:C.textMut,fontSize:"0.65rem",marginTop:"6px"}}>Click to replace</p></div></div>:<><p style={{fontSize:"1.7rem",marginBottom:"8px"}}>🖼️</p><p style={{color:C.textPri,fontSize:"0.85rem"}}>{pairDragging?"Drop it!":`Drag & drop "${labelB||"Partner B"}"'s image here`}</p><p style={{color:C.textSec,fontSize:"0.72rem"}}>or click to browse</p></>}
+            </div>
+          </div>
+          <p style={{color:C.textMut,fontSize:"0.62rem",lineHeight:1.6}}>Title, slug, description, tags, and badges above are shared by both halves — each just gets its label appended (e.g. &ldquo;{title||"Your Title"} — {labelA||"Him"}&rdquo;). Write the lore note once; it covers the whole pair.</p>
+        </div>}
+      </Card>
       <Card style={{padding:"16px"}}>
         <label style={lbl}>Device Type</label>
         <div style={{display:"flex",gap:"8px",flexWrap:"wrap"}}>
@@ -381,12 +435,12 @@ function ImageUploaderTab({password}:{password:string}){
       <Card style={{padding:"14px 16px",background:"rgba(124,58,237,0.06)",borderColor:"rgba(124,58,237,0.3)"}}>
         <p style={{color:C.purple,fontSize:"0.72rem",marginBottom:"8px"}}>✦ Upload summary</p>
         <div style={{display:"flex",flexDirection:"column",gap:"4px",fontSize:"0.7rem",color:C.textSec}}>
-          <span>📷 Thumbnail: {file?`${file.name} (${(file.size/1024/1024).toFixed(1)} MB)`:"Not set"} → stored at <code style={{color:C.gold}}>thumbnails/{slug}/</code></span>
-          <span>{highResFile?`🖼 4K file: ${highResFile.name} (${(highResFile.size/1024/1024).toFixed(1)} MB)`:` 4K file: none — thumbnail will be used for downloads`} → stored at <code style={{color:C.gold}}>high-res/{slug}/</code></span>
-          <span style={{color:C.textMut,fontSize:"0.65rem",marginTop:"4px"}}>Users see the thumbnail everywhere. Clicking Download serves the 4K file via a secure signed URL.</span>
+          <span>📷 {isPair?`Image 1 ("${labelA||"Him"}")`:"Thumbnail"}: {file?`${file.name} (${(file.size/1024/1024).toFixed(1)} MB)`:"Not set"} → stored at <code style={{color:C.gold}}>thumbnails/{slug}/</code></span>
+          {isPair?<span>📷 Image 2 (&ldquo;{labelB||"Her"}&rdquo;): {pairFile?`${pairFile.name} (${(pairFile.size/1024/1024).toFixed(1)} MB)`:"Not set"} → stored at <code style={{color:C.gold}}>thumbnails/{slug}-{(labelB||"her").toLowerCase()}/</code></span>:<span>{highResFile?`🖼 4K file: ${highResFile.name} (${(highResFile.size/1024/1024).toFixed(1)} MB)`:` 4K file: none — thumbnail will be used for downloads`} → stored at <code style={{color:C.gold}}>high-res/{slug}/</code></span>}
+          <span style={{color:C.textMut,fontSize:"0.65rem",marginTop:"4px"}}>{isPair?"Two image rows will be created, linked by a shared pair id, with the same title/description/tags and each label appended.":"Users see the thumbnail everywhere. Clicking Download serves the 4K file via a secure signed URL."}</span>
         </div>
       </Card>
-      <Btn onClick={handleUpload} disabled={uploading} style={{padding:"14px 32px",fontSize:"0.82rem"}}>{uploading?"⏳ Uploading…":"📤 Upload Image"}</Btn>
+      <Btn onClick={handleUpload} disabled={uploading} style={{padding:"14px 32px",fontSize:"0.82rem"}}>{uploading?"⏳ Uploading…":isPair?"💞 Upload Matching Pair":"📤 Upload Image"}</Btn>
       {uploadedUrl&&<Card style={{padding:"14px 16px",borderColor:C.green,background:"rgba(76,175,80,0.08)"}}><p style={{color:C.green,fontSize:"0.8rem",marginBottom:"6px"}}>✓ Uploaded successfully</p><a href={uploadedUrl} target="_blank" rel="noopener noreferrer" style={{color:C.gold,fontSize:"0.75rem",wordBreak:"break-all"}}>{uploadedUrl}</a></Card>}
     </>}
   </div>;
@@ -582,7 +636,7 @@ function PublishedImagesTab({password}:{password:string}){
       ).map((img,rank)=><div key={img.id} style={{border:`1px solid ${C.border}`,background:C.surface}}>
         <div style={{position:"relative",aspectRatio:"9/16",background:"#0d0b14",overflow:"hidden"}}>
           <img src={thumbUrl(img.r2Key)} alt={img.title} style={{width:"100%",height:"100%",objectFit:"cover",display:"block"}} onError={e=>{(e.target as HTMLImageElement).style.display="none";}}/>
-          {img.isAdult&&<span style={{position:"absolute",top:"6px",left:"6px",background:C.red,color:"#fff",fontSize:"0.55rem",fontFamily:"monospace",fontWeight:900,padding:"2px 6px"}}>16+</span>}{img.isAvatar&&<span style={{position:"absolute",top:"6px",right:"6px",background:"rgba(99,179,237,0.9)",color:"#fff",fontSize:"0.5rem",fontFamily:"monospace",fontWeight:900,padding:"2px 6px"}}>🎭 PFP</span>}
+          {img.isAdult&&<span style={{position:"absolute",top:"6px",left:"6px",background:C.red,color:"#fff",fontSize:"0.55rem",fontFamily:"monospace",fontWeight:900,padding:"2px 6px"}}>16+</span>}{img.isAvatar&&<span style={{position:"absolute",top:"6px",right:"6px",background:"rgba(99,179,237,0.9)",color:"#fff",fontSize:"0.5rem",fontFamily:"monospace",fontWeight:900,padding:"2px 6px"}}>🎭 PFP</span>}{img.matchingGroupId&&<span style={{position:"absolute",bottom:"6px",right:"6px",background:"rgba(236,72,153,0.92)",color:"#fff",fontSize:"0.5rem",fontFamily:"monospace",fontWeight:900,padding:"2px 6px"}}>💞 {img.matchingLabel||"Pair"}</span>}
           {/* NEW: rank badge when sorted by downloads */}
           {sortBy==="downloads-desc"&&(downloadCounts[img.slug]??0)>0&&<span style={{position:"absolute",top:"6px",left:"6px",background:"rgba(192,0,26,0.9)",color:"#fff",fontSize:"0.55rem",fontFamily:"monospace",fontWeight:900,padding:"2px 6px"}}>#{rank+1}</span>}
           {BADGE_TAGS.filter(b=>img.tags.includes(b.tag)).slice(0,2).map(b=><span key={b.tag} style={{position:"absolute",bottom:"6px",left:"6px",background:b.bg,border:`1px solid ${b.color}`,color:b.color,fontSize:"0.5rem",fontFamily:"monospace",padding:"2px 5px",marginBottom:`${BADGE_TAGS.filter(bx=>img.tags.includes(bx.tag)).indexOf(b)*18}px`}}>{b.label}</span>)}

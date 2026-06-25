@@ -72,6 +72,14 @@ model Image {
   /// Set to true to show this image on the /avatars Discord profile picture page.
   isAvatar      Boolean     @default(false)
 
+  /// When two avatars are a "matching pair" (e.g. soulmate / bestfriend PFPs),
+  /// both Image rows share this same id. Null for ordinary, unpaired avatars.
+  matchingGroupId String?
+
+  /// Which half of the pair this image is — shown as a tab/dot label in the
+  /// slideshow, e.g. "Him" / "Her", "A" / "B". Null when not part of a pair.
+  matchingLabel   String?
+
   downloads     Download[]
   comments      Comment[]
 
@@ -82,6 +90,7 @@ model Image {
   @@index([deviceType])
   @@index([isAdult, createdAt])
   @@index([tags])
+  @@index([matchingGroupId])
 }
 
 model Download {

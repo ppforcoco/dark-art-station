@@ -60,6 +60,7 @@ export async function PATCH(
     const {
       title, description, metaDescription, altText, tags,
       isAdult, deviceType, sortOrder, highResKey, isAvatar,
+      matchingGroupId, matchingLabel,
     } = body;
 
     const updated = await db.image.update({
@@ -75,6 +76,8 @@ export async function PATCH(
         ...(sortOrder         !== undefined && { sortOrder }),
         ...(highResKey        !== undefined && { highResKey }),
         ...(isAvatar          !== undefined && { isAvatar }),
+        ...(matchingGroupId   !== undefined && { matchingGroupId }),
+        ...(matchingLabel     !== undefined && { matchingLabel }),
       },
     });
 

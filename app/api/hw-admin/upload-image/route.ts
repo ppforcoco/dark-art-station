@@ -31,6 +31,8 @@ export async function POST(req: NextRequest) {
     const isAdult      = formData.get("isAdult") === "true";
     const commentsEnabled = formData.get("commentsEnabled") === "true";
     const isAvatar         = formData.get("isAvatar") === "true";
+    const matchingGroupId  = formData.get("matchingGroupId") as string | null; // shared id for a matching-pair avatar
+    const matchingLabel    = formData.get("matchingLabel")   as string | null; // e.g. "Him" / "Her"
 
     if (!file || !slug || !title) {
       return NextResponse.json({ error: "file, slug, and title are required" }, { status: 400 });
@@ -113,6 +115,8 @@ export async function POST(req: NextRequest) {
         isAdult,
         commentsEnabled,
         isAvatar,
+        matchingGroupId: matchingGroupId || null,
+        matchingLabel:   matchingLabel   || null,
         deviceType:   (deviceType as "IPHONE" | "ANDROID" | "PC" | null) || null,
         tags:          parsedTags,
         collectionId:  collectionId || null,

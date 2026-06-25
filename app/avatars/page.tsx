@@ -9,7 +9,7 @@ import { getPublicUrl } from "@/lib/r2";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import AdminHtmlBlock from "@/components/AdminHtmlBlock";
 import { getPageContent } from "@/lib/db";
-import AvatarShareBtn from "@/components/AvatarShareBtn";
+import AvatarsGrid from "@/components/AvatarsGrid";
 
 export const revalidate = 60;
 
@@ -45,7 +45,15 @@ interface AvatarItem {
   description: string | null;
   src: string;
   tags: string[];
+  matchingGroupId: string | null;
+  matchingLabel: string | null;
 }
+
+// After grouping, the page renders a flat list of either single avatars or
+// matching pairs (two avatars that share a matchingGroupId).
+type GalleryEntry =
+  | { kind: "single"; item: AvatarItem }
+  | { kind: "pair"; groupId: string; title: string; description: string | null; frames: { id: string; src: string; label: string }[] };
 
 export default async function AvatarsPage() {
   let avatars: AvatarItem[] = [];
@@ -60,18 +68,21 @@ export default async function AvatarsPage() {
         select: {
           id: true, slug: true, title: true, description: true,
           r2Key: true, highResKey: true, tags: true,
+          matchingGroupId: true, matchingLabel: true,
         },
       }),
       getPageContent("avatars"),
     ]);
 
     avatars = rawAvatars.map((img) => ({
-      id:          img.id,
-      slug:        img.slug,
-      title:       img.title,
-      description: img.description,
-      src:         getPublicUrl(img.r2Key),
-      tags:        img.tags,
+      id:              img.id,
+      slug:            img.slug,
+      title:           img.title,
+      description:     img.description,
+      src:             getPublicUrl(img.r2Key),
+      tags:            img.tags,
+      matchingGroupId: img.matchingGroupId,
+      matchingLabel:   img.matchingLabel,
     }));
 
     pageContent = content;
@@ -80,18 +91,44 @@ export default async function AvatarsPage() {
     dbError = true;
   }
 
+  // ── Group into singles + matching pairs ────────────────────────────────
+  // Two avatars sharing the same matchingGroupId render as one slideshow
+  // card instead of two separate cards. Order is preserved by first
+  // appearance (avatars are already newest-first from the query above).
+  const entries: GalleryEntry[] = [];
+  const seenGroups = new Set<string>();
+  for (const avatar of avatars) {
+    if (avatar.matchingGroupId) {
+      if (seenGroups.has(avatar.matchingGroupId)) continue; // already added with its partner
+      seenGroups.add(avatar.matchingGroupId);
+      const partners = avatars.filter((a) => a.matchingGroupId === avatar.matchingGroupId);
+      entries.push({
+        kind: "pair",
+        groupId: avatar.matchingGroupId,
+        // Strip the " — Label" suffix added at upload time, so the shared
+        // card title reads clean (e.g. "Soulmates in the Dark", not
+        // "Soulmates in the Dark — Him").
+        title: avatar.title.replace(/\s+—\s+[^—]+$/, ""),
+        description: avatar.description,
+        frames: partners.map((p) => ({ id: p.id, src: p.src, label: p.matchingLabel || "View" })),
+      });
+    } else {
+      entries.push({ kind: "single", item: avatar });
+    }
+  }
+
   const jsonLd = JSON.stringify({
     "@context": "https://schema.org",
     "@type": "ItemList",
     name: "Dark Discord Avatars & Profile Pictures | Haunted Wallpapers",
     url: `${SITE_URL}/avatars`,
-    numberOfItems: avatars.length,
-    itemListElement: avatars.map((img, i) => ({
+    numberOfItems: entries.length,
+    itemListElement: entries.map((entry, i) => ({
       "@type": "ListItem",
       position: i + 1,
       url: `${SITE_URL}/avatars`,
-      name: img.title,
-      image: img.src,
+      name: entry.kind === "single" ? entry.item.title : entry.title,
+      image: entry.kind === "single" ? entry.item.src : entry.frames[0]?.src,
     })),
   });
 
@@ -137,7 +174,7 @@ export default async function AvatarsPage() {
               Couldn&apos;t load avatars right now. Try again in a second.
             </p>
           </div>
-        ) : avatars.length === 0 ? (
+        ) : entries.length === 0 ? (
           <div className="hw-avatars-empty">
             <div className="hw-avatars-empty__sigil">✦ ☽ ✦</div>
             <h2 className="hw-avatars-empty__title">Coming soon</h2>
@@ -147,57 +184,7 @@ export default async function AvatarsPage() {
             </p>
           </div>
         ) : (
-          <>
-            <p className="hw-avatars-count">
-              — {avatars.length} avatar{avatars.length !== 1 ? "s" : ""} ready to use
-            </p>
-            <div className="hw-avatars-grid">
-              {avatars.map((avatar, i) => (
-                <article key={avatar.id} className="hw-avatar-card">
-                  {/* 1:1 square image */}
-                  <div className="hw-avatar-card__img-wrap">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={avatar.src}
-                      alt={`${avatar.title} — dark Discord avatar`}
-                      className="hw-avatar-card__img"
-                      loading={i < 8 ? "eager" : "lazy"}
-                      decoding="async"
-                      draggable={false}
-                    />
-                  </div>
-
-                  {/* Card body */}
-                  <div className="hw-avatar-card__body">
-                    <h2 className="hw-avatar-card__title">{avatar.title}</h2>
-
-                    {/* Always-visible action buttons */}
-                    <div className="hw-avatar-card__actions">
-                      <a
-                        href={`/api/download/image/${avatar.id}`}
-                        className="hw-avatar-card__btn hw-avatar-card__btn--dl"
-                        aria-label={`Download ${avatar.title}`}
-                      >
-                        ↓ Download
-                      </a>
-                      <AvatarShareBtn
-                        url={avatar.src}
-                        title={avatar.title}
-                      />
-                    </div>
-
-                    {/* HTML description — render as-is, trust the HTML */}
-                    {avatar.description && (
-                      <div
-                        className="hw-avatar-card__desc"
-                        dangerouslySetInnerHTML={{ __html: avatar.description }}
-                      />
-                    )}
-                  </div>
-                </article>
-              ))}
-            </div>
-          </>
+          <AvatarsGrid entries={entries} />
         )}
       </section>
 
