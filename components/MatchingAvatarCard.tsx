@@ -78,7 +78,7 @@ export default function MatchingAvatarCard({ title, description, frames }: Match
             className="hw-avatar-card__btn hw-avatar-card__btn--dl"
             aria-label={`Download ${title} — ${current.label}`}
           >
-            ↓ Download {current.label}
+            ↓ Download
           </a>
           <AvatarShareBtn url={current.src} title={`${title} — ${current.label}`} />
         </div>
