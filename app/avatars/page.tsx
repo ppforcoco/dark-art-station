@@ -16,24 +16,25 @@ export const revalidate = 60;
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
 
 export const metadata: Metadata = {
-  title: "Dark Discord Avatars & Profile Pictures | HAUNTED WALLPAPERS",
+  title: "Dark PFP & Matching Avatars — Discord, WhatsApp, Gaming | Haunted Wallpapers",
   description:
-    "Dark fantasy profile pictures made for Discord, Steam, and anywhere else your avatar actually matters. Square 1:1 crops, high resolution, ready to use.",
+    "Free dark aesthetic profile pictures and matching avatar pairs for Discord, WhatsApp DP, Steam, and gaming profiles. Anime, skull, mask, and gothic PFPs updated weekly.",
   keywords: [
-    "discord avatar", "dark pfp", "discord profile picture", "dark aesthetic pfp",
-    "gothic avatar", "horror pfp", "dark fantasy profile picture", "steam avatar",
+    "dark pfp", "matching pfp for best friends", "dark whatsapp dp", "aesthetic discord avatar",
+    "gaming profile picture", "anime dark profile picture", "gothic pfp", "dark aesthetic pfp",
+    "discord avatar", "matching avatars", "skull pfp", "mask avatar", "dark profile picture",
   ],
   openGraph: {
-    title: "Dark Discord Avatars & Profile Pictures | HAUNTED WALLPAPERS",
-    description: "Dark fantasy profile pictures for Discord, Steam, and beyond. Square 1:1, high resolution.",
+    title: "Dark PFP & Matching Avatars — Discord, WhatsApp, Gaming | Haunted Wallpapers",
+    description: "Free dark aesthetic profile pictures and matching avatar pairs for Discord, WhatsApp DP, Steam, and gaming profiles. Anime, skull, mask, and gothic PFPs updated weekly.",
     url: `${SITE_URL}/avatars`,
-    siteName: "HAUNTED WALLPAPERS",
+    siteName: "Haunted Wallpapers",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Dark Discord Avatars & Profile Pictures | HAUNTED WALLPAPERS",
-    description: "Dark fantasy profile pictures for Discord, Steam, and beyond.",
+    title: "Dark PFP & Matching Avatars — Discord, WhatsApp, Gaming | Haunted Wallpapers",
+    description: "Free dark aesthetic profile pictures and matching avatar pairs for Discord, WhatsApp DP, Steam, and gaming profiles.",
   },
   alternates: { canonical: `${SITE_URL}/avatars` },
 };
@@ -155,10 +156,13 @@ export default async function AvatarsPage() {
               <span dangerouslySetInnerHTML={{ __html: pageContent.title }} />
             ) : (
               <>
-                Dark <span className="hw-avatars-title__accent">Avatars</span> for Discord
+                Dark <span className="hw-avatars-title__accent">PFP</span> &amp; Matching Avatars
               </>
             )}
           </h1>
+          <p className="hw-avatars-subtitle">
+            Discord · WhatsApp · Steam · Gaming Profiles
+          </p>
         </div>
       </section>
 
@@ -223,6 +227,14 @@ export default async function AvatarsPage() {
         .hw-avatars-title__accent {
           color: #c9a84c;
           font-style: italic;
+        }
+        .hw-avatars-subtitle {
+          font-family: var(--font-space, monospace);
+          font-size: 0.7rem;
+          letter-spacing: 0.2em;
+          text-transform: uppercase;
+          color: rgba(232, 228, 220, 0.35);
+          margin-top: 10px;
         }
 
         /* ── Nav pills ── */
