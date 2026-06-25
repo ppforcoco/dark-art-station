@@ -1,12 +1,7 @@
 "use client";
 // components/MatchingAvatarCard.tsx
-//
-// Renders a "matching pair" avatar (e.g. soulmate / bestfriend PFPs) as a
-// single card with a two-frame slideshow. Each frame downloads as its own
-// clean square image — nobody downloads a combined image and crops it
-// themselves, which is the whole point of storing the pair as two real files.
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import AvatarShareBtn from "@/components/AvatarShareBtn";
 
 interface PairFrame {
@@ -18,16 +13,33 @@ interface PairFrame {
 interface MatchingAvatarCardProps {
   title: string;
   description: string | null;
-  frames: PairFrame[]; // expects exactly 2, but degrades gracefully with 1
+  frames: PairFrame[];
 }
 
 export default function MatchingAvatarCard({ title, description, frames }: MatchingAvatarCardProps) {
+  // Always start on frame 0 (Partner A / "Him" / first uploaded)
   const [active, setActive] = useState(0);
   const current = frames[active] ?? frames[0];
 
+  // Auto-slideshow — alternates every 2.5 s, pauses if user clicked manually
+  const [paused, setPaused] = useState(false);
+
+  useEffect(() => {
+    if (frames.length < 2 || paused) return;
+    const id = setInterval(() => {
+      setActive(prev => (prev + 1) % frames.length);
+    }, 2500);
+    return () => clearInterval(id);
+  }, [frames.length, paused]);
+
+  function handleTabClick(i: number) {
+    setActive(i);
+    setPaused(true); // user took control — stop auto-advancing
+  }
+
   return (
     <article className="hw-avatar-card hw-avatar-card--pair">
-      {/* 1:1 square image, swaps between the two halves */}
+      {/* 1:1 square image */}
       <div className="hw-avatar-card__img-wrap">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
@@ -39,10 +51,7 @@ export default function MatchingAvatarCard({ title, description, frames }: Match
           draggable={false}
         />
 
-        {/* Frame switcher — sits right on top of the image, full-width, so
-            it's the first thing people see (a bottom-floating pill was easy
-            to miss; this can't be missed). Doubles as the "matching pair"
-            signal — no separate badge needed. */}
+        {/* Tab bar sits ON TOP of the image — first thing people see */}
         {frames.length > 1 ? (
           <div className="hw-pair-tabs" role="tablist" aria-label={`${title} — choose a side`}>
             <span className="hw-pair-icon" aria-hidden="true">💞</span>
@@ -53,7 +62,7 @@ export default function MatchingAvatarCard({ title, description, frames }: Match
                 role="tab"
                 aria-selected={i === active}
                 className={`hw-pair-tab${i === active ? " hw-pair-tab--active" : ""}`}
-                onClick={() => setActive(i)}
+                onClick={() => handleTabClick(i)}
               >
                 {f.label}
               </button>
@@ -67,6 +76,20 @@ export default function MatchingAvatarCard({ title, description, frames }: Match
       {/* Card body */}
       <div className="hw-avatar-card__body">
         <h2 className="hw-avatar-card__title">{title}</h2>
+
+        {/* Subtitle line — shows which frame is active, below the image */}
+        {frames.length > 1 && (
+          <p className="hw-pair-subtitle">
+            {frames.map((f, i) => (
+              <span
+                key={f.id}
+                className={`hw-pair-subtitle__label${i === active ? " hw-pair-subtitle__label--active" : ""}`}
+              >
+                {f.label}
+              </span>
+            ))}
+          </p>
+        )}
 
         <div className="hw-avatar-card__actions">
           <a
@@ -142,6 +165,31 @@ export default function MatchingAvatarCard({ title, description, frames }: Match
         .hw-pair-tab:hover:not(.hw-pair-tab--active) {
           color: #fff;
           background: rgba(255, 255, 255, 0.14);
+        }
+        /* Subtitle below image — fades between label names */
+        .hw-pair-subtitle {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 10px;
+          margin: 6px 0 2px;
+          font-family: var(--font-space, monospace);
+          font-size: 0.6rem;
+          letter-spacing: 0.14em;
+          text-transform: uppercase;
+          position: relative;
+        }
+        .hw-pair-subtitle__label {
+          color: rgba(232, 228, 220, 0.28);
+          transition: color 0.4s ease;
+        }
+        .hw-pair-subtitle__label--active {
+          color: rgba(236, 72, 153, 0.9);
+        }
+        .hw-pair-subtitle__label + .hw-pair-subtitle__label::before {
+          content: "·";
+          margin-right: 10px;
+          color: rgba(232,228,220,0.15);
         }
       `}</style>
     </article>
