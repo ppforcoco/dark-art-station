@@ -81,8 +81,6 @@ export default async function Top100DarkFantasyPage() {
                 <div style={{ aspectRatio: img.deviceType === "PC" ? "16/9" : "9/16", overflow: "hidden", background: "#0a0812" }}>
                   <img src={getPublicUrl(img.r2Key)} alt={img.title} loading="lazy" decoding="async"
                     style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", transition: "transform 0.3s ease" }}
-                    onMouseOver={e => (e.currentTarget.style.transform = "scale(1.04)")}
-                    onMouseOut={e => (e.currentTarget.style.transform = "scale(1)")} />
                 </div>
                 <p style={{ fontFamily: "var(--font-space,monospace)", fontSize: "0.58rem", color: "rgba(232,228,220,0.6)", marginTop: "5px", letterSpacing: "0.03em", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{img.title}</p>
                 {shortDesc && <p style={{ fontFamily: "var(--font-space,monospace)", fontSize: "0.52rem", color: "rgba(232,228,220,0.3)", marginTop: "2px", letterSpacing: "0.02em", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{shortDesc}</p>}
