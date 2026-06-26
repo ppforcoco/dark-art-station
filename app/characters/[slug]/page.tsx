@@ -43,9 +43,46 @@ function getCachedImage(slug: string) {
   )();
 }
 
+// Safe resident fetch — returns null instead of throwing if the table
+// doesn't exist yet or the record is missing.
+async function safeGetResident(slug: string) {
+  try {
+    return await db.resident.findUnique({
+      where: { slug, isPublished: true },
+      select: { name: true, slug: true },
+    });
+  } catch {
+    return null;
+  }
+}
+
+// Safe related wallpapers fetch — returns [] on any DB error.
+async function safeGetRelated(residentTag: string, currentSlug: string) {
+  try {
+    return await db.image.findMany({
+      where: {
+        tags: { has: residentTag },
+        slug: { not: currentSlug },
+      },
+      orderBy: [{ viewCount: "desc" }],
+      take: 8,
+      select: { id: true, slug: true, title: true, r2Key: true, deviceType: true },
+    });
+  } catch {
+    return [];
+  }
+}
+
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const image = await getCachedImage(slug);
+
+  let image;
+  try {
+    image = await getCachedImage(slug);
+  } catch {
+    return { title: "Not Found | Haunted Wallpapers" };
+  }
+
   if (!image) return { title: "Not Found | Haunted Wallpapers" };
 
   // Must have a resident: tag
@@ -86,7 +123,13 @@ export async function generateStaticParams() {
 export default async function CharacterWallpaperPage({ params }: PageProps) {
   const { slug } = await params;
 
-  const image = await getCachedImage(slug);
+  let image;
+  try {
+    image = await getCachedImage(slug);
+  } catch {
+    notFound();
+  }
+
   if (!image) notFound();
 
   // Only resident-tagged images allowed on this route
@@ -95,21 +138,10 @@ export default async function CharacterWallpaperPage({ params }: PageProps) {
 
   const residentSlug = residentTag.replace("resident:", "");
 
-  // Load resident info for breadcrumb + related
+  // Load resident info for breadcrumb + related — both calls are safe (won't throw)
   const [resident, relatedWallpapers] = await Promise.all([
-    db.resident.findUnique({
-      where: { slug: residentSlug, isPublished: true },
-      select: { name: true, slug: true },
-    }),
-    db.image.findMany({
-      where: {
-        tags: { has: residentTag },
-        slug: { not: slug },
-      },
-      orderBy: [{ viewCount: "desc" }],
-      take: 8,
-      select: { id: true, slug: true, title: true, r2Key: true, deviceType: true },
-    }),
+    safeGetResident(residentSlug),
+    safeGetRelated(residentTag, slug),
   ]);
 
   const thumbUrl = getPublicUrl(image.r2Key);

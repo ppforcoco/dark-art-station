@@ -15,12 +15,20 @@ interface PageProps {
   params: Promise<{ slug: string }>;
 }
 
+async function safeGetResident(slug: string) {
+  try {
+    return await db.resident.findUnique({
+      where: { slug, isPublished: true },
+      select: { name: true, tagline: true, portraitKey: true, story: true, personality: true, slug: true },
+    });
+  } catch {
+    return null;
+  }
+}
+
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const resident = await db.resident.findUnique({
-    where: { slug, isPublished: true },
-    select: { name: true, tagline: true, portraitKey: true },
-  });
+  const resident = await safeGetResident(slug);
   if (!resident) return { title: "Not Found | Haunted Wallpapers" };
 
   const ogImage = resident.portraitKey ? getPublicUrl(resident.portraitKey) : undefined;
@@ -48,20 +56,23 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 export default async function ResidentPage({ params }: PageProps) {
   const { slug } = await params;
 
-  const resident = await db.resident.findUnique({
-    where: { slug, isPublished: true },
-  });
+  const resident = await safeGetResident(slug);
 
   if (!resident) notFound();
 
-  const wallpapers = await db.image.findMany({
-    where: {
-      tags: { has: `resident:${slug}` },
-    },
-    orderBy: [{ viewCount: "desc" }, { createdAt: "desc" }],
-    take: 48,
-    select: { id: true, slug: true, title: true, r2Key: true, deviceType: true },
-  });
+  let wallpapers: { id: string; slug: string; title: string; r2Key: string; deviceType: string | null }[] = [];
+  try {
+    wallpapers = await db.image.findMany({
+      where: {
+        tags: { has: `resident:${slug}` },
+      },
+      orderBy: [{ viewCount: "desc" }, { createdAt: "desc" }],
+      take: 48,
+      select: { id: true, slug: true, title: true, r2Key: true, deviceType: true },
+    });
+  } catch {
+    wallpapers = [];
+  }
 
   const portraitUrl = resident.portraitKey ? getPublicUrl(resident.portraitKey) : null;
 
