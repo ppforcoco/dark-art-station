@@ -228,11 +228,11 @@ export default async function Home() {
           <section className="hp-section" style={{ marginBottom: "clamp(48px, 8vw, 96px)" }}>
             <div className="hp-section-head">
               <div>
-                <p className="hp-section-eye" style={{ color: "#9d4edd" }}>Characters of the Town</p>
+                <p className="hp-section-eye" style={{ color: "#a85ee3" }}>Characters of the Town</p>
                 <h2 className="hp-section-title">Meet the Residents</h2>
                 <p className="hp-section-sub">Every haunting has a face. Every face has a story.</p>
               </div>
-              <Link href="/residents" style={{ fontFamily: "var(--font-space, monospace)", fontSize: "0.65rem", letterSpacing: "0.15em", textTransform: "uppercase", color: "rgba(157,78,221,0.8)", textDecoration: "none", border: "1px solid rgba(157,78,221,0.3)", padding: "8px 16px" }}>
+              <Link href="/residents" style={{ fontFamily: "var(--font-space, monospace)", fontSize: "0.65rem", letterSpacing: "0.15em", textTransform: "uppercase", color: "rgba(184,125,232,0.95)", textDecoration: "none", border: "1px solid rgba(157,78,221,0.3)", padding: "8px 16px" }}>
                 All Residents →
               </Link>
             </div>
@@ -329,7 +329,7 @@ export default async function Home() {
                   </div>
                 </Link>
                 <div className="hp-wotd-info">
-                  <p className="hp-section-eye" style={{ color:"#ef0014", margin:0 }}>Wallpaper of the Day</p>
+                  <p className="hp-section-eye" style={{ color:"#ff3344", margin:0 }}>Wallpaper of the Day</p>
                   <h2 className="hp-wotd-title">{wotd.title}</h2>
                   <p className="hp-wotd-note">One secret pulled daily from the town. Download before it disappears.</p>
                   <Link href={wotdHref} className="hp-btn-red" style={{ alignSelf:"flex-start" }}>

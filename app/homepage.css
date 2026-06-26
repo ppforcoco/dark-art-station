@@ -165,7 +165,7 @@
 }
 .hp-worlds-sub {
   font-family:Arial, sans-serif; font-size:clamp(.5rem,.6vw,.58rem);
-  letter-spacing:.26em; text-transform:uppercase; color:#ef0014; margin:0 0 4px;
+  letter-spacing:.26em; text-transform:uppercase; color:#ff3344; margin:0 0 4px;
 }
 .hp-worlds-grid {
   display:grid; grid-template-columns:repeat(5,1fr);
@@ -205,7 +205,7 @@
 .hp-wotd-rule-line { flex:1; height:1px; background:linear-gradient(90deg,transparent,rgba(224,0,31,.3),transparent) }
 .hp-wotd-label {
   font-family:Arial, sans-serif; font-size:clamp(.54rem,.65vw,.62rem);
-  letter-spacing:.22em; text-transform:uppercase; color:#ef0014; white-space:nowrap;
+  letter-spacing:.22em; text-transform:uppercase; color:#ff3344; white-space:nowrap;
 }
 .hp-wotd-body {
   display:flex; align-items:center; gap:clamp(20px,4vw,48px);

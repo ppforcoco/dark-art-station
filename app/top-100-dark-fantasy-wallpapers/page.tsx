@@ -62,18 +62,8 @@ export default async function Top100DarkFantasyPage() {
           </p>
         </div>
 
-        {/* Intro */}
-        <div style={{ maxWidth: "720px", marginBottom: "48px", borderLeft: "1px solid rgba(201,168,76,0.2)", paddingLeft: "20px" }}>
-          <p style={{ color: "rgba(232,228,220,0.7)", fontSize: "0.9rem", lineHeight: 1.9, marginBottom: "12px" }}>
-            Drive long enough down a road that doesn't feel right — where the trees lean in too close and the fog sits too still — and you will find it. The haunted town. No signs announce it. No lights guide the way. It just... appears. And once seen, it stays with you.
-          </p>
-          <p style={{ color: "rgba(232,228,220,0.7)", fontSize: "0.9rem", lineHeight: 1.9 }}>
-            That is the feeling behind our Top 100 Dark Fantasy Wallpapers. Every piece comes from that place between worlds — where the air is heavy with forgotten things, where the light never quite reaches the ground, and where the silence has weight.
-          </p>
-        </div>
-
         {/* Grid */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(160px,1fr))", gap: "16px", marginBottom: "80px" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(160px,1fr))", gap: "16px", marginBottom: "48px" }}>
           {images.map((img) => {
             const shortDesc = img.description ? img.description.replace(/<[^>]*>/g, "").slice(0, 72).trim() : null;
             const href = img.deviceType
@@ -92,6 +82,16 @@ export default async function Top100DarkFantasyPage() {
               </Link>
             );
           })}
+        </div>
+
+        {/* Intro */}
+        <div style={{ maxWidth: "720px", marginBottom: "48px", borderLeft: "1px solid rgba(201,168,76,0.2)", paddingLeft: "20px" }}>
+          <p style={{ color: "rgba(232,228,220,0.7)", fontSize: "0.9rem", lineHeight: 1.9, marginBottom: "12px" }}>
+            Drive long enough down a road that doesn't feel right — where the trees lean in too close and the fog sits too still — and you will find it. The haunted town. No signs announce it. No lights guide the way. It just... appears. And once seen, it stays with you.
+          </p>
+          <p style={{ color: "rgba(232,228,220,0.7)", fontSize: "0.9rem", lineHeight: 1.9 }}>
+            That is the feeling behind our Top 100 Dark Fantasy Wallpapers. Every piece comes from that place between worlds — where the air is heavy with forgotten things, where the light never quite reaches the ground, and where the silence has weight.
+          </p>
         </div>
 
         {/* SEO Description */}

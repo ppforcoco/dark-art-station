@@ -54,9 +54,6 @@ export default async function Top100AmoledPage() {
           <p style={{ fontFamily: "var(--font-cormorant,serif)", fontSize: "1.1rem", fontStyle: "italic", color: "rgba(232,228,220,0.55)", marginBottom: "16px", maxWidth: "600px" }}>
             True black. Zero light. Made for screens that earn the darkness.
           </p>
-          <p style={{ fontFamily: "var(--font-space,monospace)", fontSize: "0.65rem", letterSpacing: "0.18em", textTransform: "uppercase", color: "rgba(232,228,220,0.3)" }}>
-            {images.length} wallpapers · Pure black OLED optimised · Free 4K download
-          </p>
         </div>
 
         {/* Grid */}

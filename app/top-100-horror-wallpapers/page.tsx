@@ -62,18 +62,8 @@ export default async function Top100HorrorPage() {
           </p>
         </div>
 
-        {/* Intro */}
-        <div style={{ maxWidth: "720px", marginBottom: "48px", borderLeft: "1px solid rgba(192,0,26,0.2)", paddingLeft: "20px" }}>
-          <p style={{ color: "rgba(232,228,220,0.7)", fontSize: "0.9rem", lineHeight: 1.9, marginBottom: "12px" }}>
-            The static. That low, crackling hum that sits just beneath the silence. It is the sound the haunted town makes when it breathes. And when you press your screen, when you set one of these wallpapers as your background, that static bleeds through.
-          </p>
-          <p style={{ color: "rgba(232,228,220,0.7)", fontSize: "0.9rem", lineHeight: 1.9 }}>
-            Our Top 100 Horror Wallpapers are pulled from the haunted town's forgotten frequencies. The atmosphere is thick. The colors are drained — washed-out grays, sickly yellows, and deep, swallowing blacks. There is a rawness to every piece, a sense that something is just out of frame, just beyond reach.
-          </p>
-        </div>
-
         {/* Grid */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(160px,1fr))", gap: "16px", marginBottom: "80px" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(160px,1fr))", gap: "16px", marginBottom: "48px" }}>
           {images.map((img) => {
             const shortDesc = img.description ? img.description.replace(/<[^>]*>/g, "").slice(0, 72).trim() : null;
             const href = img.deviceType
@@ -92,6 +82,16 @@ export default async function Top100HorrorPage() {
               </Link>
             );
           })}
+        </div>
+
+        {/* Intro */}
+        <div style={{ maxWidth: "720px", marginBottom: "48px", borderLeft: "1px solid rgba(192,0,26,0.2)", paddingLeft: "20px" }}>
+          <p style={{ color: "rgba(232,228,220,0.7)", fontSize: "0.9rem", lineHeight: 1.9, marginBottom: "12px" }}>
+            The static. That low, crackling hum that sits just beneath the silence. It is the sound the haunted town makes when it breathes. And when you press your screen, when you set one of these wallpapers as your background, that static bleeds through.
+          </p>
+          <p style={{ color: "rgba(232,228,220,0.7)", fontSize: "0.9rem", lineHeight: 1.9 }}>
+            Our Top 100 Horror Wallpapers are pulled from the haunted town's forgotten frequencies. The atmosphere is thick. The colors are drained — washed-out grays, sickly yellows, and deep, swallowing blacks. There is a rawness to every piece, a sense that something is just out of frame, just beyond reach.
+          </p>
         </div>
 
         {/* SEO Description */}
