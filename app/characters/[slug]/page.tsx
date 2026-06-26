@@ -26,25 +26,28 @@ interface PageProps {
 
 function getCachedImage(slug: string) {
   return unstable_cache(
-    () => db.image.findFirst({
-      where: {
-        slug,
-      },
-      select: {
-        id: true, slug: true, title: true, description: true,
-        r2Key: true, highResKey: true, tags: true,
-        viewCount: true, deviceType: true,
-        commentsEnabled: true, isAdult: true,
-        _count: { select: { downloads: true } },
-      },
-    }),
+    async () => {
+      try {
+        return await db.image.findFirst({
+          where: { slug },
+          select: {
+            id: true, slug: true, title: true, description: true,
+            r2Key: true, highResKey: true, tags: true,
+            viewCount: true, deviceType: true,
+            commentsEnabled: true, isAdult: true,
+            _count: { select: { downloads: true } },
+          },
+        });
+      } catch {
+        return null;
+      }
+    },
     [`character-image-${slug}`],
     { revalidate: 60 },
   )();
 }
 
-// Safe resident fetch — returns null instead of throwing if the table
-// doesn't exist yet or the record is missing.
+// Safe resident fetch — returns null if table missing or record not found.
 async function safeGetResident(slug: string) {
   try {
     return await db.resident.findUnique({
@@ -76,16 +79,10 @@ async function safeGetRelated(residentTag: string, currentSlug: string) {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
 
-  let image;
-  try {
-    image = await getCachedImage(slug);
-  } catch {
-    return { title: "Not Found | Haunted Wallpapers" };
-  }
-
+  const image = await getCachedImage(slug);
   if (!image) return { title: "Not Found | Haunted Wallpapers" };
 
-  // Must have a resident: tag
+  // Characters route is for resident-tagged images only
   const residentTag = image.tags.find((t) => t.startsWith("resident:"));
   if (!residentTag) return { title: "Not Found | Haunted Wallpapers" };
 
@@ -123,40 +120,35 @@ export async function generateStaticParams() {
 export default async function CharacterWallpaperPage({ params }: PageProps) {
   const { slug } = await params;
 
-  let image;
-  try {
-    image = await getCachedImage(slug);
-  } catch {
-    notFound();
-  }
-
+  const image = await getCachedImage(slug);
   if (!image) notFound();
 
-  // Only resident-tagged images allowed on this route
-  const residentTag = image.tags.find((t) => t.startsWith("resident:"));
+  // Characters route is for resident-tagged images only
+  const residentTag = image!.tags.find((t) => t.startsWith("resident:"));
   if (!residentTag) notFound();
 
   const residentSlug = residentTag.replace("resident:", "");
 
-  // Load resident info for breadcrumb + related — both calls are safe (won't throw)
+  // Both calls are wrapped in try/catch — won't throw even if Resident table missing
   const [resident, relatedWallpapers] = await Promise.all([
     safeGetResident(residentSlug),
     safeGetRelated(residentTag, slug),
   ]);
 
-  const thumbUrl = getPublicUrl(image.r2Key);
-  const isPortrait = image.deviceType !== "PC";
-  const displayDescription = image.description ?? `${image.title} — free dark art wallpaper from Haunted Wallpapers.`;
+  const thumbUrl = getPublicUrl(image!.r2Key);
+  // null deviceType = treat as portrait (phone wallpaper)
+  const isPortrait = image!.deviceType !== "PC";
+  const displayDescription = image!.description ?? `${image!.title} — free dark art wallpaper from Haunted Wallpapers.`;
 
   return (
-    <PremiumLockedGateClient tags={image.tags} devicePath="characters">
+    <PremiumLockedGateClient tags={image!.tags} devicePath="characters">
       <main style={{ backgroundColor: "var(--bg-primary)", color: "var(--text-primary)", colorScheme: "dark", minHeight: "100vh" }}>
 
         <Breadcrumbs items={[
           { label: "Home", href: "/" },
           { label: "Residents", href: "/residents" },
           ...(resident ? [{ label: resident.name, href: `/residents/${resident.slug}` }] : []),
-          { label: image.title },
+          { label: image!.title },
         ]} />
 
         <section style={{ maxWidth: "1280px", margin: "0 auto", padding: "16px 16px 48px" }}>
@@ -167,7 +159,7 @@ export default async function CharacterWallpaperPage({ params }: PageProps) {
               <div style={{ position: "relative", width: "100%", aspectRatio: isPortrait ? "9/16" : "16/9", overflow: "hidden", background: "#0a0812", borderRadius: "4px" }}>
                 <Image
                   src={thumbUrl}
-                  alt={image.title}
+                  alt={image!.title}
                   fill
                   unoptimized
                   className="object-cover"
@@ -178,21 +170,21 @@ export default async function CharacterWallpaperPage({ params }: PageProps) {
 
               {/* Actions */}
               <div style={{ marginTop: "12px", display: "flex", flexDirection: "column", gap: "8px" }}>
-                <DownloadButton href={`/api/download/image/${image.id}`} slug={image.slug} downloadCount={0} />
-                <PreviewButton src={thumbUrl} title={image.title} />
+                <DownloadButton href={`/api/download/image/${image!.id}`} slug={image!.slug} downloadCount={0} />
+                <PreviewButton src={thumbUrl} title={image!.title} />
                 <FavoriteButton
                   size="md"
                   className="detail-fav-inline"
-                  item={{ slug: image.slug, title: image.title, thumb: thumbUrl, href: `/characters/${slug}`, device: "iphone" }}
+                  item={{ slug: image!.slug, title: image!.title, thumb: thumbUrl, href: `/characters/${slug}`, device: "iphone" }}
                 />
-                <WallpaperReactions imageId={image.id} />
+                <WallpaperReactions imageId={image!.id} />
               </div>
             </div>
 
             {/* ── Info ── */}
             <div className="char-info">
               <h1 style={{ fontFamily: "var(--font-cinzel, serif)", fontSize: "clamp(1.4rem, 4vw, 2.4rem)", lineHeight: 1.15, marginBottom: "12px", color: "rgba(232,228,220,0.97)" }}>
-                {image.title}
+                {image!.title}
               </h1>
 
               {/* Resident link */}
@@ -202,16 +194,16 @@ export default async function CharacterWallpaperPage({ params }: PageProps) {
                 </a>
               )}
 
-              <SocialShare title={image.title} imageUrl={thumbUrl} pageUrl={`${SITE_URL}/characters/${slug}`} />
+              <SocialShare title={image!.title} imageUrl={thumbUrl} pageUrl={`${SITE_URL}/characters/${slug}`} />
 
               {/* Tags */}
-              {image.tags.filter((t) => !t.startsWith("badge-") && !t.startsWith("resident:")).length > 0 && (
+              {image!.tags.filter((t) => !t.startsWith("badge-") && !t.startsWith("resident:")).length > 0 && (
                 <div style={{ padding: "12px 0" }}>
                   <p style={{ fontFamily: "var(--font-space, monospace)", fontSize: "0.55rem", letterSpacing: "0.28em", textTransform: "uppercase", color: "rgba(224,224,224,0.3)", marginBottom: "8px" }}>
                     Tags
                   </p>
                   <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
-                    {image.tags.filter((t) => !t.startsWith("badge-") && !t.startsWith("resident:")).map((tag) => (
+                    {image!.tags.filter((t) => !t.startsWith("badge-") && !t.startsWith("resident:")).map((tag) => (
                       <span key={tag} style={{ display: "inline-block", padding: "4px 10px", fontFamily: "var(--font-space, monospace)", fontSize: "0.65rem", letterSpacing: "0.1em", textTransform: "uppercase", color: "rgba(224,224,224,0.6)", border: "1px solid rgba(224,224,224,0.1)", background: "rgba(255,255,255,0.03)" }}>
                         #{tag}
                       </span>
@@ -258,7 +250,7 @@ export default async function CharacterWallpaperPage({ params }: PageProps) {
           )}
         </section>
 
-        <RecentlyViewed currentSlug={image.slug} />
+        <RecentlyViewed currentSlug={image!.slug} />
 
         <style>{`
           .char-grid {
@@ -297,7 +289,7 @@ export default async function CharacterWallpaperPage({ params }: PageProps) {
           .description-html strong, .description-html b { color: #f0ecff; }
         `}</style>
 
-        <PageTracker item={{ slug: image.slug, title: image.title, thumb: thumbUrl, href: `/characters/${slug}` }} />
+        <PageTracker item={{ slug: image!.slug, title: image!.title, thumb: thumbUrl, href: `/characters/${slug}` }} />
       </main>
     </PremiumLockedGateClient>
   );

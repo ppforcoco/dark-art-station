@@ -36,14 +36,17 @@ export default async function NotFound() {
       );
       suggestions = results.filter(Boolean) as typeof suggestions;
     }
-  } catch {}
+  } catch {
+    // DB unavailable — show the 404 page without suggestions
+    suggestions = [];
+  }
 
   function getHref(img: typeof suggestions[0]) {
     if (img.deviceType === "IPHONE")  return `/iphone/${img.slug}`;
     if (img.deviceType === "ANDROID") return `/android/${img.slug}`;
     if (img.deviceType === "PC")      return `/pc/${img.slug}`;
     if (img.collection?.slug)         return `/shop/${img.collection.slug}/${img.slug}`;
-    return "/shop";
+    return "/";
   }
 
   return (
