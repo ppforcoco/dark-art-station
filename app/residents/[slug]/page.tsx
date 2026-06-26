@@ -6,7 +6,7 @@ import { db } from "@/lib/db";
 import { getPublicUrl } from "@/lib/r2";
 import Breadcrumbs from "@/components/Breadcrumbs";
 
-export const revalidate = 3600;
+export const revalidate = 60;
 export const dynamicParams = true;
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
@@ -57,7 +57,6 @@ export default async function ResidentPage({ params }: PageProps) {
   // Fetch wallpapers tagged with this resident
   const wallpapers = await db.image.findMany({
     where: {
-      isAdult: false,
       tags: { has: `resident:${slug}` },
     },
     orderBy: [{ viewCount: "desc" }, { createdAt: "desc" }],
