@@ -442,6 +442,7 @@ function ImageUploaderTab({password}:{password:string}){
           <input placeholder="Add custom tag…" value={newTagInput} onChange={e=>setNewTagInput(e.target.value.toLowerCase().replace(/\s+/g,"-"))} onKeyDown={e=>{if(e.key==="Enter"&&newTagInput.trim()){const v=newTagInput.trim();setCustomTags(prev=>prev.includes(v)?prev:[...prev,v]);setSelectedTags(prev=>prev.includes(v)?prev:[...prev,v]);setNewTagInput("");}}} style={{...inp,flex:1,fontSize:"0.75rem"}}/>
           <Btn onClick={()=>{if(!newTagInput.trim())return;const v=newTagInput.trim();setCustomTags(prev=>prev.includes(v)?prev:[...prev,v]);setSelectedTags(prev=>prev.includes(v)?prev:[...prev,v]);setNewTagInput("");}} variant="ghost">Add</Btn>
         </div>
+        <ResidentTagPicker selectedTags={selectedTags} onToggle={(tag)=>setSelectedTags(prev=>prev.includes(tag)?prev.filter(t=>t!==tag):[...prev,tag])} password={password}/>
       </Card>
       <Card style={{padding:"16px"}}><label style={lbl}>Collection (optional)</label><select value={collectionId} onChange={e=>setCollectionId(e.target.value)} style={{...inp,cursor:"pointer"}}><option value="">— Standalone (no collection) —</option>{collections.map(c=><option key={c.id} value={c.id}>{c.title} ({c.slug})</option>)}</select></Card>
       <Card style={{padding:"14px 16px",background:"rgba(124,58,237,0.06)",borderColor:"rgba(124,58,237,0.3)"}}>
@@ -517,6 +518,35 @@ function BlogTab({password,prefillTitle,prefillLabel,onPrefillUsed}:{password:st
 }
 
 // ── UPDATED: PublishedImagesTab with Most Downloads sort ──────────────────────
+
+function ResidentTagPicker({selectedTags,onToggle,password}:{selectedTags:string[];onToggle:(tag:string)=>void;password:string}){
+  const[residents,setResidents]=React.useState<{slug:string;name:string}[]>([]);
+  React.useEffect(()=>{
+    fetch("/api/hw-admin/residents",{headers:{"x-admin-password":password}})
+      .then(r=>r.json())
+      .then(d=>setResidents(d.residents??[]))
+      .catch(()=>{});
+  },[password]);
+  if(residents.length===0)return null;
+  return(
+    <div style={{marginTop:"12px",borderTop:"1px solid rgba(157,78,221,0.2)",paddingTop:"12px"}}>
+      <p style={{fontFamily:"monospace",fontSize:"0.62rem",letterSpacing:"0.15em",textTransform:"uppercase",color:"#9d4edd",marginBottom:"8px"}}>👥 Assign to Resident</p>
+      <div style={{display:"flex",flexWrap:"wrap",gap:"6px"}}>
+        {residents.map(r=>{
+          const tag=`resident:${r.slug}`;
+          const active=selectedTags.includes(tag);
+          return(
+            <button key={r.slug} type="button" onClick={()=>onToggle(tag)}
+              style={{background:active?"rgba(157,78,221,0.25)":"transparent",border:`1px solid ${active?"#9d4edd":"rgba(157,78,221,0.3)"}`,color:active?"#c77dff":"rgba(157,78,221,0.7)",padding:"5px 14px",cursor:"pointer",fontSize:"0.68rem",fontFamily:"monospace",transition:"all 0.15s"}}>
+              {active?"✓ ":""}{r.name}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 function PublishedImagesTab({password}:{password:string}){
   const[images,setImages]=useState<ImageRecord[]>([]);
   const[total,setTotal]=useState(0);
@@ -532,7 +562,7 @@ function PublishedImagesTab({password}:{password:string}){
   const[eDesc,setEDesc]=useState("");
   const[eAlt,setEAlt]=useState("");
   const[eMetaDesc,setEMetaDesc]=useState("");
-  const[eTags,setETags]=useState<string[]>([]);const eTagInputRef=useRef<HTMLInputElement>(null);
+  const[eTags,setETags]=useState<string[]>([]);
   const[eAdult,setEAdult]=useState(false);const[eAvatar,setEAvatar]=useState(false);
   const[eDevice,setEDevice]=useState("");
   const[aiLoading,setAiLoading]=useState(false);
@@ -566,7 +596,7 @@ function PublishedImagesTab({password}:{password:string}){
 
   function openEdit(img:ImageRecord){setEditing(img);setETitle(img.title);setEDesc(img.description??"");setEAlt(img.altText??"");setEMetaDesc(img.metaDescription??"");setETags(img.tags.filter(t=>t!=="16plus"));setEAdult(img.isAdult);setEAvatar(img.isAvatar??false);setEDevice(img.deviceType??"");setMsg(null);}
   async function handleAiRegenerate(){if(!editing)return;setAiLoading(true);try{const imgUrl=thumbUrl(editing.r2Key);const{data,mediaType}=await urlToBase64(imgUrl);const result=await analyzeImageWithClaude(data,mediaType);if(result.title)setETitle(result.title);if(result.description)setEDesc(result.description);if(result.altText)setEAlt(result.altText);if(result.tags?.length)setETags(result.tags.filter(t=>ALL_TAGS.includes(t)));setMsg({type:"ok",text:"✓ AI regenerated title, description, alt text & tags!"});}catch(err){setMsg({type:"err",text:`⚠ AI failed: ${(err as Error).message}`});}setAiLoading(false);}
-  async function handleSave(){if(!editing)return;setSaving(true);const pendingTag=eTagInputRef.current?.value?.trim();const flushedTags=pendingTag?[...new Set([...eTags,pendingTag])]:eTags;const tags=eAdult?[...flushedTags,"16plus"]:flushedTags;try{const res=await fetch(`/api/hw-admin/images/${editing.id}`,{method:"PATCH",headers:{"Content-Type":"application/json","x-admin-password":password},body:JSON.stringify({title:eTitle,description:eDesc,altText:eAlt,metaDescription:eMetaDesc||null,tags,isAdult:eAdult,isAvatar:eAvatar,deviceType:eDevice||null})});const json=await res.json().catch(()=>({}));if(!res.ok){setMsg({type:"err",text:json.error??`Save failed (${res.status})`});setSaving(false);return;}setMsg({type:"ok",text:`✓ Saved "${eTitle}"`});setEditing(null);load(page,q);}catch(err){setMsg({type:"err",text:`Network error: ${(err as Error).message}`});}setSaving(false);}
+  async function handleSave(){if(!editing)return;setSaving(true);const tags=eAdult?[...eTags,"16plus"]:eTags;try{const res=await fetch(`/api/hw-admin/images/${editing.id}`,{method:"PATCH",headers:{"Content-Type":"application/json","x-admin-password":password},body:JSON.stringify({title:eTitle,description:eDesc,altText:eAlt,metaDescription:eMetaDesc||null,tags,isAdult:eAdult,isAvatar:eAvatar,deviceType:eDevice||null})});const json=await res.json().catch(()=>({}));if(!res.ok){setMsg({type:"err",text:json.error??`Save failed (${res.status})`});setSaving(false);return;}setMsg({type:"ok",text:`✓ Saved "${eTitle}"`});setEditing(null);load(page,q);}catch(err){setMsg({type:"err",text:`Network error: ${(err as Error).message}`});}setSaving(false);}
   async function handleDelete(img:ImageRecord){if(!confirm(`Delete "${img.title}"?\n\nThis removes from R2 and database permanently.`))return;setDeleting(img.id);try{const res=await fetch(`/api/hw-admin/images/${img.id}`,{method:"DELETE",headers:{"x-admin-password":password}});if(!res.ok)throw new Error("Delete failed");setMsg({type:"ok",text:`✓ Deleted "${img.title}"`});load(page,q);}catch{setMsg({type:"err",text:"Delete failed."});}setDeleting(null);}
   const thumbUrl=(key:string)=>r2Base?`${r2Base}/${key}`:`/api/r2-proxy/${key}`;
   const altOk=eAlt.length>=130&&eAlt.length<=150;
@@ -620,8 +650,9 @@ function PublishedImagesTab({password}:{password:string}){
       </div>
       <div style={{marginBottom:"14px"}}><label style={lbl}>Description (HTML)</label><textarea value={eDesc} onChange={e=>setEDesc(e.target.value)} rows={6} style={{...inp,resize:"vertical",lineHeight:"1.6",fontSize:"0.82rem"}}/></div>
       <div style={{marginBottom:"14px"}}><label style={lbl}>SEO Tags ({eTags.length})</label>
-        <div style={{display:"flex",gap:"8px",marginBottom:"8px"}}><input placeholder="Paste tags by commas: dark, gothic, horror…" ref={eTagInputRef} style={{...inp,flex:1,fontSize:"0.72rem",borderColor:"rgba(201,168,76,0.4)"}} onKeyDown={e=>{if(e.key==="Enter"){const raw=(e.target as HTMLInputElement).value;const parsed=raw.split(",").map(t=>t.trim().toLowerCase().replace(/\s+/g,"-")).filter(Boolean);setETags(prev=>[...new Set([...prev,...parsed])]);(e.target as HTMLInputElement).value="";e.preventDefault();}}} onPaste={e=>{setTimeout(()=>{const raw=(e.target as HTMLInputElement).value;const parsed=raw.split(",").map(t=>t.trim().toLowerCase().replace(/\s+/g,"-")).filter(Boolean);if(parsed.length>1){setETags(prev=>[...new Set([...prev,...parsed])]);(e.target as HTMLInputElement).value="";}},50);}}/><Btn onClick={()=>setETags([])} variant="ghost" style={{fontSize:"0.65rem",padding:"6px 10px",flexShrink:0}}>Clear</Btn></div>
-        <div style={{display:"flex",flexWrap:"wrap",gap:"6px"}}>{ALL_TAGS.map(tag=><button key={tag} onClick={()=>setETags(prev=>prev.includes(tag)?prev.filter(t=>t!==tag):[...prev,tag])} style={{background:eTags.includes(tag)?C.red:"transparent",border:`1px solid ${eTags.includes(tag)?C.red:C.border}`,color:eTags.includes(tag)?C.white:C.textSec,padding:"4px 12px",cursor:"pointer",fontSize:"0.65rem",fontFamily:"monospace"}}>{eTags.includes(tag)?"✓ ":""}{tag}</button>)}</div></div>
+        <div style={{display:"flex",gap:"8px",marginBottom:"8px"}}><input placeholder="Paste tags by commas: dark, gothic, horror…" style={{...inp,flex:1,fontSize:"0.72rem",borderColor:"rgba(201,168,76,0.4)"}} onKeyDown={e=>{if(e.key==="Enter"){const raw=(e.target as HTMLInputElement).value;const parsed=raw.split(",").map(t=>t.trim().toLowerCase().replace(/\s+/g,"-")).filter(Boolean);setETags(prev=>[...new Set([...prev,...parsed])]);(e.target as HTMLInputElement).value="";e.preventDefault();}}} onPaste={e=>{setTimeout(()=>{const raw=(e.target as HTMLInputElement).value;const parsed=raw.split(",").map(t=>t.trim().toLowerCase().replace(/\s+/g,"-")).filter(Boolean);if(parsed.length>1){setETags(prev=>[...new Set([...prev,...parsed])]);(e.target as HTMLInputElement).value="";}},50);}}/><Btn onClick={()=>setETags([])} variant="ghost" style={{fontSize:"0.65rem",padding:"6px 10px",flexShrink:0}}>Clear</Btn></div>
+        <div style={{display:"flex",flexWrap:"wrap",gap:"6px"}}>{ALL_TAGS.map(tag=><button key={tag} onClick={()=>setETags(prev=>prev.includes(tag)?prev.filter(t=>t!==tag):[...prev,tag])} style={{background:eTags.includes(tag)?C.red:"transparent",border:`1px solid ${eTags.includes(tag)?C.red:C.border}`,color:eTags.includes(tag)?C.white:C.textSec,padding:"4px 12px",cursor:"pointer",fontSize:"0.65rem",fontFamily:"monospace"}}>{eTags.includes(tag)?"✓ ":""}{tag}</button>)}</div>
+        <ResidentTagPicker selectedTags={eTags} onToggle={(tag)=>setETags(prev=>prev.includes(tag)?prev.filter(t=>t!==tag):[...prev,tag])} password={password}/></div>
       <div style={{marginBottom:"16px"}}>
         <label style={lbl}>FOMO Badges</label>
         <div style={{display:"flex",flexWrap:"wrap",gap:"8px",marginTop:"4px"}}>
