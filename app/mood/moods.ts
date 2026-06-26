@@ -4,7 +4,7 @@ export const MOODS = [
   {
     id:       "paranoid",
     label:    "Paranoid",
-    glyph:    "👁",
+    glyph:    "",
     desc:     "Something is watching. It knows your schedule.",
     color:    "#c0001a",
     gradient: "radial-gradient(ellipse at 50% 0%, rgba(192,0,26,0.18) 0%, transparent 65%)",
@@ -13,7 +13,7 @@ export const MOODS = [
   {
     id:       "melancholy",
     label:    "Melancholy",
-    glyph:    "🌧",
+    glyph:    "",
     desc:     "Beautiful sadness. The kind that feels like home.",
     color:    "#5b7fa6",
     gradient: "radial-gradient(ellipse at 50% 0%, rgba(91,127,166,0.15) 0%, transparent 65%)",
@@ -22,26 +22,27 @@ export const MOODS = [
   {
     id:       "powerful",
     label:    "Powerful",
-    glyph:    "⚡",
+    glyph:    "",
     desc:     "You didn't survive this far to be small.",
     color:    "#c9a84c",
     gradient: "radial-gradient(ellipse at 50% 0%, rgba(201,168,76,0.15) 0%, transparent 65%)",
-    // "god" removed — no religious/nat words
-    tags:     ["powerful", "demon", "warrior", "fire", "lightning", "dragon", "dark-fantasy", "epic", "crimson", "amoled"],
+    // "god" and "demon" removed
+    tags:     ["powerful", "warrior", "fire", "lightning", "dragon", "dark-fantasy", "epic", "crimson", "amoled"],
   },
   {
     id:       "aggressive",
     label:    "Aggressive",
-    glyph:    "🩸",
+    glyph:    "",
     desc:     "Raw energy. Unfiltered. Do not tap twice.",
     color:    "#ff2222",
     gradient: "radial-gradient(ellipse at 50% 0%, rgba(255,34,34,0.15) 0%, transparent 65%)",
-    tags:     ["aggressive", "skull", "blood", "gore", "monster", "beast", "claws", "teeth", "villain", "chaos", "anger"],
+    // "blood" removed
+    tags:     ["aggressive", "skull", "gore", "monster", "beast", "claws", "teeth", "villain", "chaos", "anger"],
   },
   {
     id:       "quiet",
     label:    "Quiet",
-    glyph:    "🌙",
+    glyph:    "",
     desc:     "Still. Empty. A room after everyone has left.",
     color:    "#8888bb",
     gradient: "radial-gradient(ellipse at 50% 0%, rgba(136,136,187,0.12) 0%, transparent 65%)",
@@ -50,7 +51,7 @@ export const MOODS = [
   {
     id:       "haunted",
     label:    "Haunted",
-    glyph:    "🕯",
+    glyph:    "",
     desc:     "You carry something old with you. It won't leave.",
     color:    "#d4a847",
     gradient: "radial-gradient(ellipse at 50% 0%, rgba(212,168,71,0.14) 0%, transparent 65%)",
@@ -59,17 +60,17 @@ export const MOODS = [
   {
     id:       "obsessed",
     label:    "Obsessed",
-    glyph:    "🔁",
+    glyph:    "",
     desc:     "One thought. Looping. You can't stop.",
     color:    "#9b30d0",
     gradient: "radial-gradient(ellipse at 50% 0%, rgba(155,48,208,0.15) 0%, transparent 65%)",
-    // "ritual" removed from tags
+    // "ritual" removed
     tags:     ["obsessed", "spiral", "loop", "hypnotic", "surreal", "glitch", "distorted", "trance"],
   },
   {
     id:       "cold",
     label:    "Cold",
-    glyph:    "❄️",
+    glyph:    "",
     desc:     "Frozen inside. No warmth. No apologies.",
     color:    "#60b8d8",
     gradient: "radial-gradient(ellipse at 50% 0%, rgba(96,184,216,0.13) 0%, transparent 65%)",
@@ -79,7 +80,7 @@ export const MOODS = [
   {
     id:       "dreaming",
     label:    "Dreaming",
-    glyph:    "🌌",
+    glyph:    "",
     desc:     "Half asleep. The edges of reality softening.",
     color:    "#7060c8",
     gradient: "radial-gradient(ellipse at 50% 0%, rgba(112,96,200,0.15) 0%, transparent 65%)",
@@ -88,7 +89,6 @@ export const MOODS = [
   {
     id:       "isolated",
     label:    "Isolated",
-    // glyph changed from 🏚 to empty string — no emoji in nav pill
     glyph:    "",
     desc:     "Alone is different from lonely. This is both.",
     color:    "#6a7a6a",
@@ -98,7 +98,7 @@ export const MOODS = [
   {
     id:       "feral",
     label:    "Feral",
-    glyph:    "🐺",
+    glyph:    "",
     desc:     "Something primal just woke up behind your eyes.",
     color:    "#c87820",
     gradient: "radial-gradient(ellipse at 50% 0%, rgba(200,120,32,0.14) 0%, transparent 65%)",
@@ -107,7 +107,7 @@ export const MOODS = [
   {
     id:       "glitching",
     label:    "Glitching",
-    glyph:    "📡",
+    glyph:    "",
     desc:     "Reality keeps buffering. Error. Error. Error.",
     color:    "#00d4aa",
     gradient: "radial-gradient(ellipse at 50% 0%, rgba(0,212,170,0.12) 0%, transparent 65%)",
@@ -116,7 +116,7 @@ export const MOODS = [
   {
     id:       "sinister",
     label:    "Sinister",
-    glyph:    "🎭",
+    glyph:    "",
     desc:     "Everything is fine. That's the problem.",
     color:    "#c030c0",
     gradient: "radial-gradient(ellipse at 50% 0%, rgba(192,48,192,0.14) 0%, transparent 65%)",
@@ -126,8 +126,7 @@ export const MOODS = [
   {
     id:       "mythic",
     label:    "Mythic",
-    glyph:    "🐉",
-    // updated desc: "Ancient. Vast. You're not the main character here." (no nat/religious words)
+    glyph:    "",
     desc:     "Ancient. Vast. You're not the main character here.",
     color:    "#e8c060",
     gradient: "radial-gradient(ellipse at 50% 0%, rgba(232,192,96,0.14) 0%, transparent 65%)",

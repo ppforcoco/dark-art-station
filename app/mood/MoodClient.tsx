@@ -23,28 +23,6 @@ interface PreviewTarget {
   title: string;
 }
 
-// ── Mood descriptions (shown in the quiz intro and hero) ────────────────────
-const MOOD_DESCRIPTIONS: Record<string, { vibe: string; example: string; keywords: string[] }> = {
-  paranoid:   { vibe: "Hyper-aware. Eyes everywhere. Every shadow is a shape.", example: "Great for surveillance cams, all-seeing eyes, figures in the dark.", keywords: ["watching", "unsettling", "horror", "shadow"] },
-  melancholy: { vibe: "A beautiful ache. Rain on glass. Missing something you can't name.", example: "Rain, fog, lonely coastlines, dimly lit rooms.", keywords: ["sad", "lonely", "rain", "moody", "atmospheric"] },
-  powerful:   { vibe: "Unstoppable. Lightning in your veins. Born to burn.", example: "Demons, warriors, dragons, fire, divine wrath.", keywords: ["fire", "warrior", "epic", "demon"] },
-  aggressive: { vibe: "Raw. Unfiltered. Chaos with teeth.", example: "Skulls, beasts, blood, claws, villains mid-scream.", keywords: ["skull", "blood", "monster", "chaos"] },
-  quiet:      { vibe: "Still. Emptied. A room after everyone has left.", example: "Minimal dark art, moons, black voids, silhouettes.", keywords: ["minimal", "moon", "void", "night"] },
-  haunted:    { vibe: "Something old clings to you. Candles. Cold rooms. Old names.", example: "Ghosts, spirits, candlelit manors, Victorian fog.", keywords: ["ghost", "spirit", "gothic", "candle"] },
-  // "ritual" removed from keywords to match tags change in moods.ts
-  obsessed:   { vibe: "One thought on repeat. Can't stop. Won't stop.", example: "Spirals, fractals, hypnotic loops, glitch art.", keywords: ["spiral", "hypnotic", "loop"] },
-  cold:       { vibe: "Frozen inside. No warmth. No apologies.", example: "Ice, frost, winter wastelands, blizzard, pale light.", keywords: ["ice", "frost", "winter", "frozen"] },
-  // violent entry removed
-  dreaming:   { vibe: "Half asleep. Reality blurring at the edges.", example: "Cosmic nebulas, surreal vistas, psychedelic dreamscapes.", keywords: ["cosmic", "galaxy", "surreal", "ethereal"] },
-  isolated:   { vibe: "Alone is different from lonely. This is both.", example: "Abandoned ruins, empty deserts, post-apocalyptic.", keywords: ["abandoned", "ruin", "desolate", "alone"] },
-  feral:      { vibe: "Primal. Hungry. Something behind your eyes just woke up.", example: "Wolves, predators, wild creatures, hunt.", keywords: ["wolf", "predator", "beast", "primal"] },
-  glitching:  { vibe: "Reality is buffering. Error. Error. Rebooting.", example: "Digital corruption, cyber art, neon glitch, matrix.", keywords: ["glitch", "digital", "cyber", "neon"] },
-  // sinister: vibe updated — "Ancient. Vast…" moved to mythic; sinister keeps its own distinct vibe
-  sinister:   { vibe: "Everything is fine. That's the problem.", example: "Clowns, masks, uncanny smiles, wrong-feeling art.", keywords: ["villain", "evil", "clown", "mask"] },
-  // mythic: updated to match new moods.ts desc, no nat/religious words
-  mythic:     { vibe: "Ancient. Vast. You're not the main character here.", example: "Dragons, titans, eldritch beasts, legendary creatures.", keywords: ["dragon", "titan", "ancient", "legendary"] },
-};
-
 // ── Quiz questions → mood scoring ──────────────────────────────────────────
 // violent removed from all option arrays
 const QUIZ_QUESTIONS = [
@@ -203,7 +181,6 @@ export default function MoodClient({ moods, imagesByMood }: Props) {
 
   return (
     <>
-
       {preview && (
         <LockScreenPreviewModal
           src={preview.src}
@@ -220,24 +197,14 @@ export default function MoodClient({ moods, imagesByMood }: Props) {
             <button className="quiz-close" onClick={resetQuiz} aria-label="Close">✕</button>
 
             {quizResult ? (
-              /* ── Result screen ── */
               (() => {
                 const rMood = moods.find(m => m.id === quizResult)!;
-                const rDesc = MOOD_DESCRIPTIONS[quizResult];
                 return (
                   <div className="quiz-result"
                     style={{ ["--qmood-color" as string]: rMood.color }}>
                     <p className="quiz-result-eyebrow">Your mood is</p>
-                    {/* only render glyph if non-empty */}
-                    {rMood.glyph && (
-                      <span className="quiz-result-glyph">{rMood.glyph}</span>
-                    )}
                     <h2 className="quiz-result-mood">{rMood.label}</h2>
                     <p className="quiz-result-desc">{rMood.desc}</p>
-                    {/* only show vibe if it differs from desc to avoid duplication */}
-                    {rDesc && rDesc.vibe !== rMood.desc && (
-                      <p className="quiz-result-vibe">{rDesc.vibe}</p>
-                    )}
                     {quizResultImg && (
                       <div className="quiz-result-img-wrap">
                         <Image
@@ -275,7 +242,6 @@ export default function MoodClient({ moods, imagesByMood }: Props) {
                 );
               })()
             ) : (
-              /* ── Question screen ── */
               <>
                 <div className="quiz-progress">
                   {QUIZ_QUESTIONS.map((q, i) => (
@@ -319,20 +285,12 @@ export default function MoodClient({ moods, imagesByMood }: Props) {
         {/* ── Hero ── */}
         <div className="mood-hero">
           <p className="mood-hero-eyebrow">Find Your Vibe</p>
-          {/* only render glyph if non-empty (isolated has no glyph) */}
-          {activeMood.glyph && (
-            <span className="mood-hero-glyph">{activeMood.glyph}</span>
-          )}
+          {/* glyph line removed entirely — all glyphs are now "" in moods.ts */}
           <h1 className="mood-hero-title">
             I Feel <em>{activeMood.label}</em>
           </h1>
+          {/* single tagline — desc only, no second vibe line */}
           <p className="mood-hero-desc">{activeMood.desc}</p>
-          {/* only show vibe line if it differs from desc — prevents sinister double tagline */}
-          {MOOD_DESCRIPTIONS[active] && MOOD_DESCRIPTIONS[active].vibe !== activeMood.desc && (
-            <p className="mood-hero-vibe">
-              {MOOD_DESCRIPTIONS[active].vibe}
-            </p>
-          )}
           <p className="mood-count">
             {allImages.length > 0
               ? `${allImages.length} wallpaper${allImages.length !== 1 ? "s" : ""} match this mood`
@@ -343,7 +301,7 @@ export default function MoodClient({ moods, imagesByMood }: Props) {
           </button>
         </div>
 
-        {/* ── Mood selector ── */}
+        {/* ── Mood selector — no glyphs rendered ── */}
         <div className="mood-selector">
           {moods.map((mood) => (
             <button
@@ -351,12 +309,7 @@ export default function MoodClient({ moods, imagesByMood }: Props) {
               className={`mood-btn${active === mood.id ? " mood-btn--active" : ""}`}
               style={{ ["--btn-color" as string]: mood.color }}
               onClick={() => switchMood(mood.id)}
-              title={MOOD_DESCRIPTIONS[mood.id]?.vibe ?? mood.desc}
             >
-              {/* only render glyph span if non-empty — isolated shows label only */}
-              {mood.glyph && (
-                <span className="mood-btn-glyph">{mood.glyph}</span>
-              )}
               {mood.label}
               <span className="mood-btn-dot" />
             </button>
@@ -367,7 +320,7 @@ export default function MoodClient({ moods, imagesByMood }: Props) {
         <section className="mood-grid-section" ref={gridRef}>
           <div className="mood-grid-header">
             <span className="mood-grid-heading">
-              {activeMood.glyph && `${activeMood.glyph} `}{activeMood.label} Wallpapers
+              {activeMood.label} Wallpapers
             </span>
             {allImages.length > 0 && (
               <span className="mood-grid-count">— {allImages.length} found</span>
@@ -393,7 +346,6 @@ export default function MoodClient({ moods, imagesByMood }: Props) {
                   <div className="mood-card-overlay" />
                   <span className="mood-card-device">{img.deviceType ?? ""}</span>
                   <span className="mood-card-title">{img.title}</span>
-                  {/* Preview button */}
                   <button
                     className="mood-card-preview"
                     onClick={(e) => openPreview(e, img)}
@@ -406,7 +358,6 @@ export default function MoodClient({ moods, imagesByMood }: Props) {
               ))
             ) : (
               <div className="mood-empty">
-                <div className="mood-empty-glyph">{activeMood.glyph}</div>
                 <p className="mood-empty-title">No wallpapers tagged yet</p>
                 <p className="mood-empty-desc">
                   Add these tags to your images in the admin panel:
