@@ -29,7 +29,6 @@ function getCachedImage(slug: string) {
     () => db.image.findFirst({
       where: {
         slug,
-        tags: { hasSome: [] }, // fetch any image by slug, filter by resident tag below
       },
       select: {
         id: true, slug: true, title: true, description: true,
