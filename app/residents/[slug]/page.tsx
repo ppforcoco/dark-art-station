@@ -54,7 +54,6 @@ export default async function ResidentPage({ params }: PageProps) {
 
   if (!resident) notFound();
 
-  // Fetch wallpapers tagged with this resident
   const wallpapers = await db.image.findMany({
     where: {
       tags: { has: `resident:${slug}` },
@@ -74,32 +73,27 @@ export default async function ResidentPage({ params }: PageProps) {
         { label: resident.name },
       ]} />
 
-      <main style={{ maxWidth: "1280px", margin: "0 auto", padding: "0 clamp(16px, 5vw, 60px) 60px" }}>
+      <main style={{ maxWidth: "1280px", margin: "0 auto", padding: "0 clamp(16px, 5vw, 60px) 80px" }}>
         <style>{`
-          .res-hero { display: grid; grid-template-columns: 1fr; gap: 28px; padding-top: 32px; margin-bottom: 48px; }
-          .res-portrait { width: 160px; aspect-ratio: 9/16; overflow: hidden; background: #0a0812; border: 1px solid rgba(157,78,221,0.2); position: relative; margin: 0 auto; }
-          .res-identity h1 { font-size: clamp(1.6rem, 6vw, 3.5rem); }
-          .res-identity .tagline { font-size: 0.78rem; }
-          .res-identity .story { font-size: 0.88rem; }
+          .res-hero { display: grid; grid-template-columns: 1fr; gap: 24px; padding-top: 32px; margin-bottom: 40px; }
+          .res-portrait { width: 140px; aspect-ratio: 9/16; overflow: hidden; background: #0a0812; border: 1px solid rgba(157,78,221,0.2); position: relative; margin: 0 auto; flex-shrink: 0; }
           @media(min-width: 640px) {
-            .res-hero { grid-template-columns: 200px 1fr; align-items: flex-start; gap: 36px; }
+            .res-hero { grid-template-columns: 180px 1fr; align-items: flex-start; gap: 32px; }
             .res-portrait { width: 100%; margin: 0; }
           }
           @media(min-width: 900px) {
-            .res-hero { grid-template-columns: clamp(220px, 26vw, 320px) 1fr; gap: clamp(32px, 5vw, 60px); align-items: flex-end; }
-            .res-identity h1 { font-size: clamp(2rem, 4vw, 3.5rem); }
-            .res-identity .tagline { font-size: 0.9rem; }
-            .res-identity .story { font-size: 0.92rem; }
+            .res-hero { grid-template-columns: clamp(200px, 22vw, 280px) 1fr; gap: clamp(28px, 4vw, 52px); align-items: flex-end; }
           }
-          .res-wp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; }
-          @media(min-width: 640px) { .res-wp-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 14px; } }
-          .res-wp-img { transition: transform 0.3s ease; }
+          .res-wp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 8px; }
+          @media(min-width: 480px) { .res-wp-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; } }
+          @media(min-width: 900px) { .res-wp-grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 14px; } }
+          .res-wp-img { transition: transform 0.3s ease; display: block; width: 100%; height: 100%; object-fit: cover; }
           .res-wp-img:hover { transform: scale(1.04); }
+          .res-divider { border: none; border-top: 1px solid rgba(157,78,221,0.15); margin: 56px 0; }
         `}</style>
 
-        {/* Hero — portrait + identity */}
+        {/* ── Hero: portrait + name + tagline ── */}
         <div className="res-hero">
-          {/* Portrait */}
           {portraitUrl && (
             <div className="res-portrait">
               <img
@@ -112,52 +106,28 @@ export default async function ResidentPage({ params }: PageProps) {
               <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to right, transparent 60%, rgba(5,3,12,0.4) 100%)" }} />
             </div>
           )}
-
-          {/* Identity */}
-          <div className="res-identity" style={{ paddingBottom: "8px" }}>
+          <div style={{ paddingBottom: "8px" }}>
             <p style={{ fontFamily: "var(--font-space, monospace)", fontSize: "0.58rem", letterSpacing: "0.25em", textTransform: "uppercase", color: "#9d4edd", marginBottom: "12px" }}>
               Resident of the Haunted Town
             </p>
-            <h1 style={{ fontFamily: "var(--font-cinzel, serif)", color: "rgba(232,228,220,0.97)", lineHeight: 1.1, marginBottom: "16px" }}>
+            <h1 style={{ fontFamily: "var(--font-cinzel, serif)", color: "rgba(232,228,220,0.97)", lineHeight: 1.1, marginBottom: "14px", fontSize: "clamp(1.6rem, 5vw, 3.2rem)" }}>
               {resident.name}
             </h1>
-            <p className="tagline" style={{ fontFamily: "var(--font-space, monospace)", color: "rgba(157,78,221,0.85)", letterSpacing: "0.07em", lineHeight: 1.7, marginBottom: "24px" }}>
+            <p style={{ fontFamily: "var(--font-space, monospace)", color: "rgba(157,78,221,0.85)", letterSpacing: "0.07em", lineHeight: 1.7, fontSize: "clamp(0.72rem, 1.5vw, 0.9rem)" }}>
               {resident.tagline}
             </p>
-
-            {/* Story */}
-            {resident.story && (
-              <div
-                className="story"
-                style={{ color: "rgba(232,228,220,0.72)", lineHeight: 1.9, maxWidth: "560px" }}
-                dangerouslySetInnerHTML={{ __html: resident.story }}
-              />
-            )}
           </div>
         </div>
 
-        {/* Personality */}
-        {resident.personality && (
-          <div style={{ marginBottom: "64px", borderLeft: "3px solid rgba(157,78,221,0.35)", paddingLeft: "28px", maxWidth: "780px" }}>
-            <p style={{ fontFamily: "var(--font-space, monospace)", fontSize: "0.6rem", letterSpacing: "0.2em", textTransform: "uppercase", color: "#9d4edd", marginBottom: "20px" }}>
-              Personality
-            </p>
-            <div
-              style={{ color: "rgba(232,228,220,0.65)", lineHeight: 1.85, fontSize: "0.9rem" }}
-              dangerouslySetInnerHTML={{ __html: resident.personality }}
-            />
-          </div>
-        )}
-
-        {/* Wallpapers */}
+        {/* ── Wallpapers — moved up, right after hero ── */}
         {wallpapers.length > 0 && (
-          <section style={{ marginBottom: "80px" }}>
-            <div style={{ marginBottom: "28px" }}>
-              <p style={{ fontFamily: "var(--font-space, monospace)", fontSize: "0.6rem", letterSpacing: "0.2em", textTransform: "uppercase", color: "#9d4edd", marginBottom: "10px" }}>
+          <section style={{ marginBottom: "64px" }}>
+            <div style={{ marginBottom: "20px", display: "flex", alignItems: "baseline", gap: "16px" }}>
+              <p style={{ fontFamily: "var(--font-space, monospace)", fontSize: "0.6rem", letterSpacing: "0.2em", textTransform: "uppercase", color: "#9d4edd" }}>
                 Their Wallpapers
               </p>
-              <p style={{ fontFamily: "var(--font-space, monospace)", fontSize: "0.65rem", color: "rgba(232,228,220,0.35)", letterSpacing: "0.08em" }}>
-                {wallpapers.length} wallpapers from {resident.name}&apos;s world
+              <p style={{ fontFamily: "var(--font-space, monospace)", fontSize: "0.62rem", color: "rgba(232,228,220,0.25)", letterSpacing: "0.06em" }}>
+                {wallpapers.length} wallpapers
               </p>
             </div>
             <div className="res-wp-grid">
@@ -170,10 +140,9 @@ export default async function ResidentPage({ params }: PageProps) {
                       loading="lazy"
                       decoding="async"
                       className="res-wp-img"
-                      style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
                     />
                   </div>
-                  <p style={{ fontFamily: "var(--font-space, monospace)", fontSize: "0.58rem", color: "rgba(232,228,220,0.4)", marginTop: "6px", letterSpacing: "0.04em", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                  <p style={{ fontFamily: "var(--font-space, monospace)", fontSize: "0.56rem", color: "rgba(232,228,220,0.35)", marginTop: "5px", letterSpacing: "0.04em", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                     {img.title}
                   </p>
                 </Link>
@@ -182,7 +151,33 @@ export default async function ResidentPage({ params }: PageProps) {
           </section>
         )}
 
+        <hr className="res-divider" />
 
+        {/* ── Story — moved below wallpapers ── */}
+        {resident.story && (
+          <div style={{ marginBottom: "56px", maxWidth: "720px" }}>
+            <p style={{ fontFamily: "var(--font-space, monospace)", fontSize: "0.6rem", letterSpacing: "0.2em", textTransform: "uppercase", color: "#9d4edd", marginBottom: "24px" }}>
+              Origin Story
+            </p>
+            <div
+              style={{ color: "rgba(232,228,220,0.72)", lineHeight: 1.9, fontSize: "clamp(0.85rem, 1.5vw, 0.95rem)" }}
+              dangerouslySetInnerHTML={{ __html: resident.story }}
+            />
+          </div>
+        )}
+
+        {/* ── Personality — moved below story ── */}
+        {resident.personality && (
+          <div style={{ marginBottom: "64px", borderLeft: "3px solid rgba(157,78,221,0.35)", paddingLeft: "28px", maxWidth: "780px" }}>
+            <p style={{ fontFamily: "var(--font-space, monospace)", fontSize: "0.6rem", letterSpacing: "0.2em", textTransform: "uppercase", color: "#9d4edd", marginBottom: "20px" }}>
+              Personality
+            </p>
+            <div
+              style={{ color: "rgba(232,228,220,0.65)", lineHeight: 1.85, fontSize: "0.9rem" }}
+              dangerouslySetInnerHTML={{ __html: resident.personality }}
+            />
+          </div>
+        )}
 
       </main>
     </>
