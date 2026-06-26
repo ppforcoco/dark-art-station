@@ -49,6 +49,10 @@ export default async function Mood3amPage() {
 
       <main style={{ maxWidth: "1280px", margin: "0 auto", padding: "40px clamp(16px, 5vw, 60px) 80px" }}>
 
+        <style>{`
+          .mood-img { transition: transform 0.3s ease; }
+          .mood-img:hover { transform: scale(1.04); }
+        `}</style>
         {/* Hero */}
         <div style={{ marginBottom: "48px", borderLeft: "3px solid #00d4aa", paddingLeft: "24px" }}>
           <p style={{ fontFamily: "var(--font-space, monospace)", fontSize: "0.65rem", letterSpacing: "0.2em", textTransform: "uppercase", color: "#00d4aa", marginBottom: "12px" }}>
@@ -72,10 +76,7 @@ export default async function Mood3amPage() {
                   alt={img.title}
                   loading="lazy"
                   decoding="async"
-                  style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", transition: "transform 0.3s ease" }}
-                  onMouseOver={e => (e.currentTarget.style.transform = "scale(1.04)")}
-                  onMouseOut={e => (e.currentTarget.style.transform = "scale(1)")}
-                />
+                  className="mood-img" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}                />
               </div>
               <p style={{ fontFamily: "var(--font-space, monospace)", fontSize: "0.6rem", color: "rgba(232,228,220,0.45)", marginTop: "6px", letterSpacing: "0.04em", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                 {img.title}

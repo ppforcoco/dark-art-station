@@ -247,3 +247,20 @@ model LiveWallpaper {
 
   @@index([isPublished, createdAt])
 }
+
+// ── Residents of the Haunted Town ─────────────────────────────────────────────
+model Resident {
+  id          String   @id @default(uuid())
+  slug        String   @unique
+  name        String
+  tagline     String                   // one-liner trait shown on grid card
+  story       String   @default("")   // HTML — full lore narrative
+  personality String   @default("")   // HTML — personality breakdown
+  portraitKey String   @default("")   // R2 key for 9:16 portrait image
+  order       Int      @default(0)    // manual sort order on /residents grid
+  isPublished Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([isPublished, order])
+}

@@ -106,6 +106,8 @@ export default async function Home() {
   let newThisWeek:     Array<{ id: string; slug: string; title: string; r2Key: string; deviceType: string | null; tags: string[] }> = [];
   let premiumThisWeek: Array<{ id: string; slug: string; title: string; r2Key: string; deviceType: string | null; tags: string[]; updatedAt: Date | null }> = [];
 
+  let residents: Array<{ slug: string; name: string; tagline: string; portraitKey: string }> = [];
+
   try {
     [wotd, totalImages, newThisWeek, premiumThisWeek] = await Promise.all([
       getCachedWotd(),
@@ -113,6 +115,12 @@ export default async function Home() {
       getCachedNewThisWeek(),
       getCachedPremiumThisWeek(),
     ]);
+    residents = await db.resident.findMany({
+      where: { isPublished: true },
+      orderBy: [{ order: "asc" }, { createdAt: "asc" }],
+      take: 6,
+      select: { slug: true, name: true, tagline: true, portraitKey: true },
+    });
   } catch (err) {
     console.error("[home/page] DB error:", err);
   }
@@ -213,7 +221,47 @@ export default async function Home() {
           </section>
         )}
 
-        {/* ══ COLOR WORLDS ════════════════════════════════════════════════ */}
+
+        {/* ══ RESIDENTS OF HAUNTED TOWN ══════════════════════════════════ */}
+        {residents.length > 0 && (
+          <section className="hp-section" style={{ marginBottom: "clamp(48px, 8vw, 96px)" }}>
+            <div className="hp-section-head">
+              <div>
+                <p className="hp-section-eye" style={{ color: "#9d4edd" }}>Characters of the Town</p>
+                <h2 className="hp-section-title">Meet the Residents</h2>
+                <p className="hp-section-sub">Every haunting has a face. Every face has a story.</p>
+              </div>
+              <Link href="/residents" style={{ fontFamily: "var(--font-space, monospace)", fontSize: "0.65rem", letterSpacing: "0.15em", textTransform: "uppercase", color: "rgba(157,78,221,0.8)", textDecoration: "none", border: "1px solid rgba(157,78,221,0.3)", padding: "8px 16px" }}>
+                All Residents →
+              </Link>
+            </div>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(140px, 1fr))", gap: "16px", marginTop: "32px" }}>
+              {residents.map((r) => (
+                <Link key={r.slug} href={`/residents/${r.slug}`} style={{ display: "block", textDecoration: "none" }}>
+                  <div style={{ aspectRatio: "9/16", background: "#0a0812", overflow: "hidden", marginBottom: "8px", border: "1px solid rgba(157,78,221,0.15)" }}>
+                    {r.portraitKey ? (
+                      <img
+                        src={`${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/${r.portraitKey}`}
+                        alt={r.name}
+                        style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    ) : (
+                      <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", color: "rgba(157,78,221,0.3)", fontSize: "2rem" }}>
+                        👤
+                      </div>
+                    )}
+                  </div>
+                  <p style={{ fontFamily: "var(--font-cinzel, serif)", fontSize: "0.75rem", color: "rgba(232,228,220,0.85)", marginBottom: "4px", letterSpacing: "0.05em" }}>{r.name}</p>
+                  <p style={{ fontFamily: "var(--font-space, monospace)", fontSize: "0.55rem", color: "rgba(157,78,221,0.7)", letterSpacing: "0.08em", textTransform: "uppercase", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{r.tagline}</p>
+                </Link>
+              ))}
+            </div>
+          </section>
+        )}
+
+                {/* ══ COLOR WORLDS ════════════════════════════════════════════════ */}
         <section className="hp-worlds">
           <div className="hp-worlds-head">
             <p className="hp-worlds-sub">Enter by Color</p>

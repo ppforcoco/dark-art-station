@@ -1869,8 +1869,450 @@ function VisitorsTab({password}:{password:string}){
   </div>;
 }
 
-type Tab="analytics"|"visitors"|"pages"|"collections"|"districts"|"upload"|"published"|"bulkai"|"highres"|"blog"|"manage18"|"backdate"|"preview"|"feedback"|"nuke"|"pin"|"comments"|"livewallpapers";
-const NAV_ITEMS:[Tab,string,string][]=[["analytics","📊","Analytics"],["visitors","👀","Visitors"],["pages","📝","Page Content"],["collections","🗂","Collections"],["districts","🏚️","Districts"],["upload","📤","Upload Image"],["published","📸","Published"],["bulkai","🤖","Bulk AI Update"],["highres","⬆️","Upload 4K"],["blog","✍️","Blog Posts"],["manage18","⚠","16+ Manage"],["backdate","📅","Backdate"],["preview","🌐","Live Preview"],["feedback","⚑","Reports"],["comments","💬","Wishes"],["pin","📌","Pin Wallpapers"],["livewallpapers","🎬","Live Wallpapers"],["nuke","💣","Nuke Everything"]];
+interface ResidentRecord {
+  id: string;
+  slug: string;
+  name: string;
+  tagline: string;
+  story: string;
+  personality: string;
+  portraitKey: string;
+  order: number;
+  isPublished: boolean;
+  createdAt: string;
+}
+
+function ResidentsTab({ password }: { password: string }) {
+  const [residents, setResidents] = useState<ResidentRecord[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [msg, setMsg] = useState<{ type: "ok" | "err"; text: string } | null>(null);
+  const [view, setView] = useState<"list" | "create" | "edit">("list");
+  const [selected, setSelected] = useState<ResidentRecord | null>(null);
+
+  // Create form state
+  const [cName, setCName] = useState("");
+  const [cSlug, setCSlug] = useState("");
+  const [cTagline, setCTagline] = useState("");
+  const [cStory, setCStory] = useState("");
+  const [cPersonality, setCPersonality] = useState("");
+  const [cOrder, setCOrder] = useState(0);
+  const [cSaving, setCsaving] = useState(false);
+
+  // Edit form state
+  const [eName, setEName] = useState("");
+  const [eTagline, setETagline] = useState("");
+  const [eStory, setEStory] = useState("");
+  const [ePersonality, setEPersonality] = useState("");
+  const [eOrder, setEOrder] = useState(0);
+  const [eSaving, setEsaving] = useState(false);
+  const [storyMode, setStoryMode] = useState<"html" | "preview">("html");
+  const [personalityMode, setPersonalityMode] = useState<"html" | "preview">("html");
+
+  // Portrait upload
+  const portraitRef = useRef<HTMLInputElement>(null);
+  const [portraitFile, setPortraitFile] = useState<File | null>(null);
+  const [portraitPreview, setPortraitPreview] = useState("");
+  const [portraitUploading, setPortraitUploading] = useState(false);
+
+  const R2_BASE = process.env.NEXT_PUBLIC_R2_PUBLIC_URL ?? "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev";
+
+  async function load() {
+    setLoading(true);
+    try {
+      const res = await fetch("/api/hw-admin/residents", { headers: { "x-admin-password": password } });
+      if (res.ok) { const j = await res.json(); setResidents(j.residents ?? []); }
+    } catch { setMsg({ type: "err", text: "Failed to load residents." }); }
+    setLoading(false);
+  }
+
+  useEffect(() => { load(); }, []);
+
+  function openEdit(r: ResidentRecord) {
+    setSelected(r);
+    setEName(r.name);
+    setETagline(r.tagline);
+    setEStory(r.story);
+    setEPersonality(r.personality);
+    setEOrder(r.order);
+    setPortraitFile(null);
+    setPortraitPreview(r.portraitKey ? `${R2_BASE}/${r.portraitKey}` : "");
+    setStoryMode("html");
+    setPersonalityMode("html");
+    setMsg(null);
+    setView("edit");
+  }
+
+  function openCreate() {
+    setCName(""); setCSlug(""); setCTagline(""); setCStory(""); setCPersonality(""); setCOrder(residents.length);
+    setMsg(null);
+    setView("create");
+  }
+
+  function autoSlug(name: string) {
+    return name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+  }
+
+  async function handleCreate() {
+    if (!cName.trim() || !cSlug.trim() || !cTagline.trim()) { setMsg({ type: "err", text: "Name, slug, and tagline are required." }); return; }
+    setCsaving(true); setMsg(null);
+    try {
+      const res = await fetch("/api/hw-admin/residents", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "x-admin-password": password },
+        body: JSON.stringify({ slug: cSlug.trim(), name: cName.trim(), tagline: cTagline.trim(), story: cStory, personality: cPersonality, order: cOrder }),
+      });
+      const j = await res.json();
+      if (!res.ok) { setMsg({ type: "err", text: j.error ?? "Failed." }); setCsaving(false); return; }
+      setMsg({ type: "ok", text: `✓ Resident "${cName}" created. Now upload their portrait.` });
+      await load();
+      openEdit(j.resident);
+    } catch { setMsg({ type: "err", text: "Network error." }); }
+    setCsaving(false);
+  }
+
+  async function handleSaveEdit() {
+    if (!selected) return;
+    setEsaving(true); setMsg(null);
+    try {
+      const res = await fetch("/api/hw-admin/residents", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json", "x-admin-password": password },
+        body: JSON.stringify({ slug: selected.slug, name: eName, tagline: eTagline, story: eStory, personality: ePersonality, order: eOrder }),
+      });
+      const j = await res.json();
+      if (!res.ok) { setMsg({ type: "err", text: j.error ?? "Save failed." }); setEsaving(false); return; }
+      setMsg({ type: "ok", text: `✓ Saved "${eName}"` });
+      setSelected(j.resident);
+      setResidents(prev => prev.map(r => r.slug === selected.slug ? j.resident : r));
+    } catch { setMsg({ type: "err", text: "Network error." }); }
+    setEsaving(false);
+  }
+
+  async function handleTogglePublish(r: ResidentRecord) {
+    const res = await fetch("/api/hw-admin/residents", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json", "x-admin-password": password },
+      body: JSON.stringify({ slug: r.slug, isPublished: !r.isPublished }),
+    });
+    if (res.ok) {
+      const j = await res.json();
+      setResidents(prev => prev.map(x => x.slug === r.slug ? j.resident : x));
+      if (selected?.slug === r.slug) setSelected(j.resident);
+    }
+  }
+
+  async function handleDelete(r: ResidentRecord) {
+    if (!confirm(`Delete "${r.name}"? This cannot be undone.`)) return;
+    const res = await fetch("/api/hw-admin/residents", {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json", "x-admin-password": password },
+      body: JSON.stringify({ slug: r.slug }),
+    });
+    if (res.ok) { setMsg({ type: "ok", text: `✓ Deleted "${r.name}"` }); setView("list"); await load(); }
+    else setMsg({ type: "err", text: "Delete failed." });
+  }
+
+  async function handlePortraitUpload() {
+    if (!portraitFile || !selected) return;
+    setPortraitUploading(true); setMsg(null);
+    try {
+      const form = new FormData();
+      form.append("file", portraitFile);
+      form.append("slug", selected.slug);
+      const res = await fetch("/api/hw-admin/residents/upload-portrait", { method: "POST", headers: { "x-admin-password": password }, body: form });
+      const j = await res.json();
+      if (!res.ok) { setMsg({ type: "err", text: j.error ?? "Upload failed." }); setPortraitUploading(false); return; }
+      setMsg({ type: "ok", text: "✓ Portrait uploaded!" });
+      setPortraitPreview(j.url);
+      setPortraitFile(null);
+      if (portraitRef.current) portraitRef.current.value = "";
+      setResidents(prev => prev.map(r => r.slug === selected.slug ? { ...r, portraitKey: j.r2Key } : r));
+      setSelected(prev => prev ? { ...prev, portraitKey: j.r2Key } : prev);
+    } catch { setMsg({ type: "err", text: "Upload error." }); }
+    setPortraitUploading(false);
+  }
+
+  const TOOLBAR_TAGS = [
+    { label: "B",  wrap: ["<strong>", "</strong>"] },
+    { label: "I",  wrap: ["<em>", "</em>"] },
+    { label: "H2", wrap: ["<h2>", "</h2>"] },
+    { label: "H3", wrap: ["<h3>", "</h3>"] },
+    { label: "P",  wrap: ["<p>", "</p>"] },
+    { label: "UL", wrap: ["<ul>\n  <li>", "</li>\n</ul>"] },
+    { label: "LI", wrap: ["<li>", "</li>"] },
+    { label: "Red",  wrap: ['<span style="color:#c0001a">', "</span>"] },
+    { label: "Gold", wrap: ['<span style="color:#c9a84c">', "</span>"] },
+    { label: "BQ",   wrap: ['<blockquote style="border-left:3px solid #c0001a;padding:8px 16px;margin:12px 0;font-style:italic;">', "</blockquote>"] },
+    { label: "HR", wrap: ['<hr style="border:none;border-top:1px solid rgba(255,255,255,0.1);margin:20px 0;" />', ""] },
+    { label: "Dim", wrap: ['<span style="color:rgba(255,255,255,0.45)">', "</span>"] },
+  ];
+
+  function applyTag(id: string, val: string, setVal: (v: string) => void, open: string, close: string) {
+    const el = document.getElementById(id) as HTMLTextAreaElement | null;
+    if (!el) { setVal(val + open + close); return; }
+    const s = el.selectionStart, e = el.selectionEnd;
+    const selected = val.slice(s, e);
+    const next = val.slice(0, s) + open + selected + close + val.slice(e);
+    setVal(next);
+    setTimeout(() => { el.focus(); const pos = s + open.length + selected.length + close.length; el.setSelectionRange(pos, pos); }, 10);
+  }
+
+  function HtmlToolbar({ id, val, setVal }: { id: string; val: string; setVal: (v: string) => void }) {
+    return (
+      <div style={{ display: "flex", flexWrap: "wrap", gap: "4px", marginBottom: "6px" }}>
+        {TOOLBAR_TAGS.map(({ label, wrap }) => (
+          <button key={label} type="button"
+            onClick={() => applyTag(id, val, setVal, wrap[0], wrap[1])}
+            style={{ background: "rgba(124,58,237,0.15)", border: `1px solid ${C.border}`, color: C.purple, padding: "3px 9px", cursor: "pointer", fontSize: "0.62rem", fontFamily: "monospace" }}>
+            {label}
+          </button>
+        ))}
+      </div>
+    );
+  }
+
+  // ── RENDER ────────────────────────────────────────────────────────────────
+
+  if (loading) return <p style={{ color: C.textSec, padding: "40px 0", textAlign: "center" }}>Loading residents…</p>;
+
+  // LIST VIEW
+  if (view === "list") return (
+    <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+      <Msg msg={msg} />
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <p style={{ color: C.textSec, fontSize: "0.82rem" }}>{residents.length} residents in the haunted town</p>
+        <Btn onClick={openCreate}>+ New Resident</Btn>
+      </div>
+      {residents.length === 0
+        ? <Card style={{ padding: "48px", textAlign: "center" }}><p style={{ color: C.textMut }}>No residents yet. Create the first one.</p></Card>
+        : <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+            {residents.map(r => (
+              <Card key={r.id} style={{ display: "flex", gap: "16px", alignItems: "center", padding: "14px 18px" }}>
+                {/* Portrait thumbnail */}
+                <div style={{ width: "44px", height: "78px", flexShrink: 0, background: "#0a0812", border: `1px solid ${C.border}`, overflow: "hidden", position: "relative" }}>
+                  {r.portraitKey
+                    ? <img src={`${R2_BASE}/${r.portraitKey}`} alt={r.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                    : <span style={{ color: C.textMut, fontSize: "0.6rem", position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>No portrait</span>}
+                </div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <p style={{ color: C.textPri, fontWeight: 600, marginBottom: "3px" }}>{r.name}</p>
+                  <p style={{ color: C.textSec, fontSize: "0.78rem", marginBottom: "4px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{r.tagline}</p>
+                  <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+                    <span style={{ color: C.textMut, fontSize: "0.6rem" }}>/{r.slug}</span>
+                    <span style={{ background: r.isPublished ? "rgba(76,175,80,0.15)" : "rgba(255,255,255,0.05)", color: r.isPublished ? C.green : C.textMut, padding: "1px 7px", fontSize: "0.58rem", border: `1px solid ${r.isPublished ? C.green : C.border}` }}>
+                      {r.isPublished ? "LIVE" : "DRAFT"}
+                    </span>
+                    <span style={{ color: C.textMut, fontSize: "0.58rem" }}>order: {r.order}</span>
+                  </div>
+                </div>
+                <div style={{ display: "flex", gap: "8px", flexShrink: 0 }}>
+                  <Btn variant="ghost" onClick={() => openEdit(r)}>Edit</Btn>
+                  <Btn variant={r.isPublished ? "danger" : "success"} onClick={() => handleTogglePublish(r)}>
+                    {r.isPublished ? "Unpublish" : "Publish"}
+                  </Btn>
+                </div>
+              </Card>
+            ))}
+          </div>
+      }
+    </div>
+  );
+
+  // CREATE VIEW
+  if (view === "create") return (
+    <div style={{ maxWidth: "720px", display: "flex", flexDirection: "column", gap: "20px" }}>
+      <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+        <Btn variant="ghost" onClick={() => setView("list")}>← Back</Btn>
+        <h2 style={{ color: C.textPri, fontWeight: 400, fontSize: "1rem", margin: 0 }}>New Resident</h2>
+      </div>
+      <Msg msg={msg} />
+      <Card>
+        <p style={eyebrow}>Identity</p>
+        <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
+          <div>
+            <label style={lbl}>Name *</label>
+            <input style={inp} value={cName} onChange={e => { setCName(e.target.value); setCSlug(autoSlug(e.target.value)); }} placeholder="e.g. The Watcher" />
+          </div>
+          <div>
+            <label style={lbl}>Slug * (auto-filled, editable)</label>
+            <input style={inp} value={cSlug} onChange={e => setCSlug(e.target.value)} placeholder="the-watcher" />
+          </div>
+          <div>
+            <label style={lbl}>Tagline * — one-line trait shown on card</label>
+            <input style={inp} value={cTagline} onChange={e => setCTagline(e.target.value)} placeholder="e.g. She sees everything. She says nothing." />
+          </div>
+          <div>
+            <label style={lbl}>Sort Order</label>
+            <input style={{ ...inp, width: "120px" }} type="number" value={cOrder} onChange={e => setCOrder(Number(e.target.value))} />
+          </div>
+        </div>
+      </Card>
+      <Card>
+        <p style={eyebrow}>Story (HTML)</p>
+        <HtmlToolbar id="create-story" val={cStory} setVal={setCStory} />
+        <textarea id="create-story" style={{ ...inp, minHeight: "200px", resize: "vertical" }} value={cStory} onChange={e => setCStory(e.target.value)} placeholder="<p>The story of this resident…</p>" />
+      </Card>
+      <Card>
+        <p style={eyebrow}>Personality (HTML)</p>
+        <HtmlToolbar id="create-personality" val={cPersonality} setVal={setCPersonality} />
+        <textarea id="create-personality" style={{ ...inp, minHeight: "150px", resize: "vertical" }} value={cPersonality} onChange={e => setCPersonality(e.target.value)} placeholder="<p>Their personality traits…</p>" />
+      </Card>
+      <div style={{ display: "flex", gap: "12px" }}>
+        <Btn onClick={handleCreate} disabled={cSaving}>{cSaving ? "Creating…" : "Create Resident →"}</Btn>
+        <Btn variant="ghost" onClick={() => setView("list")}>Cancel</Btn>
+      </div>
+    </div>
+  );
+
+  // EDIT VIEW
+  if (view === "edit" && selected) return (
+    <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+      <div style={{ display: "flex", alignItems: "center", gap: "16px", flexWrap: "wrap" }}>
+        <Btn variant="ghost" onClick={() => setView("list")}>← Back</Btn>
+        <h2 style={{ color: C.textPri, fontWeight: 400, fontSize: "1rem", margin: 0 }}>Editing: {selected.name}</h2>
+        <span style={{ background: selected.isPublished ? "rgba(76,175,80,0.15)" : "rgba(255,255,255,0.05)", color: selected.isPublished ? C.green : C.textMut, padding: "2px 10px", fontSize: "0.6rem", border: `1px solid ${selected.isPublished ? C.green : C.border}` }}>
+          {selected.isPublished ? "LIVE" : "DRAFT"}
+        </span>
+        <a href={`/residents/${selected.slug}`} target="_blank" rel="noopener noreferrer" style={{ color: C.textMut, fontSize: "0.65rem", marginLeft: "auto" }}>↗ View page</a>
+      </div>
+      <Msg msg={msg} />
+
+      {/* Portrait Upload */}
+      <Card>
+        <p style={eyebrow}>Portrait — 9:16 ratio</p>
+        <div style={{ display: "flex", gap: "20px", alignItems: "flex-start", flexWrap: "wrap" }}>
+          <div style={{ width: "100px", height: "178px", background: "#0a0812", border: `1px solid ${C.border}`, overflow: "hidden", flexShrink: 0, position: "relative" }}>
+            {portraitPreview
+              ? <img src={portraitPreview} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+              : <span style={{ color: C.textMut, fontSize: "0.6rem", position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", textAlign: "center", padding: "8px" }}>No portrait yet</span>}
+          </div>
+          <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: "10px" }}>
+            <p style={{ color: C.textSec, fontSize: "0.78rem", lineHeight: 1.6 }}>Upload a 9:16 portrait image for this resident. JPG, PNG, or WEBP. This becomes their card background on <code style={{ color: C.purple }}>/residents</code> and the header on their own page.</p>
+            <input ref={portraitRef} type="file" accept="image/*" style={{ color: C.textSec, fontSize: "0.78rem" }}
+              onChange={e => {
+                const f = e.target.files?.[0];
+                if (f) { setPortraitFile(f); setPortraitPreview(URL.createObjectURL(f)); }
+              }} />
+            {portraitFile && (
+              <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+                <span style={{ color: C.textSec, fontSize: "0.72rem" }}>{portraitFile.name} ({(portraitFile.size / 1024 / 1024).toFixed(1)} MB)</span>
+                <Btn onClick={handlePortraitUpload} disabled={portraitUploading}>{portraitUploading ? "Uploading…" : "Upload Portrait"}</Btn>
+              </div>
+            )}
+          </div>
+        </div>
+      </Card>
+
+      {/* Identity */}
+      <Card>
+        <p style={eyebrow}>Identity</p>
+        <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
+          <div>
+            <label style={lbl}>Name</label>
+            <input style={inp} value={eName} onChange={e => setEName(e.target.value)} />
+          </div>
+          <div>
+            <label style={lbl}>Slug (read-only)</label>
+            <input style={{ ...inp, opacity: 0.5, cursor: "not-allowed" }} value={selected.slug} readOnly />
+          </div>
+          <div>
+            <label style={lbl}>Tagline — one-line shown on grid card</label>
+            <input style={inp} value={eTagline} onChange={e => setETagline(e.target.value)} />
+          </div>
+          <div>
+            <label style={lbl}>Sort Order</label>
+            <input style={{ ...inp, width: "120px" }} type="number" value={eOrder} onChange={e => setEOrder(Number(e.target.value))} />
+          </div>
+        </div>
+      </Card>
+
+      {/* Story HTML */}
+      <Card>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
+          <p style={eyebrow}>Story</p>
+          <div style={{ display: "flex", gap: "6px" }}>
+            {(["html", "preview"] as const).map(m => (
+              <button key={m} type="button" onClick={() => setStoryMode(m)}
+                style={{ background: storyMode === m ? C.red : "transparent", border: `1px solid ${storyMode === m ? C.red : C.border}`, color: storyMode === m ? "#fff" : C.textSec, padding: "3px 12px", cursor: "pointer", fontSize: "0.62rem", fontFamily: "monospace", textTransform: "uppercase" }}>
+                {m}
+              </button>
+            ))}
+          </div>
+        </div>
+        {storyMode === "html"
+          ? <>
+              <HtmlToolbar id="edit-story" val={eStory} setVal={setEStory} />
+              <textarea id="edit-story" style={{ ...inp, minHeight: "300px", resize: "vertical" }} value={eStory} onChange={e => setEStory(e.target.value)} />
+            </>
+          : <div style={{ background: "#0a0812", border: `1px solid ${C.border}`, padding: "20px", minHeight: "200px", color: C.textPri, lineHeight: 1.8, fontSize: "0.9rem" }} dangerouslySetInnerHTML={{ __html: eStory || "<p style='color:rgba(255,255,255,0.3)'>Nothing written yet…</p>" }} />
+        }
+      </Card>
+
+      {/* Personality HTML */}
+      <Card>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
+          <p style={eyebrow}>Personality</p>
+          <div style={{ display: "flex", gap: "6px" }}>
+            {(["html", "preview"] as const).map(m => (
+              <button key={m} type="button" onClick={() => setPersonalityMode(m)}
+                style={{ background: personalityMode === m ? C.red : "transparent", border: `1px solid ${personalityMode === m ? C.red : C.border}`, color: personalityMode === m ? "#fff" : C.textSec, padding: "3px 12px", cursor: "pointer", fontSize: "0.62rem", fontFamily: "monospace", textTransform: "uppercase" }}>
+                {m}
+              </button>
+            ))}
+          </div>
+        </div>
+        {personalityMode === "html"
+          ? <>
+              <HtmlToolbar id="edit-personality" val={ePersonality} setVal={setEPersonality} />
+              <textarea id="edit-personality" style={{ ...inp, minHeight: "200px", resize: "vertical" }} value={ePersonality} onChange={e => setEPersonality(e.target.value)} />
+            </>
+          : <div style={{ background: "#0a0812", border: `1px solid ${C.border}`, padding: "20px", minHeight: "150px", color: C.textPri, lineHeight: 1.8, fontSize: "0.9rem" }} dangerouslySetInnerHTML={{ __html: ePersonality || "<p style='color:rgba(255,255,255,0.3)'>Nothing written yet…</p>" }} />
+        }
+      </Card>
+
+      {/* Wallpapers — tag instructions */}
+      <Card style={{ borderColor: "rgba(201,168,76,0.3)", background: "rgba(201,168,76,0.04)" }}>
+        <p style={{ ...eyebrow, color: C.gold }}>Assigning Wallpapers to this Resident</p>
+        <p style={{ color: C.textSec, fontSize: "0.82rem", lineHeight: 1.7, marginBottom: "10px" }}>
+          Go to <strong style={{ color: C.textPri }}>Upload Image</strong> or <strong style={{ color: C.textPri }}>Published</strong> tab and add the tag:
+        </p>
+        <code style={{ background: "#0a0812", color: C.gold, padding: "8px 14px", display: "inline-block", fontSize: "0.85rem", border: `1px solid ${C.border}`, letterSpacing: "0.05em" }}>
+          resident:{selected.slug}
+        </code>
+        <p style={{ color: C.textMut, fontSize: "0.72rem", marginTop: "10px", lineHeight: 1.6 }}>
+          Any image with this tag will automatically appear in their wallpaper grid on <code style={{ color: C.purple }}>/residents/{selected.slug}</code>
+        </p>
+      </Card>
+
+      {/* Save / Delete */}
+      <div style={{ display: "flex", gap: "12px", flexWrap: "wrap", paddingBottom: "32px" }}>
+        <Btn onClick={handleSaveEdit} disabled={eSaving}>{eSaving ? "Saving…" : "Save Changes"}</Btn>
+        <Btn variant={selected.isPublished ? "danger" : "success"} onClick={() => handleTogglePublish(selected)}>
+          {selected.isPublished ? "Unpublish" : "Publish Live"}
+        </Btn>
+        <Btn variant="danger" onClick={() => handleDelete(selected)}>Delete Resident</Btn>
+      </div>
+    </div>
+  );
+
+  return null;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// STEP 2: In the same file, find the line:
+//   type Tab = "analytics" | "visitors" | ... | "nuke";
+// Add "residents" to the union:
+//   type Tab = "analytics" | ... | "nuke" | "residents";
+//
+// STEP 3: Find NAV_ITEMS array and add before "nuke":
+//   ["residents", "👥", "Residents"],
+//
+// STEP 4: Find the tab render block and add before the nuke line:
+//   {tab === "residents" && <ResidentsTab password={password} />}
+// ─────────────────────────────────────────────────────────────────────────────
+
+type Tab="analytics"|"visitors"|"pages"|"collections"|"districts"|"upload"|"published"|"bulkai"|"highres"|"blog"|"manage18"|"backdate"|"preview"|"feedback"|"nuke"|"pin"|"comments"|"livewallpapers"|"residents";
+const NAV_ITEMS:[Tab,string,string][]=[["analytics","📊","Analytics"],["visitors","👀","Visitors"],["pages","📝","Page Content"],["collections","🗂","Collections"],["districts","🏚️","Districts"],["upload","📤","Upload Image"],["published","📸","Published"],["bulkai","🤖","Bulk AI Update"],["highres","⬆️","Upload 4K"],["blog","✍️","Blog Posts"],["manage18","⚠","16+ Manage"],["backdate","📅","Backdate"],["preview","🌐","Live Preview"],["feedback","⚑","Reports"],["comments","💬","Wishes"],["pin","📌","Pin Wallpapers"],["livewallpapers","🎬","Live Wallpapers"],["residents","👥","Residents"],["nuke","💣","Nuke Everything"]];
 
 export default function AdminClient(){
   const[authed,setAuthed]=useState(false);const[password,setPw]=useState("");const[tab,setTab]=useState<Tab>("analytics");const[sidebarOpen,setSidebarOpen]=useState(true);const[prefillTitle,setPrefillTitle]=useState("");const[prefillLabel,setPrefillLabel]=useState("");
@@ -1917,6 +2359,7 @@ export default function AdminClient(){
         {tab==="comments"&&<CommentsTab password={password}/>}
         {tab==="pin"&&<PinTab password={password}/>}
         {tab==="livewallpapers"&&<LiveWallpapersTab password={password}/>}
+        {tab==="residents"&&<ResidentsTab password={password}/>}
         {tab==="nuke"&&<NukeTab password={password}/>}
       </div>
     </div>
