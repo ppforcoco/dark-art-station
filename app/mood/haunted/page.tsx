@@ -37,7 +37,7 @@ export default async function MoodHauntedPage() {
     },
     orderBy: [{ viewCount: "desc" }, { createdAt: "desc" }],
     take: 48,
-    select: { id: true, slug: true, title: true, r2Key: true, deviceType: true },
+    select: { id: true, slug: true, title: true, r2Key: true, deviceType: true, collection: { select: { slug: true } } },
   });
 
   return (
@@ -69,8 +69,14 @@ export default async function MoodHauntedPage() {
 
         {/* Grid */}
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))", gap: "16px", marginBottom: "80px" }}>
-          {images.map((img) => (
-            <Link key={img.id} href={`/wallpaper/${img.slug}`} style={{ display: "block", textDecoration: "none" }}>
+          {images.map((img) => {
+            const href = img.deviceType
+              ? `/${img.deviceType.toLowerCase()}/${img.slug}`
+              : img.collection?.slug
+                ? `/shop/${img.collection.slug}/${img.slug}`
+                : "/obsessions";
+            return (
+            <Link key={img.id} href={href} style={{ display: "block", textDecoration: "none" }}>
               <div style={{ aspectRatio: img.deviceType === "PC" ? "16/9" : "9/16", overflow: "hidden", background: "#0a0812" }}>
                 <img
                   src={getPublicUrl(img.r2Key)}
@@ -83,7 +89,8 @@ export default async function MoodHauntedPage() {
                 {img.title}
               </p>
             </Link>
-          ))}
+            );
+          })}
         </div>
 
         {/* SEO Description */}

@@ -37,7 +37,7 @@ export default async function Top100AmoledPage() {
     },
     orderBy: [{ viewCount: "desc" }, { createdAt: "desc" }],
     take: 100,
-    select: { id: true, slug: true, title: true, description: true, r2Key: true, deviceType: true },
+    select: { id: true, slug: true, title: true, description: true, r2Key: true, deviceType: true, collection: { select: { slug: true } } },
   });
 
   return (
@@ -63,8 +63,13 @@ export default async function Top100AmoledPage() {
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(160px,1fr))", gap: "16px", marginBottom: "80px" }}>
           {images.map((img) => {
             const shortDesc = img.description ? img.description.replace(/<[^>]*>/g, "").slice(0, 72).trim() : null;
+            const href = img.deviceType
+              ? `/${img.deviceType.toLowerCase()}/${img.slug}`
+              : img.collection?.slug
+                ? `/shop/${img.collection.slug}/${img.slug}`
+                : "/obsessions";
             return (
-              <Link key={img.id} href={`/wallpaper/${img.slug}`} style={{ display: "block", textDecoration: "none" }}>
+              <Link key={img.id} href={href} style={{ display: "block", textDecoration: "none" }}>
                 <div style={{ aspectRatio: img.deviceType === "PC" ? "16/9" : "9/16", overflow: "hidden", background: "#000" }}>
                   <img src={getPublicUrl(img.r2Key)} alt={img.title} loading="lazy" decoding="async"
                     style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", transition: "transform 0.3s ease" }} />
