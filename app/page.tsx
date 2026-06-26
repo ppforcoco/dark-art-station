@@ -292,6 +292,75 @@ export default async function Home() {
           );
         })()}
 
+        {/* ══ TOP 100 COLLECTIONS ════════════════════════════════════════ */}
+        <section className="hp-top100">
+          <div className="hp-section-head">
+            <div>
+              <p className="hp-section-eye" style={{ color:"#ef0014" }}>Curated Collections</p>
+              <h2 className="hp-section-title">Top 100 Wallpapers</h2>
+              <p className="hp-section-sub">Hand-picked collections, ranked and ready.</p>
+            </div>
+          </div>
+          <div className="hp-top100-grid">
+            <Link href="/top-100-amoled-wallpapers" prefetch={false} className="hp-top100-card hp-top100-card--amoled">
+              <span className="hp-top100-num">100</span>
+              <span className="hp-top100-name">AMOLED Wallpapers</span>
+              <span className="hp-top100-quote">Pure black. Zero grey. The screen disappears.</span>
+              <span className="hp-top100-arrow">→</span>
+            </Link>
+            <Link href="/top-100-horror-wallpapers" prefetch={false} className="hp-top100-card hp-top100-card--horror">
+              <span className="hp-top100-num">100</span>
+              <span className="hp-top100-name">Horror Wallpapers</span>
+              <span className="hp-top100-quote">The dark is not empty. It is full of things that know your name.</span>
+              <span className="hp-top100-arrow">→</span>
+            </Link>
+            <Link href="/top-100-dark-fantasy-wallpapers" prefetch={false} className="hp-top100-card hp-top100-card--fantasy">
+              <span className="hp-top100-num">100</span>
+              <span className="hp-top100-name">Dark Fantasy Wallpapers</span>
+              <span className="hp-top100-quote">Magic leaves scars. These are the marks.</span>
+              <span className="hp-top100-arrow">→</span>
+            </Link>
+          </div>
+        </section>
+
+        {/* ══ MOOD ════════════════════════════════════════════════════════ */}
+        <section className="hp-mood">
+          <div className="hp-section-head">
+            <div>
+              <p className="hp-section-eye" style={{ color:"#9b72cf" }}>Browse by Feeling</p>
+              <h2 className="hp-section-title">Mood Wallpapers</h2>
+              <p className="hp-section-sub">Some silences are heavier than others. This is one of them.</p>
+            </div>
+          </div>
+          <div className="hp-mood-grid">
+            <Link href="/mood/3am" prefetch={false} className="hp-mood-card hp-mood-card--3am">
+              <span className="hp-mood-icon">🌑</span>
+              <span className="hp-mood-label">3AM</span>
+              <span className="hp-mood-sub">When sleep won&rsquo;t come</span>
+            </Link>
+            <Link href="/mood/villain" prefetch={false} className="hp-mood-card hp-mood-card--villain">
+              <span className="hp-mood-icon">🩸</span>
+              <span className="hp-mood-label">Villain</span>
+              <span className="hp-mood-sub">For your dark arc era</span>
+            </Link>
+            <Link href="/mood/haunted" prefetch={false} className="hp-mood-card hp-mood-card--haunted">
+              <span className="hp-mood-icon">👁</span>
+              <span className="hp-mood-label">Haunted</span>
+              <span className="hp-mood-sub">Something follows you</span>
+            </Link>
+            <Link href="/mood/quiet" prefetch={false} className="hp-mood-card hp-mood-card--quiet">
+              <span className="hp-mood-icon">🌫</span>
+              <span className="hp-mood-label">Quiet</span>
+              <span className="hp-mood-sub">For the ones who observe</span>
+            </Link>
+            <Link href="/mood" prefetch={false} className="hp-mood-card hp-mood-card--all">
+              <span className="hp-mood-icon">✦</span>
+              <span className="hp-mood-label">All Moods</span>
+              <span className="hp-mood-sub">Browse everything</span>
+            </Link>
+          </div>
+        </section>
+
       </div>
     </>
   );

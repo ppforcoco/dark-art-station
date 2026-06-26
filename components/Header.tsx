@@ -10,7 +10,6 @@ const NAV_LINKS = [
   { label: "PC",            href: "/pc"         },
   { label: "Matching Sets", href: "/sets"       },
   { label: "The Archive",   href: "/obsessions" },
-  { label: "Mood",          href: "/mood"       },
   { label: "Live Wallpapers", href: "/live-wallpapers" },
   { label: "Tools",          href: "/tools"          },
   { label: "Avatars",        href: "/avatars"       },
