@@ -16,6 +16,7 @@ export async function GET(req: NextRequest) {
     collectionId: null,    // exclude shop/collection items
     sortOrder: { gte: 0 }, // exclude pinned negatives
     isAdult: false,        // never show adult content publicly
+    isAvatar: false,       // exclude pfp avatars
   };
 
   if (device && ["IPHONE", "ANDROID", "PC"].includes(device)) {

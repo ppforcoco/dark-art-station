@@ -32,6 +32,7 @@ export default async function Mood3amPage() {
   const images = await db.image.findMany({
     where: {
       isAdult: false,
+        isAvatar: false,
       tags: { hasSome: ["glitch", "glitching", "neon", "cyberpunk", "dark", "night", "moody", "insomnia", "3am", "void", "atmospheric"] },
     },
     orderBy: [{ viewCount: "desc" }, { createdAt: "desc" }],

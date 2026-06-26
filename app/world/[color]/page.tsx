@@ -249,6 +249,7 @@ export default async function WorldPage({
 
   const where = {
     isAdult: false,
+        isAvatar: false,
     ...deviceFilter,
     OR: [
       ...tagConditions,

@@ -12,7 +12,7 @@ async function getIdPool(): Promise<string[]> {
 
   const rows = await db.image.findMany({
     select: { id: true },
-    where: { deviceType: { not: null }, isAdult: false },
+    where: { deviceType: { not: null }, isAdult: false, isAvatar: false },
   });
 
   cachedIds  = rows.map((r) => r.id);

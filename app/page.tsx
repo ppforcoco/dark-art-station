@@ -40,6 +40,7 @@ const getCachedNewThisWeek = unstable_cache(
   () => db.image.findMany({
     where: {
       isAdult: false,
+      isAvatar: false,
       tags: { has: "badge-new" },
       createdAt: { gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) },
       NOT: { tags: { has: "badge-premium" } },
@@ -54,7 +55,7 @@ const getCachedNewThisWeek = unstable_cache(
 
 const getCachedPremiumThisWeek = unstable_cache(
   () => db.image.findMany({
-    where: { tags: { has: "badge-premium" }, isAdult: false },
+    where: { tags: { has: "badge-premium" }, isAdult: false, isAvatar: false },
     orderBy: { createdAt: "desc" },
     take: 8,
     select: { id: true, slug: true, title: true, r2Key: true, deviceType: true, tags: true, updatedAt: true },
@@ -241,7 +242,7 @@ export default async function Home() {
                   <div style={{ aspectRatio: "9/16", background: "#0a0812", overflow: "hidden", marginBottom: "8px", border: "1px solid rgba(157,78,221,0.15)" }}>
                     {r.portraitKey ? (
                       <img
-                        src={`${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/${r.portraitKey}`}
+                        src={getPublicUrl(r.portraitKey)}
                         alt={r.name}
                         style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
                         loading="lazy"
@@ -253,8 +254,8 @@ export default async function Home() {
                       </div>
                     )}
                   </div>
-                  <p style={{ fontFamily: "var(--font-cinzel, serif)", fontSize: "0.75rem", color: "rgba(232,228,220,0.85)", marginBottom: "4px", letterSpacing: "0.05em" }}>{r.name}</p>
-                  <p style={{ fontFamily: "var(--font-space, monospace)", fontSize: "0.55rem", color: "rgba(157,78,221,0.7)", letterSpacing: "0.08em", textTransform: "uppercase", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{r.tagline}</p>
+                  <p style={{ fontFamily: "var(--font-cinzel, serif)", fontSize: "0.75rem", color: "rgba(232,228,220,0.85)", marginBottom: "4px", letterSpacing: "0.05em", lineHeight: 1.4 }}>{r.name}</p>
+                  <p style={{ fontFamily: "var(--font-space, monospace)", fontSize: "0.55rem", color: "rgba(157,78,221,0.7)", letterSpacing: "0.08em", textTransform: "uppercase", lineHeight: 1.55 }}>{r.tagline}</p>
                 </Link>
               ))}
             </div>

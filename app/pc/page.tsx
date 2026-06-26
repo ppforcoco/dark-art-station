@@ -52,6 +52,8 @@ export default async function PcPage({ searchParams }: PageProps) {
 
   const where = {
     collectionId: null,
+    isAvatar: false,
+    isAdult: false,
     deviceType: "PC" as const,
     ...(tag ? { tags: { has: tag } } : {}),
   };

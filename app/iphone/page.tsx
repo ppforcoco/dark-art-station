@@ -74,6 +74,8 @@ export default async function IphonePage({ searchParams }: PageProps) {
   const where = {
     collectionId: null,
     deviceType: "IPHONE" as const,
+    isAvatar: false,
+    isAdult: false,
     ...(tag ? {
       OR: [
         { tags: { has: tag } },
@@ -112,7 +114,7 @@ export default async function IphonePage({ searchParams }: PageProps) {
       getPageContent("iphone"),
       (!tag && page === 1)
         ? db.image.findMany({
-            where: { tags: { has: "badge-new" }, deviceType: "IPHONE", isAdult: false },
+            where: { tags: { has: "badge-new" }, deviceType: "IPHONE", isAdult: false, isAvatar: false },
             orderBy: { updatedAt: "desc" },
             take: 10,
             select: { id: true, slug: true, title: true, r2Key: true, viewCount: true, tags: true, isAdult: true, updatedAt: true },

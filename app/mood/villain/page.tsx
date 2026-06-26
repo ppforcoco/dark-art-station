@@ -32,6 +32,7 @@ export default async function MoodVillainPage() {
   const images = await db.image.findMany({
     where: {
       isAdult: false,
+        isAvatar: false,
       tags: { hasSome: ["villain", "sinister", "evil", "dark-fantasy", "powerful", "crimson", "mask", "crown", "gothic", "aggressive", "demon"] },
     },
     orderBy: [{ viewCount: "desc" }, { createdAt: "desc" }],

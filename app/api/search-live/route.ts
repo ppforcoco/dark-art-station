@@ -23,6 +23,7 @@ export async function GET(req: NextRequest) {
     db.image.findMany({
       where: {
         isAdult: false,
+        isAvatar: false,
         tags: { has: qLower },
       },
       select: {
@@ -36,6 +37,7 @@ export async function GET(req: NextRequest) {
     db.image.findMany({
       where: {
         isAdult: false,
+        isAvatar: false,
         title: { startsWith: q, mode: "insensitive" },
       },
       select: {
@@ -66,6 +68,7 @@ export async function GET(req: NextRequest) {
     const titleContains = await db.image.findMany({
       where: {
         isAdult: false,
+        isAvatar: false,
         title: { contains: q, mode: "insensitive" },
         id: { notIn: Array.from(existingIds) },
       },

@@ -154,6 +154,8 @@ export default async function IphoneImagePage({ params }: PageProps) {
         collectionId: null,
         deviceType: "IPHONE",
         slug: { not: imageSlug },
+        isAdult: false,
+        isAvatar: false,
         tags: { hasSome: image.tags.slice(0, 3) },
       },
       orderBy: [{ sortOrder: "asc" }],

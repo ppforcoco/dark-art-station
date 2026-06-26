@@ -32,6 +32,7 @@ export default async function MoodQuietPage() {
   const images = await db.image.findMany({
     where: {
       isAdult: false,
+        isAvatar: false,
       tags: { hasSome: ["quiet", "minimal", "minimalist", "melancholy", "sad", "lonely", "fog", "mist", "rain", "calm", "silhouette", "moon", "isolated"] },
     },
     orderBy: [{ viewCount: "desc" }, { createdAt: "desc" }],

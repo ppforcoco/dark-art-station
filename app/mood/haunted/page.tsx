@@ -32,6 +32,7 @@ export default async function MoodHauntedPage() {
   const images = await db.image.findMany({
     where: {
       isAdult: false,
+        isAvatar: false,
       tags: { hasSome: ["haunted", "ghost", "spirit", "gothic", "horror", "paranormal", "Victorian", "abandoned", "specter", "wraith", "apparition", "creepy"] },
     },
     orderBy: [{ viewCount: "desc" }, { createdAt: "desc" }],
