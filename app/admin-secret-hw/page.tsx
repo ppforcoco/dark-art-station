@@ -264,7 +264,7 @@ function ImageUploaderTab({password}:{password:string}){
   function onDrop(e:React.DragEvent){e.preventDefault();setDragging(false);const f=e.dataTransfer.files[0];if(f?.type.startsWith("image/"))handleFileSelect(f);}
   function toggleTag(tag:string){setSelectedTags(prev=>prev.includes(tag)?prev.filter(t=>t!==tag):[...prev,tag]);}
   async function handleGenerateAll(){if(!file)return;setGenerating(true);setMessage(null);try{const base64=await fileToBase64(file);const result=await analyzeImageWithClaude(base64,file.type);if(result.title){setTitle(result.title);setSlug(result.title.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,""));}if(result.description)setDescription(result.description);if(result.altText)setAltText(result.altText);if(result.tags?.length)setSelectedTags(result.tags.filter(t=>ALL_TAGS.includes(t)));setMessage({type:"ok",text:"✓ Claude AI generated title, description, alt text & tags!"});}catch(err){setMessage({type:"err",text:`⚠ AI generation failed: ${(err as Error).message}`});}setGenerating(false);}
-  async function postOneImage(f:File,hrFile:File|null,slugVal:string,titleVal:string,extra:{matchingGroupId?:string;matchingLabel?:string}={}){const form=new FormData();form.append("file",f);if(hrFile)form.append("highResFile",hrFile);form.append("slug",slugVal);form.append("title",titleVal);form.append("altText",altText);form.append("metaDescription",metaDescription);form.append("description",description);form.append("tags",JSON.stringify(selectedTags));form.append("isAdult",String(isAdult));form.append("commentsEnabled",String(commentsEnabled));form.append("isAvatar",String(isPair?true:isAvatar));if(extra.matchingGroupId)form.append("matchingGroupId",extra.matchingGroupId);if(extra.matchingLabel)form.append("matchingLabel",extra.matchingLabel);if(deviceType)form.append("deviceType",deviceType);if(collectionId.trim())form.append("collectionId",collectionId.trim());const res=await fetch("/api/hw-admin/upload-image",{method:"POST",headers:{"x-admin-password":password},body:form});const json=await res.json();if(!res.ok)throw new Error(json.error??"Upload failed.");return json;}
+  async function postOneImage(f:File,hrFile:File|null,slugVal:string,titleVal:string,extra:{matchingGroupId?:string;matchingLabel?:string}={}){const form=new FormData();form.append("file",f);if(hrFile)form.append("highResFile",hrFile);form.append("slug",slugVal);form.append("title",titleVal);form.append("altText",altText);form.append("metaDescription",metaDescription);form.append("description",description);const tagsToSend=newTagInput.trim()?[...new Set([...selectedTags,newTagInput.trim()])]:selectedTags;form.append("tags",JSON.stringify(tagsToSend));form.append("isAdult",String(isAdult));form.append("commentsEnabled",String(commentsEnabled));form.append("isAvatar",String(isPair?true:isAvatar));if(extra.matchingGroupId)form.append("matchingGroupId",extra.matchingGroupId);if(extra.matchingLabel)form.append("matchingLabel",extra.matchingLabel);if(deviceType)form.append("deviceType",deviceType);if(collectionId.trim())form.append("collectionId",collectionId.trim());const res=await fetch("/api/hw-admin/upload-image",{method:"POST",headers:{"x-admin-password":password},body:form});const json=await res.json();if(!res.ok)throw new Error(json.error??"Upload failed.");return json;}
   function resetUploadForm(){setFile(null);setHighResFile(null);setPreview("");setPairFile(null);setPairPreview("");setPairHighResFile(null);setSlug("");setTitle("");setDescription("");setMetaDescription("");setAltText("");setDeviceType("");setSelectedTags([]);setCollectionId("");setIsAdult(false);setCommentsEnabled(false);setIsAvatar(false);setIsPair(false);setLabelA("Him");setLabelB("Her");if(fileInputRef.current)fileInputRef.current.value="";if(highResInputRef.current)highResInputRef.current.value="";if(pairFileInputRef.current)pairFileInputRef.current.value="";if(pairHighResInputRef.current)pairHighResInputRef.current.value="";}
   async function handleUpload(){
     if(isPair){
@@ -435,6 +435,7 @@ function ImageUploaderTab({password}:{password:string}){
             <input placeholder="Paste tags separated by commas: dark, gothic, horror, skull…" style={{...inp,flex:1,fontSize:"0.75rem",borderColor:"rgba(201,168,76,0.4)"}} onKeyDown={e=>{if(e.key==="Enter"){const raw=(e.target as HTMLInputElement).value;const parsed=raw.split(",").map(t=>t.trim().toLowerCase().replace(/\s+/g,"-")).filter(Boolean);const known=parsed.filter(t=>ALL_TAGS.includes(t));const unknown=parsed.filter(t=>!ALL_TAGS.includes(t));setSelectedTags(prev=>[...new Set([...prev,...known])]);setCustomTags(prev=>[...new Set([...prev,...unknown])]);setSelectedTags(prev=>[...new Set([...prev,...unknown])]);(e.target as HTMLInputElement).value="";e.preventDefault();}}} onPaste={e=>{setTimeout(()=>{const raw=(e.target as HTMLInputElement).value;const parsed=raw.split(",").map(t=>t.trim().toLowerCase().replace(/\s+/g,"-")).filter(Boolean);if(parsed.length>1){const known=parsed.filter(t=>ALL_TAGS.includes(t));const unknown=parsed.filter(t=>!ALL_TAGS.includes(t));setSelectedTags(prev=>[...new Set([...prev,...known])]);setCustomTags(prev=>[...new Set([...prev,...unknown])]);setSelectedTags(prev=>[...new Set([...prev,...unknown])]);(e.target as HTMLInputElement).value="";}},50);}}/>
             <Btn onClick={()=>{if(selectedTags.length>0){setSelectedTags([]);setCustomTags([]);}}} variant="ghost" style={{fontSize:"0.65rem",padding:"8px 12px",flexShrink:0}}>Clear</Btn>
           </div>
+          <ResidentTagPicker selectedTags={selectedTags} onToggle={(tag)=>setSelectedTags(prev=>prev.includes(tag)?prev.filter(t=>t!==tag):[...prev,tag])} password={password}/>
           <div style={{display:"flex",flexWrap:"wrap",gap:"6px",marginBottom:"10px"}}>
           {[...ALL_TAGS,...customTags].map(tag=><button key={tag} type="button" onClick={()=>toggleTag(tag)} style={{background:selectedTags.includes(tag)?"rgba(192,0,26,0.2)":"transparent",border:`1px solid ${selectedTags.includes(tag)?C.red:C.border}`,color:selectedTags.includes(tag)?C.textPri:C.textSec,padding:"5px 12px",cursor:"pointer",fontSize:"0.65rem",letterSpacing:"0.08em",fontFamily:"monospace"}}>{selectedTags.includes(tag)?"✓ ":""}{tag}</button>)}
         </div>
@@ -442,7 +443,6 @@ function ImageUploaderTab({password}:{password:string}){
           <input placeholder="Add custom tag…" value={newTagInput} onChange={e=>setNewTagInput(e.target.value.toLowerCase().replace(/\s+/g,"-"))} onKeyDown={e=>{if(e.key==="Enter"&&newTagInput.trim()){const v=newTagInput.trim();setCustomTags(prev=>prev.includes(v)?prev:[...prev,v]);setSelectedTags(prev=>prev.includes(v)?prev:[...prev,v]);setNewTagInput("");}}} style={{...inp,flex:1,fontSize:"0.75rem"}}/>
           <Btn onClick={()=>{if(!newTagInput.trim())return;const v=newTagInput.trim();setCustomTags(prev=>prev.includes(v)?prev:[...prev,v]);setSelectedTags(prev=>prev.includes(v)?prev:[...prev,v]);setNewTagInput("");}} variant="ghost">Add</Btn>
         </div>
-        <ResidentTagPicker selectedTags={selectedTags} onToggle={(tag)=>setSelectedTags(prev=>prev.includes(tag)?prev.filter(t=>t!==tag):[...prev,tag])} password={password}/>
       </Card>
       <Card style={{padding:"16px"}}><label style={lbl}>Collection (optional)</label><select value={collectionId} onChange={e=>setCollectionId(e.target.value)} style={{...inp,cursor:"pointer"}}><option value="">— Standalone (no collection) —</option>{collections.map(c=><option key={c.id} value={c.id}>{c.title} ({c.slug})</option>)}</select></Card>
       <Card style={{padding:"14px 16px",background:"rgba(124,58,237,0.06)",borderColor:"rgba(124,58,237,0.3)"}}>
@@ -523,25 +523,18 @@ function ResidentTagPicker({selectedTags,onToggle,password}:{selectedTags:string
   const[residents,setResidents]=React.useState<{slug:string;name:string}[]>([]);
   React.useEffect(()=>{
     fetch("/api/hw-admin/residents",{headers:{"x-admin-password":password}})
-      .then(r=>r.json())
-      .then(d=>setResidents(d.residents??[]))
-      .catch(()=>{});
+      .then(r=>r.json()).then(d=>setResidents(d.residents??[])).catch(()=>{});
   },[password]);
   if(residents.length===0)return null;
   return(
     <div style={{marginTop:"12px",borderTop:"1px solid rgba(157,78,221,0.2)",paddingTop:"12px"}}>
       <p style={{fontFamily:"monospace",fontSize:"0.62rem",letterSpacing:"0.15em",textTransform:"uppercase",color:"#9d4edd",marginBottom:"8px"}}>👥 Assign to Resident</p>
       <div style={{display:"flex",flexWrap:"wrap",gap:"6px"}}>
-        {residents.map(r=>{
-          const tag=`resident:${r.slug}`;
-          const active=selectedTags.includes(tag);
-          return(
-            <button key={r.slug} type="button" onClick={()=>onToggle(tag)}
-              style={{background:active?"rgba(157,78,221,0.25)":"transparent",border:`1px solid ${active?"#9d4edd":"rgba(157,78,221,0.3)"}`,color:active?"#c77dff":"rgba(157,78,221,0.7)",padding:"5px 14px",cursor:"pointer",fontSize:"0.68rem",fontFamily:"monospace",transition:"all 0.15s"}}>
-              {active?"✓ ":""}{r.name}
-            </button>
-          );
-        })}
+        {residents.map(r=>{const tag=`resident:${r.slug}`;const active=selectedTags.includes(tag);return(
+          <button key={r.slug} type="button" onClick={()=>onToggle(tag)} style={{background:active?"rgba(157,78,221,0.25)":"transparent",border:`1px solid ${active?"#9d4edd":"rgba(157,78,221,0.3)"}`,color:active?"#c77dff":"rgba(157,78,221,0.7)",padding:"5px 14px",cursor:"pointer",fontSize:"0.68rem",fontFamily:"monospace"}}>
+            {active?"✓ ":""}{r.name}
+          </button>
+        );})}
       </div>
     </div>
   );
@@ -651,8 +644,7 @@ function PublishedImagesTab({password}:{password:string}){
       <div style={{marginBottom:"14px"}}><label style={lbl}>Description (HTML)</label><textarea value={eDesc} onChange={e=>setEDesc(e.target.value)} rows={6} style={{...inp,resize:"vertical",lineHeight:"1.6",fontSize:"0.82rem"}}/></div>
       <div style={{marginBottom:"14px"}}><label style={lbl}>SEO Tags ({eTags.length})</label>
         <div style={{display:"flex",gap:"8px",marginBottom:"8px"}}><input placeholder="Paste tags by commas: dark, gothic, horror…" style={{...inp,flex:1,fontSize:"0.72rem",borderColor:"rgba(201,168,76,0.4)"}} onKeyDown={e=>{if(e.key==="Enter"){const raw=(e.target as HTMLInputElement).value;const parsed=raw.split(",").map(t=>t.trim().toLowerCase().replace(/\s+/g,"-")).filter(Boolean);setETags(prev=>[...new Set([...prev,...parsed])]);(e.target as HTMLInputElement).value="";e.preventDefault();}}} onPaste={e=>{setTimeout(()=>{const raw=(e.target as HTMLInputElement).value;const parsed=raw.split(",").map(t=>t.trim().toLowerCase().replace(/\s+/g,"-")).filter(Boolean);if(parsed.length>1){setETags(prev=>[...new Set([...prev,...parsed])]);(e.target as HTMLInputElement).value="";}},50);}}/><Btn onClick={()=>setETags([])} variant="ghost" style={{fontSize:"0.65rem",padding:"6px 10px",flexShrink:0}}>Clear</Btn></div>
-        <div style={{display:"flex",flexWrap:"wrap",gap:"6px"}}>{ALL_TAGS.map(tag=><button key={tag} onClick={()=>setETags(prev=>prev.includes(tag)?prev.filter(t=>t!==tag):[...prev,tag])} style={{background:eTags.includes(tag)?C.red:"transparent",border:`1px solid ${eTags.includes(tag)?C.red:C.border}`,color:eTags.includes(tag)?C.white:C.textSec,padding:"4px 12px",cursor:"pointer",fontSize:"0.65rem",fontFamily:"monospace"}}>{eTags.includes(tag)?"✓ ":""}{tag}</button>)}</div>
-        <ResidentTagPicker selectedTags={eTags} onToggle={(tag)=>setETags(prev=>prev.includes(tag)?prev.filter(t=>t!==tag):[...prev,tag])} password={password}/></div>
+        <div style={{display:"flex",flexWrap:"wrap",gap:"6px"}}>{ALL_TAGS.map(tag=><button key={tag} onClick={()=>setETags(prev=>prev.includes(tag)?prev.filter(t=>t!==tag):[...prev,tag])} style={{background:eTags.includes(tag)?C.red:"transparent",border:`1px solid ${eTags.includes(tag)?C.red:C.border}`,color:eTags.includes(tag)?C.white:C.textSec,padding:"4px 12px",cursor:"pointer",fontSize:"0.65rem",fontFamily:"monospace"}}>{eTags.includes(tag)?"✓ ":""}{tag}</button>)}</div><ResidentTagPicker selectedTags={eTags} onToggle={(tag)=>setETags(prev=>prev.includes(tag)?prev.filter(t=>t!==tag):[...prev,tag])} password={password}/></div>
       <div style={{marginBottom:"16px"}}>
         <label style={lbl}>FOMO Badges</label>
         <div style={{display:"flex",flexWrap:"wrap",gap:"8px",marginTop:"4px"}}>
