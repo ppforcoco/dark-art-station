@@ -345,9 +345,7 @@ export default async function Home() {
         <section className="hp-top100">
           <div className="hp-section-head">
             <div>
-              <p className="hp-section-eye" style={{ color:"#ef0014" }}>Curated Collections</p>
               <h2 className="hp-section-title">Top 100 Wallpapers</h2>
-              <p className="hp-section-sub">Hand-picked collections, ranked and ready.</p>
             </div>
           </div>
           <div className="hp-top100-grid">
