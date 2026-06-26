@@ -81,10 +81,23 @@ export async function PATCH(
       },
     });
 
-    // Revalidate avatar and wallpaper pages so changes show immediately
+    // Revalidate all correct image pages
     revalidatePath("/avatars");
-    revalidatePath(`/wallpaper/${updated.slug}`);
+    revalidatePath(`/pc/${updated.slug}`);
+    revalidatePath(`/iphone/${updated.slug}`);
+    revalidatePath(`/android/${updated.slug}`);
     revalidatePath("/");
+
+    // Revalidate any resident pages this image is tagged to
+    if (Array.isArray(updated.tags)) {
+      for (const tag of updated.tags) {
+        if (tag.startsWith("resident:")) {
+          const residentSlug = tag.replace("resident:", "");
+          revalidatePath(`/residents/${residentSlug}`);
+        }
+      }
+    }
+
     return NextResponse.json({ ok: true, slug: updated.slug });
   } catch (err) {
     console.error("[images PATCH by id]", err);
