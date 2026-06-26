@@ -26,7 +26,8 @@ export const MOODS = [
     desc:     "You didn't survive this far to be small.",
     color:    "#c9a84c",
     gradient: "radial-gradient(ellipse at 50% 0%, rgba(201,168,76,0.15) 0%, transparent 65%)",
-    tags:     ["powerful", "demon", "warrior", "fire", "lightning", "dragon", "god", "dark-fantasy", "epic", "crimson", "amoled"],
+    // "god" removed — no religious/nat words
+    tags:     ["powerful", "demon", "warrior", "fire", "lightning", "dragon", "dark-fantasy", "epic", "crimson", "amoled"],
   },
   {
     id:       "aggressive",
@@ -62,7 +63,8 @@ export const MOODS = [
     desc:     "One thought. Looping. You can't stop.",
     color:    "#9b30d0",
     gradient: "radial-gradient(ellipse at 50% 0%, rgba(155,48,208,0.15) 0%, transparent 65%)",
-    tags:     ["obsessed", "spiral", "loop", "hypnotic", "surreal", "glitch", "distorted", "trance", "ritual"],
+    // "ritual" removed from tags
+    tags:     ["obsessed", "spiral", "loop", "hypnotic", "surreal", "glitch", "distorted", "trance"],
   },
   {
     id:       "cold",
@@ -73,15 +75,7 @@ export const MOODS = [
     gradient: "radial-gradient(ellipse at 50% 0%, rgba(96,184,216,0.13) 0%, transparent 65%)",
     tags:     ["cold", "ice", "winter", "frost", "snow", "frozen", "pale", "arctic", "blizzard", "tundra"],
   },
-  {
-    id:       "violent",
-    label:    "Violent",
-    glyph:    "💀",
-    desc:     "The darkness that isn't poetic. It just is.",
-    color:    "#cc2200",
-    gradient: "radial-gradient(ellipse at 50% 0%, rgba(204,34,0,0.16) 0%, transparent 65%)",
-    tags:     ["violent", "skull", "death", "gore", "brutal", "war", "destruction", "carnage", "reaper"],
-  },
+  // VIOLENT removed entirely
   {
     id:       "dreaming",
     label:    "Dreaming",
@@ -94,7 +88,8 @@ export const MOODS = [
   {
     id:       "isolated",
     label:    "Isolated",
-    glyph:    "🏚",
+    // glyph changed from 🏚 to empty string — no emoji in nav pill
+    glyph:    "",
     desc:     "Alone is different from lonely. This is both.",
     color:    "#6a7a6a",
     gradient: "radial-gradient(ellipse at 50% 0%, rgba(106,122,106,0.13) 0%, transparent 65%)",
@@ -125,16 +120,18 @@ export const MOODS = [
     desc:     "Everything is fine. That's the problem.",
     color:    "#c030c0",
     gradient: "radial-gradient(ellipse at 50% 0%, rgba(192,48,192,0.14) 0%, transparent 65%)",
-    tags:     ["sinister", "villain", "evil", "clown", "mask", "smile", "dread", "uncanny", "wrong", "disturbing"],
+    // all tags removed
+    tags:     [] as unknown as readonly string[],
   },
   {
     id:       "mythic",
     label:    "Mythic",
     glyph:    "🐉",
-    desc:     "Ancient. Vast. You are not the main character.",
+    // updated desc: "Ancient. Vast. You're not the main character here." (no nat/religious words)
+    desc:     "Ancient. Vast. You're not the main character here.",
     color:    "#e8c060",
     gradient: "radial-gradient(ellipse at 50% 0%, rgba(232,192,96,0.14) 0%, transparent 65%)",
-    tags:     ["mythic", "myth", "dragon", "titan", "eldritch", "elder", "god", "cosmic", "ancient", "legendary", "kraken"],
+    tags:     ["mythic", "myth", "dragon", "titan", "eldritch", "elder", "cosmic", "ancient", "legendary", "kraken"],
   },
 ] as const;
 

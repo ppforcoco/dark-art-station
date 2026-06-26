@@ -9,7 +9,6 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 
 export const revalidate = 3600;
 
-
 export const metadata: Metadata = {
   title: "Mood Wallpapers — Find Your Vibe | Haunted Wallpapers",
   description:
@@ -27,7 +26,11 @@ export default async function MoodPage() {
       const images = await db.image.findMany({
         where: {
           isAdult: false,
-          tags:    { hasSome: mood.tags as unknown as string[] },
+          // exclude PC wallpapers — mood page is phone-first
+          deviceType: { in: ["IPHONE", "ANDROID"] },
+          tags: mood.tags.length > 0
+            ? { hasSome: mood.tags as unknown as string[] }
+            : undefined,
         },
         orderBy: [{ viewCount: "desc" }, { createdAt: "desc" }],
         take: 48,
