@@ -84,9 +84,11 @@ export default async function ResidentPage({ params }: PageProps) {
           @media(min-width: 900px) {
             .res-hero { grid-template-columns: clamp(200px, 22vw, 280px) 1fr; gap: clamp(28px, 4vw, 52px); align-items: flex-end; }
           }
-          .res-wp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 8px; }
-          @media(min-width: 480px) { .res-wp-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; } }
-          @media(min-width: 900px) { .res-wp-grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 14px; } }
+          .res-wp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; }
+          @media(min-width: 480px) { .res-wp-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; } }
+          @media(min-width: 900px) { .res-wp-grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; } }
+          .res-wp-pc { grid-column: span 2; }
+          @media(max-width: 479px) { .res-wp-pc { grid-column: span 1; } }
           .res-wp-img { transition: transform 0.3s ease; display: block; width: 100%; height: 100%; object-fit: cover; }
           .res-wp-img:hover { transform: scale(1.04); }
           .res-divider { border: none; border-top: 1px solid rgba(157,78,221,0.15); margin: 56px 0; }
@@ -132,7 +134,7 @@ export default async function ResidentPage({ params }: PageProps) {
             </div>
             <div className="res-wp-grid">
               {wallpapers.map((img) => (
-                <Link key={img.id} href={img.deviceType === "PC" ? `/pc/${img.slug}` : `/iphone/${img.slug}`} style={{ display: "block", textDecoration: "none" }}>
+                <Link key={img.id} href={`/characters/${img.slug}`} className={img.deviceType === "PC" ? "res-wp-pc" : ""} style={{ display: "block", textDecoration: "none" }}>
                   <div style={{ aspectRatio: img.deviceType === "PC" ? "16/9" : "9/16", overflow: "hidden", background: "#0a0812" }}>
                     <img
                       src={getPublicUrl(img.r2Key)}
