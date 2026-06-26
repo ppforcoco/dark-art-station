@@ -33,12 +33,17 @@ export default function AdminHtmlBlock({ html }: { html: string }) {
       dangerouslySetInnerHTML={{ __html: cleanHtml }}
       style={{
         width: "100%",
+        maxWidth: "100%",
         marginBottom: "32px",
         backgroundColor: "var(--bg-primary, #0c0b14)",
         color: "var(--text-primary, #e8e4dc)",
         fontSize: "clamp(0.82rem, 2.2vw, 1rem)",
         lineHeight: 1.7,
         colorScheme: "dark",
+        overflowX: "hidden",
+        overflowWrap: "break-word",
+        wordBreak: "break-word",
+        boxSizing: "border-box",
       }}
       className="admin-html-block"
     />

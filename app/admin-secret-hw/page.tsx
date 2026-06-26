@@ -727,7 +727,7 @@ function BackdateTab({password}:{password:string}){
 
 function LivePreviewTab(){
   const[activeUrl,setActiveUrl]=useState("/blog");const[customUrl,setCustomUrl]=useState("");const iframeRef=useRef<HTMLIFrameElement>(null);
-  const QUICK_LINKS=[{label:"Home",url:"/"},{label:"Blog",url:"/blog"},{label:"iPhone",url:"/iphone"},{label:"Android",url:"/android"},{label:"PC",url:"/pc"},{label:"Shop",url:"/shop"},{label:"Collections",url:"/collections"},{label:"About",url:"/about"},{label:"FAQ",url:"/faq"},{label:"Contact",url:"/contact"},{label:"Tools",url:"/tools"}];
+  const QUICK_LINKS=[{label:"Home",url:"/"},{label:"Blog",url:"/blog"},{label:"iPhone",url:"/iphone"},{label:"Android",url:"/android"},{label:"PC",url:"/pc"},{label:"Shop",url:"/shop"},{label:"Collections",url:"/obsessions"},{label:"About",url:"/about"},{label:"FAQ",url:"/faq"},{label:"Contact",url:"/contact"},{label:"Tools",url:"/tools"}];
   function navigate(url:string){const full=url.startsWith("http")?url:`https://hauntedwallpapers.com${url}`;setActiveUrl(url);if(iframeRef.current)iframeRef.current.src=full;}
   return<div>
     <Card style={{padding:"14px 18px",marginBottom:"16px",borderColor:C.red}}><strong style={{color:C.gold}}>🌐 Live Site Preview</strong><span style={{color:C.textSec,marginLeft:"8px",fontSize:"0.82rem"}}>Browse your live site in-panel.</span></Card>

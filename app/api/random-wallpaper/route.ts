@@ -63,7 +63,7 @@ export async function GET() {
       );
     }
 
-    let href = "/collections";
+    let href = "/obsessions";
     if (image.deviceType === "IPHONE")       href = `/iphone/${image.slug}`;
     else if (image.deviceType === "ANDROID") href = `/android/${image.slug}`;
     else if (image.deviceType === "PC")      href = `/pc/${image.slug}`;

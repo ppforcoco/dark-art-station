@@ -166,7 +166,7 @@ export default async function CollectionImagePage({ params }: PageProps) {
       <Breadcrumbs
         items={[
           { label: "Home", href: "/" },
-          { label: "Collections", href: "/collections" },
+          { label: "Collections", href: "/obsessions" },
           { label: collection.title, href: `/shop/${slug}` },
           { label: image.title },
         ]}

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
+import { revalidateCollectionPage } from "@/lib/revalidate-shop";
 
 function checkAuth(req: NextRequest) {
   const pw = req.headers.get("x-admin-password");
@@ -99,6 +100,11 @@ export async function PATCH(req: NextRequest) {
       },
       select: { id: true, slug: true, title: true, description: true, metaDescription: true, isPublished: true },
     });
+
+    // Bust the cached public page immediately — without this, the edit is
+    // correct in the DB but the live /shop/[slug] page (revalidate = 3600)
+    // won't show it for up to an hour.
+    revalidateCollectionPage(slug);
 
     return NextResponse.json({ ok: true, collection: updated });
   } catch (err) {

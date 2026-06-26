@@ -336,9 +336,12 @@ export default async function CollectionPage({ params }: PageProps) {
         /* ── Description ── */
         .coll-desc-section {
           max-width: 720px;
+          width: 100%;
           margin: 48px auto 0;
           padding-top: 32px;
           border-top: 1px solid rgba(255,255,255,0.07);
+          overflow: hidden;
+          box-sizing: border-box;
         }
         .coll-desc-heading {
           display: flex;
@@ -359,6 +362,12 @@ export default async function CollectionPage({ params }: PageProps) {
           font-size: 0.85rem;
           line-height: 1.9;
           color: #a89bc0;
+          width: 100%;
+          max-width: 100%;
+          overflow-x: hidden;
+          overflow-wrap: break-word;
+          word-break: break-word;
+          box-sizing: border-box;
         }
         .coll-desc-body p { margin: 0 0 14px; }
         .coll-desc-body p:last-child { margin: 0; }
@@ -366,6 +375,18 @@ export default async function CollectionPage({ params }: PageProps) {
           column-count: 1 !important;
           columns: auto !important;
           display: block !important;
+          width: 100% !important;
+          max-width: 100% !important;
+          overflow-x: hidden !important;
+        }
+        /* Neutralise any fixed widths, absolute positioning, or floats
+           pasted in via admin HTML — this is the safety net that stops
+           layout from breaking out of the page on mobile/desktop. */
+        .coll-desc-body .admin-html-block * {
+          max-width: 100% !important;
+          position: static !important;
+          float: none !important;
+          box-sizing: border-box !important;
         }
         .coll-desc-body .admin-html-block div,
         .coll-desc-body .admin-html-block section,
@@ -376,6 +397,12 @@ export default async function CollectionPage({ params }: PageProps) {
           max-width: 100% !important;
           column-count: 1 !important;
           columns: auto !important;
+        }
+        .coll-desc-body .admin-html-block img,
+        .coll-desc-body .admin-html-block svg,
+        .coll-desc-body .admin-html-block video {
+          max-width: 100% !important;
+          height: auto !important;
         }
 
         /* ── Mobile info ── */
