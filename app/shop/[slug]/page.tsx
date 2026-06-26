@@ -381,11 +381,26 @@ export default async function CollectionPage({ params }: PageProps) {
         }
         /* Neutralise any fixed widths, absolute positioning, or floats
            pasted in via admin HTML — this is the safety net that stops
-           layout from breaking out of the page on mobile/desktop. */
-        .coll-desc-body .admin-html-block * {
+           layout from breaking out of the page on mobile/desktop.
+           Empty decorative elements (background glows/gradients with no
+           text content) are exempt from the position:static override —
+           those rely on being out-of-flow, and forcing them into normal
+           flow turns an invisible glow into a large empty block before
+           the real content (the bug this caused previously). */
+        .coll-desc-body .admin-html-block *:not(.hw-anime-bg-glow):not([class*="-bg-glow"]):not([class*="-glow-bg"]):not(.hw-anime-wrapper):not([class*="-wrapper"]) {
           max-width: 100% !important;
           position: static !important;
           float: none !important;
+          box-sizing: border-box !important;
+        }
+        .coll-desc-body .admin-html-block [class*="-wrapper"] {
+          position: relative !important;
+          max-width: 100% !important;
+          box-sizing: border-box !important;
+        }
+        .coll-desc-body .admin-html-block [class*="-bg-glow"],
+        .coll-desc-body .admin-html-block [class*="-glow-bg"] {
+          max-width: 500px !important;
           box-sizing: border-box !important;
         }
         .coll-desc-body .admin-html-block div,
