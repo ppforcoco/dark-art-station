@@ -163,7 +163,7 @@ export default async function ResidentPage({ params }: PageProps) {
             </div>
             <div className="res-wp-grid">
               {wallpapers.map((img) => (
-                <Link key={img.id} href={`/wallpaper/${img.slug}`} style={{ display: "block", textDecoration: "none" }}>
+                <Link key={img.id} href={img.deviceType === "PC" ? `/pc/${img.slug}` : `/iphone/${img.slug}`} style={{ display: "block", textDecoration: "none" }}>
                   <div style={{ aspectRatio: img.deviceType === "PC" ? "16/9" : "9/16", overflow: "hidden", background: "#0a0812" }}>
                     <img
                       src={getPublicUrl(img.r2Key)}
