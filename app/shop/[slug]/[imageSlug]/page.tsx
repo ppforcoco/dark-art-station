@@ -14,7 +14,6 @@ import FavoriteButton from "@/components/FavoriteButton";
 import PageTracker from "@/components/PageTracker";
 import RecentlyViewed from "@/components/RecentlyViewed";
 import WallpaperReactions from "@/components/WallpaperReactions";
-import { shouldCountPageView } from "@/lib/analytics-filter";
 import { sanitizeAdminHtml } from "@/lib/sanitize-html";
 
 export const revalidate = 3600;
@@ -107,11 +106,16 @@ export default async function CollectionImagePage({ params }: PageProps) {
 
   if (!collection) notFound();
 
-  if (await shouldCountPageView()) {
-    db.image
-      .update({ where: { id: image.id }, data: { viewCount: { increment: 1 } } })
-      .catch(() => {});
-  }
+  // NOTE: view-count increments happen here unconditionally because this
+  // page is statically revalidated (export const revalidate = 3600 above).
+  // shouldCountPageView() calls next/headers' headers(), which forces a
+  // page from static -> dynamic mid-render and crashes with:
+  //   "Error: Page changed from static to dynamic at runtime ... reason: headers"
+  // Bot/IP filtering for view counts isn't compatible with a statically
+  // cached page — do it in a dynamic API route instead if you need it back.
+  db.image
+    .update({ where: { id: image.id }, data: { viewCount: { increment: 1 } } })
+    .catch(() => {});
 
   const thumbUrl = getPublicUrl(image.r2Key);
   const heroAlt = image.altText ?? `${image.title} — free dark wallpaper download`;
