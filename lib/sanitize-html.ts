@@ -1,92 +1,57 @@
 /**
  * sanitizeAdminHtml
  *
+ * Used only by shop/[slug]/[imageSlug] — the individual wallpaper detail page.
+ *
  * Admin HTML can be a full standalone page with <style>, <script>, <svg>,
- * layout divs, grids, animations — or clean prose markup.
+ * layout divs, grids, animations, tables, images — or simple prose markup.
  *
  * Strategy:
- *  1. Nuke everything that is purely presentational (style, script, svg, img…)
- *  2. Extract ONLY <p> paragraph content — the actual readable text
- *  3. Rebuild as clean prose-only HTML safe to drop inside a <div>
- *
- * This is intentionally aggressive: we'd rather lose a <h2> subheading
- * than accidentally render a CSS grid or animated SVG inside the page.
+ *  - Allow ALL safe HTML elements (headings, lists, tables, images, divs,
+ *    figures, svg, style blocks, etc.)
+ *  - Strip only genuinely dangerous things:
+ *      · <script> tags
+ *      · inline event handlers (onclick, onload, onerror…)
+ *      · javascript: / data: URLs in href/src/action
+ *      · <meta http-equiv="refresh"> redirects
+ *  - If input is a full HTML document, extract <body> content only.
+ *  - Make images responsive.
  */
 export function sanitizeAdminHtml(raw: string): string {
   if (!raw || !raw.trim()) return "";
 
   let html = raw;
 
-  // ── Phase 1: Nuke entire block-level non-prose elements ──────────────────
-
-  html = html.replace(/<style[\s\S]*?<\/style>/gi, "");
+  // Strip <script> blocks entirely
   html = html.replace(/<script[\s\S]*?<\/script>/gi, "");
-  html = html.replace(/<head[\s\S]*?<\/head>/gi, "");
-  html = html.replace(/<svg[\s\S]*?<\/svg>/gi, "");
+
+  // Strip <noscript> blocks
   html = html.replace(/<noscript[\s\S]*?<\/noscript>/gi, "");
 
-  const NUKE_PAIRED = [
-    "canvas","video","audio","iframe","embed","object",
-    "picture","figure","map","table","thead","tbody","tfoot",
-    "select","datalist","details","dialog","menu",
-  ];
-  for (const tag of NUKE_PAIRED) {
-    html = html.replace(new RegExp(`<${tag}[\\s\\S]*?<\\/${tag}>`, "gi"), "");
-  }
+  // Strip <head> block (meta, title, base tags not needed)
+  html = html.replace(/<head[\s\S]*?<\/head>/gi, "");
 
-  const NUKE_VOID = ["img","input","br","hr","source","track","area","col","link","meta","base","wbr"];
-  for (const tag of NUKE_VOID) {
-    html = html.replace(new RegExp(`<${tag}[^>]*\\/?>`, "gi"), " ");
-  }
+  // Strip dangerous <meta http-equiv="refresh"> redirects
+  html = html.replace(/<meta[^>]+http-equiv\s*=\s*["']refresh["'][^>]*\/?>/gi, "");
 
-  // ── Phase 2: Extract <body> if this is a full page ───────────────────────
+  // If full HTML document, extract body content only
   const bodyMatch = html.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
   if (bodyMatch) html = bodyMatch[1];
 
-  // ── Phase 3: Strip block wrapper tags that cause React #418 hydration
-  //    mismatch — remove div/section/article/header/footer/main/nav open+close
-  //    tags but KEEP their inner content so text is preserved ────────────────
-  html = html.replace(/<\/?(?:div|section|article|aside|header|footer|main|nav|body|html)[^>]*>/gi, " ");
+  // Strip inline event handlers (onclick, onload, onerror, onmouseover, etc.)
+  html = html.replace(/\s+on\w+\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]*)/gi, "");
 
-  // ── Phase 4: Collect all <p> paragraphs ──────────────────────────────────
-  const paragraphs: string[] = [];
-  const pRegex = /<p[^>]*>([\s\S]*?)<\/p>/gi;
-  let match;
-  while ((match = pRegex.exec(html)) !== null) {
-    const inner = match[1]
-      .replace(/<(?!\/?(?:em|strong|span|a|b|i|u|mark|code|abbr)\b)[^>]+>/gi, "")
-      .replace(/\s+style="[^"]*"/gi, "")
-      .replace(/\s+style='[^']*'/gi, "")
-      .replace(/\s+class="[^"]*"/gi, "")
-      .replace(/\s+class='[^']*'/gi, "")
-      .replace(/\s+on\w+="[^"]*"/gi, "")
-      .replace(/\s+id="[^"]*"/gi, "")
-      .trim();
+  // Strip javascript: and data: URLs
+  html = html.replace(
+    /(href|src|action)\s*=\s*(?:"(?:javascript:|data:)[^"]*"|'(?:javascript:|data:)[^']*')/gi,
+    ""
+  );
 
-    if (inner.length > 0) {
-      paragraphs.push(`<p>${inner}</p>`);
-    }
-  }
+  // Make images responsive (add style only if no existing style attr)
+  html = html.replace(/<img([^>]*?)>/gi, (match, attrs) => {
+    if (/style\s*=/i.test(attrs)) return match;
+    return `<img${attrs} style="max-width:100%;height:auto;display:block;">`;
+  });
 
-  // ── Phase 5: If no <p> tags found, fall back to h1-h6 / li text ─────────
-  if (paragraphs.length === 0) {
-    const headingRegex = /<h[1-6][^>]*>([\s\S]*?)<\/h[1-6]>/gi;
-    while ((match = headingRegex.exec(html)) !== null) {
-      const inner = match[1].replace(/<[^>]+>/g, "").trim();
-      if (inner) paragraphs.push(`<p>${inner}</p>`);
-    }
-    const liRegex = /<li[^>]*>([\s\S]*?)<\/li>/gi;
-    while ((match = liRegex.exec(html)) !== null) {
-      const inner = match[1].replace(/<[^>]+>/g, "").trim();
-      if (inner) paragraphs.push(`<p>${inner}</p>`);
-    }
-  }
-
-  // ── Phase 6: If still nothing, strip ALL tags and wrap in <p> ────────────
-  if (paragraphs.length === 0) {
-    const text = html.replace(/<[^>]+>/g, " ").replace(/\s{2,}/g, " ").trim();
-    if (text) paragraphs.push(`<p>${text}</p>`);
-  }
-
-  return paragraphs.join("\n");
+  return html.trim();
 }
