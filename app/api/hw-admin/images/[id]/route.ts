@@ -88,6 +88,18 @@ export async function PATCH(
     revalidatePath(`/android/${updated.slug}`);
     revalidatePath("/");
 
+    // Revalidate shop collection image page
+    if (updated.collectionId) {
+      const collection = await db.collection.findUnique({
+        where: { id: updated.collectionId },
+        select: { slug: true },
+      });
+      if (collection) {
+        revalidatePath(`/shop/${collection.slug}/${updated.slug}`);
+        revalidatePath(`/shop/${collection.slug}`);
+      }
+    }
+
     // Revalidate any resident pages this image is tagged to
     if (Array.isArray(updated.tags)) {
       for (const tag of updated.tags) {
