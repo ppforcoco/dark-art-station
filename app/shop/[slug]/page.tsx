@@ -326,7 +326,7 @@ export default async function CollectionPage({ params }: PageProps) {
           font-size: 0.52rem;
           letter-spacing: 0.1em;
           text-transform: uppercase;
-          color: #4a445a;
+          color: #c4bdd8;
           text-align: center;
           white-space: nowrap;
           overflow: hidden;

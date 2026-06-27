@@ -15,6 +15,7 @@ import PageTracker from "@/components/PageTracker";
 import RecentlyViewed from "@/components/RecentlyViewed";
 import WallpaperReactions from "@/components/WallpaperReactions";
 import { sanitizeAdminHtml } from "@/lib/sanitize-html";
+import BirthdayComments from "@/components/BirthdayComments";
 
 export const revalidate = 3600;
 export const dynamicParams = true;
@@ -86,6 +87,7 @@ export default async function CollectionImagePage({ params }: PageProps) {
       id: true, slug: true, title: true, description: true,
       altText: true, r2Key: true, highResKey: true, tags: true,
       viewCount: true, sortOrder: true, collectionId: true,
+      commentsEnabled: true,
       _count: { select: { downloads: true } },
     },
   });
@@ -290,6 +292,11 @@ export default async function CollectionImagePage({ params }: PageProps) {
 
             {/* ── Reactions ── */}
             <WallpaperReactions imageId={image.id} />
+
+            {/* ── Comments ── */}
+            {image.commentsEnabled && (
+              <BirthdayComments imageId={image.id} imageTitle={image.title} />
+            )}
           </div>
         </div>
       </section>
