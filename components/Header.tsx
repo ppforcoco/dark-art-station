@@ -9,7 +9,7 @@ const NAV_LINKS = [
   { label: "Android",       href: "/android"    },
   { label: "PC",            href: "/pc"         },
   { label: "Matching Sets", href: "/sets"       },
-  { label: "The Archive",   href: "/obsessions" },
+  { label: "Collections",   href: "/collections" },
   { label: "Live Wallpapers", href: "/live-wallpapers" },
   { label: "Tools",          href: "/tools"          },
   { label: "Avatars",        href: "/avatars"       },
@@ -209,7 +209,7 @@ export default function Header() {
                 {liveLoading && <div className="hw-live-loading">Searching…</div>}
                 {liveResults.map(img => {
                   const href = img.collectionSlug
-                    ? `/shop/${img.collectionSlug}/${img.slug}`
+                    ? `/collections/${img.collectionSlug}/${img.slug}`
                     : img.deviceType
                       ? `/${img.deviceType.toLowerCase()}/${img.slug}`
                       : `/search?q=${encodeURIComponent(query)}`;
@@ -295,13 +295,13 @@ export default function Header() {
           </svg>
           Android
         </Link>
-        <Link href="/obsessions" prefetch={false} className="hw-bottom-nav__item" onClick={closeMenu}>
+        <Link href="/collections" prefetch={false} className="hw-bottom-nav__item" onClick={closeMenu}>
           <svg className="hw-bottom-nav__icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
             <circle cx="12" cy="9" r="5" />
             <path d="M9 9c0-1.7 1.3-3 3-3" />
             <path d="M6 21c0-3.3 2.7-6 6-6s6 2.7 6 6" />
           </svg>
-          Archive
+          Collections
         </Link>
         <Link href="/live-wallpapers" prefetch={false} className="hw-bottom-nav__item" onClick={closeMenu}>
           <svg className="hw-bottom-nav__icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
