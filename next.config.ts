@@ -73,9 +73,9 @@ const nextConfig: NextConfig = {
 
   async redirects() {
     return [
-      { source: "/shop", missing: [{ type: "query", key: "filter" }, { type: "query", key: "category" }], destination: "/collections", permanent: true },
-      { source: "/shop", has: [{ type: "query", key: "filter" }], destination: "/collections", permanent: true },
-      { source: "/shop", has: [{ type: "query", key: "category" }], destination: "/collections", permanent: true },
+      { source: "/shop", destination: "/collections", permanent: true },
+      { source: "/shop/:slug", destination: "/collections/:slug", permanent: true },
+      { source: "/shop/:slug/:imageSlug", destination: "/collections/:slug/:imageSlug", permanent: true },
       { source: "/ads.txt", destination: "https://srv.adstxtmanager.com/19390/hauntedwallpapers.com", permanent: true },
     ];
   },
