@@ -1,4 +1,4 @@
-// app/obsessions/page.tsx
+// app/collections/page.tsx
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
@@ -6,7 +6,6 @@ import { db, getPageContent } from "@/lib/db";
 import AdminHtmlBlock from "@/components/AdminHtmlBlock";
 import Breadcrumbs from "@/components/Breadcrumbs";
 
-// No cache — always serve fresh so admin changes show instantly
 export const revalidate = 0;
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
@@ -15,23 +14,23 @@ export async function generateMetadata(): Promise<Metadata> {
   const pageContent = await getPageContent("obsessions");
   const desc =
     pageContent?.metaDesc ??
-    "Browse all dark fantasy wallpaper obsessions — horror, gothic, dark humor and more. Free HD downloads for iPhone, Android and PC.";
+    "Browse all dark wallpaper collections — horror, gothic, dark fantasy and more. Free HD downloads for iPhone, Android and PC.";
   const title =
-    pageContent?.title ?? "Obsessions | Dark Wallpaper Collections | Haunted Wallpapers";
+    pageContent?.title ?? "Collections | Dark Wallpaper Collections | Haunted Wallpapers";
   return {
     title,
     description: desc,
-    alternates: { canonical: `${SITE_URL}/obsessions` },
+    alternates: { canonical: `${SITE_URL}/collections` },
     openGraph: {
       title, description: desc,
-      url: `${SITE_URL}/obsessions`, siteName: "Haunted Wallpapers", type: "website",
-      images: [{ url: `${SITE_URL}/og-image.jpg`, width: 1200, height: 630, alt: "Haunted Wallpapers — Obsessions" }],
+      url: `${SITE_URL}/collections`, siteName: "Haunted Wallpapers", type: "website",
+      images: [{ url: `${SITE_URL}/og-image.jpg`, width: 1200, height: 630, alt: "Haunted Wallpapers — Collections" }],
     },
     twitter: { card: "summary_large_image", title, description: desc, images: [`${SITE_URL}/og-image.jpg`] },
   };
 }
 
-export default async function ObsessionsPage() {
+export default async function CollectionsPage() {
   const [collections, pageContent] = await Promise.all([
     db.collection.findMany({
       where: { isPublished: true },
@@ -55,17 +54,17 @@ export default async function ObsessionsPage() {
   }, {});
 
   return (
-    <main style={{ minHeight: "100vh", backgroundColor: "var(--bg-primary)", color: "var(--text-primary)" }}>
+    <main style={{ minHeight: "100vh", backgroundColor: "var(--bg-primary)", color: "var(--text-primary)", paddingTop: "80px" }}>
 
       <Breadcrumbs items={[
         { label: "Home", href: "/" },
-        { label: "Obsessions" },
+        { label: "Collections" },
       ]} />
 
       {/* ── Title ── */}
       <section className="max-w-7xl mx-auto px-6 md:px-[60px] pt-10 pb-4">
         <h1 className="font-display text-3xl md:text-4xl font-bold leading-tight mb-6">
-          Choose Your <span style={{ color: "#c9a84c", fontStyle: "italic" }}>Obsession</span>
+          Browse <span style={{ color: "#c9a84c", fontStyle: "italic" }}>Collections</span>
         </h1>
       </section>
 
@@ -76,7 +75,7 @@ export default async function ObsessionsPage() {
             <div className="hw-coming-soon__sigil">✦ ☽ ✦</div>
             <div className="hw-coming-soon__bar" />
             <h2 className="hw-coming-soon__title">Coming Soon</h2>
-            <p className="hw-coming-soon__sub">Dark obsessions are being assembled. Check back soon.</p>
+            <p className="hw-coming-soon__sub">Dark collections are being assembled. Check back soon.</p>
           </div>
         ) : (
           <>
@@ -90,7 +89,6 @@ export default async function ObsessionsPage() {
                   — {category}
                 </p>
 
-                {/* 9:16 portrait grid — same column count as iPhone page */}
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
                   {cols.map((col, i) => {
                     const thumb = col.thumbnail && col.thumbnail.trim() !== ""
@@ -98,15 +96,14 @@ export default async function ObsessionsPage() {
                       : null;
                     const hasImages = col._count.images > 0;
 
-                    // Rotating border palette — each card gets a distinct colored border
                     const BORDER_PALETTE = [
-                      { border: "#7c3aed", glow: "rgba(124,58,237,0.4)"   }, // purple
-                      { border: "#c0001a", glow: "rgba(192,0,26,0.4)"     }, // crimson
-                      { border: "#9aa5b4", glow: "rgba(154,165,180,0.3)"  }, // silver
-                      { border: "#800020", glow: "rgba(128,0,32,0.4)"     }, // maroon
-                      { border: "#1a5c36", glow: "rgba(26,92,54,0.4)"     }, // dark green
-                      { border: "#111111", glow: "rgba(200,190,255,0.12)" }, // pure black
-                      { border: "#a855f7", glow: "rgba(168,85,247,0.4)"   }, // violet
+                      { border: "#7c3aed", glow: "rgba(124,58,237,0.4)"   },
+                      { border: "#c0001a", glow: "rgba(192,0,26,0.4)"     },
+                      { border: "#9aa5b4", glow: "rgba(154,165,180,0.3)"  },
+                      { border: "#800020", glow: "rgba(128,0,32,0.4)"     },
+                      { border: "#1a5c36", glow: "rgba(26,92,54,0.4)"     },
+                      { border: "#111111", glow: "rgba(200,190,255,0.12)" },
+                      { border: "#a855f7", glow: "rgba(168,85,247,0.4)"   },
                     ];
                     const palette = BORDER_PALETTE[i % BORDER_PALETTE.length];
 
@@ -179,14 +176,12 @@ export default async function ObsessionsPage() {
                     );
                   })}
                 </div>
-
               </div>
             ))}
           </>
         )}
       </section>
 
-      {/* Admin HTML — below the grid */}
       {pageContent?.body && (
         <div className="w-full px-6 md:px-16 pb-8">
           <AdminHtmlBlock html={pageContent.body} />
@@ -199,9 +194,9 @@ export default async function ObsessionsPage() {
           __html: JSON.stringify({
             "@context": "https://schema.org",
             "@type": "CollectionPage",
-            name: "Obsessions | Haunted Wallpapers",
-            url: `${SITE_URL}/obsessions`,
-            description: "Dark fantasy wallpaper obsessions — horror, gothic, dark humor and more.",
+            name: "Collections | Haunted Wallpapers",
+            url: `${SITE_URL}/collections`,
+            description: "Dark wallpaper collections — horror, gothic, dark fantasy and more.",
             numberOfItems: collections.length,
           }),
         }}
