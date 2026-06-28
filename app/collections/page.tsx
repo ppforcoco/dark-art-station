@@ -54,7 +54,7 @@ export default async function CollectionsPage() {
   }, {});
 
   return (
-    <main className="content-wrapper" style={{ minHeight: "100vh", backgroundColor: "var(--bg-primary)", color: "var(--text-primary)" }}>
+    <main style={{ minHeight: "100vh", backgroundColor: "var(--bg-primary)", color: "var(--text-primary)", paddingTop: "calc(var(--topbar-total, 0px) + var(--nav-h, 88px))" }}>
 
       <Breadcrumbs items={[
         { label: "Home", href: "/" },
