@@ -746,6 +746,8 @@ function CollectionsTab({password}:{password:string}){
   const[selected,setSelected]=useState<CollectionRecord|null>(null);
   const[desc,setDesc]=useState("");
   const[metaDesc,setMetaDesc]=useState("");
+  const[editTitle,setEditTitle]=useState("");
+  const[editSlug,setEditSlug]=useState("");
   const[descMode,setDescMode]=useState<"html"|"preview">("html");
   const[saving,setSaving]=useState(false);
   const[msg,setMsg]=useState<{type:"ok"|"err";text:string}|null>(null);
@@ -788,6 +790,7 @@ function CollectionsTab({password}:{password:string}){
 
   function openCollection(c:CollectionRecord){
     setSelected(c);setDesc(c.description??"");setMetaDesc(c.metaDescription??"");
+    setEditTitle(c.title);setEditSlug(c.slug);
     setMsg(null);setDescMode("html");
     setThumbFile(null);setThumbPreview("");setThumbMsg(null);
     if(thumbInputRef.current)thumbInputRef.current.value="";
@@ -806,9 +809,9 @@ function CollectionsTab({password}:{password:string}){
 
   async function handleSave(){
     if(!selected)return;setSaving(true);setMsg(null);
-    try{const res=await fetch("/api/hw-admin/collections",{method:"PATCH",headers:{"Content-Type":"application/json","x-admin-password":password},body:JSON.stringify({slug:selected.slug,description:desc,metaDescription:metaDesc||null})});
+    try{const res=await fetch("/api/hw-admin/collections",{method:"PATCH",headers:{"Content-Type":"application/json","x-admin-password":password},body:JSON.stringify({slug:selected.slug,newSlug:editSlug!==selected.slug?editSlug:undefined,title:editTitle!==selected.title?editTitle:undefined,description:desc,metaDescription:metaDesc||null})});
       const j=await res.json();
-      if(res.ok){setMsg({type:"ok",text:`✓ Saved "${selected.title}"`});setCollections(prev=>prev.map(c=>c.slug===selected.slug?{...c,description:desc,metaDescription:metaDesc||null}:c));setSelected(s=>s?{...s,description:desc,metaDescription:metaDesc||null}:null);}
+      if(res.ok){setMsg({type:"ok",text:`✓ Saved "${editTitle}"`});setCollections(prev=>prev.map(c=>c.slug===selected.slug?{...c,title:editTitle,slug:editSlug,description:desc,metaDescription:metaDesc||null}:c));setSelected(s=>s?{...s,title:editTitle,slug:editSlug,description:desc,metaDescription:metaDesc||null}:null);}
       else setMsg({type:"err",text:j.error??"Save failed."});}
     catch{setMsg({type:"err",text:"Network error."});}setSaving(false);
   }
@@ -896,10 +899,10 @@ function CollectionsTab({password}:{password:string}){
         <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",flexWrap:"wrap",gap:"12px"}}>
           <div>
             <p style={{color:C.red,fontSize:"0.6rem",letterSpacing:"0.2em",textTransform:"uppercase",marginBottom:"4px"}}>Editing Collection</p>
-            <p style={{color:C.gold,fontSize:"1rem",fontWeight:500}}>{selected.title}</p>
+            <input value={editTitle} onChange={e=>setEditTitle(e.target.value)} style={{...inp,fontSize:"1rem",fontWeight:500,color:C.gold,marginBottom:"6px",width:"100%"}}/>
+            <input value={editSlug} onChange={e=>setEditSlug(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g,"-"))} style={{...inp,fontSize:"0.65rem",color:C.textMut,marginBottom:"4px",width:"100%"}}/>
             <div style={{display:"flex",gap:"12px",marginTop:"4px"}}>
-              <code style={{color:C.textMut,fontSize:"0.65rem"}}>/shop/{selected.slug}</code>
-              <a href={`https://hauntedwallpapers.com/shop/${selected.slug}`} target="_blank" rel="noopener noreferrer" style={{color:C.textMut,fontSize:"0.65rem",textDecoration:"none"}}>↗ View Live</a>
+              <a href={`https://hauntedwallpapers.com/collections/${editSlug}`} target="_blank" rel="noopener noreferrer" style={{color:C.textMut,fontSize:"0.65rem",textDecoration:"none"}}>↗ View Live</a>
             </div>
           </div>
           <div style={{display:"flex",gap:"8px",flexWrap:"wrap"}}>

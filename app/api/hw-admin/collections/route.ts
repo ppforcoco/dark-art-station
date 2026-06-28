@@ -88,12 +88,14 @@ export async function PATCH(req: NextRequest) {
   if (!checkAuth(req)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   try {
-    const { slug, description, metaDescription, isPublished } = await req.json();
+    const { slug, newSlug, title, description, metaDescription, isPublished } = await req.json();
     if (!slug) return NextResponse.json({ error: "slug is required" }, { status: 400 });
 
     const updated = await db.collection.update({
       where: { slug },
       data: {
+        ...(title !== undefined ? { title: title.trim() } : {}),
+        ...(newSlug !== undefined ? { slug: newSlug.trim() } : {}),
         ...(description !== undefined ? { description } : {}),
         ...(metaDescription !== undefined ? { metaDescription: metaDescription || null } : {}),
         ...(isPublished !== undefined ? { isPublished: Boolean(isPublished) } : {}),
