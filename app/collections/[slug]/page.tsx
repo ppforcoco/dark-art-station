@@ -52,7 +52,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     openGraph: {
       title: `${collection.title} | Haunted Wallpapers`,
       description: metaDesc,
-      url: `${siteUrl}/shop/${slug}`,
+      url: `${siteUrl}/collections/${slug}`,
       siteName: "Haunted Wallpapers",
       images: [{ url: ogImage, width: 1200, height: 630, alt: collection.thumbnailAlt ?? collection.title }],
       type: "website",
@@ -63,7 +63,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       description: metaDesc,
       images: [ogImage],
     },
-    alternates: { canonical: `${siteUrl}/shop/${slug}` },
+    alternates: { canonical: `${siteUrl}/collections/${slug}` },
   };
 }
 
@@ -455,7 +455,7 @@ export default async function CollectionPage({ params }: PageProps) {
 
       <Breadcrumbs items={[
         { label: "Home",       href: "/" },
-        { label: "Obsessions", href: "/obsessions" },
+        { label: "Collections", href: "/collections" },
         { label: collection.title },
       ]} />
 
@@ -489,7 +489,7 @@ export default async function CollectionPage({ params }: PageProps) {
                 const locked = (img.tags ?? []).includes("badge-premium") && isPremiumLocked((img as any).updatedAt);
                 const href = !collectionImageIds.has(img.id) && (img as any).deviceType
                   ? `/${(img as any).deviceType.toLowerCase()}/${img.slug}`
-                  : `/shop/${slug}/${img.slug}`;
+                  : `/collections/${slug}/${img.slug}`;
                 return (
                   <Link key={img.id} href={href} className="coll-img-card"
                     style={{ pointerEvents: locked ? "none" : "auto", textDecoration: "none" }}>
@@ -545,7 +545,7 @@ export default async function CollectionPage({ params }: PageProps) {
                 const locked = (img.tags ?? []).includes("badge-premium") && isPremiumLocked((img as any).updatedAt);
                 const href = !collectionImageIds.has(img.id) && (img as any).deviceType
                   ? `/${(img as any).deviceType.toLowerCase()}/${img.slug}`
-                  : `/shop/${slug}/${img.slug}`;
+                  : `/collections/${slug}/${img.slug}`;
                 const imgUrl = getPublicUrl(img.r2Key);
 
                 return (
@@ -621,7 +621,7 @@ export default async function CollectionPage({ params }: PageProps) {
               {relatedCollections.map((rc) => {
                 const thumb = rc.thumbnail ? `${r2Base}/${rc.thumbnail}` : null;
                 return (
-                  <Link key={rc.slug} href={`/shop/${rc.slug}`} style={{ textDecoration: "none", display: "block" }}>
+                  <Link key={rc.slug} href={`/collections/${rc.slug}`} style={{ textDecoration: "none", display: "block" }}>
                     <div style={{ position: "relative", aspectRatio: "9/16", overflow: "hidden", background: "#0f0c1a", border: "1px solid rgba(255,255,255,0.06)", marginBottom: "10px" }}>
                       {thumb
                         // eslint-disable-next-line @next/next/no-img-element
