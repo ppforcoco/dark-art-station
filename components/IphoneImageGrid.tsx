@@ -240,12 +240,58 @@ export default function IphoneImageGrid({
                 position: "relative",
                 display: "block",
                 overflow: "hidden",
-                borderRadius: "8px",
-                backgroundColor: "#0e0d1a",
-                border: "1px solid rgba(255,255,255,0.06)",
-                aspectRatio,
+                borderRadius: "28px",
+                backgroundColor: "#0a0a0a",
+                border: "1.5px solid rgba(224,224,224,0.10)",
+                aspectRatio: "9/16",
+                boxShadow: "0 20px 60px rgba(0,0,0,0.90), 0 0 28px rgba(224,224,224,0.07)",
               }}
             >
+              {/* Dynamic Island notch — first 12 cards only */}
+              {(
+                <div style={{
+                  position: "absolute",
+                  top: "8px",
+                  left: "50%",
+                  transform: "translateX(-50%)",
+                  width: "35%",
+                  height: "10px",
+                  background: "#000",
+                  borderRadius: "6px",
+                  zIndex: 10,
+                  pointerEvents: "none",
+                }} />
+              )}
+              {/* Side buttons — first 12 cards only */}
+              {(
+                <>
+                  <div style={{ position: "absolute", left: "-3px", top: "24%", width: "3px", height: "20px", background: "#222", borderRadius: "2px 0 0 2px", zIndex: 10, pointerEvents: "none" }} />
+                  <div style={{ position: "absolute", left: "-3px", top: "37%", width: "3px", height: "20px", background: "#222", borderRadius: "2px 0 0 2px", zIndex: 10, pointerEvents: "none" }} />
+                  <div style={{ position: "absolute", right: "-3px", top: "29%", width: "3px", height: "28px", background: "#222", borderRadius: "0 2px 2px 0", zIndex: 10, pointerEvents: "none" }} />
+                </>
+              )}
+              {/* Glass gloss — first 12 cards only */}
+              {(
+                <div style={{
+                  position: "absolute", inset: 0,
+                  background: "linear-gradient(135deg, rgba(255,255,255,0.06) 0%, transparent 50%)",
+                  pointerEvents: "none",
+                  zIndex: 8,
+                  borderRadius: "28px",
+                }} />
+              )}
+              {/* Home indicator — first 12 cards only */}
+              {(
+                <div style={{
+                  position: "absolute", bottom: "6px", left: "50%",
+                  transform: "translateX(-50%)",
+                  width: "38px", height: "3px",
+                  background: "rgba(255,255,255,0.28)",
+                  borderRadius: "2px",
+                  zIndex: 10,
+                  pointerEvents: "none",
+                }} />
+              )}
               {showVault ? (
                 /* ── LOCKED PREMIUM — vault placeholder with live countdown ── */
                 <div style={{

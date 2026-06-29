@@ -1414,11 +1414,11 @@ show days only ── */
 }.mockup-phone-shell {
   position: relative;
   width: 100%;
-  /* 9:19.5 approx iPhone aspect */
-  aspect-ratio: 9 / 19.5;
+  /* 9:16 matches wallpaper ratio exactly — no crop */
+  aspect-ratio: 9 / 16;
   /* Pure black — OLED infinite contrast, no gradient bleed onto wallpaper */
   background: #000000;
-  border-radius: 44px;
+  border-radius: 28px;
   /* Spectral white rim — rgba(224,224,224,0.10) = ghostly moonlight at 10% */
   border: 1.5px solid rgba(224,224,224,0.10);
   /* drop-shadow is GPU-composited on mobile (unlike box-shadow).
@@ -1435,7 +1435,7 @@ show days only ── */
   content: "";
   position: absolute;
   inset: 0;
-  border-radius: 44px;
+  border-radius: 28px;
   background: linear-gradient(
     135deg,
     rgba(255,255,255,0.055) 0%,
@@ -1478,7 +1478,7 @@ decorative */
   width: 100%;
   height: 100%;
   overflow: hidden;
-  border-radius: 34px;
+  border-radius: 22px;
   /* Pure black — critical for OLED infinite contrast when wallpaper loads */
   background: #000000;
 }/* ── Monitor frame (PC) ── */
