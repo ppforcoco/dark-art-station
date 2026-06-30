@@ -113,9 +113,6 @@ export default async function AvatarsHubPage() {
       {/* ── Hero ── */}
       <section className="hw-hub-hero">
         <div className="hw-hub-hero__inner">
-          <h1 className="hw-hub-title">
-            Dark <span className="hw-hub-title__accent">PFP</span> &amp; Avatar Vault
-          </h1>
           <p className="hw-hub-desc">
             Your avatar follows you everywhere. So why does it still look basic? Upgrade your
             Discord PFP, Steam avatar, Twitch profile pic, and WhatsApp photo in one shot.

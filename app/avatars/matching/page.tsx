@@ -9,6 +9,129 @@ import { getPublicUrl } from "@/lib/r2";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import MatchingAvatarCard from "@/components/MatchingAvatarCard";
 
+// Cloned exactly from app/avatars/[tag]/page.tsx's AVATAR_CARD_STYLES so the
+// card markup (image, title, download/share buttons, HTML description) looks
+// identical here, on /avatars/discord-pfp, and on /avatars/gaming-pfp.
+const AVATAR_CARD_STYLES = `
+  .hw-avatars-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: clamp(10px, 2vw, 18px);
+  }
+  @media (min-width: 640px) {
+    .hw-avatars-grid { grid-template-columns: repeat(auto-fill, minmax(175px, 1fr)); }
+  }
+  @media (min-width: 1024px) {
+    .hw-avatars-grid { grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); }
+  }
+  .hw-avatar-card {
+    background: #13111e;
+    border: 1px solid #2a2535;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+  .hw-avatar-card:hover {
+    border-color: rgba(192,0,26,0.45);
+    box-shadow: 0 0 16px rgba(192,0,26,0.1);
+  }
+  .hw-avatar-card__img-wrap {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    background: #0a0812;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  .hw-avatar-card__img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: center;
+    display: block;
+    transition: transform 0.35s ease;
+    padding: 10px;
+  }
+  .hw-avatar-card:hover .hw-avatar-card__img { transform: scale(1.03); }
+  .hw-avatar-card__body { padding: 10px 10px 12px; }
+  .hw-avatar-card__title {
+    font-family: var(--font-space, monospace);
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--text-primary, #e8e4dc);
+    margin-bottom: 8px;
+    line-height: 1.3;
+  }
+  .hw-avatar-card__actions {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 8px;
+  }
+  .hw-avatar-card__btn {
+    flex: 1;
+    font-family: var(--font-space, monospace);
+    font-size: 0.58rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    text-align: center;
+    padding: 6px 4px;
+    border: 1px solid rgba(255,255,255,0.15);
+    background: rgba(255,255,255,0.04);
+    color: rgba(232,228,220,0.75);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+  }
+  .hw-avatar-card__btn--dl {
+    border-color: rgba(192,0,26,0.4);
+    background: rgba(192,0,26,0.08);
+    color: #e8e4dc;
+  }
+  .hw-avatar-card__btn--dl:hover {
+    background: rgba(192,0,26,0.22);
+    border-color: rgba(192,0,26,0.8);
+    color: #fff;
+  }
+  .hw-avatar-card__btn--share:hover {
+    border-color: rgba(201,168,76,0.5);
+    color: #c9a84c;
+    background: rgba(201,168,76,0.06);
+  }
+  .hw-avatar-card__desc {
+    margin-top: 8px;
+    overflow: hidden;
+    border-radius: 0 0 4px 4px;
+  }
+  .hw-avatars-empty {
+    text-align: center;
+    padding: 80px 24px;
+  }
+  .hw-avatars-empty__sigil {
+    color: #c0001a;
+    font-size: 1.4rem;
+    margin-bottom: 20px;
+    letter-spacing: 0.3em;
+  }
+  .hw-avatars-empty__title {
+    font-family: var(--font-display, serif);
+    font-size: clamp(1.4rem, 4vw, 2rem);
+    color: var(--text-primary, #e8e4dc);
+    font-weight: 300;
+    margin-bottom: 12px;
+  }
+  .hw-avatars-empty__sub {
+    color: rgba(232,228,220,0.45);
+    font-size: 0.9rem;
+    max-width: 420px;
+    margin: 0 auto;
+    line-height: 1.7;
+  }
+`;
+
 export const revalidate = 60;
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
@@ -110,21 +233,23 @@ export default async function MatchingAvatarsPage() {
 
       <section className="hw-match-section">
         {dbError ? (
-          <div className="hw-match-empty">
-            <h2 className="hw-match-empty__title">Something went wrong</h2>
-            <p className="hw-match-empty__sub">Couldn&apos;t load matching avatars right now. Try again shortly.</p>
+          <div className="hw-avatars-empty">
+            <div className="hw-avatars-empty__sigil">✦ ☽ ✦</div>
+            <h2 className="hw-avatars-empty__title">Something went wrong</h2>
+            <p className="hw-avatars-empty__sub">Couldn&apos;t load matching avatars right now. Try again shortly.</p>
           </div>
         ) : pairs.length === 0 ? (
-          <div className="hw-match-empty">
-            <h2 className="hw-match-empty__title">Coming soon</h2>
-            <p className="hw-match-empty__sub">New matching pairs drop occasionally. Check back soon.</p>
+          <div className="hw-avatars-empty">
+            <div className="hw-avatars-empty__sigil">✦ ☽ ✦</div>
+            <h2 className="hw-avatars-empty__title">Coming soon</h2>
+            <p className="hw-avatars-empty__sub">New matching pairs drop occasionally. Check back soon.</p>
           </div>
         ) : (
           <>
-            <p className="hw-match-count">
+            <p className="hw-avatars-count">
               — {pairs.length} matching {pairs.length === 1 ? "pair" : "pairs"} ready to use
             </p>
-            <div className="hw-match-grid">
+            <div className="hw-avatars-grid">
               {pairs.map((pair) => (
                 <MatchingAvatarCard
                   key={pair.groupId}
@@ -170,21 +295,7 @@ export default async function MatchingAvatarsPage() {
           color: #4a445a;
           margin-bottom: 20px;
         }
-        .hw-match-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-          gap: clamp(10px, 2vw, 18px);
-        }
-        @media (min-width: 640px) { .hw-match-grid { grid-template-columns: repeat(auto-fill, minmax(175px, 1fr)); } }
-        @media (min-width: 1024px) { .hw-match-grid { grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); } }
-        .hw-match-empty { text-align: center; padding: 80px 24px; }
-        .hw-match-empty__title {
-          font-family: var(--font-display, serif);
-          font-size: clamp(1.4rem, 4vw, 2rem);
-          font-weight: 300;
-          margin-bottom: 12px;
-        }
-        .hw-match-empty__sub { color: rgba(232,228,220,0.45); font-size: 0.9rem; max-width: 420px; margin: 0 auto; line-height: 1.7; }
+        ${AVATAR_CARD_STYLES}
       `}</style>
 
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd }} />
