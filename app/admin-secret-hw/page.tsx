@@ -23,7 +23,7 @@ const BADGE_TAGS = [
 ];
 const ADSENSE_CHECKLIST=[{done:true,item:"Original content — no copy-paste or AI spam"},{done:true,item:"Privacy Policy page live"},{done:true,item:"About page live"},{done:true,item:"Contact page live"},{done:false,item:"At least 15–20 blog posts published (800+ words each)"},{done:false,item:"Consistent posting — 2–3 posts per week minimum"},{done:false,item:"Site is at least 3–6 months old with traffic history"},{done:false,item:"No broken links, 404s, or console errors"},{done:false,item:"Mobile responsive on all pages"},{done:false,item:"Google Search Console verified + sitemap submitted"},{done:false,item:"No misleading navigation or hidden text"},{done:false,item:"Clear site purpose — wallpaper downloads, clearly stated"}];
 const ADULT_IMAGES_TO_MARK=[{title:"Seductive Reaper",device:"IPHONE"},{title:"Gothic Temptress",device:"ANDROID"},{title:"Dark Sensuality",device:"PC"},{title:"Occult Ritual",device:"IPHONE"},{title:"Blood Moon Ritual",device:"ANDROID"},{title:"Forbidden Darkness",device:"PC"}];
-const PAGE_SLUGS=[{slug:"home",label:"Home",url:"/"},{slug:"obsessions",label:"Obsessions",url:"/obsessions"},{slug:"shop",label:"Shop / Collections",url:"/shop"},{slug:"iphone",label:"iPhone Wallpapers",url:"/iphone"},{slug:"android",label:"Android Wallpapers",url:"/android"},{slug:"pc",label:"PC Wallpapers",url:"/pc"},{slug:"blog",label:"Blog Index",url:"/blog"},{slug:"faq",label:"FAQ",url:"/faq"},{slug:"about",label:"About",url:"/about"},{slug:"contact",label:"Contact",url:"/contact"},{slug:"privacy",label:"Privacy Policy",url:"/privacy"},{slug:"terms",label:"Terms of Service",url:"/terms"},{slug:"licensing",label:"Licensing",url:"/licensing"},{slug:"dmca",label:"DMCA",url:"/dmca"},{slug:"tools",label:"Tools",url:"/tools"},{slug:"search",label:"Search",url:"/search"}];
+const PAGE_SLUGS=[{slug:"home",label:"Home",url:"/"},{slug:"collections",label:"Collections",url:"/collections"},{slug:"iphone",label:"iPhone Wallpapers",url:"/iphone"},{slug:"android",label:"Android Wallpapers",url:"/android"},{slug:"pc",label:"PC Wallpapers",url:"/pc"},{slug:"blog",label:"Blog Index",url:"/blog"},{slug:"faq",label:"FAQ",url:"/faq"},{slug:"about",label:"About",url:"/about"},{slug:"contact",label:"Contact",url:"/contact"},{slug:"privacy",label:"Privacy Policy",url:"/privacy"},{slug:"terms",label:"Terms of Service",url:"/terms"},{slug:"licensing",label:"Licensing",url:"/licensing"},{slug:"dmca",label:"DMCA",url:"/dmca"},{slug:"tools",label:"Tools",url:"/tools"},{slug:"search",label:"Search",url:"/search"}];
 
 const CLAUDE_API_URL="https://api.anthropic.com/v1/messages";
 const CLAUDE_MODEL="claude-sonnet-4-6";
@@ -205,8 +205,8 @@ function PageContentTab({password}:{password:string}){
       })}
       <div style={{padding:"14px 16px",borderTop:`1px solid ${C.border}`}}>
         <p style={{...eyebrow,marginBottom:"8px"}}>Custom Slug</p>
-        <p style={{color:C.textMut,fontSize:"0.65rem",marginBottom:"8px",lineHeight:1.6}}>For collections:<br/><code style={{color:C.purple}}>shop/your-slug</code><br/>For events:<br/><code style={{color:C.purple}}>halloween</code></p>
-        <input value={customSlug} onChange={e=>setCustomSlug(e.target.value.toLowerCase().replace(/[^a-z0-9/-]/g,""))} onFocus={()=>setUseCustom(true)} placeholder="shop/skeleton-card" style={{...inp,fontSize:"0.75rem",marginBottom:"6px"}}/>
+        <p style={{color:C.textMut,fontSize:"0.65rem",marginBottom:"8px",lineHeight:1.6}}>For collections:<br/><code style={{color:C.purple}}>collections/your-slug</code><br/>For events:<br/><code style={{color:C.purple}}>halloween</code></p>
+        <input value={customSlug} onChange={e=>setCustomSlug(e.target.value.toLowerCase().replace(/[^a-z0-9/-]/g,""))} onFocus={()=>setUseCustom(true)} placeholder="collections/skeleton-card" style={{...inp,fontSize:"0.75rem",marginBottom:"6px"}}/>
         <Btn onClick={()=>{setUseCustom(true);setMsg(null);}} variant="ghost" style={{width:"100%",padding:"7px"}}>Load Custom</Btn>
       </div>
     </Card></div>
@@ -727,7 +727,7 @@ function BackdateTab({password}:{password:string}){
 
 function LivePreviewTab(){
   const[activeUrl,setActiveUrl]=useState("/blog");const[customUrl,setCustomUrl]=useState("");const iframeRef=useRef<HTMLIFrameElement>(null);
-  const QUICK_LINKS=[{label:"Home",url:"/"},{label:"Blog",url:"/blog"},{label:"iPhone",url:"/iphone"},{label:"Android",url:"/android"},{label:"PC",url:"/pc"},{label:"Shop",url:"/shop"},{label:"Collections",url:"/obsessions"},{label:"About",url:"/about"},{label:"FAQ",url:"/faq"},{label:"Contact",url:"/contact"},{label:"Tools",url:"/tools"}];
+  const QUICK_LINKS=[{label:"Home",url:"/"},{label:"Blog",url:"/blog"},{label:"iPhone",url:"/iphone"},{label:"Android",url:"/android"},{label:"PC",url:"/pc"},{label:"Collections",url:"/collections"},{label:"About",url:"/about"},{label:"FAQ",url:"/faq"},{label:"Contact",url:"/contact"},{label:"Tools",url:"/tools"}];
   function navigate(url:string){const full=url.startsWith("http")?url:`https://hauntedwallpapers.com${url}`;setActiveUrl(url);if(iframeRef.current)iframeRef.current.src=full;}
   return<div>
     <Card style={{padding:"14px 18px",marginBottom:"16px",borderColor:C.red}}><strong style={{color:C.gold}}>🌐 Live Site Preview</strong><span style={{color:C.textSec,marginLeft:"8px",fontSize:"0.82rem"}}>Browse your live site in-panel.</span></Card>
@@ -915,7 +915,7 @@ function CollectionsTab({password}:{password:string}){
         <Msg msg={msg}/>
         <Card style={{padding:"16px",borderColor:selected.thumbnail?C.gold:"rgba(201,168,76,0.3)",background:selected.thumbnail?"rgba(201,168,76,0.04)":C.surface}}>
           <p style={{...lbl,marginBottom:"10px",color:C.gold}}>🖼 Obsession Card Thumbnail</p>
-          <p style={{color:C.textMut,fontSize:"0.65rem",marginBottom:"14px",lineHeight:1.6}}>This image appears on the <strong style={{color:C.textSec}}>Homepage grid</strong> and <strong style={{color:C.textSec}}>/obsessions</strong> page as the card background. Recommended: portrait 3:4 ratio, min 600px wide. JPG/PNG/WEBP.</p>
+          <p style={{color:C.textMut,fontSize:"0.65rem",marginBottom:"14px",lineHeight:1.6}}>This image appears on the <strong style={{color:C.textSec}}>Homepage grid</strong> and <strong style={{color:C.textSec}}>/collections</strong> page as the card background. Recommended: portrait 3:4 ratio, min 600px wide. JPG/PNG/WEBP.</p>
           {selected.thumbnail&&thumbUrl(selected.thumbnail)&&(
             <div style={{display:"flex",gap:"16px",alignItems:"flex-start",marginBottom:"16px",padding:"12px",background:"rgba(0,0,0,0.3)",border:`1px solid ${C.border}`}}>
               <img src={thumbUrl(selected.thumbnail)} alt="Current thumbnail" style={{width:"60px",height:"80px",objectFit:"cover",border:`1px solid ${C.gold}`,flexShrink:0}} onError={e=>{(e.target as HTMLImageElement).style.opacity="0.2";}}/>
@@ -993,7 +993,7 @@ function CollectionsTab({password}:{password:string}){
         </Card>
         <Card style={{padding:"14px 16px",background:"rgba(124,58,237,0.08)",borderColor:"rgba(124,58,237,0.3)"}}>
           <p style={{color:C.purple,fontSize:"0.75rem",marginBottom:"4px"}}>✦ How this works</p>
-          <p style={{color:C.textSec,fontSize:"0.72rem",lineHeight:1.7}}>The <strong style={{color:C.gold}}>thumbnail</strong> shows as the card background on the homepage obsessions grid and /obsessions page. The <strong style={{color:C.gold}}>description</strong> renders at <code style={{color:C.gold}}>/shop/{selected.slug}</code> as the editorial intro. Meta description goes in &lt;head&gt; for Google only.</p>
+          <p style={{color:C.textSec,fontSize:"0.72rem",lineHeight:1.7}}>The <strong style={{color:C.gold}}>thumbnail</strong> shows as the card background on the homepage and /collections page. The <strong style={{color:C.gold}}>description</strong> renders at <code style={{color:C.gold}}>/collections/{selected.slug}</code> as the editorial intro. Meta description goes in &lt;head&gt; for Google only.</p>
         </Card>
       </div>}
   </div>;

@@ -92,7 +92,7 @@ export default function HalloweenCountdown() {
   return (
     <div className="halloween-bar" aria-label="Halloween countdown">
       {halloween ? (
-        <a href="/obsessions" className="hc-active">
+        <a href="/collections" className="hc-active">
           🎃 It&apos;s Halloween! Browse the Collection →
         </a>
       ) : (

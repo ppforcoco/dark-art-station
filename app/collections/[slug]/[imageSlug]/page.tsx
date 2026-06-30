@@ -31,7 +31,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const [image, collection] = await Promise.all([
     db.image.findFirst({
       where: { slug: imageSlug, collection: { slug } },
-      select: { title: true, description: true, altText: true, r2Key: true, tags: true, isAdult: true },
+      select: { title: true, description: true, metaDescription: true, altText: true, r2Key: true, tags: true, isAdult: true },
     }),
     db.collection.findUnique({
       where: { slug },
@@ -43,8 +43,19 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   const ogImage = getPublicUrl(image.r2Key);
   const ogAlt = image.altText ?? image.title;
+
+  // IMPORTANT: meta/OG/twitter descriptions must be plain text, never raw HTML.
+  // Prefer the dedicated metaDescription field; otherwise strip tags from the
+  // rich-HTML `description` field so we never leak markup into <meta> tags.
+  const plainDesc = (image.metaDescription ?? image.description ?? "")
+    .replace(/<[^>]*>/g, " ")
+    .replace(/&nbsp;/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, 200);
+
   const metaDesc =
-    image.description ??
+    plainDesc ||
     `${image.title} — free dark wallpaper for iPhone, Android and PC. Download instantly, no account required.`;
 
   return {
@@ -57,7 +68,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     openGraph: {
       title: `${image.title} | Haunted Wallpapers`,
       description: metaDesc,
-      url: `${siteUrl}/shop/${slug}/${imageSlug}`,
+      url: `${siteUrl}/collections/${slug}/${imageSlug}`,
       siteName: "Haunted Wallpapers",
       images: [{ url: ogImage, width: 1080, height: 1920, alt: ogAlt }],
       type: "website",
@@ -68,7 +79,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       description: metaDesc,
       images: [ogImage],
     },
-    alternates: { canonical: `${siteUrl}/shop/${slug}/${imageSlug}` },
+    alternates: { canonical: `${siteUrl}/collections/${slug}/${imageSlug}` },
     ...(image.isAdult ? { robots: { index: false, follow: false, nosnippet: true } } : {}),
   };
 }
@@ -151,7 +162,7 @@ export default async function CollectionImagePage({ params }: PageProps) {
         <div style={{ maxWidth: "1280px", margin: "0 auto", padding: "10px 24px", borderBottom: "1px solid rgba(255,255,255,0.06)", display: "flex", gap: "6px", alignItems: "center" }}>
           <span style={{ fontFamily: "var(--font-space, monospace)", fontSize: "0.45rem", letterSpacing: "0.2em", textTransform: "uppercase", color: "rgba(255,255,255,0.2)", whiteSpace: "nowrap", marginRight: "4px" }}>More ▸</span>
           {tagSortedStrip.map((img) => (
-            <Link key={img.slug} href={`/shop/${slug}/${img.slug}`} className="more-strip-link">
+            <Link key={img.slug} href={`/collections/${slug}/${img.slug}`} className="more-strip-link">
               <div className="more-strip-thumb" style={{ position: "relative", width: "44px", height: "78px", overflow: "hidden", borderRadius: "4px", border: "1px solid rgba(255,255,255,0.08)" }}>
                 <Image src={getPublicUrl(img.r2Key)} alt={img.title} fill className="object-cover" unoptimized sizes="44px" />
               </div>
@@ -161,15 +172,15 @@ export default async function CollectionImagePage({ params }: PageProps) {
       )}
 
       <KeyboardNav
-        prevHref={prevImage ? `/shop/${slug}/${prevImage.slug}` : null}
-        nextHref={nextImage ? `/shop/${slug}/${nextImage.slug}` : null}
+        prevHref={prevImage ? `/collections/${slug}/${prevImage.slug}` : null}
+        nextHref={nextImage ? `/collections/${slug}/${nextImage.slug}` : null}
       />
 
       <Breadcrumbs
         items={[
           { label: "Home", href: "/" },
-          { label: "Collections", href: "/obsessions" },
-          { label: collection.title, href: `/shop/${slug}` },
+          { label: "Collections", href: "/collections" },
+          { label: collection.title, href: `/collections/${slug}` },
           { label: image.title },
         ]}
       />
@@ -197,7 +208,7 @@ export default async function CollectionImagePage({ params }: PageProps) {
               />
               {prevImage && (
                 <Link
-                  href={`/shop/${slug}/${prevImage.slug}`}
+                  href={`/collections/${slug}/${prevImage.slug}`}
                   prefetch={true}
                   className="hw-img-arrow hw-img-arrow--prev"
                   aria-label={`Previous: ${prevImage.title}`}
@@ -210,7 +221,7 @@ export default async function CollectionImagePage({ params }: PageProps) {
               )}
               {nextImage && (
                 <Link
-                  href={`/shop/${slug}/${nextImage.slug}`}
+                  href={`/collections/${slug}/${nextImage.slug}`}
                   prefetch={true}
                   className="hw-img-arrow hw-img-arrow--next"
                   aria-label={`Next: ${nextImage.title}`}
@@ -262,7 +273,7 @@ export default async function CollectionImagePage({ params }: PageProps) {
               )}
             </div>
 
-            <SocialShare title={image.title} imageUrl={thumbUrl} pageUrl={`${siteUrl}/shop/${slug}/${imageSlug}`} />
+            <SocialShare title={image.title} imageUrl={thumbUrl} pageUrl={`${siteUrl}/collections/${slug}/${imageSlug}`} />
 
             {image.description && (
               <div
@@ -285,7 +296,7 @@ export default async function CollectionImagePage({ params }: PageProps) {
               <FavoriteButton
                 size="md"
                 className="detail-fav-inline"
-                item={{ slug: image.slug, title: image.title, thumb: thumbUrl, href: `/shop/${slug}/${imageSlug}`, device: "collection" }}
+                item={{ slug: image.slug, title: image.title, thumb: thumbUrl, href: `/collections/${slug}/${imageSlug}`, device: "collection" }}
               />
               
             </div>
@@ -301,7 +312,7 @@ export default async function CollectionImagePage({ params }: PageProps) {
         </div>
       </section>
 
-      <PageTracker item={{ slug: image.slug, title: image.title, thumb: thumbUrl, href: `/shop/${slug}/${imageSlug}` }} />
+      <PageTracker item={{ slug: image.slug, title: image.title, thumb: thumbUrl, href: `/collections/${slug}/${imageSlug}` }} />
       <RecentlyViewed currentSlug={image.slug} />
       <RelatedWallpapers images={related} />
 
@@ -311,10 +322,16 @@ export default async function CollectionImagePage({ params }: PageProps) {
           __html: JSON.stringify({
             "@context": "https://schema.org",
             "@type": "Product",
-            "@id": `${siteUrl}/shop/${slug}/${imageSlug}#product`,
+            "@id": `${siteUrl}/collections/${slug}/${imageSlug}#product`,
             name: image.title,
-            description: image.description ?? `${image.title} — free dark wallpaper.`,
-            url: `${siteUrl}/shop/${slug}/${imageSlug}`,
+            description:
+              (image.description ?? "")
+                .replace(/<[^>]*>/g, " ")
+                .replace(/&nbsp;/g, " ")
+                .replace(/\s+/g, " ")
+                .trim()
+                .slice(0, 200) || `${image.title} — free dark wallpaper.`,
+            url: `${siteUrl}/collections/${slug}/${imageSlug}`,
             brand: { "@type": "Brand", name: "Haunted Wallpapers", url: siteUrl },
             category: "Digital Products > Wallpapers",
             image: [{ "@type": "ImageObject", url: thumbUrl, contentUrl: thumbUrl, caption: image.altText ?? image.title }],
@@ -325,7 +342,7 @@ export default async function CollectionImagePage({ params }: PageProps) {
             ],
             offers: {
               "@type": "Offer",
-              url: `${siteUrl}/shop/${slug}/${imageSlug}`,
+              url: `${siteUrl}/collections/${slug}/${imageSlug}`,
               price: "0.00", priceCurrency: "USD",
               availability: "https://schema.org/InStock",
               seller: { "@type": "Organization", name: "Haunted Wallpapers", url: siteUrl },

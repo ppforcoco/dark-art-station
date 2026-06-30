@@ -1,5 +1,5 @@
 // app/obsessions/[slug]/page.tsx
-// Redirects /obsessions/[slug] → /shop/[slug]
+// Redirects /obsessions/[slug] → /collections/[slug]
 
 import { redirect } from "next/navigation";
 
@@ -11,5 +11,5 @@ interface PageProps {
 
 export default async function ObsessionSlugRedirect({ params }: PageProps) {
   const { slug } = await params;
-  redirect(`/shop/${slug}`);
+  redirect(`/collections/${slug}`);
 }

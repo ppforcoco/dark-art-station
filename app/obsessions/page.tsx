@@ -21,10 +21,10 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title,
     description: desc,
-    alternates: { canonical: `${SITE_URL}/obsessions` },
+    alternates: { canonical: `${SITE_URL}/collections` },
     openGraph: {
       title, description: desc,
-      url: `${SITE_URL}/obsessions`, siteName: "Haunted Wallpapers", type: "website",
+      url: `${SITE_URL}/collections`, siteName: "Haunted Wallpapers", type: "website",
       images: [{ url: `${SITE_URL}/og-image.jpg`, width: 1200, height: 630, alt: "Haunted Wallpapers — Obsessions" }],
     },
     twitter: { card: "summary_large_image", title, description: desc, images: [`${SITE_URL}/og-image.jpg`] },
@@ -175,7 +175,7 @@ export default async function ObsessionsPage() {
                     );
 
                     return (
-                      <Link prefetch={false} key={col.id} href={`/shop/${col.slug}`} style={{ textDecoration: "none", display: "block" }}>{card}</Link>
+                      <Link prefetch={false} key={col.id} href={`/collections/${col.slug}`} style={{ textDecoration: "none", display: "block" }}>{card}</Link>
                     );
                   })}
                 </div>
@@ -200,7 +200,7 @@ export default async function ObsessionsPage() {
             "@context": "https://schema.org",
             "@type": "CollectionPage",
             name: "Obsessions | Haunted Wallpapers",
-            url: `${SITE_URL}/obsessions`,
+            url: `${SITE_URL}/collections`,
             description: "Dark fantasy wallpaper obsessions — horror, gothic, dark humor and more.",
             numberOfItems: collections.length,
           }),

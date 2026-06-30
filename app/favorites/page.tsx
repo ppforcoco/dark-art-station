@@ -66,7 +66,7 @@ export default function FavoritesPage() {
           <div className="fav-empty-links">
             <Link href="/iphone" className="fav-empty-btn">Browse iPhone</Link>
             <Link href="/android" className="fav-empty-btn">Browse Android</Link>
-            <Link href="/shop" className="fav-empty-btn">Browse Collections</Link>
+            <Link href="/collections" className="fav-empty-btn">Browse Collections</Link>
           </div>
         </div>
 

@@ -134,7 +134,7 @@ export default function ProductCard({
                 ← Go Back
               </button>
               <a
-                href={`/shop/${slug}`}
+                href={`/collections/${slug}`}
                 style={{
                   flex: 1, padding: "12px",
                   background: "#c0001a",
@@ -235,7 +235,7 @@ export default function ProductCard({
         ) : (
           /* ── Normal card (or adult after reveal) ── */
           <Link prefetch={false}
-            href={isAdult ? "#" : `/shop/${slug}`}
+            href={isAdult ? "#" : `/collections/${slug}`}
             onClick={isAdult ? (e) => { e.preventDefault(); setShowAgeGate(true); } : undefined}
             className={`product-card-image relative overflow-hidden block ${!thumbnail ? bgClass : ""}`}
             aria-label={`View ${name} collection`}
@@ -272,7 +272,7 @@ export default function ProductCard({
                   slug:   slug,
                   title:  name,
                   thumb:  thumbnail,
-                  href:   `/shop/${slug}`,
+                  href:   `/collections/${slug}`,
                   device: "collection",
                 }}
               />
@@ -300,7 +300,7 @@ export default function ProductCard({
                 : price}
             </span>
             <Link prefetch={false}
-              href={isAdult ? "#" : `/shop/${slug}`}
+              href={isAdult ? "#" : `/collections/${slug}`}
               onClick={isAdult ? (e) => { e.preventDefault(); setShowAgeGate(true); } : undefined}
               className="product-card-cta"
               aria-label={isFree ? `Download ${name} free` : `View ${name} collection`}

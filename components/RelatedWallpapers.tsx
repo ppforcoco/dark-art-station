@@ -2,7 +2,7 @@
 // Displays a "You May Also Like" grid of related images.
 // Server Component — no 'use client' needed.
 // Data is fetched upstream (page.tsx) and passed as a prop.
-// Reusable across shop/[slug]/[imageSlug], iphone/[slug], android/[slug], pc/[slug].
+// Reusable across collections/[slug]/[imageSlug], iphone/[slug], android/[slug], pc/[slug].
 
 import Image from "next/image";
 import Link from "next/link";
@@ -32,10 +32,10 @@ export default function RelatedWallpapers({
       <div className={landscape ? "related-grid related-grid--landscape" : "related-grid"}>
         {images.map((img) => {
           const href = img.collectionSlug
-            ? `/shop/${img.collectionSlug}/${img.slug}`
+            ? `/collections/${img.collectionSlug}/${img.slug}`
             : img.deviceType
               ? `/${img.deviceType.toLowerCase()}/${img.slug}`
-              : `/shop`;
+              : `/collections`;
 
           return (
             <Link prefetch={false} key={img.id} href={href} className={landscape ? "related-card related-card--landscape" : "related-card"}>

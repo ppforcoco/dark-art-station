@@ -69,8 +69,8 @@ export default async function Top100HorrorPage() {
             const href = img.deviceType
               ? `/${img.deviceType.toLowerCase()}/${img.slug}`
               : img.collection?.slug
-                ? `/shop/${img.collection.slug}/${img.slug}`
-                : "/obsessions";
+                ? `/collections/${img.collection.slug}/${img.slug}`
+                : "/collections";
             return (
               <Link key={img.id} href={href} style={{ display: "block", textDecoration: "none" }}>
                 <div style={{ aspectRatio: img.deviceType === "PC" ? "16/9" : "9/16", overflow: "hidden", background: "#0a0812" }}>

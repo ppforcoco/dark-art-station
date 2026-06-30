@@ -20,7 +20,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${siteUrl}/iphone`,        lastModified: new Date(), changeFrequency: "daily"   as const, priority: 0.85 },
     { url: `${siteUrl}/android`,       lastModified: new Date(), changeFrequency: "daily"   as const, priority: 0.85 },
     { url: `${siteUrl}/pc`,            lastModified: new Date(), changeFrequency: "daily"   as const, priority: 0.85 },
-    { url: `${siteUrl}/obsessions`,    lastModified: new Date(), changeFrequency: "weekly"  as const, priority: 0.8  },
+    { url: `${siteUrl}/collections`,   lastModified: new Date(), changeFrequency: "weekly"  as const, priority: 0.8  },
     { url: `${siteUrl}/mood`,          lastModified: new Date(), changeFrequency: "weekly"  as const, priority: 0.8  },
     { url: `${siteUrl}/search`,        lastModified: new Date(), changeFrequency: "weekly"  as const, priority: 0.6  },
     { url: `${siteUrl}/blog`,          lastModified: new Date(), changeFrequency: "weekly"  as const, priority: 0.75 },
@@ -72,7 +72,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }));
 
     const collectionRoutes: MetadataRoute.Sitemap = collections.map((c) => ({
-      url: `${siteUrl}/shop/${c.slug}`,
+      url: `${siteUrl}/collections/${c.slug}`,
       lastModified: c.updatedAt,
       changeFrequency: "monthly" as const,
       priority: 0.8,
@@ -82,7 +82,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const imageRoutes: MetadataRoute.Sitemap = collectionImages
       .filter((img) => img.collection?.slug)
       .map((img) => ({
-        url: `${siteUrl}/shop/${img.collection?.slug}/${img.slug}`,
+        url: `${siteUrl}/collections/${img.collection?.slug}/${img.slug}`,
         lastModified: img.updatedAt,
         changeFrequency: "monthly" as const,
         priority: 0.6,

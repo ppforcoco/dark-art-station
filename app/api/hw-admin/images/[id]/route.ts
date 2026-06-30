@@ -88,15 +88,15 @@ export async function PATCH(
     revalidatePath(`/android/${updated.slug}`);
     revalidatePath("/");
 
-    // Revalidate shop collection image page
+    // Revalidate collection image page
     if (updated.collectionId) {
       const collection = await db.collection.findUnique({
         where: { id: updated.collectionId },
         select: { slug: true },
       });
       if (collection) {
-        revalidatePath(`/shop/${collection.slug}/${updated.slug}`);
-        revalidatePath(`/shop/${collection.slug}`);
+        revalidatePath(`/collections/${collection.slug}/${updated.slug}`);
+        revalidatePath(`/collections/${collection.slug}`);
       }
     }
 

@@ -46,7 +46,7 @@ function KeepExploringBar({ visible }: { visible: boolean }) {
           <Link prefetch={false} href="/iphone"  className="keep-exploring-link">iPhone</Link>
           <Link prefetch={false} href="/android" className="keep-exploring-link">Android</Link>
           <Link prefetch={false} href="/pc"      className="keep-exploring-link">PC</Link>
-          <Link prefetch={false} href="/shop"    className="keep-exploring-link keep-exploring-link--accent">Browse All →</Link>
+          <Link prefetch={false} href="/collections" className="keep-exploring-link keep-exploring-link--accent">Browse All →</Link>
         </div>
         <button
           type="button"

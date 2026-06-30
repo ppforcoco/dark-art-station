@@ -44,12 +44,12 @@ function ResultCard({ item, index, total }: { item: SearchResultItem; index: num
 
   const href =
     item.kind === "collection"
-      ? `/shop/${item.slug}`
+      ? `/collections/${item.slug}`
       : item.collectionSlug
-        ? `/shop/${item.collectionSlug}/${item.slug}`
+        ? `/collections/${item.collectionSlug}/${item.slug}`
         : devicePath
           ? `/${devicePath}/${item.slug}`
-          : `/shop/${item.slug}`;
+          : `/collections/${item.slug}`;
 
   const deviceLabel =
     item.kind === "standalone" && item.deviceType

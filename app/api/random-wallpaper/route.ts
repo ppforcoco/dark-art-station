@@ -63,11 +63,11 @@ export async function GET() {
       );
     }
 
-    let href = "/obsessions";
+    let href = "/collections";
     if (image.deviceType === "IPHONE")       href = `/iphone/${image.slug}`;
     else if (image.deviceType === "ANDROID") href = `/android/${image.slug}`;
     else if (image.deviceType === "PC")      href = `/pc/${image.slug}`;
-    else if (image.collection?.slug)         href = `/shop/${image.collection.slug}/${image.slug}`;
+    else if (image.collection?.slug)         href = `/collections/${image.collection.slug}/${image.slug}`;
 
     return NextResponse.json(
       { ...image, href },

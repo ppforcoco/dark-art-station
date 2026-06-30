@@ -45,7 +45,7 @@ export default async function NotFound() {
     if (img.deviceType === "IPHONE")  return `/iphone/${img.slug}`;
     if (img.deviceType === "ANDROID") return `/android/${img.slug}`;
     if (img.deviceType === "PC")      return `/pc/${img.slug}`;
-    if (img.collection?.slug)         return `/shop/${img.collection.slug}/${img.slug}`;
+    if (img.collection?.slug)         return `/collections/${img.collection.slug}/${img.slug}`;
     return "/";
   }
 
@@ -61,7 +61,7 @@ export default async function NotFound() {
         </p>
         <div className="nf-actions">
           <Link prefetch={false} href="/"     className="nf-btn-primary">← Back to Home</Link>
-          <Link prefetch={false} href="/shop" className="nf-btn-secondary">Browse All Collections</Link>
+          <Link prefetch={false} href="/collections" className="nf-btn-secondary">Browse All Collections</Link>
         </div>
       </div>
 
