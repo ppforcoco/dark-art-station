@@ -3,6 +3,7 @@ import { db } from "@/lib/db";
 import { getSignedDownloadUrl } from "@/lib/r2";
 import { createHash } from "crypto";
 import { shouldCountRequest } from "@/lib/analytics-filter";
+import { isImagePremiumLocked } from "@/lib/premium-lock";
 
 const HOURLY_LIMIT        = 15;
 const HOURLY_WINDOW_MS    = 60 * 60 * 1000;
@@ -109,11 +110,18 @@ export async function GET(
 
     const image = await db.image.findUnique({
       where: { id },
-      select: { id: true, title: true, highResKey: true },
+      select: { id: true, title: true, highResKey: true, tags: true },
     });
 
     if (!image) {
       return NextResponse.json({ error: "Image not found" }, { status: 404 });
+    }
+
+    if (isImagePremiumLocked(image.tags)) {
+      return NextResponse.json(
+        { error: "This wallpaper is currently sealed in the vault." },
+        { status: 403 }
+      );
     }
 
     if (!image.highResKey) {
