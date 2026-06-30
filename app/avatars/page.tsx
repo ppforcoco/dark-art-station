@@ -77,7 +77,7 @@ export default async function AvatarsHubPage() {
     });
 
     const discord = images.filter((img) => img.tags.some((t) => t.toLowerCase().includes("discord")));
-    const gaming  = images.filter((img) => img.tags.some((t) => t.toLowerCase().includes("gaming")));
+    const gaming  = images.filter((img) => img.tags.some((t) => t.toLowerCase() === "gaming-pfp"));
     const pairs   = images.filter((img) => img.matchingGroupId);
 
     counts = {

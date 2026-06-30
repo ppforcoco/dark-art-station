@@ -18,7 +18,8 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.
 
 interface TagConfig {
   slug: string;
-  matchKeyword: string; // substring matched against each image's tags (lowercased)
+  matchKeyword: string; // substring (or exact, if exactMatch) matched against each image's tags (lowercased)
+  exactMatch?: boolean; // true = tag must equal matchKeyword exactly, not just contain it
   pillLabel: string;
   tagline: string;
   description: string;
@@ -44,7 +45,8 @@ const TAG_CONFIGS: Record<string, TagConfig> = {
   },
   "gaming-pfp": {
     slug: "gaming-pfp",
-    matchKeyword: "gaming",
+    matchKeyword: "gaming-pfp",
+    exactMatch: true,
     pillLabel: "Gaming PFP",
     tagline: "Spawn in with an avatar worth remembering.",
     description:
@@ -229,13 +231,17 @@ export default async function AvatarTagPage({ params }: PageProps) {
 
   try {
     const rawImages = await db.image.findMany({
-      where: { isAdult: false },
+      where: { isAvatar: true, isAdult: false },
       orderBy: { createdAt: "desc" },
       select: { id: true, title: true, description: true, r2Key: true, tags: true },
     });
 
     avatars = rawImages
-      .filter((img) => img.tags.some((t) => t.toLowerCase().includes(config.matchKeyword)))
+      .filter((img) =>
+        config.exactMatch
+          ? img.tags.some((t) => t.toLowerCase() === config.matchKeyword)
+          : img.tags.some((t) => t.toLowerCase().includes(config.matchKeyword))
+      )
       .map((img) => ({
         id: img.id,
         title: img.title,
