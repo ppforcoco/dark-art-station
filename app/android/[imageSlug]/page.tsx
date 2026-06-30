@@ -131,10 +131,10 @@ function PremiumVaultGate({ devicePath }: { devicePath: string }) {
         }}>†</span>
       ))}
       <div style={{ fontSize: "56px", marginBottom: "24px" }}>🔒</div>
-      <span style={{ fontFamily: "var(--font-space, monospace)", fontSize: "0.6rem", letterSpacing: "0.28em", textTransform: "uppercase", color: "rgba(201,168,76,0.55)", marginBottom: "12px", display: "block" }}>Back In The Vault</span>
+      <span style={{ fontFamily: "var(--font-space, monospace)", fontSize: "0.6rem", letterSpacing: "0.28em", textTransform: "uppercase", color: "rgba(201,168,76,0.55)", marginBottom: "12px", display: "block" }}>Back In Town</span>
       <h1 style={{ fontFamily: "var(--font-cinzel, serif)", fontSize: "clamp(1.8rem, 4vw, 2.8rem)", fontWeight: 700, color: "#f0e8d8", margin: "0 0 16px", lineHeight: 1.1, maxWidth: "560px" }}>This Wallpaper Is Sealed</h1>
       <p style={{ fontFamily: "var(--font-space, monospace)", fontSize: "0.82rem", color: "rgba(200,180,140,0.55)", maxWidth: "400px", lineHeight: 1.75, margin: "0 0 32px" }}>
-        Premium wallpapers are available for 24 hours, then sealed away for 24 hours. Check back when the vault reopens.
+        Premium wallpapers are available for 24 hours, then sealed away for 24 hours. Check back when it's back in town.
       </p>
       <div style={{ marginBottom: "36px" }}>
         <PremiumCountdown isLocked={true} />

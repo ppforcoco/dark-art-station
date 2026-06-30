@@ -120,7 +120,7 @@ export default function PremiumLockedGate({ tags, devicePath = "iphone", childre
         color: "rgba(201,168,76,0.6)",
         marginBottom: "12px",
         display: "block",
-      }}>Back In The Vault</span>
+      }}>Back In Town</span>
 
       {/* Main heading */}
       <h1 style={{
@@ -143,7 +143,7 @@ export default function PremiumLockedGate({ tags, devicePath = "iphone", childre
         lineHeight: 1.7,
         margin: "0 0 32px",
       }}>
-        Premium wallpapers surface for 24 hours, then return to the vault.
+        Premium wallpapers surface for 24 hours, then return to town.
         This one is locked away — come back when it resurfaces.
       </p>
 

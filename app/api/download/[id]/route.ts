@@ -119,7 +119,7 @@ export async function GET(
 
     if (isImagePremiumLocked(image.tags)) {
       return NextResponse.json(
-        { error: "This wallpaper is currently sealed in the vault." },
+        { error: "This wallpaper is currently sealed. Back in town soon." },
         { status: 403 }
       );
     }
