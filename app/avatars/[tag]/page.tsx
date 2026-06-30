@@ -100,7 +100,7 @@ interface AvatarItem {
 }
 
 // Shared shape for the original /avatars card markup/CSS, reused identically
-// on /avatars/matching. Cloned exactly from the original card markup/CSS.
+// on /avatars/matching-pfp. Cloned exactly from the original card markup/CSS.
 const AVATAR_CARD_STYLES = `
   .hw-avatars-grid {
     display: grid;
