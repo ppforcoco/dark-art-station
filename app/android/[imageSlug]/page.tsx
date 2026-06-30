@@ -18,6 +18,8 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 import PremiumCountdown from "@/components/PremiumCountdown";
 import WallpaperReactions from "@/components/WallpaperReactions";
 import PremiumLockedGateClient from "@/components/PremiumLockedGate";
+import VaultSealedView from "@/components/VaultSealedView";
+import { isImagePremiumLocked } from "@/lib/premium-lock";
 import BirthdayComments from "@/components/BirthdayComments";
 import SummonRandomTag from "@/components/SummonRandomTag";
 
@@ -153,8 +155,10 @@ export default async function AndroidImagePage({ params }: PageProps) {
 
   if (!image || image.deviceType !== "ANDROID") notFound();
 
-  const isPremium = image.tags.includes("badge-premium");
-  void isPremium; // lock is handled client-side by PremiumLockedGateClient
+  // ── Server-side enforcement — see app/iphone/[imageSlug]/page.tsx for why.
+  if (isImagePremiumLocked(image.tags)) {
+    return <VaultSealedView devicePath="android" />;
+  }
 
   const thumbUrl = getPublicUrl(image.r2Key);
   const displayDescription = image.description ?? buildFallbackDescription(image.title, image.tags);

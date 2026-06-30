@@ -102,6 +102,12 @@ const EPOCH_MS  = Date.UTC(2025, 0, 1, 0, 0, 0); // Jan 1 2025 00:00 UTC
 const CYCLE_MS  = 48 * 60 * 60 * 1000;            // 48 h full cycle
 const UNLOCK_MS = 24 * 60 * 60 * 1000;            // first 24 h = unlocked
 
+/** Derive lock state purely from the current time (client side) */
+function getClientLockState(): boolean {
+  const pos = (Date.now() - EPOCH_MS) % CYCLE_MS;
+  return pos >= UNLOCK_MS;
+}
+
 function getMsRemaining(isLocked: boolean): number {
   const pos = (Date.now() - EPOCH_MS) % CYCLE_MS;
   if (!isLocked) return Math.max(0, UNLOCK_MS - pos);
@@ -200,6 +206,21 @@ export default function IphoneImageGrid({
   const [isMobile, setIsMobile] = useState(false);
   const [visibleCount, setVisibleCount] = useState(initialCount);
 
+  // ── Client-side self-correction for the lock state ──────────────────────
+  // `isLockedGlobal` comes from the server and is only as fresh as the last
+  // ISR revalidation (up to an hour). Re-derive it from the real clock on
+  // the client too — same constants as MiniCountdown/PremiumCountdown —
+  // so the vault flips at the exact second the cycle changes, the same way
+  // the homepage already does, instead of sitting stale for up to an hour.
+  const [clientLocked, setClientLocked] = useState(isLockedGlobal);
+  useEffect(() => {
+    const update = () => setClientLocked(getClientLockState());
+    update();
+    const id = setInterval(update, 1000);
+    return () => clearInterval(id);
+  }, []);
+  const effectiveLockedGlobal = clientLocked;
+
   // On mobile, cap priority images to 2 max to avoid preload warnings and
   // too many eager network requests on slow connections.
   const effectivePriorityCount = isMobile ? Math.min(priorityCount, 2) : priorityCount;
@@ -230,22 +251,32 @@ export default function IphoneImageGrid({
       {visibleImages.map((img, idx) => {
         const isPremium = img.tags.includes("badge-premium");
         const isNew     = img.tags.includes("badge-new");
-        const showVault = isPremium && isLockedGlobal;
+        const showVault = isPremium && effectiveLockedGlobal;
+
+        const cardStyle: CSSProperties = {
+          position: "relative",
+          display: "block",
+          overflow: "hidden",
+          borderRadius: "28px",
+          backgroundColor: "#0a0a0a",
+          border: "1.5px solid rgba(224,224,224,0.10)",
+          aspectRatio: "9/16",
+          boxShadow: "0 20px 60px rgba(0,0,0,0.90), 0 0 28px rgba(224,224,224,0.07)",
+          cursor: showVault ? "default" : "pointer",
+        };
+
+        // Locked premium cards render as a plain, non-navigable <div> —
+        // they cannot be clicked/tapped through to the real image page.
+        const CardTag: any = showVault ? "div" : Link;
+        const cardExtraProps = showVault
+          ? { "aria-disabled": true, tabIndex: -1 }
+          : { href: `${hrefPrefix}/${img.slug}`, prefetch: false };
 
         return (
-            <Link prefetch={false}
+            <CardTag
               key={img.id}
-              href={`${hrefPrefix}/${img.slug}`}
-              style={{
-                position: "relative",
-                display: "block",
-                overflow: "hidden",
-                borderRadius: "28px",
-                backgroundColor: "#0a0a0a",
-                border: "1.5px solid rgba(224,224,224,0.10)",
-                aspectRatio: "9/16",
-                boxShadow: "0 20px 60px rgba(0,0,0,0.90), 0 0 28px rgba(224,224,224,0.07)",
-              }}
+              {...cardExtraProps}
+              style={cardStyle}
             >
               {/* Dynamic Island notch — first 12 cards only */}
               {(
@@ -416,7 +447,7 @@ export default function IphoneImageGrid({
                 </span>
               )}
 
-            </Link>
+            </CardTag>
         );
       })}
 

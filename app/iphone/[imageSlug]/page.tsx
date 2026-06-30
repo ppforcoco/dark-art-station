@@ -15,6 +15,8 @@ import FavoriteButton from "@/components/FavoriteButton";
 import PreviewButton from "@/components/PreviewButton";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import PremiumLockedGateClient from "@/components/PremiumLockedGate";
+import VaultSealedView from "@/components/VaultSealedView";
+import { isImagePremiumLocked } from "@/lib/premium-lock";
 import BirthdayComments from "@/components/BirthdayComments";
 import SummonRandomTag from "@/components/SummonRandomTag";
 import WallpaperReactions from "@/components/WallpaperReactions";
@@ -118,6 +120,16 @@ export default async function IphoneImagePage({ params }: PageProps) {
   const image = await getCachedImage(imageSlug);
 
   if (!image || image.deviceType !== "IPHONE") notFound();
+
+  // ── Server-side enforcement ─────────────────────────────────────────────
+  // Check the real lock state BEFORE building thumbUrl or any markup that
+  // references the actual file. This stops the locked image's URL from ever
+  // being present in the page HTML — previously the image was always
+  // server-rendered and only hidden client-side after hydration, which meant
+  // view-source (or a direct request) could still reveal a "sealed" wallpaper.
+  if (isImagePremiumLocked(image.tags)) {
+    return <VaultSealedView devicePath="iphone" />;
+  }
 
   const thumbUrl = getPublicUrl(image.r2Key);
   const displayDescription = image.description ?? buildFallbackDescription(image.title, image.tags);

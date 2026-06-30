@@ -9,6 +9,7 @@ import Pagination from "@/components/Pagination";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import IphoneImageGrid from "@/components/IphoneImageGrid";
 import AdminHtmlBlock from "@/components/AdminHtmlBlock";
+import { isGloballyPremiumLocked } from "@/lib/premium-lock";
 
 export const revalidate = 3600;
 
@@ -59,6 +60,7 @@ export default async function AndroidPage({ searchParams }: PageProps) {
   const { tag, page: rawPage } = await searchParams;
   const page = Math.max(1, parseInt(rawPage ?? "1", 10) || 1);
   const skip = (page - 1) * PAGE_SIZE;
+  const locked = isGloballyPremiumLocked();
 
   const where = {
     collectionId: null,
@@ -228,7 +230,7 @@ export default async function AndroidPage({ searchParams }: PageProps) {
             priorityCount={2}
             aspectRatio="9/16"
             sizes="(max-width: 640px) 33vw, 160px"
-            isLockedGlobal={false}
+            isLockedGlobal={locked}
           />
         </section>
       )}
@@ -264,7 +266,7 @@ export default async function AndroidPage({ searchParams }: PageProps) {
               aspectRatio="9/16"
               sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 20vw"
               insertAfter={9}
-              isLockedGlobal={false}
+              isLockedGlobal={locked}
               initialCount={6}
               batchSize={6}
             />
