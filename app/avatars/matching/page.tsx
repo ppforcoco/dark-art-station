@@ -1,4 +1,4 @@
-// app/avatars/matching/page.tsx
+// app/avatars/matching-pfp/page.tsx
 // Matching Avatars — the third category pill on /avatars. Pulls images that
 // share a matchingGroupId and renders them as paired slideshow cards.
 
@@ -137,24 +137,24 @@ export const revalidate = 60;
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
 
 export const metadata: Metadata = {
-  title: "Best Matching Avatars 2026 | Free Dark PFPs for Best Friends & Couples",
+  title: "Matching PFP 2026 | Free Dark Matching Avatars for Best Friends & Couples",
   description:
-    "Matching profile pictures built for two. Download paired dark-aesthetic avatars for Discord, WhatsApp, and Steam — one for you, one for them.",
-  keywords: ["matching avatars", "matching pfp for best friends", "matching couple pfp", "matching discord avatars"],
+    "Matching pfp sets built for two. Download paired dark-aesthetic avatars for Discord, WhatsApp, and Steam — one for you, one for them.",
+  keywords: ["matching pfp", "matching pfp for couples", "matching pfp for 2 friends", "matching pfp for friends", "dark matching pfp for couples", "matching avatars"],
   openGraph: {
-    title: "Best Matching Avatars 2026 | Free Dark PFPs for Best Friends & Couples",
+    title: "Matching PFP 2026 | Free Dark Matching Avatars for Best Friends & Couples",
     description:
-      "Matching profile pictures built for two. Download paired dark-aesthetic avatars for Discord, WhatsApp, and Steam — one for you, one for them.",
-    url: `${SITE_URL}/avatars/matching`,
+      "Matching pfp sets built for two. Download paired dark-aesthetic avatars for Discord, WhatsApp, and Steam — one for you, one for them.",
+    url: `${SITE_URL}/avatars/matching-pfp`,
     siteName: "Haunted Wallpapers",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Best Matching Avatars 2026 | Free Dark PFPs for Best Friends & Couples",
-    description: "Matching profile pictures built for two. One for you, one for them.",
+    title: "Matching PFP 2026 | Free Dark Matching Avatars for Best Friends & Couples",
+    description: "Matching pfp sets built for two. One for you, one for them.",
   },
-  alternates: { canonical: `${SITE_URL}/avatars/matching` },
+  alternates: { canonical: `${SITE_URL}/avatars/matching-pfp` },
 };
 
 interface PairFrame { id: string; src: string; label: string }
@@ -192,20 +192,20 @@ export default async function MatchingAvatarsPage() {
       });
     }
   } catch (err) {
-    console.error("[avatars/matching] DB error:", err);
+    console.error("[avatars/matching-pfp] DB error:", err);
     dbError = true;
   }
 
   const jsonLd = JSON.stringify({
     "@context": "https://schema.org",
     "@type": "ItemList",
-    name: "Matching Avatars | Haunted Wallpapers",
-    url: `${SITE_URL}/avatars/matching`,
+    name: "Matching PFP | Haunted Wallpapers",
+    url: `${SITE_URL}/avatars/matching-pfp`,
     numberOfItems: pairs.length,
     itemListElement: pairs.map((p, i) => ({
       "@type": "ListItem",
       position: i + 1,
-      url: `${SITE_URL}/avatars/matching`,
+      url: `${SITE_URL}/avatars/matching-pfp`,
       name: p.title,
       image: p.frames[0]?.src,
     })),
@@ -217,14 +217,14 @@ export default async function MatchingAvatarsPage() {
         items={[
           { label: "Home", href: "/" },
           { label: "Avatars", href: "/avatars" },
-          { label: "Matching Avatars" },
+          { label: "Matching PFP" },
         ]}
       />
 
       <section className="hw-match-hero">
         <div className="hw-match-hero__inner">
-          <span className="hw-match-pill">Matching Avatars</span>
-          <h1 className="hw-match-title">One for you. One for them. Both haunted.</h1>
+          <span className="hw-match-pill">Matching PFP</span>
+          <h1 className="hw-match-title">Matching PFP. One for you. One for them. Both haunted.</h1>
           <p className="hw-match-desc">
             Download both. Set one each. No explanation needed.
           </p>

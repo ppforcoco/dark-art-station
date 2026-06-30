@@ -1,6 +1,6 @@
 // app/avatars/page.tsx
 // Avatars hub — landing page with 3 big categories: Discord PFP, Gaming PFP,
-// Matching Avatars. This page no longer renders the raw image grid itself;
+// Matching PFP. This page no longer renders the raw image grid itself;
 // it routes users into the dedicated, tag-filtered sub-pages instead.
 
 import React from "react";
@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   description:
     "The avatar refresh everyone's doing right now. Grab scroll-stopping profile pictures for Discord, Steam, Twitch, and WhatsApp before your friends copy the look.",
   keywords: [
-    "discord pfp", "gaming pfp", "matching avatars", "dark pfp", "aesthetic discord avatar",
+    "discord pfp", "gaming pfp", "matching pfp", "dark pfp", "aesthetic discord avatar",
     "gaming profile picture", "steam avatar", "twitch pfp", "whatsapp dp", "matching pfp for best friends",
   ],
   openGraph: {
@@ -57,17 +57,17 @@ const CATEGORIES = [
     tagFilter: "gaming",
   },
   {
-    key: "matching-avatars",
-    href: "/avatars/matching",
-    label: "Matching Avatars",
+    key: "matching-pfp",
+    href: "/avatars/matching-pfp",
+    label: "Matching PFP",
     tagline: "One for you. One for them. Both haunted.",
     tagFilter: null,
   },
 ] as const;
 
 export default async function AvatarsHubPage() {
-  let counts: Record<string, number> = { "discord-pfp": 0, "gaming-pfp": 0, "matching-avatars": 0 };
-  let previews: Record<string, string[]> = { "discord-pfp": [], "gaming-pfp": [], "matching-avatars": [] };
+  let counts: Record<string, number> = { "discord-pfp": 0, "gaming-pfp": 0, "matching-pfp": 0 };
+  let previews: Record<string, string[]> = { "discord-pfp": [], "gaming-pfp": [], "matching-pfp": [] };
 
   try {
     const images = await db.image.findMany({
@@ -83,12 +83,12 @@ export default async function AvatarsHubPage() {
     counts = {
       "discord-pfp": discord.length,
       "gaming-pfp": gaming.length,
-      "matching-avatars": pairs.length,
+      "matching-pfp": pairs.length,
     };
     previews = {
       "discord-pfp": discord.slice(0, 4).map((img) => getPublicUrl(img.r2Key)),
       "gaming-pfp": gaming.slice(0, 4).map((img) => getPublicUrl(img.r2Key)),
-      "matching-avatars": pairs.slice(0, 4).map((img) => getPublicUrl(img.r2Key)),
+      "matching-pfp": pairs.slice(0, 4).map((img) => getPublicUrl(img.r2Key)),
     };
   } catch (err) {
     console.error("[avatars/hub] DB error:", err);
