@@ -1,5 +1,7 @@
 // app/avatars/page.tsx
-// Discord profile picture / avatar gallery — 1:1 square crops, dark aesthetic.
+// Avatars hub — landing page with 3 big categories: Discord PFP, Gaming PFP,
+// Matching Avatars. This page no longer renders the raw image grid itself;
+// it routes users into the dedicated, tag-filtered sub-pages instead.
 
 import React from "react";
 import type { Metadata } from "next";
@@ -7,468 +9,277 @@ import Link from "next/link";
 import { db } from "@/lib/db";
 import { getPublicUrl } from "@/lib/r2";
 import Breadcrumbs from "@/components/Breadcrumbs";
-import AdminHtmlBlock from "@/components/AdminHtmlBlock";
-import { getPageContent } from "@/lib/db";
-import AvatarsGrid from "@/components/AvatarsGrid";
 
 export const revalidate = 60;
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
 
 export const metadata: Metadata = {
-  title: "Dark PFP & Matching Avatars — Discord, WhatsApp, Gaming | Haunted Wallpapers",
+  title: "Viral Gaming Avatars 2026 | Discord, Twitch, Steam & WhatsApp PFPs",
   description:
-    "Free dark aesthetic profile pictures and matching avatar pairs for Discord, WhatsApp DP, Steam, and gaming profiles. Anime, skull, mask, and gothic PFPs updated weekly.",
+    "The avatar refresh everyone's doing right now. Grab scroll-stopping profile pictures for Discord, Steam, Twitch, and WhatsApp before your friends copy the look.",
   keywords: [
-    "dark pfp", "matching pfp for best friends", "dark whatsapp dp", "aesthetic discord avatar",
-    "gaming profile picture", "anime dark profile picture", "gothic pfp", "dark aesthetic pfp",
-    "discord avatar", "matching avatars", "skull pfp", "mask avatar", "dark profile picture",
+    "discord pfp", "gaming pfp", "matching avatars", "dark pfp", "aesthetic discord avatar",
+    "gaming profile picture", "steam avatar", "twitch pfp", "whatsapp dp", "matching pfp for best friends",
   ],
   openGraph: {
-    title: "Dark PFP & Matching Avatars — Discord, WhatsApp, Gaming | Haunted Wallpapers",
-    description: "Free dark aesthetic profile pictures and matching avatar pairs for Discord, WhatsApp DP, Steam, and gaming profiles. Anime, skull, mask, and gothic PFPs updated weekly.",
+    title: "Viral Gaming Avatars 2026 | Discord, Twitch, Steam & WhatsApp PFPs",
+    description:
+      "The avatar refresh everyone's doing right now. Grab scroll-stopping profile pictures for Discord, Steam, Twitch, and WhatsApp before your friends copy the look.",
     url: `${SITE_URL}/avatars`,
     siteName: "Haunted Wallpapers",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Dark PFP & Matching Avatars — Discord, WhatsApp, Gaming | Haunted Wallpapers",
-    description: "Free dark aesthetic profile pictures and matching avatar pairs for Discord, WhatsApp DP, Steam, and gaming profiles.",
+    title: "Viral Gaming Avatars 2026 | Discord, Twitch, Steam & WhatsApp PFPs",
+    description:
+      "The avatar refresh everyone's doing right now. Grab scroll-stopping profile pictures for Discord, Steam, Twitch, and WhatsApp before your friends copy the look.",
   },
   alternates: { canonical: `${SITE_URL}/avatars` },
 };
 
-interface AvatarItem {
-  id: string;
-  slug: string;
-  title: string;
-  description: string | null;
-  src: string;
-  tags: string[];
-  matchingGroupId: string | null;
-  matchingLabel: string | null;
-}
+// ── Category card data ──────────────────────────────────────────────────────
+// Counts are fetched live below; everything else here is static copy.
+const CATEGORIES = [
+  {
+    key: "discord-pfp",
+    href: "/avatars/discord-pfp",
+    label: "Discord PFP",
+    tagline: "The PFP that starts conversations before you even type.",
+    tagFilter: "discord",
+  },
+  {
+    key: "gaming-pfp",
+    href: "/avatars/gaming-pfp",
+    label: "Gaming PFP",
+    tagline: "Spawn in with an avatar worth remembering.",
+    tagFilter: "gaming",
+  },
+  {
+    key: "matching-avatars",
+    href: "/avatars/matching",
+    label: "Matching Avatars",
+    tagline: "One for you. One for them. Both haunted.",
+    tagFilter: null,
+  },
+] as const;
 
-// After grouping, the page renders a flat list of either single avatars or
-// matching pairs (two avatars that share a matchingGroupId).
-type GalleryEntry =
-  | { kind: "single"; item: AvatarItem }
-  | { kind: "pair"; groupId: string; title: string; description: string | null; frames: { id: string; src: string; label: string }[] };
-
-export default async function AvatarsPage() {
-  let avatars: AvatarItem[] = [];
-  let pageContent = null;
-  let dbError = false;
+export default async function AvatarsHubPage() {
+  let counts: Record<string, number> = { "discord-pfp": 0, "gaming-pfp": 0, "matching-avatars": 0 };
+  let previews: Record<string, string[]> = { "discord-pfp": [], "gaming-pfp": [], "matching-avatars": [] };
 
   try {
-    const [rawAvatars, content] = await Promise.all([
-      db.image.findMany({
-        where: { isAvatar: true, isAdult: false },
-        orderBy: { createdAt: "desc" },
-        select: {
-          id: true, slug: true, title: true, description: true,
-          r2Key: true, highResKey: true, tags: true,
-          matchingGroupId: true, matchingLabel: true,
-        },
-      }),
-      getPageContent("avatars"),
-    ]);
+    const images = await db.image.findMany({
+      where: { isAvatar: true, isAdult: false },
+      orderBy: { createdAt: "desc" },
+      select: { id: true, r2Key: true, tags: true, matchingGroupId: true },
+    });
 
-    avatars = rawAvatars.map((img) => ({
-      id:              img.id,
-      slug:            img.slug,
-      title:           img.title,
-      description:     img.description,
-      src:             getPublicUrl(img.r2Key),
-      tags:            img.tags,
-      matchingGroupId: img.matchingGroupId,
-      matchingLabel:   img.matchingLabel,
-    }));
+    const discord = images.filter((img) => img.tags.some((t) => t.toLowerCase().includes("discord")));
+    const gaming  = images.filter((img) => img.tags.some((t) => t.toLowerCase().includes("gaming")));
+    const pairs   = images.filter((img) => img.matchingGroupId);
 
-    pageContent = content;
+    counts = {
+      "discord-pfp": discord.length,
+      "gaming-pfp": gaming.length,
+      "matching-avatars": pairs.length,
+    };
+    previews = {
+      "discord-pfp": discord.slice(0, 4).map((img) => getPublicUrl(img.r2Key)),
+      "gaming-pfp": gaming.slice(0, 4).map((img) => getPublicUrl(img.r2Key)),
+      "matching-avatars": pairs.slice(0, 4).map((img) => getPublicUrl(img.r2Key)),
+    };
   } catch (err) {
-    console.error("[avatars/page] DB error:", err);
-    dbError = true;
-  }
-
-  // ── Group into singles + matching pairs ────────────────────────────────
-  // Two avatars sharing the same matchingGroupId render as one slideshow
-  // card instead of two separate cards. Order is preserved by first
-  // appearance (avatars are already newest-first from the query above).
-  const entries: GalleryEntry[] = [];
-  const seenGroups = new Set<string>();
-  for (const avatar of avatars) {
-    if (avatar.matchingGroupId) {
-      if (seenGroups.has(avatar.matchingGroupId)) continue; // already added with its partner
-      seenGroups.add(avatar.matchingGroupId);
-      const partners = avatars.filter((a) => a.matchingGroupId === avatar.matchingGroupId);
-      entries.push({
-        kind: "pair",
-        groupId: avatar.matchingGroupId,
-        // Strip the " — Label" suffix added at upload time, so the shared
-        // card title reads clean (e.g. "Soulmates in the Dark", not
-        // "Soulmates in the Dark — Him").
-        title: avatar.title.replace(/\s+—\s+[^—]+$/, ""),
-        description: avatar.description,
-        frames: partners.slice().reverse().map((p) => ({ id: p.id, src: p.src, label: p.matchingLabel || "View" })),
-      });
-    } else {
-      entries.push({ kind: "single", item: avatar });
-    }
+    console.error("[avatars/hub] DB error:", err);
   }
 
   const jsonLd = JSON.stringify({
     "@context": "https://schema.org",
-    "@type": "ItemList",
-    name: "Dark Discord Avatars & Profile Pictures | Haunted Wallpapers",
+    "@type": "CollectionPage",
+    name: "Viral Gaming Avatars 2026",
     url: `${SITE_URL}/avatars`,
-    numberOfItems: entries.length,
-    itemListElement: entries.map((entry, i) => ({
-      "@type": "ListItem",
-      position: i + 1,
-      url: `${SITE_URL}/avatars`,
-      name: entry.kind === "single" ? entry.item.title : entry.title,
-      image: entry.kind === "single" ? entry.item.src : entry.frames[0]?.src,
+    hasPart: CATEGORIES.map((c) => ({
+      "@type": "CollectionPage",
+      name: c.label,
+      url: `${SITE_URL}${c.href}`,
     })),
   });
 
   return (
-    <main
-      style={{
-        minHeight: "100vh",
-        backgroundColor: "var(--bg-primary, #0c0b14)",
-        color: "var(--text-primary, #e8e4dc)",
-      }}
-    >
-      <Breadcrumbs
-        items={[
-          { label: "Home", href: "/" },
-          { label: "Discord Avatars" },
-        ]}
-      />
+    <main className="hw-hub">
+      <Breadcrumbs items={[{ label: "Home", href: "/" }, { label: "Avatars" }]} />
 
       {/* ── Hero ── */}
-      <section className="hw-avatars-hero">
-        <div className="hw-avatars-hero__inner">
-          <h1 className="hw-avatars-title">
-            {pageContent?.title ? (
-              <span dangerouslySetInnerHTML={{ __html: pageContent.title }} />
-            ) : (
-              <>
-                Dark <span className="hw-avatars-title__accent">PFP</span> &amp; Matching Avatars
-              </>
-            )}
+      <section className="hw-hub-hero">
+        <div className="hw-hub-hero__inner">
+          <h1 className="hw-hub-title">
+            Dark <span className="hw-hub-title__accent">PFP</span> &amp; Avatar Vault
           </h1>
-          <p className="hw-avatars-subtitle">
-            Discord · WhatsApp · Steam · Gaming Profiles
+          <p className="hw-hub-desc">
+            Your avatar follows you everywhere. So why does it still look basic? Upgrade your
+            Discord PFP, Steam avatar, Twitch profile pic, and WhatsApp photo in one shot.
+            HD, cropped right, and impossible to ignore.
           </p>
         </div>
       </section>
 
+      {/* ── Category cards ── */}
+      <section className="hw-hub-categories">
+        <div className="hw-hub-categories__grid">
+          {CATEGORIES.map((cat) => (
+            <Link key={cat.key} href={cat.href} className="hw-cat-card">
+              <div className="hw-cat-card__previews">
+                {previews[cat.key].length > 0 ? (
+                  previews[cat.key].map((src, i) => (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      key={i}
+                      src={src}
+                      alt=""
+                      className="hw-cat-card__preview-img"
+                      loading={i === 0 ? "eager" : "lazy"}
+                    />
+                  ))
+                ) : (
+                  <div className="hw-cat-card__preview-empty" aria-hidden="true" />
+                )}
+              </div>
 
-
-      {/* ── Grid ── */}
-      <section className="hw-avatars-section">
-        {dbError ? (
-          <div className="hw-avatars-empty">
-            <div className="hw-avatars-empty__sigil">✦ ☽ ✦</div>
-            <h2 className="hw-avatars-empty__title">Something went wrong</h2>
-            <p className="hw-avatars-empty__sub">
-              Couldn&apos;t load avatars right now. Try again in a second.
-            </p>
-          </div>
-        ) : entries.length === 0 ? (
-          <div className="hw-avatars-empty">
-            <div className="hw-avatars-empty__sigil">✦ ☽ ✦</div>
-            <h2 className="hw-avatars-empty__title">Coming soon</h2>
-            <p className="hw-avatars-empty__sub">
-              The first drop is being prepared. Mark images as &ldquo;Avatar&rdquo; in the
-              admin panel to populate this page.
-            </p>
-          </div>
-        ) : (
-          <AvatarsGrid entries={entries} />
-        )}
-      </section>
-
-      {/* ── Cross-links ── */}
-      <section className="hw-avatars-crosslinks">
-        <p className="hw-avatars-crosslinks__label">Also worth a look</p>
-        <div className="hw-avatars-crosslinks__row">
-          <Link href="/iphone" className="hw-avatars-crosslink-btn">
-            📱 iPhone Wallpapers
-          </Link>
-          <Link href="/android" className="hw-avatars-crosslink-btn">
-            🤖 Android Wallpapers
-          </Link>
-          <Link href="/pc" className="hw-avatars-crosslink-btn">
-            🖥 PC Wallpapers
-          </Link>
+              <div className="hw-cat-card__body">
+                <span className="hw-cat-card__count">
+                  {counts[cat.key]} {counts[cat.key] === 1 ? "avatar" : "avatars"}
+                </span>
+                <h2 className="hw-cat-card__label">{cat.label}</h2>
+                <p className="hw-cat-card__tagline">{cat.tagline}</p>
+                <span className="hw-cat-card__cta">Browse collection →</span>
+              </div>
+            </Link>
+          ))}
         </div>
       </section>
 
       <style>{`
+        .hw-hub {
+          min-height: 100vh;
+          background-color: var(--bg-primary, #0c0b14);
+          color: var(--text-primary, #e8e4dc);
+        }
+
         /* ── Hero ── */
-        .hw-avatars-hero {
-          padding: clamp(32px, 6vw, 64px) clamp(20px, 5vw, 60px) 24px;
+        .hw-hub-hero {
+          padding: clamp(32px, 6vw, 64px) clamp(20px, 5vw, 60px) 8px;
           max-width: 1280px;
           margin: 0 auto;
         }
-        .hw-avatars-hero__inner { max-width: 680px; }
-        .hw-avatars-title {
+        .hw-hub-hero__inner { max-width: 720px; }
+        .hw-hub-title {
           font-family: var(--font-display, serif);
           font-size: clamp(1.8rem, 5vw, 3rem);
           font-weight: 700;
           line-height: 1.1;
-          margin-bottom: 0;
+          margin-bottom: 16px;
           color: var(--text-primary, #e8e4dc);
         }
-        .hw-avatars-title__accent {
-          color: #c9a84c;
-          font-style: italic;
-        }
-        .hw-avatars-subtitle {
-          font-family: var(--font-space, monospace);
-          font-size: 0.7rem;
-          letter-spacing: 0.2em;
-          text-transform: uppercase;
-          color: rgba(232, 228, 220, 0.35);
-          margin-top: 10px;
+        .hw-hub-title__accent { color: #c9a84c; font-style: italic; }
+        .hw-hub-desc {
+          color: rgba(232, 228, 220, 0.7);
+          font-size: clamp(0.92rem, 2vw, 1.05rem);
+          line-height: 1.75;
+          max-width: 640px;
         }
 
-        /* ── Nav pills ── */
-        .hw-avatars-nav {
-          padding: 20px clamp(20px, 5vw, 60px) 24px;
+        /* ── Category grid ── */
+        .hw-hub-categories {
           max-width: 1280px;
           margin: 0 auto;
+          padding: 32px clamp(16px, 4vw, 60px) 80px;
         }
-        .hw-avatars-nav__inner {
-          display: flex;
-          flex-wrap: wrap;
-          gap: 8px;
-        }
-        .hw-avatars-nav__pill {
-          font-family: var(--font-space, monospace);
-          font-size: 0.6rem;
-          letter-spacing: 0.14em;
-          text-transform: uppercase;
-          text-decoration: none;
-          color: rgba(232,228,220,0.6);
-          border: 1px solid rgba(255,255,255,0.1);
-          background: rgba(255,255,255,0.03);
-          padding: 7px 14px;
-          transition: all 0.2s ease;
-        }
-        .hw-avatars-nav__pill:hover {
-          border-color: rgba(192,0,26,0.5);
-          color: #fff;
-          background: rgba(192,0,26,0.07);
-        }
-        .hw-avatars-nav__pill--active {
-          border-color: rgba(192,0,26,0.65);
-          color: #fff;
-          background: rgba(192,0,26,0.12);
-        }
-
-        /* ── Section ── */
-        .hw-avatars-section {
-          max-width: 1280px;
-          margin: 0 auto;
-          padding: 0 clamp(16px, 4vw, 60px) 60px;
-        }
-        .hw-avatars-count {
-          font-family: var(--font-space, monospace);
-          font-size: 0.6rem;
-          letter-spacing: 0.2em;
-          text-transform: uppercase;
-          color: #4a445a;
-          margin-bottom: 20px;
-        }
-
-        /* ── Grid ── */
-        .hw-avatars-grid {
+        .hw-hub-categories__grid {
           display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-          gap: clamp(10px, 2vw, 18px);
+          grid-template-columns: 1fr;
+          gap: 20px;
         }
-        @media (min-width: 640px) {
-          .hw-avatars-grid { grid-template-columns: repeat(auto-fill, minmax(175px, 1fr)); }
-        }
-        @media (min-width: 1024px) {
-          .hw-avatars-grid { grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); }
+        @media (min-width: 760px) {
+          .hw-hub-categories__grid { grid-template-columns: repeat(3, 1fr); gap: 24px; }
         }
 
-        /* ── Card ── */
-        .hw-avatar-card {
+        .hw-cat-card {
+          display: flex;
+          flex-direction: column;
+          text-decoration: none;
+          color: inherit;
           background: #13111e;
           border: 1px solid #2a2535;
-          transition: border-color 0.2s ease, box-shadow 0.2s ease;
+          overflow: hidden;
+          transition: border-color 0.22s ease, transform 0.22s ease, box-shadow 0.22s ease;
         }
-        .hw-avatar-card:hover {
-          border-color: rgba(192,0,26,0.45);
-          box-shadow: 0 0 16px rgba(192,0,26,0.1);
+        .hw-cat-card:hover {
+          border-color: rgba(192,0,26,0.55);
+          box-shadow: 0 0 24px rgba(192,0,26,0.12);
+          transform: translateY(-2px);
         }
 
-        /* ── 1:1 image ── */
-        .hw-avatar-card__img-wrap {
-          position: relative;
-          width: 100%;
+        .hw-cat-card__previews {
+          display: grid;
+          grid-template-columns: repeat(2, 1fr);
+          grid-template-rows: repeat(2, 1fr);
+          gap: 2px;
           aspect-ratio: 1 / 1;
           background: #0a0812;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          overflow: hidden;
         }
-        .hw-avatar-card__img {
+        .hw-cat-card__preview-img {
           width: 100%;
           height: 100%;
-          object-fit: contain;
-          object-position: center;
+          object-fit: cover;
           display: block;
-          transition: transform 0.35s ease;
-          padding: 10px;
         }
-        .hw-avatar-card:hover .hw-avatar-card__img {
-          transform: scale(1.03);
-        }
-
-        /* ── Card body ── */
-        .hw-avatar-card__body {
-          padding: 10px 10px 12px;
-        }
-        .hw-avatar-card__title {
-          font-family: var(--font-space, monospace);
-          font-size: 0.7rem;
-          font-weight: 600;
-          color: var(--text-primary, #e8e4dc);
-          margin-bottom: 8px;
-          line-height: 1.3;
+        .hw-cat-card__preview-empty {
+          grid-column: 1 / -1;
+          grid-row: 1 / -1;
+          background: linear-gradient(135deg, rgba(192,0,26,0.08), rgba(0,0,0,0.2));
         }
 
-        /* ── Action buttons — always visible ── */
-        .hw-avatar-card__actions {
+        .hw-cat-card__body {
+          padding: 20px 22px 24px;
           display: flex;
+          flex-direction: column;
           gap: 6px;
-          margin-bottom: 8px;
         }
-        .hw-avatar-card__btn {
-          flex: 1;
+        .hw-cat-card__count {
           font-family: var(--font-space, monospace);
-          font-size: 0.58rem;
-          letter-spacing: 0.1em;
+          font-size: 0.62rem;
+          letter-spacing: 0.18em;
           text-transform: uppercase;
-          text-decoration: none;
-          text-align: center;
-          padding: 6px 4px;
-          border: 1px solid rgba(255,255,255,0.15);
-          background: rgba(255,255,255,0.04);
-          color: rgba(232,228,220,0.75);
-          cursor: pointer;
-          transition: all 0.15s ease;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 3px;
-        }
-        .hw-avatar-card__btn--dl {
-          border-color: rgba(192,0,26,0.4);
-          background: rgba(192,0,26,0.08);
-          color: #e8e4dc;
-        }
-        .hw-avatar-card__btn--dl:hover {
-          background: rgba(192,0,26,0.22);
-          border-color: rgba(192,0,26,0.8);
-          color: #fff;
-        }
-        .hw-avatar-card__btn--share:hover {
-          border-color: rgba(201,168,76,0.5);
           color: #c9a84c;
-          background: rgba(201,168,76,0.06);
         }
-
-        /* ── HTML description — no overrides, renders exactly as admin wrote it ── */
-        .hw-avatar-card__desc {
-          margin-top: 8px;
-          overflow: hidden;
-          border-radius: 0 0 4px 4px;
-        }
-
-        /* ── Empty state ── */
-        .hw-avatars-empty {
-          text-align: center;
-          padding: 80px 24px;
-        }
-        .hw-avatars-empty__sigil {
-          color: #c0001a;
-          font-size: 1.4rem;
-          margin-bottom: 20px;
-          letter-spacing: 0.3em;
-        }
-        .hw-avatars-empty__title {
+        .hw-cat-card__label {
           font-family: var(--font-display, serif);
-          font-size: clamp(1.4rem, 4vw, 2rem);
+          font-size: 1.4rem;
+          font-weight: 700;
           color: var(--text-primary, #e8e4dc);
-          font-weight: 300;
-          margin-bottom: 12px;
+          margin: 2px 0 4px;
         }
-        .hw-avatars-empty__sub {
-          color: rgba(232,228,220,0.45);
-          font-size: 0.9rem;
-          max-width: 420px;
-          margin: 0 auto;
-          line-height: 1.7;
+        .hw-cat-card__tagline {
+          color: rgba(232,228,220,0.62);
+          font-size: 0.88rem;
+          line-height: 1.6;
+          margin-bottom: 14px;
         }
-
-        /* ── Cross-links ── */
-        .hw-avatars-crosslinks {
-          max-width: 900px;
-          margin: 0 auto;
-          padding: 40px 24px 64px;
-          border-top: 1px solid rgba(192,0,26,0.15);
-          text-align: center;
-        }
-        .hw-avatars-crosslinks__label {
+        .hw-cat-card__cta {
           font-family: var(--font-space, monospace);
-          font-size: 0.6rem;
-          letter-spacing: 0.22em;
-          text-transform: uppercase;
-          color: #4a445a;
-          margin-bottom: 20px;
-        }
-        .hw-avatars-crosslinks__row {
-          display: flex;
-          gap: 12px;
-          justify-content: center;
-          flex-wrap: wrap;
-        }
-        .hw-avatars-crosslink-btn {
-          font-family: var(--font-space, monospace);
-          font-size: 0.7rem;
+          font-size: 0.66rem;
           letter-spacing: 0.12em;
           text-transform: uppercase;
           color: #e8e4dc;
-          text-decoration: none;
-          border: 1px solid rgba(192,0,26,0.35);
-          padding: 10px 20px;
-          background: rgba(192,0,26,0.05);
-          transition: all 0.22s ease;
-          display: inline-flex;
-          align-items: center;
-          gap: 8px;
+          border-top: 1px solid rgba(255,255,255,0.08);
+          padding-top: 14px;
+          transition: color 0.2s ease;
         }
-        .hw-avatars-crosslink-btn:hover {
-          border-color: rgba(192,0,26,0.75);
-          background: rgba(192,0,26,0.12);
-          color: #fff;
-        }
+        .hw-cat-card:hover .hw-cat-card__cta { color: #c0001a; }
       `}</style>
 
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: jsonLd }}
-      />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd }} />
     </main>
   );
 }
