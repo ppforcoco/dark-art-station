@@ -180,12 +180,6 @@ export default async function AndroidPage({ searchParams }: PageProps) {
         )}
       </section>
 
-      {!tag && pageContent?.body && (
-        <div className="w-full pb-8">
-          <AdminHtmlBlock html={pageContent.body} />
-        </div>
-      )}
-
       {/* ── Screen + Style filters ── */}
       <div className="hw-tag-pills-wrap">
         <ScreenStyleFilters rootPath="/android" currentPath="/android" currentTag={tag} />
@@ -259,6 +253,12 @@ export default async function AndroidPage({ searchParams }: PageProps) {
           </>
         )}
       </section>
+
+      {!tag && pageContent?.body && (
+        <div className="w-full pb-8">
+          <AdminHtmlBlock html={pageContent.body} />
+        </div>
+      )}
 
       <section style={{
         maxWidth: "860px",
