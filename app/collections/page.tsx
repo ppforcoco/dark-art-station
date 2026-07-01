@@ -27,7 +27,7 @@ export async function generateMetadata(): Promise<Metadata> {
   let ogImage: string = DEFAULT_OG_IMAGE;
   try {
     const latest = await db.collection.findFirst({
-      where: { thumbnail: { not: null } },
+      where: { NOT: { thumbnail: "" } },
       orderBy: { createdAt: "desc" },
       select: { thumbnail: true },
     });
