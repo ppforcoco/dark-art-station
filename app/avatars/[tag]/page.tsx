@@ -57,6 +57,34 @@ const TAG_CONFIGS: Record<string, TagConfig> = {
     emptyTitle: "Coming soon",
     emptyBody: "New gaming PFPs are being tagged and added. Check back shortly.",
   },
+  "anime-pfp": {
+    slug: "anime-pfp",
+    matchKeyword: "anime-pfp",
+    exactMatch: true,
+    pillLabel: "Anime PFP",
+    tagline: "Dark anime pfp — not the bright cartoon kind.",
+    description:
+      "Everyone's Discord is full of the same neon shounen avatars. These anime PFPs go the other way — shadow-heavy, moody, low-saturation, built for people who want an edge instead of a highlight reel. HD, cropped to a perfect 1:1, ready for Discord, Instagram, and Twitter in one tap.",
+    metaTitle: "Dark Anime PFP 2026 | Free Aesthetic Anime Profile Pictures HD",
+    metaDescription:
+      "Free dark, aesthetic anime PFPs in HD. Moody anime avatars for Discord, Instagram, and Twitter — not the bright cartoon look everyone else has. Download instantly.",
+    emptyTitle: "Coming soon",
+    emptyBody: "New anime PFPs are being tagged and added. Check back shortly.",
+  },
+  "dark-pfp": {
+    slug: "dark-pfp",
+    matchKeyword: "dark-pfp",
+    exactMatch: true,
+    pillLabel: "Dark PFP",
+    tagline: "For the ones who don't do bright.",
+    description:
+      "No pastel, no neon, no forced smiles. Just dark, atmospheric profile pictures built for people who'd rather be noticed for restraint than volume. HD, cropped to 1:1, ready to drop straight into Discord, WhatsApp, Instagram, or wherever your face goes next.",
+    metaTitle: "Dark PFP 2026 | Free Aesthetic Dark Profile Pictures HD",
+    metaDescription:
+      "Free dark aesthetic profile pictures in HD. Moody, shadow-heavy PFPs for Discord, WhatsApp, and Instagram — no pastel, no neon. Download instantly, ready to use.",
+    emptyTitle: "Coming soon",
+    emptyBody: "New dark PFPs are being tagged and added. Check back shortly.",
+  },
 };
 
 interface PageProps {

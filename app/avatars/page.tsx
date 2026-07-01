@@ -19,8 +19,9 @@ export const metadata: Metadata = {
   description:
     "The avatar refresh everyone's doing right now. Grab scroll-stopping profile pictures for Discord, Steam, Twitch, and WhatsApp before your friends copy the look.",
   keywords: [
-    "discord pfp", "gaming pfp", "matching pfp", "dark pfp", "aesthetic discord avatar",
-    "gaming profile picture", "steam avatar", "twitch pfp", "whatsapp dp", "matching pfp for best friends",
+    "discord pfp", "gaming pfp", "matching pfp", "dark pfp", "anime pfp", "dark anime pfp",
+    "aesthetic discord avatar", "gaming profile picture", "steam avatar", "twitch pfp",
+    "whatsapp dp", "matching pfp for best friends",
   ],
   openGraph: {
     title: "Viral Gaming Avatars 2026 | Discord, Twitch, Steam & WhatsApp PFPs",
@@ -57,6 +58,20 @@ const CATEGORIES = [
     tagFilter: "gaming",
   },
   {
+    key: "anime-pfp",
+    href: "/avatars/anime-pfp",
+    label: "Anime PFP",
+    tagline: "Dark anime pfp — not the bright cartoon kind.",
+    tagFilter: "anime-pfp",
+  },
+  {
+    key: "dark-pfp",
+    href: "/avatars/dark-pfp",
+    label: "Dark PFP",
+    tagline: "For the ones who don't do bright.",
+    tagFilter: "dark-pfp",
+  },
+  {
     key: "matching-pfp",
     href: "/avatars/matching-pfp",
     label: "Matching PFP",
@@ -66,8 +81,12 @@ const CATEGORIES = [
 ] as const;
 
 export default async function AvatarsHubPage() {
-  let counts: Record<string, number> = { "discord-pfp": 0, "gaming-pfp": 0, "matching-pfp": 0 };
-  let previews: Record<string, string[]> = { "discord-pfp": [], "gaming-pfp": [], "matching-pfp": [] };
+  let counts: Record<string, number> = {
+    "discord-pfp": 0, "gaming-pfp": 0, "anime-pfp": 0, "dark-pfp": 0, "matching-pfp": 0,
+  };
+  let previews: Record<string, string[]> = {
+    "discord-pfp": [], "gaming-pfp": [], "anime-pfp": [], "dark-pfp": [], "matching-pfp": [],
+  };
 
   try {
     const images = await db.image.findMany({
@@ -78,16 +97,22 @@ export default async function AvatarsHubPage() {
 
     const discord = images.filter((img) => img.tags.some((t) => t.toLowerCase().includes("discord")));
     const gaming  = images.filter((img) => img.tags.some((t) => t.toLowerCase() === "gaming-pfp"));
+    const anime   = images.filter((img) => img.tags.some((t) => t.toLowerCase() === "anime-pfp"));
+    const dark    = images.filter((img) => img.tags.some((t) => t.toLowerCase() === "dark-pfp"));
     const pairs   = images.filter((img) => img.matchingGroupId);
 
     counts = {
       "discord-pfp": discord.length,
       "gaming-pfp": gaming.length,
+      "anime-pfp": anime.length,
+      "dark-pfp": dark.length,
       "matching-pfp": pairs.length,
     };
     previews = {
       "discord-pfp": discord.slice(0, 4).map((img) => getPublicUrl(img.r2Key)),
       "gaming-pfp": gaming.slice(0, 4).map((img) => getPublicUrl(img.r2Key)),
+      "anime-pfp": anime.slice(0, 4).map((img) => getPublicUrl(img.r2Key)),
+      "dark-pfp": dark.slice(0, 4).map((img) => getPublicUrl(img.r2Key)),
       "matching-pfp": pairs.slice(0, 4).map((img) => getPublicUrl(img.r2Key)),
     };
   } catch (err) {
