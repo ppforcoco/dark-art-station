@@ -28,11 +28,11 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
 
   const title = tag
     ? `Dark #${tag} Lock Screen Wallpapers for iPhone${pageLabel} | HAUNTED WALLPAPERS`
-    : `Best Lock Screen Wallpapers for iPhone (Dark & HD)${pageLabel} | HAUNTED WALLPAPERS`;
+    : `Best iPhone Lock Screen Wallpapers 2026 | iOS 19, Depth Effect & Dynamic Island${pageLabel}`;
 
   const description = tag
     ? `Free dark #${tag} lock screen wallpapers for iPhone. Composed with open space up top so the clock and notifications stay readable. Download instantly.`
-    : "Free dark, HD lock screen wallpapers for iPhone. Every image is picked with clear space up top so the clock and notifications never get lost in the art. No account required.";
+    : "iPhone wallpapers built around the lock screen clock and Dynamic Island. Dark, depth-ready backgrounds tested on iOS 19. No text overlap. No bad crops. Just clean, Apple-grade lock screens.";
 
   const canonical = tag
     ? `${siteUrl}/iphone/lock-screen-wallpapers?tag=${tag}`
@@ -41,7 +41,7 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
   return {
     title,
     description,
-    keywords: ["iphone lock screen wallpaper", "lock screen wallpaper", "dark lock screen wallpaper", "aesthetic lock screen iphone", tag ?? "dark"].filter(Boolean),
+    keywords: ["iPhone lock screen wallpaper", "iOS 19 wallpaper", "Dynamic Island background", "depth effect wallpaper", "dark iPhone wallpaper", "Apple lock screen", "free iPhone wallpaper 2026", tag ?? "dark"].filter(Boolean),
     openGraph: { title, description, url: canonical, siteName: "HAUNTED WALLPAPERS", type: "website" },
     twitter: { card: "summary_large_image", title, description },
     alternates: { canonical },
@@ -137,6 +137,8 @@ export default async function IphoneLockScreenPage({ searchParams }: PageProps) 
       ]} />
 
       <section className="max-w-7xl mx-auto px-6 md:px-[60px] pt-10 pb-8">
+        <p className="device-page-tagline">Built for the notch. Designed for the glance.</p>
+
         <h1 className="font-display text-3xl md:text-4xl font-bold leading-tight mb-6">
           Dark <span className="text-[#c9a84c] italic">Lock Screen</span> Wallpapers for iPhone
           {page > 1 && <span className="text-[#4a445a] text-2xl"> — Page {page}</span>}
@@ -144,12 +146,14 @@ export default async function IphoneLockScreenPage({ searchParams }: PageProps) 
 
         <div className="device-page-intro">
           <p>
-            Every wallpaper here is picked for what sits <em>on top</em> of it — the clock,
-            the date, and your notifications. That means open, uncluttered space in the upper
-            half of the frame, so nothing important gets lost behind a busy image.
+            iPhone lock screens hit different — the clock floats high, the depth effect layers
+            behind it, and your wallpaper has to play nice with both. Every image here is
+            cropped and tested for iOS: no clock clash, no Dynamic Island interference, no
+            awkward text overlap.
           </p>
           <p>
-            Free to download, no account required, no watermarks. Portrait 9:16, HD.
+            Dark modes that make the time pop. Depth-ready layers that respond when you tilt.
+            Wake your phone, and it actually looks like Apple designed it.
           </p>
         </div>
       </section>
@@ -226,6 +230,19 @@ export default async function IphoneLockScreenPage({ searchParams }: PageProps) 
       </section>
 
       <style>{`
+        .device-page-tagline {
+          font-family: var(--font-display, serif);
+          font-style: italic;
+          font-size: clamp(1rem, 1.6vw + 0.5rem, 1.4rem);
+          line-height: 1.4;
+          color: #c9a84c;
+          letter-spacing: 0.01em;
+          margin-bottom: 12px;
+          max-width: 680px;
+        }
+        @media (max-width: 480px) {
+          .device-page-tagline { font-size: 1.05rem; margin-bottom: 10px; }
+        }
         .hw-tag-pills-wrap {
           background-color: var(--bg-primary, #0c0b14);
           padding: 0 clamp(24px, 5vw, 60px) 28px;

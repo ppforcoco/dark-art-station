@@ -28,11 +28,11 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
 
   const title = tag
     ? `Dark #${tag} Home Screen Wallpapers for Android${pageLabel} | HAUNTED WALLPAPERS`
-    : `Best Home Screen Wallpapers for Android (Dark & HD)${pageLabel} | HAUNTED WALLPAPERS`;
+    : `Best Android Home Screen Wallpapers 2026 | Dark, Minimal & Icon-Friendly${pageLabel}`;
 
   const description = tag
     ? `Free dark #${tag} home screen wallpapers for Android. Composed to stay readable behind a full grid of app icons. Download instantly.`
-    : "Free dark, HD home screen wallpapers for Android. Every image is picked to stay calm and readable once your app icons are laid over it. No account required.";
+    : "Android home screen wallpapers built around your apps and widgets. Dark, minimal backgrounds that make icons pop without the clutter. Free downloads for every launcher.";
 
   const canonical = tag
     ? `${siteUrl}/android/home-screen-wallpapers?tag=${tag}`
@@ -41,7 +41,7 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
   return {
     title,
     description,
-    keywords: ["android home screen wallpaper", "home screen wallpaper", "dark home screen wallpaper", "aesthetic home screen android", tag ?? "dark"].filter(Boolean),
+    keywords: ["Android home screen wallpaper", "home screen background", "minimal Android wallpaper", "dark wallpaper for apps", "launcher wallpaper", "icon-friendly background", "free Android wallpaper 2026", "widget wallpaper", tag ?? "dark"].filter(Boolean),
     openGraph: { title, description, url: canonical, siteName: "HAUNTED WALLPAPERS", type: "website" },
     twitter: { card: "summary_large_image", title, description },
     alternates: { canonical },
@@ -149,6 +149,8 @@ export default async function AndroidHomeScreenPage({ searchParams }: PageProps)
       ]} />
 
       <section className="max-w-7xl mx-auto px-6 md:px-[60px] pt-10 pb-8">
+        <p className="device-page-tagline">Your apps live here. Your wallpaper shouldn't fight them.</p>
+
         <h1 className="font-display text-3xl md:text-4xl font-bold leading-tight mb-6">
           Dark <span className="text-[#c9a84c] italic">Home Screen</span> Wallpapers for Android
           {page > 1 && <span className="text-[#4a445a] text-2xl"> — Page {page}</span>}
@@ -156,12 +158,15 @@ export default async function AndroidHomeScreenPage({ searchParams }: PageProps)
 
         <div className="device-page-intro">
           <p>
-            Every wallpaper here is picked for what sits <em>on top</em> of it — 4–5 rows of
-            app icons. That means calmer, less busy compositions overall, so your icons stay
-            easy to read instead of disappearing into the art.
+            Your home screen is where the chaos lives — app icons, widgets, folders everywhere.
+            The wallpaper underneath has one job: hold it together without adding to the mess.
+            Every Android home screen wallpaper here is built for clarity.
           </p>
           <p>
-            Free to download, no account required, no watermarks. Portrait 9:16, HD.
+            Dark tones that make icons pop. Subtle depth that doesn&apos;t drown your apps.
+            Clean gradients, moody landscapes, and minimal textures that look sharp behind
+            every launcher. No busy patterns. No icon camouflage. Just backdrops that let your
+            setup breathe.
           </p>
         </div>
       </section>
@@ -238,6 +243,19 @@ export default async function AndroidHomeScreenPage({ searchParams }: PageProps)
       </section>
 
       <style>{`
+        .device-page-tagline {
+          font-family: var(--font-display, serif);
+          font-style: italic;
+          font-size: clamp(1rem, 1.6vw + 0.5rem, 1.4rem);
+          line-height: 1.4;
+          color: #c9a84c;
+          letter-spacing: 0.01em;
+          margin-bottom: 12px;
+          max-width: 680px;
+        }
+        @media (max-width: 480px) {
+          .device-page-tagline { font-size: 1.05rem; margin-bottom: 10px; }
+        }
         .hw-tag-pills-wrap {
           background-color: var(--bg-primary, #0c0b14);
           padding: 0 clamp(24px, 5vw, 60px) 28px;

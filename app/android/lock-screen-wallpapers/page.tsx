@@ -28,11 +28,11 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
 
   const title = tag
     ? `Dark #${tag} Lock Screen Wallpapers for Android${pageLabel} | HAUNTED WALLPAPERS`
-    : `Best Lock Screen Wallpapers for Android (Dark & HD)${pageLabel} | HAUNTED WALLPAPERS`;
+    : `Best Android Lock Screen Wallpapers 2026 | Dark AMOLED, Clock-Centered${pageLabel}`;
 
   const description = tag
     ? `Free dark #${tag} lock screen wallpapers for Android. Composed with open space up top so the clock and notifications stay readable. Download instantly.`
-    : "Free dark, HD lock screen wallpapers for Android. Every image is picked with clear space up top so the clock and notifications never get lost in the art. No account required.";
+    : "Wallpapers designed around your Android lock screen clock. Dark AMOLED backgrounds, perfectly centered, zero clutter. Free downloads that look crisp every time you unlock.";
 
   const canonical = tag
     ? `${siteUrl}/android/lock-screen-wallpapers?tag=${tag}`
@@ -41,7 +41,7 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
   return {
     title,
     description,
-    keywords: ["android lock screen wallpaper", "lock screen wallpaper", "dark lock screen wallpaper", "aesthetic lock screen android", tag ?? "dark"].filter(Boolean),
+    keywords: ["Android lock screen wallpaper", "AMOLED wallpaper", "dark lock screen background", "clock-centered wallpaper", "free Android wallpaper 2026", "OLED optimized", tag ?? "dark"].filter(Boolean),
     openGraph: { title, description, url: canonical, siteName: "HAUNTED WALLPAPERS", type: "website" },
     twitter: { card: "summary_large_image", title, description },
     alternates: { canonical },
@@ -137,6 +137,8 @@ export default async function AndroidLockScreenPage({ searchParams }: PageProps)
       ]} />
 
       <section className="max-w-7xl mx-auto px-6 md:px-[60px] pt-10 pb-8">
+        <p className="device-page-tagline">The wallpaper that owns the center of your screen.</p>
+
         <h1 className="font-display text-3xl md:text-4xl font-bold leading-tight mb-6">
           Dark <span className="text-[#c9a84c] italic">Lock Screen</span> Wallpapers for Android
           {page > 1 && <span className="text-[#4a445a] text-2xl"> — Page {page}</span>}
@@ -144,12 +146,14 @@ export default async function AndroidLockScreenPage({ searchParams }: PageProps)
 
         <div className="device-page-intro">
           <p>
-            Every wallpaper here is picked for what sits <em>on top</em> of it — the clock,
-            the date, and your notifications. That means open, uncluttered space in the upper
-            half of the frame, so nothing important gets lost behind a busy image.
+            Your lock screen is the one screen you see a hundred times a day. The clock sits
+            dead center — so we design around it. Every wallpaper is built to frame that spot,
+            not fight it.
           </p>
           <p>
-            Free to download, no account required, no watermarks. Portrait 9:16, HD.
+            Dark, moody, and sharp for AMOLED screens. No clutter. No weird crops. Just a clean
+            backdrop that makes your Android lock screen hit different every time you wake your
+            phone.
           </p>
         </div>
       </section>
@@ -226,6 +230,19 @@ export default async function AndroidLockScreenPage({ searchParams }: PageProps)
       </section>
 
       <style>{`
+        .device-page-tagline {
+          font-family: var(--font-display, serif);
+          font-style: italic;
+          font-size: clamp(1rem, 1.6vw + 0.5rem, 1.4rem);
+          line-height: 1.4;
+          color: #c9a84c;
+          letter-spacing: 0.01em;
+          margin-bottom: 12px;
+          max-width: 680px;
+        }
+        @media (max-width: 480px) {
+          .device-page-tagline { font-size: 1.05rem; margin-bottom: 10px; }
+        }
         .hw-tag-pills-wrap {
           background-color: var(--bg-primary, #0c0b14);
           padding: 0 clamp(24px, 5vw, 60px) 28px;
