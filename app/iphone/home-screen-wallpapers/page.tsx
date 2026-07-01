@@ -1,21 +1,20 @@
-// app/android/page.tsx
+// app/iphone/home-screen-wallpapers/page.tsx
 import React from "react";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { db, getPageContent } from "@/lib/db";
+import { db } from "@/lib/db";
 import { Prisma } from "@prisma/client";
 import { getPublicUrl } from "@/lib/r2";
 import Pagination from "@/components/Pagination";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import IphoneImageGrid from "@/components/IphoneImageGrid";
 import ScreenStyleFilters from "@/components/ScreenStyleFilters";
-import AdminHtmlBlock from "@/components/AdminHtmlBlock";
 import { isGloballyPremiumLocked } from "@/lib/premium-lock";
 
 export const revalidate = 3600;
 
-
 const PAGE_SIZE = 24;
+const SCREEN_TAG = "home-screen";
 
 interface PageProps {
   searchParams: Promise<{ tag?: string; page?: string }>;
@@ -28,19 +27,21 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
   const siteUrl   = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
 
   const title = tag
-    ? `Dark #${tag} Wallpapers for Android & iPhone${pageLabel} | HAUNTED WALLPAPERS`
-    : `Dark Android Wallpapers Free Download (iPhone & Android)${pageLabel} | HAUNTED WALLPAPERS`;
+    ? `Dark #${tag} Home Screen Wallpapers for iPhone${pageLabel} | HAUNTED WALLPAPERS`
+    : `Best Home Screen Wallpapers for iPhone (Dark & HD)${pageLabel} | HAUNTED WALLPAPERS`;
 
   const description = tag
-    ? `Browse free AMOLED-optimised dark wallpapers for Android tagged #${tag}. Download instantly, no account required.`
-    : "Free AMOLED-optimised dark wallpapers for Android. Deep blacks, zero battery waste on OLED screens. Samsung, Pixel, OnePlus ready. No account required.";
+    ? `Free dark #${tag} home screen wallpapers for iPhone. Composed to stay readable behind a full grid of app icons. Download instantly.`
+    : "Free dark, HD home screen wallpapers for iPhone. Every image is picked to stay calm and readable once your app icons are laid over it. No account required.";
 
-  const canonical = tag ? `${siteUrl}/android?tag=${tag}` : `${siteUrl}/android`;
+  const canonical = tag
+    ? `${siteUrl}/iphone/home-screen-wallpapers?tag=${tag}`
+    : `${siteUrl}/iphone/home-screen-wallpapers`;
 
   return {
     title,
     description,
-    keywords: ["android wallpaper", "dark wallpaper android", "hd android wallpaper", "free android wallpaper", tag ?? "dark", "dark fantasy"].filter(Boolean),
+    keywords: ["iphone home screen wallpaper", "home screen wallpaper", "dark home screen wallpaper", "aesthetic home screen iphone", tag ?? "dark"].filter(Boolean),
     openGraph: { title, description, url: canonical, siteName: "HAUNTED WALLPAPERS", type: "website" },
     twitter: { card: "summary_large_image", title, description },
     alternates: { canonical },
@@ -57,58 +58,57 @@ interface ImageItem {
   isAdult: boolean;
 }
 
-export default async function AndroidPage({ searchParams }: PageProps) {
+export default async function IphoneHomeScreenPage({ searchParams }: PageProps) {
   const { tag, page: rawPage } = await searchParams;
   const page = Math.max(1, parseInt(rawPage ?? "1", 10) || 1);
   const skip = (page - 1) * PAGE_SIZE;
   const locked = isGloballyPremiumLocked();
 
-  const where = {
-    collectionId: null,
-    isAdult: false,
-    deviceType: "ANDROID" as const,
-    ...(tag ? {
+  // Exact hyphenated tag match only — never a title/partial match — so this
+  // never pulls in unrelated wallpapers just because a word overlaps.
+  const andConditions: Prisma.ImageWhereInput[] = [
+    {
+      OR: [
+        { tags: { has: SCREEN_TAG } },
+        { tags: { has: SCREEN_TAG.toUpperCase() } },
+        { tags: { has: "Home-Screen" } },
+      ],
+    },
+  ];
+
+  if (tag) {
+    andConditions.push({
       OR: [
         { tags: { has: tag } },
         { tags: { has: tag.toLowerCase() } },
         { tags: { has: tag.charAt(0).toUpperCase() + tag.slice(1).toLowerCase() } },
-        { title: { contains: tag, mode: Prisma.QueryMode.insensitive } },
       ],
-    } : {}),
+    });
+  }
+
+  const where: Prisma.ImageWhereInput = {
+    collectionId: null,
+    deviceType: "IPHONE",
+    isAvatar: false,
+    isAdult: false,
+    AND: andConditions,
   };
 
-  let pinnedImages: ImageItem[] = [];
   let images: ImageItem[] = [];
   let total = 0;
-  let pageContent = null;
   let dbError = false;
 
   try {
-    const [pinnedRaw, imagesRaw, totalCount, content] = await Promise.all([
-      (!tag && page === 1)
-        ? db.image.findMany({
-            where: { collectionId: null, deviceType: "ANDROID", isAdult: false, sortOrder: { lt: 0 } },
-            orderBy: { sortOrder: "asc" },
-            select: { id: true, slug: true, title: true, r2Key: true, viewCount: true, tags: true, isAdult: true, updatedAt: true },
-            take: 3,
-          })
-        : Promise.resolve([] as Array<{ id: string; slug: string; title: string; r2Key: string; viewCount: number; tags: string[]; isAdult: boolean; updatedAt: Date }>),
+    const [imagesRaw, totalCount] = await Promise.all([
       db.image.findMany({
         where,
         orderBy: { createdAt: "desc" },
-        select: { id: true, slug: true, title: true, r2Key: true, viewCount: true, tags: true, isAdult: true, updatedAt: true },
+        select: { id: true, slug: true, title: true, r2Key: true, viewCount: true, tags: true, isAdult: true },
         take: PAGE_SIZE,
         skip,
       }),
       db.image.count({ where }),
-      getPageContent("android"),
     ]);
-
-    pinnedImages = pinnedRaw.map((img) => ({
-      id: img.id, slug: img.slug, title: img.title,
-      src: getPublicUrl(img.r2Key),
-      viewCount: img.viewCount, tags: img.tags, isAdult: img.isAdult,
-    }));
 
     images = imagesRaw.map((img) => ({
       id: img.id, slug: img.slug, title: img.title,
@@ -117,25 +117,24 @@ export default async function AndroidPage({ searchParams }: PageProps) {
     }));
 
     total = totalCount;
-    pageContent = content;
   } catch (err) {
-    console.error("[android/page] DB error:", err);
+    console.error("[iphone/home-screen-wallpapers] DB error:", err);
     dbError = true;
   }
 
   const totalPages = Math.ceil(total / PAGE_SIZE);
-  const baseUrl    = tag ? `/android?tag=${encodeURIComponent(tag)}` : "/android";
+  const baseUrl    = tag ? `/iphone/home-screen-wallpapers?tag=${encodeURIComponent(tag)}` : "/iphone/home-screen-wallpapers";
 
   const jsonLd = JSON.stringify({
     "@context": "https://schema.org",
     "@type": "ItemList",
-    name: tag ? `Dark #${tag} Android Wallpapers | Haunted Wallpapers` : "Free Dark Android Wallpapers HD | Haunted Wallpapers",
-    url: tag ? `${process.env.NEXT_PUBLIC_SITE_URL}/android?tag=${tag}` : `${process.env.NEXT_PUBLIC_SITE_URL}/android`,
+    name: "Home Screen Wallpapers for iPhone | Haunted Wallpapers",
+    url: `${process.env.NEXT_PUBLIC_SITE_URL}${baseUrl}`,
     numberOfItems: total,
     itemListElement: images.map((img, i) => ({
       "@type": "ListItem",
       position: skip + i + 1,
-      url: `${process.env.NEXT_PUBLIC_SITE_URL}/android/${img.slug}`,
+      url: `${process.env.NEXT_PUBLIC_SITE_URL}/iphone/${img.slug}`,
       name: img.title,
       image: img.src,
     })),
@@ -145,80 +144,36 @@ export default async function AndroidPage({ searchParams }: PageProps) {
     <main className="min-h-screen" style={{ backgroundColor: "var(--bg-primary)", color: "var(--text-primary)" }}>
       <Breadcrumbs items={[
         { label: "Home", href: "/" },
-        { label: "Android Wallpapers" },
+        { label: "iPhone Wallpapers", href: "/iphone" },
+        { label: "Home Screen Wallpapers" },
       ]} />
 
       <section className="max-w-7xl mx-auto px-6 md:px-[60px] pt-10 pb-8">
         <h1 className="font-display text-3xl md:text-4xl font-bold leading-tight mb-6">
-          {tag ? (
-            <>Dark <span className="text-[#c9a84c] italic">#{tag}</span> Wallpapers for Android</>
-          ) : pageContent?.title ? (
-            <span dangerouslySetInnerHTML={{ __html: pageContent.title }} />
-          ) : (
-            <>Free Dark Android <span className="text-[#c9a84c] italic">Wallpapers</span></>
-          )}
+          Dark <span className="text-[#c9a84c] italic">Home Screen</span> Wallpapers for iPhone
           {page > 1 && <span className="text-[#4a445a] text-2xl"> — Page {page}</span>}
         </h1>
 
-        {!tag && !pageContent?.body && (
-          <div className="device-page-intro">
-            <p>
-              All Android wallpapers here are portrait 9:16 format, sized for modern flagship
-              screens including Samsung Galaxy, Google Pixel, OnePlus, and Xiaomi devices.
-              AMOLED-optimised: near-black backgrounds let your OLED screen turn pixels completely
-              off, extending battery life while looking dramatically better.
-            </p>
-            <p>
-              Download is instant — tap any image, tap download, and it saves directly to your
-              gallery. No account, no watermarks, no limits.
-            </p>
-            <div className="device-page-guide-link">
-              <span>Need help setting it up?</span>
-              <a href="/blog/the-dark-aesthetic-a-complete-guide-to-customizing-your-devices">Read our wallpaper guide →</a>
-            </div>
-          </div>
-        )}
+        <div className="device-page-intro">
+          <p>
+            Every wallpaper here is picked for what sits <em>on top</em> of it — 4–5 rows of
+            app icons. That means calmer, less busy compositions overall, so your icons stay
+            easy to read instead of disappearing into the art.
+          </p>
+          <p>
+            Free to download, no account required, no watermarks. Portrait 9:16, HD.
+          </p>
+        </div>
       </section>
 
-      {!tag && pageContent?.body && (
-        <div className="w-full pb-8">
-          <AdminHtmlBlock html={pageContent.body} />
-        </div>
-      )}
-
-      {/* ── Screen + Style filters ── */}
       <div className="hw-tag-pills-wrap">
-        <ScreenStyleFilters rootPath="/android" currentPath="/android" currentTag={tag} />
+        <ScreenStyleFilters
+          rootPath="/iphone"
+          currentPath="/iphone/home-screen-wallpapers"
+          currentTag={tag}
+          activeScreen="home-screen"
+        />
       </div>
-
-      {pinnedImages.length > 0 && (
-        <section className="max-w-7xl mx-auto px-6 md:px-[60px] pb-10">
-          <div style={{ display: "flex", alignItems: "center", gap: "14px", marginBottom: "20px" }}>
-            <span style={{
-              fontFamily: "var(--font-space, monospace)",
-              fontSize: "0.58rem",
-              letterSpacing: "0.22em",
-              textTransform: "uppercase",
-              color: "#c0001a",
-              border: "1px solid rgba(192,0,26,0.5)",
-              padding: "5px 12px",
-              background: "rgba(192,0,26,0.08)",
-              boxShadow: "0 0 12px rgba(192,0,26,0.15)",
-            }}>★ The Most Haunted</span>
-            <div style={{ flex: 1, height: "1px", background: "linear-gradient(to right, rgba(192,0,26,0.35), transparent)" }} />
-          </div>
-          <IphoneImageGrid
-            images={pinnedImages}
-            hrefPrefix="/android"
-            altSuffix="free dark Android wallpaper HD"
-            gridStyle={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "12px", maxWidth: "480px" }}
-            priorityCount={2}
-            aspectRatio="9/16"
-            sizes="(max-width: 640px) 33vw, 160px"
-            isLockedGlobal={locked}
-          />
-        </section>
-      )}
 
       <section className="max-w-7xl mx-auto px-6 md:px-[60px] py-10">
         {dbError ? (
@@ -234,7 +189,7 @@ export default async function AndroidPage({ searchParams }: PageProps) {
             <div className="hw-coming-soon__bar" />
             <h2 className="hw-coming-soon__title">Coming Soon</h2>
             <p className="hw-coming-soon__sub">
-              {tag ? `New wallpapers tagged #${tag} are on their way.` : "Dark art is brewing. Upload images from the admin panel to fill this page."}
+              Home screen wallpapers are on their way — tag wallpapers <code>home-screen</code> in the admin panel to have them show up here.
             </p>
           </div>
         ) : (
@@ -244,8 +199,8 @@ export default async function AndroidPage({ searchParams }: PageProps) {
             </p>
             <IphoneImageGrid
               images={images}
-              hrefPrefix="/android"
-              altSuffix="free dark Android wallpaper HD"
+              hrefPrefix="/iphone"
+              altSuffix="free dark iPhone home screen wallpaper HD"
               gridClassName="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3"
               priorityCount={4}
               aspectRatio="9/16"
@@ -276,8 +231,9 @@ export default async function AndroidPage({ searchParams }: PageProps) {
           marginBottom: "20px",
         }}>Also available for</p>
         <div style={{ display: "flex", gap: "14px", justifyContent: "center", flexWrap: "wrap" }}>
-          <Link href="/iphone" className="hw-crosslink-btn">📱 iPhone Wallpapers</Link>
-          <Link href="/pc" className="hw-crosslink-btn">🖥 Desktop PC Nightmares</Link>
+          <Link href="/iphone/lock-screen-wallpapers" className="hw-crosslink-btn">🔒 iPhone Lock Screen</Link>
+          <Link href="/android/home-screen-wallpapers" className="hw-crosslink-btn">🤖 Android Home Screen</Link>
+          <Link href="/iphone" className="hw-crosslink-btn">📱 All iPhone Wallpapers</Link>
         </div>
       </section>
 
@@ -288,11 +244,7 @@ export default async function AndroidPage({ searchParams }: PageProps) {
           max-width: 1280px;
           margin: 0 auto;
         }
-        .hw-tag-pills {
-          display: flex;
-          flex-wrap: wrap;
-          gap: 8px;
-        }
+        .hw-tag-pills { display: flex; flex-wrap: wrap; gap: 8px; }
         .hw-tag-pill {
           font-family: var(--font-space, monospace);
           font-size: 0.58rem;
@@ -306,11 +258,7 @@ export default async function AndroidPage({ searchParams }: PageProps) {
           border-radius: 2px;
           transition: all 0.2s ease;
         }
-        .hw-tag-pill:hover {
-          border-color: rgba(192,0,26,0.6);
-          color: #fff;
-          background: rgba(192,0,26,0.08);
-        }
+        .hw-tag-pill:hover { border-color: rgba(192,0,26,0.6); color: #fff; background: rgba(192,0,26,0.08); }
         .hw-tag-pill--active {
           border-color: rgba(192,0,26,0.7);
           color: #fff;

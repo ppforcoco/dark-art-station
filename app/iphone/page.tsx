@@ -9,6 +9,7 @@ import Pagination from "@/components/Pagination";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import AdminHtmlBlock from "@/components/AdminHtmlBlock";
 import IphoneImageGrid from "@/components/IphoneImageGrid";
+import ScreenStyleFilters from "@/components/ScreenStyleFilters";
 import { isGloballyPremiumLocked } from "@/lib/premium-lock";
 
 export const revalidate = 3600;
@@ -213,26 +214,10 @@ export default async function IphonePage({ searchParams }: PageProps) {
         </div>
       )}
 
-      {/* ── Category filter pills ── */}
-      {(() => {
-        const ALL_CATS = [
-          "skeletons","minimal","dark-humor","gaming","cyberpunk","lofi","anime","dark-fantasy","gothic",
-        ];
-        const visible = ALL_CATS;
-        return (
-          <div className="hw-tag-pills-wrap">
-            <div className="hw-tag-pills">
-              <Link href="/iphone" className={`hw-tag-pill ${!tag ? "hw-tag-pill--active" : ""}`}>All</Link>
-              {visible.map((t) => (
-                <Link key={t} href={`/iphone?tag=${encodeURIComponent(t)}`}
-                  className={`hw-tag-pill ${tag === t ? "hw-tag-pill--active" : ""}`}>
-                  {t.charAt(0).toUpperCase() + t.slice(1).replace(/-/g, " ")}
-                </Link>
-              ))}
-            </div>
-          </div>
-        );
-      })()}
+      {/* ── Screen + Style filters ── */}
+      <div className="hw-tag-pills-wrap">
+        <ScreenStyleFilters rootPath="/iphone" currentPath="/iphone" currentTag={tag} />
+      </div>
 
       {pinnedImages.length > 0 && (
         <section className="max-w-7xl mx-auto px-6 md:px-[60px] pb-10">
