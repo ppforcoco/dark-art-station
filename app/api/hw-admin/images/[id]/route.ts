@@ -87,6 +87,12 @@ export async function PATCH(
     revalidatePath(`/iphone/${updated.slug}`);
     revalidatePath(`/android/${updated.slug}`);
     revalidatePath("/");
+    revalidatePath("/iphone");
+    revalidatePath("/android");
+    revalidatePath("/iphone/lock-screen-wallpapers");
+    revalidatePath("/iphone/home-screen-wallpapers");
+    revalidatePath("/android/lock-screen-wallpapers");
+    revalidatePath("/android/home-screen-wallpapers");
 
     // Revalidate collection image page
     if (updated.collectionId) {

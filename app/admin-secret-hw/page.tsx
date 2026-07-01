@@ -388,6 +388,16 @@ function ImageUploaderTab({password}:{password:string}){
           <Btn onClick={()=>setIsAvatar(!isAvatar)} variant={isAvatar?"success":"ghost"} style={{flexShrink:0,borderColor:isAvatar?"#63b3ed":undefined,color:isAvatar?"#63b3ed":undefined}}>{isAvatar?"✓ Avatar ON":"Mark as Avatar"}</Btn>
         </div>
       </Card>
+      <Card style={{padding:"14px 18px",borderColor:selectedTags.includes("lock-screen-wallpaper")||selectedTags.includes("home-screen-wallpaper")?"rgba(201,168,76,0.5)":C.border,background:selectedTags.includes("lock-screen-wallpaper")||selectedTags.includes("home-screen-wallpaper")?"rgba(201,168,76,0.06)":C.surface}}>
+        <div>
+          <p style={{color:C.gold,fontSize:"0.72rem",marginBottom:"4px"}}>🔒🏠 Lock Screen / Home Screen Pages</p>
+          <p style={{color:C.textMut,fontSize:"0.68rem",lineHeight:1.6,marginBottom:"10px"}}>Show this wallpaper on the dedicated <code>/iphone/lock-screen-wallpapers</code> or <code>/home-screen-wallpapers</code> pages (and the Android equivalents). Pick one, both, or neither.</p>
+          <div style={{display:"flex",gap:"10px",flexWrap:"wrap"}}>
+            <Btn onClick={()=>setSelectedTags(prev=>prev.includes("lock-screen-wallpaper")?prev.filter(t=>t!=="lock-screen-wallpaper"):[...prev,"lock-screen-wallpaper"])} variant={selectedTags.includes("lock-screen-wallpaper")?"success":"ghost"} style={{borderColor:selectedTags.includes("lock-screen-wallpaper")?"#c9a84c":undefined,color:selectedTags.includes("lock-screen-wallpaper")?"#c9a84c":undefined}}>{selectedTags.includes("lock-screen-wallpaper")?"🔒 Lock Screen ON":"Mark as Lock Screen"}</Btn>
+            <Btn onClick={()=>setSelectedTags(prev=>prev.includes("home-screen-wallpaper")?prev.filter(t=>t!=="home-screen-wallpaper"):[...prev,"home-screen-wallpaper"])} variant={selectedTags.includes("home-screen-wallpaper")?"success":"ghost"} style={{borderColor:selectedTags.includes("home-screen-wallpaper")?"#c9a84c":undefined,color:selectedTags.includes("home-screen-wallpaper")?"#c9a84c":undefined}}>{selectedTags.includes("home-screen-wallpaper")?"🏠 Home Screen ON":"Mark as Home Screen"}</Btn>
+          </div>
+        </div>
+      </Card>
       <Card style={{padding:"14px 18px",borderColor:isPair?"rgba(236,72,153,0.5)":C.border,background:isPair?"rgba(236,72,153,0.06)":C.surface}}>
         <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:"16px"}}>
           <div>
@@ -656,6 +666,11 @@ function PublishedImagesTab({password}:{password:string}){
       </div>
       <div style={{marginBottom:"20px",display:"flex",alignItems:"center",gap:"12px"}}><Btn onClick={()=>setEAdult(a=>!a)} variant={eAdult?"danger":"ghost"} style={{padding:"6px 16px"}}>{eAdult?"⚠ 16+ ON":"16+ OFF"}</Btn><span style={{color:C.textSec,fontSize:"0.7rem"}}>Mark as adult/mature</span></div>
       <div style={{marginBottom:"20px",display:"flex",alignItems:"center",gap:"12px"}}><Btn onClick={()=>setEAvatar(a=>!a)} variant={eAvatar?"success":"ghost"} style={{padding:"6px 16px",borderColor:eAvatar?"#63b3ed":undefined,color:eAvatar?"#63b3ed":undefined}}>{eAvatar?"🎭 Avatar ON":"Avatar OFF"}</Btn><span style={{color:C.textSec,fontSize:"0.7rem"}}>Show on /avatars Discord pfp page</span></div>
+      <div style={{marginBottom:"20px",display:"flex",alignItems:"center",gap:"12px",flexWrap:"wrap"}}>
+        <Btn onClick={()=>setETags(prev=>prev.includes("lock-screen-wallpaper")?prev.filter(t=>t!=="lock-screen-wallpaper"):[...prev,"lock-screen-wallpaper"])} variant={eTags.includes("lock-screen-wallpaper")?"success":"ghost"} style={{padding:"6px 16px",borderColor:eTags.includes("lock-screen-wallpaper")?"#c9a84c":undefined,color:eTags.includes("lock-screen-wallpaper")?"#c9a84c":undefined}}>{eTags.includes("lock-screen-wallpaper")?"🔒 Lock Screen ON":"Lock Screen OFF"}</Btn>
+        <Btn onClick={()=>setETags(prev=>prev.includes("home-screen-wallpaper")?prev.filter(t=>t!=="home-screen-wallpaper"):[...prev,"home-screen-wallpaper"])} variant={eTags.includes("home-screen-wallpaper")?"success":"ghost"} style={{padding:"6px 16px",borderColor:eTags.includes("home-screen-wallpaper")?"#c9a84c":undefined,color:eTags.includes("home-screen-wallpaper")?"#c9a84c":undefined}}>{eTags.includes("home-screen-wallpaper")?"🏠 Home Screen ON":"Home Screen OFF"}</Btn>
+        <span style={{color:C.textSec,fontSize:"0.7rem"}}>Show on the dedicated lock/home screen pages</span>
+      </div>
       <Msg msg={msg}/>
       <div style={{display:"flex",gap:"10px"}}><Btn onClick={handleSave} disabled={saving}>{saving?"Saving…":"💾 Save"}</Btn><Btn onClick={()=>setEditing(null)} variant="ghost">Cancel</Btn></div>
     </div></div>}
