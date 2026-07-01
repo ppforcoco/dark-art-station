@@ -150,6 +150,7 @@ export default async function AndroidLockScreenPage({ searchParams }: PageProps)
           currentPath="/android/lock-screen-wallpapers"
           currentTag={tag}
           activeScreen="lock-screen"
+          showStyleDropdown={false}
         />
       </div>
 

@@ -14,13 +14,14 @@ interface ScreenStyleFiltersProps {
   currentPath: string;   // the actual page currently rendering this: rootPath, `${rootPath}/lock-screen-wallpapers`, or `${rootPath}/home-screen-wallpapers`
   currentTag?: string;   // active style tag (?tag=...), works on any of the 3 pages
   activeScreen?: "lock-screen" | "home-screen"; // omit on the root device page
+  showStyleDropdown?: boolean; // set false to hide the "Style" select (defaults to true)
 }
 
 function withTag(path: string, tag?: string) {
   return tag ? `${path}?tag=${encodeURIComponent(tag)}` : path;
 }
 
-export default function ScreenStyleFilters({ rootPath, currentPath, currentTag, activeScreen }: ScreenStyleFiltersProps) {
+export default function ScreenStyleFilters({ rootPath, currentPath, currentTag, activeScreen, showStyleDropdown = true }: ScreenStyleFiltersProps) {
   const router = useRouter();
 
   const handleStyleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -53,22 +54,24 @@ export default function ScreenStyleFilters({ rootPath, currentPath, currentTag, 
         </div>
       </div>
 
-      <div className="hw-filter-group">
-        <span className="hw-filter-label">Style</span>
-        <select
-          className="hw-style-select"
-          value={currentTag ?? "all"}
-          onChange={handleStyleChange}
-          aria-label="Filter by style"
-        >
-          <option value="all">All Styles</option>
-          {CATEGORIES.map((c) => (
-            <option key={c} value={c}>
-              {c.charAt(0).toUpperCase() + c.slice(1).replace(/-/g, " ")}
-            </option>
-          ))}
-        </select>
-      </div>
+      {showStyleDropdown && (
+        <div className="hw-filter-group">
+          <span className="hw-filter-label">Style</span>
+          <select
+            className="hw-style-select"
+            value={currentTag ?? "all"}
+            onChange={handleStyleChange}
+            aria-label="Filter by style"
+          >
+            <option value="all">All Styles</option>
+            {CATEGORIES.map((c) => (
+              <option key={c} value={c}>
+                {c.charAt(0).toUpperCase() + c.slice(1).replace(/-/g, " ")}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
 
       <style>{`
         .hw-filters-wrap {

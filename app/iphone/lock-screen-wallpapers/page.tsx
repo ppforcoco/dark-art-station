@@ -150,6 +150,7 @@ export default async function IphoneLockScreenPage({ searchParams }: PageProps) 
           currentPath="/iphone/lock-screen-wallpapers"
           currentTag={tag}
           activeScreen="lock-screen"
+          showStyleDropdown={false}
         />
       </div>
 

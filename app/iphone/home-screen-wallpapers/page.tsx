@@ -13,7 +13,7 @@ import { isGloballyPremiumLocked } from "@/lib/premium-lock";
 export const revalidate = 3600;
 
 const PAGE_SIZE = 24;
-const SCREEN_TAG = "home-screen";
+const SCREEN_TAG = "home-screen-wallpaper";
 
 interface PageProps {
   searchParams: Promise<{ tag?: string; page?: string }>;
@@ -162,6 +162,7 @@ export default async function IphoneHomeScreenPage({ searchParams }: PageProps) 
           currentPath="/iphone/home-screen-wallpapers"
           currentTag={tag}
           activeScreen="home-screen"
+          showStyleDropdown={false}
         />
       </div>
 
@@ -179,7 +180,7 @@ export default async function IphoneHomeScreenPage({ searchParams }: PageProps) 
             <div className="hw-coming-soon__bar" />
             <h2 className="hw-coming-soon__title">Coming Soon</h2>
             <p className="hw-coming-soon__sub">
-              Home screen wallpapers are on their way — tag wallpapers <code>home-screen</code> in the admin panel to have them show up here.
+              Home screen wallpapers are on their way — tag wallpapers <code>home-screen-wallpaper</code> in the admin panel to have them show up here.
             </p>
           </div>
         ) : (
