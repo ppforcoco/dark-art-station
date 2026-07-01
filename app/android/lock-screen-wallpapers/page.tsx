@@ -14,7 +14,7 @@ import { isGloballyPremiumLocked } from "@/lib/premium-lock";
 export const revalidate = 3600;
 
 const PAGE_SIZE = 24;
-const SCREEN_TAG = "lock-screen";
+const SCREEN_TAG = "lock-screen-wallpaper";
 
 interface PageProps {
   searchParams: Promise<{ tag?: string; page?: string }>;
@@ -64,26 +64,14 @@ export default async function AndroidLockScreenPage({ searchParams }: PageProps)
   const skip = (page - 1) * PAGE_SIZE;
   const locked = isGloballyPremiumLocked();
 
-  // Exact hyphenated tag match only — never a title/partial match — so this
-  // never pulls in unrelated wallpapers just because a word overlaps.
+  // Single exact tag match ONLY — no case variants, no fallback matching.
+  // A wallpaper must have the literal tag "lock-screen-wallpaper" to appear here.
   const andConditions: Prisma.ImageWhereInput[] = [
-    {
-      OR: [
-        { tags: { has: SCREEN_TAG } },
-        { tags: { has: SCREEN_TAG.toUpperCase() } },
-        { tags: { has: "Lock-Screen" } },
-      ],
-    },
+    { tags: { has: SCREEN_TAG } },
   ];
 
   if (tag) {
-    andConditions.push({
-      OR: [
-        { tags: { has: tag } },
-        { tags: { has: tag.toLowerCase() } },
-        { tags: { has: tag.charAt(0).toUpperCase() + tag.slice(1).toLowerCase() } },
-      ],
-    });
+    andConditions.push({ tags: { has: tag } });
   }
 
   const where: Prisma.ImageWhereInput = {
@@ -189,7 +177,7 @@ export default async function AndroidLockScreenPage({ searchParams }: PageProps)
             <div className="hw-coming-soon__bar" />
             <h2 className="hw-coming-soon__title">Coming Soon</h2>
             <p className="hw-coming-soon__sub">
-              Lock screen wallpapers are on their way — tag wallpapers <code>lock-screen</code> in the admin panel to have them show up here.
+              Lock screen wallpapers are on their way — tag wallpapers <code>lock-screen-wallpaper</code> (exact, lowercase) in the admin panel to have them show up here.
             </p>
           </div>
         ) : (
