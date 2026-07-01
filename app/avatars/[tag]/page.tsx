@@ -15,6 +15,7 @@ import AvatarShareBtn from "@/components/AvatarShareBtn";
 export const revalidate = 60;
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
+const DEFAULT_OG_IMAGE = "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/og-image.webp";
 
 interface TagConfig {
   slug: string;
@@ -96,6 +97,29 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const config = TAG_CONFIGS[tag];
   if (!config) return {};
 
+  // Pull one real image from this category to use as the preview thumbnail —
+  // shown by Google (mobile search thumbnail) and by social link previews
+  // (Twitter/Discord/WhatsApp). Without this, previously the site-wide
+  // openGraph object was silently dropped (Next.js does not deep-merge
+  // nested metadata fields), leaving these pages with NO preview image at all.
+  let previewImage: string = DEFAULT_OG_IMAGE;
+  try {
+    const rawImages = await db.image.findMany({
+      where: { isAvatar: true, isAdult: false },
+      orderBy: { createdAt: "desc" },
+      select: { r2Key: true, tags: true },
+      take: 200,
+    });
+    const match = rawImages.find((img) =>
+      config.exactMatch
+        ? img.tags.some((t) => t.toLowerCase() === config.matchKeyword)
+        : img.tags.some((t) => t.toLowerCase().includes(config.matchKeyword))
+    );
+    if (match) previewImage = getPublicUrl(match.r2Key);
+  } catch {
+    // fall back silently to DEFAULT_OG_IMAGE
+  }
+
   return {
     title: config.metaTitle,
     description: config.metaDescription,
@@ -106,11 +130,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       url: `${SITE_URL}/avatars/${config.slug}`,
       siteName: "Haunted Wallpapers",
       type: "website",
+      images: [{ url: previewImage, width: 1200, height: 1200, alt: config.metaTitle }],
     },
     twitter: {
       card: "summary_large_image",
       title: config.metaTitle,
       description: config.metaDescription,
+      images: [previewImage],
     },
     alternates: { canonical: `${SITE_URL}/avatars/${config.slug}` },
   };

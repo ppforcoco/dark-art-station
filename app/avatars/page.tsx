@@ -13,6 +13,7 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 export const revalidate = 60;
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
+const DEFAULT_OG_IMAGE = "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/og-image.webp";
 
 export const metadata: Metadata = {
   title: "Viral Gaming Avatars 2026 | Discord, Twitch, Steam & WhatsApp PFPs",
@@ -30,12 +31,14 @@ export const metadata: Metadata = {
     url: `${SITE_URL}/avatars`,
     siteName: "Haunted Wallpapers",
     type: "website",
+    images: [{ url: DEFAULT_OG_IMAGE, width: 1200, height: 630, alt: "Haunted Wallpapers Avatars" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "Viral Gaming Avatars 2026 | Discord, Twitch, Steam & WhatsApp PFPs",
     description:
       "The avatar refresh everyone's doing right now. Grab scroll-stopping profile pictures for Discord, Steam, Twitch, and WhatsApp before your friends copy the look.",
+    images: [DEFAULT_OG_IMAGE],
   },
   alternates: { canonical: `${SITE_URL}/avatars` },
 };
