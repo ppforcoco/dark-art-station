@@ -139,7 +139,7 @@ export default async function AndroidLockScreenPage({ searchParams }: PageProps)
         <p className="device-page-tagline">The wallpaper that owns the center of your screen.</p>
 
         <h1 className="font-display text-3xl md:text-4xl font-bold leading-tight">
-          Dark <span className="text-[#c9a84c] italic">Lock Screen</span> Wallpapers for Android
+          <span className="text-[#c9a84c] italic">Lock Screen</span> Wallpapers for Android
           {page > 1 && <span className="text-[#4a445a] text-2xl"> — Page {page}</span>}
         </h1>
       </section>

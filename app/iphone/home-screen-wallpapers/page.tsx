@@ -151,7 +151,7 @@ export default async function IphoneHomeScreenPage({ searchParams }: PageProps) 
         <p className="device-page-tagline">Your apps float on this. Make the surface worth it.</p>
 
         <h1 className="font-display text-3xl md:text-4xl font-bold leading-tight">
-          Dark <span className="text-[#c9a84c] italic">Home Screen</span> Wallpapers for iPhone
+          <span className="text-[#c9a84c] italic">Home Screen</span> Wallpapers for iPhone
           {page > 1 && <span className="text-[#4a445a] text-2xl"> — Page {page}</span>}
         </h1>
       </section>
