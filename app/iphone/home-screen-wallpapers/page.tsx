@@ -1,7 +1,6 @@
 // app/iphone/home-screen-wallpapers/page.tsx
 import React from "react";
 import type { Metadata } from "next";
-import Link from "next/link";
 import { db } from "@/lib/db";
 import { Prisma } from "@prisma/client";
 import { getPublicUrl } from "@/lib/r2";
@@ -151,24 +150,10 @@ export default async function IphoneHomeScreenPage({ searchParams }: PageProps) 
       <section className="max-w-7xl mx-auto px-6 md:px-[60px] pt-10 pb-8">
         <p className="device-page-tagline">Your apps float on this. Make the surface worth it.</p>
 
-        <h1 className="font-display text-3xl md:text-4xl font-bold leading-tight mb-6">
+        <h1 className="font-display text-3xl md:text-4xl font-bold leading-tight">
           Dark <span className="text-[#c9a84c] italic">Home Screen</span> Wallpapers for iPhone
           {page > 1 && <span className="text-[#4a445a] text-2xl"> — Page {page}</span>}
         </h1>
-
-        <div className="device-page-intro">
-          <p>
-            iPhone home screens are clean by design — app icons snap to a grid, widgets sit
-            sharp, and your wallpaper is the stage underneath. Every background here is tested
-            on iOS: dark enough to make icons readable, subtle enough to not fight Focus modes,
-            and crisp enough to hold up behind every page of apps.
-          </p>
-          <p>
-            No busy textures that swallow your folders. No gradients that clash with
-            Apple&apos;s glass aesthetic. Just backdrops that make your iPhone feel more
-            expensive than it already is.
-          </p>
-        </div>
       </section>
 
       <div className="hw-tag-pills-wrap">
@@ -220,25 +205,19 @@ export default async function IphoneHomeScreenPage({ searchParams }: PageProps) 
         )}
       </section>
 
-      <section style={{
-        maxWidth: "860px",
-        margin: "0 auto",
-        padding: "40px 24px 64px",
-        borderTop: "1px solid rgba(192,0,26,0.18)",
-        textAlign: "center",
-      }}>
-        <p style={{
-          fontFamily: "var(--font-space, monospace)",
-          fontSize: "0.6rem",
-          letterSpacing: "0.22em",
-          textTransform: "uppercase",
-          color: "#4a445a",
-          marginBottom: "20px",
-        }}>Also available for</p>
-        <div style={{ display: "flex", gap: "14px", justifyContent: "center", flexWrap: "wrap" }}>
-          <Link href="/iphone/lock-screen-wallpapers" className="hw-crosslink-btn">🔒 iPhone Lock Screen</Link>
-          <Link href="/android/home-screen-wallpapers" className="hw-crosslink-btn">🤖 Android Home Screen</Link>
-          <Link href="/iphone" className="hw-crosslink-btn">📱 All iPhone Wallpapers</Link>
+      <section className="device-page-description-wrap">
+        <div className="device-page-description">
+          <p>
+            iPhone home screens are clean by design — app icons snap to a grid, widgets sit
+            sharp, and your wallpaper is the stage underneath. Every background here is tested
+            on iOS: dark enough to make icons readable, subtle enough to not fight Focus modes,
+            and crisp enough to hold up behind every page of apps.
+          </p>
+          <p>
+            No busy textures that swallow your folders. No gradients that clash with
+            Apple&apos;s glass aesthetic. Just backdrops that make your iPhone feel more
+            expensive than it already is.
+          </p>
         </div>
       </section>
 
@@ -256,6 +235,32 @@ export default async function IphoneHomeScreenPage({ searchParams }: PageProps) 
         @media (max-width: 480px) {
           .device-page-tagline { font-size: 1.05rem; margin-bottom: 10px; }
         }
+        .device-page-description-wrap {
+          max-width: 760px;
+          margin: 0 auto;
+          padding: 48px clamp(24px, 5vw, 60px) 72px;
+          border-top: 1px solid rgba(192,0,26,0.18);
+        }
+        .device-page-description {
+          position: relative;
+          text-align: center;
+        }
+        .device-page-description::before {
+          content: "✦";
+          display: block;
+          color: #c9a84c;
+          font-size: 0.9rem;
+          margin-bottom: 20px;
+          opacity: 0.7;
+        }
+        .device-page-description p {
+          font-family: var(--font-body, sans-serif);
+          font-size: clamp(0.92rem, 0.4vw + 0.85rem, 1rem);
+          line-height: 1.75;
+          color: rgba(224,224,248,0.72);
+          margin-bottom: 16px;
+        }
+        .device-page-description p:last-child { margin-bottom: 0; }
         .hw-tag-pills-wrap {
           background-color: var(--bg-primary, #0c0b14);
           padding: 0 clamp(24px, 5vw, 60px) 28px;
@@ -282,27 +287,6 @@ export default async function IphoneHomeScreenPage({ searchParams }: PageProps) 
           color: #fff;
           background: rgba(192,0,26,0.12);
           box-shadow: 0 0 14px rgba(192,0,26,0.15);
-        }
-        .hw-crosslink-btn {
-          font-family: var(--font-space, monospace);
-          font-size: 0.72rem;
-          letter-spacing: 0.14em;
-          text-transform: uppercase;
-          color: #e8e4f8;
-          text-decoration: none;
-          border: 1px solid rgba(192,0,26,0.4);
-          padding: 13px 26px;
-          background: rgba(192,0,26,0.06);
-          transition: all 0.25s ease;
-          display: inline-flex;
-          align-items: center;
-          gap: 8px;
-        }
-        .hw-crosslink-btn:hover {
-          border-color: rgba(192,0,26,0.8);
-          background: rgba(192,0,26,0.13);
-          color: #ffffff;
-          box-shadow: 0 0 22px rgba(192,0,26,0.22);
         }
       `}</style>
 
