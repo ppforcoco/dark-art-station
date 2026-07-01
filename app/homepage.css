@@ -318,7 +318,7 @@
   font-family: Georgia, serif;
   font-style: italic;
   font-size: clamp(.72rem,.9vw,.82rem);
-  color: rgba(255,255,255,.45);
+  color: rgba(255,255,255,.62);
   line-height: 1.5;
   position: relative;
 }
@@ -372,6 +372,6 @@
 .hp-mood-sub {
   font-family: Arial, sans-serif;
   font-size: clamp(.55rem,.65vw,.62rem);
-  color: rgba(255,255,255,.4); text-align: center;
+  color: rgba(255,255,255,.62); text-align: center;
   letter-spacing: .04em; line-height: 1.3;
 }

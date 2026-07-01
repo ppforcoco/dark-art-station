@@ -255,7 +255,7 @@ export default async function Home() {
                     )}
                   </div>
                   <p style={{ fontFamily: "var(--font-cinzel, serif)", fontSize: "0.75rem", color: "rgba(232,228,220,0.85)", marginBottom: "4px", letterSpacing: "0.05em", lineHeight: 1.4 }}>{r.name}</p>
-                  <p style={{ fontFamily: "var(--font-space, monospace)", fontSize: "0.55rem", color: "rgba(157,78,221,0.7)", letterSpacing: "0.08em", textTransform: "uppercase", lineHeight: 1.55 }}>{r.tagline}</p>
+                  <p style={{ fontFamily: "var(--font-space, monospace)", fontSize: "0.55rem", color: "rgba(201,168,230,0.9)", letterSpacing: "0.08em", textTransform: "uppercase", lineHeight: 1.55 }}>{r.tagline}</p>
                 </Link>
               ))}
             </div>
