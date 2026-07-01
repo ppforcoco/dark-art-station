@@ -9,6 +9,10 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 export const revalidate = 0;
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
+// Same real, working default image used in the root layout — the old
+// `${SITE_URL}/og-image.jpg` fallback pointed at a file that doesn't exist
+// in /public, so shares/search previews for this page showed nothing.
+const DEFAULT_OG_IMAGE = "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/og-image.webp";
 
 export async function generateMetadata(): Promise<Metadata> {
   const pageContent = await getPageContent("obsessions");
@@ -17,6 +21,23 @@ export async function generateMetadata(): Promise<Metadata> {
     "Browse all dark wallpaper collections — horror, gothic, dark fantasy and more. Free HD downloads for iPhone, Android and PC.";
   const title =
     pageContent?.title ?? "Collections | Dark Wallpaper Collections | Haunted Wallpapers";
+
+  // Pull one real collection thumbnail — same image visitors already see
+  // in the collection cards on this page — instead of the generic fallback.
+  let ogImage: string = DEFAULT_OG_IMAGE;
+  try {
+    const latest = await db.collection.findFirst({
+      where: { thumbnail: { not: null } },
+      orderBy: { createdAt: "desc" },
+      select: { thumbnail: true },
+    });
+    if (latest?.thumbnail) {
+      ogImage = `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/${latest.thumbnail}`;
+    }
+  } catch {
+    // fall back silently to DEFAULT_OG_IMAGE
+  }
+
   return {
     title,
     description: desc,
@@ -24,9 +45,9 @@ export async function generateMetadata(): Promise<Metadata> {
     openGraph: {
       title, description: desc,
       url: `${SITE_URL}/collections`, siteName: "Haunted Wallpapers", type: "website",
-      images: [{ url: `${SITE_URL}/og-image.jpg`, width: 1200, height: 630, alt: "Haunted Wallpapers — Collections" }],
+      images: [{ url: ogImage, width: 1200, height: 630, alt: "Haunted Wallpapers — Collections" }],
     },
-    twitter: { card: "summary_large_image", title, description: desc, images: [`${SITE_URL}/og-image.jpg`] },
+    twitter: { card: "summary_large_image", title, description: desc, images: [ogImage] },
   };
 }
 

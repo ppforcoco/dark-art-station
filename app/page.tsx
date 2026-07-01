@@ -13,9 +13,11 @@ import TonightSlider from "@/components/TonightSlider";
 import "./homepage.css";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
-const OG_IMAGE = `${SITE_URL}/og-image.jpg`;
 const CDN      = "https://assets.hauntedwallpapers.com";
 const HERO_IMG = `${CDN}/haunted-wallpapers-hero-image.avif`;
+// Use the real hero image visitors actually see, not a fake branded
+// placeholder — this is what shows up in Google/social previews now.
+const OG_IMAGE = HERO_IMG;
 
 // ─── Cached DB queries — all revalidate every 5 minutes ──────────────────────
 // Previously these ran fresh on every request, causing ~1.5–2 s of TTFB.
