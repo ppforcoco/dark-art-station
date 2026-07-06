@@ -71,13 +71,37 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.7,
     }));
 
-    const collectionRoutes: MetadataRoute.Sitemap = collections.map((c) => ({
-      url: `${siteUrl}/collections/${c.slug}`,
-      lastModified: c.updatedAt,
-      changeFrequency: "monthly" as const,
-      priority: 0.8,
-      ...(c.thumbnail ? { images: [r2Url(c.thumbnail)] } : {}),
-    }));
+    // ── SEO FIX ──────────────────────────────────────────────────────────
+    // Some collections use one of their own wallpaper images as the cover
+    // thumbnail (instead of a distinct custom cover asset). If we tag that
+    // same file as the "image" for BOTH the collection listing page AND
+    // the individual wallpaper page, Google has to pick one page to
+    // associate the image with in Image Search — and it consistently
+    // prefers the collection page (more text, more links, more authority)
+    // over the specific per-wallpaper page. That's why searches like
+    // "sirius brawl stars wallpaper" were landing people on the whole
+    // collection instead of the exact Sirius wallpaper page, tanking CTR.
+    //
+    // Fix: build a set of every r2Key already used by an individual image
+    // page, and drop the `images` field from a collection route whenever
+    // its thumbnail duplicates one of those. The collection page still
+    // gets indexed normally — it just stops competing with its own child
+    // page for ownership of that specific image file.
+    const childImageR2Keys = new Set(collectionImages.map((img) => img.r2Key));
+
+    const collectionRoutes: MetadataRoute.Sitemap = collections.map((c) => {
+      const thumbnailIsDuplicateOfChildImage = c.thumbnail && childImageR2Keys.has(c.thumbnail);
+      return {
+        url: `${siteUrl}/collections/${c.slug}`,
+        lastModified: c.updatedAt,
+        changeFrequency: "monthly" as const,
+        priority: 0.8,
+        ...(c.thumbnail && !thumbnailIsDuplicateOfChildImage
+          ? { images: [r2Url(c.thumbnail)] }
+          : {}),
+      };
+    });
+    // ─────────────────────────────────────────────────────────────────────
 
     const imageRoutes: MetadataRoute.Sitemap = collectionImages
       .filter((img) => img.collection?.slug)
