@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import { db as prisma } from "@/lib/db";
 
 function checkAuth(req: NextRequest) {
   const pw = req.headers.get("x-admin-password");
