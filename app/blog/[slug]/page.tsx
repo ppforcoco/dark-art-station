@@ -8,9 +8,30 @@ import BlogPostClient from "./BlogPostClient";
 export const revalidate = 3600;
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
 
-function getCachedPost(slug: string) {
+// unstable_cache serializes its return value for storage/reuse across
+// requests, so Date fields come back as plain strings on cache HITS while
+// staying real Date objects on the very first (cache MISS) call. Calling
+// .toISOString() later on an already-stringified date throws — that was
+// the cause of every /blog/[slug] request 500ing after the first hit.
+// Fix: normalise dates to strings *inside* the cached function so the
+// shape is identical (and safe) whether it's a hit or a miss.
+type CachedBlogPost = Awaited<ReturnType<typeof db.blogPost.findUnique>>;
+type SerialisedBlogPost = Omit<NonNullable<CachedBlogPost>, "createdAt" | "updatedAt"> & {
+  createdAt: string;
+  updatedAt: string;
+};
+
+function getCachedPost(slug: string): Promise<SerialisedBlogPost | null> {
   return unstable_cache(
-    () => db.blogPost.findUnique({ where: { slug } }),
+    async () => {
+      const post = await db.blogPost.findUnique({ where: { slug } });
+      if (!post) return null;
+      return {
+        ...post,
+        createdAt: post.createdAt.toISOString(),
+        updatedAt: post.updatedAt.toISOString(),
+      };
+    },
     [`blog-post-${slug}`],
     { revalidate: 3600 },
   )();
@@ -80,12 +101,10 @@ export default async function BlogPostPage(
 
   if (!post) notFound();
 
-  // Serialise dates for client component
-  const serialisedPost = {
-    ...post,
-    createdAt: post.createdAt.toISOString(),
-    updatedAt: post.updatedAt.toISOString(),
-  };
+  // post's dates are already ISO strings (converted inside getCachedPost,
+  // before the value goes into unstable_cache) — don't call .toISOString()
+  // on them again here.
+  const serialisedPost = post;
   const serialisedAll = allPosts.map((p) => ({
     ...p,
     createdAt: p.createdAt.toISOString(),
