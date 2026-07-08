@@ -8,7 +8,7 @@ const NAV_LINKS = [
   { label: "iPhone",        href: "/iphone"     },
   { label: "Android",       href: "/android"    },
   { label: "PC",            href: "/pc"         },
-  { label: "Matching Sets", href: "/sets"       },
+  { label: "Matching Wallpapers", href: "/matching-wallpapers" },
   { label: "Collections",   href: "/collections" },
   { label: "Live Wallpapers", href: "/live-wallpapers" },
   { label: "Tools",          href: "/tools"          },
@@ -149,7 +149,7 @@ export default function Header() {
                 key={l.href}
                 href={l.href}
                 prefetch={false}
-                className={`hw-nav__link${l.href === "/sets" ? " hw-nav__link--sets" : ""}`}
+                className={`hw-nav__link${l.href === "/matching-wallpapers" ? " hw-nav__link--sets" : ""}`}
               >
                 {l.label}
               </Link>
@@ -258,7 +258,7 @@ export default function Header() {
               key={l.href}
               href={l.href}
               prefetch={false}
-              className={`hw-menu-panel__link${l.href === "/sets" ? " hw-menu-panel__link--sets" : ""}`}
+              className={`hw-menu-panel__link${l.href === "/matching-wallpapers" ? " hw-menu-panel__link--sets" : ""}`}
               onClick={closeMenu}
               tabIndex={menuOpen ? 0 : -1}
             >
@@ -272,7 +272,7 @@ export default function Header() {
             Saved Wallpapers
           </Link>
           <Link href="/tools" prefetch={false} className="hw-menu-panel__link" onClick={closeMenu} tabIndex={menuOpen ? 0 : -1}>
-            🛠 Tools
+            Tools
           </Link>
         </nav>
       </div>
@@ -303,12 +303,12 @@ export default function Header() {
           </svg>
           Collections
         </Link>
-        <Link href="/live-wallpapers" prefetch={false} className="hw-bottom-nav__item" onClick={closeMenu}>
+        <Link href="/matching-wallpapers" prefetch={false} className="hw-bottom-nav__item" onClick={closeMenu}>
           <svg className="hw-bottom-nav__icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
-            <rect x="3" y="5" width="18" height="14" rx="2" />
-            <path d="M10 9l5 3-5 3z" fill="currentColor" stroke="none" />
+            <circle cx="9" cy="12" r="6" />
+            <circle cx="15" cy="12" r="6" />
           </svg>
-          Live
+          Matching
         </Link>
         <button
           type="button"
