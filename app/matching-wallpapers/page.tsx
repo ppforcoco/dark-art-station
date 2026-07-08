@@ -88,7 +88,7 @@ export default async function MatchingWallpapersHubPage() {
   try {
     const images = await db.image.findMany({
       where: { isAvatar: false, isAdult: false, matchingGroupId: { not: null } },
-      orderBy: { createdAt: "desc" },
+      orderBy: { createdAt: "asc" },
       select: { id: true, r2Key: true, tags: true, matchingGroupId: true },
     });
 
