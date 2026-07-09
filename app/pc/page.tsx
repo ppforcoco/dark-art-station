@@ -35,12 +35,31 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
 
   const canonical = tag ? `${siteUrl}/pc?tag=${tag}` : `${siteUrl}/pc`;
 
+  // Pull a real, recent PC wallpaper to use as the social preview image —
+  // without this, /pc had no og:image at all, so Google/Discord/Facebook
+  // previews showed no thumbnail whatsoever.
+  const DEFAULT_OG_IMAGE = "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/og-image.webp";
+  let ogImage: string = DEFAULT_OG_IMAGE;
+  try {
+    const latest = await db.image.findFirst({
+      where: { deviceType: "PC", isAdult: false },
+      orderBy: { createdAt: "desc" },
+      select: { r2Key: true },
+    });
+    if (latest) ogImage = getPublicUrl(latest.r2Key);
+  } catch {
+    // fall back silently to DEFAULT_OG_IMAGE
+  }
+
   return {
     title,
     description,
     keywords: ["pc wallpaper", "desktop wallpaper dark", "hd desktop wallpaper", "free pc wallpaper", "16:9 wallpaper", tag ?? "dark", "dark fantasy"].filter(Boolean),
-    openGraph: { title, description, url: canonical, siteName: "HAUNTED WALLPAPERS", type: "website" },
-    twitter: { card: "summary_large_image", title, description },
+    openGraph: {
+      title, description, url: canonical, siteName: "HAUNTED WALLPAPERS", type: "website",
+      images: [{ url: ogImage, width: 1920, height: 1080, alt: "Dark Desktop Wallpapers" }],
+    },
+    twitter: { card: "summary_large_image", title, description, images: [ogImage] },
     alternates: { canonical },
   };
 }

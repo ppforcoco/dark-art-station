@@ -37,12 +37,30 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
 
   const canonical = tag ? `${siteUrl}/android?tag=${tag}` : `${siteUrl}/android`;
 
+  // Pull a real, recent Android wallpaper to use as the social preview image —
+  // without this, /android had no og:image at all, so previews showed nothing.
+  const DEFAULT_OG_IMAGE = "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/og-image.webp";
+  let ogImage: string = DEFAULT_OG_IMAGE;
+  try {
+    const latest = await db.image.findFirst({
+      where: { deviceType: "ANDROID", isAdult: false },
+      orderBy: { createdAt: "desc" },
+      select: { r2Key: true },
+    });
+    if (latest) ogImage = getPublicUrl(latest.r2Key);
+  } catch {
+    // fall back silently to DEFAULT_OG_IMAGE
+  }
+
   return {
     title,
     description,
     keywords: ["android wallpaper", "dark wallpaper android", "hd android wallpaper", "free android wallpaper", tag ?? "dark", "dark fantasy"].filter(Boolean),
-    openGraph: { title, description, url: canonical, siteName: "HAUNTED WALLPAPERS", type: "website" },
-    twitter: { card: "summary_large_image", title, description },
+    openGraph: {
+      title, description, url: canonical, siteName: "HAUNTED WALLPAPERS", type: "website",
+      images: [{ url: ogImage, width: 1080, height: 1920, alt: "Dark Android Wallpapers" }],
+    },
+    twitter: { card: "summary_large_image", title, description, images: [ogImage] },
     alternates: { canonical },
   };
 }
