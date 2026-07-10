@@ -1,14 +1,8 @@
-/* ═══════════════════════════════════════════════════════════════════
-   CRITICAL — inlined in <style> in layout.tsx (before ANY external CSS)
-   body { background:#000;margin:0 }
-   .hp-hero { background:#000;min-height:50vw }
-   .hp { background:#070510 }
-   ═══════════════════════════════════════════════════════════════════ */
-
 .hp { background:#070510; min-height:100vh; color:#e8e4f0 }
 
 /* ═══════════════════════════════════════════════════════════════════
-   HERO — full-bleed image, text overlaid bottom-left
+   HERO — compact text hero (no background image; kept intentionally
+   lightweight so it never reserves blank space waiting on an asset)
 ═══════════════════════════════════════════════════════════════════ */
 
 .hp-hero {
@@ -19,30 +13,7 @@
   contain: layout style;
 }
 
-/* Full-bleed hero image */
-.hp-hero-img {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center center;
-  display: block;
-  z-index: 1;
-}
-
-/* Vignette — left edge & bottom dark so text stays legible */
-.hp-hero-vignette {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 2;
-  background:
-    linear-gradient(to right,  rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.50) 40%, transparent 75%),
-    linear-gradient(to top,    rgba(0,0,0,0.82) 0%, rgba(0,0,0,0.35) 38%, transparent 65%);
-}
-
-/* Text block — now flows normally inside the compact hero */
+/* Text block — flows normally inside the compact hero */
 .hp-hero-body {
   position: static;
   max-width: min(520px, 90vw);

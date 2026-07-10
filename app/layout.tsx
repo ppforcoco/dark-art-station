@@ -65,15 +65,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" dir="ltr" suppressHydrationWarning style={{ backgroundColor: "#0c0b14", color: "#e8e4dc" }}>
       <head>
-        {/* ── Hero image preload — LCP hint ───────────────────────────────── */}
-        <link
-          rel="preload"
-          as="image"
-          href="https://assets.hauntedwallpapers.com/extras/the-haunted-wallpapers-hero-section-image-mobile-dark-wallpapers-thumbnail.avif"
-          type="image/avif"
-          fetchPriority="high"
-        />
-
         {/* ── Critical inline CSS ─────────────────────────────────────────── */}
         <style dangerouslySetInnerHTML={{ __html: `
           @keyframes hw-flicker {
