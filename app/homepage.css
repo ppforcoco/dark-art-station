@@ -16,11 +16,6 @@
   width: 100%;
   background: #000;
   overflow: hidden;
-  /* Aspect ratio matches hero image (1672 × 941 ≈ 16/9).
-     On mobile we allow a taller crop so the image fills nicely. */
-  aspect-ratio: 16 / 9;
-  min-height: 260px;
-  max-height: 92vh;
   contain: layout style;
 }
 
@@ -47,29 +42,18 @@
     linear-gradient(to top,    rgba(0,0,0,0.82) 0%, rgba(0,0,0,0.35) 38%, transparent 65%);
 }
 
-/* Text block — anchored bottom-left over the image */
+/* Text block — now flows normally inside the compact hero */
 .hp-hero-body {
-  position: absolute;
-  z-index: 3;
-  bottom: clamp(24px, 5.5vw, 60px);
-  left: clamp(20px, 5vw, 72px);
-  /* Don't let text run into the right half of the image on wide screens */
-  max-width: min(520px, 50vw);
+  position: static;
+  max-width: min(520px, 90vw);
   display: flex;
   flex-direction: column;
-  gap: clamp(10px, 1.8vw, 16px);
+  gap: clamp(6px, 1vw, 10px);
 }
 
 @media (max-width: 560px) {
-  .hp-hero {
-    aspect-ratio: unset;
-    min-height: 56vw;
-    max-height: 82vw;
-  }
   .hp-hero-body {
-    max-width: calc(100% - 32px);
-    bottom: clamp(14px, 4vw, 24px);
-    left: clamp(14px, 4vw, 24px);
+    max-width: 100%;
   }
 }
 
