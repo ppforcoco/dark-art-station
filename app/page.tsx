@@ -7,7 +7,6 @@ import Image from "next/image";
 import { db, getWallpaperOfTheDay, getPageContent } from "@/lib/db";
 import { getPublicUrl } from "@/lib/r2";
 import PremiumCountdown from "@/components/PremiumCountdown";
-import StreakBar from "@/components/StreakBar";
 import WallpaperCardGridClient from "@/components/WallpaperCardGridClient";
 import TonightSlider from "@/components/TonightSlider";
 import "./homepage.css";
@@ -155,39 +154,52 @@ export default async function Home() {
 
       <div className="hp">
 
-        {/* ══ HERO ════════════════════════════════════════════════════════ */}
-        <section className="hp-hero">
-
-          {/* Text overlay — bottom-left anchored */}
-          <div className="hp-hero-body">
-            <p className="hp-eyebrow">New drops every day</p>
-            <h1 className="hp-hero-tagline">
-              You&rsquo;ve arrived in Haunted Town —<br />where every wallpaper has a secret
+        {/* ══ HERO (compact) ═══════════════════════════════════════════════ */}
+        <section
+          className="hp-hero"
+          style={{
+            minHeight: "auto",
+            padding: "20px 24px",
+            display: "flex",
+            flexDirection: "column",
+            gap: "10px",
+          }}
+        >
+          <div className="hp-hero-body" style={{ maxWidth: "560px" }}>
+            <p className="hp-eyebrow" style={{ fontSize: "0.65rem", marginBottom: "4px" }}>
+              New drops every day
+            </p>
+            <h1
+              className="hp-hero-tagline"
+              style={{ fontSize: "1.1rem", lineHeight: 1.3, marginBottom: "10px" }}
+            >
+              You&rsquo;ve arrived in Haunted Town — where every wallpaper has a secret
             </h1>
-            <div className="hp-hero-stat">
+            <div
+              className="hp-hero-stat"
+              style={{ gap: "16px", marginBottom: "12px" }}
+            >
               <div>
-                <span className="hp-hero-num">{fmt(totalImages)}</span>
-                <span className="hp-hero-numlabel">Wallpapers</span>
+                <span className="hp-hero-num" style={{ fontSize: "1rem" }}>{fmt(totalImages)}</span>
+                <span className="hp-hero-numlabel" style={{ fontSize: "0.55rem" }}>Wallpapers</span>
               </div>
               <div>
-                <span className="hp-hero-num">4K</span>
-                <span className="hp-hero-numlabel">Quality</span>
+                <span className="hp-hero-num" style={{ fontSize: "1rem" }}>4K</span>
+                <span className="hp-hero-numlabel" style={{ fontSize: "0.55rem" }}>Quality</span>
               </div>
               <div>
-                <span className="hp-hero-num">Free</span>
-                <span className="hp-hero-numlabel">Always</span>
+                <span className="hp-hero-num" style={{ fontSize: "1rem" }}>Free</span>
+                <span className="hp-hero-numlabel" style={{ fontSize: "0.55rem" }}>Always</span>
               </div>
             </div>
-            <div className="hp-hero-cta">
-              <Link prefetch={false} href="/all" className="hp-btn-red">Browse All →</Link>
-              <Link prefetch={false} href="/iphone" className="hp-btn-ghost">iPhone</Link>
-              <Link prefetch={false} href="/android" className="hp-btn-ghost">Android</Link>
+            <div className="hp-hero-cta" style={{ gap: "8px" }}>
+              <Link prefetch={false} href="/all" className="hp-btn-red" style={{ padding: "6px 14px", fontSize: "0.7rem" }}>Browse All →</Link>
+              <Link prefetch={false} href="/iphone" className="hp-btn-ghost" style={{ padding: "6px 14px", fontSize: "0.7rem" }}>iPhone</Link>
+              <Link prefetch={false} href="/android" className="hp-btn-ghost" style={{ padding: "6px 14px", fontSize: "0.7rem" }}>Android</Link>
             </div>
           </div>
-
         </section>
 
-        <StreakBar />
 
         {/* ══ FRESH FROM THE TOWN ══════════════════════════════════════════ */}
         {newThisWeek.length > 0 && (
