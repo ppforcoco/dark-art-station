@@ -142,15 +142,17 @@ meta labels */
 /* body::before noise overlay REMOVED — was creating a GPU compositor layer at z-index:9000 on every scroll frame, causing ~40ms paint thrash on mobile *//* ── Custom Scrollbar ──────────────────────────────────────── */
 
 /* ── FadeUp ────────────────────────────────────────────────── *//* ── Global Content Wrapper — prevents nav overlap ──────────── */
-/* Wraps {children}in layout.tsx. Accounts for:                 */
-/*   --topbar-h  = Halloween bar height (set by JS,
-default 0px) */
-/*   --nav-h     = 88px desktop / 72px mobile                    */
+/* Wraps {children} in layout.tsx. .hw-nav is position:sticky, so it   */
+/* already reserves its own height in normal document flow — this     */
+/* wrapper must NOT add --nav-h on top of that (that was double-       */
+/* counting the nav height and creating a large empty gap above the    */
+/* hero). It only needs to account for --topbar-total, an extra fixed  */
+/* element (e.g. a seasonal banner) that would sit outside the flow.   */
 :root {
   --topbar-total: 0px; /* JS overrides this when topbar is visible — default 0px prevents CLS */
 }
-.content-wrapper { padding-top: calc(var(--topbar-total, 0px) + var(--nav-h, 88px)); }
-@media (max-width: 1279px) {.content-wrapper { padding-top: calc(var(--topbar-total, 0px) + var(--nav-h-mob, 84px)); }
+.content-wrapper { padding-top: var(--topbar-total, 0px); }
+@media (max-width: 1279px) {.content-wrapper { padding-top: var(--topbar-total, 0px); }
 }/* ── Path Bar — breadcrumb strip below nav ──────────────────── */
 
 .nav-logo {
