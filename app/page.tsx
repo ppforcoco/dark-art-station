@@ -14,10 +14,7 @@ import "./homepage.css";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
 const CDN      = "https://assets.hauntedwallpapers.com";
-const HERO_IMG = `${CDN}/haunted-wallpapers-hero-image.avif`;
-// Use the real hero image visitors actually see, not a fake branded
-// placeholder — this is what shows up in Google/social previews now.
-const OG_IMAGE = HERO_IMG;
+const OG_IMAGE = `${CDN}/haunted-wallpapers-hero-image.avif`;
 
 // ─── Cached DB queries — all revalidate every 5 minutes ──────────────────────
 // Previously these ran fresh on every request, causing ~1.5–2 s of TTFB.
@@ -160,23 +157,6 @@ export default async function Home() {
 
         {/* ══ HERO ════════════════════════════════════════════════════════ */}
         <section className="hp-hero">
-
-          {/* Full-bleed background image */}
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={HERO_IMG}
-            alt=""
-            aria-hidden="true"
-            className="hp-hero-img"
-            fetchPriority="high"
-            decoding="async"
-            loading="eager"
-            width="1672"
-            height="941"
-          />
-
-          {/* Gradient vignette so text is legible over the image */}
-          <div className="hp-hero-vignette" aria-hidden="true" />
 
           {/* Text overlay — bottom-left anchored */}
           <div className="hp-hero-body">
