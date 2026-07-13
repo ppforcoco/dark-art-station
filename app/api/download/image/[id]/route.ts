@@ -64,6 +64,14 @@ export async function GET(
     const ipHash = hashIp(rawIp);
     const referer = req.headers.get("referer") ?? null;
 
+    const allowedHost = "hauntedwallpapers.com";
+    if (!referer || !referer.includes(allowedHost)) {
+      return NextResponse.json(
+        { error: "Invalid request origin." },
+        { status: 403 }
+      );
+    }
+
     const last = lastDownload.get(ipHash);
     if (last && Date.now() - last < MIN_DELAY_MS) {
       return NextResponse.json(
