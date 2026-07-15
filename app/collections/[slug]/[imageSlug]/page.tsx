@@ -139,16 +139,6 @@ export default async function CollectionImagePage({ params }: PageProps) {
   const nextImage = currentIdx < siblings.length - 1 ? siblings[currentIdx + 1] : null;
   const nextImageSrc = nextImage ? getPublicUrl(nextImage.r2Key) : null;
 
-  const imageTags = new Set(image.tags);
-  const tagSortedStrip = siblings
-    .filter((s) => s.slug !== imageSlug)
-    .sort((a, b) => {
-      const aScore = ((a as any).tags as string[] ?? []).filter((t) => imageTags.has(t)).length;
-      const bScore = ((b as any).tags as string[] ?? []).filter((t) => imageTags.has(t)).length;
-      return bScore - aScore;
-    })
-    .slice(0, 4);
-
   const related = await getRelatedImages(image.id, image.tags, 6);
 
   return (
@@ -301,25 +291,6 @@ export default async function CollectionImagePage({ params }: PageProps) {
       <PageTracker item={{ slug: image.slug, title: image.title, thumb: thumbUrl, href: `/collections/${slug}/${imageSlug}` }} />
       <RecentlyViewed currentSlug={image.slug} />
       <RelatedWallpapers images={related} />
-
-      {/* ── More Dark Art — moved below all main content/related sections.
-          Previously rendered at the very top of the page (before the hero
-          image), which meant these thumbnails were the first <img> tags in
-          the HTML — a likely reason Google was associating the wrong image
-          with this page. Keeping it as a quick nav aid, just no longer
-          competing with the primary wallpaper for "first image" status. ── */}
-      {tagSortedStrip.length > 0 && (
-        <div style={{ maxWidth: "1280px", margin: "32px auto 0", padding: "10px 24px", borderTop: "1px solid rgba(255,255,255,0.06)", display: "flex", gap: "6px", alignItems: "center" }}>
-          <span style={{ fontFamily: "var(--font-space, monospace)", fontSize: "0.45rem", letterSpacing: "0.2em", textTransform: "uppercase", color: "rgba(255,255,255,0.2)", whiteSpace: "nowrap", marginRight: "4px" }}>More ▸</span>
-          {tagSortedStrip.map((img) => (
-            <Link key={img.slug} href={`/collections/${slug}/${img.slug}`} className="more-strip-link">
-              <div className="more-strip-thumb" style={{ position: "relative", width: "44px", height: "78px", overflow: "hidden", borderRadius: "4px", border: "1px solid rgba(255,255,255,0.08)" }}>
-                <Image src={getPublicUrl(img.r2Key)} alt={img.title} fill className="object-cover" unoptimized loading="lazy" sizes="44px" />
-              </div>
-            </Link>
-          ))}
-        </div>
-      )}
 
       <script
         type="application/ld+json"
