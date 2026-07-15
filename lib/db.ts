@@ -252,11 +252,15 @@ export async function getRelatedImages(
   }));
   scored.sort((a, b) => b.overlap - a.overlap || b.viewCount - a.viewCount);
 
-  // Use any with ≥1 tag match; fallback to full candidates
-  const qualified = scored.filter(img => img.overlap >= 1);
-  const pool = qualified.length >= 1 ? qualified : scored;
+  // Require ≥2 shared tags, as documented above. A single shared tag
+  // (e.g. both images tagged "dark") is too weak a signal and was letting
+  // completely unrelated art (e.g. an anime portrait) show up as "related"
+  // to a game-character wallpaper. If nothing clears that bar, return
+  // nothing rather than falling back to arbitrary top-viewed images —
+  // an empty/hidden section is better than a wrong recommendation.
+  const qualified = scored.filter(img => img.overlap >= 2);
 
-  return pool.slice(0, limit).map(img => ({
+  return qualified.slice(0, limit).map(img => ({
     id:             img.id,
     slug:           img.slug,
     title:          img.title,

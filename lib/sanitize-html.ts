@@ -53,5 +53,14 @@ export function sanitizeAdminHtml(raw: string): string {
     return `<img${attrs} style="max-width:100%;height:auto;display:block;">`;
   });
 
+  // Downgrade any <h1>/<h2> the admin pasted in — the page template already
+  // renders its own single <h1> (the wallpaper/collection title). Letting
+  // admin content add another <h1> (or a second competing <h2>) confuses
+  // the page's heading structure and was a contributing factor in Google
+  // misidentifying the primary subject of some pages. Everything admin
+  // content adds gets bumped to <h3>+.
+  html = html.replace(/<h1(\s[^>]*)?>/gi, "<h3$1>").replace(/<\/h1>/gi, "</h3>");
+  html = html.replace(/<h2(\s[^>]*)?>/gi, "<h3$1>").replace(/<\/h2>/gi, "</h3>");
+
   return html.trim();
 }

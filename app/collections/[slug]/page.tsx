@@ -1,13 +1,13 @@
 // app/shop/[slug]/page.tsx
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import Image from "next/image";
 import Link from "next/link";
 import { db } from "@/lib/db";
 import { getPublicUrl } from "@/lib/r2";
 import AdminHtmlBlock from "@/components/AdminHtmlBlock";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { isPremiumLocked } from "@/lib/premium-lock";
+import { sanitizeAdminHtml } from "@/lib/sanitize-html";
 
 export const revalidate = 3600;
 
@@ -32,12 +32,23 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   const collection = await db.collection.findUnique({
     where: { slug },
-    select: { title: true, description: true, metaDescription: true, thumbnail: true, thumbnailAlt: true },
+    select: {
+      title: true, description: true, metaDescription: true, thumbnail: true, thumbnailAlt: true,
+      images: { select: { r2Key: true } },
+    },
   });
 
   if (!collection) return { title: "Not Found | Haunted Wallpapers" };
 
-  const ogImage = collection.thumbnail
+  // Don't use the collection thumbnail as og:image if it's literally one of
+  // the wallpapers inside the collection — that makes Google see the same
+  // file claimed as the "main image" of two different pages (the collection
+  // page AND that wallpaper's own detail page). The sitemap already avoids
+  // listing this file twice for the same reason; this mirrors that fix here.
+  const thumbnailIsDuplicateOfChildImage =
+    !!collection.thumbnail && collection.images.some((img) => img.r2Key === collection.thumbnail);
+
+  const ogImage = collection.thumbnail && !thumbnailIsDuplicateOfChildImage
     ? `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/${collection.thumbnail}`
     : `${siteUrl}/og-image.jpg`;
 
@@ -144,46 +155,18 @@ export default async function CollectionPage({ params }: PageProps) {
           padding: 24px 24px 80px;
         }
 
-        /* ── Mobile: untouched ── */
-        .coll-desktop-only { display: none; }
-        .coll-mobile-info  { display: block; padding-bottom: 28px; }
-        .coll-mobile-grid  { display: block; }
-
         @media (min-width: 900px) {
-          .coll-layout       { padding: 32px 60px 80px; }
-          .coll-mobile-info  { display: none; }
-          .coll-mobile-grid  { display: none; }
-          .coll-desktop-only { display: block; }
+          .coll-layout { padding: 32px 60px 80px; }
         }
 
-        /* ── Mobile card ── */
-        .coll-img-card {
-          position: relative;
-          aspect-ratio: 9 / 16;
-          overflow: hidden;
-          background: #1a1825;
-          border: 1px solid rgba(255,255,255,0.05);
-          border-radius: 4px;
-          transition: border-color 0.2s, transform 0.2s;
-          display: block;
-        }
-        .coll-img-card:hover {
-          border-color: rgba(192,0,26,0.35);
-          transform: translateY(-3px);
-        }
-        .coll-card-overlay {
-          position: absolute; inset: 0;
-          background: linear-gradient(to top, rgba(10,8,18,0.85) 0%, transparent 55%);
-          display: flex; align-items: flex-end; padding: 10px;
-          opacity: 0; transition: opacity 0.2s;
-        }
-        .coll-img-card:hover .coll-card-overlay { opacity: 1; }
-
-        /* ── Desktop header ── */
+        /* ── Header — single copy, responsive via CSS only ── */
         .coll-desktop-header {
           text-align: center;
           max-width: 760px;
-          margin: 0 auto 48px;
+          margin: 0 auto 32px;
+        }
+        @media (min-width: 900px) {
+          .coll-desktop-header { margin: 0 auto 48px; }
         }
         .coll-info-eyebrow {
           font-family: monospace;
@@ -420,37 +403,6 @@ export default async function CollectionPage({ params }: PageProps) {
           height: auto !important;
         }
 
-        /* ── Mobile info ── */
-        .coll-mobile-title {
-          font-family: var(--font-cinzel, serif);
-          font-size: 1.7rem;
-          font-weight: 700;
-          line-height: 1.2;
-          margin: 0 0 8px;
-          color: var(--text-primary, #e8e4f8);
-        }
-        .coll-mobile-eyebrow {
-          font-family: monospace;
-          font-size: 0.55rem;
-          letter-spacing: 0.22em;
-          text-transform: uppercase;
-          color: #4a445a;
-          margin: 0 0 12px;
-        }
-        .coll-mobile-count {
-          font-family: monospace;
-          font-size: 0.6rem;
-          letter-spacing: 0.14em;
-          text-transform: uppercase;
-          color: #8a809a;
-          margin-bottom: 20px;
-          display: block;
-        }
-        .coll-mobile-grid-inner {
-          display: grid;
-          grid-template-columns: repeat(2, 1fr);
-          gap: 8px;
-        }
       `}</style>
 
       <Breadcrumbs items={[
@@ -461,137 +413,81 @@ export default async function CollectionPage({ params }: PageProps) {
 
       <div className="coll-layout">
 
-        {/* ══ MOBILE (< 900px) — untouched ══ */}
-        <div className="coll-mobile-info">
-          <p className="coll-mobile-eyebrow">{collection.category ?? "Collection"}</p>
-          <h1 className="coll-mobile-title">
+        {/* ══ HEADER — one copy, responsive via CSS only ══ */}
+        <div className="coll-desktop-header">
+          <p className="coll-info-eyebrow">{collection.category ?? "Collection"} · Haunted Wallpapers</p>
+          <h1 className="coll-desktop-title">
             {collection.title}
             {collection.isAdult && (
               <span className="coll-info-adult" style={{ marginLeft: "10px", verticalAlign: "middle" }}>16+</span>
             )}
           </h1>
-          <span className="coll-mobile-count">
+          <span className="coll-desktop-count">
             {mergedImages.length} wallpaper{mergedImages.length !== 1 ? "s" : ""}
           </span>
         </div>
 
-        <div className="coll-mobile-grid">
-          {mergedImages.length === 0 ? (
-            <div className="hw-coming-soon">
-              <div className="hw-coming-soon__sigil">✦ ☽ ✦</div>
-              <div className="hw-coming-soon__bar" />
-              <h2 className="hw-coming-soon__title">Coming Soon</h2>
-              <p className="hw-coming-soon__sub">Dark art is being assembled. Check back soon.</p>
-            </div>
-          ) : (
-            <div className="coll-mobile-grid-inner">
-              {mergedImages.map((img, idx) => {
-                const locked = (img.tags ?? []).includes("badge-premium") && isPremiumLocked((img as any).updatedAt);
-                const href = !collectionImageIds.has(img.id) && (img as any).deviceType
-                  ? `/${(img as any).deviceType.toLowerCase()}/${img.slug}`
-                  : `/collections/${slug}/${img.slug}`;
-                return (
-                  <Link key={img.id} href={href} className="coll-img-card"
-                    style={{ pointerEvents: locked ? "none" : "auto", textDecoration: "none" }}>
-                    <Image
-                      src={getPublicUrl(img.r2Key)}
+        {/* ══ GRID — one copy. Already responsive: auto-fill/minmax collapses
+            to ~2 columns on phones and expands on wider screens, so a
+            separate mobile markup was never actually necessary. ══ */}
+        {mergedImages.length === 0 ? (
+          <div className="hw-coming-soon">
+            <div className="hw-coming-soon__sigil">✦ ☽ ✦</div>
+            <div className="hw-coming-soon__bar" />
+            <h2 className="hw-coming-soon__title">Coming Soon</h2>
+            <p className="hw-coming-soon__sub">Dark art is being assembled. Check back soon.</p>
+          </div>
+        ) : (
+          <div className="coll-mockup-grid">
+            {mergedImages.map((img, idx) => {
+              const locked = (img.tags ?? []).includes("badge-premium") && isPremiumLocked((img as any).updatedAt);
+              const href = !collectionImageIds.has(img.id) && (img as any).deviceType
+                ? `/${(img as any).deviceType.toLowerCase()}/${img.slug}`
+                : `/collections/${slug}/${img.slug}`;
+              const imgUrl = getPublicUrl(img.r2Key);
+
+              return (
+                <Link key={img.id} href={href} className="coll-mockup-link"
+                  style={{ pointerEvents: locked ? "none" : "auto" }}>
+                  {/* Self-contained phone frame — no DeviceMockup dependency */}
+                  <div className="coll-phone">
+                    <div className="coll-phone-notch" aria-hidden="true" />
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={imgUrl}
                       alt={img.altText ?? img.title}
-                      fill className="object-cover"
-                      sizes="50vw"
-                      priority={idx < 2}
-                      unoptimized
-                      style={{ filter: locked ? "blur(10px) brightness(0.25)" : "none" }}
+                      className="coll-phone-img"
+                      loading={idx < 6 ? "eager" : "lazy"}
+                      style={{
+                        filter: locked ? "blur(10px) brightness(0.25)" : "none",
+                      }}
                     />
-                    {locked ? <LockedOverlay /> : (
-                      <div className="coll-card-overlay">
-                        <span style={{ fontFamily: "monospace", fontSize: "0.48rem", letterSpacing: "0.12em", textTransform: "uppercase", color: "#c9a84c" }}>View →</span>
+                    <div className="coll-phone-glass" aria-hidden="true" />
+                    {locked ? (
+                      <div style={{ position: "absolute", inset: 0, zIndex: 9 }}>
+                        <LockedOverlay />
+                      </div>
+                    ) : (
+                      <div className="coll-phone-overlay">
+                        <span>View →</span>
                       </div>
                     )}
-                  </Link>
-                );
-              })}
-            </div>
-          )}
-        </div>
-
-        {/* ══ DESKTOP (≥ 900px) ══ */}
-        <div className="coll-desktop-only">
-
-          {/* HEADER */}
-          <div className="coll-desktop-header">
-            <p className="coll-info-eyebrow">{collection.category ?? "Collection"} · Haunted Wallpapers</p>
-            <h1 className="coll-desktop-title">
-              {collection.title}
-              {collection.isAdult && (
-                <span className="coll-info-adult" style={{ marginLeft: "10px", verticalAlign: "middle" }}>16+</span>
-              )}
-            </h1>
-            <span className="coll-desktop-count">
-              {mergedImages.length} wallpaper{mergedImages.length !== 1 ? "s" : ""}
-            </span>
+                  </div>
+                  <p className="coll-phone-label">{img.title}</p>
+                </Link>
+              );
+            })}
           </div>
+        )}
 
-          {/* PHONE MOCKUP GRID */}
-          {mergedImages.length === 0 ? (
-            <div className="hw-coming-soon">
-              <div className="hw-coming-soon__sigil">✦ ☽ ✦</div>
-              <div className="hw-coming-soon__bar" />
-              <h2 className="hw-coming-soon__title">Coming Soon</h2>
-              <p className="hw-coming-soon__sub">Dark art is being assembled. Check back soon.</p>
-            </div>
-          ) : (
-            <div className="coll-mockup-grid">
-              {mergedImages.map((img, idx) => {
-                const locked = (img.tags ?? []).includes("badge-premium") && isPremiumLocked((img as any).updatedAt);
-                const href = !collectionImageIds.has(img.id) && (img as any).deviceType
-                  ? `/${(img as any).deviceType.toLowerCase()}/${img.slug}`
-                  : `/collections/${slug}/${img.slug}`;
-                const imgUrl = getPublicUrl(img.r2Key);
-
-                return (
-                  <Link key={img.id} href={href} className="coll-mockup-link"
-                    style={{ pointerEvents: locked ? "none" : "auto" }}>
-                    {/* Self-contained phone frame — no DeviceMockup dependency */}
-                    <div className="coll-phone">
-                      <div className="coll-phone-notch" aria-hidden="true" />
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        src={imgUrl}
-                        alt={img.altText ?? img.title}
-                        className="coll-phone-img"
-                        loading={idx < 6 ? "eager" : "lazy"}
-                        style={{
-                          filter: locked ? "blur(10px) brightness(0.25)" : "none",
-                        }}
-                      />
-                      <div className="coll-phone-glass" aria-hidden="true" />
-                      {locked ? (
-                        <div style={{ position: "absolute", inset: 0, zIndex: 9 }}>
-                          <LockedOverlay />
-                        </div>
-                      ) : (
-                        <div className="coll-phone-overlay">
-                          <span>View →</span>
-                        </div>
-                      )}
-                    </div>
-                    <p className="coll-phone-label">{img.title}</p>
-                  </Link>
-                );
-              })}
-            </div>
-          )}
-
-        </div>
-
-        {/* DESCRIPTION — visible on both mobile and desktop */}
+        {/* DESCRIPTION */}
         <div className="coll-desc-section">
           <h2 className="coll-desc-heading">
             <span className="coll-desc-accent">✦</span> About This Collection
           </h2>
           <div className="coll-desc-body">
             {collection.description ? (
-              <AdminHtmlBlock html={collection.description} />
+              <AdminHtmlBlock html={sanitizeAdminHtml(collection.description)} />
             ) : (
               <p>{fallbackDesc}</p>
             )}
