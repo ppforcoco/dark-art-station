@@ -18,7 +18,7 @@ export async function GET(req: NextRequest) {
   if (slug) {
     const collection = await db.collection.findUnique({
       where: { slug },
-      select: { id: true, slug: true, title: true, category: true, description: true, metaDescription: true, thumbnail: true },
+      select: { id: true, slug: true, title: true, category: true, description: true, metaDescription: true, thumbnail: true, rootSlug: true },
     });
     return NextResponse.json({ collection: collection ?? null });
   }
@@ -28,7 +28,7 @@ export async function GET(req: NextRequest) {
     select: {
       id: true, slug: true, title: true, category: true,
       description: true, metaDescription: true, thumbnail: true,
-      isPublished: true,
+      isPublished: true, rootSlug: true,
       _count: { select: { images: true } },
     },
   });
@@ -40,7 +40,7 @@ export async function POST(req: NextRequest) {
   if (!checkAuth(req)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   try {
-    const { title, slug, category, icon, bgClass, tag, featured, description } = await req.json();
+    const { title, slug, category, icon, bgClass, tag, featured, description, rootSlug } = await req.json();
     if (!title?.trim() || !slug?.trim()) {
       return NextResponse.json({ error: "title and slug are required" }, { status: 400 });
     }
@@ -56,6 +56,7 @@ export async function POST(req: NextRequest) {
         featured:    featured === true,
         description: description?.trim() || "",
         thumbnail:   "",
+        rootSlug:    rootSlug === true,
       },
     });
 
@@ -88,7 +89,7 @@ export async function PATCH(req: NextRequest) {
   if (!checkAuth(req)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   try {
-    const { slug, newSlug, title, description, metaDescription, isPublished } = await req.json();
+    const { slug, newSlug, title, description, metaDescription, isPublished, rootSlug } = await req.json();
     if (!slug) return NextResponse.json({ error: "slug is required" }, { status: 400 });
 
     const updated = await db.collection.update({
@@ -99,14 +100,17 @@ export async function PATCH(req: NextRequest) {
         ...(description !== undefined ? { description } : {}),
         ...(metaDescription !== undefined ? { metaDescription: metaDescription || null } : {}),
         ...(isPublished !== undefined ? { isPublished: Boolean(isPublished) } : {}),
+        ...(rootSlug !== undefined ? { rootSlug: Boolean(rootSlug) } : {}),
       },
-      select: { id: true, slug: true, title: true, description: true, metaDescription: true, isPublished: true },
+      select: { id: true, slug: true, title: true, description: true, metaDescription: true, isPublished: true, rootSlug: true },
     });
 
     // Bust the cached public page immediately — without this, the edit is
-    // correct in the DB but the live /shop/[slug] page (revalidate = 3600)
-    // won't show it for up to an hour.
+    // correct in the DB but the live page (revalidate = 3600) won't show it
+    // for up to an hour. slug here is the OLD slug (pre-rename), which is
+    // what matters for busting the currently-live cached path.
     revalidateCollectionPage(slug);
+    if (newSlug !== undefined && newSlug !== slug) revalidateCollectionPage(newSlug);
 
     return NextResponse.json({ ok: true, collection: updated });
   } catch (err) {

@@ -43,13 +43,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       }),
       db.collection.findMany({
         where: { isPublished: true },
-        select: { slug: true, title: true, thumbnail: true, updatedAt: true },
+        select: { slug: true, title: true, thumbnail: true, updatedAt: true, rootSlug: true },
         orderBy: { updatedAt: "desc" },
       }),
       db.image.findMany({
         select: {
           slug: true, title: true, r2Key: true, updatedAt: true,
-          collection: { select: { slug: true } },
+          collection: { select: { slug: true, rootSlug: true } },
         },
         where: { collectionId: { not: null }, isAdult: false, collection: { isPublished: true } },
         orderBy: { updatedAt: "desc" },
@@ -92,7 +92,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const collectionRoutes: MetadataRoute.Sitemap = collections.map((c) => {
       const thumbnailIsDuplicateOfChildImage = c.thumbnail && childImageR2Keys.has(c.thumbnail);
       return {
-        url: `${siteUrl}/collections/${c.slug}`,
+        url: c.rootSlug ? `${siteUrl}/${c.slug}` : `${siteUrl}/collections/${c.slug}`,
         lastModified: c.updatedAt,
         changeFrequency: "monthly" as const,
         priority: 0.8,
@@ -106,7 +106,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const imageRoutes: MetadataRoute.Sitemap = collectionImages
       .filter((img) => img.collection?.slug)
       .map((img) => ({
-        url: `${siteUrl}/collections/${img.collection?.slug}/${img.slug}`,
+        url: img.collection?.rootSlug
+          ? `${siteUrl}/${img.slug}`
+          : `${siteUrl}/collections/${img.collection?.slug}/${img.slug}`,
         lastModified: img.updatedAt,
         changeFrequency: "monthly" as const,
         priority: 0.6,

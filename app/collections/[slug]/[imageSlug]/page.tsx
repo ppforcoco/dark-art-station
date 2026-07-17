@@ -1,6 +1,6 @@
 // app/shop/[slug]/[imageSlug]/page.tsx
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import KeyboardNav from "@/components/KeyboardNav";
@@ -109,7 +109,7 @@ export default async function CollectionImagePage({ params }: PageProps) {
   const collection = await db.collection.findUnique({
     where: { slug },
     select: {
-      id: true, slug: true, title: true,
+      id: true, slug: true, title: true, rootSlug: true,
       images: {
         orderBy: { sortOrder: "asc" },
         select: { slug: true, title: true, altText: true, r2Key: true, sortOrder: true, tags: true },
@@ -118,6 +118,10 @@ export default async function CollectionImagePage({ params }: PageProps) {
   });
 
   if (!collection) notFound();
+
+  // Root-level collections' wallpapers live at hauntedwallpapers.com/{imageSlug}
+  // directly — send anyone hitting the old nested URL straight there.
+  if (collection.rootSlug) permanentRedirect(`/${imageSlug}`);
 
   // NOTE: view-count increments happen here unconditionally because this
   // page is statically revalidated (export const revalidate = 3600 above).

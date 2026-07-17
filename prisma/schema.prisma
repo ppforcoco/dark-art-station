@@ -38,6 +38,13 @@ model Collection {
   /// Set to false to hide from all public pages and sitemap without deleting.
   isPublished Boolean  @default(true)
 
+  /// Set to true to serve this collection at the site root (e.g.
+  /// hauntedwallpapers.com/melodie-brawl-stars-wallpaper) instead of nested
+  /// under /collections/. Its images then also get root-level URLs
+  /// (e.g. /melodie-4k) instead of /collections/{slug}/{imageSlug}.
+  /// The old /collections/{slug} URL keeps working — it 308-redirects here.
+  rootSlug    Boolean  @default(false)
+
   images      Image[]
   downloads   Download[]
 

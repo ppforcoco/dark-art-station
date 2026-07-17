@@ -68,6 +68,17 @@ const getCachedPageContent = unstable_cache(
   { revalidate: 3600 },
 );
 
+const getCachedCultFollowing = unstable_cache(
+  () => db.collection.findMany({
+    where: { rootSlug: true, isPublished: true },
+    orderBy: [{ featured: "desc" }, { createdAt: "desc" }],
+    take: 10,
+    select: { slug: true, title: true, thumbnail: true, thumbnailAlt: true, category: true },
+  }),
+  ["homepage-cult-following"],
+  { revalidate: 300 },
+);
+
 export async function generateMetadata(): Promise<Metadata> {
   const pageContent = await getCachedPageContent();
   const desc = pageContent?.metaDesc ??
@@ -106,6 +117,7 @@ export default async function Home() {
   let premiumThisWeek: Array<{ id: string; slug: string; title: string; r2Key: string; deviceType: string | null; tags: string[]; updatedAt: Date | null }> = [];
 
   let residents: Array<{ slug: string; name: string; tagline: string; portraitKey: string }> = [];
+  let cultFollowing: Array<{ slug: string; title: string; thumbnail: string | null; thumbnailAlt: string | null; category: string }> = [];
 
   try {
     [wotd, totalImages, newThisWeek, premiumThisWeek] = await Promise.all([
@@ -120,6 +132,7 @@ export default async function Home() {
       take: 6,
       select: { slug: true, name: true, tagline: true, portraitKey: true },
     });
+    cultFollowing = await getCachedCultFollowing();
   } catch (err) {
     console.error("[home/page] DB error:", err);
   }
@@ -213,6 +226,45 @@ export default async function Home() {
             </div>
 
             <TonightSlider items={newItems} />
+          </section>
+        )}
+
+
+        {/* ══ CULT FOLLOWING — fandom/character wallpapers, root-level pages ══ */}
+        {cultFollowing.length > 0 && (
+          <section className="hp-section" style={{ marginBottom: "clamp(48px, 8vw, 96px)" }}>
+            <div className="hp-section-head">
+              <div>
+                <p className="hp-section-eye" style={{ color: "#c9a84c" }}>Cult Following</p>
+                <h2 className="hp-section-title">Beyond Haunted Town</h2>
+                <p className="hp-section-sub">The characters everyone&rsquo;s obsessed with — reimagined dark.</p>
+              </div>
+              <div style={{ display: "flex", gap: "8px" }}>
+                <Link prefetch={false} href="/iphone" className="hp-btn-ghost" style={{ padding: "6px 14px", fontSize: "0.7rem" }}>iPhone</Link>
+                <Link prefetch={false} href="/android" className="hp-btn-ghost" style={{ padding: "6px 14px", fontSize: "0.7rem" }}>Android</Link>
+              </div>
+            </div>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(140px, 1fr))", gap: "16px", marginTop: "32px" }}>
+              {cultFollowing.map((c) => (
+                <Link key={c.slug} href={`/${c.slug}`} style={{ display: "block", textDecoration: "none" }}>
+                  <div style={{ aspectRatio: "9/16", background: "#0a0812", overflow: "hidden", marginBottom: "8px", border: "1px solid rgba(201,168,76,0.15)" }}>
+                    {c.thumbnail ? (
+                      <img
+                        src={getPublicUrl(c.thumbnail)}
+                        alt={c.thumbnailAlt ?? c.title}
+                        style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    ) : (
+                      <div style={{ width: "100%", height: "100%" }} />
+                    )}
+                  </div>
+                  <p style={{ fontFamily: "var(--font-cinzel, serif)", fontSize: "0.75rem", color: "rgba(232,228,220,0.85)", marginBottom: "4px", letterSpacing: "0.05em", lineHeight: 1.4 }}>{c.title}</p>
+                  <p style={{ fontFamily: "var(--font-space, monospace)", fontSize: "0.55rem", color: "rgba(201,168,76,0.9)", letterSpacing: "0.08em", textTransform: "uppercase", lineHeight: 1.55 }}>{c.category}</p>
+                </Link>
+              ))}
+            </div>
           </section>
         )}
 

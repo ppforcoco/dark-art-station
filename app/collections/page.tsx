@@ -27,7 +27,7 @@ export async function generateMetadata(): Promise<Metadata> {
   let ogImage: string = DEFAULT_OG_IMAGE;
   try {
     const latest = await db.collection.findFirst({
-      where: { NOT: { thumbnail: "" } },
+      where: { NOT: { thumbnail: "" }, rootSlug: false },
       orderBy: { createdAt: "desc" },
       select: { thumbnail: true },
     });
@@ -54,7 +54,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function CollectionsPage() {
   const [collections, pageContent] = await Promise.all([
     db.collection.findMany({
-      where: { isPublished: true },
+      where: { isPublished: true, rootSlug: false },
       orderBy: [{ featured: "desc" }, { createdAt: "asc" }],
       select: {
         id: true, slug: true, title: true, category: true,

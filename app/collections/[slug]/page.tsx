@@ -1,6 +1,6 @@
 // app/shop/[slug]/page.tsx
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import Link from "next/link";
 import { db } from "@/lib/db";
 import { getPublicUrl } from "@/lib/r2";
@@ -90,7 +90,7 @@ export default async function CollectionPage({ params }: PageProps) {
     select: {
       id: true, slug: true, title: true, description: true,
       thumbnail: true, thumbnailAlt: true, icon: true,
-      category: true, isAdult: true, isPublished: true,
+      category: true, isAdult: true, isPublished: true, rootSlug: true,
       images: {
         orderBy: { sortOrder: "asc" },
         select: {
@@ -104,6 +104,11 @@ export default async function CollectionPage({ params }: PageProps) {
 
   if (!collection) notFound();
   if (!collection.isPublished) notFound();
+
+  // Root-level collections (e.g. character wallpaper pages) live at
+  // hauntedwallpapers.com/{slug} — send anyone hitting the old nested
+  // /collections/{slug} URL straight there so there's one canonical URL.
+  if (collection.rootSlug) permanentRedirect(`/${slug}`);
 
   const districtTag = DISTRICT_TAG_MAP[slug];
   const districtImages = districtTag
@@ -124,7 +129,7 @@ export default async function CollectionPage({ params }: PageProps) {
   ];
 
   const relatedRaw = await db.collection.findMany({
-    where: { slug: { not: slug }, isPublished: true },
+    where: { slug: { not: slug }, isPublished: true, rootSlug: false },
     select: {
       slug: true, title: true, category: true, thumbnail: true, thumbnailAlt: true,
       _count: { select: { images: true } },
