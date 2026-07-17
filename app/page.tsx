@@ -138,7 +138,7 @@ export default async function Home() {
             </div>
             <div className="hp-hero-cta" style={{ gap: "8px" }}>
               <Link prefetch={false} href="/all" className="hp-btn-red" style={{ padding: "6px 14px", fontSize: "0.7rem" }}>Browse All →</Link>
-              <Link prefetch={false} href="/melodie-brawl-stars" className="hp-btn-ghost" style={{ padding: "6px 14px", fontSize: "0.7rem" }}>Beyond Haunted Town</Link>
+              <Link prefetch={false} href="/collections" className="hp-btn-ghost" style={{ padding: "6px 14px", fontSize: "0.7rem" }}>Beyond Haunted Town</Link>
               <Link prefetch={false} href="/residents" className="hp-btn-ghost" style={{ padding: "6px 14px", fontSize: "0.7rem" }}>Residents</Link>
             </div>
           </div>

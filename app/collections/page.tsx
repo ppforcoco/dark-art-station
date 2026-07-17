@@ -54,12 +54,12 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function CollectionsPage() {
   const [collections, pageContent] = await Promise.all([
     db.collection.findMany({
-      where: { isPublished: true, rootSlug: false },
+      where: { isPublished: true },
       orderBy: [{ featured: "desc" }, { createdAt: "asc" }],
       select: {
         id: true, slug: true, title: true, category: true,
         tag: true, icon: true, bgClass: true, featured: true,
-        isAdult: true, thumbnail: true, thumbnailAlt: true,
+        isAdult: true, thumbnail: true, thumbnailAlt: true, rootSlug: true,
         _count: { select: { images: true } },
       },
     }),
@@ -192,8 +192,10 @@ export default async function CollectionsPage() {
                       </div>
                     );
 
+                    const href = col.rootSlug ? `/${col.slug}` : `/collections/${col.slug}`;
+
                     return (
-                      <Link prefetch={false} key={col.id} href={`/collections/${col.slug}`} style={{ textDecoration: "none", display: "block" }}>{card}</Link>
+                      <Link prefetch={false} key={col.id} href={href} style={{ textDecoration: "none", display: "block" }}>{card}</Link>
                     );
                   })}
                 </div>
