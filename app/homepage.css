@@ -32,7 +32,7 @@
   font-family: Arial, sans-serif;
   font-size: clamp(.58rem, .85vw, .7rem);
   letter-spacing: .28em; text-transform: uppercase;
-  color: #c0001a; margin: 0;
+  color: #ff4757; margin: 0;
 }
 .hp-hero-tagline {
   font-family: Arial, sans-serif;
