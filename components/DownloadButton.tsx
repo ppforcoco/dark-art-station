@@ -143,16 +143,6 @@ export default function DownloadButton({ href, slug, viewCount, downloadCount, l
     <>
       <div className="download-btn-wrap">
 
-        <div className="download-stats-row">
-          <span style={{ display: "flex", gap: "12px" }}>
-            <span className="download-stat">↓ {fmtCount(displayDownloads)} downloads</span>
-            <span className="download-stat">👁 {fmtCount(displayViews)} views</span>
-          </span>
-          {state === "done" && (
-            <span className="download-saved-msg">✓ Saved</span>
-          )}
-        </div>
-
         <div style={{ display: "flex", gap: "10px" }}>
           <a
             href={href}
@@ -187,6 +177,16 @@ export default function DownloadButton({ href, slug, viewCount, downloadCount, l
                 </svg>
               )}
             </button>
+          )}
+        </div>
+
+        <div className="download-stats-row">
+          <span style={{ display: "flex", gap: "12px" }}>
+            <span className="download-stat">↓ {fmtCount(displayDownloads)} downloads</span>
+            <span className="download-stat">👁 {fmtCount(displayViews)} views</span>
+          </span>
+          {state === "done" && (
+            <span className="download-saved-msg">✓ Saved</span>
           )}
         </div>
       </div>

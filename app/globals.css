@@ -8087,6 +8087,16 @@ body:has(.blog-post-page) .site-header,
             overflow: hidden !important;
           }
         }
+        /* Shrink the preview on mobile so the download button lands
+           within the first viewport instead of below the fold. */
+        @media (max-width: 767px) {
+          .shop-detail-image-wrap > div {
+            width: auto !important;
+            max-width: 100%;
+            max-height: 46vh;
+            margin: 0 auto;
+          }
+        }
         @media (min-width: 768px) {
           .hw-img-arrow--prev {
             left: -22px;

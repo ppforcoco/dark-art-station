@@ -15,9 +15,9 @@ export async function generateMetadata(): Promise<Metadata> {
   const pageContent = await getPageContent("cool-wallpapers");
   const desc =
     pageContent?.metaDesc ??
-    "Cool wallpapers you won't find anywhere else — character crossovers, gaming icons and bright drops from Haunted Town. Free HD downloads for iPhone, Android and PC.";
+    "Discover cool wallpapers in HD and 4K for iPhone, Android and PC — character crossovers, gaming icons and bold new drops. Free, no sign-up needed.";
   const title =
-    pageContent?.title ?? "Cool Wallpapers | Character & Gaming Wallpapers | Haunted Wallpapers";
+    pageContent?.title ?? "Cool Wallpapers in HD & 4K for iPhone, Android & PC | Haunted Wallpapers";
 
   let ogImage: string = DEFAULT_OG_IMAGE;
   try {
@@ -84,10 +84,10 @@ export default async function CoolWallpapersPage() {
       {/* ── Title ── */}
       <section className="max-w-7xl mx-auto px-6 md:px-[60px] pt-10 pb-4">
         <h1 className="font-display text-3xl md:text-4xl font-bold leading-tight mb-2">
-          Cool <span style={{ color: "#c9a84c", fontStyle: "italic" }}>Wallpapers</span>
+          Cool <span style={{ color: "#c9a84c", fontStyle: "italic" }}>Wallpapers</span> in HD &amp; 4K for iPhone, Android &amp; PC
         </h1>
-        <p style={{ color: "#9a94a8", fontSize: "0.9rem", maxWidth: "560px" }}>
-          Character crossovers, gaming icons and bright drops — beyond Haunted Town.
+        <p style={{ color: "#9a94a8", fontSize: "0.9rem", maxWidth: "640px" }}>
+          This is where Haunted Town gets colorful. Cool Wallpapers is home to character crossovers, gaming icons and bold, bright art you won&rsquo;t find anywhere else on the site — starting with Melodie from Brawl Stars, with new drops added regularly. Every wallpaper is free to download in HD and 4K, ready for your iPhone, Android or PC — no account required.
         </p>
       </section>
 
