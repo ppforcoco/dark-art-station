@@ -753,7 +753,7 @@ function LivePreviewTab(){
   </div>;
 }
 
-interface CollectionRecord{id:string;slug:string;title:string;category:string;description:string;metaDescription:string|null;thumbnail:string|null;isPublished:boolean;_count:{images:number};}
+interface CollectionRecord{id:string;slug:string;title:string;category:string;description:string;metaDescription:string|null;thumbnail:string|null;isPublished:boolean;rootSlug:boolean;_count:{images:number};}
 
 function CollectionsTab({password}:{password:string}){
   const[collections,setCollections]=useState<CollectionRecord[]>([]);
@@ -774,8 +774,11 @@ function CollectionsTab({password}:{password:string}){
   const[createIcon,setCreateIcon]=useState("🖤");
   const[createTag,setCreateTag]=useState("Collection");
   const[createFeatured,setCreateFeatured]=useState(false);
+  const[createRootSlug,setCreateRootSlug]=useState(false);
   const[createMsg,setCreateMsg]=useState<{type:"ok"|"err";text:string}|null>(null);
   const[creating,setCreating]=useState(false);
+  const[editRootSlug,setEditRootSlug]=useState(false);
+  const[deleting,setDeleting]=useState(false);
   const[thumbFile,setThumbFile]=useState<File|null>(null);
   const[thumbPreview,setThumbPreview]=useState("");
   const[thumbDragging,setThumbDragging]=useState(false);
@@ -787,9 +790,9 @@ function CollectionsTab({password}:{password:string}){
   async function handleCreate(){
     if(!createTitle.trim()||!createSlug.trim())return;
     setCreating(true);setCreateMsg(null);
-    try{const res=await fetch("/api/hw-admin/collections",{method:"POST",headers:{"Content-Type":"application/json","x-admin-password":password},body:JSON.stringify({title:createTitle.trim(),slug:createSlug.trim(),category:createCategory.trim()||"General",icon:createIcon.trim()||"🖤",tag:createTag.trim()||"Collection",featured:createFeatured})});
+    try{const res=await fetch("/api/hw-admin/collections",{method:"POST",headers:{"Content-Type":"application/json","x-admin-password":password},body:JSON.stringify({title:createTitle.trim(),slug:createSlug.trim(),category:createCategory.trim()||"General",icon:createIcon.trim()||"🖤",tag:createTag.trim()||"Collection",featured:createFeatured,rootSlug:createRootSlug})});
       const j=await res.json();
-      if(res.ok){setCreateMsg({type:"ok",text:`✓ Created "${createTitle}"`});setCreateTitle("");setCreateSlug("");setCreateCategory("General");setCreateIcon("🖤");setCreateTag("Collection");setCreateFeatured(false);setShowCreate(false);load();}
+      if(res.ok){setCreateMsg({type:"ok",text:`✓ Created "${createTitle}"`});setCreateTitle("");setCreateSlug("");setCreateCategory("General");setCreateIcon("🖤");setCreateTag("Collection");setCreateFeatured(false);setCreateRootSlug(false);setShowCreate(false);load();}
       else setCreateMsg({type:"err",text:j.error??"Create failed."});}
     catch{setCreateMsg({type:"err",text:"Network error."});}setCreating(false);
   }
@@ -805,7 +808,7 @@ function CollectionsTab({password}:{password:string}){
 
   function openCollection(c:CollectionRecord){
     setSelected(c);setDesc(c.description??"");setMetaDesc(c.metaDescription??"");
-    setEditTitle(c.title);setEditSlug(c.slug);
+    setEditTitle(c.title);setEditSlug(c.slug);setEditRootSlug(!!c.rootSlug);
     setMsg(null);setDescMode("html");
     setThumbFile(null);setThumbPreview("");setThumbMsg(null);
     if(thumbInputRef.current)thumbInputRef.current.value="";
@@ -824,11 +827,33 @@ function CollectionsTab({password}:{password:string}){
 
   async function handleSave(){
     if(!selected)return;setSaving(true);setMsg(null);
-    try{const res=await fetch("/api/hw-admin/collections",{method:"PATCH",headers:{"Content-Type":"application/json","x-admin-password":password},body:JSON.stringify({slug:selected.slug,newSlug:editSlug!==selected.slug?editSlug:undefined,title:editTitle!==selected.title?editTitle:undefined,description:desc,metaDescription:metaDesc||null})});
+    try{const res=await fetch("/api/hw-admin/collections",{method:"PATCH",headers:{"Content-Type":"application/json","x-admin-password":password},body:JSON.stringify({slug:selected.slug,newSlug:editSlug!==selected.slug?editSlug:undefined,title:editTitle!==selected.title?editTitle:undefined,description:desc,metaDescription:metaDesc||null,rootSlug:editRootSlug})});
       const j=await res.json();
-      if(res.ok){setMsg({type:"ok",text:`✓ Saved "${editTitle}"`});setCollections(prev=>prev.map(c=>c.slug===selected.slug?{...c,title:editTitle,slug:editSlug,description:desc,metaDescription:metaDesc||null}:c));setSelected(s=>s?{...s,title:editTitle,slug:editSlug,description:desc,metaDescription:metaDesc||null}:null);}
+      if(res.ok){setMsg({type:"ok",text:`✓ Saved "${editTitle}"`});setCollections(prev=>prev.map(c=>c.slug===selected.slug?{...c,title:editTitle,slug:editSlug,description:desc,metaDescription:metaDesc||null,rootSlug:editRootSlug}:c));setSelected(s=>s?{...s,title:editTitle,slug:editSlug,description:desc,metaDescription:metaDesc||null,rootSlug:editRootSlug}:null);}
       else setMsg({type:"err",text:j.error??"Save failed."});}
     catch{setMsg({type:"err",text:"Network error."});}setSaving(false);
+  }
+
+  async function handleDeleteCollection(){
+    if(!selected)return;
+    const imgCount=selected._count.images;
+    const warning=imgCount>0
+      ?`Delete "${selected.title}"?\n\nThis PERMANENTLY deletes the collection AND all ${imgCount} image record${imgCount===1?"":"s"} inside it from the database. This cannot be undone.\n\nType-check yourself: are you sure?`
+      :`Delete "${selected.title}"?\n\nThis permanently removes the collection from the database. This cannot be undone.`;
+    if(!confirm(warning))return;
+    setDeleting(true);setMsg(null);
+    try{
+      const res=await fetch("/api/hw-admin/collections",{method:"DELETE",headers:{"Content-Type":"application/json","x-admin-password":password},body:JSON.stringify({slug:selected.slug})});
+      const j=await res.json();
+      if(res.ok){
+        setCollections(prev=>prev.filter(c=>c.slug!==selected.slug));
+        setSelected(null);
+        setMsg(null);
+      }else{
+        setMsg({type:"err",text:j.error??"Delete failed."});
+      }
+    }catch{setMsg({type:"err",text:"Network error."});}
+    setDeleting(false);
   }
 
   async function handleThumbUpload(){
@@ -876,6 +901,10 @@ function CollectionsTab({password}:{password:string}){
           <input type="checkbox" checked={createFeatured} onChange={e=>setCreateFeatured(e.target.checked)} style={{accentColor:C.gold}}/>
           <span style={{color:C.textSec,fontSize:"0.72rem"}}>Featured (shows at top)</span>
         </label>
+        <label style={{display:"flex",alignItems:"center",gap:"8px",cursor:"pointer",marginBottom:"8px"}}>
+          <input type="checkbox" checked={createRootSlug} onChange={e=>setCreateRootSlug(e.target.checked)} style={{accentColor:C.gold}}/>
+          <span style={{color:C.textSec,fontSize:"0.72rem"}}>Root-level URL (e.g. hauntedwallpapers.com/{createSlug||"slug"} instead of /collections/{createSlug||"slug"})</span>
+        </label>
         {createMsg&&<p style={{fontSize:"0.72rem",color:createMsg.type==="ok"?C.green:C.red,margin:"0 0 6px"}}>{createMsg.text}</p>}
         <Btn onClick={handleCreate} disabled={creating||!createTitle.trim()||!createSlug.trim()}>{creating?"Creating…":"Create Collection"}</Btn>
       </div>}
@@ -897,6 +926,7 @@ function CollectionsTab({password}:{password:string}){
                 <p style={{color:C.textMut,fontSize:"0.6rem",marginTop:"2px"}}>{c._count.images} images · {c.category}</p>
                 <div style={{display:"flex",gap:"6px",marginTop:"2px",flexWrap:"wrap"}}>
                   {!c.isPublished&&<p style={{color:C.red,fontSize:"0.55rem",margin:0,background:"rgba(192,0,26,0.15)",padding:"1px 5px"}}>● HIDDEN</p>}
+                  {c.rootSlug&&<p style={{color:C.gold,fontSize:"0.55rem",margin:0,background:"rgba(201,168,76,0.15)",padding:"1px 5px"}}>◆ ROOT</p>}
                   {hasThumb&&<p style={{color:C.gold,fontSize:"0.55rem",margin:0}}>🖼 thumb</p>}
                   {hasContent&&<p style={{color:hasHtml?C.purple:C.green,fontSize:"0.55rem",margin:0}}>{hasHtml?"● HTML":"● desc"}</p>}
                 </div>
@@ -916,8 +946,12 @@ function CollectionsTab({password}:{password:string}){
             <p style={{color:C.red,fontSize:"0.6rem",letterSpacing:"0.2em",textTransform:"uppercase",marginBottom:"4px"}}>Editing Collection</p>
             <input value={editTitle} onChange={e=>setEditTitle(e.target.value)} style={{...inp,fontSize:"1rem",fontWeight:500,color:C.gold,marginBottom:"6px",width:"100%"}}/>
             <input value={editSlug} onChange={e=>setEditSlug(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g,"-"))} style={{...inp,fontSize:"0.65rem",color:C.textMut,marginBottom:"4px",width:"100%"}}/>
-            <div style={{display:"flex",gap:"12px",marginTop:"4px"}}>
-              <a href={`https://hauntedwallpapers.com/collections/${editSlug}`} target="_blank" rel="noopener noreferrer" style={{color:C.textMut,fontSize:"0.65rem",textDecoration:"none"}}>↗ View Live</a>
+            <div style={{display:"flex",gap:"12px",marginTop:"4px",alignItems:"center",flexWrap:"wrap"}}>
+              <a href={`https://hauntedwallpapers.com/${editRootSlug?editSlug:`collections/${editSlug}`}`} target="_blank" rel="noopener noreferrer" style={{color:C.textMut,fontSize:"0.65rem",textDecoration:"none"}}>↗ View Live</a>
+              <label style={{display:"flex",alignItems:"center",gap:"6px",cursor:"pointer"}}>
+                <input type="checkbox" checked={editRootSlug} onChange={e=>setEditRootSlug(e.target.checked)} style={{accentColor:C.gold}}/>
+                <span style={{color:C.textSec,fontSize:"0.65rem"}}>Root-level URL (hauntedwallpapers.com/{editSlug} instead of /collections/{editSlug})</span>
+              </label>
             </div>
           </div>
           <div style={{display:"flex",gap:"8px",flexWrap:"wrap"}}>
@@ -925,6 +959,9 @@ function CollectionsTab({password}:{password:string}){
               {toggling?"…":selected.isPublished?"⬇ Unpublish":"⬆ Publish"}
             </Btn>
             <Btn onClick={handleSave} disabled={saving}>{saving?"Saving…":"💾 Save Description"}</Btn>
+            <Btn onClick={handleDeleteCollection} disabled={deleting} variant="danger" style={{background:"transparent",color:C.red,borderColor:"rgba(192,0,26,0.5)"}}>
+              {deleting?"…":"🗑 Delete Collection"}
+            </Btn>
           </div>
         </div>
         <Msg msg={msg}/>
