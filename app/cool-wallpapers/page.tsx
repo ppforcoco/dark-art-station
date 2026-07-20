@@ -55,6 +55,11 @@ export default async function CoolWallpapersPage() {
         id: true, slug: true, title: true, category: true,
         tag: true, icon: true, bgClass: true, featured: true,
         isAdult: true, thumbnail: true, thumbnailAlt: true,
+        images: {
+          orderBy: { sortOrder: "asc" },
+          take: 4,
+          select: { r2Key: true },
+        },
         _count: { select: { images: true } },
       },
     }),
@@ -106,6 +111,10 @@ export default async function CoolWallpapersPage() {
               const thumb = col.thumbnail && col.thumbnail.trim() !== ""
                 ? `${r2Base}/${col.thumbnail}`
                 : null;
+              const previews = col.images
+                .filter((img) => img.r2Key)
+                .slice(0, 4)
+                .map((img) => `${r2Base}/${img.r2Key}`);
               const hasImages = col._count.images > 0;
               const palette = BORDER_PALETTE[i % BORDER_PALETTE.length];
 
@@ -126,7 +135,20 @@ export default async function CoolWallpapersPage() {
                   } as React.CSSProperties}
                 >
                   <div className="dt-obs-card__bg" style={{ position: "absolute", inset: 0 }}>
-                    {thumb ? (
+                    {previews.length > 0 ? (
+                      <div className="dt-obs-card__previews">
+                        {previews.map((src, pi) => (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img
+                            key={pi}
+                            src={src}
+                            alt=""
+                            className="dt-obs-card__preview-img"
+                            loading={i === 0 && pi === 0 ? "eager" : "lazy"}
+                          />
+                        ))}
+                      </div>
+                    ) : thumb ? (
                       <Image
                         src={thumb}
                         alt={col.thumbnailAlt ?? col.title}
