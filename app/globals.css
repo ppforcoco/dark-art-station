@@ -3692,9 +3692,9 @@ zero filter/blur ─────────────────────
 .dt-obs-card__veil {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to top, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.2) 60%, transparent 100%);
+  background: linear-gradient(to top, rgba(0,0,0,0.94) 0%, rgba(0,0,0,0.55) 35%, rgba(0,0,0,0.15) 65%, transparent 100%);
   transition: opacity 0.3s;
-}.dt-obs-card:hover .dt-obs-card__veil { background: linear-gradient(to top, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.3) 60%, transparent 100%); }/* Glitch stripe on hover */
+}.dt-obs-card:hover .dt-obs-card__veil { background: linear-gradient(to top, rgba(0,0,0,0.94) 0%, rgba(0,0,0,0.6) 35%, rgba(0,0,0,0.2) 65%, transparent 100%); }/* Glitch stripe on hover */
 .dt-obs-card__glitch { display: none; }/* Blood drip on hover */
 .dt-obs-card__drip {
   position: absolute;
@@ -3712,13 +3712,18 @@ zero filter/blur ─────────────────────
   padding: 20px 18px;
   z-index: 5;
 }.dt-obs-card__tag {
-  display: block;
+  display: inline-block;
   font-family: var(--dt-font-mono);
   font-size: 0.5rem;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--dt-crimson);
-  margin-bottom: 6px;
+  color: #fff;
+  background: rgba(192,0,26,0.88);
+  padding: 3px 8px;
+  border-radius: 3px;
+  margin-bottom: 8px;
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
 }.dt-obs-card__title {
   font-family: var(--dt-font-head);
   font-size: 1rem;
@@ -4579,7 +4584,7 @@ needs boost */
 .blog-post-card-date { color: #a09aaf !important; }.blog-category-item-date { color: #a09aaf !important; }.blog-category-item-title { color: #d8d4ec !important; }/* Blog category label — was #6b6480 */
 .blog-post-card-excerpt { color: #b0aac0 !important; }/* Horror fact */
 .hf-label { color: #ff1a33 !important; }/* dt- obsession card count — was #3a3450 (2.5:1 fail) */
-.dt-obs-card__count { color: #9090c0 !important; }.dt-obs-card__tag { color: #e03040 !important; }/* Scroll-to-top */
+.dt-obs-card__count { color: #9090c0 !important; }.dt-obs-card__tag { color: #ffffff !important; }/* Scroll-to-top */
 .scroll-top-btn { color: #ffffff !important; }/* Cookie banner / feedback widget defaults */
 .fav-btn { color: rgba(240,236,255,0.75) !important; }/* ── LCP FIX: Ensure hero images preload correctly ──────────────────── */
 /* The hero phone image closest to 9:16 should be priority-loaded.
