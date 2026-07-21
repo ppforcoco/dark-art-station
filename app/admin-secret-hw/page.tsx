@@ -25,21 +25,20 @@ const ADSENSE_CHECKLIST=[{done:true,item:"Original content — no copy-paste or 
 const ADULT_IMAGES_TO_MARK=[{title:"Seductive Reaper",device:"IPHONE"},{title:"Gothic Temptress",device:"ANDROID"},{title:"Dark Sensuality",device:"PC"},{title:"Occult Ritual",device:"IPHONE"},{title:"Blood Moon Ritual",device:"ANDROID"},{title:"Forbidden Darkness",device:"PC"}];
 const PAGE_SLUGS=[{slug:"home",label:"Home",url:"/"},{slug:"collections",label:"Collections",url:"/collections"},{slug:"iphone",label:"iPhone Wallpapers",url:"/iphone"},{slug:"android",label:"Android Wallpapers",url:"/android"},{slug:"pc",label:"PC Wallpapers",url:"/pc"},{slug:"blog",label:"Blog Index",url:"/blog"},{slug:"faq",label:"FAQ",url:"/faq"},{slug:"about",label:"About",url:"/about"},{slug:"contact",label:"Contact",url:"/contact"},{slug:"privacy",label:"Privacy Policy",url:"/privacy"},{slug:"terms",label:"Terms of Service",url:"/terms"},{slug:"licensing",label:"Licensing",url:"/licensing"},{slug:"dmca",label:"DMCA",url:"/dmca"},{slug:"tools",label:"Tools",url:"/tools"},{slug:"search",label:"Search",url:"/search"}];
 
-const CLAUDE_API_URL="https://api.anthropic.com/v1/messages";
-const CLAUDE_MODEL="claude-sonnet-4-6";
 const ALL_TAG_LIST=["dark","gothic","horror","fantasy","minimal","amoled","neon","cyberpunk","nature","abstract","skull","moon","forest","city","demon","angel","witch","fire","ice","space","ocean","halloween","anime","street","pattern","texture","portrait","landscape"];
 
 async function fileToBase64(file:File):Promise<string>{const reader=new FileReader();return new Promise((resolve,reject)=>{reader.onload=()=>resolve((reader.result as string).split(",")[1]);reader.onerror=reject;reader.readAsDataURL(file);});}
 async function urlToBase64(url:string):Promise<{data:string;mediaType:string}>{const res=await fetch(url);if(!res.ok)throw new Error("Could not fetch");const blob=await res.blob();const file=new File([blob],"image.jpg",{type:blob.type||"image/jpeg"});const data=await fileToBase64(file);return{data,mediaType:file.type};}
-interface ClaudeImageAnalysis{title:string;description:string;altText:string;tags:string[];}
-async function analyzeImageWithClaude(base64:string,mediaType:string):Promise<ClaudeImageAnalysis>{
-  const prompt=`You are an SEO expert for "Haunted Wallpapers". Analyze this wallpaper image and return ONLY valid JSON:\n{"title":"Compelling wallpaper title (4-8 words)","description":"SEO description ~200 words, flowing prose","altText":"130-150 characters alt text, no period at end","tags":["3-6 tags from: ${ALL_TAG_LIST.join(", ")}"]}\nReturn ONLY valid JSON, no markdown.`;
-  const res=await fetch(CLAUDE_API_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:CLAUDE_MODEL,max_tokens:1000,messages:[{role:"user",content:[{type:"image",source:{type:"base64",media_type:mediaType,data:base64}},{type:"text",text:prompt}]}]})});
-  if(!res.ok){const e=await res.text().catch(()=>"");throw new Error(`Claude API error ${res.status}: ${e.slice(0,200)}`);}
-  const data=await res.json();const raw=data?.content?.[0]?.text?.trim()??"";
-  if(!raw)throw new Error("Claude returned empty response.");
-  try{const clean=raw.replace(/^```json\n?|```$/g,"").trim();return JSON.parse(clean) as ClaudeImageAnalysis;}
-  catch{throw new Error("Claude response could not be parsed.");}
+interface ClaudeImageAnalysis{title:string;description:string;altText:string;metaDescription:string;tags:string[];}
+// Calls our own server route (/api/hw-admin/analyze-image), which holds the GLM API key
+// server-side and forwards the request to GLM-4.6V-Flash (Z.ai's free vision model).
+// Never call a third-party AI API with a key directly from client-side code — it would
+// ship the key in the browser bundle for anyone to read.
+async function analyzeImageWithClaude(base64:string,mediaType:string,password:string):Promise<ClaudeImageAnalysis>{
+  const res=await fetch("/api/hw-admin/analyze-image",{method:"POST",headers:{"Content-Type":"application/json","x-admin-password":password},body:JSON.stringify({imageBase64:base64,mediaType})});
+  const json=await res.json().catch(()=>({}));
+  if(!res.ok)throw new Error(json.error??`Analysis failed (${res.status})`);
+  return json as ClaudeImageAnalysis;
 }
 
 const C={bg:"#0d0b14",surface:"#13111e",border:"#2a2535",red:"#c0001a",gold:"#c9a84c",purple:"#7c3aed",textPri:"#e8e4f8",textSec:"#8a809a",textMut:"#4a445a",green:"#4caf50",white:"#ffffff"};
@@ -263,7 +262,7 @@ function ImageUploaderTab({password}:{password:string}){
   function handleFileSelect(f:File){setFile(f);setSlug(slugify(f.name));if(!title)setTitle(f.name.replace(/\.[^.]+$/,"").replace(/[-_]/g," ").replace(/\b\w/g,c=>c.toUpperCase()));setPreview(URL.createObjectURL(f));setMessage(null);setUploadedUrl("");}
   function onDrop(e:React.DragEvent){e.preventDefault();setDragging(false);const f=e.dataTransfer.files[0];if(f?.type.startsWith("image/"))handleFileSelect(f);}
   function toggleTag(tag:string){setSelectedTags(prev=>prev.includes(tag)?prev.filter(t=>t!==tag):[...prev,tag]);}
-  async function handleGenerateAll(){if(!file)return;setGenerating(true);setMessage(null);try{const base64=await fileToBase64(file);const result=await analyzeImageWithClaude(base64,file.type);if(result.title){setTitle(result.title);setSlug(result.title.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,""));}if(result.description)setDescription(result.description);if(result.altText)setAltText(result.altText);if(result.tags?.length)setSelectedTags(result.tags.filter(t=>ALL_TAGS.includes(t)));setMessage({type:"ok",text:"✓ Claude AI generated title, description, alt text & tags!"});}catch(err){setMessage({type:"err",text:`⚠ AI generation failed: ${(err as Error).message}`});}setGenerating(false);}
+  async function handleGenerateAll(){if(!file)return;setGenerating(true);setMessage(null);try{const base64=await fileToBase64(file);const result=await analyzeImageWithClaude(base64,file.type,password);if(result.title){setTitle(result.title);setSlug(result.title.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,""));}if(result.description)setDescription(result.description);if(result.altText)setAltText(result.altText);if(result.metaDescription)setMetaDescription(result.metaDescription);if(result.tags?.length)setSelectedTags(result.tags.filter(t=>ALL_TAGS.includes(t)));setMessage({type:"ok",text:"✓ AI generated title, description, alt text, meta description & tags!"});}catch(err){setMessage({type:"err",text:`⚠ AI generation failed: ${(err as Error).message}`});}setGenerating(false);}
   async function postOneImage(f:File,hrFile:File|null,slugVal:string,titleVal:string,extra:{matchingGroupId?:string;matchingLabel?:string}={}){const form=new FormData();form.append("file",f);if(hrFile)form.append("highResFile",hrFile);form.append("slug",slugVal);form.append("title",titleVal);form.append("altText",altText);form.append("metaDescription",metaDescription);form.append("description",description);const tagsToSend=newTagInput.trim()?[...new Set([...selectedTags,newTagInput.trim()])]:selectedTags;form.append("tags",JSON.stringify(tagsToSend));form.append("isAdult",String(isAdult));form.append("commentsEnabled",String(commentsEnabled));form.append("isAvatar",String(isPair?true:isAvatar));if(extra.matchingGroupId)form.append("matchingGroupId",extra.matchingGroupId);if(extra.matchingLabel)form.append("matchingLabel",extra.matchingLabel);if(deviceType)form.append("deviceType",deviceType);if(collectionId.trim())form.append("collectionId",collectionId.trim());const res=await fetch("/api/hw-admin/upload-image",{method:"POST",headers:{"x-admin-password":password},body:form});const json=await res.json();if(!res.ok)throw new Error(json.error??"Upload failed.");return json;}
   function resetUploadForm(){setFile(null);setHighResFile(null);setPreview("");setPairFile(null);setPairPreview("");setPairHighResFile(null);setSlug("");setTitle("");setDescription("");setMetaDescription("");setAltText("");setDeviceType("");setSelectedTags([]);setCollectionId("");setIsAdult(false);setCommentsEnabled(false);setIsAvatar(false);setIsPair(false);setLabelA("Him");setLabelB("Her");if(fileInputRef.current)fileInputRef.current.value="";if(highResInputRef.current)highResInputRef.current.value="";if(pairFileInputRef.current)pairFileInputRef.current.value="";if(pairHighResInputRef.current)pairHighResInputRef.current.value="";}
   async function handleUpload(){
@@ -324,7 +323,7 @@ function ImageUploaderTab({password}:{password:string}){
     </Card>
     {file&&<>
       <Card style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:"16px",flexWrap:"wrap",padding:"16px 18px",borderColor:"rgba(192,0,26,0.4)",background:"rgba(192,0,26,0.06)"}}>
-        <div><p style={{color:C.gold,fontSize:"0.75rem",marginBottom:"4px"}}>✨ AI Auto-Fill (Claude Vision)</p><p style={{color:C.textSec,fontSize:"0.68rem"}}>Generates title, 200-word description, SEO alt text & tags.</p></div>
+        <div><p style={{color:C.gold,fontSize:"0.75rem",marginBottom:"4px"}}>✨ AI Auto-Fill (GLM Vision)</p><p style={{color:C.textSec,fontSize:"0.68rem"}}>Generates title, 200-word description, SEO alt text, meta description & tags.</p></div>
         <Btn onClick={handleGenerateAll} disabled={generating}>{generating?"✨ Analysing…":"✨ Generate All Fields"}</Btn>
       </Card>
       <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"16px"}}>
@@ -342,13 +341,14 @@ function ImageUploaderTab({password}:{password:string}){
       <Card style={{padding:"16px"}}>
         <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:"8px",flexWrap:"wrap",gap:"8px"}}>
           <label style={{...lbl,marginBottom:0}}>Alt Text (SEO) <span style={{color:altOk?C.green:altText.length>0?C.gold:C.textMut}}>({altText.length}/150{altOk?" ✓":" — aim for 130–150"})</span></label>
-          <Btn onClick={async()=>{if(!file)return;setGenerating(true);try{const{altText:at}=await analyzeImageWithClaude(await fileToBase64(file),file.type);setAltText(at);}catch(err){setMessage({type:"err",text:(err as Error).message});}setGenerating(false);}} disabled={generating} variant="ghost" style={{fontSize:"0.65rem",padding:"5px 14px"}}>{generating?"✨ Analysing…":"✨ AI Generate"}</Btn>
+          <Btn onClick={async()=>{if(!file)return;setGenerating(true);try{const{altText:at}=await analyzeImageWithClaude(await fileToBase64(file),file.type,password);setAltText(at);}catch(err){setMessage({type:"err",text:(err as Error).message});}setGenerating(false);}} disabled={generating} variant="ghost" style={{fontSize:"0.65rem",padding:"5px 14px"}}>{generating?"✨ Analysing…":"✨ AI Generate"}</Btn>
         </div>
         <input value={altText} onChange={e=>setAltText(e.target.value)} placeholder="Dark gothic forest wallpaper with moonlit trees — free HD download" style={inp}/>
       </Card>
       <Card style={{padding:"16px"}}>
-        <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:"8px"}}>
+        <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:"8px",flexWrap:"wrap",gap:"8px"}}>
           <label style={{...lbl,marginBottom:0}}>Meta Description (Google snippet) <span style={{color:metaDescription.length>155?C.red:metaDescription.length>=130?C.green:C.textMut}}>({metaDescription.length}/155{metaDescription.length>=130&&metaDescription.length<=155?" ✓":""})</span></label>
+          <Btn onClick={async()=>{if(!file)return;setGenerating(true);try{const{metaDescription:md}=await analyzeImageWithClaude(await fileToBase64(file),file.type,password);setMetaDescription(md);}catch(err){setMessage({type:"err",text:(err as Error).message});}setGenerating(false);}} disabled={generating} variant="ghost" style={{fontSize:"0.65rem",padding:"5px 14px"}}>{generating?"✨ Analysing…":"✨ AI Generate"}</Btn>
         </div>
         <input value={metaDescription} onChange={e=>setMetaDescription(e.target.value)} placeholder="130–155 chars · keyword-rich · what Google shows in search results" style={{...inp,borderColor:metaDescription.length>155?C.red:metaDescription.length>=130&&metaDescription.length<=155?C.green:C.border}}/>
         <p style={{color:C.textMut,fontSize:"0.62rem",marginTop:"6px"}}>Leave blank to auto-generate from the description. Visible in Google search results only.</p>
@@ -598,7 +598,7 @@ function PublishedImagesTab({password}:{password:string}){
   },[sortBy,password]);
 
   function openEdit(img:ImageRecord){setEditing(img);setETitle(img.title);setEDesc(img.description??"");setEAlt(img.altText??"");setEMetaDesc(img.metaDescription??"");setETags(img.tags.filter(t=>t!=="16plus"));setEAdult(img.isAdult);setEAvatar(img.isAvatar??false);setEDevice(img.deviceType??"");setMsg(null);}
-  async function handleAiRegenerate(){if(!editing)return;setAiLoading(true);try{const imgUrl=thumbUrl(editing.r2Key);const{data,mediaType}=await urlToBase64(imgUrl);const result=await analyzeImageWithClaude(data,mediaType);if(result.title)setETitle(result.title);if(result.description)setEDesc(result.description);if(result.altText)setEAlt(result.altText);if(result.tags?.length)setETags(result.tags.filter(t=>ALL_TAGS.includes(t)));setMsg({type:"ok",text:"✓ AI regenerated title, description, alt text & tags!"});}catch(err){setMsg({type:"err",text:`⚠ AI failed: ${(err as Error).message}`});}setAiLoading(false);}
+  async function handleAiRegenerate(){if(!editing)return;setAiLoading(true);try{const imgUrl=thumbUrl(editing.r2Key);const{data,mediaType}=await urlToBase64(imgUrl);const result=await analyzeImageWithClaude(data,mediaType,password);if(result.title)setETitle(result.title);if(result.description)setEDesc(result.description);if(result.altText)setEAlt(result.altText);if(result.metaDescription)setEMetaDesc(result.metaDescription);if(result.tags?.length)setETags(result.tags.filter(t=>ALL_TAGS.includes(t)));setMsg({type:"ok",text:"✓ AI regenerated title, description, alt text, meta description & tags!"});}catch(err){setMsg({type:"err",text:`⚠ AI failed: ${(err as Error).message}`});}setAiLoading(false);}
   async function handleSave(){if(!editing)return;setSaving(true);const tags=eAdult?[...eTags,"16plus"]:eTags;try{const res=await fetch(`/api/hw-admin/images/${editing.id}`,{method:"PATCH",headers:{"Content-Type":"application/json","x-admin-password":password},body:JSON.stringify({title:eTitle,description:eDesc,altText:eAlt,metaDescription:eMetaDesc||null,tags,isAdult:eAdult,isAvatar:eAvatar,deviceType:eDevice||null})});const json=await res.json().catch(()=>({}));if(!res.ok){setMsg({type:"err",text:json.error??`Save failed (${res.status})`});setSaving(false);return;}setMsg({type:"ok",text:`✓ Saved "${eTitle}"`});setEditing(null);load(page,q);}catch(err){setMsg({type:"err",text:`Network error: ${(err as Error).message}`});}setSaving(false);}
   async function handleDelete(img:ImageRecord){if(!confirm(`Delete "${img.title}"?\n\nThis removes from R2 and database permanently.`))return;setDeleting(img.id);try{const res=await fetch(`/api/hw-admin/images/${img.id}`,{method:"DELETE",headers:{"x-admin-password":password}});if(!res.ok)throw new Error("Delete failed");setMsg({type:"ok",text:`✓ Deleted "${img.title}"`});load(page,q);}catch{setMsg({type:"err",text:"Delete failed."});}setDeleting(null);}
   const thumbUrl=(key:string)=>r2Base?`${r2Base}/${key}`:`/api/r2-proxy/${key}`;
@@ -634,8 +634,8 @@ function PublishedImagesTab({password}:{password:string}){
           <p style={lbl}>Slug (read-only)</p>
           <p style={{color:C.purple,fontSize:"0.8rem",marginBottom:"12px"}}>{editing.slug}</p>
           <div style={{background:"rgba(192,0,26,0.06)",border:`1px solid rgba(192,0,26,0.25)`,padding:"12px 16px"}}>
-            <p style={{color:C.gold,fontSize:"0.72rem",marginBottom:"4px"}}>✨ AI Auto-Fill (Claude Vision)</p>
-            <p style={{color:C.textSec,fontSize:"0.65rem",marginBottom:"10px"}}>Regenerates title, 200-word description, SEO alt text & tags from the image.</p>
+            <p style={{color:C.gold,fontSize:"0.72rem",marginBottom:"4px"}}>✨ AI Auto-Fill (GLM Vision)</p>
+            <p style={{color:C.textSec,fontSize:"0.65rem",marginBottom:"10px"}}>Regenerates title, 200-word description, SEO alt text, meta description & tags from the image.</p>
             <Btn onClick={handleAiRegenerate} disabled={aiLoading} style={{fontSize:"0.68rem",padding:"8px 16px"}}>{aiLoading?"✨ Analysing…":"✨ Regenerate All with AI"}</Btn>
           </div>
         </div>
@@ -1174,9 +1174,9 @@ function BulkAiTab({password}:{password:string}){
     try{
       const imgUrl=r2Base?`${r2Base}/${img.r2Key}`:`/api/r2-proxy/${img.r2Key}`;
       const{data,mediaType}=await urlToBase64(imgUrl);
-      const result=await analyzeImageWithClaude(data,mediaType);
+      const result=await analyzeImageWithClaude(data,mediaType,password);
       const tags=img.isAdult?[...result.tags.filter((t:string)=>ALL_TAGS.includes(t)),"16plus"]:result.tags.filter((t:string)=>ALL_TAGS.includes(t));
-      const res=await fetch(`/api/hw-admin/images/${img.id}`,{method:"PATCH",headers:{"Content-Type":"application/json","x-admin-password":password},body:JSON.stringify({title:result.title,description:result.description,altText:result.altText,tags})});
+      const res=await fetch(`/api/hw-admin/images/${img.id}`,{method:"PATCH",headers:{"Content-Type":"application/json","x-admin-password":password},body:JSON.stringify({title:result.title,description:result.description,altText:result.altText,metaDescription:result.metaDescription,tags})});
       if(!res.ok)throw new Error("Save failed");
       setStatuses(prev=>({...prev,[img.id]:{state:"done",msg:result.title}}));
     }catch(err){setStatuses(prev=>({...prev,[img.id]:{state:"err",msg:(err as Error).message}}));}
@@ -1233,7 +1233,7 @@ function BulkAiTab({password}:{password:string}){
       </div>
       <Card style={{padding:"14px 16px",borderColor:"rgba(201,168,76,0.3)",background:"rgba(201,168,76,0.05)"}}>
         <p style={{color:C.gold,fontSize:"0.72rem",marginBottom:"4px"}}>⚠ What this does</p>
-        <p style={{color:C.textSec,fontSize:"0.68rem",lineHeight:1.7}}>Claude Vision analyses each image and <strong style={{color:C.textPri}}>overwrites</strong> the title, description (~200 words), alt text (130–150 chars), and tags. It processes them one by one with a short delay. This cannot be undone — use with care.</p>
+        <p style={{color:C.textSec,fontSize:"0.68rem",lineHeight:1.7}}>GLM Vision analyses each image and <strong style={{color:C.textPri}}>overwrites</strong> the title, description (~200 words), alt text (130–150 chars), meta description, and tags. It processes them one by one with a short delay. This cannot be undone — use with care.</p>
       </Card>
       <Msg msg={overallMsg}/>
       {loadingImgs?<p style={{color:C.textSec,textAlign:"center",padding:"40px"}}>Loading images…</p>:images.length===0?<Card style={{padding:"32px",textAlign:"center"}}><p style={{color:C.textMut}}>No images found in this collection.</p></Card>:
