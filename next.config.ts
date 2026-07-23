@@ -7,15 +7,15 @@ const ASSETS = "https://assets.hauntedwallpapers.com";
 // ─── Content Security Policy ─────────────────────────────────────────────────
 const CSP = [
   `default-src 'self'`,
-  `script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cloud.umami.is https://static.cloudflareinsights.com`,
-  `script-src-elem 'self' 'unsafe-inline' https://cloud.umami.is https://static.cloudflareinsights.com`,
+  `script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cloud.umami.is https://static.cloudflareinsights.com https://www.clarity.ms https://*.clarity.ms`,
+  `script-src-elem 'self' 'unsafe-inline' https://cloud.umami.is https://static.cloudflareinsights.com https://www.clarity.ms https://*.clarity.ms`,
   // No Google Fonts — app uses system fonts only (Arial/system-ui)
   `style-src 'self' 'unsafe-inline'`,
   `style-src-elem 'self' 'unsafe-inline'`,
   // No gstatic — no web fonts loaded
   `font-src 'self' data:`,
-  `img-src 'self' data: blob: ${R2_CDN} ${ASSETS}`,
-  `connect-src 'self' ${R2_CDN} ${ASSETS} https://cloud.umami.is https://gateway.umami.is https://api-gateway.umami.dev https://cloudflareinsights.com https://api.anthropic.com`,
+  `img-src 'self' data: blob: ${R2_CDN} ${ASSETS} https://www.clarity.ms https://*.clarity.ms`,
+  `connect-src 'self' ${R2_CDN} ${ASSETS} https://cloud.umami.is https://gateway.umami.is https://api-gateway.umami.dev https://cloudflareinsights.com https://api.anthropic.com https://www.clarity.ms https://*.clarity.ms`,
   `media-src 'self' ${R2_CDN} ${ASSETS}`,
   `frame-src 'self' blob:`,
   `worker-src 'self' blob:`,
