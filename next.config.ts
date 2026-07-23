@@ -14,8 +14,8 @@ const CSP = [
   `style-src-elem 'self' 'unsafe-inline'`,
   // No gstatic — no web fonts loaded
   `font-src 'self' data:`,
-  `img-src 'self' data: blob: ${R2_CDN} ${ASSETS} https://www.clarity.ms https://*.clarity.ms`,
-  `connect-src 'self' ${R2_CDN} ${ASSETS} https://cloud.umami.is https://gateway.umami.is https://api-gateway.umami.dev https://cloudflareinsights.com https://api.anthropic.com https://www.clarity.ms https://*.clarity.ms`,
+  `img-src 'self' data: blob: ${R2_CDN} ${ASSETS} https://www.clarity.ms https://*.clarity.ms https://c.bing.com https://bat.bing.com`,
+  `connect-src 'self' ${R2_CDN} ${ASSETS} https://cloud.umami.is https://gateway.umami.is https://api-gateway.umami.dev https://cloudflareinsights.com https://api.anthropic.com https://www.clarity.ms https://*.clarity.ms https://c.bing.com https://bat.bing.com`,
   `media-src 'self' ${R2_CDN} ${ASSETS}`,
   `frame-src 'self' blob:`,
   `worker-src 'self' blob:`,
