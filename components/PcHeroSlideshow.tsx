@@ -6,7 +6,7 @@ interface Slide { id: string; slug: string; title: string; url: string; }
 interface Props { slides: Slide[]; }
 
 // ✅ PERF: Slideshow auto-advance removed.
-// Previously: setInterval every 4s caused 8 non-composited animations (PageSpeed flag).
+// Previously: setInterval every 4s caused 8 non-composited animation (PageSpeed flag).
 // Now: static display of the first slide — zero JS timers, zero layout thrash.
 // Manual dot navigation kept for user-initiated browsing.
 export default function PcHeroSlideshow({ slides }: Props) {
