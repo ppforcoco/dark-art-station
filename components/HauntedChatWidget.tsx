@@ -11,11 +11,22 @@ interface Msg {
 const GREETING: Msg = {
   role: "assistant",
   content:
-    "You've summoned The Keeper. Ask me about finding wallpapers, downloads, favorites, or how to submit your own art. 🕯️",
+    "I am the Keeper of this town's archive. I assist with wallpapers, downloads, favorites, and submissions for Haunted Wallpapers. How can I help?",
 };
 
 const NETWORK_ERROR =
   "Couldn't reach The Keeper — check your network connection and try again.";
+
+// Preset questions shown to the visitor so they can tap instead of typing.
+// Keep this list strictly about site/wallpaper functionality.
+const PRESET_QUESTIONS: string[] = [
+  "How do I download a wallpaper?",
+  "How do favorites work?",
+  "How do I submit my own artwork?",
+  "Where do I find iPhone wallpapers?",
+  "How do I report a problem?",
+  "What does the Keeper do here?",
+];
 
 export default function HauntedChatWidget() {
   const [open, setOpen] = useState(false);
@@ -29,8 +40,7 @@ export default function HauntedChatWidget() {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
   }, [messages, open]);
 
-  async function handleSend() {
-    const text = input.trim();
+  async function sendMessage(text: string) {
     if (!text || sending) return;
 
     // If the browser already knows it's offline, don't even try the request.
@@ -84,12 +94,19 @@ export default function HauntedChatWidget() {
     }
   }
 
+  function handleSend() {
+    sendMessage(input.trim());
+  }
+
   function handleKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       handleSend();
     }
   }
+
+  // Only show preset questions before the visitor has sent their own message.
+  const showPresets = messages.length === 1 && !sending;
 
   return (
     <>
@@ -133,7 +150,7 @@ export default function HauntedChatWidget() {
             left: "20px",
             zIndex: 9998,
             width: "min(360px, calc(100vw - 40px))",
-            height: "min(480px, calc(100vh - 140px))",
+            height: "min(520px, calc(100vh - 140px))",
             background: "#0f0d1a",
             border: "1px solid #2a2535",
             borderTop: "2px solid #c0001a",
@@ -190,7 +207,7 @@ export default function HauntedChatWidget() {
                   letterSpacing: "0.05em",
                 }}
               >
-                Ask The Keeper
+                The Keeper — Site Assistant
               </h3>
             </div>
           </div>
@@ -227,6 +244,50 @@ export default function HauntedChatWidget() {
                 {m.content}
               </div>
             ))}
+
+            {/* Preset question chips — tap instead of typing */}
+            {showPresets && (
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "6px",
+                  marginTop: "2px",
+                }}
+              >
+                <span
+                  style={{
+                    color: "#6b6480",
+                    fontSize: "0.62rem",
+                    letterSpacing: "0.08em",
+                    textTransform: "uppercase",
+                    marginBottom: "2px",
+                  }}
+                >
+                  Common questions
+                </span>
+                {PRESET_QUESTIONS.map((q) => (
+                  <button
+                    key={q}
+                    onClick={() => sendMessage(q)}
+                    style={{
+                      textAlign: "left",
+                      background: "#1a1625",
+                      border: "1px solid #2a2535",
+                      color: "#c9c4dd",
+                      padding: "8px 10px",
+                      fontSize: "0.72rem",
+                      fontFamily: "monospace",
+                      borderRadius: "4px",
+                      cursor: "pointer",
+                    }}
+                  >
+                    {q}
+                  </button>
+                ))}
+              </div>
+            )}
+
             {sending && (
               <div
                 style={{
@@ -236,7 +297,7 @@ export default function HauntedChatWidget() {
                   letterSpacing: "0.05em",
                 }}
               >
-                The Keeper is stirring…
+                The Keeper is responding…
               </div>
             )}
             {error && (
@@ -306,4 +367,4 @@ export default function HauntedChatWidget() {
       )}
     </>
   );
-}ch
+}
