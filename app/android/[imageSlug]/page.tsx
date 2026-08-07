@@ -168,7 +168,7 @@ export default async function AndroidImagePage({ params }: PageProps) {
   const [prevSibling, nextSibling, tagSortedStrip] = await Promise.all([
     db.image.findFirst({
       where: {
-        collectionId: null, deviceType: "ANDROID",
+        deviceType: "ANDROID",
         OR: [
           { sortOrder: { lt: image.sortOrder } },
           { sortOrder: image.sortOrder, id: { lt: image.id } },
@@ -179,7 +179,7 @@ export default async function AndroidImagePage({ params }: PageProps) {
     }),
     db.image.findFirst({
       where: {
-        collectionId: null, deviceType: "ANDROID",
+        deviceType: "ANDROID",
         OR: [
           { sortOrder: { gt: image.sortOrder } },
           { sortOrder: image.sortOrder, id: { gt: image.id } },

@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { r2, BUCKET, getPublicUrl } from "@/lib/r2";
 import { db } from "@/lib/db";
+import { pingIndexNow } from "@/lib/index-now";
 
 function checkAuth(req: NextRequest) {
   const pw = req.headers.get("x-admin-password");
@@ -124,6 +125,15 @@ export async function POST(req: NextRequest) {
     });
 
     const publicThumbUrl = getPublicUrl(r2Key);
+
+    // Tell Bing/Yandex/Seznam/Naver about the new page immediately instead of
+    // waiting for their next crawl. Fire-and-forget — never blocks the response.
+    // (Google doesn't support IndexNow — see lib/index-now.ts for what actually
+    // helps Google pick this page up faster.)
+    if (deviceType) {
+      const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
+      void pingIndexNow([`${siteUrl}/${deviceType.toLowerCase()}/${slug}`]);
+    }
 
     return NextResponse.json({
       ok:         true,

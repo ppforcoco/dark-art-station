@@ -109,7 +109,7 @@ export default async function PcImagePage({ params }: PageProps) {
   const [prevSibling, nextSibling, tagSortedStrip] = await Promise.all([
     db.image.findFirst({
       where: {
-        collectionId: null, deviceType: "PC",
+        deviceType: "PC",
         OR: [
           { sortOrder: { lt: image.sortOrder } },
           { sortOrder: image.sortOrder, id: { lt: image.id } },
@@ -120,7 +120,7 @@ export default async function PcImagePage({ params }: PageProps) {
     }),
     db.image.findFirst({
       where: {
-        collectionId: null, deviceType: "PC",
+        deviceType: "PC",
         OR: [
           { sortOrder: { gt: image.sortOrder } },
           { sortOrder: image.sortOrder, id: { gt: image.id } },
