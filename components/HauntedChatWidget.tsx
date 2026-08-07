@@ -14,6 +14,9 @@ const GREETING: Msg = {
     "You've summoned The Keeper. Ask me about finding wallpapers, downloads, favorites, or how to submit your own art. 🕯️",
 };
 
+const NETWORK_ERROR =
+  "Couldn't reach The Keeper — check your network connection and try again.";
+
 export default function HauntedChatWidget() {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<Msg[]>([GREETING]);
@@ -29,6 +32,12 @@ export default function HauntedChatWidget() {
   async function handleSend() {
     const text = input.trim();
     if (!text || sending) return;
+
+    // If the browser already knows it's offline, don't even try the request.
+    if (typeof navigator !== "undefined" && navigator.onLine === false) {
+      setError(NETWORK_ERROR);
+      return;
+    }
 
     const nextMessages: Msg[] = [...messages, { role: "user", content: text }];
     setMessages(nextMessages);
@@ -47,16 +56,29 @@ export default function HauntedChatWidget() {
         }),
       });
 
-      const data = await res.json();
-
-      if (!res.ok) {
-        setError(data?.error ?? "Something went wrong.");
+      let data: { reply?: string; error?: string } = {};
+      try {
+        data = await res.json();
+      } catch {
+        // Response wasn't JSON (e.g. a proxy/host error page) — treat as network trouble.
+        setError(NETWORK_ERROR);
         return;
       }
 
-      setMessages((prev) => [...prev, { role: "assistant", content: data.reply }]);
+      if (!res.ok) {
+        setError(data?.error || NETWORK_ERROR);
+        return;
+      }
+
+      if (!data.reply) {
+        setError(NETWORK_ERROR);
+        return;
+      }
+
+      setMessages((prev) => [...prev, { role: "assistant", content: data.reply as string }]);
     } catch {
-      setError("Couldn't reach The Keeper. Check your connection and try again.");
+      // fetch() throws on actual connectivity failures (DNS, offline, CORS, timeout)
+      setError(NETWORK_ERROR);
     } finally {
       setSending(false);
     }
@@ -71,30 +93,36 @@ export default function HauntedChatWidget() {
 
   return (
     <>
-      {/* Launcher bubble */}
+      {/* Launcher pill — bottom LEFT so it never collides with the ambient player (bottom right) */}
       <button
         onClick={() => setOpen((v) => !v)}
         aria-label={open ? "Close chat" : "Open chat with The Keeper"}
         style={{
           position: "fixed",
           bottom: "20px",
-          right: "20px",
+          left: "20px",
           zIndex: 9998,
-          width: "52px",
-          height: "52px",
-          borderRadius: "50%",
+          display: "flex",
+          alignItems: "center",
+          gap: "8px",
+          height: "48px",
+          padding: open ? "0" : "0 18px 0 14px",
+          width: open ? "48px" : "auto",
+          borderRadius: "999px",
           background: "#c0001a",
           border: "1px solid #ff4d5e",
           color: "#fff",
-          fontSize: "1.3rem",
+          fontFamily: "monospace",
+          fontSize: "0.78rem",
+          letterSpacing: "0.05em",
           cursor: "pointer",
           boxShadow: "0 4px 20px rgba(192,0,26,0.5)",
-          display: "flex",
-          alignItems: "center",
           justifyContent: "center",
+          transition: "width 0.15s ease, padding 0.15s ease",
         }}
       >
-        {open ? "✕" : "👻"}
+        <span style={{ fontSize: "1.15rem", lineHeight: 1 }}>{open ? "✕" : "💬"}</span>
+        {!open && <span>Chat with The Keeper</span>}
       </button>
 
       {open && (
@@ -102,7 +130,7 @@ export default function HauntedChatWidget() {
           style={{
             position: "fixed",
             bottom: "84px",
-            right: "20px",
+            left: "20px",
             zIndex: 9998,
             width: "min(360px, calc(100vw - 40px))",
             height: "min(480px, calc(100vh - 140px))",
@@ -120,29 +148,51 @@ export default function HauntedChatWidget() {
             style={{
               padding: "16px 18px",
               borderBottom: "1px solid #2a2535",
+              display: "flex",
+              alignItems: "center",
+              gap: "10px",
             }}
           >
-            <p
+            <span
               style={{
-                color: "#c0001a",
-                fontSize: "0.55rem",
-                letterSpacing: "0.2em",
-                textTransform: "uppercase",
-                margin: 0,
+                width: "30px",
+                height: "30px",
+                borderRadius: "50%",
+                background: "#1a1625",
+                border: "1px solid #2a2535",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: "0.95rem",
+                flexShrink: 0,
               }}
+              aria-hidden
             >
-              Haunted Wallpapers
-            </p>
-            <h3
-              style={{
-                color: "#f0ecff",
-                fontSize: "0.9rem",
-                margin: "4px 0 0",
-                letterSpacing: "0.05em",
-              }}
-            >
-              Ask The Keeper
-            </h3>
+              💬
+            </span>
+            <div>
+              <p
+                style={{
+                  color: "#c0001a",
+                  fontSize: "0.55rem",
+                  letterSpacing: "0.2em",
+                  textTransform: "uppercase",
+                  margin: 0,
+                }}
+              >
+                Haunted Wallpapers · Live Chat
+              </p>
+              <h3
+                style={{
+                  color: "#f0ecff",
+                  fontSize: "0.9rem",
+                  margin: "4px 0 0",
+                  letterSpacing: "0.05em",
+                }}
+              >
+                Ask The Keeper
+              </h3>
+            </div>
           </div>
 
           {/* Messages */}
@@ -256,4 +306,4 @@ export default function HauntedChatWidget() {
       )}
     </>
   );
-}
+}ch
