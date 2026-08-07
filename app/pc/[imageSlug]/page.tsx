@@ -116,7 +116,7 @@ export default async function PcImagePage({ params }: PageProps) {
         ],
       },
       orderBy: [{ sortOrder: "desc" }, { id: "desc" }],
-      select: { slug: true, title: true },
+      select: { slug: true, title: true, r2Key: true },
     }),
     db.image.findFirst({
       where: {
@@ -127,7 +127,7 @@ export default async function PcImagePage({ params }: PageProps) {
         ],
       },
       orderBy: [{ sortOrder: "asc" }, { id: "asc" }],
-      select: { slug: true, title: true },
+      select: { slug: true, title: true, r2Key: true },
     }),
     db.image.findMany({
       where: {
@@ -144,8 +144,17 @@ export default async function PcImagePage({ params }: PageProps) {
   const prevImage = prevSibling;
   const nextImage = nextSibling;
 
+  // Preload the raw sibling image bytes so Next/Prev feels instant — the Link
+  // prefetch below only fetches the RSC/page payload, not the actual r2 image,
+  // which is what made clicking next/prev feel slow.
+  const prevImageUrl = prevImage ? getPublicUrl(prevImage.r2Key) : null;
+  const nextImageUrl = nextImage ? getPublicUrl(nextImage.r2Key) : null;
+
   return (
     <main className="min-h-screen" style={{ backgroundColor: "var(--bg-primary)", color: "var(--text-primary)", colorScheme: "dark" }}>
+
+      {prevImageUrl && <link rel="preload" as="image" href={prevImageUrl} />}
+      {nextImageUrl && <link rel="preload" as="image" href={nextImageUrl} />}
 
       <Breadcrumbs items={[
         { label: "Home", href: "/" },
@@ -167,7 +176,7 @@ export default async function PcImagePage({ params }: PageProps) {
                     alt={image.title}
                     fill
                     className="object-contain"
-                    loading="eager"
+                    priority
                     quality={85}
                     sizes="(max-width: 768px) 100vw, 760px"
                   />
