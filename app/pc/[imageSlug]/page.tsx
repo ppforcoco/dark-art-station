@@ -29,7 +29,7 @@ function getCachedImage(slug: string) {
       select: {
         id: true, slug: true, title: true, description: true,
         metaDescription: true, r2Key: true, highResKey: true, tags: true,
-        viewCount: true, sortOrder: true, deviceType: true, isAdult: true,
+        viewCount: true, sortOrder: true, deviceType: true, isAdult: true, createdAt: true,
         _count: { select: { downloads: true } },
       },
     }),
@@ -106,27 +106,35 @@ export default async function PcImagePage({ params }: PageProps) {
   const plainDescription = displayDescription.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
 
   // ── Only fetch prev/next slugs + tag strip ──────────────────────────────
+  // IMPORTANT: must mirror the exact where/orderBy used by the /pc grid
+  // (app/pc/page.tsx) — collectionId: null, isAdult: false, ordered by
+  // createdAt desc — or "next/prev" walks a different sequence than what's
+  // visually on the grid.
   const [prevSibling, nextSibling, tagSortedStrip] = await Promise.all([
     db.image.findFirst({
       where: {
         deviceType: "PC",
+        collectionId: null,
+        isAdult: false,
         OR: [
-          { sortOrder: { lt: image.sortOrder } },
-          { sortOrder: image.sortOrder, id: { lt: image.id } },
+          { createdAt: { gt: image.createdAt } },
+          { createdAt: image.createdAt, id: { gt: image.id } },
         ],
       },
-      orderBy: [{ sortOrder: "desc" }, { id: "desc" }],
+      orderBy: [{ createdAt: "asc" }, { id: "asc" }],
       select: { slug: true, title: true, r2Key: true },
     }),
     db.image.findFirst({
       where: {
         deviceType: "PC",
+        collectionId: null,
+        isAdult: false,
         OR: [
-          { sortOrder: { gt: image.sortOrder } },
-          { sortOrder: image.sortOrder, id: { gt: image.id } },
+          { createdAt: { lt: image.createdAt } },
+          { createdAt: image.createdAt, id: { lt: image.id } },
         ],
       },
-      orderBy: [{ sortOrder: "asc" }, { id: "asc" }],
+      orderBy: [{ createdAt: "desc" }, { id: "desc" }],
       select: { slug: true, title: true, r2Key: true },
     }),
     db.image.findMany({
