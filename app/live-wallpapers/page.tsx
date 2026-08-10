@@ -486,22 +486,12 @@ export default function LiveWallpapersPage() {
         <span className={`lw-sign${flicker ? " flicker" : ""}`}>
           {flicker ? "open... ish" : "town is open"}
         </span>
-        <p className="lw-desc">
-          Not every resident of Haunted Town stands still. Some wander. Some
-          perform. Some refuse to leave. Welcome to a growing collection of
-          animated live wallpapers inspired by the strange streets, forgotten
-          corners, and unusual residents of Haunted Town. Here you&apos;ll find
-          moving skeletons, gothic characters, rebellious mascots, mysterious
-          creatures, dark legends, and countless personalities waiting to find a
-          place on your screen. Choose a live wallpaper below and start
-          exploring the town one resident at a time.
-        </p>
       </section>
 
       {/* GRID */}
       <section className="lw-grid-section">
         <div className="lw-section-head">
-          <h2 className="lw-section-title">Residents of Haunted Town</h2>
+          <h2 className="lw-section-title">What&apos;s New in Haunted Town</h2>
           <span className="lw-section-note">
             {items.length > 0
               ? `${items.length} found so far`
@@ -597,6 +587,20 @@ export default function LiveWallpapersPage() {
             <p className="lw-faq-a">{item.a}</p>
           </div>
         ))}
+      </section>
+
+      {/* ABOUT */}
+      <section className="lw-hero" style={{ paddingTop: 0 }}>
+        <p className="lw-desc">
+          Not every resident of Haunted Town stands still. Some wander. Some
+          perform. Some refuse to leave. Welcome to a growing collection of
+          animated live wallpapers inspired by the strange streets, forgotten
+          corners, and unusual residents of Haunted Town. Here you&apos;ll find
+          moving skeletons, gothic characters, rebellious mascots, mysterious
+          creatures, dark legends, and countless personalities waiting to find a
+          place on your screen. Choose a live wallpaper below and start
+          exploring the town one resident at a time.
+        </p>
       </section>
 
       {/* FOOTER */}
