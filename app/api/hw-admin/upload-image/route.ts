@@ -4,6 +4,7 @@ import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { r2, BUCKET, getPublicUrl } from "@/lib/r2";
 import { db } from "@/lib/db";
 import { pingIndexNow } from "@/lib/index-now";
+import { revalidatePath } from "next/cache";
 
 function checkAuth(req: NextRequest) {
   const pw = req.headers.get("x-admin-password");
@@ -124,6 +125,15 @@ export async function POST(req: NextRequest) {
     });
 
     const publicThumbUrl = getPublicUrl(r2Key);
+
+    // Homepage is statically cached for 1 hour ("Fresh From The Town" slider).
+    // Without this, a brand-new upload wouldn't show up there until the next
+    // hourly rebuild — force it to refresh right now instead.
+    try {
+      revalidatePath("/");
+    } catch (err) {
+      console.error("[revalidateHomepage] failed", err);
+    }
 
     // Tell Bing/Yandex/Seznam/Naver about the new page immediately instead of
     // waiting for their next crawl. Fire-and-forget — never blocks the response.

@@ -3,8 +3,6 @@ import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ClientComponents from "@/components/ClientComponents";
-import PWARegister from "@/components/PWARegister";
-import AmbientPlayer from "@/components/AmbientPlayer";
 
 const SITE_URL  = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
 const SITE_NAME = "Haunted Wallpapers";
@@ -143,9 +141,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           {children}
         </main>
         <Footer />
-        <AmbientPlayer />
         <ClientComponents />
-        <PWARegister />
         <script
           async
           src="https://cloud.umami.is/script.js"

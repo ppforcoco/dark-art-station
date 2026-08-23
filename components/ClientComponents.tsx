@@ -9,6 +9,8 @@ const CookieBanner      = dynamic(() => import("@/components/CookieBanner"),    
 const FeedbackWidget    = dynamic(() => import("@/components/FeedbackWidget"),     { ssr: false });
 const LoadingSpinner    = dynamic(() => import("@/components/LoadingSpinner"),     { ssr: false });
 const SiteAnalytics     = dynamic(() => import("@/components/SiteAnalytics"),      { ssr: false });
+const AmbientPlayer     = dynamic(() => import("@/components/AmbientPlayer"),      { ssr: false });
+const PWARegister       = dynamic(() => import("@/components/PWARegister"),        { ssr: false });
 
 export default function ClientComponents() {
   return (
@@ -25,6 +27,11 @@ export default function ClientComponents() {
       <Suspense fallback={null}>
         <LoadingSpinner />
       </Suspense>
+      {/* Background ambient sound player — not needed for first paint,
+          delayed here so it doesn't add to the initial page bundle. */}
+      <AmbientPlayer />
+      {/* Service Worker registration — also fine to defer. */}
+      <PWARegister />
     </>
   );
 }
