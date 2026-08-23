@@ -76,7 +76,7 @@ function LockScreenModal({
           {/* ── Phone mockup ── */}
           <div className="lsp-preview">
             <div className="lsp-phone">
-              <Image src={src} alt={title} fill unoptimized style={{ objectFit: "cover" }} />
+              <Image src={src} alt={title} fill style={{ objectFit: "cover" }} />
 
               {frame === "iphone-di"     && <div className="lsp-di" />}
               {frame === "iphone-notch"  && <div className="lsp-notch" />}

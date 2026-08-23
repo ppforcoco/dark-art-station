@@ -47,7 +47,6 @@ export default function WallpaperCardGrid({ items, accentRgb, badge, badgeColor 
                   src={img.src}
                   alt={img.title}
                   fill
-                  unoptimized
                   loading="lazy"
                   sizes="(max-width: 640px) 100px, (max-width: 1024px) 180px, 220px"
                   style={{ objectFit: "cover" }}

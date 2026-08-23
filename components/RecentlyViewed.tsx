@@ -71,7 +71,6 @@ export default function RecentlyViewed({ currentSlug }: RecentlyViewedProps) {
                   alt={item.title}
                   fill
                   loading="lazy"
-                  unoptimized
                   style={{ objectFit: "cover" }}
                   sizes="(max-width: 640px) 50vw, 150px"
                 />
@@ -97,7 +96,6 @@ export default function RecentlyViewed({ currentSlug }: RecentlyViewedProps) {
                     alt={item.title}
                     fill
                     loading="lazy"
-                    unoptimized
                     style={{ objectFit: "cover" }}
                     sizes="(max-width: 640px) 100vw, 250px"
                   />

@@ -64,7 +64,6 @@ function TrailStrip({
                 alt={item.title}
                 fill
                 loading="lazy"
-                unoptimized
                 sizes={
                   isPortrait
                     ? "(max-width:640px) 28vw, 130px"

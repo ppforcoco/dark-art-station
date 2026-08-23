@@ -149,7 +149,6 @@ export default async function CharacterWallpaperPage({ params }: PageProps) {
                     src={thumbUrl}
                     alt={image!.title}
                     fill
-                    unoptimized
                     className="object-cover"
                     loading="eager"
                     sizes="(max-width: 768px) 100vw, 480px"

@@ -78,8 +78,8 @@ export default function TonightSlider({ items }: TonightSliderProps) {
                   src={item.src}
                   alt={item.title}
                   fill
+                  priority={i === 0}
                   loading={i < 2 ? "eager" : "lazy"}
-                  unoptimized
                   sizes="(max-width:767px) 44vw, 145px"
                   style={{ objectFit: "cover", objectPosition: "center top", contentVisibility: "auto" }}
                 />

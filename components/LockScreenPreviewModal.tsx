@@ -76,7 +76,7 @@ export default function LockScreenPreviewModal({ src, title, onClose, mode: _mod
           <div className="lsp-preview">
             <div className="lsp-phone">
               {/* Wallpaper */}
-              <Image src={src} alt={title} fill unoptimized style={{ objectFit: "cover" }} />
+              <Image src={src} alt={title} fill style={{ objectFit: "cover" }} />
 
               {/* Frame chrome */}
               {frame === "iphone-di"     && <div className="lsp-di" />}

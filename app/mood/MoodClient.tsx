@@ -210,7 +210,7 @@ export default function MoodClient({ moods, imagesByMood }: Props) {
                         <Image
                           src={quizResultImg.url}
                           alt={quizResultImg.title}
-                          fill unoptimized
+                          fill
                           style={{ objectFit: "cover" }}
                         />
                       </div>
@@ -339,7 +339,6 @@ export default function MoodClient({ moods, imagesByMood }: Props) {
                     src={img.url}
                     alt={img.title}
                     fill
-                    unoptimized
                     sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 22vw"
                     style={{ objectFit: "cover" }}
                   />

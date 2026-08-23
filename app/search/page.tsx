@@ -64,7 +64,6 @@ function ResultCard({ item, index, total }: { item: SearchResultItem; index: num
           alt={item.title}
           fill
           loading="lazy"
-          unoptimized
           style={{ objectFit: "cover" }}
           sizes="(max-width: 640px) 50vw, 200px"
         />

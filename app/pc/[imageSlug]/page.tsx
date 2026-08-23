@@ -179,7 +179,6 @@ export default async function PcImagePage({ params }: PageProps) {
               <DeviceMockup deviceType="PC">
                 <div className="relative w-full h-full" style={{ background: "#050505" }}>
                   <Image
-                    unoptimized
                     src={thumbUrl}
                     alt={image.title}
                     fill
@@ -233,7 +232,7 @@ export default async function PcImagePage({ params }: PageProps) {
                     {tagSortedStrip.map((img) => (
                       <Link key={img.slug} href={`/pc/${img.slug}`} className="more-strip-link">
                         <div className="hw-more-strip__thumb" style={{ position: "relative" }}>
-                          <Image src={getPublicUrl(img.r2Key)} alt={img.title} fill className="object-cover" loading="lazy" sizes="100px" unoptimized />
+                          <Image src={getPublicUrl(img.r2Key)} alt={img.title} fill className="object-cover" loading="lazy" sizes="100px" />
                         </div>
                       </Link>
                     ))}

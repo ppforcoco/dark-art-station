@@ -193,7 +193,6 @@ export default async function AndroidImagePage({ params }: PageProps) {
                     src={thumbUrl}
                     alt={image.title}
                     fill
-                    unoptimized
                     className="object-cover"
                     priority
                     sizes="(max-width: 480px) 280px, (max-width: 768px) 340px, 480px"

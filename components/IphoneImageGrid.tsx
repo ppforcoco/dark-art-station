@@ -267,7 +267,6 @@ export default function IphoneImageGrid({
                 src={img.src}
                 alt={`${img.title}${altSuffix ? " — " + altSuffix : ""}`}
                 fill
-                unoptimized
                 className="object-cover"
                 sizes={sizes}
                 priority={effectivePriority}

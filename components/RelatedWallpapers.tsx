@@ -45,7 +45,6 @@ export default function RelatedWallpapers({
                   alt={img.title}
                   fill
                   loading="lazy"
-                  unoptimized
                   style={{ objectFit: "cover" }}
                   sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 200px"
                 />

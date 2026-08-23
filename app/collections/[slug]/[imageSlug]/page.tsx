@@ -182,7 +182,6 @@ export default async function CollectionImagePage({ params }: PageProps) {
                 priority
                 fetchPriority="high"
                 quality={90}
-                unoptimized
                 sizes="(max-width: 768px) 100vw, 420px"
                 style={{ objectFit: "cover", objectPosition: "center" }}
               />

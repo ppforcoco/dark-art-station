@@ -758,7 +758,6 @@ export default async function WorldPage({
                         priority={idx < 4}
                         sizes="(max-width: 767px) 50vw, (max-width: 1279px) 33vw, 25vw"
                         style={{ objectFit: "cover" }}
-                        unoptimized
                       />
                     </div>
                     <div className="world-card-cap">

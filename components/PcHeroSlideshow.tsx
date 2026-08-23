@@ -24,7 +24,6 @@ export default function PcHeroSlideshow({ slides }: Props) {
           fill
           className="object-cover"
           priority
-          unoptimized
           sizes="(max-width: 768px) 100vw, 50vw"
         />
       </Link>

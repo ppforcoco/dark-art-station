@@ -462,7 +462,6 @@ async function RootImageView({ imageSlug }: { imageSlug: string }) {
                 priority
                 fetchPriority="high"
                 quality={90}
-                unoptimized
                 sizes="(max-width: 768px) 100vw, 420px"
                 style={{ objectFit: "cover", objectPosition: "center" }}
               />

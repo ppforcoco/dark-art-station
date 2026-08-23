@@ -175,7 +175,6 @@ export default function ProductCard({
                 alt=""
                 fill
                 loading="lazy"
-                unoptimized
                 className="object-cover"
                 style={{
                   filter: "blur(20px) brightness(0.2)",
@@ -248,7 +247,6 @@ export default function ProductCard({
                 fill
                 loading={priority ? "eager" : "lazy"}
                 priority={false}
-                unoptimized
                 className="object-cover transition-transform duration-500 group-hover:scale-105"
                 sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 200px"
               />

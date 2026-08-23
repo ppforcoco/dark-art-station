@@ -132,7 +132,6 @@ export default async function ObsessionsPage() {
                               src={thumb}
                               alt={col.thumbnailAlt ?? col.title}
                               fill
-                              unoptimized
                               className="object-cover"
                               sizes="(max-width:480px) 50vw, (max-width:900px) 33vw, 25vw"
                             />
