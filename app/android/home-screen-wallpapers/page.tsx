@@ -8,7 +8,6 @@ import Pagination from "@/components/Pagination";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import IphoneImageGrid from "@/components/IphoneImageGrid";
 import ScreenStyleFilters from "@/components/ScreenStyleFilters";
-import { isGloballyPremiumLocked } from "@/lib/premium-lock";
 
 export const revalidate = 3600;
 
@@ -61,7 +60,7 @@ export default async function AndroidHomeScreenPage({ searchParams }: PageProps)
   const { tag, page: rawPage } = await searchParams;
   const page = Math.max(1, parseInt(rawPage ?? "1", 10) || 1);
   const skip = (page - 1) * PAGE_SIZE;
-  const locked = isGloballyPremiumLocked();
+  const locked = false;
 
   // Exact hyphenated tag match only — never a title/partial match — so this
   // never pulls in unrelated wallpapers just because a word overlaps.

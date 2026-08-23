@@ -15,11 +15,7 @@ import PageTracker from "@/components/PageTracker";
 import FavoriteButton from "@/components/FavoriteButton";
 import PreviewButton from "@/components/PreviewButton";
 import Breadcrumbs from "@/components/Breadcrumbs";
-import PremiumCountdown from "@/components/PremiumCountdown";
 import WallpaperReactions from "@/components/WallpaperReactions";
-import PremiumLockedGateClient from "@/components/PremiumLockedGate";
-import VaultSealedView from "@/components/VaultSealedView";
-import { isImagePremiumLocked } from "@/lib/premium-lock";
 import BirthdayComments from "@/components/BirthdayComments";
 import SummonRandomTag from "@/components/SummonRandomTag";
 
@@ -106,47 +102,6 @@ export async function generateStaticParams() {
   return [];
 }
 
-function PremiumVaultGate({ devicePath }: { devicePath: string }) {
-  return (
-    <main style={{
-      minHeight: "100vh",
-      backgroundColor: "var(--bg-primary, #07050f)",
-      color: "var(--text-primary, #e8e4f8)",
-      colorScheme: "dark",
-      display: "flex", flexDirection: "column",
-      alignItems: "center", justifyContent: "center",
-      padding: "40px 24px", textAlign: "center",
-      position: "relative", overflow: "hidden",
-    }}>
-      <div style={{
-        position: "absolute", inset: 0, pointerEvents: "none",
-        background: "radial-gradient(ellipse 60% 50% at 50% 50%, rgba(201,168,76,0.06) 0%, transparent 70%)",
-      }} />
-      {(["tl", "tr", "bl", "br"] as const).map((pos) => (
-        <span key={pos} style={{
-          position: "absolute",
-          top: pos.startsWith("t") ? "20px" : undefined,
-          bottom: pos.startsWith("b") ? "20px" : undefined,
-          left: pos.endsWith("l") ? "20px" : undefined,
-          right: pos.endsWith("r") ? "20px" : undefined,
-          fontFamily: "var(--font-cinzel, serif)", fontSize: "1.1rem", color: "rgba(201,168,76,0.2)",
-        }}>†</span>
-      ))}
-      <div style={{ fontSize: "56px", marginBottom: "24px" }}>🔒</div>
-      <span style={{ fontFamily: "var(--font-space, monospace)", fontSize: "0.6rem", letterSpacing: "0.28em", textTransform: "uppercase", color: "rgba(201,168,76,0.55)", marginBottom: "12px", display: "block" }}>Back In Town</span>
-      <h1 style={{ fontFamily: "var(--font-cinzel, serif)", fontSize: "clamp(1.8rem, 4vw, 2.8rem)", fontWeight: 700, color: "#f0e8d8", margin: "0 0 16px", lineHeight: 1.1, maxWidth: "560px" }}>This Wallpaper Is Sealed</h1>
-      <p style={{ fontFamily: "var(--font-space, monospace)", fontSize: "0.82rem", color: "rgba(200,180,140,0.55)", maxWidth: "400px", lineHeight: 1.75, margin: "0 0 32px" }}>
-        Premium wallpapers are available for 24 hours, then sealed away for 24 hours. Check back when it's back in town.
-      </p>
-      <div style={{ marginBottom: "36px" }}>
-        <PremiumCountdown isLocked={true} />
-      </div>
-      <div style={{ width: "100%", maxWidth: "320px", height: "1px", background: "linear-gradient(to right, transparent, rgba(201,168,76,0.2), transparent)", marginBottom: "32px" }} />
-      <Link href={`/${devicePath}`} style={{ fontFamily: "var(--font-space, monospace)", fontSize: "0.72rem", letterSpacing: "0.16em", textTransform: "uppercase", color: "#e8e4f8", textDecoration: "none", border: "1px solid rgba(192,0,26,0.4)", padding: "13px 28px", background: "rgba(192,0,26,0.06)", display: "inline-flex", alignItems: "center", gap: "8px" }}>← Browse Free Wallpapers</Link>
-    </main>
-  );
-}
-
 export default async function AndroidImagePage({ params }: PageProps) {
   const { imageSlug } = await params;
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
@@ -154,11 +109,6 @@ export default async function AndroidImagePage({ params }: PageProps) {
   const image = await getCachedImage(imageSlug);
 
   if (!image || image.deviceType !== "ANDROID") notFound();
-
-  // ── Server-side enforcement — see app/iphone/[imageSlug]/page.tsx for why.
-  if (isImagePremiumLocked(image.tags)) {
-    return <VaultSealedView devicePath="android" />;
-  }
 
   const thumbUrl = getPublicUrl(image.r2Key);
   const displayDescription = image.description ?? buildFallbackDescription(image.title, image.tags);
@@ -219,7 +169,7 @@ export default async function AndroidImagePage({ params }: PageProps) {
   const nextImageUrl = nextImage ? getPublicUrl(nextImage.r2Key) : null;
 
   return (
-    <PremiumLockedGateClient tags={image.tags} devicePath="android">
+    <>
     <main className="min-h-screen" style={{ backgroundColor: "var(--bg-primary)", color: "var(--text-primary)", colorScheme: "dark" }}>
 
       {prevImageUrl && <link rel="preload" as="image" href={prevImageUrl} />}
@@ -400,6 +350,6 @@ export default async function AndroidImagePage({ params }: PageProps) {
         })
       }} />
     </main>
-  </PremiumLockedGateClient>
+  </>
   );
 }

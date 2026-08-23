@@ -10,7 +10,6 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 import AdminHtmlBlock from "@/components/AdminHtmlBlock";
 import IphoneImageGrid from "@/components/IphoneImageGrid";
 import ScreenStyleFilters from "@/components/ScreenStyleFilters";
-import { isGloballyPremiumLocked } from "@/lib/premium-lock";
 
 export const revalidate = 3600;
 
@@ -91,7 +90,7 @@ export default async function IphonePage({ searchParams }: PageProps) {
   const { tag, page: rawPage } = await searchParams;
   const page = Math.max(1, parseInt(rawPage ?? "1", 10) || 1);
   const skip = (page - 1) * PAGE_SIZE;
-  const locked = isGloballyPremiumLocked();
+  const locked = false;
 
   const where = {
     collectionId: null,

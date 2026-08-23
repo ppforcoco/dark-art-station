@@ -14,9 +14,6 @@ import PageTracker from "@/components/PageTracker";
 import FavoriteButton from "@/components/FavoriteButton";
 import PreviewButton from "@/components/PreviewButton";
 import Breadcrumbs from "@/components/Breadcrumbs";
-import PremiumLockedGateClient from "@/components/PremiumLockedGate";
-import VaultSealedView from "@/components/VaultSealedView";
-import { isImagePremiumLocked } from "@/lib/premium-lock";
 import BirthdayComments from "@/components/BirthdayComments";
 import SummonRandomTag from "@/components/SummonRandomTag";
 import WallpaperReactions from "@/components/WallpaperReactions";
@@ -121,16 +118,6 @@ export default async function IphoneImagePage({ params }: PageProps) {
 
   if (!image || image.deviceType !== "IPHONE") notFound();
 
-  // ── Server-side enforcement ─────────────────────────────────────────────
-  // Check the real lock state BEFORE building thumbUrl or any markup that
-  // references the actual file. This stops the locked image's URL from ever
-  // being present in the page HTML — previously the image was always
-  // server-rendered and only hidden client-side after hydration, which meant
-  // view-source (or a direct request) could still reveal a "sealed" wallpaper.
-  if (isImagePremiumLocked(image.tags)) {
-    return <VaultSealedView devicePath="iphone" />;
-  }
-
   const thumbUrl = getPublicUrl(image.r2Key);
   const displayDescription = image.description ?? buildFallbackDescription(image.title, image.tags);
   const plainDescription = displayDescription.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
@@ -194,7 +181,7 @@ export default async function IphoneImagePage({ params }: PageProps) {
   const nextImageUrl = nextImage ? getPublicUrl(nextImage.r2Key) : null;
 
   return (
-    <PremiumLockedGateClient tags={image.tags} devicePath="iphone">
+    <>
     <main className="min-h-screen" style={{ backgroundColor: "var(--bg-primary)", color: "var(--text-primary)", colorScheme: "dark" }}>
 
       {prevImageUrl && <link rel="preload" as="image" href={prevImageUrl} />}
@@ -671,6 +658,6 @@ export default async function IphoneImagePage({ params }: PageProps) {
         })
       }} />
     </main>
-  </PremiumLockedGateClient>
+  </>
   );
 }

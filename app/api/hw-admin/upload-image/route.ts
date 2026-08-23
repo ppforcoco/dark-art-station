@@ -101,7 +101,6 @@ export async function POST(req: NextRequest) {
     // ── Parse tags ───────────────────────────────────────────────────────────
     let parsedTags: string[] = [];
     try { parsedTags = tags ? JSON.parse(tags) : []; } catch {}
-    if (isAdult && !parsedTags.includes("16plus")) parsedTags.push("16plus");
 
     // ── Save to DB ───────────────────────────────────────────────────────────
     const image = await db.image.create({

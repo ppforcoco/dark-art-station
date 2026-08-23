@@ -19,7 +19,6 @@ import Link from "next/link";
 import Image from "next/image";
 import { db, getRelatedImages } from "@/lib/db";
 import { getPublicUrl } from "@/lib/r2";
-import { isPremiumLocked } from "@/lib/premium-lock";
 import { sanitizeAdminHtml } from "@/lib/sanitize-html";
 import AdminHtmlBlock from "@/components/AdminHtmlBlock";
 import Breadcrumbs from "@/components/Breadcrumbs";
@@ -297,7 +296,7 @@ async function RootCollectionView({ slug }: { slug: string }) {
         ) : (
           <div className="coll-mockup-grid">
             {mergedImages.map((img, idx) => {
-              const locked = (img.tags ?? []).includes("badge-premium") && isPremiumLocked((img as any).updatedAt);
+              const locked = false;
               const href = !collectionImageIds.has(img.id) && (img as any).deviceType
                 ? `/${(img as any).deviceType.toLowerCase()}/${img.slug}`
                 : `/${img.slug}`;

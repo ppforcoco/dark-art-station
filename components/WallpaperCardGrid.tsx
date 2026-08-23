@@ -6,43 +6,6 @@ import Link from "next/link";
 import Image from "next/image";
 import styles from "./WallpaperCardGrid.module.css";
 
-// ─── Cycle constants — must match all other files ────────────────────────────
-const EPOCH_MS  = Date.UTC(2025, 0, 1, 0, 0, 0);
-const CYCLE_MS  = 48 * 60 * 60 * 1000;
-const UNLOCK_MS = 24 * 60 * 60 * 1000;
-
-function getClientIsLocked(): boolean {
-  const pos = (Date.now() - EPOCH_MS) % CYCLE_MS;
-  return pos >= UNLOCK_MS;
-}
-
-function getMsUntilUnlock(): number {
-  const pos = (Date.now() - EPOCH_MS) % CYCLE_MS;
-  if (pos >= UNLOCK_MS) return Math.max(0, CYCLE_MS - pos);
-  return 0;
-}
-
-function fmtMs(ms: number) {
-  const s = Math.max(0, Math.floor(ms / 1000));
-  const h = Math.floor(s / 3600);
-  const m = Math.floor((s % 3600) / 60);
-  const sec = s % 60;
-  const p = (n: number) => String(n).padStart(2, "0");
-  return `${p(h)}h ${p(m)}m ${p(sec)}s`;
-}
-
-function VaultCountdown() {
-  const [display, setDisplay] = useState<string | null>(null);
-  useEffect(() => {
-    const tick = () => setDisplay(fmtMs(getMsUntilUnlock()));
-    tick();
-    const id = setInterval(tick, 1000);
-    return () => clearInterval(id);
-  }, []);
-  if (!display) return null;
-  return <>{display}</>;
-}
-
 export interface WallpaperCardItem {
   id: string;
   slug: string;
@@ -65,48 +28,9 @@ export default function WallpaperCardGrid({ items, accentRgb, badge, badgeColor 
   const shadowDefault = `0 0 0 1px rgba(${accentRgb},0.25), 0 8px 32px rgba(0,0,0,0.6)`;
   const shadowHover   = `0 0 0 1px rgba(${accentRgb},0.65), 0 20px 56px rgba(0,0,0,0.85), 0 0 32px rgba(${accentRgb},0.22)`;
 
-  // ── FIX: hydration-safe lock state ───────────────────────────────────────
-  const [isLockedNow, setIsLockedNow] = useState(false);
-  useEffect(() => {
-    setIsLockedNow(getClientIsLocked());
-    const id = setInterval(() => setIsLockedNow(getClientIsLocked()), 60_000);
-    return () => clearInterval(id);
-  }, []);
-
   return (
     <div className={styles.outer}>
       {items.map((img) => {
-        /* LOCKED CARD */
-        if (img.isLocked && isLockedNow) {
-          return (
-            <div
-              key={img.id}
-              className={styles.lockedCard}
-              style={{ boxShadow: `0 0 0 1px rgba(${accentRgb},0.15), 0 8px 32px rgba(0,0,0,0.6)` }}
-            >
-              <div className={styles.thumb}>
-                <div className={styles.btnL1} />
-                <div className={styles.btnL2} />
-                <div className={styles.btnR} />
-                <div className={styles.notch} />
-                <Image src={img.src} alt="" aria-hidden="true" fill loading="lazy" sizes="100px"
-                  style={{ objectFit: "cover", filter: "blur(12px) brightness(0.18)", transform: "scale(1.12)" }}
-                  unoptimized />
-                <div className={styles.vaultOverlay}>
-                  <span className={styles.vaultLock} style={{ filter: `drop-shadow(0 0 8px rgba(${accentRgb},0.6))` }}>🔒</span>
-                  <span className={styles.vaultLabel} style={{ color: accent }}>Back in the Town</span>
-                  <span className={styles.vaultTimer} style={{ color: `rgba(${accentRgb},0.55)` }}>BACK IN <VaultCountdown /></span>
-                </div>
-                <div className={styles.homeBar} style={{ background: "rgba(255,255,255,0.12)" }} />
-              </div>
-              <div className={styles.footer} style={{ borderTop: `1px solid rgba(${accentRgb},0.08)` }}>
-                <p className={styles.lockedTitle} style={{ color: `rgba(${accentRgb},0.35)` }}>&nbsp;</p>
-              </div>
-            </div>
-          );
-        }
-
-        /* UNLOCKED CARD */
         return (
           <Link prefetch={false} key={img.id} href={`/${img.devicePath}/${img.slug}`} className={styles.link}>
             <div

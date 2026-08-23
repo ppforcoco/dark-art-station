@@ -160,54 +160,6 @@ export default function DeviceImageCard({
   }
 
 
-  // ── Premium locked card ───────────────────────────────────────────────────
-  if (isLocked) {
-    return (
-      <div
-        style={{
-          aspectRatio: aspectRatio.replace("/", " / "),
-          position: "relative",
-          overflow: "hidden",
-          background: "#0a0810",
-          borderRadius: "inherit",
-          cursor: "default",
-        }}
-      >
-        {/* Blurred background image */}
-        <Image
-          unoptimized
-          src={src}
-          alt=""
-          fill
-          loading="lazy"
-          className="object-cover"
-          style={{ filter: "blur(12px) brightness(0.25)", transform: "scale(1.1)" }}
-          sizes={sizes}
-          aria-hidden="true"
-        />
-        {/* Lock overlay */}
-        <div style={{
-          position: "absolute", inset: 0, zIndex: 5,
-          display: "flex", flexDirection: "column",
-          alignItems: "center", justifyContent: "center",
-          gap: "10px", padding: "1rem", textAlign: "center",
-          background: "rgba(10,8,16,0.5)",
-        }}>
-          <span style={{ fontSize: "1.8rem", lineHeight: 1 }}>🔒</span>
-          <span style={{
-            fontSize: "0.55rem", letterSpacing: "0.2em",
-            textTransform: "uppercase", color: "#c9a84c",
-            fontFamily: "monospace", fontWeight: 700,
-          }}>Back in the Town</span>
-          <span style={{
-            fontSize: "0.5rem", color: "rgba(201,168,76,0.6)",
-            fontFamily: "monospace", lineHeight: 1.4,
-          }}>Returns in 24h</span>
-        </div>
-      </div>
-    );
-  }
-
   // ── Normal card ───────────────────────────────────────────────────────────
   return (
     <>

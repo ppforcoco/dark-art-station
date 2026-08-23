@@ -12,7 +12,6 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 import PageTracker from "@/components/PageTracker";
 import RecentlyViewed from "@/components/RecentlyViewed";
 import WallpaperReactions from "@/components/WallpaperReactions";
-import PremiumLockedGateClient from "@/components/PremiumLockedGate";
 
 export const dynamicParams = true;
 export const revalidate = 60;
@@ -131,7 +130,7 @@ export default async function CharacterWallpaperPage({ params }: PageProps) {
       ?? `${image!.title} — free dark art wallpaper from Haunted Wallpapers.`;
 
     return (
-      <PremiumLockedGateClient tags={image!.tags} devicePath="characters">
+      <>
         <main style={{ backgroundColor: "var(--bg-primary)", color: "var(--text-primary)", colorScheme: "dark", minHeight: "100vh" }}>
 
           <Breadcrumbs items={[
@@ -247,7 +246,7 @@ export default async function CharacterWallpaperPage({ params }: PageProps) {
 
           <PageTracker item={{ slug: image!.slug, title: image!.title, thumb: thumbUrl, href: `/characters/${slug}` }} />
         </main>
-      </PremiumLockedGateClient>
+      </>
     );
   } catch (err) {
     // Last-resort catch — log and show 404 rather than raw 500
