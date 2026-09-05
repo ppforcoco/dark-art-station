@@ -1,6 +1,7 @@
 // app/api/hw-admin/upload-image/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
+import sharp from "sharp";
 import { r2, BUCKET, getPublicUrl } from "@/lib/r2";
 import { db } from "@/lib/db";
 import { pingIndexNow } from "@/lib/index-now";
@@ -53,10 +54,18 @@ export async function POST(req: NextRequest) {
     }
 
     // ── Thumbnail (always required) ──────────────────────────────────────────
-    const thumbBytes  = await file.arrayBuffer();
-    const thumbBuffer = Buffer.from(thumbBytes);
-    const thumbExt    = file.name.split(".").pop()?.toLowerCase() ?? "jpg";
-    const thumbMime   = file.type || "image/jpeg";
+    // Resize/compress on upload so we never store or serve an oversized raw
+    // file as the "thumbnail" — this was previously stored exactly as
+    // uploaded, forcing Next's image optimizer to do heavy resizing work on
+    // every uncached request (slow TTFB) and bloating the origin storage.
+    const thumbBytes    = await file.arrayBuffer();
+    const rawThumbBuffer = Buffer.from(thumbBytes);
+    const thumbBuffer = await sharp(rawThumbBuffer)
+      .resize(800, 1200, { fit: "inside", withoutEnlargement: true })
+      .webp({ quality: 82 })
+      .toBuffer();
+    const thumbExt    = "webp";
+    const thumbMime   = "image/webp";
     const r2Key       = `thumbnails/${slug}/${slug}.${thumbExt}`;
 
     await r2.send(new PutObjectCommand({
@@ -87,14 +96,17 @@ export async function POST(req: NextRequest) {
         CacheControl: "private, max-age=0",
       }));
     } else {
-      // No 4K file — fall back to using the thumbnail as the download target
-      highResKey = `high-res/${slug}/${slug}.${thumbExt}`;
+      // No 4K file — fall back to using the original (uncompressed) upload
+      // as the download target, not the shrunk public thumbnail.
+      const origExt  = file.name.split(".").pop()?.toLowerCase() ?? "jpg";
+      const origMime = file.type || "image/jpeg";
+      highResKey = `high-res/${slug}/${slug}.${origExt}`;
 
       await r2.send(new PutObjectCommand({
         Bucket:       BUCKET,
         Key:          highResKey,
-        Body:         thumbBuffer,
-        ContentType:  thumbMime,
+        Body:         rawThumbBuffer,
+        ContentType:  origMime,
         CacheControl: "private, max-age=0",
       }));
     }
