@@ -44,8 +44,9 @@ export default function Footer(): JSX.Element {
             <li><Link href="/about"     prefetch={false}>About</Link></li>
             <li><Link href="/contact"   prefetch={false}>Contact</Link></li>
             <li><Link href="/faq"       prefetch={false}>FAQ</Link></li>
-            <li><Link href="/privacy"   prefetch={false}>Privacy Policy</Link></li>
-            <li><Link href="/licensing" prefetch={false}>Licensing &amp; Usage</Link></li>
+            <li><Link href="/privacy"       prefetch={false}>Privacy Policy</Link></li>
+            <li><Link href="/refund-policy" prefetch={false}>Refund Policy</Link></li>
+            <li><Link href="/licensing"     prefetch={false}>Licensing &amp; Usage</Link></li>
             <li><Link href="/dmca"      prefetch={false}>DMCA &amp; Copyright</Link></li>
           </ul>
         </div>
