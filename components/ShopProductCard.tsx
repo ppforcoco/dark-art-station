@@ -36,7 +36,7 @@ export default function ShopProductCard({
       <Link
         prefetch={false}
         href={`/shop/${slug}`}
-        className="product-card-image relative overflow-hidden block p-bg-1"
+        className={`product-card-image relative overflow-hidden block${thumbnail ? "" : " p-bg-1"}`}
         aria-label={`View ${name}`}
       >
         {thumbnail ? (

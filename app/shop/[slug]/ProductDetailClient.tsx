@@ -50,7 +50,7 @@ export default function ProductDetailClient({
       <div>
         <div style={{
           position: "relative", width: "100%", aspectRatio: "9 / 16",
-          background: "radial-gradient(at 60% 30%, #2d0838, #0e0820)",
+          background: mainImage ? "transparent" : "radial-gradient(at 60% 30%, #2d0838, #0e0820)",
           overflow: "hidden",
         }}>
           {mainImage ? (
