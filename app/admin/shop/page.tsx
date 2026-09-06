@@ -27,8 +27,23 @@ const CATEGORY_PRESETS: Record<string, { variantLabel: string; variants: string[
       "Galaxy S23 Ultra",
     ],
   },
-  "T-Shirt": { variantLabel: "Size", variants: ["S", "M", "L", "XL", "XXL"] },
-  "Hoodie":  { variantLabel: "Size", variants: ["S", "M", "L", "XL", "XXL", "3XL", "4XL"] },
+  // Apparel variants are "Color / Size" — lib/gelato-catalog.ts splits on
+  // " / " to resolve the real Gelato UID, so keep that exact separator.
+  "T-Shirt": {
+    variantLabel: "Size",
+    variants: ["Black", "White"].flatMap(c => ["S", "M", "L", "XL", "XXL"].map(s => `${c} / ${s}`)),
+  },
+  "Hoodie": {
+    variantLabel: "Size",
+    variants: ["White", "Black"].flatMap(c => ["S", "M", "L", "XL", "XXL", "3XL", "4XL", "5XL"].map(s => `${c} / ${s}`)),
+  },
+};
+
+// Sizes available per apparel category — used by the color/size generator
+// below so you don't have to type every "Color / Size" combo by hand.
+const APPAREL_SIZES: Record<string, string[]> = {
+  "T-Shirt": ["S", "M", "L", "XL", "XXL"],
+  "Hoodie":  ["S", "M", "L", "XL", "XXL", "3XL", "4XL", "5XL"],
 };
 
 interface Product {
@@ -234,6 +249,20 @@ function ProductForm({
   const [category, setCategory] = useState(existing?.category ?? "Phone Case");
   const [variantLabel, setVariantLabel] = useState(existing?.variantLabel ?? CATEGORY_PRESETS["Phone Case"].variantLabel);
   const [variantsText, setVariantsText] = useState((existing?.variants ?? CATEGORY_PRESETS["Phone Case"].variants).join(", "));
+  const [colorsText, setColorsText] = useState("Black, White");
+
+  const isApparel = category === "T-Shirt" || category === "Hoodie";
+
+  // Rebuilds variantsText as "Color / Size" for every color × every size
+  // in this category. Only colors that actually have a UID in
+  // lib/gelato-catalog.ts will fulfill — check there (or the dashboard)
+  // before adding a color that isn't Black or White.
+  function regenerateApparelVariants() {
+    const colors = colorsText.split(",").map(c => c.trim()).filter(Boolean);
+    const sizes = APPAREL_SIZES[category] ?? [];
+    const combos = colors.flatMap(c => sizes.map(s => `${c} / ${s}`));
+    setVariantsText(combos.join(", "));
+  }
   const [price, setPrice] = useState(existing ? String(existing.price) : "29.99");
   const [compareAtPrice, setCompareAtPrice] = useState(existing?.compareAtPrice ? String(existing.compareAtPrice) : "");
   const [descriptionHtml, setDescriptionHtml] = useState(existing?.descriptionHtml ?? "");
@@ -387,14 +416,31 @@ function ProductForm({
         </div>
       </div>
 
+      {isApparel && (
+        <div style={{ display: "grid", gridTemplateColumns: "2fr auto", gap: "16px", alignItems: "end", marginBottom: "8px" }}>
+          <div>
+            <label style={lbl}>Colors (comma-separated — only Black &amp; White have confirmed Gelato UIDs so far)</label>
+            <input style={inp} value={colorsText} onChange={e => setColorsText(e.target.value)} placeholder="Black, White" />
+          </div>
+          <Btn variant="ghost" onClick={regenerateApparelVariants}>Generate sizes ×colors</Btn>
+        </div>
+      )}
+
       <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: "16px", marginBottom: "16px" }}>
         <div>
           <label style={lbl}>Variant Label</label>
           <input style={inp} value={variantLabel} onChange={e => setVariantLabel(e.target.value)} placeholder="Phone Model" />
         </div>
         <div>
-          <label style={lbl}>Variant Options (comma-separated)</label>
-          <input style={inp} value={variantsText} onChange={e => setVariantsText(e.target.value)} placeholder="iPhone 14, iPhone 15, iPhone 16" />
+          <label style={lbl}>
+            Variant Options (comma-separated{isApparel ? ' — must be "Color / Size", e.g. "Black / M"' : ""})
+          </label>
+          <input
+            style={inp}
+            value={variantsText}
+            onChange={e => setVariantsText(e.target.value)}
+            placeholder={isApparel ? "Black / S, Black / M, White / S" : "iPhone 14, iPhone 15, iPhone 16"}
+          />
         </div>
       </div>
 

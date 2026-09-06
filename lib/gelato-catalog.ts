@@ -78,40 +78,87 @@ export const PHONE_CASE_UID_MAP: Record<string, string> = {
   "Galaxy S23 Ultra":            "phonecase_samsung_galaxy-s23ultra_tough_white_glossy",  // ✅ confirmed
 };
 
-export const TSHIRT_UID_MAP: Record<string, string> = {
-  "S":   "apparel_product_gca_t-shirt_gsc_crewneck_gcu_unisex_gqa_heavy-weight_gsi_s_gco_black_gpr_4-0_gildan_5000",   // ✅ confirmed
-  "M":   "apparel_product_gca_t-shirt_gsc_crewneck_gcu_unisex_gqa_heavy-weight_gsi_m_gco_black_gpr_4-0_gildan_5000",   // ✅ confirmed
-  "L":   "apparel_product_gca_t-shirt_gsc_crewneck_gcu_unisex_gqa_heavy-weight_gsi_l_gco_black_gpr_4-0_gildan_5000",   // ✅ confirmed
-  "XL":  "apparel_product_gca_t-shirt_gsc_crewneck_gcu_unisex_gqa_heavy-weight_gsi_xl_gco_black_gpr_4-0_gildan_5000",  // ✅ confirmed
-  "XXL": "apparel_product_gca_t-shirt_gsc_crewneck_gcu_unisex_gqa_heavy-weight_gsi_2xl_gco_black_gpr_4-0_gildan_5000", // ✅ confirmed (Gelato calls this "2XL")
+// ── Apparel with color ──────────────────────────────────────────────────
+// Apparel variant strings now encode BOTH color and size as "Color / Size"
+// (e.g. "Black / M"). Each color needs its own confirmed UID per size —
+// picking a color in the Gelato dashboard changes the UID, it isn't just
+// a cosmetic swap.
+//
+// Only ONE color per garment has ever been clicked-and-copied from the
+// dashboard (Black for t-shirt, White for hoodie). The opposite color
+// below is 🤔 INFERRED by swapping the "_gco_{color}_" token, following
+// the same naming pattern Gelato uses elsewhere in this file — it has
+// NOT been confirmed. Before enabling a new color for real customers,
+// open that exact color+size combo in the Gelato dashboard and verify
+// the UID matches, the same 2-minute check described above.
+
+export const TSHIRT_UID_MAP: Record<string, Record<string, string>> = {
+  "Black": {
+    "S":   "apparel_product_gca_t-shirt_gsc_crewneck_gcu_unisex_gqa_heavy-weight_gsi_s_gco_black_gpr_4-0_gildan_5000",   // ✅ confirmed
+    "M":   "apparel_product_gca_t-shirt_gsc_crewneck_gcu_unisex_gqa_heavy-weight_gsi_m_gco_black_gpr_4-0_gildan_5000",   // ✅ confirmed
+    "L":   "apparel_product_gca_t-shirt_gsc_crewneck_gcu_unisex_gqa_heavy-weight_gsi_l_gco_black_gpr_4-0_gildan_5000",   // ✅ confirmed
+    "XL":  "apparel_product_gca_t-shirt_gsc_crewneck_gcu_unisex_gqa_heavy-weight_gsi_xl_gco_black_gpr_4-0_gildan_5000",  // ✅ confirmed
+    "XXL": "apparel_product_gca_t-shirt_gsc_crewneck_gcu_unisex_gqa_heavy-weight_gsi_2xl_gco_black_gpr_4-0_gildan_5000", // ✅ confirmed (Gelato calls this "2XL")
+  },
+  "White": {
+    "S":   "apparel_product_gca_t-shirt_gsc_crewneck_gcu_unisex_gqa_heavy-weight_gsi_s_gco_white_gpr_4-0_gildan_5000",   // 🤔 inferred — CONFIRM before use
+    "M":   "apparel_product_gca_t-shirt_gsc_crewneck_gcu_unisex_gqa_heavy-weight_gsi_m_gco_white_gpr_4-0_gildan_5000",   // 🤔 inferred — CONFIRM before use
+    "L":   "apparel_product_gca_t-shirt_gsc_crewneck_gcu_unisex_gqa_heavy-weight_gsi_l_gco_white_gpr_4-0_gildan_5000",   // 🤔 inferred — CONFIRM before use
+    "XL":  "apparel_product_gca_t-shirt_gsc_crewneck_gcu_unisex_gqa_heavy-weight_gsi_xl_gco_white_gpr_4-0_gildan_5000",  // 🤔 inferred — CONFIRM before use
+    "XXL": "apparel_product_gca_t-shirt_gsc_crewneck_gcu_unisex_gqa_heavy-weight_gsi_2xl_gco_white_gpr_4-0_gildan_5000", // 🤔 inferred — CONFIRM before use
+  },
 };
 
-export const HOODIE_UID_MAP: Record<string, string> = {
-  "S":   "apparel_product_gca_hoodie_gsc_pullover_gcu_unisex_gqa_classic_gsi_s_gco_white_gpr_4-0_gildan_18500",   // ✅ confirmed
-  "M":   "apparel_product_gca_hoodie_gsc_pullover_gcu_unisex_gqa_classic_gsi_m_gco_white_gpr_4-0_gildan_18500",   // ✅ confirmed
-  "L":   "apparel_product_gca_hoodie_gsc_pullover_gcu_unisex_gqa_classic_gsi_l_gco_white_gpr_4-0_gildan_18500",   // ✅ confirmed
-  "XL":  "apparel_product_gca_hoodie_gsc_pullover_gcu_unisex_gqa_classic_gsi_xl_gco_white_gpr_4-0_gildan_18500",  // ✅ confirmed
-  "XXL": "apparel_product_gca_hoodie_gsc_pullover_gcu_unisex_gqa_classic_gsi_2xl_gco_white_gpr_4-0_gildan_18500", // ✅ confirmed (Gelato calls this "2XL")
-  "3XL": "apparel_product_gca_hoodie_gsc_pullover_gcu_unisex_gqa_classic_gsi_3xl_gco_white_gpr_4-0_gildan_18500", // ✅ confirmed
-  "4XL": "apparel_product_gca_hoodie_gsc_pullover_gcu_unisex_gqa_classic_gsi_4xl_gco_white_gpr_4-0_gildan_18500", // ✅ confirmed
+export const HOODIE_UID_MAP: Record<string, Record<string, string>> = {
+  "White": {
+    "S":   "apparel_product_gca_hoodie_gsc_pullover_gcu_unisex_gqa_classic_gsi_s_gco_white_gpr_4-0_gildan_18500",   // ✅ confirmed
+    "M":   "apparel_product_gca_hoodie_gsc_pullover_gcu_unisex_gqa_classic_gsi_m_gco_white_gpr_4-0_gildan_18500",   // ✅ confirmed
+    "L":   "apparel_product_gca_hoodie_gsc_pullover_gcu_unisex_gqa_classic_gsi_l_gco_white_gpr_4-0_gildan_18500",   // ✅ confirmed
+    "XL":  "apparel_product_gca_hoodie_gsc_pullover_gcu_unisex_gqa_classic_gsi_xl_gco_white_gpr_4-0_gildan_18500",  // ✅ confirmed
+    "XXL": "apparel_product_gca_hoodie_gsc_pullover_gcu_unisex_gqa_classic_gsi_2xl_gco_white_gpr_4-0_gildan_18500", // ✅ confirmed (Gelato calls this "2XL")
+    "3XL": "apparel_product_gca_hoodie_gsc_pullover_gcu_unisex_gqa_classic_gsi_3xl_gco_white_gpr_4-0_gildan_18500", // ✅ confirmed
+    "4XL": "apparel_product_gca_hoodie_gsc_pullover_gcu_unisex_gqa_classic_gsi_4xl_gco_white_gpr_4-0_gildan_18500", // ✅ confirmed
+    "5XL": "apparel_product_gca_hoodie_gsc_pullover_gcu_unisex_gqa_classic_gsi_5xl_gco_white_gpr_4-0_gildan_18500", // 🤔 inferred — CONFIRM before use (black 5XL confirmed, white not yet checked)
+  },
+  "Black": {
+    "S":   "apparel_product_gca_hoodie_gsc_pullover_gcu_unisex_gqa_classic_gsi_s_gco_black_gpr_4-0_gildan_18500",   // ✅ confirmed
+    "M":   "apparel_product_gca_hoodie_gsc_pullover_gcu_unisex_gqa_classic_gsi_m_gco_black_gpr_4-0_gildan_18500",   // ✅ confirmed
+    "L":   "apparel_product_gca_hoodie_gsc_pullover_gcu_unisex_gqa_classic_gsi_l_gco_black_gpr_4-0_gildan_18500",   // ✅ confirmed
+    "XL":  "apparel_product_gca_hoodie_gsc_pullover_gcu_unisex_gqa_classic_gsi_xl_gco_black_gpr_4-0_gildan_18500",  // ✅ confirmed
+    "XXL": "apparel_product_gca_hoodie_gsc_pullover_gcu_unisex_gqa_classic_gsi_2xl_gco_black_gpr_4-0_gildan_18500", // ✅ confirmed (Gelato calls this "2XL")
+    "3XL": "apparel_product_gca_hoodie_gsc_pullover_gcu_unisex_gqa_classic_gsi_3xl_gco_black_gpr_4-0_gildan_18500", // ✅ confirmed
+    "4XL": "apparel_product_gca_hoodie_gsc_pullover_gcu_unisex_gqa_classic_gsi_4xl_gco_black_gpr_4-0_gildan_18500", // ✅ confirmed
+    "5XL": "apparel_product_gca_hoodie_gsc_pullover_gcu_unisex_gqa_classic_gsi_5xl_gco_black_gpr_4-0_gildan_18500", // ✅ confirmed
+  },
 };
 
-// Category name (from Product.category) → which map to use.
-const CATEGORY_UID_MAPS: Record<string, Record<string, string>> = {
-  "Phone Case": PHONE_CASE_UID_MAP,
-  "T-Shirt":    TSHIRT_UID_MAP,
-  "Hoodie":     HOODIE_UID_MAP,
+const APPAREL_UID_MAPS: Record<string, Record<string, Record<string, string>>> = {
+  "T-Shirt": TSHIRT_UID_MAP,
+  "Hoodie":  HOODIE_UID_MAP,
 };
 
 /**
  * Look up the Gelato product UID for a given product category + variant.
- * Returns null if there's no mapping yet (UID still blank) or the
- * category/variant combo isn't recognized — callers should treat null
- * as "can't fulfill this via Gelato yet".
+ *
+ * For "Phone Case", variant is the phone model string, e.g. "iPhone 14".
+ * For "T-Shirt" / "Hoodie", variant must be "Color / Size", e.g. "Black / M"
+ * — this matches what ProductDetailClient sends once two color+size
+ * dropdowns are combined.
+ *
+ * Returns null if there's no mapping yet (UID still blank), the variant
+ * string is malformed, or the category/variant combo isn't recognized —
+ * callers should treat null as "can't fulfill this via Gelato yet".
  */
 export function getGelatoProductUid(category: string, variant: string): string | null {
-  const map = CATEGORY_UID_MAPS[category];
-  if (!map) return null;
-  const uid = map[variant];
-  return uid ? uid : null;
+  if (category === "Phone Case") {
+    return PHONE_CASE_UID_MAP[variant] ?? null;
+  }
+
+  const apparelMap = APPAREL_UID_MAPS[category];
+  if (!apparelMap) return null;
+
+  const [color, size] = variant.split(" / ").map(s => s.trim());
+  if (!color || !size) return null; // not in "Color / Size" format
+
+  return apparelMap[color]?.[size] ?? null;
 }

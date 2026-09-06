@@ -1,9 +1,21 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type CSSProperties } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { useCart } from "@/lib/cart-context";
+
+const selectLabelStyle: CSSProperties = {
+  display: "block", fontFamily: "var(--font-space,monospace)",
+  fontSize: "0.6rem", letterSpacing: "0.15em", textTransform: "uppercase",
+  color: "#8a809a", marginBottom: "8px",
+};
+
+const selectStyle: CSSProperties = {
+  background: "#0a0812", border: "1px solid #2a2535", color: "#e8e4f8",
+  padding: "12px 14px", fontSize: "0.9rem", fontFamily: "var(--font-space,monospace)",
+  minWidth: "140px",
+};
 
 interface Props {
   slug: string;
@@ -17,14 +29,51 @@ interface Props {
   descriptionHtml: string;
 }
 
+// Apparel variants are stored as "Color / Size" (see lib/gelato-catalog.ts).
+// If every variant follows that pattern, show separate Color + Size
+// dropdowns instead of one long combined list. Anything that doesn't match
+// (e.g. Phone Case's plain "iPhone 14") falls back to the single dropdown.
+function parseColorSizeVariants(variants: string[]) {
+  const parsed = variants.map(v => v.split(" / ").map(s => s.trim()));
+  if (parsed.some(p => p.length !== 2 || !p[0] || !p[1])) return null;
+
+  const colors = [...new Set(parsed.map(p => p[0]))];
+  const sizesByColor = new Map<string, string[]>();
+  for (const [color, size] of parsed) {
+    if (!sizesByColor.has(color)) sizesByColor.set(color, []);
+    sizesByColor.get(color)!.push(size);
+  }
+  return { colors, sizesByColor };
+}
+
 export default function ProductDetailClient({
   slug, name, category, variantLabel, variants, price, compareAtPrice, images, descriptionHtml,
 }: Props) {
   const { addItem } = useCart();
   const router = useRouter();
+
+  const colorSize = parseColorSizeVariants(variants);
+  const [selectedColor, setSelectedColor] = useState(colorSize?.colors[0] ?? "");
+  const [selectedSize, setSelectedSize] = useState(
+    colorSize ? colorSize.sizesByColor.get(colorSize.colors[0])?.[0] ?? "" : ""
+  );
   const [selectedVariant, setSelectedVariant] = useState(variants[0] ?? "");
   const [activeImage, setActiveImage] = useState(0);
   const [added, setAdded] = useState(false);
+
+  // Keep the combined "Color / Size" string (what cart/checkout/Gelato
+  // expect) in sync whenever either dropdown changes.
+  function handleColorChange(color: string) {
+    setSelectedColor(color);
+    const firstSize = colorSize?.sizesByColor.get(color)?.[0] ?? "";
+    setSelectedSize(firstSize);
+    setSelectedVariant(`${color} / ${firstSize}`);
+  }
+
+  function handleSizeChange(size: string) {
+    setSelectedSize(size);
+    setSelectedVariant(`${selectedColor} / ${size}`);
+  }
 
   const mainImage = images[activeImage] ?? images[0] ?? null;
 
@@ -98,27 +147,29 @@ export default function ProductDetailClient({
           )}
         </div>
 
-        {variants.length > 0 && (
+        {colorSize ? (
+          <div style={{ display: "flex", gap: "16px", marginBottom: "24px", flexWrap: "wrap" }}>
+            <div>
+              <label htmlFor="color-select" style={selectLabelStyle}>Color</label>
+              <select id="color-select" value={selectedColor} onChange={e => handleColorChange(e.target.value)} style={selectStyle}>
+                {colorSize.colors.map(c => <option key={c} value={c}>{c}</option>)}
+              </select>
+            </div>
+            <div>
+              <label htmlFor="size-select" style={selectLabelStyle}>{variantLabel}</label>
+              <select id="size-select" value={selectedSize} onChange={e => handleSizeChange(e.target.value)} style={selectStyle}>
+                {(colorSize.sizesByColor.get(selectedColor) ?? []).map(s => <option key={s} value={s}>{s}</option>)}
+              </select>
+            </div>
+          </div>
+        ) : variants.length > 0 && (
           <div style={{ marginBottom: "24px" }}>
-            <label
-              htmlFor="variant-select"
-              style={{
-                display: "block", fontFamily: "var(--font-space,monospace)",
-                fontSize: "0.6rem", letterSpacing: "0.15em", textTransform: "uppercase",
-                color: "#8a809a", marginBottom: "8px",
-              }}
-            >
-              {variantLabel}
-            </label>
+            <label htmlFor="variant-select" style={selectLabelStyle}>{variantLabel}</label>
             <select
               id="variant-select"
               value={selectedVariant}
               onChange={e => setSelectedVariant(e.target.value)}
-              style={{
-                width: "100%", maxWidth: "320px", background: "#0a0812",
-                border: "1px solid #2a2535", color: "#e8e4f8",
-                padding: "12px 14px", fontSize: "0.9rem", fontFamily: "var(--font-space,monospace)",
-              }}
+              style={{ ...selectStyle, width: "100%", maxWidth: "320px" }}
             >
               {variants.map(v => <option key={v} value={v}>{v}</option>)}
             </select>
