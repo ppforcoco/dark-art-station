@@ -45,9 +45,9 @@ export default function ProductDetailClient({
   }
 
   return (
-    <section className="max-w-6xl mx-auto px-6 md:px-[60px] py-8 grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-20">
+    <section className="max-w-6xl mx-auto pl-4 pr-6 md:pl-6 md:pr-[60px] py-8 grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-24">
       {/* ── Gallery ── */}
-      <div style={{ maxWidth: "440px", width: "100%" }}>
+      <div style={{ maxWidth: "380px", width: "100%" }}>
         <div style={{
           position: "relative", width: "100%", aspectRatio: "9 / 16",
           background: mainImage ? "transparent" : "radial-gradient(at 60% 30%, #2d0838, #0e0820)",
