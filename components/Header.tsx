@@ -2,9 +2,11 @@
 import Link from "next/link";
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { Menu, X, Search, Shuffle } from "lucide-react";
+import { Menu, X, Search, Shuffle, ShoppingCart } from "lucide-react";
+import { useCart } from "@/lib/cart-context";
 
 const NAV_LINKS = [
+  { label: "Shop",          href: "/shop"       },
   { label: "iPhone",        href: "/iphone"     },
   { label: "Android",       href: "/android"    },
   { label: "PC",            href: "/pc"         },
@@ -17,6 +19,7 @@ const NAV_LINKS = [
 
 export default function Header() {
   const router = useRouter();
+  const { count: cartCount } = useCart();
   const [menuOpen,   setMenuOpen]   = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [query,      setQuery]      = useState("");
@@ -168,6 +171,30 @@ export default function Header() {
             >
               <Shuffle size={17} />
             </button>
+            <Link
+              href="/cart"
+              prefetch={false}
+              className="hw-nav__icon-btn"
+              style={{ position: "relative" }}
+              aria-label={`Cart, ${cartCount} item${cartCount === 1 ? "" : "s"}`}
+            >
+              <ShoppingCart size={17} />
+              {cartCount > 0 && (
+                <span
+                  style={{
+                    position: "absolute", top: "-4px", right: "-4px",
+                    background: "#c0001a", color: "#fff",
+                    fontFamily: "var(--font-space,monospace)",
+                    fontSize: "0.55rem", fontWeight: 700,
+                    minWidth: "16px", height: "16px", borderRadius: "999px",
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                    padding: "0 3px", lineHeight: 1,
+                  }}
+                >
+                  {cartCount > 99 ? "99+" : cartCount}
+                </span>
+              )}
+            </Link>
             <button
               type="button"
               className="hw-nav__hamburger"

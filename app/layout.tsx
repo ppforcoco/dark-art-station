@@ -4,6 +4,7 @@ import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ClientComponents from "@/components/ClientComponents";
+import { CartProvider } from "@/lib/cart-context";
 
 const SITE_URL  = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
 const SITE_NAME = "Haunted Wallpapers";
@@ -134,12 +135,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             ]),
           }}
         />
-        <Header />
-        <main className="content-wrapper">
-          {children}
-        </main>
-        <Footer />
-        <ClientComponents />
+        <CartProvider>
+          <Header />
+          <main className="content-wrapper">
+            {children}
+          </main>
+          <Footer />
+          <ClientComponents />
+        </CartProvider>
 
         {/* ── Third-party analytics — loaded lazily after the page is
             interactive, so they don't compete with initial render or a

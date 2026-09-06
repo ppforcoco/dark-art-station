@@ -255,6 +255,46 @@ model LiveWallpaper {
   @@index([isPublished, createdAt])
 }
 
+// ── Shop / Print-on-Demand Products ───────────────────────────────────────────
+model Product {
+  id              String   @id @default(uuid())
+  slug            String   @unique
+  name            String
+  descriptionHtml String   @default("")   // sanitized with sanitizeAdminHtml before render
+
+  /// Free-text product type, e.g. "Phone Case", "T-Shirt". Drives the storefront
+  /// label + which variant list is shown. Not an enum — new product types can be
+  /// added from the admin panel without a migration.
+  category        String
+
+  /// Label shown above the variant dropdown on the product page, e.g.
+  /// "iPhone Model", "Size". Auto-filled by category in the admin UI but
+  /// editable, since future categories may need a custom label.
+  variantLabel    String   @default("Option")
+
+  /// The selectable options themselves, e.g. ["iPhone 14","iPhone 15","iPhone 16"]
+  /// or ["S","M","L","XL"]. Rendered as a dropdown on the product page.
+  variants        String[] @default([])
+
+  price           Float
+  compareAtPrice  Float?
+
+  /// R2 key for the primary 9:16 product mockup shown on cards + as the main image.
+  thumbnailKey    String   @default("")
+  /// Additional R2 keys — extra angles/mockups shown in the product gallery.
+  galleryKeys     String[] @default([])
+
+  badge           String?           // "New" | "Hot" | etc, same convention as Collection
+  featured        Boolean  @default(false)
+  isPublished     Boolean  @default(false)
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([isPublished, createdAt])
+  @@index([category])
+}
+
 // ── Residents of the Haunted Town ─────────────────────────────────────────────
 model Resident {
   id          String   @id @default(uuid())
