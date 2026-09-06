@@ -45,9 +45,9 @@ export default function ProductDetailClient({
   }
 
   return (
-    <section className="max-w-6xl mx-auto px-6 md:px-[60px] py-8 grid grid-cols-1 md:grid-cols-2 gap-10">
+    <section className="max-w-6xl mx-auto px-6 md:px-[60px] py-8 grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-20">
       {/* ── Gallery ── */}
-      <div>
+      <div style={{ maxWidth: "440px", width: "100%" }}>
         <div style={{
           position: "relative", width: "100%", aspectRatio: "9 / 16",
           background: mainImage ? "transparent" : "radial-gradient(at 60% 30%, #2d0838, #0e0820)",
@@ -60,7 +60,7 @@ export default function ProductDetailClient({
           )}
         </div>
         {images.length > 1 && (
-          <div style={{ display: "flex", gap: "8px", marginTop: "10px" }}>
+          <div style={{ display: "flex", gap: "8px", marginTop: "10px", flexWrap: "wrap" }}>
             {images.map((img, i) => (
               <button
                 key={img}
