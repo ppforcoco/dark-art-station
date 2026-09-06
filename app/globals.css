@@ -2353,6 +2353,10 @@ a.download-btn {
 .product-card-cta {
     min-height: 42px;
     line-height: 42px;
+    font-size: 0.6rem;
+  }.product-grid .flex.flex-col.gap-3 { gap: 8px !important; }.product-grid > div > .p-5,
+  .product-grid > div > div[class*="p-5"] { padding: 10px 10px 12px !important; }
+}
 
 /* ══════════════════════════════════════════════════════════════
    SHOP CARD — shop-only variant, isolated from .product-card-*
@@ -2419,7 +2423,8 @@ a.download-btn {
 .shop-card-info    { padding: 10px 10px 12px; }
   .shop-card-meta    { margin-bottom: 8px; }
   .shop-card-title   { font-size: 1.05rem; }
-}.shop-card-cta {
+}
+.shop-card-cta {
   display: block;
   width: 100%;
   text-align: center;
@@ -2453,8 +2458,7 @@ a.download-btn {
     min-height: 42px;
     line-height: 42px;
     font-size: 0.6rem;
-  }.product-grid .flex.flex-col.gap-3 { gap: 8px !important; }.product-grid > div > .p-5,
-  .product-grid > div > div[class*="p-5"] { padding: 10px 10px 12px !important; }
+  }
 }/* Light theme */
 
 /* ── AdSense: responsive,
