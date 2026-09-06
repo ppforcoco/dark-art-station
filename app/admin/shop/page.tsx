@@ -243,18 +243,20 @@ function ProductForm({
     }
     setSaving(true);
     const variants = variantsText.split(",").map(v => v.trim()).filter(Boolean);
-    const body = {
-      name, slug, category, variantLabel, variants,
+    const payloadBase = {
+      name, category, variantLabel, variants,
       price: Number(price),
       compareAtPrice: compareAtPrice ? Number(compareAtPrice) : null,
       descriptionHtml, badge: badge || null, featured,
-      ...(isEdit ? { newSlug: slug } : {}),
     };
+    const payload = isEdit
+      ? { slug: existing!.slug, newSlug: slug, ...payloadBase }
+      : { slug, ...payloadBase };
     try {
       const res = await fetch("/api/hw-admin/shop", {
         method: isEdit ? "PATCH" : "POST",
         headers: { "Content-Type": "application/json", "x-admin-password": password },
-        body: JSON.stringify(isEdit ? { slug: existing!.slug, ...body } : body),
+        body: JSON.stringify(payload),
       });
       const j = await res.json();
       if (res.ok) {
