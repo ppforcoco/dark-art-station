@@ -10,7 +10,7 @@ function checkAuth(req: NextRequest) {
   return pw === correct;
 }
 
-// POST — upload a product image. formData: file, slug, kind ("thumbnail" | "gallery")
+// POST — upload a product image. formData: file, slug, kind ("thumbnail" | "gallery" | "print")
 export async function POST(req: NextRequest) {
   if (!checkAuth(req)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
@@ -33,7 +33,7 @@ export async function POST(req: NextRequest) {
     const buffer = Buffer.from(bytes);
     const ext = file.name.split(".").pop()?.toLowerCase() ?? "jpg";
     const mime = file.type || "image/jpeg";
-    const uniquePart = kind === "gallery" ? `${Date.now()}` : `thumbnail-${Date.now()}`;
+    const uniquePart = kind === "gallery" ? `${Date.now()}` : `${kind}-${Date.now()}`;
     const r2Key = `shop/${slug}/${uniquePart}.${ext}`;
 
     await r2.send(new PutObjectCommand({
@@ -43,17 +43,24 @@ export async function POST(req: NextRequest) {
       ContentType: mime,
     }));
 
-    const updated = kind === "gallery"
-      ? await db.product.update({
-          where: { slug },
-          data: { galleryKeys: { push: r2Key } },
-          select: { id: true, slug: true, galleryKeys: true },
-        })
-      : await db.product.update({
-          where: { slug },
-          data: { thumbnailKey: r2Key },
-          select: { id: true, slug: true, thumbnailKey: true },
-        });
+    const updated =
+      kind === "gallery"
+        ? await db.product.update({
+            where: { slug },
+            data: { galleryKeys: { push: r2Key } },
+            select: { id: true, slug: true, galleryKeys: true },
+          })
+        : kind === "print"
+        ? await db.product.update({
+            where: { slug },
+            data: { printFileKey: r2Key },
+            select: { id: true, slug: true, printFileKey: true },
+          })
+        : await db.product.update({
+            where: { slug },
+            data: { thumbnailKey: r2Key },
+            select: { id: true, slug: true, thumbnailKey: true },
+          });
 
     const r2Base = process.env.NEXT_PUBLIC_R2_PUBLIC_URL ?? "";
     return NextResponse.json({

@@ -284,6 +284,10 @@ model Product {
   /// Additional R2 keys — extra angles/mockups shown in the product gallery.
   galleryKeys     String[] @default([])
 
+  /// Full-resolution print-ready file (300 DPI+) that Gelato actually prints from.
+  /// Separate from thumbnailKey, which is storefront-display quality only.
+  printFileKey    String   @default("")
+
   badge           String?           // "New" | "Hot" | etc, same convention as Collection
   featured        Boolean  @default(false)
   isPublished     Boolean  @default(false)

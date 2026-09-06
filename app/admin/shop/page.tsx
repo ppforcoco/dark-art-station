@@ -22,6 +22,7 @@ interface Product {
   descriptionHtml: string;
   thumbnailKey: string;
   galleryKeys: string[];
+  printFileKey: string;
   badge: string | null;
   featured: boolean;
   isPublished: boolean;
@@ -175,7 +176,7 @@ function ShopAdmin({ password }: { password: string }) {
                           : <span style={{ fontSize: "0.6rem", color: C.textMut, border: `1px solid ${C.border}`, padding: "1px 6px" }}>DRAFT</span>}
                       </div>
                       <div style={{ fontSize: "0.75rem", color: C.textSec }}>
-                        {p.category} · ${p.price.toFixed(2)} · {p.variants.length} {p.variantLabel.toLowerCase()} option(s) · {p.thumbnailKey ? "✓ thumbnail" : "⚠ no thumbnail"} · {p.galleryKeys.length} gallery image(s)
+                        {p.category} · ${p.price.toFixed(2)} · {p.variants.length} {p.variantLabel.toLowerCase()} option(s) · {p.thumbnailKey ? "✓ thumbnail" : "⚠ no thumbnail"} · {p.galleryKeys.length} gallery image(s) · {p.printFileKey ? "✓ print file" : "⚠ no print file (Gelato can't fulfill)"}
                       </div>
                     </div>
                     <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
@@ -221,10 +222,13 @@ function ProductForm({
 
   const [thumbFile, setThumbFile] = useState<File | null>(null);
   const [galleryFile, setGalleryFile] = useState<File | null>(null);
+  const [printFile, setPrintFile] = useState<File | null>(null);
   const [uploadingThumb, setUploadingThumb] = useState(false);
   const [uploadingGallery, setUploadingGallery] = useState(false);
+  const [uploadingPrint, setUploadingPrint] = useState(false);
   const thumbInputRef = useRef<HTMLInputElement>(null);
   const galleryInputRef = useRef<HTMLInputElement>(null);
+  const printInputRef = useRef<HTMLInputElement>(null);
 
   const isEdit = !!existing;
 
@@ -304,6 +308,22 @@ function ProductForm({
       else setMsg({ type: "err", text: j.error ?? "Upload failed." });
     } catch { setMsg({ type: "err", text: "Network error." }); }
     setUploadingGallery(false);
+  }
+
+  async function handleUploadPrint() {
+    if (!printFile || !existing) return;
+    setUploadingPrint(true);
+    try {
+      const form = new FormData();
+      form.append("file", printFile);
+      form.append("slug", existing.slug);
+      form.append("kind", "print");
+      const res = await fetch("/api/hw-admin/shop/upload", { method: "POST", headers: { "x-admin-password": password }, body: form });
+      const j = await res.json();
+      if (res.ok) { setMsg({ type: "ok", text: "✓ Print file uploaded — ready for Gelato." }); onSaved(); }
+      else setMsg({ type: "err", text: j.error ?? "Upload failed." });
+    } catch { setMsg({ type: "err", text: "Network error." }); }
+    setUploadingPrint(false);
   }
 
   return (
@@ -410,6 +430,21 @@ function ProductForm({
               <input ref={galleryInputRef} type="file" accept="image/*" onChange={e => setGalleryFile(e.target.files?.[0] ?? null)} style={{ marginBottom: "8px", fontSize: "0.75rem" }} />
               <Btn variant="ghost" onClick={handleUploadGallery} disabled={!galleryFile || uploadingGallery}>{uploadingGallery ? "Uploading…" : "Add Gallery Image"}</Btn>
             </div>
+          </div>
+
+          <div style={{ marginTop: "28px", paddingTop: "24px", borderTop: `1px solid ${C.border}` }}>
+            <h3 style={{ fontSize: "0.75rem", color: C.gold, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: "6px" }}>Print File (for Gelato fulfillment)</h3>
+            <p style={{ fontSize: "0.68rem", color: C.textMut, marginBottom: "14px", lineHeight: 1.6 }}>
+              Full-resolution, print-ready file (300 DPI+) — this is what actually gets printed on the physical product.
+              Separate from the thumbnail above, which is storefront-display quality only and is never sent to Gelato.
+            </p>
+            {existing!.printFileKey ? (
+              <p style={{ fontSize: "0.7rem", color: C.green, marginBottom: "8px" }}>✓ Print file set — uploading a new one replaces it.</p>
+            ) : (
+              <p style={{ fontSize: "0.7rem", color: C.red, marginBottom: "8px" }}>⚠ No print file yet — Gelato can't fulfill this product until one is uploaded.</p>
+            )}
+            <input ref={printInputRef} type="file" accept="image/*" onChange={e => setPrintFile(e.target.files?.[0] ?? null)} style={{ marginBottom: "8px", fontSize: "0.75rem" }} />
+            <Btn variant="ghost" onClick={handleUploadPrint} disabled={!printFile || uploadingPrint}>{uploadingPrint ? "Uploading…" : "Upload Print File"}</Btn>
           </div>
         </div>
       )}
