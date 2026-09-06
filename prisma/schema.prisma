@@ -299,6 +299,60 @@ model Product {
   @@index([category])
 }
 
+// ── Shop Orders ────────────────────────────────────────────────────────────────
+// The "notebook" that records what a customer bought, so there's something
+// for Gelato to fulfill once a real payment has come in. Paddle is not wired
+// up yet — orders can be created in "pending" state at checkout time, and a
+// later webhook flips paymentStatus to "paid" once Paddle confirms.
+model Order {
+  id          String   @id @default(uuid())
+  /// Short human-friendly reference shown to the customer, e.g. "HW-100042".
+  orderNumber String   @unique
+
+  email       String
+
+  /// Snapshot of what was purchased at the time of order — deliberately NOT
+  /// a relation to Product, so editing/deleting a product later never changes
+  /// the historical record of what this customer actually bought.
+  /// Shape: [{ slug, name, category, variant, variantLabel, price, qty, thumbnailKey }]
+  items       Json
+
+  currency    String   @default("USD")
+  subtotal    Float
+
+  // ── Shipping address ──
+  firstName     String
+  lastName      String
+  addressLine1  String
+  addressLine2  String?
+  city          String
+  postCode      String
+  state         String?
+  country       String   // 2-letter ISO code, e.g. "US"
+  phone         String?
+
+  // ── Payment (Paddle) ──
+  /// "pending" | "paid" | "failed" | "refunded"
+  paymentStatus       String  @default("pending")
+  paddleTransactionId String?
+
+  // ── Fulfillment (Gelato) ──
+  /// "not_sent" | "sent" | "failed"
+  gelatoStatus   String  @default("not_sent")
+  gelatoOrderId  String?
+  /// Populated when Gelato rejects the order, so a failed order is visible
+  /// in the admin panel instead of silently lost.
+  gelatoError    String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([paymentStatus])
+  @@index([gelatoStatus])
+  @@index([email])
+  @@index([createdAt])
+}
+
 // ── Residents of the Haunted Town ─────────────────────────────────────────────
 model Resident {
   id          String   @id @default(uuid())

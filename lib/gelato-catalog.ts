@@ -1,4 +1,3 @@
-mkdir -p lib && cat > lib/gelato-catalog.ts << 'EOF'
 // lib/gelato-catalog.ts
 //
 // Maps your storefront variant strings (the ones in Product.variants,
@@ -100,5 +99,3 @@ export function getGelatoProductUid(category: string, variant: string): string |
   const uid = map[variant];
   return uid ? uid : null;
 }
-EOF
-echo "Created lib/gelato-catalog.ts"
