@@ -157,8 +157,50 @@ export function getGelatoProductUid(category: string, variant: string): string |
   const apparelMap = APPAREL_UID_MAPS[category];
   if (!apparelMap) return null;
 
-  const [color, size] = variant.split(" / ").map(s => s.trim());
-  if (!color || !size) return null; // not in "Color / Size" format
+  if (variant.includes(" / ")) {
+    const [color, size] = variant.split(" / ").map(s => s.trim());
+    if (!color || !size) return null;
+    return apparelMap[color]?.[size] ?? null;
+  }
 
-  return apparelMap[color]?.[size] ?? null;
+  // Backward compatibility: products created before color support store a
+  // plain size string ("M", "2XL"...) with no color. These predate the
+  // color dropdown and were always fulfilled as one fixed color — Black
+  // for T-Shirt, White for Hoodie (the only color each one had a UID for
+  // originally). Keep resolving those the same way so existing live
+  // products don't silently break.
+  const legacyColor = category === "T-Shirt" ? "Black" : "White";
+  return apparelMap[legacyColor]?.[variant.trim()] ?? null;
+}
+
+// ── For the admin panel ─────────────────────────────────────────────────
+// These read the SAME maps used above to resolve real Gelato UIDs, so any
+// option the admin panel offers is guaranteed to actually work — there is
+// no way to pick something that doesn't match, because these functions
+// are the only source of what counts as a valid option.
+
+/** All phone models that have a confirmed-or-inferred Gelato UID. */
+export function getPhoneCaseModels(): string[] {
+  return Object.keys(PHONE_CASE_UID_MAP);
+}
+
+/** All colors available for a given apparel category ("T-Shirt" | "Hoodie"). */
+export function getApparelColors(category: string): string[] {
+  return Object.keys(APPAREL_UID_MAPS[category] ?? {});
+}
+
+/** All sizes available for a given apparel category, across every color. */
+export function getApparelSizes(category: string): string[] {
+  const map = APPAREL_UID_MAPS[category];
+  if (!map) return [];
+  const sizes = new Set<string>();
+  for (const color of Object.values(map)) {
+    for (const size of Object.keys(color)) sizes.add(size);
+  }
+  return [...sizes];
+}
+
+/** Whether a category/variant combo is currently backed by a real UID. */
+export function isVariantSupported(category: string, variant: string): boolean {
+  return getGelatoProductUid(category, variant) !== null;
 }
