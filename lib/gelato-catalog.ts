@@ -74,17 +74,29 @@ export const PHONE_CASE_UID_MAP: Record<string, string> = {
 };
 
 export const TSHIRT_UID_MAP: Record<string, string> = {
-  "S":   "", // TODO
-  "M":   "", // TODO
-  "L":   "", // TODO
-  "XL":  "", // TODO
-  "XXL": "", // TODO
+  "S":   "apparel_product_gca_t-shirt_gsc_crewneck_gcu_unisex_gqa_heavy-weight_gsi_s_gco_black_gpr_4-0_gildan_5000",   // ✅ confirmed
+  "M":   "apparel_product_gca_t-shirt_gsc_crewneck_gcu_unisex_gqa_heavy-weight_gsi_m_gco_black_gpr_4-0_gildan_5000",   // ✅ confirmed
+  "L":   "apparel_product_gca_t-shirt_gsc_crewneck_gcu_unisex_gqa_heavy-weight_gsi_l_gco_black_gpr_4-0_gildan_5000",   // ✅ confirmed
+  "XL":  "apparel_product_gca_t-shirt_gsc_crewneck_gcu_unisex_gqa_heavy-weight_gsi_xl_gco_black_gpr_4-0_gildan_5000",  // ✅ confirmed
+  "XXL": "apparel_product_gca_t-shirt_gsc_crewneck_gcu_unisex_gqa_heavy-weight_gsi_2xl_gco_black_gpr_4-0_gildan_5000", // ✅ confirmed (Gelato calls this "2XL")
+};
+
+export const HOODIE_UID_MAP: Record<string, string> = {
+  "XS":  "", // TODO
+  "S":   "apparel_product_gca_hoodie_gsc_pullover_gcu_unisex_gqa_classic_gsi_s_gco_white_gpr_4-0_gildan_18500",   // ✅ confirmed
+  "M":   "apparel_product_gca_hoodie_gsc_pullover_gcu_unisex_gqa_classic_gsi_m_gco_white_gpr_4-0_gildan_18500",   // ✅ confirmed
+  "L":   "apparel_product_gca_hoodie_gsc_pullover_gcu_unisex_gqa_classic_gsi_l_gco_white_gpr_4-0_gildan_18500",   // ✅ confirmed
+  "XL":  "apparel_product_gca_hoodie_gsc_pullover_gcu_unisex_gqa_classic_gsi_xl_gco_white_gpr_4-0_gildan_18500",  // ✅ confirmed
+  "XXL": "apparel_product_gca_hoodie_gsc_pullover_gcu_unisex_gqa_classic_gsi_2xl_gco_white_gpr_4-0_gildan_18500", // ✅ confirmed (Gelato calls this "2XL")
+  "3XL": "", // TODO
+  "4XL": "", // TODO
 };
 
 // Category name (from Product.category) → which map to use.
 const CATEGORY_UID_MAPS: Record<string, Record<string, string>> = {
   "Phone Case": PHONE_CASE_UID_MAP,
   "T-Shirt":    TSHIRT_UID_MAP,
+  "Hoodie":     HOODIE_UID_MAP,
 };
 
 /**
