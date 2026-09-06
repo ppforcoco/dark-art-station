@@ -8,7 +8,7 @@ export const dynamic = "force-dynamic";
 const CATEGORY_PRESETS: Record<string, { variantLabel: string; variants: string[] }> = {
   "Phone Case": { variantLabel: "Phone Model", variants: ["iPhone 14", "iPhone 15", "iPhone 16", "Galaxy S23", "Galaxy S24"] },
   "T-Shirt":    { variantLabel: "Size",        variants: ["S", "M", "L", "XL", "XXL"] },
-  "Hoodie":     { variantLabel: "Size",        variants: ["XS", "S", "M", "L", "XL", "XXL", "3XL", "4XL"] },
+  "Hoodie":     { variantLabel: "Size",        variants: ["S", "M", "L", "XL", "XXL", "3XL", "4XL"] },
 };
 
 interface Product {
