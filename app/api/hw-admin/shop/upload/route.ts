@@ -33,7 +33,7 @@ export async function POST(req: NextRequest) {
     const buffer = Buffer.from(bytes);
     const ext = file.name.split(".").pop()?.toLowerCase() ?? "jpg";
     const mime = file.type || "image/jpeg";
-    const uniquePart = kind === "gallery" ? `${Date.now()}` : "thumbnail";
+    const uniquePart = kind === "gallery" ? `${Date.now()}` : `thumbnail-${Date.now()}`;
     const r2Key = `shop/${slug}/${uniquePart}.${ext}`;
 
     await r2.send(new PutObjectCommand({

@@ -32,11 +32,11 @@ export default function ShopProductCard({
   };
 
   return (
-    <div className="product-card-wrap group">
+    <div className="shop-card-wrap group">
       <Link
         prefetch={false}
         href={`/shop/${slug}`}
-        className={`product-card-image relative overflow-hidden block${thumbnail ? "" : " p-bg-1"}`}
+        className={`shop-card-image relative overflow-hidden block${thumbnail ? "" : " p-bg-1"}`}
         aria-label={`View ${name}`}
       >
         {thumbnail ? (
@@ -63,14 +63,14 @@ export default function ShopProductCard({
         </span>
       </Link>
 
-      <div className="product-card-info">
-        <div className="product-card-meta">
-          <span className="product-card-category">{category}</span>
-          <div className="product-card-title">{name}</div>
+      <div className="shop-card-info">
+        <div className="shop-card-meta">
+          <span className="shop-card-category">{category}</span>
+          <div className="shop-card-title">{name}</div>
         </div>
 
-        <div className="product-card-bottom">
-          <span className="product-card-price">
+        <div className="shop-card-bottom">
+          <span className="shop-card-price">
             ${price.toFixed(2)}
             {compareAtPrice && compareAtPrice > price && (
               <span style={{ marginLeft: "6px", textDecoration: "line-through", opacity: 0.5, fontSize: "0.85em" }}>
@@ -78,7 +78,7 @@ export default function ShopProductCard({
               </span>
             )}
           </span>
-          <Link prefetch={false} href={`/shop/${slug}`} className="product-card-cta" aria-label={`View ${name}`}>
+          <Link prefetch={false} href={`/shop/${slug}`} className="shop-card-cta" aria-label={`View ${name}`}>
             View →
           </Link>
         </div>

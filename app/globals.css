@@ -2353,6 +2353,105 @@ a.download-btn {
 .product-card-cta {
     min-height: 42px;
     line-height: 42px;
+
+/* ══════════════════════════════════════════════════════════════
+   SHOP CARD — shop-only variant, isolated from .product-card-*
+   (which is shared with components/ProductCard.tsx for collections)
+   ══════════════════════════════════════════════════════════════ */
+
+.shop-card-wrap {
+  background: transparent;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  height: 100%;
+  transition: transform 0.3s cubic-bezier(0.16,1,0.3,1),
+              box-shadow 0.3s cubic-bezier(0.16,1,0.3,1);
+}.shop-card-wrap:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 0 0 1px rgba(192,0,26,0.35),
+              0 8px 32px rgba(192,0,26,0.22),
+              0 2px 8px rgba(0,0,0,0.4);
+}.shop-card-image {
+  border: 1px solid #2a2535;
+}.shop-card-info {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  background: #16131f;
+  border: 1px solid #2a2535;
+  padding: 16px 20px 20px;
+}.shop-card-meta {
+  flex: 1;
+  margin-bottom: 12px;
+}.shop-card-category {
+  font-family: Arial, sans-serif;
+  font-size: 0.6rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #ff1a33;
+  display: block;
+  margin-bottom: 6px;
+}.shop-card-title {
+  font-family: Arial, sans-serif;
+  font-style: italic;
+  font-size: 1.05rem;
+  color: #f0ecff;
+  line-height: 1.3;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}.shop-card-bottom {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: auto;
+  padding-top: 12px;
+  border-top: 1px solid rgba(42,37,53,0.5);
+}.shop-card-price {
+  font-family: Arial, sans-serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #c9a84c;
+}
+
+@media (max-width: 639px) {
+.shop-card-info    { padding: 10px 10px 12px; }
+  .shop-card-meta    { margin-bottom: 8px; }
+  .shop-card-title   { font-size: 1.05rem; }
+}.shop-card-cta {
+  display: block;
+  width: 100%;
+  text-align: center;
+  min-height: 44px;
+  line-height: 44px;
+  padding: 0 10px;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  text-decoration: none !important;
+  color: #ff1a33;
+  border: 1px solid #ff1a33;
+  background: transparent;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+}.shop-card-cta:hover {
+  background-color: #ff1a33;
+  color: #f0ecff !important;
+}.shop-card-cta:active { background-color: #8b0000; }
+
+@media (max-width: 639px) {
+.shop-card-cta {
+    min-height: 42px;
+    line-height: 42px;
     font-size: 0.6rem;
   }.product-grid .flex.flex-col.gap-3 { gap: 8px !important; }.product-grid > div > .p-5,
   .product-grid > div > div[class*="p-5"] { padding: 10px 10px 12px !important; }
