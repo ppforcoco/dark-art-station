@@ -5,10 +5,30 @@ import { useState, useEffect, useCallback, useRef } from "react";
 
 export const dynamic = "force-dynamic";
 
+// IMPORTANT: every string here must match a key in lib/gelato-catalog.ts
+// EXACTLY (spelling, spacing, "(US only)" suffix, "XXL" not "2XL", etc.) —
+// checkout accepts whatever you type here, but Gelato fulfillment will
+// reject anything that doesn't resolve to a real UID and the order gets
+// stuck after the customer has already paid. Only ✅-confirmed UIDs from
+// gelato-catalog.ts are listed below; add more only after confirming the
+// UID in the Gelato dashboard and adding it to that file first.
 const CATEGORY_PRESETS: Record<string, { variantLabel: string; variants: string[] }> = {
-  "Phone Case": { variantLabel: "Phone Model", variants: ["iPhone 14", "iPhone 15", "iPhone 16", "Galaxy S23", "Galaxy S24"] },
-  "T-Shirt":    { variantLabel: "Size",        variants: ["S", "M", "L", "XL", "XXL"] },
-  "Hoodie":     { variantLabel: "Size",        variants: ["S", "M", "L", "XL", "XXL", "3XL", "4XL"] },
+  "Phone Case": {
+    variantLabel: "Phone Model",
+    variants: [
+      "iPhone 14",
+      "iPhone 14 Pro Max",
+      "iPhone 15 Pro Max",
+      "iPhone 16 (US only)",
+      "iPhone 16 Plus (US only)",
+      "iPhone 16 Pro (US only)",
+      "iPhone 16 Pro Max (US only)",
+      "Galaxy S23 Plus",
+      "Galaxy S23 Ultra",
+    ],
+  },
+  "T-Shirt": { variantLabel: "Size", variants: ["S", "M", "L", "XL", "XXL"] },
+  "Hoodie":  { variantLabel: "Size", variants: ["S", "M", "L", "XL", "XXL", "3XL", "4XL"] },
 };
 
 interface Product {
