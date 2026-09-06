@@ -1,3 +1,4 @@
+mkdir -p lib && cat > lib/gelato-catalog.ts << 'EOF'
 // lib/gelato-catalog.ts
 //
 // Maps your storefront variant strings (the ones in Product.variants,
@@ -25,11 +26,52 @@
 // safer than silently accepting an order we can't fulfill.
 
 export const PHONE_CASE_UID_MAP: Record<string, string> = {
-  "iPhone 14":   "phonecase_apple_iphone-14_tough_white_glossy", // ✅ confirmed
-  "iPhone 15":   "", // TODO
-  "iPhone 16":   "", // TODO
-  "Galaxy S23":  "", // TODO — double check Gelato still stocks this before launch
-  "Galaxy S24":  "", // TODO — double check Gelato still stocks this before launch
+  // ── Apple ──
+  "iPhone 7":                    "", // TODO
+  "iPhone 7 Plus":               "", // TODO
+  "iPhone 8":                    "", // TODO
+  "iPhone 8 Plus":               "", // TODO
+  "iPhone SE (2020)":            "", // TODO
+  "iPhone X":                    "", // TODO
+  "iPhone XS":                   "", // TODO
+  "iPhone XS Max":               "", // TODO
+  "iPhone XR":                   "", // TODO
+  "iPhone 11":                   "", // TODO
+  "iPhone 11 Pro":               "", // TODO
+  "iPhone 11 Pro Max":           "", // TODO
+  "iPhone 12":                   "", // TODO
+  "iPhone 12 Mini":              "", // TODO
+  "iPhone 12 Pro":               "", // TODO
+  "iPhone 12 Pro Max":           "", // TODO
+  "iPhone 13":                   "", // TODO
+  "iPhone 13 Mini":              "", // TODO
+  "iPhone 13 Pro":               "", // TODO
+  "iPhone 13 Pro Max":           "", // TODO
+  "iPhone 14":                   "phonecase_apple_iphone-14_tough_white_glossy", // ✅ confirmed
+  "iPhone 14 Plus":              "", // TODO
+  "iPhone 14 Pro":               "", // TODO
+  "iPhone 14 Pro Max":           "", // TODO
+  "iPhone 15":                   "", // TODO
+  "iPhone 15 Plus":              "", // TODO
+  "iPhone 15 Pro":               "", // TODO
+  "iPhone 15 Pro Max":           "", // TODO
+  "iPhone 16 (US only)":         "", // TODO — Gelato only ships this model within the US
+  "iPhone 16 Plus (US only)":    "", // TODO — Gelato only ships this model within the US
+  "iPhone 16 Pro (US only)":     "", // TODO — Gelato only ships this model within the US
+  "iPhone 16 Pro Max (US only)": "", // TODO — Gelato only ships this model within the US
+  // ── Samsung ──
+  "Galaxy S20":                  "", // TODO
+  "Galaxy S20 Plus":             "", // TODO
+  "Galaxy S20 Ultra":            "", // TODO
+  "Galaxy S21":                  "", // TODO
+  "Galaxy S21 Plus":             "", // TODO
+  "Galaxy S21 Ultra":            "", // TODO
+  "Galaxy S22":                  "", // TODO
+  "Galaxy S22 Plus":             "", // TODO
+  "Galaxy S22 Ultra":            "", // TODO
+  "Galaxy S23":                  "", // TODO
+  "Galaxy S23 Plus":             "", // TODO
+  "Galaxy S23 Ultra":            "", // TODO
 };
 
 export const TSHIRT_UID_MAP: Record<string, string> = {
@@ -58,3 +100,5 @@ export function getGelatoProductUid(category: string, variant: string): string |
   const uid = map[variant];
   return uid ? uid : null;
 }
+EOF
+echo "Created lib/gelato-catalog.ts"
