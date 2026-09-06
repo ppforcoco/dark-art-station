@@ -26,51 +26,56 @@
 
 export const PHONE_CASE_UID_MAP: Record<string, string> = {
   // ── Apple ──
-  "iPhone 7":                    "", // TODO
-  "iPhone 7 Plus":               "", // TODO
-  "iPhone 8":                    "", // TODO
-  "iPhone 8 Plus":               "", // TODO
-  "iPhone SE (2020)":            "", // TODO
-  "iPhone X":                    "", // TODO
-  "iPhone XS":                   "", // TODO
-  "iPhone XS Max":               "", // TODO
-  "iPhone XR":                   "", // TODO
-  "iPhone 11":                   "", // TODO
-  "iPhone 11 Pro":               "", // TODO
-  "iPhone 11 Pro Max":           "", // TODO
-  "iPhone 12":                   "", // TODO
-  "iPhone 12 Mini":              "", // TODO
-  "iPhone 12 Pro":               "", // TODO
-  "iPhone 12 Pro Max":           "", // TODO
-  "iPhone 13":                   "", // TODO
-  "iPhone 13 Mini":              "", // TODO
-  "iPhone 13 Pro":               "", // TODO
-  "iPhone 13 Pro Max":           "", // TODO
-  "iPhone 14":                   "phonecase_apple_iphone-14_tough_white_glossy", // ✅ confirmed
-  "iPhone 14 Plus":              "", // TODO
-  "iPhone 14 Pro":               "", // TODO
-  "iPhone 14 Pro Max":           "", // TODO
-  "iPhone 15":                   "", // TODO
-  "iPhone 15 Plus":              "", // TODO
-  "iPhone 15 Pro":               "", // TODO
-  "iPhone 15 Pro Max":           "", // TODO
-  "iPhone 16 (US only)":         "", // TODO — Gelato only ships this model within the US
-  "iPhone 16 Plus (US only)":    "", // TODO — Gelato only ships this model within the US
-  "iPhone 16 Pro (US only)":     "", // TODO — Gelato only ships this model within the US
-  "iPhone 16 Pro Max (US only)": "", // TODO — Gelato only ships this model within the US
+  // Pattern confirmed from iPhone 14 + 16 series: phonecase_apple_iphone-{model}_tough_white_glossy
+  // 🤔 = inferred from that pattern, not clicked-and-copied — if an order for one of these
+  // ever fails, that's the first place to check (Gelato will reject bad UIDs loudly, it
+  // won't silently ship the wrong case).
+  "iPhone 7":                    "phonecase_apple_iphone-7_tough_white_glossy",        // 🤔 inferred
+  "iPhone 7 Plus":               "phonecase_apple_iphone-7plus_tough_white_glossy",    // 🤔 inferred
+  "iPhone 8":                    "phonecase_apple_iphone-8_tough_white_glossy",        // 🤔 inferred
+  "iPhone 8 Plus":               "phonecase_apple_iphone-8plus_tough_white_glossy",    // 🤔 inferred
+  "iPhone SE (2020)":            "phonecase_apple_iphone-se2020_tough_white_glossy",   // 🤔 inferred — least confident, naming may differ
+  "iPhone X":                    "phonecase_apple_iphone-x_tough_white_glossy",        // 🤔 inferred
+  "iPhone XS":                   "phonecase_apple_iphone-xs_tough_white_glossy",       // 🤔 inferred
+  "iPhone XS Max":               "phonecase_apple_iphone-xsmax_tough_white_glossy",    // 🤔 inferred
+  "iPhone XR":                   "phonecase_apple_iphone-xr_tough_white_glossy",       // 🤔 inferred
+  "iPhone 11":                   "phonecase_apple_iphone-11_tough_white_glossy",       // 🤔 inferred
+  "iPhone 11 Pro":               "phonecase_apple_iphone-11pro_tough_white_glossy",    // 🤔 inferred
+  "iPhone 11 Pro Max":           "phonecase_apple_iphone-11promax_tough_white_glossy", // 🤔 inferred
+  "iPhone 12":                   "phonecase_apple_iphone-12_tough_white_glossy",       // 🤔 inferred
+  "iPhone 12 Mini":              "phonecase_apple_iphone-12mini_tough_white_glossy",   // 🤔 inferred
+  "iPhone 12 Pro":               "phonecase_apple_iphone-12pro_tough_white_glossy",    // 🤔 inferred
+  "iPhone 12 Pro Max":           "phonecase_apple_iphone-12promax_tough_white_glossy", // 🤔 inferred
+  "iPhone 13":                   "phonecase_apple_iphone-13_tough_white_glossy",       // 🤔 inferred
+  "iPhone 13 Mini":              "phonecase_apple_iphone-13mini_tough_white_glossy",   // 🤔 inferred
+  "iPhone 13 Pro":               "phonecase_apple_iphone-13pro_tough_white_glossy",    // 🤔 inferred
+  "iPhone 13 Pro Max":           "phonecase_apple_iphone-13promax_tough_white_glossy", // 🤔 inferred
+  "iPhone 14":                   "phonecase_apple_iphone-14_tough_white_glossy",       // ✅ confirmed
+  "iPhone 14 Plus":              "phonecase_apple_iphone-14plus_tough_white_glossy",   // 🤔 inferred
+  "iPhone 14 Pro":               "phonecase_apple_iphone-14pro_tough_white_glossy",    // 🤔 inferred
+  "iPhone 14 Pro Max":           "phonecase_apple_iphone-14promax_tough_white_glossy", // ✅ confirmed
+  "iPhone 15":                   "phonecase_apple_iphone-15_tough_white_glossy",       // 🤔 inferred
+  "iPhone 15 Plus":              "phonecase_apple_iphone-15plus_tough_white_glossy",   // 🤔 inferred
+  "iPhone 15 Pro":               "phonecase_apple_iphone-15pro_tough_white_glossy",    // 🤔 inferred
+  "iPhone 15 Pro Max":           "phonecase_apple_iphone-15promax_tough_white_glossy", // ✅ confirmed
+  "iPhone 16 (US only)":         "phonecase_apple_iphone-16_tough_white_glossy",       // ✅ confirmed
+  "iPhone 16 Plus (US only)":    "phonecase_apple_iphone-16plus_tough_white_glossy",   // ✅ confirmed
+  "iPhone 16 Pro (US only)":     "phonecase_apple_iphone-16pro_tough_white_glossy",    // ✅ confirmed
+  "iPhone 16 Pro Max (US only)": "phonecase_apple_iphone-16promax_tough_white_glossy", // ✅ confirmed
   // ── Samsung ──
-  "Galaxy S20":                  "", // TODO
-  "Galaxy S20 Plus":             "", // TODO
-  "Galaxy S20 Ultra":            "", // TODO
-  "Galaxy S21":                  "", // TODO
-  "Galaxy S21 Plus":             "", // TODO
-  "Galaxy S21 Ultra":            "", // TODO
-  "Galaxy S22":                  "", // TODO
-  "Galaxy S22 Plus":             "", // TODO
-  "Galaxy S22 Ultra":            "", // TODO
-  "Galaxy S23":                  "", // TODO
-  "Galaxy S23 Plus":             "", // TODO
-  "Galaxy S23 Ultra":            "", // TODO
+  // Pattern confirmed from Galaxy S23 Plus + S23 Ultra: phonecase_samsung_galaxy-{model}_tough_white_glossy
+  "Galaxy S20":                  "phonecase_samsung_galaxy-s20_tough_white_glossy",       // 🤔 inferred
+  "Galaxy S20 Plus":             "phonecase_samsung_galaxy-s20plus_tough_white_glossy",   // 🤔 inferred
+  "Galaxy S20 Ultra":            "phonecase_samsung_galaxy-s20ultra_tough_white_glossy",  // 🤔 inferred
+  "Galaxy S21":                  "phonecase_samsung_galaxy-s21_tough_white_glossy",       // 🤔 inferred
+  "Galaxy S21 Plus":             "phonecase_samsung_galaxy-s21plus_tough_white_glossy",   // 🤔 inferred
+  "Galaxy S21 Ultra":            "phonecase_samsung_galaxy-s21ultra_tough_white_glossy",  // 🤔 inferred
+  "Galaxy S22":                  "phonecase_samsung_galaxy-s22_tough_white_glossy",       // 🤔 inferred
+  "Galaxy S22 Plus":             "phonecase_samsung_galaxy-s22plus_tough_white_glossy",   // 🤔 inferred
+  "Galaxy S22 Ultra":            "phonecase_samsung_galaxy-s22ultra_tough_white_glossy",  // 🤔 inferred
+  "Galaxy S23":                  "phonecase_samsung_galaxy-s23_tough_white_glossy",       // 🤔 inferred
+  "Galaxy S23 Plus":             "phonecase_samsung_galaxy-s23plus_tough_white_glossy",   // ✅ confirmed
+  "Galaxy S23 Ultra":            "phonecase_samsung_galaxy-s23ultra_tough_white_glossy",  // ✅ confirmed
 };
 
 export const TSHIRT_UID_MAP: Record<string, string> = {
