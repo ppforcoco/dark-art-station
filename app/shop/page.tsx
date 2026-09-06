@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { db } from "@/lib/db";
 import { getPublicUrl } from "@/lib/r2";
 import Breadcrumbs from "@/components/Breadcrumbs";
-import ShopProductCard from "@/components/ShopProductCard";
+import ShopCategoryFilter from "@/components/ShopCategoryFilter";
 
 export const revalidate = 0;
 
@@ -36,6 +36,33 @@ export default async function ShopPage() {
     return acc;
   }, {});
 
+  // Order category sections + pills consistently: Phone Case, T-Shirt, Hoodie
+  // first (in that order, if present), then anything else alphabetically —
+  // rather than whatever order they happened to be created in.
+  const PRIORITY_ORDER = ["Phone Case", "T-Shirt", "Hoodie"];
+  const categoryNames = Object.keys(grouped).sort((a, b) => {
+    const ai = PRIORITY_ORDER.indexOf(a);
+    const bi = PRIORITY_ORDER.indexOf(b);
+    if (ai !== -1 && bi !== -1) return ai - bi;
+    if (ai !== -1) return -1;
+    if (bi !== -1) return 1;
+    return a.localeCompare(b);
+  });
+
+  const groups = categoryNames.map(category => ({
+    category,
+    items: grouped[category].map(p => ({
+      id: p.id,
+      slug: p.slug,
+      name: p.name,
+      category: p.category,
+      price: p.price,
+      compareAtPrice: p.compareAtPrice,
+      badge: p.badge,
+      thumbnail: p.thumbnailKey ? getPublicUrl(p.thumbnailKey) : null,
+    })),
+  }));
+
   return (
     <div style={{ minHeight: "100vh", backgroundColor: "var(--bg-primary)", color: "var(--text-primary)" }}>
       <Breadcrumbs items={[
@@ -61,32 +88,7 @@ export default async function ShopPage() {
             <p className="hw-coming-soon__sub">The shop is being stocked. Check back soon.</p>
           </div>
         ) : (
-          Object.entries(grouped).map(([category, items]) => (
-            <div key={category} style={{ marginBottom: "48px" }}>
-              <p style={{
-                fontFamily: "var(--font-space,monospace)", fontSize: "0.58rem",
-                letterSpacing: "0.3em", textTransform: "uppercase", color: "#4a445a",
-                marginBottom: "14px", paddingBottom: "8px", borderBottom: "1px solid #2a2535",
-              }}>
-                — {category}
-              </p>
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
-                {items.map((p, i) => (
-                  <ShopProductCard
-                    key={p.id}
-                    slug={p.slug}
-                    name={p.name}
-                    category={p.category}
-                    price={p.price}
-                    compareAtPrice={p.compareAtPrice}
-                    badge={p.badge}
-                    thumbnail={p.thumbnailKey ? getPublicUrl(p.thumbnailKey) : null}
-                    priority={i < 5}
-                  />
-                ))}
-              </div>
-            </div>
-          ))
+          <ShopCategoryFilter groups={groups} />
         )}
       </section>
     </div>
