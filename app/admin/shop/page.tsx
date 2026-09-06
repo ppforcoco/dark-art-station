@@ -2,49 +2,20 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
+import {
+  getPhoneCaseModels, getApparelColors, getApparelSizes, isVariantSupported,
+} from "@/lib/gelato-catalog";
 
 export const dynamic = "force-dynamic";
 
-// IMPORTANT: every string here must match a key in lib/gelato-catalog.ts
-// EXACTLY (spelling, spacing, "(US only)" suffix, "XXL" not "2XL", etc.) —
-// checkout accepts whatever you type here, but Gelato fulfillment will
-// reject anything that doesn't resolve to a real UID and the order gets
-// stuck after the customer has already paid. Only ✅-confirmed UIDs from
-// gelato-catalog.ts are listed below; add more only after confirming the
-// UID in the Gelato dashboard and adding it to that file first.
-const CATEGORY_PRESETS: Record<string, { variantLabel: string; variants: string[] }> = {
-  "Phone Case": {
-    variantLabel: "Phone Model",
-    variants: [
-      "iPhone 14",
-      "iPhone 14 Pro Max",
-      "iPhone 15 Pro Max",
-      "iPhone 16 (US only)",
-      "iPhone 16 Plus (US only)",
-      "iPhone 16 Pro (US only)",
-      "iPhone 16 Pro Max (US only)",
-      "Galaxy S23 Plus",
-      "Galaxy S23 Ultra",
-    ],
-  },
-  // Apparel variants are "Color / Size" — lib/gelato-catalog.ts splits on
-  // " / " to resolve the real Gelato UID, so keep that exact separator.
-  "T-Shirt": {
-    variantLabel: "Size",
-    variants: ["Black", "White"].flatMap(c => ["S", "M", "L", "XL", "XXL"].map(s => `${c} / ${s}`)),
-  },
-  "Hoodie": {
-    variantLabel: "Size",
-    variants: ["White", "Black"].flatMap(c => ["S", "M", "L", "XL", "XXL", "3XL", "4XL", "5XL"].map(s => `${c} / ${s}`)),
-  },
-};
+// The only categories this store supports — each one has a matching UID
+// map in lib/gelato-catalog.ts. Adding a category here without a matching
+// map means nothing selected under it can ever be fulfilled.
+const CATEGORIES = ["Phone Case", "T-Shirt", "Hoodie"];
 
-// Sizes available per apparel category — used by the color/size generator
-// below so you don't have to type every "Color / Size" combo by hand.
-const APPAREL_SIZES: Record<string, string[]> = {
-  "T-Shirt": ["S", "M", "L", "XL", "XXL"],
-  "Hoodie":  ["S", "M", "L", "XL", "XXL", "3XL", "4XL", "5XL"],
-};
+function variantLabelFor(category: string) {
+  return category === "Phone Case" ? "Phone Model" : "Size";
+}
 
 interface Product {
   id: string;
@@ -67,6 +38,15 @@ interface Product {
 const C = { bg: "#0d0b14", surface: "#13111e", border: "#2a2535", red: "#c0001a", gold: "#c9a84c", textPri: "#e8e4f8", textSec: "#8a809a", textMut: "#4a445a", green: "#4caf50", white: "#ffffff" };
 const inp: React.CSSProperties = { width: "100%", background: "#0a0812", border: `1px solid ${C.border}`, color: C.textPri, padding: "10px 12px", fontSize: "0.875rem", fontFamily: "monospace", boxSizing: "border-box", outline: "none" };
 const lbl: React.CSSProperties = { display: "block", color: C.textMut, fontSize: "0.6rem", letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: "6px" };
+function checkboxPill(active: boolean): React.CSSProperties {
+  return {
+    display: "flex", alignItems: "center", padding: "6px 12px",
+    border: `1px solid ${active ? "#c0001a" : C.border}`,
+    background: active ? "rgba(192,0,26,0.12)" : "transparent",
+    color: C.textPri, fontSize: "0.8rem", fontFamily: "monospace",
+    cursor: "pointer", userSelect: "none",
+  };
+}
 
 function Btn({ children, onClick, disabled, variant = "primary", style }: { children: React.ReactNode; onClick?: () => void; disabled?: boolean; variant?: "primary" | "ghost" | "danger" | "success"; style?: React.CSSProperties }) {
   const base: React.CSSProperties = { border: "none", cursor: disabled ? "not-allowed" : "pointer", fontSize: "0.72rem", letterSpacing: "0.1em", textTransform: "uppercase", fontFamily: "monospace", padding: "10px 20px", opacity: disabled ? 0.5 : 1, whiteSpace: "nowrap" };
@@ -247,21 +227,62 @@ function ProductForm({
   const [slug, setSlug] = useState(existing?.slug ?? "");
   const [slugTouched, setSlugTouched] = useState(!!existing);
   const [category, setCategory] = useState(existing?.category ?? "Phone Case");
-  const [variantLabel, setVariantLabel] = useState(existing?.variantLabel ?? CATEGORY_PRESETS["Phone Case"].variantLabel);
-  const [variantsText, setVariantsText] = useState((existing?.variants ?? CATEGORY_PRESETS["Phone Case"].variants).join(", "));
-  const [colorsText, setColorsText] = useState("Black, White");
 
   const isApparel = category === "T-Shirt" || category === "Hoodie";
 
-  // Rebuilds variantsText as "Color / Size" for every color × every size
-  // in this category. Only colors that actually have a UID in
-  // lib/gelato-catalog.ts will fulfill — check there (or the dashboard)
-  // before adding a color that isn't Black or White.
-  function regenerateApparelVariants() {
-    const colors = colorsText.split(",").map(c => c.trim()).filter(Boolean);
-    const sizes = APPAREL_SIZES[category] ?? [];
-    const combos = colors.flatMap(c => sizes.map(s => `${c} / ${s}`));
-    setVariantsText(combos.join(", "));
+  // Every checkbox below is sourced directly from lib/gelato-catalog.ts —
+  // the same functions used to resolve a real Gelato UID at fulfillment
+  // time. There is no free-text field for sizes/models/colors anymore, so
+  // it is not possible to save an option that doesn't actually match
+  // Gelato's catalog.
+
+  // Phone Case: which models this product offers.
+  const [selectedModels, setSelectedModels] = useState<string[]>(() => {
+    if (!existing || existing.category !== "Phone Case") return [];
+    const valid = getPhoneCaseModels();
+    return existing.variants.filter(v => valid.includes(v));
+  });
+
+  // T-Shirt / Hoodie: which colors + which sizes. Every checked
+  // color × checked size combo that Gelato actually supports becomes a
+  // variant ("Black / M") when saved.
+  const [selectedColors, setSelectedColors] = useState<string[]>(() => {
+    if (!existing || !(existing.category === "T-Shirt" || existing.category === "Hoodie")) return [];
+    const valid = getApparelColors(existing.category);
+    const fromColorSize = existing.variants
+      .map(v => v.split(" / ")[0]?.trim())
+      .filter((c): c is string => !!c && valid.includes(c));
+    // Legacy plain-size products (no color in the text) were always
+    // fulfilled as one fixed color — Black for T-Shirt, White for Hoodie.
+    const hasLegacyPlain = existing.variants.some(v => !v.includes(" / "));
+    const legacyColor = existing.category === "T-Shirt" ? "Black" : "White";
+    return [...new Set([...fromColorSize, ...(hasLegacyPlain ? [legacyColor] : [])])];
+  });
+  const [selectedSizes, setSelectedSizes] = useState<string[]>(() => {
+    if (!existing || !(existing.category === "T-Shirt" || existing.category === "Hoodie")) return [];
+    const validSizes = getApparelSizes(existing.category);
+    const fromColorSize = existing.variants
+      .map(v => v.split(" / ")[1]?.trim())
+      .filter((s): s is string => !!s && validSizes.includes(s));
+    const plainSizes = existing.variants.filter(v => !v.includes(" / ") && validSizes.includes(v.trim())).map(v => v.trim());
+    return [...new Set([...fromColorSize, ...plainSizes])];
+  });
+
+  function toggle(list: string[], setList: (v: string[]) => void, value: string) {
+    setList(list.includes(value) ? list.filter(v => v !== value) : [...list, value]);
+  }
+
+  // The variants actually saved: computed fresh from the checkboxes every
+  // time, always in the exact format Gelato needs. No way for this to
+  // drift out of sync with lib/gelato-catalog.ts.
+  function computeVariants(): string[] {
+    if (category === "Phone Case") return selectedModels;
+    if (isApparel) {
+      return selectedColors.flatMap(c =>
+        selectedSizes.filter(s => isVariantSupported(category, `${c} / ${s}`)).map(s => `${c} / ${s}`)
+      );
+    }
+    return [];
   }
   const [price, setPrice] = useState(existing ? String(existing.price) : "29.99");
   const [compareAtPrice, setCompareAtPrice] = useState(existing?.compareAtPrice ? String(existing.compareAtPrice) : "");
@@ -284,9 +305,10 @@ function ProductForm({
 
   function handleCategoryChange(val: string) {
     setCategory(val);
-    if (!isEdit && CATEGORY_PRESETS[val]) {
-      setVariantLabel(CATEGORY_PRESETS[val].variantLabel);
-      setVariantsText(CATEGORY_PRESETS[val].variants.join(", "));
+    if (!isEdit) {
+      setSelectedModels([]);
+      setSelectedColors([]);
+      setSelectedSizes([]);
     }
   }
 
@@ -295,10 +317,14 @@ function ProductForm({
       setMsg({ type: "err", text: "Name, slug, category and price are required." });
       return;
     }
+    const variants = computeVariants();
+    if (variants.length === 0) {
+      setMsg({ type: "err", text: `Select at least one ${variantLabelFor(category).toLowerCase()} option below.` });
+      return;
+    }
     setSaving(true);
-    const variants = variantsText.split(",").map(v => v.trim()).filter(Boolean);
     const payloadBase = {
-      name, category, variantLabel, variants,
+      name, category, variantLabel: variantLabelFor(category), variants,
       price: Number(price),
       compareAtPrice: compareAtPrice ? Number(compareAtPrice) : null,
       descriptionHtml, badge: badge || null, featured,
@@ -400,10 +426,9 @@ function ProductForm({
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "16px" }}>
         <div>
           <label style={lbl}>Content Type</label>
-          <input style={inp} list="category-presets" value={category} onChange={e => handleCategoryChange(e.target.value)} placeholder="Phone Case" />
-          <datalist id="category-presets">
-            {Object.keys(CATEGORY_PRESETS).map(c => <option key={c} value={c} />)}
-          </datalist>
+          <select style={inp} value={category} onChange={e => handleCategoryChange(e.target.value)}>
+            {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+          </select>
         </div>
         <div>
           <label style={lbl}>Badge (optional)</label>
@@ -416,33 +441,61 @@ function ProductForm({
         </div>
       </div>
 
-      {isApparel && (
-        <div style={{ display: "grid", gridTemplateColumns: "2fr auto", gap: "16px", alignItems: "end", marginBottom: "8px" }}>
-          <div>
-            <label style={lbl}>Colors (comma-separated — only Black &amp; White have confirmed Gelato UIDs so far)</label>
-            <input style={inp} value={colorsText} onChange={e => setColorsText(e.target.value)} placeholder="Black, White" />
+      {category === "Phone Case" && (
+        <div style={{ marginBottom: "16px" }}>
+          <label style={lbl}>Phone Models (check every model this listing offers)</label>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "8px", padding: "12px", border: "1px solid #2a2535" }}>
+            {getPhoneCaseModels().map(model => (
+              <label key={model} style={checkboxPill(selectedModels.includes(model))}>
+                <input
+                  type="checkbox"
+                  checked={selectedModels.includes(model)}
+                  onChange={() => toggle(selectedModels, setSelectedModels, model)}
+                  style={{ marginRight: "6px" }}
+                />
+                {model}
+              </label>
+            ))}
           </div>
-          <Btn variant="ghost" onClick={regenerateApparelVariants}>Generate sizes ×colors</Btn>
         </div>
       )}
 
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: "16px", marginBottom: "16px" }}>
-        <div>
-          <label style={lbl}>Variant Label</label>
-          <input style={inp} value={variantLabel} onChange={e => setVariantLabel(e.target.value)} placeholder="Phone Model" />
+      {isApparel && (
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "16px" }}>
+          <div>
+            <label style={lbl}>Colors</label>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "8px", padding: "12px", border: "1px solid #2a2535" }}>
+              {getApparelColors(category).map(color => (
+                <label key={color} style={checkboxPill(selectedColors.includes(color))}>
+                  <input
+                    type="checkbox"
+                    checked={selectedColors.includes(color)}
+                    onChange={() => toggle(selectedColors, setSelectedColors, color)}
+                    style={{ marginRight: "6px" }}
+                  />
+                  {color}
+                </label>
+              ))}
+            </div>
+          </div>
+          <div>
+            <label style={lbl}>Sizes</label>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "8px", padding: "12px", border: "1px solid #2a2535" }}>
+              {getApparelSizes(category).map(size => (
+                <label key={size} style={checkboxPill(selectedSizes.includes(size))}>
+                  <input
+                    type="checkbox"
+                    checked={selectedSizes.includes(size)}
+                    onChange={() => toggle(selectedSizes, setSelectedSizes, size)}
+                    style={{ marginRight: "6px" }}
+                  />
+                  {size}
+                </label>
+              ))}
+            </div>
+          </div>
         </div>
-        <div>
-          <label style={lbl}>
-            Variant Options (comma-separated{isApparel ? ' — must be "Color / Size", e.g. "Black / M"' : ""})
-          </label>
-          <input
-            style={inp}
-            value={variantsText}
-            onChange={e => setVariantsText(e.target.value)}
-            placeholder={isApparel ? "Black / S, Black / M, White / S" : "iPhone 14, iPhone 15, iPhone 16"}
-          />
-        </div>
-      </div>
+      )}
 
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "16px" }}>
         <div>
