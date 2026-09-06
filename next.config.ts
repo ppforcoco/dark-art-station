@@ -73,9 +73,6 @@ const nextConfig: NextConfig = {
 
   async redirects() {
     return [
-      { source: "/shop", destination: "/collections", permanent: true },
-      { source: "/shop/:slug", destination: "/collections/:slug", permanent: true },
-      { source: "/shop/:slug/:imageSlug", destination: "/collections/:slug/:imageSlug", permanent: true },
       { source: "/obsessions", destination: "/collections", permanent: true },
       { source: "/obsessions/:slug", destination: "/collections/:slug", permanent: true },
       { source: "/ads.txt", destination: "https://srv.adstxtmanager.com/19390/hauntedwallpapers.com", permanent: true },
