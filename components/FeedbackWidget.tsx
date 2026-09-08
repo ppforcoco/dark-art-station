@@ -98,10 +98,10 @@ export default function FeedbackWidget() {
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "20px" }}>
           <div>
             <p style={{ color: "#ff2e9e", fontSize: "0.55rem", letterSpacing: "0.2em", textTransform: "uppercase", margin: 0 }}>
-              Haunted Wallpapers
+              MR4K Walls
             </p>
             <h3 style={{ color: "#f6ecff", fontSize: "0.9rem", margin: "4px 0 0", letterSpacing: "0.05em" }}>
-              Report a Problem
+              Snitch on a Bug
             </h3>
           </div>
           <button

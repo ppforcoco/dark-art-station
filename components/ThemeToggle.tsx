@@ -15,7 +15,7 @@ const DARK_TEXT = "#fdf0ff";
  * first paint, so there's no flash-of-wrong-theme on reload.
  *
  * "fog" = the cartoon daylight theme (see app/theme-cartoon-fog.css).
- * No attribute = the default Ruby Haunted dark theme.
+ * No attribute = the default Ruby dark theme.
  */
 export default function ThemeToggle() {
   const [isLight, setIsLight] = useState(false);
@@ -51,9 +51,9 @@ export default function ThemeToggle() {
       type="button"
       className="hw-nav__icon-btn hw-theme-toggle"
       onClick={toggle}
-      aria-label={isLight ? "Switch to haunted dark theme" : "Switch to daylight cartoon theme"}
+      aria-label={isLight ? "Switch to dark mode" : "Switch to light mode"}
       aria-pressed={isLight}
-      title={isLight ? "Back to the haunted side" : "Step into the daylight"}
+      title={isLight ? "Go dark" : "Let there be light"}
     >
       {isLight ? <Moon size={17} /> : <Sun size={17} />}
     </button>

@@ -3079,36 +3079,7 @@ body:has([data-force-blog="true"]) .site-footer {
 
 /* ── Light theme overrides ──────────────────────────────────── */
 
-/* ═══════════════════════════════════════════════════════════════
-   HW2 REDESIGN — Deep Purple / Black / Crimson
-   ═══════════════════════════════════════════════════════════════ */
-
-/* ── Tokens ── */
-:root {
-  --hw2-void:     #0f0726;
-  --hw2-deep:     #150a33;
-  --hw2-abyss:    #0f0d1f;
-  --hw2-surface:  #13112a;
-  --hw2-lift:     #1a1735;
-  --hw2-border:   rgba(120, 80, 200, 0.18);
-  --hw2-border-hi: rgba(180, 80, 220, 0.4);
-  --hw2-crimson:  #ff4fa3;
-  --hw2-blood:    #b0179e;
-  --hw2-ember:    #ff2233;
-  --hw2-purple:   #9333ea;
-  --hw2-violet:   #a855f7;
-  --hw2-mist:     #6d5b9a;
-  --hw2-pale:     #e2d9f3;
-  --hw2-text:     #e0cfff;
-  --hw2-text-dim: #8a7faa;
-  --hw2-text-mut: #4a4468;
-  --hw2-gold:     #ffd23f;
-  --hw2-nav-h:    72px;
-}/* ── Base overrides for redesign ── */
-body {
-  background: var(--hw2-void);
-  color: var(--hw2-text);
-}/* ══════════════════════════════════
+/* ══════════════════════════════════
    PARTICLES
 ══════════════════════════════════ */
 

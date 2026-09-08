@@ -240,3 +240,85 @@ html[data-theme="fog"] { color-scheme: light; background-color: #fff3e0 !importa
   border-radius: 999px !important;
 }
 [data-theme="fog"] .pagination-btn--active { background: var(--ember) !important; color: #fff !important; }
+
+/* ── 10. CONTRAST FIX — pills, tags & badges were inheriting dark-theme
+   colors (pale lavender/yellow on transparent bg) which nearly vanish
+   against the light cream background. Force bold, dark-on-light text. ── */
+
+/* Wallpaper detail page — #tag pills */
+[data-theme="fog"] .detail-tag-pill {
+  color: var(--pale) !important;
+  border-color: var(--pale) !important;
+  background: #fff !important;
+  font-weight: 700 !important;
+}
+
+/* Wallpaper detail page — quality badges (Premium/Trending/New/Hot/etc) */
+[data-theme="fog"] .quality-badge {
+  background: #fff !important;
+  color: var(--pale) !important;
+  font-weight: 700 !important;
+  border-width: 2px !important;
+}
+[data-theme="fog"] .quality-badge--premium   { border-color: #e0a900 !important; }
+[data-theme="fog"] .quality-badge--trending  { border-color: #d96a1f !important; }
+[data-theme="fog"] .quality-badge--new       { border-color: #1fa956 !important; }
+[data-theme="fog"] .quality-badge--hot       { border-color: #b722c9 !important; }
+[data-theme="fog"] .quality-badge--exclusive { border-color: #1f7fce !important; }
+[data-theme="fog"] .quality-badge--limited   { border-color: #d94a80 !important; }
+
+/* Search results — tag pills & position number badge */
+[data-theme="fog"] .search-card-tag-pill {
+  color: var(--pale) !important;
+  background: #fff !important;
+  border-color: var(--pale) !important;
+  font-weight: 700 !important;
+}
+[data-theme="fog"] .search-card:hover .search-card-tag-pill { color: var(--ember) !important; border-color: var(--ember) !important; }
+[data-theme="fog"] .search-card-num {
+  background: rgba(53,32,92,0.85) !important;
+  color: #fff !important;
+  font-weight: 700 !important;
+}
+
+/* Shop / search suggestion & filter pills */
+[data-theme="fog"] .sp-pill,
+[data-theme="fog"] .filter-pill {
+  color: var(--pale) !important;
+  border-color: var(--pale) !important;
+  font-weight: 700 !important;
+}
+[data-theme="fog"] .sp-pill:hover,
+[data-theme="fog"] .sp-pill.active,
+[data-theme="fog"] .filter-pill:hover,
+[data-theme="fog"] .filter-pill[data-active="true"] {
+  color: #fff !important;
+  background: var(--crimson) !important;
+  border-color: var(--pale) !important;
+}
+
+/* Mood page tag hints */
+[data-theme="fog"] .mood-tag-pill {
+  color: var(--pale) !important;
+  border-color: var(--pale) !important;
+  opacity: 1 !important;
+  font-weight: 700 !important;
+}
+
+/* AMOLED / OLED result badge + premium ribbon text + pagination numbers */
+[data-theme="fog"] .oled-result-badge {
+  color: var(--pale) !important;
+  border-color: var(--pale) !important;
+  background: #fff !important;
+  font-weight: 700 !important;
+}
+[data-theme="fog"] .ts-badge--premium { color: #b8860b !important; font-weight: 700 !important; }
+[data-theme="fog"] .pagination-ellipsis,
+[data-theme="fog"] .pagination-btn { color: var(--pale) !important; font-weight: 700 !important; }
+
+/* General body copy on light bg — keep bold + high contrast */
+[data-theme="fog"] p,
+[data-theme="fog"] .image-description-html,
+[data-theme="fog"] .footer-brand-desc {
+  font-weight: 600 !important;
+}

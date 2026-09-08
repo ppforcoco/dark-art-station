@@ -511,18 +511,18 @@ async function RootImageView({ imageSlug }: { imageSlug: string }) {
               {image.tags.filter((t: string) => t.startsWith("badge-")).length > 0 && (
                 <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", marginTop: "10px", marginBottom: "4px" }}>
                   {image.tags.filter((t: string) => t.startsWith("badge-")).map((tag: string) => {
-                    const badgeMap: Record<string, { label: string; color: string; bg: string }> = {
-                      "badge-premium":   { label: "⭐ Premium",   color: "#ffd23f", bg: "rgba(255,210,63,0.15)" },
-                      "badge-trending":  { label: "🔥 Trending",  color: "#ff8c42", bg: "rgba(255,140,66,0.15)" },
-                      "badge-new":       { label: "✨ New",        color: "#4ade80", bg: "rgba(74,222,128,0.15)" },
-                      "badge-hot":       { label: "💀 Hot",        color: "#e040fb", bg: "rgba(224,64,251,0.15)" },
-                      "badge-exclusive": { label: "🌙 Exclusive",  color: "#42a5f5", bg: "rgba(66,165,245,0.15)" },
-                      "badge-limited":   { label: "⏳ Limited",    color: "#ff6b9d", bg: "rgba(255,107,157,0.15)" },
+                    const badgeMap: Record<string, { label: string; cls: string }> = {
+                      "badge-premium":   { label: "⭐ Premium",   cls: "quality-badge quality-badge--premium" },
+                      "badge-trending":  { label: "🔥 Trending",  cls: "quality-badge quality-badge--trending" },
+                      "badge-new":       { label: "✨ New",        cls: "quality-badge quality-badge--new" },
+                      "badge-hot":       { label: "💀 Hot",        cls: "quality-badge quality-badge--hot" },
+                      "badge-exclusive": { label: "🌙 Exclusive",  cls: "quality-badge quality-badge--exclusive" },
+                      "badge-limited":   { label: "⏳ Limited",    cls: "quality-badge quality-badge--limited" },
                     };
                     const b = badgeMap[tag];
                     if (!b) return null;
                     return (
-                      <span key={tag} style={{ background: b.bg, border: `1px solid ${b.color}`, color: b.color, fontSize: "0.65rem", fontFamily: "monospace", padding: "3px 10px", letterSpacing: "0.08em" }}>
+                      <span key={tag} className={b.cls}>
                         {b.label}
                       </span>
                     );
@@ -535,7 +535,7 @@ async function RootImageView({ imageSlug }: { imageSlug: string }) {
 
             {image.description && (
               <div
-                className="font-body text-[1rem] text-[#c9a8e8] leading-relaxed image-description-html"
+                className="font-body text-[1rem] text-[color:var(--text-primary)] leading-relaxed image-description-html"
                 dangerouslySetInnerHTML={{ __html: sanitizeAdminHtml(image.description) }}
               />
             )}
@@ -543,7 +543,7 @@ async function RootImageView({ imageSlug }: { imageSlug: string }) {
             {image.tags.length > 0 && (
               <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
                 {image.tags.map((tag) => (
-                  <span key={tag} className="font-mono text-[0.55rem] tracking-[0.15em] uppercase border border-[#341a63] px-3 py-1 text-[#b39ddb]">
+                  <span key={tag} className="detail-tag-pill font-mono text-[0.55rem] tracking-[0.15em] uppercase border border-[color:var(--border-dim)] px-3 py-1 text-[color:var(--text-muted)]">
                     #{tag}
                   </span>
                 ))}

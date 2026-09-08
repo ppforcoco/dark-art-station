@@ -6,6 +6,10 @@ import { db } from "@/lib/db";
 // isn't available in the build environment, the entire build hangs/crashes.
 export const dynamic = "force-dynamic";
 
+// NOTE: this is only the R2/CDN asset bucket hostname, not the site domain —
+// left as-is on purpose. Renaming it would break every existing image URL
+// unless the R2 bucket itself is also renamed. Swap only if/when you migrate
+// the actual asset bucket to a mr4kwalls-branded CDN host.
 const CDN = process.env.NEXT_PUBLIC_R2_PUBLIC_URL ?? "https://assets.hauntedwallpapers.com";
 
 function r2Url(key: string) {
@@ -13,7 +17,7 @@ function r2Url(key: string) {
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://mr4kwalls.com";
 
   const staticRoutes: MetadataRoute.Sitemap = [
     { url: siteUrl,                    lastModified: new Date(), changeFrequency: "weekly"  as const, priority: 1.0  },
