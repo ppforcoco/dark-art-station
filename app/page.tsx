@@ -173,7 +173,6 @@ export default async function Home() {
                     <div className="time">9:41</div>
                     <div className="date">Fri, Oct 31</div>
                   </div>
-                  <div className="tonight-tag">Tonight&rsquo;s Haunting · {featured.title}</div>
                   <svg className="bone-corner br" viewBox="0 0 64 64" fill="none" stroke="currentColor" strokeWidth="1.5">
                     <circle cx="14" cy="14" r="6" /><circle cx="50" cy="50" r="6" /><path d="M18 18 46 46" />
                   </svg>
