@@ -76,12 +76,8 @@ export default function Breadcrumbs({ items }: BreadcrumbsProps) {
             min-height: 42px;
             display: flex;
             align-items: center;
-            background: linear-gradient(
-              to right,
-              rgba(20, 14, 30, 0.98),
-              rgba(14, 10, 22, 0.98)
-            );
-            border-bottom: 1px solid rgba(255,46,158, 0.15);
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-dim, rgba(128,128,128,0.2));
             position: relative;
             overflow: visible;
           }
@@ -138,9 +134,10 @@ export default function Breadcrumbs({ items }: BreadcrumbsProps) {
             gap: 5px;
             font-family: var(--font-space, 'Space Mono', monospace);
             font-size: 0.62rem;
+            font-weight: 700;
             letter-spacing: 0.16em;
             text-transform: uppercase;
-            color: rgba(180, 160, 220, 0.6);
+            color: var(--text-muted);
             text-decoration: none;
             padding: 4px 10px;
             border-radius: 2px;
@@ -152,9 +149,9 @@ export default function Breadcrumbs({ items }: BreadcrumbsProps) {
           }
 
           .hw-breadcrumb__link:hover {
-            color: #e0d4f8;
+            color: var(--text-primary);
             background: rgba(176,23,158, 0.1);
-            border-color: rgba(176,23,158, 0.25);
+            border-color: rgba(176,23,158, 0.3);
           }
 
           .hw-breadcrumb__home-icon {
@@ -170,9 +167,10 @@ export default function Breadcrumbs({ items }: BreadcrumbsProps) {
           .hw-breadcrumb__current {
             font-family: var(--font-space, 'Space Mono', monospace);
             font-size: 0.62rem;
+            font-weight: 700;
             letter-spacing: 0.16em;
             text-transform: uppercase;
-            color: #ffd23f;
+            color: var(--text-primary);
             padding: 4px 2px;
             white-space: normal;
             word-break: break-word;

@@ -324,13 +324,13 @@ export default async function IphoneImagePage({ params }: PageProps) {
 
             {image.tags.filter((t: string) => !t.startsWith("badge-")).length > 0 && (
               <div style={{ padding: "10px 0 4px" }}>
-                <p style={{ fontFamily: "var(--font-space, monospace)", fontSize: "0.55rem", letterSpacing: "0.28em", textTransform: "uppercase" as const, color: "rgba(224,224,224,0.3)", margin: "0 0 8px" }}>
+                <p style={{ fontFamily: "var(--font-space, monospace)", fontSize: "0.55rem", letterSpacing: "0.28em", textTransform: "uppercase" as const, color: "var(--text-muted)", fontWeight: 700, margin: "0 0 8px" }}>
                   Choose Your Next Obsession
                 </p>
                 <div style={{ display: "flex", flexWrap: "wrap" as const, gap: "6px" }}>
                   {image.tags.filter((t: string) => !t.startsWith("badge-")).map((tag: string) => (
                     <a key={tag} href={`/iphone?tag=${encodeURIComponent(tag)}`}
-                      style={{ display: "inline-block", padding: "4px 10px", borderRadius: "2px", fontFamily: "var(--font-space, monospace)", fontSize: "0.65rem", letterSpacing: "0.1em", textTransform: "uppercase" as const, textDecoration: "none", color: "rgba(224,224,224,0.7)", border: "1px solid rgba(224,224,224,0.12)", background: "rgba(255,255,255,0.03)" }}>
+                      style={{ display: "inline-block", padding: "4px 10px", borderRadius: "2px", fontFamily: "var(--font-space, monospace)", fontSize: "0.65rem", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase" as const, textDecoration: "none", color: "var(--text-primary)", border: "1px solid var(--border-dim, rgba(128,128,128,0.3))", background: "var(--bg-secondary)" }}>
                       #{tag}
                     </a>
                   ))}
