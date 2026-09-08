@@ -485,41 +485,41 @@ works on all themes */
 .site-footer {
   background: var(--bg-secondary);
   border-top: 1px solid #341a63;
-  padding: 36px 60px 24px;
+  padding: 20px 60px 14px;
 }
 @media (max-width: 767px) {
-.site-footer { padding: 28px 24px 20px; }
+.site-footer { padding: 16px 24px 12px; }
 }/* Always push footer above sticky ad on mobile; revert when ad dismissed */
 @media (max-width: 767px) {
-body:not(.sticky-ad-dismissed) .site-footer { padding-bottom: calc(58px + 24px + env(safe-area-inset-bottom)); }
+body:not(.sticky-ad-dismissed) .site-footer { padding-bottom: calc(58px + 14px + env(safe-area-inset-bottom)); }
 }.footer-grid {
   display: grid;
   grid-template-columns: 2fr 1fr 1fr;
-  gap: 48px; margin-bottom: 24px;
+  gap: 32px; margin-bottom: 14px;
 }
 @media (max-width: 1023px) {
-.footer-grid { grid-template-columns: 1fr 1fr; gap: 40px; }
+.footer-grid { grid-template-columns: 1fr 1fr; gap: 24px; }
 }
 @media (max-width: 639px)  {
 .footer-grid { grid-template-columns: 1fr; }
 }.footer-brand-desc {
   font-family: Arial, sans-serif;
-  font-size: 1.0rem; font-style: italic;
-  color: #9c7fc9; line-height: 1.65; max-width: 320px;
-  margin-top: 10px;
+  font-size: 0.78rem; font-style: italic;
+  color: #9c7fc9; line-height: 1.5; max-width: 320px;
+  margin-top: 6px;
 }.footer-col-title {
   font-family: Arial, sans-serif;
-  font-size: 0.62rem; letter-spacing: 0.22em; text-transform: uppercase;
-  color: #c0b8d8; margin-bottom: 12px;
-}.footer-col ul { list-style: none; }.footer-col li { margin-bottom: 6px; }.footer-col a {
+  font-size: 0.58rem; letter-spacing: 0.22em; text-transform: uppercase;
+  color: #c0b8d8; margin-bottom: 8px;
+}.footer-col ul { list-style: none; }.footer-col li { margin-bottom: 3px; }.footer-col a {
   font-family: Arial, sans-serif;
-  font-size: 1.0rem; font-style: italic;
+  font-size: 0.8rem; font-style: italic;
   color: #9c7fc9; text-decoration: none;
   transition: color 0.2s;
 }.footer-col a:hover { color: #e0cfff; }.footer-bottom {
   display: flex; align-items: center; justify-content: space-between;
-  padding-top: 16px; border-top: 1px solid #341a63;
-  flex-wrap: wrap; gap: 12px;
+  padding-top: 10px; border-top: 1px solid #341a63;
+  flex-wrap: wrap; gap: 10px;
 }.footer-copy {
   font-family: Arial, sans-serif;
   font-size: 0.6rem; letter-spacing: 0.1em; color: #9c7fc9;
@@ -3297,6 +3297,41 @@ tighten spacing
 /* Obsession cards */
 
 /* Statement / manifesto */
+
+/* Screen/style filter pills (All / Lock Screen / Home Screen) —
+   these were styled for a dark background and were nearly invisible
+   on the cream "fog" background. */
+[data-theme="fog"] .hw-tag-pills-wrap {
+  background-color: transparent !important;
+}
+[data-theme="fog"] .hw-tag-pill {
+  color: #4a3570 !important;
+  border-color: rgba(43,27,71,0.25) !important;
+  background: rgba(43,27,71,0.05) !important;
+}
+[data-theme="fog"] .hw-tag-pill:hover {
+  border-color: rgba(255,46,158,0.6) !important;
+  color: #1a1230 !important;
+  background: rgba(255,46,158,0.08) !important;
+}
+[data-theme="fog"] .hw-tag-pill--active {
+  border-color: rgba(255,46,158,0.7) !important;
+  color: #1a1230 !important;
+  background: rgba(255,46,158,0.14) !important;
+  box-shadow: 0 0 14px rgba(255,46,158,0.12) !important;
+}
+[data-theme="fog"] .hw-filter-label {
+  color: rgba(43,27,71,0.55) !important;
+}
+[data-theme="fog"] .hw-style-select {
+  color: #2b1b47 !important;
+  background-color: rgba(43,27,71,0.04) !important;
+  border-color: rgba(43,27,71,0.25) !important;
+}
+[data-theme="fog"] .hw-style-select option {
+  background: #fff3e0 !important;
+  color: #2b1b47 !important;
+}
 
 /* Daily pick */
 

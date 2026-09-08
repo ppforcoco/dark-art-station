@@ -107,7 +107,6 @@ export default async function Home() {
         <div className="hp-marquee" aria-hidden="true">
           <div className="hp-marquee-track">
             <span>NEW DROPS EVERY WEEK ✦ 4K ONLY, NO CAP ✦ MR4K NEVER SLEEPS ✦</span>
-            <span>NEW DROPS EVERY WEEK ✦ 4K ONLY, NO CAP ✦ MR4K NEVER SLEEPS ✦</span>
           </div>
         </div>
 
