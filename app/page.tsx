@@ -6,6 +6,7 @@ import Link from "next/link";
 import { db, getPageContent } from "@/lib/db";
 import { getPublicUrl } from "@/lib/r2";
 import TonightSlider from "@/components/TonightSlider";
+import NewsletterForm from "@/components/NewsletterForm";
 import "./homepage.css";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
@@ -110,52 +111,30 @@ export default async function Home() {
           </div>
         </div>
 
-        {/* ══ HERO (compact) ═══════════════════════════════════════════════ */}
-        <section
-          className="hp-hero"
-          style={{
-            minHeight: "auto",
-            padding: "20px 24px",
-            display: "flex",
-            flexDirection: "column",
-            gap: "10px",
-          }}
-        >
-          <div
-            className="hp-hero-inner-flex"
-            style={{ maxWidth: "760px" }}
-          >
-            <div className="hp-hero-body" style={{ maxWidth: "420px" }}>
-              <p className="hp-eyebrow" style={{ marginBottom: "4px" }}>
-                New drops every day
-              </p>
-              <h1
-                className="hp-hero-tagline"
-                style={{ marginBottom: "10px" }}
-              >
-                You&rsquo;ve arrived in Haunted Town — where every wallpaper has a secret
+        {/* ══ HERO ═════════════════════════════════════════════════════════ */}
+        <section className="hp-hero">
+          <div className="hp-hero-grid">
+            <div className="hp-hero-body">
+              <h1 className="hp-hero-headline display">
+                Your screen
+                <br />
+                deserves
+                <br />
+                <span className="hp-hero-accent">nightmares.</span>
               </h1>
-              <div
-                className="hp-hero-stat"
-                style={{ gap: "16px", marginBottom: "12px" }}
-              >
-                <div>
-                  <span className="hp-hero-num">{fmt(totalImages)}</span>
-                  <span className="hp-hero-numlabel">Wallpapers</span>
-                </div>
-                <div>
-                  <span className="hp-hero-num">4K</span>
-                  <span className="hp-hero-numlabel">Quality</span>
-                </div>
-                <div>
-                  <span className="hp-hero-num">Free</span>
-                  <span className="hp-hero-numlabel">Always</span>
-                </div>
-              </div>
-              <div className="hp-hero-cta" style={{ gap: "8px" }}>
-                <Link prefetch={false} href="/all" className="hp-btn-red" style={{ padding: "6px 14px" }}>Browse All →</Link>
-                <Link prefetch={false} href="/cool-wallpapers" className="hp-btn-ghost" style={{ padding: "6px 14px" }}>Beyond Haunted Town</Link>
-                <Link prefetch={false} href="/residents" className="hp-btn-ghost" style={{ padding: "6px 14px" }}>Residents</Link>
+              <p className="hp-hero-sub">
+                Hand-picked dark art wallpapers, free to download, updated daily.
+              </p>
+              <p className="hp-hero-stat-line">
+                {fmt(totalImages)} wallpapers &middot; 4K quality &middot; always free
+              </p>
+              <div className="hp-hero-ctas">
+                <Link prefetch={false} href="/all" className="hp-btn-primary">
+                  Browse the collection
+                </Link>
+                <Link prefetch={false} href="#tonight-haunting" className="hp-btn-big">
+                  See what&rsquo;s trending
+                </Link>
               </div>
             </div>
 
@@ -193,7 +172,7 @@ export default async function Home() {
 
         {/* ══ FRESH FROM THE TOWN ══════════════════════════════════════════ */}
         {newThisWeek.length > 0 && (
-          <section className="hp-section hp-new">
+          <section className="hp-section hp-new" id="tonight-haunting">
             <div className="hp-section-head">
               <div>
                 <p className="hp-section-eye" style={{ color:"#4caf50" }}>Fresh From The Town</p>
@@ -210,21 +189,7 @@ export default async function Home() {
         <section className="hp-newsletter">
           <h2>Get haunted (by email)</h2>
           <p>New drops, first look. Zero life advice.</p>
-          <form
-            className="hp-newsletter-form"
-            onSubmit={(e) => e.preventDefault()}
-          >
-            <label htmlFor="hp-newsletter-email" style={{ position: "absolute", left: "-9999px" }}>
-              Email address
-            </label>
-            <input
-              id="hp-newsletter-email"
-              type="email"
-              placeholder="your@email.com"
-              required
-            />
-            <button type="submit">Sign up</button>
-          </form>
+          <NewsletterForm />
         </section>
 
       </div>
