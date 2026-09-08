@@ -56,20 +56,125 @@ h1, h2, h3,
 .logo-red, .hw-nav__logo-accent { color: var(--crimson) !important; }
 
 /* ── 3. NAV / HEADER ── */
-.hw-nav, .hw-nav--scrolled {
+.hw-nav {
   background: var(--nav-bg) !important;
   border-bottom: 1px solid var(--border-dim) !important;
   backdrop-filter: blur(10px);
 }
-.hw-nav__links a,
-.hw-nav a { color: var(--ghost) !important; }
-.hw-nav__links a:hover,
-.hw-nav a:hover { color: var(--pale) !important; }
-.hw-nav-icon, .hw-nav-icon svg { color: var(--pale) !important; }
-.hw-nav-icon.spinning { color: var(--ember) !important; }
+.hw-nav__logo { color: var(--pale) !important; }
+.hw-nav__logo:hover { color: var(--pale) !important; }
+.hw-nav__logo-accent { color: var(--ember) !important; text-shadow: none !important; }
+
+.hw-nav__link { color: var(--ghost) !important; }
+.hw-nav__link:hover { color: var(--pale) !important; }
+.hw-nav__link:focus-visible { outline-color: var(--ember) !important; }
+.hw-nav__link--sets { color: var(--crimson) !important; }
+.hw-nav__link--sets:hover { color: #ff6b82 !important; }
+
+.hw-nav__icon-btn { color: var(--ghost) !important; }
+.hw-nav__icon-btn:hover { color: var(--pale) !important; }
+.hw-nav__icon-btn:focus-visible,
+.hw-nav__hamburger:focus-visible { outline-color: var(--ember) !important; }
+.hw-nav__hamburger { color: var(--ghost) !important; }
+.hw-nav__hamburger:active { color: var(--pale) !important; }
+
+/* Drip accent under the nav — recolored from stock blue to the theme's ember */
+.hw-nav__drip-drop { background: var(--ember) !important; }
+
+/* ── 3b. SEARCH OVERLAY ── */
+.hw-search-overlay { background: rgba(13,11,20,0.93) !important; }
+.hw-search-form {
+  background: var(--black) !important;
+  border: 1px solid var(--border-dim) !important;
+  border-radius: 4px !important;
+}
+.hw-search-input { color: var(--pale) !important; }
+.hw-search-input::placeholder { color: var(--smoke) !important; }
+.hw-search-submit {
+  background: var(--ember) !important;
+  color: var(--void) !important;
+  border-radius: 4px !important;
+}
+.hw-search-close-btn { color: var(--ghost) !important; }
+.hw-search-close-btn:hover { color: var(--pale) !important; }
+.hw-live-results {
+  background: var(--black) !important;
+  border: 1px solid var(--border-dim) !important;
+  border-top: none !important;
+  border-radius: 0 0 4px 4px !important;
+}
+.hw-live-loading { color: var(--smoke) !important; }
+.hw-live-item { border-top: 1px solid var(--border-dim) !important; }
+.hw-live-item:hover { background: rgba(185,160,240,0.07) !important; }
+.hw-live-title { color: var(--pale) !important; }
+.hw-live-see-all { color: var(--crimson) !important; border-top: 1px solid var(--border-dim) !important; }
+
+/* ── 3c. MOBILE MENU PANEL ── */
+.hw-menu-backdrop { background: rgba(0,0,0,0.65) !important; }
+.hw-menu-panel {
+  background: var(--void) !important;
+  border-right: 1px solid var(--border-dim) !important;
+}
+.hw-menu-panel__top {
+  color: var(--pale) !important;
+  border-bottom: 1px solid var(--border-dim) !important;
+}
+.hw-menu-panel__top-accent { color: var(--ember) !important; }
+.hw-menu-panel__link {
+  color: var(--ghost) !important;
+  border-bottom: 1px solid var(--border-dim) !important;
+}
+.hw-menu-panel__link:active,
+.hw-menu-panel__link:hover {
+  color: var(--pale) !important;
+  background: rgba(185,160,240,0.08) !important;
+}
+.hw-menu-panel__link:focus-visible { outline-color: var(--ember) !important; }
+.hw-menu-panel__link--sets { color: var(--crimson) !important; }
+.hw-menu-panel__link--sets:hover,
+.hw-menu-panel__link--sets:active { color: #ff6b82 !important; }
+
+/* ── 3d. BOTTOM NAV (mobile) ── */
+.hw-bottom-nav {
+  background: var(--nav-bg) !important;
+  border-top: 1px solid var(--border-dim) !important;
+}
+.hw-bottom-nav__item { color: var(--ghost) !important; }
+.hw-bottom-nav__item:active { color: var(--pale) !important; }
+.hw-bottom-nav__item:focus-visible { outline-color: var(--ember) !important; }
 
 /* ── 4. HERO ── */
 .hp-hero { background: var(--void) !important; }
+
+/* ── 3e. MARQUEE STRIP (matches the Ruby Haunted mockup ticker) ── */
+.hp-marquee {
+  border-bottom: 1px solid var(--border-dim);
+  background: var(--black);
+  overflow: hidden;
+  white-space: nowrap;
+  padding: 10px 0;
+}
+.hp-marquee-track {
+  display: inline-flex;
+  animation: hp-marquee-scroll 28s linear infinite;
+}
+.hp-marquee-track span {
+  font-family: 'Anton', sans-serif;
+  font-size: 12px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--lilac-dim, var(--smoke));
+  padding: 0 28px;
+  display: inline-flex;
+  align-items: center;
+}
+@keyframes hp-marquee-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hp-marquee-track { animation: none; }
+}
 .hp-eyebrow {
   color: var(--ember) !important;
   letter-spacing: 0.28em !important;
@@ -155,6 +260,11 @@ h1, h2, h3,
   background: var(--black) !important;
   border-color: var(--border-dim) !important;
   border-radius: 4px !important;
+  transition: transform 0.18s ease, border-color 0.18s ease !important;
+}
+.ts-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(185,160,240,0.4) !important;
 }
 .ts-badge { color: #7fd18a !important; font-size: 0.55rem !important; }
 .ts-badge--premium { color: var(--ember) !important; }
@@ -181,12 +291,66 @@ h1, h2, h3,
 }
 .footer-col a { color: var(--smoke) !important; font-size: 0.72rem !important; }
 .footer-col a:hover { color: var(--pale) !important; }
+.footer-bottom { border-top: 1px solid var(--border-dim) !important; }
 .footer-report-btn {
-  color: var(--smoke) !important;
-  border-color: var(--border-dim) !important;
+  color: var(--crimson) !important;
+  border-color: rgba(225,67,97,0.35) !important;
   border-radius: 4px !important;
+  background: transparent !important;
 }
-.footer-report-btn:hover { color: var(--pale) !important; border-color: var(--pale) !important; }
+.footer-report-btn:hover { color: #ff6b82 !important; border-color: var(--crimson) !important; background: rgba(225,67,97,0.06) !important; }
+
+/* ── 8b. NEWSLETTER — "Get haunted (by email)" ── */
+.hp-newsletter {
+  background: var(--black) !important;
+  border-top: 1px solid var(--border-dim) !important;
+  border-bottom: 1px solid var(--border-dim) !important;
+  padding: 56px 24px;
+  text-align: center;
+}
+.hp-newsletter h2 {
+  color: var(--pale) !important;
+  font-size: clamp(1.4rem, 3.2vw, 2rem) !important;
+  margin: 0 0 10px;
+}
+.hp-newsletter p {
+  color: var(--smoke) !important;
+  font-size: 0.85rem !important;
+  margin: 0 0 28px;
+}
+.hp-newsletter-form {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  max-width: 420px;
+  margin: 0 auto;
+  flex-wrap: wrap;
+}
+.hp-newsletter-form input {
+  flex: 1;
+  min-width: 200px;
+  padding: 14px 16px;
+  background: var(--void);
+  border: 1px solid var(--border-dim);
+  color: var(--pale);
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.85rem;
+  border-radius: 4px;
+}
+.hp-newsletter-form input::placeholder { color: var(--smoke); }
+.hp-newsletter-form input:focus-visible { outline: 2px solid var(--ember); outline-offset: 2px; }
+.hp-newsletter-form button {
+  background: var(--ember);
+  color: var(--void);
+  border: none;
+  padding: 14px 24px;
+  font-weight: 700;
+  font-family: 'Space Grotesk', sans-serif;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.18s ease;
+}
+.hp-newsletter-form button:hover { background: var(--pale); }
 
 /* ── 9. GENERAL RADIUS / ACCENT CLEANUP ── */
 .ad-banner, .pagination-btn, .social-btn, .cookie-btn {

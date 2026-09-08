@@ -102,6 +102,14 @@ export default async function Home() {
 
       <div className="hp">
 
+        {/* ══ MARQUEE STRIP ═══════════════════════════════════════════════ */}
+        <div className="hp-marquee" aria-hidden="true">
+          <div className="hp-marquee-track">
+            <span>NEW DROPS EVERY NIGHT ✦ 4K QUALITY, ALWAYS FREE ✦ HAUNTED TOWN NEVER SLEEPS ✦</span>
+            <span>NEW DROPS EVERY NIGHT ✦ 4K QUALITY, ALWAYS FREE ✦ HAUNTED TOWN NEVER SLEEPS ✦</span>
+          </div>
+        </div>
+
         {/* ══ HERO (compact) ═══════════════════════════════════════════════ */}
         <section
           className="hp-hero"
@@ -197,6 +205,27 @@ export default async function Home() {
             <TonightSlider items={newItems} />
           </section>
         )}
+
+        {/* ══ NEWSLETTER ══════════════════════════════════════════════════ */}
+        <section className="hp-newsletter">
+          <h2>Get haunted (by email)</h2>
+          <p>New drops, first look. Zero life advice.</p>
+          <form
+            className="hp-newsletter-form"
+            onSubmit={(e) => e.preventDefault()}
+          >
+            <label htmlFor="hp-newsletter-email" style={{ position: "absolute", left: "-9999px" }}>
+              Email address
+            </label>
+            <input
+              id="hp-newsletter-email"
+              type="email"
+              placeholder="your@email.com"
+              required
+            />
+            <button type="submit">Sign up</button>
+          </form>
+        </section>
 
       </div>
     </>
