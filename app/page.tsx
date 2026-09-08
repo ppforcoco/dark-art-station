@@ -93,6 +93,10 @@ export default async function Home() {
     };
   });
 
+  // Featured wallpaper shown inside the hero phone mockup — first "Tonight's
+  // Haunting" item, so the mockup always reflects a real, current upload.
+  const featured = newItems[0];
+
   return (
     <>
 
@@ -109,38 +113,73 @@ export default async function Home() {
             gap: "10px",
           }}
         >
-          <div className="hp-hero-body" style={{ maxWidth: "560px" }}>
-            <p className="hp-eyebrow" style={{ fontSize: "0.65rem", marginBottom: "4px" }}>
-              New drops every day
-            </p>
-            <h1
-              className="hp-hero-tagline"
-              style={{ fontSize: "1.1rem", lineHeight: 1.3, marginBottom: "10px" }}
-            >
-              You&rsquo;ve arrived in Haunted Town — where every wallpaper has a secret
-            </h1>
-            <div
-              className="hp-hero-stat"
-              style={{ gap: "16px", marginBottom: "12px" }}
-            >
-              <div>
-                <span className="hp-hero-num" style={{ fontSize: "1rem" }}>{fmt(totalImages)}</span>
-                <span className="hp-hero-numlabel" style={{ fontSize: "0.55rem" }}>Wallpapers</span>
+          <div
+            className="hp-hero-inner-flex"
+            style={{ maxWidth: "760px" }}
+          >
+            <div className="hp-hero-body" style={{ maxWidth: "420px" }}>
+              <p className="hp-eyebrow" style={{ marginBottom: "4px" }}>
+                New drops every day
+              </p>
+              <h1
+                className="hp-hero-tagline"
+                style={{ marginBottom: "10px" }}
+              >
+                You&rsquo;ve arrived in Haunted Town — where every wallpaper has a secret
+              </h1>
+              <div
+                className="hp-hero-stat"
+                style={{ gap: "16px", marginBottom: "12px" }}
+              >
+                <div>
+                  <span className="hp-hero-num">{fmt(totalImages)}</span>
+                  <span className="hp-hero-numlabel">Wallpapers</span>
+                </div>
+                <div>
+                  <span className="hp-hero-num">4K</span>
+                  <span className="hp-hero-numlabel">Quality</span>
+                </div>
+                <div>
+                  <span className="hp-hero-num">Free</span>
+                  <span className="hp-hero-numlabel">Always</span>
+                </div>
               </div>
-              <div>
-                <span className="hp-hero-num" style={{ fontSize: "1rem" }}>4K</span>
-                <span className="hp-hero-numlabel" style={{ fontSize: "0.55rem" }}>Quality</span>
-              </div>
-              <div>
-                <span className="hp-hero-num" style={{ fontSize: "1rem" }}>Free</span>
-                <span className="hp-hero-numlabel" style={{ fontSize: "0.55rem" }}>Always</span>
+              <div className="hp-hero-cta" style={{ gap: "8px" }}>
+                <Link prefetch={false} href="/all" className="hp-btn-red" style={{ padding: "6px 14px" }}>Browse All →</Link>
+                <Link prefetch={false} href="/cool-wallpapers" className="hp-btn-ghost" style={{ padding: "6px 14px" }}>Beyond Haunted Town</Link>
+                <Link prefetch={false} href="/residents" className="hp-btn-ghost" style={{ padding: "6px 14px" }}>Residents</Link>
               </div>
             </div>
-            <div className="hp-hero-cta" style={{ gap: "8px" }}>
-              <Link prefetch={false} href="/all" className="hp-btn-red" style={{ padding: "6px 14px", fontSize: "0.7rem" }}>Browse All →</Link>
-              <Link prefetch={false} href="/cool-wallpapers" className="hp-btn-ghost" style={{ padding: "6px 14px", fontSize: "0.7rem" }}>Beyond Haunted Town</Link>
-              <Link prefetch={false} href="/residents" className="hp-btn-ghost" style={{ padding: "6px 14px", fontSize: "0.7rem" }}>Residents</Link>
-            </div>
+
+            {/* ── Tilted phone mockup showing a real Tonight's Haunting wallpaper ── */}
+            {featured && (
+              <div className="hero-visual">
+                <div className="glow" />
+                <div className="phone-frame">
+                  <svg className="bone-corner tl" viewBox="0 0 64 64" fill="none" stroke="currentColor" strokeWidth="1.5">
+                    <circle cx="14" cy="14" r="6" /><circle cx="50" cy="50" r="6" /><path d="M18 18 46 46" />
+                  </svg>
+                  <div className="notch" />
+                  <div className="screen">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      className="wallpaper-art"
+                      src={featured.src}
+                      alt={featured.title}
+                      loading="eager"
+                    />
+                  </div>
+                  <div className="lockscreen-ui">
+                    <div className="time">9:41</div>
+                    <div className="date">Fri, Oct 31</div>
+                  </div>
+                  <div className="tonight-tag">Tonight&rsquo;s Haunting · {featured.title}</div>
+                  <svg className="bone-corner br" viewBox="0 0 64 64" fill="none" stroke="currentColor" strokeWidth="1.5">
+                    <circle cx="14" cy="14" r="6" /><circle cx="50" cy="50" r="6" /><path d="M18 18 46 46" />
+                  </svg>
+                </div>
+              </div>
+            )}
           </div>
         </section>
 

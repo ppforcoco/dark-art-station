@@ -1,0 +1,202 @@
+/* ════════════════════════════════════════════════════════════════════
+   RUBY HAUNTED ART — full site theme
+   Import this LAST in app/layout.tsx (after globals.css and homepage.css)
+   so it wins the cascade without needing to touch existing files.
+   ════════════════════════════════════════════════════════════════════ */
+
+@import url('https://fonts.googleapis.com/css2?family=Anton&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+/* ── 1. DESIGN TOKENS — remaps every var(--...) already used site-wide ── */
+:root {
+  --void:         #0d0b14 !important;
+  --black:        #161222 !important;
+  --deep:         #1c1730 !important;
+  --ash:          #262038 !important;
+  --smoke:        #a89bc4 !important;
+  --ghost:        #c9c2b4 !important;
+  --pale:         #f3ede1 !important;
+  --white:        #f3ede1 !important;
+  --crimson:      #e14361 !important;
+  --blood:        #e14361 !important;
+  --ember:        #b9a0f0 !important;
+  --gold:         #b9a0f0 !important;
+
+  --bg-primary:   #0d0b14 !important;
+  --bg-secondary: #161222 !important;
+  --text-primary: #f3ede1 !important;
+  --text-muted:   #c9c2b4 !important;
+  --border-dim:   rgba(243,237,225,0.14) !important;
+  --nav-bg:       rgba(13,11,20,0.9) !important;
+}
+
+html { color-scheme: dark; background-color: #0d0b14 !important; }
+body { background-color: var(--bg-primary) !important; color: var(--text-primary) !important; }
+
+/* ── 2. TYPOGRAPHY — Space Grotesk body, Anton display ── */
+body, button, input, textarea, select, p, span, li, a {
+  font-family: 'Space Grotesk', Arial, sans-serif !important;
+}
+
+h1, h2, h3,
+.hp-hero-tagline,
+.hp-section-title,
+.hp-worlds-title,
+.nav-logo, .hw-nav__logo-full, .hw-nav__logo-short,
+.footer-logo,
+.tonight-title,
+[class*="-title"],
+[class*="-tagline"],
+[class*="-heading"] {
+  font-family: 'Anton', sans-serif !important;
+  font-weight: 400 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.4px !important;
+}
+
+.logo-red, .hw-nav__logo-accent { color: var(--crimson) !important; }
+
+/* ── 3. NAV / HEADER ── */
+.hw-nav, .hw-nav--scrolled {
+  background: var(--nav-bg) !important;
+  border-bottom: 1px solid var(--border-dim) !important;
+  backdrop-filter: blur(10px);
+}
+.hw-nav__links a,
+.hw-nav a { color: var(--ghost) !important; }
+.hw-nav__links a:hover,
+.hw-nav a:hover { color: var(--pale) !important; }
+.hw-nav-icon, .hw-nav-icon svg { color: var(--pale) !important; }
+.hw-nav-icon.spinning { color: var(--ember) !important; }
+
+/* ── 4. HERO ── */
+.hp-hero { background: var(--void) !important; }
+.hp-eyebrow {
+  color: var(--ember) !important;
+  letter-spacing: 0.28em !important;
+  font-size: 0.6rem !important;
+}
+.hp-hero-tagline {
+  color: var(--pale) !important;
+  font-style: normal !important;
+  font-size: 1.05rem !important;
+  line-height: 1.3 !important;
+}
+.hp-hero-num { color: var(--pale) !important; font-size: 0.95rem !important; }
+.hp-hero-numlabel { color: var(--smoke) !important; font-size: 0.52rem !important; }
+
+/* ── 4b. HERO VISUAL — tilted phone mockup showing a Tonight's Haunting wallpaper ── */
+.hp-hero-inner-flex { display: flex !important; align-items: center !important; gap: 40px !important; flex-wrap: wrap !important; }
+.hero-visual { position: relative; display: flex; justify-content: center; flex: 0 0 auto; }
+.hero-visual .glow {
+  position: absolute; width: 220px; height: 220px;
+  background: radial-gradient(circle, rgba(185,160,240,0.22), transparent 70%);
+  filter: blur(10px); z-index: 0;
+}
+.phone-frame {
+  position: relative; width: 148px; aspect-ratio: 9/19.5;
+  background: #050409; border: 4px solid #050409; border-radius: 22px;
+  box-shadow: 0 0 0 2px rgba(243,237,225,0.1), 0 18px 40px rgba(0,0,0,0.55), 0 0 34px rgba(185,160,240,0.14);
+  transform: rotate(-4deg); overflow: hidden; z-index: 1;
+}
+.phone-frame .notch {
+  position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+  width: 46%; height: 12px; background: #050409;
+  border-bottom-left-radius: 9px; border-bottom-right-radius: 9px; z-index: 3;
+}
+.phone-frame .screen { position: absolute; inset: 0; border-radius: 18px; overflow: hidden; }
+.phone-frame .wallpaper-art { width: 100%; height: 100%; display: block; }
+.phone-frame .lockscreen-ui {
+  position: absolute; top: 20px; left: 0; right: 0; text-align: center; z-index: 2;
+  color: var(--pale); text-shadow: 0 2px 10px rgba(0,0,0,0.6);
+}
+.phone-frame .lockscreen-ui .time { font-family: 'Space Grotesk', sans-serif !important; font-weight: 600; font-size: 22px; letter-spacing: 0.5px; }
+.phone-frame .lockscreen-ui .date { font-size: 8px; letter-spacing: 1px; margin-top: 2px; color: rgba(243,237,225,0.85); }
+.phone-frame .tonight-tag {
+  position: absolute; bottom: 8px; left: 0; right: 0; text-align: center; z-index: 2;
+  font-size: 6.5px !important; letter-spacing: 1px; text-transform: uppercase; color: rgba(243,237,225,0.8);
+  font-family: 'Space Grotesk', sans-serif !important;
+}
+.bone-corner { position: absolute; width: 34px; opacity: 0.55; z-index: 4; color: var(--ember); }
+.bone-corner.tl { top: -8px; left: -18px; }
+.bone-corner.br { bottom: -8px; right: -18px; transform: rotate(180deg); }
+@media (max-width: 720px) { .hero-visual { margin-top: 8px; } .phone-frame { width: 120px; } }
+
+/* ── 5. BUTTONS ── */
+.hp-btn-red {
+  background: var(--crimson) !important;
+  border-color: var(--crimson) !important;
+  color: var(--pale) !important;
+  border-radius: 4px !important;
+  font-size: 0.68rem !important;
+  transition: transform 0.18s ease, box-shadow 0.18s ease !important;
+}
+.hp-btn-red:hover {
+  background: #c62d4a !important;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(225,67,97,0.3);
+}
+.hp-btn-ghost {
+  background: transparent !important;
+  border-color: var(--border-dim) !important;
+  color: var(--pale) !important;
+  border-radius: 4px !important;
+  font-size: 0.68rem !important;
+}
+.hp-btn-ghost:hover {
+  border-color: var(--pale) !important;
+  background: rgba(243,237,225,0.06) !important;
+}
+
+/* ── 6. SECTION HEADS ── */
+.hp-section-eye { color: #7fd18a !important; font-size: 0.6rem !important; }
+.hp-section-title { color: var(--pale) !important; font-size: 1.15rem !important; }
+.hp-section-sub { color: var(--smoke) !important; font-style: normal !important; font-size: 0.72rem !important; }
+.hp-see-all { color: var(--ember) !important; border-color: rgba(185,160,240,0.4) !important; }
+.hp-see-all:hover { border-color: var(--ember) !important; }
+.hp-new, .hp-premium, .hp-worlds { background: var(--void) !important; }
+
+/* ── 7. TONIGHT'S HAUNTING SLIDER ── */
+.ts-card {
+  background: var(--black) !important;
+  border-color: var(--border-dim) !important;
+  border-radius: 4px !important;
+}
+.ts-badge { color: #7fd18a !important; font-size: 0.55rem !important; }
+.ts-badge--premium { color: var(--ember) !important; }
+.ts-title { color: var(--pale) !important; font-size: 0.65rem !important; }
+.ts-overlay {
+  background: linear-gradient(to top, rgba(13,11,20,0.94) 0%, rgba(13,11,20,0.55) 48%, transparent 100%) !important;
+}
+.ts-arrow, .ts-arrow--left, .ts-arrow--right {
+  background: var(--black) !important;
+  border-color: var(--border-dim) !important;
+  color: var(--pale) !important;
+}
+.ts-arrow:hover { border-color: var(--ember) !important; color: var(--ember) !important; }
+
+/* ── 8. FOOTER ── */
+.site-footer {
+  background: var(--bg-secondary) !important;
+  border-top: 1px solid var(--border-dim) !important;
+}
+.footer-col-title { color: var(--ember) !important; letter-spacing: 1.5px !important; font-size: 0.65rem !important; }
+.footer-brand-desc, .footer-copy, .footer-ai-disclosure {
+  color: var(--smoke) !important;
+  font-size: 0.72rem !important;
+}
+.footer-col a { color: var(--smoke) !important; font-size: 0.72rem !important; }
+.footer-col a:hover { color: var(--pale) !important; }
+.footer-report-btn {
+  color: var(--smoke) !important;
+  border-color: var(--border-dim) !important;
+  border-radius: 4px !important;
+}
+.footer-report-btn:hover { color: var(--pale) !important; border-color: var(--pale) !important; }
+
+/* ── 9. GENERAL RADIUS / ACCENT CLEANUP ── */
+.ad-banner, .pagination-btn, .social-btn, .cookie-btn {
+  border-radius: 4px !important;
+}
+.cookie-btn--accept { background: var(--crimson) !important; border-color: var(--crimson) !important; }
+.cookie-btn--accept:hover { background: #c62d4a !important; }
+.pagination-btn--active { background: var(--ember) !important; color: var(--void) !important; }
