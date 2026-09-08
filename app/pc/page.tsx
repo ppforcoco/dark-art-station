@@ -226,16 +226,6 @@ export default async function PcPage({ searchParams }: PageProps) {
         ) : null}
       </section>
 
-      <section style={{ maxWidth: "860px", margin: "0 auto", padding: "40px 24px 64px", borderTop: "1px solid rgba(255,46,158,0.18)", textAlign: "center" }}>
-        <p style={{ fontFamily: "var(--font-space, monospace)", fontSize: "0.6rem", letterSpacing: "0.22em", textTransform: "uppercase", color: "#5c4a8a", marginBottom: "20px" }}>
-          Also available for
-        </p>
-        <div style={{ display: "flex", gap: "14px", justifyContent: "center", flexWrap: "wrap" }}>
-          <Link href="/iphone" className="hw-crosslink-btn">📱 iPhone Wallpapers</Link>
-          <Link href="/android" className="hw-crosslink-btn">🤖 Nocturnal Android Collection</Link>
-        </div>
-      </section>
-
       <style>{`
         .hw-crosslink-btn {
           font-family: var(--font-space, monospace); font-size: 0.72rem; letter-spacing: 0.14em;

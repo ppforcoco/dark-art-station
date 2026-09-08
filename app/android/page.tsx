@@ -277,27 +277,6 @@ export default async function AndroidPage({ searchParams }: PageProps) {
         </div>
       )}
 
-      <section style={{
-        maxWidth: "860px",
-        margin: "0 auto",
-        padding: "40px 24px 64px",
-        borderTop: "1px solid rgba(255,46,158,0.18)",
-        textAlign: "center",
-      }}>
-        <p style={{
-          fontFamily: "var(--font-space, monospace)",
-          fontSize: "0.6rem",
-          letterSpacing: "0.22em",
-          textTransform: "uppercase",
-          color: "#5c4a8a",
-          marginBottom: "20px",
-        }}>Also available for</p>
-        <div style={{ display: "flex", gap: "14px", justifyContent: "center", flexWrap: "wrap" }}>
-          <Link href="/iphone" className="hw-crosslink-btn">📱 iPhone Wallpapers</Link>
-          <Link href="/pc" className="hw-crosslink-btn">🖥 Desktop PC Nightmares</Link>
-        </div>
-      </section>
-
       <style>{`
         .hw-tag-pills-wrap {
           background-color: var(--bg-primary, #190c30);

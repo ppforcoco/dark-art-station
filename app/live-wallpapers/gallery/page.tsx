@@ -34,7 +34,7 @@ const faqs = [
   },
   {
     q: "How often are new live wallpapers added?",
-    a: "New residents arrive in Haunted Town regularly.",
+    a: "New live wallpapers arrive on MR4K regularly.",
   },
 ];
 
@@ -103,6 +103,15 @@ export default function LiveWallpapersGalleryPage() {
           --text: #f3e8ff;
           --text-dim: #af98cf;
           --line: #2c2536;
+        }
+
+        [data-theme="fog"] .lw-page {
+          --bg: #fff3e0;
+          --panel: #ffffff;
+          --accent: #7c5cff;
+          --text: #35205c;
+          --text-dim: #6b5a86;
+          --line: #e7d6c2;
         }
 
         * { box-sizing: border-box; }
@@ -473,26 +482,25 @@ export default function LiveWallpapersGalleryPage() {
       {/* ---------- HERO ---------- */}
       <section className="lw-hero">
         <div className="lw-eyebrow">Made for horror fans by horror fans</div>
-        <h1 className="lw-title">Live Wallpapers From Haunted Town</h1>
+        <h1 className="lw-title">MR4K Live Wallpapers</h1>
         <span className={`lw-sign ${flicker ? "flicker" : ""}`}>
-          {flicker ? "open... ish" : "town is open"}
+          {flicker ? "open... ish" : "mr4k is open"}
         </span>
         <p className="lw-desc">
-          Not every resident of Haunted Town stands still. Some wander. Some
-          perform. Some refuse to leave. Welcome to a growing collection of
-          animated live wallpapers inspired by the strange streets, forgotten
-          corners, and unusual residents of Haunted Town. Here you&apos;ll
-          find moving skeletons, gothic characters, rebellious mascots,
-          mysterious creatures, dark legends, and countless personalities
-          waiting to find a place on your screen. Choose a live wallpaper
-          below and start exploring the town one resident at a time.
+          Not every wallpaper stands still. Some wander. Some perform. Some
+          refuse to leave. Welcome to MR4K, a growing collection of animated
+          live wallpapers inspired by strange streets, forgotten corners, and
+          unusual characters. Here you&apos;ll find moving skeletons, gothic
+          characters, rebellious mascots, mysterious creatures, dark legends,
+          and countless personalities waiting to find a place on your screen.
+          Choose a live wallpaper below and start exploring.
         </p>
       </section>
 
       {/* ---------- GRID ---------- */}
       <section className="lw-grid-section">
         <div className="lw-section-head">
-          <h2 className="lw-section-title">Residents of Haunted Town</h2>
+          <h2 className="lw-section-title">MR4K Collection</h2>
           <span className="lw-section-note">
             {items.length > 0 ? `${items.length} found so far` : "Looking around\u2026"}
           </span>
@@ -587,7 +595,7 @@ export default function LiveWallpapersGalleryPage() {
       {/* ---------- FOOTER ---------- */}
       <footer className="lw-footer">
         <p className="lw-footer-text">
-          Haunted Town <span>never stops growing</span>.
+          MR4K <span>never stops growing</span>.
         </p>
       </footer>
     </div>
