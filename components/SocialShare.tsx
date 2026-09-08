@@ -74,8 +74,8 @@ export default function SocialShare({ title, imageUrl, pageUrl }: SocialSharePro
   };
 
   return (
-    <div className="social-share">
-      <p className="social-share-label">Share this wallpaper</p>
+    <div className="social-share hw-social-share-v2">
+      <p className="social-share-label">Send this one to someone</p>
       <div className="social-share-btns">
 
         {/* Web Share API — primary on mobile, hidden on desktop */}
@@ -129,6 +129,69 @@ export default function SocialShare({ title, imageUrl, pageUrl }: SocialSharePro
         </a>
 
       </div>
+
+      {/*
+        Scoped, !important overrides — the global stylesheet currently has
+        THREE separate copies of .social-share / .social-btn rules (all
+        with different, theme-blind colors), which is why these pills went
+        invisible on the light theme. Rather than untangle all three here,
+        this component now guarantees its own contrast regardless of what
+        globals.css ends up doing. Bold text, real border, uses the theme
+        vars that flip with the light/dark toggle.
+      */}
+      <style>{`
+        .hw-social-share-v2.social-share {
+          display: flex !important;
+          flex-direction: column !important;
+          gap: 8px !important;
+          border: 1px solid rgba(255,46,158,0.35) !important;
+          border-radius: 8px !important;
+          padding: 12px 14px !important;
+          background: rgba(255,46,158,0.06) !important;
+        }
+        .hw-social-share-v2 .social-share-label {
+          font-family: Arial, sans-serif !important;
+          font-size: 0.6rem !important;
+          font-weight: 800 !important;
+          letter-spacing: 0.16em !important;
+          text-transform: uppercase !important;
+          color: var(--text-primary) !important;
+          opacity: 0.85;
+        }
+        .hw-social-share-v2 .social-share-btns {
+          display: flex !important;
+          flex-wrap: wrap !important;
+          gap: 8px !important;
+        }
+        .hw-social-share-v2 .social-btn {
+          display: inline-flex !important;
+          align-items: center !important;
+          gap: 7px !important;
+          font-family: Arial, sans-serif !important;
+          font-size: 0.72rem !important;
+          font-weight: 800 !important;
+          letter-spacing: 0.04em !important;
+          text-decoration: none !important;
+          padding: 10px 16px !important;
+          min-height: 40px !important;
+          border-radius: 6px !important;
+          border: 1.5px solid var(--text-primary) !important;
+          color: var(--text-primary) !important;
+          background: var(--surface-2, rgba(0,0,0,0.15)) !important;
+          transition: transform 0.15s, background 0.2s !important;
+          white-space: nowrap !important;
+          touch-action: manipulation;
+        }
+        .hw-social-share-v2 .social-btn svg { width: 15px; height: 15px; fill: currentColor; flex-shrink: 0; }
+        .hw-social-share-v2 .social-btn:hover { transform: translateY(-1px); }
+        .hw-social-share-v2 .social-btn--pinterest:hover { border-color: #e60023 !important; color: #e60023 !important; background: rgba(230,0,35,0.1) !important; }
+        .hw-social-share-v2 .social-btn--x:hover { border-color: var(--text-primary) !important; background: rgba(120,120,120,0.15) !important; }
+        .hw-social-share-v2 .social-btn--whatsapp:hover { border-color: #25d366 !important; color: #25d366 !important; background: rgba(37,211,102,0.1) !important; }
+        .hw-social-share-v2 .social-btn--native { border-color: #ff2e9e !important; color: #ff2e9e !important; background: rgba(255,46,158,0.1) !important; }
+        @media (max-width: 480px) {
+          .hw-social-share-v2 .social-btn { padding: 9px 12px !important; font-size: 0.65rem !important; }
+        }
+      `}</style>
     </div>
   );
 }

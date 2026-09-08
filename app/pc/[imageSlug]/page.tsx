@@ -43,22 +43,22 @@ function buildFallbackDescription(title: string, tags: string[]): string {
   const firstTag = tags[0] ?? "dark fantasy";
   const secondTag = tags[1] ?? "atmospheric";
   return (
-    title + " is a high-resolution PC wallpaper from the Haunted Wallpapers dark art collection. " +
-    "Crafted for desktop and widescreen monitors, this piece immerses your screen in themes of " + tagList + ". " +
-    "Formatted at a native 16:9 aspect ratio, it fits seamlessly across 1080p, 1440p, and 4K displays without cropping or distortion. " +
-    "Whether you gravitate toward " + firstTag + " aesthetics or simply want a " + secondTag + " backdrop that stands out, " +
-    "this wallpaper delivers moody, original artwork at no cost. " +
-    "Click download and the full-resolution file is yours instantly. " +
-    "Every image in our PC collection is produced exclusively for Haunted Wallpapers, " +
-    "so you will not find this artwork duplicated across generic wallpaper repositories."
+    title + " is a high-res PC wallpaper straight out of the MR4K Walls collection. " +
+    "Built for desktop and widescreen monitors, it dresses your screen up in " + tagList + ". " +
+    "Native 16:9, so it fits clean across 1080p, 1440p, and 4K without cropping or stretching weirdly. " +
+    "Whether you're into " + firstTag + " or just want a " + secondTag + " backdrop that actually slaps, " +
+    "this one's free and yours in one click. " +
+    "Hit download, full-res file lands instantly, no email required. " +
+    "Every wallpaper in this set is made exclusively for MR4K Walls — " +
+    "you won't find it recycled across every other wallpaper site out there."
   );
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { imageSlug } = await params;
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://mr4kwalls.com";
   const image = await getCachedImage(imageSlug);
-  if (!image || image.deviceType !== "PC") return { title: "Not Found | HAUNTED WALLPAPERS" };
+  if (!image || image.deviceType !== "PC") return { title: "Not Found | MR4K WALLS" };
   const tagLine = image.tags.slice(0, 3).map((t) => `#${t}`).join(" ");
   const plainDesc = (image.metaDescription ?? image.description ?? "")
     .replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim().slice(0, 200);
@@ -67,20 +67,20 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const ogImage = getPublicUrl(image.r2Key);
   return {
     metadataBase: new URL(siteUrl),
-    title: `${image.title} — PC Wallpaper | HAUNTED WALLPAPERS`,
+    title: `${image.title} — PC Wallpaper | MR4K WALLS`,
     description: plainMetaDesc,
     keywords: ["pc wallpaper", "dark wallpaper pc", "hd pc wallpaper", image.title, ...image.tags],
     openGraph: {
-      title: `${image.title} | HAUNTED WALLPAPERS`,
+      title: `${image.title} | MR4K WALLS`,
       description: plainMetaDesc,
       url: `${siteUrl}/pc/${imageSlug}`,
-      siteName: "HAUNTED WALLPAPERS",
+      siteName: "MR4K WALLS",
       images: [{ url: ogImage, width: 1200, height: 630, alt: image.title }],
       type: "website",
     },
     twitter: {
       card: "summary_large_image",
-      title: `${image.title} | HAUNTED WALLPAPERS`,
+      title: `${image.title} | MR4K WALLS`,
       description: plainMetaDesc,
       images: [ogImage],
     },
@@ -95,7 +95,7 @@ export async function generateStaticParams() {
 
 export default async function PcImagePage({ params }: PageProps) {
   const { imageSlug } = await params;
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://mr4kwalls.com";
 
   const image = await getCachedImage(imageSlug);
 
@@ -159,7 +159,7 @@ export default async function PcImagePage({ params }: PageProps) {
   const nextImageUrl = nextImage ? getPublicUrl(nextImage.r2Key) : null;
 
   return (
-    <main className="min-h-screen" style={{ backgroundColor: "var(--bg-primary)", color: "var(--text-primary)", colorScheme: "dark" }}>
+    <main className="min-h-screen" style={{ backgroundColor: "var(--bg-primary)", color: "var(--text-primary)" }}>
 
       {prevImageUrl && <link rel="preload" as="image" href={prevImageUrl} />}
       {nextImageUrl && <link rel="preload" as="image" href={nextImageUrl} />}
@@ -257,16 +257,16 @@ export default async function PcImagePage({ params }: PageProps) {
                 <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", marginTop: "8px", marginBottom: "4px" }}>
                   {image.tags.filter((t: string) => t.startsWith("badge-")).map((tag: string) => {
                     const badgeMap: Record<string, { label: string; color: string; bg: string }> = {
-                      "badge-premium":   { label: "⭐ Premium",   color: "#ffd23f", bg: "rgba(255,210,63,0.15)" },
-                      "badge-trending":  { label: "🔥 Trending",  color: "#ff8c42", bg: "rgba(255,140,66,0.15)" },
-                      "badge-hot":       { label: "💀 Hot",        color: "#e040fb", bg: "rgba(224,64,251,0.15)" },
-                      "badge-exclusive": { label: "🌙 Exclusive",  color: "#42a5f5", bg: "rgba(66,165,245,0.15)" },
-                      "badge-limited":   { label: "⏳ Limited",    color: "#ff6b9d", bg: "rgba(255,107,157,0.15)" },
+                      "badge-premium":   { label: "⭐ Premium",   color: "#8a5a00", bg: "#ffd23f" },
+                      "badge-trending":  { label: "🔥 Trending",  color: "#7a2e00", bg: "#ff8c42" },
+                      "badge-hot":       { label: "🚀 Hot",        color: "#5c007a", bg: "#e040fb" },
+                      "badge-exclusive": { label: "🌙 Exclusive",  color: "#003a6b", bg: "#42a5f5" },
+                      "badge-limited":   { label: "⏳ Limited",    color: "#7a0035", bg: "#ff6b9d" },
                     };
                     const b = badgeMap[tag];
                     if (!b) return null;
                     return (
-                      <span key={tag} style={{ background: b.bg, border: `1px solid ${b.color}`, color: b.color, fontSize: "0.65rem", fontFamily: "monospace", padding: "3px 10px", letterSpacing: "0.08em" }}>
+                      <span key={tag} style={{ background: b.bg, border: `1px solid ${b.color}`, color: b.color, fontSize: "0.65rem", fontWeight: 800, fontFamily: "monospace", padding: "4px 10px", borderRadius: "4px", letterSpacing: "0.08em" }}>
                         {b.label}
                       </span>
                     );
@@ -279,7 +279,7 @@ export default async function PcImagePage({ params }: PageProps) {
 
             <div
               className="font-body hw-detail-desc leading-relaxed description-html"
-              style={{ color: "var(--text-muted)", colorScheme: "dark" }}
+              style={{ color: "var(--text-muted)" }}
               dangerouslySetInnerHTML={{ __html: displayDescription }}
             />
 
@@ -548,7 +548,7 @@ export default async function PcImagePage({ params }: PageProps) {
           name: image.title,
           description: plainDescription,
           url: `${siteUrl}/pc/${imageSlug}`,
-          brand: { "@type": "Brand", name: "HAUNTED WALLPAPERS", url: siteUrl },
+          brand: { "@type": "Brand", name: "MR4K WALLS", url: siteUrl },
           category: "Digital Products > Wallpapers > PC",
           image: [{ "@type": "ImageObject", url: thumbUrl, contentUrl: thumbUrl, caption: image.title }],
           additionalProperty: [
@@ -563,7 +563,7 @@ export default async function PcImagePage({ params }: PageProps) {
             price: "0.00",
             priceCurrency: "USD",
             availability: "https://schema.org/InStock",
-            seller: { "@type": "Organization", name: "HAUNTED WALLPAPERS", url: siteUrl },
+            seller: { "@type": "Organization", name: "MR4K WALLS", url: siteUrl },
           },
           potentialAction: { "@type": "DownloadAction", target: `${siteUrl}/api/download/image/${image.id}` },
         })

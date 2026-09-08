@@ -12,7 +12,7 @@ interface Props {
 type ReactionKey = "skull" | "fire" | "heart" | "thumbsdown";
 
 const REACTIONS: { key: ReactionKey; label: string; emoji: string; baseMin: number; baseMax: number; zeroChance: number }[] = [
-  { key: "skull",      label: "Haunted", emoji: "💀", baseMin: 12, baseMax: 24, zeroChance: 0.08 },
+  { key: "skull",      label: "Dead",    emoji: "💀", baseMin: 12, baseMax: 24, zeroChance: 0.08 },
   { key: "fire",       label: "Fire",    emoji: "🔥", baseMin: 8,  baseMax: 15, zeroChance: 0.12 },
   { key: "heart",      label: "Love",    emoji: "❤️", baseMin: 5,  baseMax: 10, zeroChance: 0.15 },
   { key: "thumbsdown", label: "Meh",     emoji: "👎", baseMin: 0,  baseMax: 4,  zeroChance: 0.30 },
@@ -86,9 +86,10 @@ export default function WallpaperReactions({ imageId }: Props) {
       <p style={{
         fontFamily: "Arial, sans-serif",
         fontSize: "0.55rem",
+        fontWeight: 700,
         letterSpacing: "0.22em",
         textTransform: "uppercase",
-        color: "rgba(224,224,224,0.35)",
+        color: "var(--text-muted)",
         margin: "18px 0 8px",
       }}>
         ▸ Tap to react
@@ -126,25 +127,26 @@ export default function WallpaperReactions({ imageId }: Props) {
           flex-direction: column;
           align-items: center;
           gap: 4px;
-          background: rgba(255,255,255,0.04);
-          border: 1px solid rgba(255,255,255,0.08);
+          background: var(--surface-2, rgba(255,255,255,0.04));
+          border: 1px solid var(--border-dim, rgba(255,255,255,0.14));
           border-radius: 12px;
           padding: 14px 16px;
           cursor: pointer;
           transition: background 0.2s, border-color 0.2s, transform 0.15s;
-          color: #d0d0e8;
+          color: var(--text-primary);
+          font-weight: 700;
           min-width: 72px;
           -webkit-tap-highlight-color: transparent;
           touch-action: manipulation;
         }
         .hw-reaction-btn:hover {
-          background: rgba(255,255,255,0.08);
-          border-color: rgba(255,46,158,0.4);
+          background: rgba(255,46,158,0.1);
+          border-color: rgba(255,46,158,0.5);
           transform: translateY(-2px);
         }
         .hw-reaction-btn--voted {
-          background: rgba(255,46,158,0.12);
-          border-color: rgba(255,46,158,0.6);
+          background: rgba(255,46,158,0.16);
+          border-color: rgba(255,46,158,0.7);
         }
         .hw-reaction-emoji {
           font-size: 2rem;
@@ -158,21 +160,23 @@ export default function WallpaperReactions({ imageId }: Props) {
         .hw-reaction-label {
           font-family: Arial, sans-serif;
           font-size: 0.5rem;
+          font-weight: 700;
           letter-spacing: 0.12em;
           text-transform: uppercase;
-          color: rgba(200,200,220,0.5);
+          color: var(--text-muted);
           line-height: 1;
           margin-top: 2px;
         }
-        .hw-reaction-btn--voted .hw-reaction-label { color: rgba(255,255,255,0.7); }
+        .hw-reaction-btn--voted .hw-reaction-label { color: var(--text-primary); }
         .hw-reaction-count {
           font-family: Arial, sans-serif;
           font-size: 0.68rem;
+          font-weight: 700;
           letter-spacing: 0.06em;
-          color: rgba(200,200,220,0.8);
+          color: var(--text-primary);
           line-height: 1;
         }
-        .hw-reaction-btn--voted .hw-reaction-count { color: #fff; }
+        .hw-reaction-btn--voted .hw-reaction-count { color: #ff2e9e; }
         @media (max-width: 480px) {
           .hw-reactions { gap: 8px; }
           .hw-reaction-btn { padding: 12px 12px; min-width: 64px; }
