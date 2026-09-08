@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Menu, X, Search, Shuffle, ShoppingCart } from "lucide-react";
 import { useCart } from "@/lib/cart-context";
+import ThemeToggle from "@/components/ThemeToggle";
 
 const NAV_LINKS = [
   { label: "Shop",          href: "/shop"       },
@@ -160,6 +161,7 @@ export default function Header() {
           </div>
 
           <div className="hw-nav__actions">
+            <ThemeToggle />
             <button type="button" className="hw-nav__icon-btn" onClick={openSearch} aria-label="Search">
               <Search size={17} />
             </button>

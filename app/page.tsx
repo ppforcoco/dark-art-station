@@ -123,7 +123,7 @@ export default async function Home() {
                 <span className="hp-hero-accent">nightmares.</span>
               </h1>
               <p className="hp-hero-sub">
-                Hand-picked dark art wallpapers, free to download, updated daily.
+                Fresh from the town where every wallpaper has a secret.
               </p>
               <p className="hp-hero-stat-line">
                 {fmt(totalImages)} wallpapers &middot; 4K quality &middot; always free

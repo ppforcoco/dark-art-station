@@ -142,17 +142,17 @@ h1, h2, h3,
 .hw-bottom-nav__item:active { color: var(--pale) !important; }
 .hw-bottom-nav__item:focus-visible { outline-color: var(--ember) !important; }
 
-/* ── 4. HERO ── */
+/* ── 4. HERO — compact size, doesn't dominate the fold ── */
 .hp-hero {
   background: var(--void) !important;
-  padding: clamp(48px, 8vw, 96px) clamp(20px, 5vw, 32px) clamp(48px, 6vw, 80px) !important;
+  padding: clamp(24px, 4vw, 48px) clamp(20px, 5vw, 32px) clamp(24px, 3.5vw, 40px) !important;
 }
 .hp-hero-grid {
   display: grid !important;
   grid-template-columns: 1.1fr 0.9fr !important;
-  gap: clamp(32px, 6vw, 64px) !important;
+  gap: clamp(20px, 3.5vw, 40px) !important;
   align-items: center !important;
-  max-width: 1180px;
+  max-width: 1080px;
   margin: 0 auto;
 }
 @media (max-width: 860px) {
@@ -160,40 +160,40 @@ h1, h2, h3,
 }
 .hp-hero-headline {
   color: var(--pale) !important;
-  font-size: clamp(2.4rem, 6.4vw, 5.2rem) !important;
-  line-height: 0.95 !important;
+  font-size: clamp(1.7rem, 4.2vw, 3.2rem) !important;
+  line-height: 0.98 !important;
   margin: 0 !important;
 }
 .hp-hero-accent { color: var(--ember) !important; }
 .hp-hero-sub {
-  margin-top: 22px;
+  margin-top: 12px;
   max-width: 38ch;
-  font-size: clamp(0.95rem, 1.4vw, 1.1rem);
+  font-size: clamp(0.85rem, 1.2vw, 1rem);
   color: var(--smoke) !important;
   font-family: 'Space Grotesk', sans-serif !important;
 }
 .hp-hero-stat-line {
-  margin-top: 10px;
-  font-size: 0.72rem;
+  margin-top: 8px;
+  font-size: 0.68rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--lilac-dim, var(--smoke));
   font-family: 'Space Grotesk', sans-serif !important;
 }
 .hp-hero-ctas {
-  margin-top: 32px;
+  margin-top: 18px;
   display: flex;
   flex-direction: column;
-  gap: 14px;
-  max-width: 420px;
+  gap: 10px;
+  max-width: 360px;
 }
 .hp-btn-primary,
 .hp-btn-big {
   font-family: 'Space Grotesk', sans-serif !important;
   font-weight: 700 !important;
-  font-size: 0.95rem !important;
+  font-size: 0.85rem !important;
   letter-spacing: 0.3px !important;
-  padding: 16px 26px !important;
+  padding: 12px 20px !important;
   border-radius: 4px !important;
   border: none;
   cursor: pointer;
@@ -217,8 +217,8 @@ h1, h2, h3,
 }
 .hp-btn-big {
   width: 100%;
-  font-size: 1.05rem !important;
-  padding: 20px 26px !important;
+  font-size: 0.9rem !important;
+  padding: 14px 20px !important;
   background: transparent !important;
   color: var(--pale) !important;
   border: 2px solid var(--pale) !important;
@@ -261,33 +261,33 @@ h1, h2, h3,
 /* ── 4b. HERO VISUAL — tilted phone mockup showing a Tonight's Haunting wallpaper ── */
 .hero-visual { position: relative; display: flex; justify-content: center; }
 .hero-visual .glow {
-  position: absolute; width: 340px; height: 340px;
+  position: absolute; width: 220px; height: 220px;
   background: radial-gradient(circle, rgba(185,160,240,0.22), transparent 70%);
   filter: blur(10px); z-index: 0;
 }
 .phone-frame {
-  position: relative; width: min(260px, 62vw); aspect-ratio: 9/19.5;
-  background: #050409; border: 6px solid #050409; border-radius: 38px;
-  box-shadow: 0 0 0 2px rgba(243,237,225,0.1), 0 30px 70px rgba(0,0,0,0.55), 0 0 60px rgba(185,160,240,0.12);
+  position: relative; width: min(190px, 48vw); aspect-ratio: 9/19.5;
+  background: #050409; border: 5px solid #050409; border-radius: 30px;
+  box-shadow: 0 0 0 2px rgba(243,237,225,0.1), 0 20px 46px rgba(0,0,0,0.55), 0 0 40px rgba(185,160,240,0.12);
   transform: rotate(-4deg); overflow: hidden; z-index: 1;
 }
 .phone-frame .notch {
   position: absolute; top: 0; left: 50%; transform: translateX(-50%);
-  width: 46%; height: 22px; background: #050409;
-  border-bottom-left-radius: 14px; border-bottom-right-radius: 14px; z-index: 3;
+  width: 46%; height: 16px; background: #050409;
+  border-bottom-left-radius: 10px; border-bottom-right-radius: 10px; z-index: 3;
 }
-.phone-frame .screen { position: absolute; inset: 0; border-radius: 32px; overflow: hidden; }
+.phone-frame .screen { position: absolute; inset: 0; border-radius: 25px; overflow: hidden; }
 .phone-frame .wallpaper-art { width: 100%; height: 100%; display: block; object-fit: cover; object-position: center; }
 .phone-frame .lockscreen-ui {
-  position: absolute; top: 38px; left: 0; right: 0; text-align: center; z-index: 2;
+  position: absolute; top: 26px; left: 0; right: 0; text-align: center; z-index: 2;
   color: var(--pale); text-shadow: 0 2px 12px rgba(0,0,0,0.6);
 }
-.phone-frame .lockscreen-ui .time { font-family: 'Space Grotesk', sans-serif !important; font-weight: 600; font-size: 44px; letter-spacing: 1px; }
-.phone-frame .lockscreen-ui .date { font-size: 12px; letter-spacing: 1px; margin-top: 4px; color: rgba(243,237,225,0.85); }
-.bone-corner { position: absolute; width: 56px; opacity: 0.55; z-index: 4; color: var(--ember); }
-.bone-corner.tl { top: -14px; left: -30px; }
-.bone-corner.br { bottom: -14px; right: -30px; transform: rotate(180deg); }
-@media (max-width: 720px) { .hero-visual { margin-top: 24px; } }
+.phone-frame .lockscreen-ui .time { font-family: 'Space Grotesk', sans-serif !important; font-weight: 600; font-size: 30px; letter-spacing: 1px; }
+.phone-frame .lockscreen-ui .date { font-size: 9px; letter-spacing: 1px; margin-top: 3px; color: rgba(243,237,225,0.85); }
+.bone-corner { position: absolute; width: 38px; opacity: 0.55; z-index: 4; color: var(--ember); }
+.bone-corner.tl { top: -10px; left: -20px; }
+.bone-corner.br { bottom: -10px; right: -20px; transform: rotate(180deg); }
+@media (max-width: 720px) { .hero-visual { margin-top: 16px; } }
 
 /* ── 5. BUTTONS ── */
 .hp-btn-red {
@@ -323,29 +323,76 @@ h1, h2, h3,
 .hp-see-all:hover { border-color: var(--ember) !important; }
 .hp-new, .hp-premium, .hp-worlds { background: var(--void) !important; }
 
-/* ── 7. TONIGHT'S HAUNTING SLIDER ── */
-.ts-card {
-  background: var(--black) !important;
-  border-color: var(--border-dim) !important;
-  border-radius: 4px !important;
-  transition: transform 0.18s ease, border-color 0.18s ease !important;
+/* ── 7. TONIGHT'S HAUNTING GRID ── */
+.ts-grid {
+  display: grid !important;
+  grid-template-columns: repeat(2, 1fr) !important;
+  gap: clamp(12px, 2vw, 22px) !important;
 }
-.ts-card:hover {
+@media (min-width: 600px) {
+  .ts-grid { grid-template-columns: repeat(3, 1fr) !important; }
+}
+.ts-grid .ts-card {
+  flex: none !important;
+  width: auto !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 8px !important;
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  text-decoration: none;
+}
+.ts-grid .ts-thumb {
+  position: relative;
+  aspect-ratio: 9/16;
+  border-radius: 10px !important;
+  overflow: hidden;
+  background: var(--black) !important;
+  border: 1px solid var(--border-dim) !important;
+  transition: border-color 0.18s ease, transform 0.18s ease;
+}
+.ts-grid .ts-card:hover .ts-thumb {
+  border-color: rgba(185,160,240,0.45) !important;
   transform: translateY(-3px);
-  border-color: rgba(185,160,240,0.4) !important;
 }
-.ts-badge { color: #7fd18a !important; font-size: 0.55rem !important; }
-.ts-badge--premium { color: var(--ember) !important; }
-.ts-title { color: var(--pale) !important; font-size: 0.65rem !important; }
-.ts-overlay {
-  background: linear-gradient(to top, rgba(13,11,20,0.94) 0%, rgba(13,11,20,0.55) 48%, transparent 100%) !important;
-}
-.ts-arrow, .ts-arrow--left, .ts-arrow--right {
-  background: var(--black) !important;
-  border-color: var(--border-dim) !important;
+.ts-grid .ts-thumb--wide { aspect-ratio: 16/9; }
+.ts-dl {
+  position: absolute; top: 10px; right: 10px; z-index: 2;
+  width: 28px; height: 28px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(13,11,20,0.68) !important;
+  border: 1px solid var(--border-dim) !important;
   color: var(--pale) !important;
+  backdrop-filter: blur(4px);
 }
-.ts-arrow:hover { border-color: var(--ember) !important; color: var(--ember) !important; }
+.ts-dl svg { width: 13px; height: 13px; }
+.ts-grid .ts-badge {
+  position: absolute; top: 10px; left: 10px; z-index: 2;
+  color: var(--void) !important;
+  background: #7fd18a !important;
+  font-size: 0.5rem !important;
+  font-family: 'Space Grotesk', sans-serif !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase;
+  padding: 3px 7px !important;
+  border-radius: 20px !important;
+}
+.ts-meta { display: flex; flex-direction: column; gap: 1px; padding: 0 2px; }
+.ts-grid .ts-title {
+  color: var(--pale) !important;
+  font-size: 0.8rem !important;
+  font-weight: 600;
+  line-height: 1.25;
+  display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden;
+}
+.ts-sub {
+  color: var(--ember) !important;
+  font-size: 0.65rem !important;
+  font-family: 'Space Grotesk', sans-serif !important;
+  letter-spacing: 0.02em;
+}
 
 /* ── 8. FOOTER ── */
 .site-footer {
