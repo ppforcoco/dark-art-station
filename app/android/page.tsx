@@ -24,7 +24,7 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
   const { tag, page: rawPage } = await searchParams;
   const page      = Math.max(1, parseInt(rawPage ?? "1", 10) || 1);
   const pageLabel = page > 1 ? ` — Page ${page}` : "";
-  const siteUrl   = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
+  const siteUrl   = process.env.NEXT_PUBLIC_SITE_URL ?? "https://mr4kwalls.com";
 
   const title = tag
     ? `Dark #${tag} Wallpapers for Android & iPhone${pageLabel} | HAUNTED WALLPAPERS`
@@ -146,7 +146,7 @@ export default async function AndroidPage({ searchParams }: PageProps) {
   const jsonLd = JSON.stringify({
     "@context": "https://schema.org",
     "@type": "ItemList",
-    name: tag ? `Dark #${tag} Android Wallpapers | Haunted Wallpapers` : "Dark Android Wallpapers HD | Haunted Wallpapers",
+    name: tag ? `Dark #${tag} Android Wallpapers | MR4K Walls` : "Dark Android Wallpapers HD | MR4K Walls",
     url: tag ? `${process.env.NEXT_PUBLIC_SITE_URL}/android?tag=${tag}` : `${process.env.NEXT_PUBLIC_SITE_URL}/android`,
     numberOfItems: total,
     itemListElement: images.map((img, i) => ({
@@ -215,7 +215,7 @@ export default async function AndroidPage({ searchParams }: PageProps) {
               padding: "5px 12px",
               background: "rgba(255,46,158,0.08)",
               boxShadow: "0 0 12px rgba(255,46,158,0.15)",
-            }}>★ The Most Haunted</span>
+            }}>★ Certified Heat</span>
             <div style={{ flex: 1, height: "1px", background: "linear-gradient(to right, rgba(255,46,158,0.35), transparent)" }} />
           </div>
           <IphoneImageGrid

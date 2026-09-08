@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Menu, X, Search, Shuffle, ShoppingCart } from "lucide-react";
 import { useCart } from "@/lib/cart-context";
 import ThemeToggle from "@/components/ThemeToggle";
+import MustacheCodeIcon from "@/components/icons/MustacheCodeIcon";
 
 const NAV_LINKS = [
   { label: "Shop",          href: "/shop"       },
@@ -138,12 +139,13 @@ export default function Header() {
       {/* ── NAV ── */}
       <nav className={`hw-nav${scrolled ? " hw-nav--scrolled" : ""}`} role="navigation" aria-label="Main navigation">
         <div className="hw-nav__inner">
-          <Link href="/" prefetch={false} className="hw-nav__logo" onClick={closeMenu}>
+          <Link href="/" prefetch={false} className="hw-nav__logo" onClick={closeMenu} style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+            <MustacheCodeIcon size={20} />
             <span className="hw-nav__logo-full">
-              HAUNTED<span className="hw-nav__logo-accent">WALLPAPERS</span>
+              MR4K<span className="hw-nav__logo-accent">WALLS</span>
             </span>
             <span className="hw-nav__logo-short">
-              H<span className="hw-nav__logo-accent">W</span>
+              MR<span className="hw-nav__logo-accent">4K</span>
             </span>
           </Link>
 
@@ -279,7 +281,7 @@ export default function Header() {
         aria-modal="true"
       >
         <div className="hw-menu-panel__top">
-          HAUNTED<span className="hw-menu-panel__top-accent">WALLPAPERS</span>
+          MR4K<span className="hw-menu-panel__top-accent">WALLS</span>
         </div>
         <nav className="hw-menu-panel__nav" aria-label="Mobile navigation">
           {NAV_LINKS.map(l => (
@@ -295,10 +297,10 @@ export default function Header() {
             </Link>
           ))}
           <button className="hw-menu-panel__link" onClick={handleRandom} tabIndex={menuOpen ? 0 : -1} type="button">
-            Random Wallpaper
+            Surprise Me
           </button>
           <Link href="/favorites" prefetch={false} className="hw-menu-panel__link" onClick={closeMenu} tabIndex={menuOpen ? 0 : -1}>
-            Saved Wallpapers
+            Your Stash
           </Link>
           <Link href="/tools" prefetch={false} className="hw-menu-panel__link" onClick={closeMenu} tabIndex={menuOpen ? 0 : -1}>
             Tools

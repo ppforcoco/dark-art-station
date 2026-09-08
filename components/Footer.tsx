@@ -16,10 +16,10 @@ export default function Footer(): JSX.Element {
         {/* ── Brand ── */}
         <div className="footer-col footer-col--brand">
           <Link href="/" prefetch={false} className="nav-logo">
-            HAUNTED<span className="logo-red">WALLPAPERS</span>
+            MR4K<span className="logo-red">WALLS</span>
           </Link>
           <p className="footer-brand-desc">
-            Premium dark art for those who feel the difference. Original. Bold. AI-crafted for iPhone, Android, and every screen you carry.
+            Premium wallpapers for people with main-character energy. Original. Bold. AI-crafted for iPhone, Android, and every screen you own.
           </p>
         </div>
 
@@ -32,8 +32,8 @@ export default function Footer(): JSX.Element {
             <li><Link href="/collections"   prefetch={false}>Collections</Link></li>
             <li><Link href="/live-wallpapers" prefetch={false}>🎬 Live Wallpapers</Link></li>
             <li><Link href="/mood"            prefetch={false}>Mood Wallpapers</Link></li>
-            <li><Link href="/favorites"       prefetch={false}>♥ Saved Wallpapers</Link></li>
-            <li><Link href="/blog"            prefetch={false}>The Secrets</Link></li>
+            <li><Link href="/favorites"       prefetch={false}>♥ Your Stash</Link></li>
+            <li><Link href="/blog"            prefetch={false}>The Lowdown</Link></li>
             <li><Link href="/tools"           prefetch={false}>Tools</Link></li>
           </ul>
         </div>
@@ -57,7 +57,7 @@ export default function Footer(): JSX.Element {
       <div className="footer-bottom">
         <div className="footer-bottom-left">
           <span className="footer-copy">
-            © {year ?? ""} HauntedWallpapers. All rights reserved. New visions arrive each night.
+            © {year ?? ""} MR4K Walls. All rights reserved. New drops land every week.
           </span>
           <span className="footer-ai-disclosure">
             All artwork on this site is AI-generated using diffusion model pipelines.

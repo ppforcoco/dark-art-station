@@ -4,9 +4,9 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
-  title: "Licensing & Terms of Use — HauntedWallpapers",
+  title: "Licensing & Terms of Use — MR4K Walls",
   description:
-    "Understand your rights when downloading art from HauntedWallpapers. " +
+    "Understand your rights when downloading art from MR4K Walls. " +
     "Personal use is always fresh. Commercial use requires a licence.",
   robots: { index: true, follow: true },
 };
@@ -34,8 +34,8 @@ export default function LicensingPage() {
           <section className="static-section">
             <h2>Overview</h2>
             <p>
-              All artwork available on HauntedWallpapers is created and curated
-              by HauntedWallpapers. Unless otherwise stated, all images are our
+              All artwork available on MR4K Walls is created and curated
+              by MR4K Walls. Unless otherwise stated, all images are our
               intellectual property. By downloading any image from this Site, you
               agree to the terms below.
             </p>
@@ -44,14 +44,14 @@ export default function LicensingPage() {
           <section className="static-section">
             <h2>Personal Use Licence</h2>
             <p>
-              Every image on HauntedWallpapers may be downloaded and used for
+              Every image on MR4K Walls may be downloaded and used for
               personal, non-commercial purposes at no cost. This includes:
             </p>
             <ul>
               <li>Setting an image as a wallpaper on your personal device(s)</li>
               <li>Printing an image for your own private display (not for sale)</li>
               <li>Sharing images on personal social media with credit to
-                HauntedWallpapers</li>
+                MR4K Walls</li>
             </ul>
             <p>
               Personal use means use solely for your own enjoyment, with no direct
@@ -92,7 +92,7 @@ export default function LicensingPage() {
             <p>
               Attribution is not required for personal use but is always
               appreciated. If you share our work publicly, please credit
-              &quot;HauntedWallpapers.com&quot; in your post or description.
+              &quot;mr4kwalls.com&quot; in your post or description.
             </p>
           </section>
 

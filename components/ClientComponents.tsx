@@ -10,7 +10,6 @@ const CookieBanner      = dynamic(() => import("@/components/CookieBanner"),    
 const FeedbackWidget    = dynamic(() => import("@/components/FeedbackWidget"),     { ssr: false });
 const LoadingSpinner    = dynamic(() => import("@/components/LoadingSpinner"),     { ssr: false });
 const SiteAnalytics     = dynamic(() => import("@/components/SiteAnalytics"),      { ssr: false });
-const AmbientPlayer     = dynamic(() => import("@/components/AmbientPlayer"),      { ssr: false });
 const PWARegister       = dynamic(() => import("@/components/PWARegister"),        { ssr: false });
 
 export default function ClientComponents() {
@@ -41,7 +40,6 @@ export default function ClientComponents() {
           <CookieBanner />
           <FeedbackWidget />
           {/* Background ambient sound player — user has to opt in to play it anyway. */}
-          <AmbientPlayer />
           {/* Service Worker registration — safe to defer, doesn't affect visible UI. */}
           <PWARegister />
         </>

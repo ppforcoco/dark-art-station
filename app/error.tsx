@@ -10,7 +10,7 @@ interface ErrorProps {
 
 export default function ErrorPage({ error, reset }: ErrorProps) {
   useEffect(() => {
-    document.title = "Error | Haunted Wallpapers";
+    document.title = "Error | MR4K Walls";
     console.error("[APP ERROR]", error);
   }, [error]);
 
@@ -19,9 +19,9 @@ export default function ErrorPage({ error, reset }: ErrorProps) {
       <div className="error-inner">
         <div className="error-sigil" aria-hidden="true">⚠ ✦ ⚠</div>
         <span className="error-code">500</span>
-        <h1 className="error-title">Something Went Wrong</h1>
+        <h1 className="error-title">Well, This Is Awkward</h1>
         <p className="error-desc">
-          An unexpected error occurred. You can try again or head back to the homepage.
+          Something broke on our end, not yours. Try again or bail back to the homepage.
         </p>
         {error.digest && (
           <p className="error-digest">Error ID: {error.digest}</p>

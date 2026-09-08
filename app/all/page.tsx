@@ -9,7 +9,7 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 export const revalidate = 3600;
 
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://mr4kwalls.com";
 
 export const metadata: Metadata = {
   title: "The Endless — All Dark Wallpapers | HAUNTED WALLPAPERS",
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     description:
       "Every wallpaper we have ever made. Dark fantasy, gothic horror, minimal dread. Updated daily.",
     url: `${SITE_URL}/all`,
-    siteName: "Haunted Wallpapers",
+    siteName: "MR4K Walls",
     type: "website",
   },
   twitter: {

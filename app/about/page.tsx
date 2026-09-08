@@ -5,10 +5,10 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
-  title: "About — HauntedWallpapers",
+  title: "About — MR4K Walls",
   description:
     "Two siblings raised on horror stories, graveyard houses, and jungle spirits. " +
-    "HauntedWallpapers is not a studio — it's an obsession. The story behind the dark art.",
+    "MR4K Walls is not a studio — it's an obsession. The story behind the dark art.",
 };
 
 export default async function AboutPage() {
@@ -31,7 +31,7 @@ export default async function AboutPage() {
           <section className="static-section">
             <h2>We Are Not a Studio. We Are Obsessed.</h2>
             <p>
-              HauntedWallpapers was built by two siblings — a brother and sister —
+              MR4K Walls was built by two siblings — a brother and sister —
               who have loved horror since before they understood why. We grew up
               talking about ghosts, watching horror movies back to back, and
               genuinely never being scared. Not detached — <em>obsessed</em>.
@@ -59,7 +59,7 @@ export default async function AboutPage() {
           <section className="static-section">
             <h2>What We Create</h2>
             <p>
-              HauntedWallpapers is an independent wallpaper project created by two siblings who love horror, dark fantasy, and atmospheric artwork. Every image is
+              MR4K Walls is an independent wallpaper project created by two siblings who love horror, dark fantasy, and atmospheric artwork. Every image is
               crafted using AI generation pipelines — diffusion models, custom-trained
               style embeddings, iterative curation — shaped by people who have a
               genuine sense of what dark art should <em>feel</em> like.

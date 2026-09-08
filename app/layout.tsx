@@ -8,8 +8,8 @@ import Footer from "@/components/Footer";
 import ClientComponents from "@/components/ClientComponents";
 import { CartProvider } from "@/lib/cart-context";
 
-const SITE_URL  = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
-const SITE_NAME = "Haunted Wallpapers";
+const SITE_URL  = process.env.NEXT_PUBLIC_SITE_URL ?? "https://mr4kwalls.com";
+const SITE_NAME = "MR4K Walls";
 const OG_IMAGE  = "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/og-image.webp";
 
 export const viewport: Viewport = {
@@ -21,7 +21,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "Haunted Wallpapers | Dark Fantasy Wallpapers",
+  title: "MR4K Walls | Dark Fantasy Wallpapers",
   description:
     "Dark fantasy wallpapers for iPhone, Android and PC. Download high-resolution AI art — horror, gothic, street style, dark humor and more.",
   keywords: [
@@ -38,16 +38,16 @@ export const metadata: Metadata = {
     },
   },
   openGraph: {
-    title:       "Haunted Wallpapers | Dark Fantasy Wallpapers",
+    title:       "MR4K Walls | Dark Fantasy Wallpapers",
     description: "Dark fantasy wallpapers for iPhone, Android and PC. Download high-resolution AI art collections.",
     url: SITE_URL, siteName: SITE_NAME, type: "website", locale: "en_US",
-    images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: "Haunted Wallpapers — Dark Fantasy & Horror Art", type: "image/webp" }],
+    images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: "MR4K Walls — Dark Fantasy & Horror Art", type: "image/webp" }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Haunted Wallpapers | Dark Fantasy Wallpapers",
+    title: "MR4K Walls | Dark Fantasy Wallpapers",
     description: "Dark fantasy wallpapers for iPhone, Android and PC. Download high-resolution AI art collections.",
-    images: [OG_IMAGE], creator: "@hauntedwallpapers",
+    images: [OG_IMAGE], creator: "@mr4kwalls",
   },
   icons: {
     icon: [
@@ -99,7 +99,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <meta name="theme-color" content="#190c30" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-        <meta name="apple-mobile-web-app-title" content="Haunted WP" />
+        <meta name="apple-mobile-web-app-title" content="MR4K Walls" />
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="format-detection" content="telephone=no" />
         <meta name="referrer" content="no-referrer-when-downgrade" />

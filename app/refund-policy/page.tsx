@@ -4,12 +4,12 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
-  title: "Refund Policy — HauntedWallpapers",
+  title: "Refund Policy — MR4K Walls",
   description: "Our refund and replacement policy for custom print-on-demand orders.",
 };
 
 const LAST_UPDATED = "6 September 2026";
-const SITE_NAME     = "HauntedWallpapers";
+const SITE_NAME     = "MR4K Walls";
 const CONTACT_EMAIL = "hello@hauntedwallpapers.com";
 
 export default function RefundPolicyPage() {

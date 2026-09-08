@@ -4,13 +4,13 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
-  title: "Privacy Policy — HauntedWallpapers",
-  description: "How HauntedWallpapers collects, uses, and protects your data.",
+  title: "Privacy Policy — MR4K Walls",
+  description: "How MR4K Walls collects, uses, and protects your data.",
 };
 
 const LAST_UPDATED = "28 March 2026";
-const SITE_NAME    = "HauntedWallpapers";
-const SITE_URL     = "https://hauntedwallpapers.com";
+const SITE_NAME    = "MR4K Walls";
+const SITE_URL     = "https://mr4kwalls.com";
 const CONTACT_EMAIL = "hello@hauntedwallpapers.com";
 
 export default function PrivacyPage() {

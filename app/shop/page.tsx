@@ -7,16 +7,16 @@ import ShopCategoryFilter from "@/components/ShopCategoryFilter";
 
 export const revalidate = 0;
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://mr4kwalls.com";
 
 export const metadata: Metadata = {
-  title: "Shop — Dark Art Phone Cases, Tees & More | HauntedWallpapers",
+  title: "Shop — Dark Art Phone Cases, Tees & More | MR4K Walls",
   description: "Wear the art. Custom print-on-demand phone cases, t-shirts and more featuring original dark, gothic and horror designs.",
   alternates: { canonical: `${SITE_URL}/shop` },
   openGraph: {
-    title: "Shop — HauntedWallpapers",
+    title: "Shop — MR4K Walls",
     description: "Custom print-on-demand phone cases, t-shirts and more featuring original dark art.",
-    url: `${SITE_URL}/shop`, siteName: "Haunted Wallpapers", type: "website",
+    url: `${SITE_URL}/shop`, siteName: "MR4K Walls", type: "website",
   },
 };
 

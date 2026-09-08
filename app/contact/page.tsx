@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import Breadcrumbs from "@/components/Breadcrumbs";
 
 export const metadata: Metadata = {
-  title: "Contact — HauntedWallpapers",
+  title: "Contact — MR4K Walls",
   description:
-    "Get in touch with HauntedWallpapers. Questions, licensing " +
+    "Get in touch with MR4K Walls. Questions, licensing " +
     "enquiries, custom orders, and technical support.",
   robots: { index: true, follow: true },
 };

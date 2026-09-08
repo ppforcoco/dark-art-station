@@ -29,12 +29,12 @@
 
 import type { MetadataRoute } from "next";
 
-const SITE_URL  = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
+const SITE_URL  = process.env.NEXT_PUBLIC_SITE_URL ?? "https://mr4kwalls.com";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name:             "Haunted Wallpapers",
-    short_name:       "Haunted WP",
+    name:             "MR4K Walls",
+    short_name:       "MR4K",
     description:      "Dark fantasy wallpapers for iPhone, Android and PC.",
     start_url:        "/",
     display:          "standalone",
@@ -86,7 +86,7 @@ export default function manifest(): MetadataRoute.Manifest {
         sizes:       "1200x630",
         type:        "image/webp",
         form_factor: "wide",
-        label:       "Haunted Wallpapers home screen",
+        label:       "MR4K Walls home screen",
       } as any,
     ],
   };

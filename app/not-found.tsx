@@ -6,7 +6,7 @@ import { db } from "@/lib/db";
 import { getPublicUrl } from "@/lib/r2";
 
 export const metadata: Metadata = {
-  title: "404 - Not Found | Haunted Wallpapers",
+  title: "404 - Not Found | MR4K Walls",
   robots: { index: false, follow: true },
 };
 
@@ -54,10 +54,10 @@ export default async function NotFound() {
       {/* Hero section */}
       <div className="nf-hero">
         <span className="nf-code">404</span>
-        <h1 className="nf-title">Lost in the Dark</h1>
+        <h1 className="nf-title">Page Ghosted You</h1>
         <p className="nf-desc">
-          This page has vanished into the void. But the darkness has more to offer —
-          explore some art while you&apos;re here.
+          This page pulled a disappearing act. While you&apos;re here,
+          grab some art instead.
         </p>
         <div className="nf-actions">
           <Link prefetch={false} href="/"     className="nf-btn-primary">← Back to Home</Link>

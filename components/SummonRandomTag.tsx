@@ -9,7 +9,7 @@ export default function SummonRandomTag({ tags, device }: SummonRandomTagProps) 
   return (
     <button
       type="button"
-      title="Summon a random tag"
+      title="Pick a random tag for me"
       style={{
         display: "inline-block",
         padding: "4px 10px",
@@ -30,7 +30,7 @@ export default function SummonRandomTag({ tags, device }: SummonRandomTagProps) 
         window.location.href = `/${device}?tag=${encodeURIComponent(picked)}`;
       }}
     >
-      #Summon-Random
+      #Surprise-Me
     </button>
   );
 }

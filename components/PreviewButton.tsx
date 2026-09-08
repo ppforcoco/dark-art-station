@@ -95,7 +95,7 @@ function LockScreenModal({
                 <div className="lsp-notif">
                   <div className="lsp-notif-icon">👻</div>
                   <div className="lsp-notif-text">
-                    <div className="lsp-notif-app">HauntedWallpapers</div>
+                    <div className="lsp-notif-app">MR4K Walls</div>
                     <div className="lsp-notif-msg">New dark art just dropped 🩸</div>
                   </div>
                 </div>

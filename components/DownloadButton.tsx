@@ -103,8 +103,8 @@ export default function DownloadButton({ href, slug, viewCount, downloadCount, l
     if (typeof navigator.share === "function") {
       try {
         await navigator.share({
-          title: "Haunted Wallpaper",
-          text: "Dark wallpaper from hauntedwallpapers.com",
+          title: "MR4K Walls",
+          text: "Grabbed this wallpaper from mr4kwalls.com",
           url: window.location.href,
         });
         return;

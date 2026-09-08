@@ -19,15 +19,15 @@ export async function generateMetadata(
   const pageLabel = page > 1 ? ` — Page ${page}` : "";
   return {
     title: q
-      ? `"${q}" — Search Results${pageLabel} | HauntedWallpapers`
-      : "Search | HauntedWallpapers",
+      ? `"${q}" — Search Results${pageLabel} | MR4K Walls`
+      : "Search | MR4K Walls",
     description: q
       ? `Discover dark fantasy wallpapers matching "${q}". Curated for iPhone, Android & PC.`
-      : "Search the full HauntedWallpapers collection.",
+      : "Search the full MR4K Walls collection.",
     openGraph: {
-      title: q ? `"${q}" — Search Results | Haunted Wallpapers` : "Search | Haunted Wallpapers",
-      description: q ? `Discover dark fantasy wallpapers matching "${q}".` : "Search the full Haunted Wallpapers collection.",
-      images: [{ url: `${process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com"}/og-image.jpg`, width: 1200, height: 630 }],
+      title: q ? `"${q}" — Search Results | MR4K Walls` : "Search | MR4K Walls",
+      description: q ? `Discover dark fantasy wallpapers matching "${q}".` : "Search the full MR4K Walls collection.",
+      images: [{ url: `${process.env.NEXT_PUBLIC_SITE_URL ?? "https://mr4kwalls.com"}/og-image.jpg`, width: 1200, height: 630 }],
     },
   };
 }

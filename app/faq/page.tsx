@@ -5,20 +5,20 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
-  title: "FAQ — HauntedWallpapers",
+  title: "FAQ — MR4K Walls",
   description:
     "Answers to common questions about downloading, file formats, device " +
-    "compatibility, and how HauntedWallpapers works.",
+    "compatibility, and how MR4K Walls works.",
   robots: { index: true, follow: true },
 };
 
 const FAQS: { q: string; a: React.ReactNode; text: string }[] = [
   {
     q: "How do downloads work?",
-    text: "Every wallpaper on HauntedWallpapers is available to download. Simply browse, tap any image, and hit the Download button.",
+    text: "Every wallpaper on MR4K Walls is available to download. Simply browse, tap any image, and hit the Download button.",
     a: (
       <>
-        Every wallpaper on HauntedWallpapers is available to download.
+        Every wallpaper on MR4K Walls is available to download.
         Simply browse, tap any image, and hit the Download button.
       </>
     ),
@@ -91,7 +91,7 @@ const FAQS: { q: string; a: React.ReactNode; text: string }[] = [
     text: "No — downloads are licensed for personal use only. Commercial use requires a separate licence. See the Licensing and Terms page for full details.",
     a: (
       <>
-        No — downloads from HauntedWallpapers are licensed for personal use only.
+        No — downloads from MR4K Walls are licensed for personal use only.
         Commercial use (merchandise, resale, advertising, etc.) requires a
         separate licence. See our{" "}
         <a href="/licensing">Licensing &amp; Terms</a> page for full details.
@@ -120,10 +120,10 @@ const FAQS: { q: string; a: React.ReactNode; text: string }[] = [
   },
   {
     q: "Are these images AI-generated?",
-    text: "Yes. Wallpapers on HauntedWallpapers are created using AI-assisted tools and creative editing workflows. Every image is reviewed and curated before publication.",
+    text: "Yes. Wallpapers on MR4K Walls are created using AI-assisted tools and creative editing workflows. Every image is reviewed and curated before publication.",
     a: (
       <>
-        Yes. Wallpapers on HauntedWallpapers are created using AI-assisted tools
+        Yes. Wallpapers on MR4K Walls are created using AI-assisted tools
         and creative editing workflows. Every image is reviewed and curated
         before publication.
       </>
@@ -131,10 +131,10 @@ const FAQS: { q: string; a: React.ReactNode; text: string }[] = [
   },
   {
     q: "Why do I see advertisements on the Site?",
-    text: "HauntedWallpapers uses Google AdSense to display relevant ads that fund server costs, storage, and content curation.",
+    text: "MR4K Walls uses Google AdSense to display relevant ads that fund server costs, storage, and content curation.",
     a: (
       <>
-        HauntedWallpapers uses Google
+        MR4K Walls uses Google
         AdSense to display relevant ads. These ads fund server costs, storage,
         and the time spent curating and generating new art. You can opt out of
         personalised ads via{" "}

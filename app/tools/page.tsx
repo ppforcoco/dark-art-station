@@ -4,7 +4,7 @@ import { useState, useRef, useCallback, useEffect } from "react";
 import Breadcrumbs from "@/components/Breadcrumbs";
 
 
-type ActiveTool = "resizer" | "darkener" | "upscaler" | "text" | "blur" | "split" | "oled" | "lockscreen" | "haunted-name" | "collage" | "timer";
+type ActiveTool = "resizer" | "darkener" | "upscaler" | "text" | "blur" | "split" | "oled" | "lockscreen" | "cursed-name" | "collage" | "timer";
 type ImgFormat = "jpeg" | "png" | "webp";
 
 const FORMATS: { value: ImgFormat; label: string; ext: string }[] = [
@@ -489,7 +489,7 @@ function UpscalerTool() {
 const TEXT_FONTS = [
   { label: "Cinzel",     value: "'Cinzel Decorative', cursive",    hint: "Gothic Title"   },
   { label: "Cormorant",  value: "'Cormorant Garamond', serif",      hint: "Elegant Serif"  },
-  { label: "Space Mono", value: "'Space Mono', monospace",          hint: "Haunted Mono"   },
+  { label: "Space Mono", value: "'Space Mono', monospace",          hint: "Villain Mono"   },
   { label: "Impact",     value: "Impact, 'Arial Narrow', sans-serif", hint: "Bold & Wide"  },
   { label: "Georgia",    value: "Georgia, 'Times New Roman', serif", hint: "Classic Serif" },
   { label: "Arial",      value: "Arial, Helvetica, sans-serif",     hint: "Clean Sans"     },
@@ -1258,7 +1258,7 @@ function LockScreenTool() {
             }}>
               <div style={{ width: 22 * scale, height: 22 * scale, background: "#ff2e9e", borderRadius: 6 * scale, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11 * scale }}>👻</div>
               <div style={{ display: "flex", flexDirection: "column", gap: 1 * scale }}>
-                <span style={{ fontFamily: "system-ui", fontSize: 10 * scale, fontWeight: 600, color: "#fff" }}>Haunted Wallpapers</span>
+                <span style={{ fontFamily: "system-ui", fontSize: 10 * scale, fontWeight: 600, color: "#fff" }}>MR4K Walls</span>
                 <span style={{ fontFamily: "system-ui", fontSize: 9 * scale, color: "rgba(255,255,255,0.7)" }}>New wallpaper: something watches.</span>
               </div>
             </div>
@@ -1302,7 +1302,7 @@ function LockScreenTool() {
 }
 
 
-// ─── Haunted Name Generator ───────────────────────────────────────────────────
+// ─── Cursed Name Generator ───────────────────────────────────────────────────
 const HAUNT_STYLES = [
   { id: "strikethrough", label: "Strikethrough", fn: (s: string) => [...s].map(c => c + "\u0336").join("") },
   { id: "dots",          label: "Void Dots",     fn: (s: string) => [...s].map(c => c + "\u0307").join("") },
@@ -1315,7 +1315,7 @@ const HAUNT_STYLES = [
   }},
 ];
 
-function HauntedNameTool() {
+function CursedNameTool() {
   const [name,    setName]    = useState("Your Name");
   const [style,   setStyle]   = useState<typeof HAUNT_STYLES[number]>(HAUNT_STYLES[0]);
   const [haunted, setHaunted] = useState("");
@@ -1368,18 +1368,18 @@ function HauntedNameTool() {
     // Footer
     ctx.font = "22px monospace";
     ctx.fillStyle = "rgba(255,255,255,0.15)";
-    ctx.fillText("hauntedwallpapers.com", 540, 1820);
+    ctx.fillText("mr4kwalls.com", 540, 1820);
   }
 
   function download() {
     const c = canvasRef.current; if (!c) return;
-    downloadCanvas(c, `haunted-${name.toLowerCase().replace(/\s+/g,"-")}.jpg`, "jpeg");
+    downloadCanvas(c, `cursed-${name.toLowerCase().replace(/\s+/g,"-")}.jpg`, "jpeg");
     setDone(true); setTimeout(() => setDone(false), 2500);
   }
 
   return (
     <div className="tool-body">
-      <p className="tool-desc">Type your name, pick a Unicode corruption style, and download a 1080×1920 haunted wallpaper with your name on it. Pure client-side — nothing leaves your device.</p>
+      <p className="tool-desc">Type your name, pick a Unicode corruption style, and download a 1080×1920 wallpaper with your name on it. Pure client-side — nothing leaves your device.</p>
 
       <div className="tool-section">
         <p className="tool-label">Your Name</p>
@@ -1521,7 +1521,7 @@ function CollageTool() {
     ctx.font = "20px monospace";
     ctx.fillStyle = "rgba(255,255,255,0.25)";
     ctx.textAlign = "center";
-    ctx.fillText("hauntedwallpapers.com", W/2, H-14);
+    ctx.fillText("mr4kwalls.com", W/2, H-14);
   }
 
   async function buildPreview() {
@@ -1549,7 +1549,7 @@ function CollageTool() {
     try {
       const c = document.createElement("canvas");
       await renderToCanvas(c);
-      downloadCanvas(c, `haunted-collage-${layout}.jpg`, "jpeg");
+      downloadCanvas(c, `mr4k-collage-${layout}.jpg`, "jpeg");
       setDone(true); setTimeout(() => setDone(false), 2500);
     } catch(e) {
       console.error(e);
@@ -1679,7 +1679,7 @@ function TimerTool() {
 
     const end = new Date(start.getTime() + 30 * 60 * 1000); // 30-min event
 
-    const uid = `hw-${Date.now()}@hauntedwallpapers.com`;
+    const uid = `hw-${Date.now()}@mr4kwalls.com`;
     const stamp = toIcsDate(now);
     const dtstart = toIcsDate(start);
     const dtend   = toIcsDate(end);
@@ -1689,7 +1689,7 @@ function TimerTool() {
     const ics = [
       "BEGIN:VCALENDAR",
       "VERSION:2.0",
-      "PRODID:-//Haunted Wallpapers//Wallpaper Reminder//EN",
+      "PRODID:-//MR4K Walls//Wallpaper Reminder//EN",
       "CALSCALE:GREGORIAN",
       "METHOD:PUBLISH",
       "BEGIN:VEVENT",
@@ -1699,8 +1699,8 @@ function TimerTool() {
       `DTEND:${dtend}`,
       rrule,
       "SUMMARY:👻 Change your wallpaper",
-      `DESCRIPTION:Time to summon a fresh haunted wallpaper. Browse at https://hauntedwallpapers.com/all — new drops every day.`,
-      "URL:https://hauntedwallpapers.com/all",
+      `DESCRIPTION:Time to grab a fresh wallpaper. Browse at https://mr4kwalls.com/all — new drops every week.`,
+      "URL:https://mr4kwalls.com/all",
       "BEGIN:VALARM",
       "TRIGGER:-PT0M",
       "ACTION:DISPLAY",
@@ -1713,7 +1713,7 @@ function TimerTool() {
     const blob = new Blob([ics], { type: "text/calendar;charset=utf-8" });
     const a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
-    a.download = `haunted-wallpaper-reminder-${intervalLabel.replace(/\s+/g, "-")}.ics`;
+    a.download = `mr4k-reminder-${intervalLabel.replace(/\s+/g, "-")}.ics`;
     a.click();
     URL.revokeObjectURL(a.href);
 
@@ -1799,7 +1799,7 @@ export default function ToolsPage() {
     { id: "split"    as const, icon: "⊟",  label: "Split Wallpaper",   sub: "Lock + home screen"    },
     { id: "oled"     as const, icon: "🔋", label: "OLED Battery Calc", sub: "How much battery saved?" },
     { id: "lockscreen" as const, icon: "📱", label: "Lock Screen Preview", sub: "See it before you set it" },
-    { id: "haunted-name" as const, icon: "💀", label: "Haunted Name", sub: "Your name, corrupted" },
+    { id: "cursed-name" as const, icon: "💀", label: "Cursed Name", sub: "Your name, corrupted" },
     { id: "collage"      as const, icon: "🖼", label: "Collage Maker", sub: "Multi-layout collages" },
     { id: "timer"        as const, icon: "⏰", label: "Wallpaper Timer", sub: "Reminder to change it" },
   ];
@@ -1845,7 +1845,7 @@ export default function ToolsPage() {
           {active === "split"      && <SplitTool />}
           {active === "oled"       && <OledTool />}
           {active === "lockscreen"  && <LockScreenTool />}
-          {active === "haunted-name" && <HauntedNameTool />}
+          {active === "cursed-name" && <CursedNameTool />}
           {active === "collage"      && <CollageTool />}
           {active === "timer"        && <TimerTool />}
         </div>

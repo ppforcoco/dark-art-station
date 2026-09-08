@@ -4,16 +4,16 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
-  title: "DMCA & Copyright — HauntedWallpapers",
+  title: "DMCA & Copyright — MR4K Walls",
   description:
-    "DMCA takedown policy for HauntedWallpapers. How to report copyright " +
+    "DMCA takedown policy for MR4K Walls. How to report copyright " +
     "infringement and what happens when we receive a valid notice.",
   robots: { index: true, follow: true },
 };
 
 const CONTACT_EMAIL  = "hello@hauntedwallpapers.com";
 const LAST_UPDATED   = "23 March 2026";
-const SITE_NAME      = "HauntedWallpapers";
+const SITE_NAME      = "MR4K Walls";
 
 export default function DmcaPage() {
   return (
@@ -42,7 +42,7 @@ export default function DmcaPage() {
               property laws.
             </p>
             <p>
-              All images on HauntedWallpapers are reviewed before publication. If
+              All images on MR4K Walls are reviewed before publication. If
               you believe any content on this site infringes your copyright or other
               intellectual property rights, please notify us using the process below.
             </p>

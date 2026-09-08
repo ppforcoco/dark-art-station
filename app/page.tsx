@@ -1,4 +1,4 @@
-// app/page.tsx — Haunted Wallpapers Homepage
+// app/page.tsx — MR4K Walls Homepage
 
 import type { Metadata } from "next";
 import { unstable_cache } from "next/cache";
@@ -9,7 +9,7 @@ import TonightSlider from "@/components/TonightSlider";
 import NewsletterForm from "@/components/NewsletterForm";
 import "./homepage.css";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://mr4kwalls.com";
 const CDN      = "https://assets.hauntedwallpapers.com";
 const OG_IMAGE = `${CDN}/haunted-wallpapers-hero-image.avif`;
 
@@ -49,15 +49,15 @@ export async function generateMetadata(): Promise<Metadata> {
   const desc = pageContent?.metaDesc ??
     "Dark fantasy wallpapers for iPhone and Android. Gothic, horror, cosmic art.";
   const title = pageContent?.title ??
-    "Haunted Wallpapers | Dark Fantasy & Horror Wallpapers";
+    "MR4K Walls | Dark Fantasy & Horror Wallpapers";
   return {
     title,
     description: desc,
     metadataBase: new URL(SITE_URL),
     openGraph: {
       title, description: desc, url: SITE_URL,
-      siteName: "Haunted Wallpapers", type: "website",
-      images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: "Haunted Wallpapers" }],
+      siteName: "MR4K Walls", type: "website",
+      images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: "MR4K Walls" }],
     },
     twitter: { card: "summary_large_image", title, description: desc, images: [OG_IMAGE] },
     alternates: { canonical: SITE_URL },
@@ -106,8 +106,8 @@ export default async function Home() {
         {/* ══ MARQUEE STRIP ═══════════════════════════════════════════════ */}
         <div className="hp-marquee" aria-hidden="true">
           <div className="hp-marquee-track">
-            <span>NEW DROPS EVERY NIGHT ✦ 4K QUALITY ✦ HAUNTED TOWN NEVER SLEEPS ✦</span>
-            <span>NEW DROPS EVERY NIGHT ✦ 4K QUALITY ✦ HAUNTED TOWN NEVER SLEEPS ✦</span>
+            <span>NEW DROPS EVERY WEEK ✦ 4K ONLY, NO CAP ✦ MR4K NEVER SLEEPS ✦</span>
+            <span>NEW DROPS EVERY WEEK ✦ 4K ONLY, NO CAP ✦ MR4K NEVER SLEEPS ✦</span>
           </div>
         </div>
 
@@ -120,17 +120,17 @@ export default async function Home() {
                 <br />
                 deserves
                 <br />
-                <span className="hp-hero-accent">nightmares.</span>
+                <span className="hp-hero-accent">some drip.</span>
               </h1>
               <p className="hp-hero-stat-line">
-                {fmt(totalImages)} wallpapers &middot; 4K quality &middot; always fresh
+                {fmt(totalImages)} wallpapers &middot; 4K quality &middot; zero cap
               </p>
               <div className="hp-hero-ctas">
                 <Link prefetch={false} href="/all" className="hp-btn-primary">
-                  Browse the collection
+                  Raid the collection
                 </Link>
                 <Link prefetch={false} href="#tonight-haunting" className="hp-btn-big">
-                  See what&rsquo;s trending
+                  See what&rsquo;s hitting
                 </Link>
               </div>
             </div>
@@ -172,9 +172,9 @@ export default async function Home() {
           <section className="hp-section hp-new" id="tonight-haunting">
             <div className="hp-section-head">
               <div>
-                <p className="hp-section-eye" style={{ color:"#4ade80" }}>Fresh From The Town</p>
-                <h2 className="hp-section-title">Tonight&rsquo;s Haunting</h2>
-                <p className="hp-section-sub">New uploads just entered Haunted Town.</p>
+                <p className="hp-section-eye" style={{ color:"#4ade80" }}>Fresh Drip Alert</p>
+                <h2 className="hp-section-title">This Week&rsquo;s Heat</h2>
+                <p className="hp-section-sub">New uploads just clocked in. You&rsquo;re welcome.</p>
               </div>
             </div>
 
@@ -184,8 +184,8 @@ export default async function Home() {
 
         {/* ══ NEWSLETTER ══════════════════════════════════════════════════ */}
         <section className="hp-newsletter">
-          <h2>Get haunted (by email)</h2>
-          <p>New drops, first look. Zero life advice.</p>
+          <h2>Get the drip (by email)</h2>
+          <p>New drops, first dibs. Zero life advice.</p>
           <NewsletterForm />
         </section>
 
