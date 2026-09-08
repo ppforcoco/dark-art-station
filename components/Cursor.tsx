@@ -39,15 +39,15 @@ const HAND_URL =
   "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/extras/Red_horror_mouse_hand_icon.webp";
 
 const DAGGER_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="64" viewBox="0 0 32 64" fill="none">
-  <polygon points="16,0 20,44 16,50 12,44" fill="#c0001a" filter="url(#glow)"/>
+  <polygon points="16,0 20,44 16,50 12,44" fill="#ff2e9e" filter="url(#glow)"/>
   <polygon points="16,0 18,38 16,44" fill="#ff4455" opacity="0.6"/>
-  <rect x="4" y="44" width="24" height="5" rx="2" fill="#8b0010"/>
-  <rect x="5" y="44.5" width="22" height="2" rx="1" fill="#c0001a" opacity="0.5"/>
+  <rect x="4" y="44" width="24" height="5" rx="2" fill="#9c1580"/>
+  <rect x="5" y="44.5" width="22" height="2" rx="1" fill="#ff2e9e" opacity="0.5"/>
   <rect x="12" y="49" width="8" height="12" rx="2" fill="#6b0010"/>
-  <line x1="12" y1="52" x2="20" y2="52" stroke="#8b0010" stroke-width="1"/>
-  <line x1="12" y1="55" x2="20" y2="55" stroke="#8b0010" stroke-width="1"/>
-  <line x1="12" y1="58" x2="20" y2="58" stroke="#8b0010" stroke-width="1"/>
-  <ellipse cx="16" cy="62" rx="5" ry="2.5" fill="#8b0010"/>
+  <line x1="12" y1="52" x2="20" y2="52" stroke="#9c1580" stroke-width="1"/>
+  <line x1="12" y1="55" x2="20" y2="55" stroke="#9c1580" stroke-width="1"/>
+  <line x1="12" y1="58" x2="20" y2="58" stroke="#9c1580" stroke-width="1"/>
+  <ellipse cx="16" cy="62" rx="5" ry="2.5" fill="#9c1580"/>
   <defs><filter id="glow" x="-40%" y="-10%" width="180%" height="120%">
     <feGaussianBlur stdDeviation="1.5" result="blur"/>
     <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
@@ -55,8 +55,8 @@ const DAGGER_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="6
 </svg>`;
 
 const DAGGER_SCROLL_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="64" viewBox="0 0 32 64" fill="none">
-  <polygon points="16,0 20,44 16,50 12,44" fill="#8b0010" filter="url(#gs)"/>
-  <polygon points="16,0 18,38 16,44" fill="#c0001a" opacity="0.5"/>
+  <polygon points="16,0 20,44 16,50 12,44" fill="#9c1580" filter="url(#gs)"/>
+  <polygon points="16,0 18,38 16,44" fill="#ff2e9e" opacity="0.5"/>
   <rect x="4" y="44" width="24" height="5" rx="2" fill="#5a000a"/>
   <rect x="12" y="49" width="8" height="12" rx="2" fill="#3d0007"/>
   <line x1="12" y1="52" x2="20" y2="52" stroke="#5a000a" stroke-width="1"/>
@@ -137,7 +137,7 @@ export default function Cursor() {
         el.style.height = "64px";
         el.innerHTML = trustedHtml(HAND_HTML) as string;
         el.style.filter =
-          "drop-shadow(0 0 10px rgba(192,0,26,0.85)) drop-shadow(0 0 22px rgba(192,0,26,0.4))";
+          "drop-shadow(0 0 10px rgba(255,46,158,0.85)) drop-shadow(0 0 22px rgba(255,46,158,0.4))";
       } else {
         el.style.width = "32px";
         el.style.height = "64px";
@@ -145,8 +145,8 @@ export default function Cursor() {
           isScrolling ? DAGGER_SCROLL_SVG : DAGGER_SVG
         ) as string;
         el.style.filter = isScrolling
-          ? "drop-shadow(0 0 3px rgba(139,0,16,0.5))"
-          : "drop-shadow(0 0 4px rgba(192,0,26,0.7))";
+          ? "drop-shadow(0 0 3px rgba(156,21,128,0.5))"
+          : "drop-shadow(0 0 4px rgba(255,46,158,0.7))";
       }
     };
 
@@ -277,7 +277,7 @@ export default function Cursor() {
         zIndex: 999999,
         opacity: 0,
         display: "none",
-        filter: "drop-shadow(0 0 4px rgba(192,0,26,0.7))",
+        filter: "drop-shadow(0 0 4px rgba(255,46,158,0.7))",
         transition: "opacity 0.15s",
         willChange: "transform",
         transformOrigin: "top left",

@@ -27,11 +27,11 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
 
   const title = tag
     ? `Dark #${tag} Desktop Wallpapers for PC & iPhone${pageLabel} | HAUNTED WALLPAPERS`
-    : `Dark Desktop Wallpapers Free Download (PC & iPhone)${pageLabel} | HAUNTED WALLPAPERS`;
+    : `Dark Desktop Wallpapers download (PC & iPhone)${pageLabel} | HAUNTED WALLPAPERS`;
 
   const description = tag
-    ? `Browse free dark fantasy desktop wallpapers tagged #${tag}. Download instantly, no account required.`
-    : "Free dark fantasy wallpapers for PC and desktop. Landscape 16:9 optimised. New drops daily. No account required.";
+    ? `Browse dark fantasy desktop wallpapers tagged #${tag}. Download instantly.`
+    : "Dark fantasy wallpapers for PC and desktop. Landscape 16:9 optimised. New drops daily.";
 
   const canonical = tag ? `${siteUrl}/pc?tag=${tag}` : `${siteUrl}/pc`;
 
@@ -54,7 +54,7 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
   return {
     title,
     description,
-    keywords: ["pc wallpaper", "desktop wallpaper dark", "hd desktop wallpaper", "free pc wallpaper", "16:9 wallpaper", tag ?? "dark", "dark fantasy"].filter(Boolean),
+    keywords: ["pc wallpaper", "desktop wallpaper dark", "hd desktop wallpaper", "16:9 wallpaper", tag ?? "dark", "dark fantasy"].filter(Boolean),
     openGraph: {
       title, description, url: canonical, siteName: "HAUNTED WALLPAPERS", type: "website",
       images: [{ url: ogImage, width: 1920, height: 1080, alt: "Dark Desktop Wallpapers" }],
@@ -117,11 +117,11 @@ export default async function PcPage({ searchParams }: PageProps) {
       <section className="max-w-7xl mx-auto px-6 md:px-[60px] pt-10 pb-8">
         <h1 className="font-display text-3xl md:text-4xl font-bold leading-tight mb-6">
           {tag ? (
-            <>Dark <span className="text-[#c9a84c] italic">#{tag}</span> Desktop Wallpapers for PC</>
+            <>Dark <span className="text-[#ffd23f] italic">#{tag}</span> Desktop Wallpapers for PC</>
           ) : (
-            <>Free Dark PC <span className="text-[#c9a84c] italic">Wallpapers</span></>
+            <>Dark PC <span className="text-[#ffd23f] italic">Wallpapers</span></>
           )}
-          {page > 1 && <span className="text-[#4a445a] text-2xl"> — Page {page}</span>}
+          {page > 1 && <span className="text-[#5c4a8a] text-2xl"> — Page {page}</span>}
         </h1>
 
         {!tag && !pageContent?.body && !dbError && (
@@ -139,7 +139,7 @@ export default async function PcPage({ searchParams }: PageProps) {
               cyberpunk decay, dark fantasy — every piece is made to own your workspace.
             </p>
             <p>
-              All wallpapers are free to download with no account required. Right-click any image
+              Every wallpaper downloads in full resolution. Right-click any image
               and save, or use the download button for the full-resolution file. Works on Windows,
               Mac, and Linux. New collections added regularly.
             </p>
@@ -151,8 +151,8 @@ export default async function PcPage({ searchParams }: PageProps) {
         )}
 
         {dbError && (
-          <div style={{ padding: "20px", border: "1px solid rgba(192,0,26,0.3)", background: "rgba(192,0,26,0.05)", marginTop: "12px" }}>
-            <p style={{ fontFamily: "var(--font-space, monospace)", fontSize: "0.7rem", color: "#c0001a", letterSpacing: "0.1em" }}>
+          <div style={{ padding: "20px", border: "1px solid rgba(255,46,158,0.3)", background: "rgba(255,46,158,0.05)", marginTop: "12px" }}>
+            <p style={{ fontFamily: "var(--font-space, monospace)", fontSize: "0.7rem", color: "#ff2e9e", letterSpacing: "0.1em" }}>
               ⚠ Could not load wallpapers — please try again in a moment.
             </p>
           </div>
@@ -193,7 +193,7 @@ export default async function PcPage({ searchParams }: PageProps) {
           </div>
         ) : !dbError ? (
           <>
-            <p className="font-mono text-[0.6rem] tracking-[0.2em] uppercase text-[#4a445a] mb-6">
+            <p className="font-mono text-[0.6rem] tracking-[0.2em] uppercase text-[#5c4a8a] mb-6">
               — {total} wallpapers · page {page} of {totalPages}
             </p>
             <ProgressiveGrid
@@ -207,7 +207,7 @@ export default async function PcPage({ searchParams }: PageProps) {
                   <DeviceImageCard
                     href={`/pc/${img.slug}`}
                     src={getPublicUrl(img.r2Key)}
-                    alt={`${img.title} — free dark PC desktop wallpaper`}
+                    alt={`${img.title} — dark PC desktop wallpaper`}
                     title={img.title}
                     tags={img.tags}
                     isAdult={img.isAdult}
@@ -226,8 +226,8 @@ export default async function PcPage({ searchParams }: PageProps) {
         ) : null}
       </section>
 
-      <section style={{ maxWidth: "860px", margin: "0 auto", padding: "40px 24px 64px", borderTop: "1px solid rgba(192,0,26,0.18)", textAlign: "center" }}>
-        <p style={{ fontFamily: "var(--font-space, monospace)", fontSize: "0.6rem", letterSpacing: "0.22em", textTransform: "uppercase", color: "#4a445a", marginBottom: "20px" }}>
+      <section style={{ maxWidth: "860px", margin: "0 auto", padding: "40px 24px 64px", borderTop: "1px solid rgba(255,46,158,0.18)", textAlign: "center" }}>
+        <p style={{ fontFamily: "var(--font-space, monospace)", fontSize: "0.6rem", letterSpacing: "0.22em", textTransform: "uppercase", color: "#5c4a8a", marginBottom: "20px" }}>
           Also available for
         </p>
         <div style={{ display: "flex", gap: "14px", justifyContent: "center", flexWrap: "wrap" }}>
@@ -239,17 +239,17 @@ export default async function PcPage({ searchParams }: PageProps) {
       <style>{`
         .hw-crosslink-btn {
           font-family: var(--font-space, monospace); font-size: 0.72rem; letter-spacing: 0.14em;
-          text-transform: uppercase; color: #e8e4f8; text-decoration: none;
-          border: 1px solid rgba(192,0,26,0.4); padding: 13px 26px;
-          background: rgba(192,0,26,0.06); transition: all 0.25s ease;
+          text-transform: uppercase; color: #f3e8ff; text-decoration: none;
+          border: 1px solid rgba(255,46,158,0.4); padding: 13px 26px;
+          background: rgba(255,46,158,0.06); transition: all 0.25s ease;
           display: inline-flex; align-items: center; gap: 8px;
         }
         .hw-crosslink-btn:hover {
-          border-color: rgba(192,0,26,0.8); background: rgba(192,0,26,0.13);
-          color: #ffffff; box-shadow: 0 0 22px rgba(192,0,26,0.22);
+          border-color: rgba(255,46,158,0.8); background: rgba(255,46,158,0.13);
+          color: #ffffff; box-shadow: 0 0 22px rgba(255,46,158,0.22);
         }
         .pc-tag-pills-wrap {
-          background-color: var(--bg-primary, #0c0b14);
+          background-color: var(--bg-primary, #190c30);
           padding: 0 clamp(24px, 5vw, 60px) 28px;
           max-width: 1280px;
           margin: 0 auto;
@@ -265,7 +265,7 @@ export default async function PcPage({ searchParams }: PageProps) {
           letter-spacing: 0.16em;
           text-transform: uppercase;
           text-decoration: none;
-          color: rgba(224,224,248,0.65);
+          color: rgba(237,228,255,0.65);
           border: 1px solid rgba(255,255,255,0.1);
           background: rgba(255,255,255,0.03);
           padding: 8px 18px;
@@ -273,15 +273,15 @@ export default async function PcPage({ searchParams }: PageProps) {
           transition: all 0.2s ease;
         }
         .pc-tag-pill:hover {
-          border-color: rgba(192,0,26,0.6);
+          border-color: rgba(255,46,158,0.6);
           color: #fff;
-          background: rgba(192,0,26,0.08);
+          background: rgba(255,46,158,0.08);
         }
         .pc-tag-pill--active {
-          border-color: rgba(192,0,26,0.7);
+          border-color: rgba(255,46,158,0.7);
           color: #fff;
-          background: rgba(192,0,26,0.12);
-          box-shadow: 0 0 14px rgba(192,0,26,0.15);
+          background: rgba(255,46,158,0.12);
+          box-shadow: 0 0 14px rgba(255,46,158,0.15);
         }
       `}</style>
 
@@ -291,7 +291,7 @@ export default async function PcPage({ searchParams }: PageProps) {
           __html: JSON.stringify({
             "@context": "https://schema.org",
             "@type": "ItemList",
-            name: tag ? `Dark #${tag} PC Wallpapers | Haunted Wallpapers` : "Free Dark Desktop Wallpapers HD | Haunted Wallpapers",
+            name: tag ? `Dark #${tag} PC Wallpapers | Haunted Wallpapers` : "Dark Desktop Wallpapers HD | Haunted Wallpapers",
             url: tag ? `${process.env.NEXT_PUBLIC_SITE_URL}/pc?tag=${tag}` : `${process.env.NEXT_PUBLIC_SITE_URL}/pc`,
             numberOfItems: total,
             itemListElement: images.map((img, i) => ({

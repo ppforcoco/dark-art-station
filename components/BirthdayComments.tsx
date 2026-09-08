@@ -135,7 +135,7 @@ export default function BirthdayComments({ imageId, imageTitle }: Props) {
           gap: "0.75rem",
           marginBottom: "0.5rem",
         }}>
-          <span style={{ color: "#8b7355", fontSize: "1.2rem" }}>✦</span>
+          <span style={{ color: "#c97b3e", fontSize: "1.2rem" }}>✦</span>
           <h2 style={{
             fontFamily: "var(--font-cinzel, serif)",
             fontSize: "clamp(1.1rem, 3vw, 1.4rem)",
@@ -147,7 +147,7 @@ export default function BirthdayComments({ imageId, imageTitle }: Props) {
           }}>
             Comments
           </h2>
-          <span style={{ color: "#8b7355", fontSize: "1.2rem" }}>✦</span>
+          <span style={{ color: "#c97b3e", fontSize: "1.2rem" }}>✦</span>
         </div>
         <p style={{
           color: "#7a6a5a",
@@ -161,7 +161,7 @@ export default function BirthdayComments({ imageId, imageTitle }: Props) {
         <div style={{
           width: "120px",
           height: "1px",
-          background: "linear-gradient(90deg, transparent, #8b7355, transparent)",
+          background: "linear-gradient(90deg, transparent, #c97b3e, transparent)",
           margin: "1rem auto 0",
         }} />
       </div>
@@ -169,8 +169,8 @@ export default function BirthdayComments({ imageId, imageTitle }: Props) {
       {/* Top comment crown */}
       {!loading && topComment && (
         <div style={{
-          background: "linear-gradient(135deg, rgba(139,115,85,0.12), rgba(232,213,183,0.06))",
-          border: "1px solid rgba(139,115,85,0.35)",
+          background: "linear-gradient(135deg, rgba(201,123,62,0.12), rgba(232,213,183,0.06))",
+          border: "1px solid rgba(201,123,62,0.35)",
           borderRadius: "2px",
           padding: "1.25rem 1.5rem",
           marginBottom: "1rem",
@@ -181,9 +181,9 @@ export default function BirthdayComments({ imageId, imageTitle }: Props) {
             top: "-11px",
             left: "50%",
             transform: "translateX(-50%)",
-            background: "#0c0b14",
+            background: "#190c30",
             padding: "0 0.75rem",
-            color: "#c9a84c",
+            color: "#ffd23f",
             fontSize: "0.75rem",
             fontFamily: "var(--font-cinzel, serif)",
             letterSpacing: "0.15em",
@@ -204,7 +204,7 @@ export default function BirthdayComments({ imageId, imageTitle }: Props) {
                 &ldquo;{topComment.message}&rdquo;
               </p>
               <span style={{
-                color: "#8b7355",
+                color: "#c97b3e",
                 fontSize: "0.8rem",
                 fontFamily: "var(--font-space, monospace)",
                 letterSpacing: "0.05em",
@@ -215,10 +215,10 @@ export default function BirthdayComments({ imageId, imageTitle }: Props) {
             <button
               onClick={() => handleLike(topComment.id)}
               style={{
-                background: likedIds.has(topComment.id) ? "rgba(139,115,85,0.2)" : "transparent",
-                border: `1px solid ${likedIds.has(topComment.id) ? "#8b7355" : "rgba(139,115,85,0.3)"}`,
+                background: likedIds.has(topComment.id) ? "rgba(201,123,62,0.2)" : "transparent",
+                border: `1px solid ${likedIds.has(topComment.id) ? "#c97b3e" : "rgba(201,123,62,0.3)"}`,
                 borderRadius: "2px",
-                color: likedIds.has(topComment.id) ? "#c9a84c" : "#7a6a5a",
+                color: likedIds.has(topComment.id) ? "#ffd23f" : "#7a6a5a",
                 cursor: likedIds.has(topComment.id) ? "default" : "pointer",
                 padding: "0.35rem 0.6rem",
                 fontSize: "0.8rem",
@@ -246,7 +246,7 @@ export default function BirthdayComments({ imageId, imageTitle }: Props) {
           {rest.map((comment) => (
             <div key={comment.id} style={{
               background: "rgba(255,255,255,0.02)",
-              border: "1px solid rgba(139,115,85,0.15)",
+              border: "1px solid rgba(201,123,62,0.15)",
               borderRadius: "2px",
               padding: "1rem 1.25rem",
               display: "flex",
@@ -276,9 +276,9 @@ export default function BirthdayComments({ imageId, imageTitle }: Props) {
                 onClick={() => handleLike(comment.id)}
                 style={{
                   background: "transparent",
-                  border: `1px solid ${likedIds.has(comment.id) ? "#8b7355" : "rgba(139,115,85,0.2)"}`,
+                  border: `1px solid ${likedIds.has(comment.id) ? "#c97b3e" : "rgba(201,123,62,0.2)"}`,
                   borderRadius: "2px",
-                  color: likedIds.has(comment.id) ? "#c9a84c" : "#5a4a3a",
+                  color: likedIds.has(comment.id) ? "#ffd23f" : "#5a4a3a",
                   cursor: likedIds.has(comment.id) ? "default" : "pointer",
                   padding: "0.3rem 0.5rem",
                   fontSize: "0.75rem",
@@ -323,7 +323,7 @@ export default function BirthdayComments({ imageId, imageTitle }: Props) {
       <div style={{
         width: "80px",
         height: "1px",
-        background: "linear-gradient(90deg, transparent, #8b7355, transparent)",
+        background: "linear-gradient(90deg, transparent, #c97b3e, transparent)",
         margin: "1.5rem auto",
       }} />
 
@@ -333,11 +333,11 @@ export default function BirthdayComments({ imageId, imageTitle }: Props) {
           <div style={{
             textAlign: "center",
             padding: "1.5rem",
-            background: "rgba(139,115,85,0.08)",
-            border: "1px solid rgba(139,115,85,0.25)",
+            background: "rgba(201,123,62,0.08)",
+            border: "1px solid rgba(201,123,62,0.25)",
             borderRadius: "2px",
           }}>
-            <p style={{ color: "#c9a84c", fontSize: "1rem", margin: "0 0 0.4rem", fontFamily: "var(--font-cinzel, serif)" }}>
+            <p style={{ color: "#ffd23f", fontSize: "1rem", margin: "0 0 0.4rem", fontFamily: "var(--font-cinzel, serif)" }}>
               ✦ Comment Received ✦
             </p>
             <p style={{ color: "#7a6a5a", fontSize: "0.85rem", margin: 0, fontStyle: "italic" }}>
@@ -348,8 +348,8 @@ export default function BirthdayComments({ imageId, imageTitle }: Props) {
               style={{
                 marginTop: "1rem",
                 background: "transparent",
-                border: "1px solid rgba(139,115,85,0.3)",
-                color: "#8b7355",
+                border: "1px solid rgba(201,123,62,0.3)",
+                color: "#c97b3e",
                 padding: "0.4rem 1rem",
                 fontSize: "0.8rem",
                 cursor: "pointer",
@@ -365,7 +365,7 @@ export default function BirthdayComments({ imageId, imageTitle }: Props) {
           <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
             <p style={{
               textAlign: "center",
-              color: "#8b7355",
+              color: "#c97b3e",
               fontSize: "0.8rem",
               fontFamily: "var(--font-cinzel, serif)",
               letterSpacing: "0.1em",
@@ -382,7 +382,7 @@ export default function BirthdayComments({ imageId, imageTitle }: Props) {
               maxLength={50}
               style={{
                 background: "rgba(255,255,255,0.03)",
-                border: "1px solid rgba(139,115,85,0.25)",
+                border: "1px solid rgba(201,123,62,0.25)",
                 borderRadius: "2px",
                 color: "#e8d5b7",
                 padding: "0.65rem 0.9rem",
@@ -401,7 +401,7 @@ export default function BirthdayComments({ imageId, imageTitle }: Props) {
               rows={3}
               style={{
                 background: "rgba(255,255,255,0.03)",
-                border: "1px solid rgba(139,115,85,0.25)",
+                border: "1px solid rgba(201,123,62,0.25)",
                 borderRadius: "2px",
                 color: "#e8d5b7",
                 padding: "0.65rem 0.9rem",
@@ -438,10 +438,10 @@ export default function BirthdayComments({ imageId, imageTitle }: Props) {
               onClick={handleSubmit}
               disabled={submitting}
               style={{
-                background: submitting ? "rgba(139,115,85,0.1)" : "rgba(139,115,85,0.15)",
-                border: "1px solid rgba(139,115,85,0.4)",
+                background: submitting ? "rgba(201,123,62,0.1)" : "rgba(201,123,62,0.15)",
+                border: "1px solid rgba(201,123,62,0.4)",
                 borderRadius: "2px",
-                color: submitting ? "#5a4a3a" : "#c9a84c",
+                color: submitting ? "#5a4a3a" : "#ffd23f",
                 padding: "0.7rem",
                 fontSize: "0.82rem",
                 fontFamily: "var(--font-cinzel, serif)",

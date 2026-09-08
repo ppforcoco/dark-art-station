@@ -203,8 +203,8 @@ export default async function AvatarsHubPage() {
       <style>{`
         .hw-hub {
           min-height: 100vh;
-          background-color: var(--bg-primary, #0c0b14);
-          color: var(--text-primary, #e8e4dc);
+          background-color: var(--bg-primary, #190c30);
+          color: var(--text-primary, #fdf0ff);
         }
 
         /* ── Hero ── */
@@ -220,11 +220,11 @@ export default async function AvatarsHubPage() {
           font-weight: 700;
           line-height: 1.1;
           margin-bottom: 16px;
-          color: var(--text-primary, #e8e4dc);
+          color: var(--text-primary, #fdf0ff);
         }
-        .hw-hub-title__accent { color: #c9a84c; font-style: italic; }
+        .hw-hub-title__accent { color: #ffd23f; font-style: italic; }
         .hw-hub-desc {
-          color: rgba(232, 228, 220, 0.7);
+          color: rgba(253,240,255, 0.7);
           font-size: clamp(0.92rem, 2vw, 1.05rem);
           line-height: 1.75;
           max-width: 640px;
@@ -250,14 +250,14 @@ export default async function AvatarsHubPage() {
           flex-direction: column;
           text-decoration: none;
           color: inherit;
-          background: #13111e;
-          border: 1px solid #2a2535;
+          background: #211038;
+          border: 1px solid #341a63;
           overflow: hidden;
           transition: border-color 0.22s ease, transform 0.22s ease, box-shadow 0.22s ease;
         }
         .hw-cat-card:hover {
-          border-color: rgba(192,0,26,0.55);
-          box-shadow: 0 0 24px rgba(192,0,26,0.12);
+          border-color: rgba(255,46,158,0.55);
+          box-shadow: 0 0 24px rgba(255,46,158,0.12);
           transform: translateY(-2px);
         }
 
@@ -267,7 +267,7 @@ export default async function AvatarsHubPage() {
           grid-template-rows: repeat(2, 1fr);
           gap: 2px;
           aspect-ratio: 1 / 1;
-          background: #0a0812;
+          background: #150a2a;
         }
         .hw-cat-card__preview-img {
           width: 100%;
@@ -278,7 +278,7 @@ export default async function AvatarsHubPage() {
         .hw-cat-card__preview-empty {
           grid-column: 1 / -1;
           grid-row: 1 / -1;
-          background: linear-gradient(135deg, rgba(192,0,26,0.08), rgba(0,0,0,0.2));
+          background: linear-gradient(135deg, rgba(255,46,158,0.08), rgba(0,0,0,0.2));
         }
 
         .hw-cat-card__body {
@@ -292,17 +292,17 @@ export default async function AvatarsHubPage() {
           font-size: 0.62rem;
           letter-spacing: 0.18em;
           text-transform: uppercase;
-          color: #c9a84c;
+          color: #ffd23f;
         }
         .hw-cat-card__label {
           font-family: var(--font-display, serif);
           font-size: 1.4rem;
           font-weight: 700;
-          color: var(--text-primary, #e8e4dc);
+          color: var(--text-primary, #fdf0ff);
           margin: 2px 0 4px;
         }
         .hw-cat-card__tagline {
-          color: rgba(232,228,220,0.62);
+          color: rgba(253,240,255,0.62);
           font-size: 0.88rem;
           line-height: 1.6;
           margin-bottom: 14px;
@@ -312,12 +312,12 @@ export default async function AvatarsHubPage() {
           font-size: 0.66rem;
           letter-spacing: 0.12em;
           text-transform: uppercase;
-          color: #e8e4dc;
+          color: #fdf0ff;
           border-top: 1px solid rgba(255,255,255,0.08);
           padding-top: 14px;
           transition: color 0.2s ease;
         }
-        .hw-cat-card:hover .hw-cat-card__cta { color: #c0001a; }
+        .hw-cat-card:hover .hw-cat-card__cta { color: #ff2e9e; }
       `}</style>
 
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd }} />

@@ -35,14 +35,14 @@ interface Product {
   isPublished: boolean;
 }
 
-const C = { bg: "#0d0b14", surface: "#13111e", border: "#2a2535", red: "#c0001a", gold: "#c9a84c", textPri: "#e8e4f8", textSec: "#8a809a", textMut: "#4a445a", green: "#4caf50", white: "#ffffff" };
-const inp: React.CSSProperties = { width: "100%", background: "#0a0812", border: `1px solid ${C.border}`, color: C.textPri, padding: "10px 12px", fontSize: "0.875rem", fontFamily: "monospace", boxSizing: "border-box", outline: "none" };
+const C = { bg: "#180b2c", surface: "#211038", border: "#341a63", red: "#ff2e9e", gold: "#ffd23f", textPri: "#f3e8ff", textSec: "#af98cf", textMut: "#5c4a8a", green: "#4ade80", white: "#ffffff" };
+const inp: React.CSSProperties = { width: "100%", background: "#150a2a", border: `1px solid ${C.border}`, color: C.textPri, padding: "10px 12px", fontSize: "0.875rem", fontFamily: "monospace", boxSizing: "border-box", outline: "none" };
 const lbl: React.CSSProperties = { display: "block", color: C.textMut, fontSize: "0.6rem", letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: "6px" };
 function checkboxPill(active: boolean): React.CSSProperties {
   return {
     display: "flex", alignItems: "center", padding: "6px 12px",
-    border: `1px solid ${active ? "#c0001a" : C.border}`,
-    background: active ? "rgba(192,0,26,0.12)" : "transparent",
+    border: `1px solid ${active ? "#ff2e9e" : C.border}`,
+    background: active ? "rgba(255,46,158,0.12)" : "transparent",
     color: C.textPri, fontSize: "0.8rem", fontFamily: "monospace",
     cursor: "pointer", userSelect: "none",
   };
@@ -53,8 +53,8 @@ function Btn({ children, onClick, disabled, variant = "primary", style }: { chil
   const variants: Record<string, React.CSSProperties> = {
     primary: { background: C.red, color: C.white },
     ghost:   { background: "transparent", color: C.textSec, border: `1px solid ${C.border}` },
-    danger:  { background: "rgba(192,0,26,0.15)", color: C.red, border: `1px solid ${C.red}` },
-    success: { background: "rgba(76,175,80,0.15)", color: C.green, border: `1px solid ${C.green}` },
+    danger:  { background: "rgba(255,46,158,0.15)", color: C.red, border: `1px solid ${C.red}` },
+    success: { background: "rgba(74,222,128,0.15)", color: C.green, border: `1px solid ${C.green}` },
   };
   return <button onClick={onClick} disabled={disabled} style={{ ...base, ...variants[variant], ...style }}>{children}</button>;
 }
@@ -63,7 +63,7 @@ function Card({ children, style }: { children: React.ReactNode; style?: React.CS
 }
 function Msg({ msg }: { msg: { type: "ok" | "err"; text: string } | null }) {
   if (!msg) return null;
-  return <div style={{ padding: "10px 14px", marginBottom: "16px", border: `1px solid ${msg.type === "ok" ? C.green : C.red}`, color: msg.type === "ok" ? C.green : "#ffd080", fontSize: "0.82rem", background: msg.type === "ok" ? "rgba(76,175,80,0.08)" : "rgba(192,0,26,0.08)" }}>{msg.text}</div>;
+  return <div style={{ padding: "10px 14px", marginBottom: "16px", border: `1px solid ${msg.type === "ok" ? C.green : C.red}`, color: msg.type === "ok" ? C.green : "#ffd080", fontSize: "0.82rem", background: msg.type === "ok" ? "rgba(74,222,128,0.08)" : "rgba(255,46,158,0.08)" }}>{msg.text}</div>;
 }
 
 function slugify(s: string) {
@@ -444,7 +444,7 @@ function ProductForm({
       {category === "Phone Case" && (
         <div style={{ marginBottom: "16px" }}>
           <label style={lbl}>Phone Models (check every model this listing offers)</label>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: "8px", padding: "12px", border: "1px solid #2a2535" }}>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "8px", padding: "12px", border: "1px solid #341a63" }}>
             {getPhoneCaseModels().map(model => (
               <label key={model} style={checkboxPill(selectedModels.includes(model))}>
                 <input
@@ -464,7 +464,7 @@ function ProductForm({
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "16px" }}>
           <div>
             <label style={lbl}>Colors</label>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "8px", padding: "12px", border: "1px solid #2a2535" }}>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "8px", padding: "12px", border: "1px solid #341a63" }}>
               {getApparelColors(category).map(color => (
                 <label key={color} style={checkboxPill(selectedColors.includes(color))}>
                   <input
@@ -480,7 +480,7 @@ function ProductForm({
           </div>
           <div>
             <label style={lbl}>Sizes</label>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "8px", padding: "12px", border: "1px solid #2a2535" }}>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "8px", padding: "12px", border: "1px solid #341a63" }}>
               {getApparelSizes(category).map(size => (
                 <label key={size} style={checkboxPill(selectedSizes.includes(size))}>
                   <input

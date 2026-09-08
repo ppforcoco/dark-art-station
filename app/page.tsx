@@ -47,9 +47,9 @@ const getCachedPageContent = unstable_cache(
 export async function generateMetadata(): Promise<Metadata> {
   const pageContent = await getCachedPageContent();
   const desc = pageContent?.metaDesc ??
-    "Free dark fantasy wallpapers for iPhone and Android. Gothic, horror, cosmic art — no sign-up, always free.";
+    "Dark fantasy wallpapers for iPhone and Android. Gothic, horror, cosmic art.";
   const title = pageContent?.title ??
-    "Haunted Wallpapers | Free Dark Fantasy & Horror Wallpapers";
+    "Haunted Wallpapers | Dark Fantasy & Horror Wallpapers";
   return {
     title,
     description: desc,
@@ -106,8 +106,8 @@ export default async function Home() {
         {/* ══ MARQUEE STRIP ═══════════════════════════════════════════════ */}
         <div className="hp-marquee" aria-hidden="true">
           <div className="hp-marquee-track">
-            <span>NEW DROPS EVERY NIGHT ✦ 4K QUALITY, ALWAYS FREE ✦ HAUNTED TOWN NEVER SLEEPS ✦</span>
-            <span>NEW DROPS EVERY NIGHT ✦ 4K QUALITY, ALWAYS FREE ✦ HAUNTED TOWN NEVER SLEEPS ✦</span>
+            <span>NEW DROPS EVERY NIGHT ✦ 4K QUALITY ✦ HAUNTED TOWN NEVER SLEEPS ✦</span>
+            <span>NEW DROPS EVERY NIGHT ✦ 4K QUALITY ✦ HAUNTED TOWN NEVER SLEEPS ✦</span>
           </div>
         </div>
 
@@ -122,11 +122,8 @@ export default async function Home() {
                 <br />
                 <span className="hp-hero-accent">nightmares.</span>
               </h1>
-              <p className="hp-hero-sub">
-                Fresh from the town where every wallpaper has a secret.
-              </p>
               <p className="hp-hero-stat-line">
-                {fmt(totalImages)} wallpapers &middot; 4K quality &middot; always free
+                {fmt(totalImages)} wallpapers &middot; 4K quality &middot; always fresh
               </p>
               <div className="hp-hero-ctas">
                 <Link prefetch={false} href="/all" className="hp-btn-primary">
@@ -175,7 +172,7 @@ export default async function Home() {
           <section className="hp-section hp-new" id="tonight-haunting">
             <div className="hp-section-head">
               <div>
-                <p className="hp-section-eye" style={{ color:"#4caf50" }}>Fresh From The Town</p>
+                <p className="hp-section-eye" style={{ color:"#4ade80" }}>Fresh From The Town</p>
                 <h2 className="hp-section-title">Tonight&rsquo;s Haunting</h2>
                 <p className="hp-section-sub">New uploads just entered Haunted Town.</p>
               </div>

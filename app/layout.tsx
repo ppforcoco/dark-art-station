@@ -17,17 +17,17 @@ export const viewport: Viewport = {
   initialScale: 1,
   viewportFit: "cover",
   colorScheme: "dark",
-  themeColor: "#0c0b14",
+  themeColor: "#190c30",
 };
 
 export const metadata: Metadata = {
-  title: "Haunted Wallpapers | Free Dark Fantasy Wallpapers",
+  title: "Haunted Wallpapers | Dark Fantasy Wallpapers",
   description:
-    "Free dark fantasy wallpapers for iPhone, Android and PC. Download high-resolution AI art — horror, gothic, street style, dark humor and more.",
+    "Dark fantasy wallpapers for iPhone, Android and PC. Download high-resolution AI art — horror, gothic, street style, dark humor and more.",
   keywords: [
     "dark wallpapers", "horror wallpapers", "gothic wallpapers",
     "iPhone wallpapers", "Android wallpapers", "HD wallpapers",
-    "AI art", "dark fantasy", "free wallpapers", "AMOLED wallpapers",
+    "AI art", "dark fantasy", "wallpapers", "AMOLED wallpapers",
   ],
   metadataBase: new URL(SITE_URL),
   robots: {
@@ -38,15 +38,15 @@ export const metadata: Metadata = {
     },
   },
   openGraph: {
-    title:       "Haunted Wallpapers | Free Dark Fantasy Wallpapers",
-    description: "Free dark fantasy wallpapers for iPhone, Android and PC. Download high-resolution AI art collections.",
+    title:       "Haunted Wallpapers | Dark Fantasy Wallpapers",
+    description: "Dark fantasy wallpapers for iPhone, Android and PC. Download high-resolution AI art collections.",
     url: SITE_URL, siteName: SITE_NAME, type: "website", locale: "en_US",
     images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: "Haunted Wallpapers — Dark Fantasy & Horror Art", type: "image/webp" }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Haunted Wallpapers | Free Dark Fantasy Wallpapers",
-    description: "Free dark fantasy wallpapers for iPhone, Android and PC. Download high-resolution AI art collections.",
+    title: "Haunted Wallpapers | Dark Fantasy Wallpapers",
+    description: "Dark fantasy wallpapers for iPhone, Android and PC. Download high-resolution AI art collections.",
     images: [OG_IMAGE], creator: "@hauntedwallpapers",
   },
   icons: {
@@ -65,7 +65,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" dir="ltr" suppressHydrationWarning style={{ backgroundColor: "#0c0b14", color: "#e8e4dc" }}>
+    <html lang="en" dir="ltr" suppressHydrationWarning style={{ backgroundColor: "#190c30", color: "#fdf0ff" }}>
       <head>
         {/* ── Critical inline CSS ─────────────────────────────────────────── */}
         <style dangerouslySetInnerHTML={{ __html: `
@@ -81,7 +81,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         ` }} />
 
         {/* ── Theme init — must run before paint ───────────────────────────── */}
-        <script dangerouslySetInnerHTML={{ __html: `(function(){try{var t=localStorage.getItem('hw-theme');if(t){document.documentElement.setAttribute('data-theme',t);if(t==='fog'){document.documentElement.style.backgroundColor='#fff6e8';document.documentElement.style.color='#2b2140';}else if(t==='ghost'){document.documentElement.style.backgroundColor='#0d0d14';document.documentElement.style.color='#e0e0f8';}else{document.documentElement.style.backgroundColor='#0c0b14';document.documentElement.style.color='#e8e4dc';}}else{document.documentElement.style.backgroundColor='#0c0b14';document.documentElement.style.color='#e8e4dc';}}catch(e){}})();` }} />
+        <script dangerouslySetInnerHTML={{ __html: `(function(){try{var t=localStorage.getItem('hw-theme');if(t){document.documentElement.setAttribute('data-theme',t);if(t==='fog'){document.documentElement.style.backgroundColor='#fff3e0';document.documentElement.style.color='#35205c';}else if(t==='ghost'){document.documentElement.style.backgroundColor='#1a0b2e';document.documentElement.style.color='#ede4ff';}else{document.documentElement.style.backgroundColor='#190c30';document.documentElement.style.color='#fdf0ff';}}else{document.documentElement.style.backgroundColor='#190c30';document.documentElement.style.color='#fdf0ff';}}catch(e){}})();` }} />
         <script dangerouslySetInnerHTML={{ __html: `(function(){try{var h=new Date().getHours();if(h>=20||h<6)document.documentElement.setAttribute('data-night','true');}catch(e){}})();` }} />
 
         {/* ── PWA ─────────────────────────────────────────────────────────── */}
@@ -96,7 +96,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <meta name="b0081adf43b5553f44ff0be1b38995754b86db3d" content="b0081adf43b5553f44ff0be1b38995754b86db3d" />
         <meta name="clckd" content="92b4a62639498edfec7c4465cd7f19df" />
         <meta name="monetag" content="53e26003203fc193ee1c865da18679cf" />
-        <meta name="theme-color" content="#0c0b14" />
+        <meta name="theme-color" content="#190c30" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <meta name="apple-mobile-web-app-title" content="Haunted WP" />
@@ -119,14 +119,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 name: SITE_NAME, url: SITE_URL,
                 logo: { "@type": "ImageObject", url: OG_IMAGE, width: 1200, height: 630 },
                 sameAs: [],
-                description: "Free dark fantasy wallpapers for iPhone, Android and PC. Bold original AI art.",
+                description: "Dark fantasy wallpapers for iPhone, Android and PC. Bold original AI art.",
                 contactPoint: { "@type": "ContactPoint", url: `${SITE_URL}/contact`, contactType: "Customer Support", availableLanguage: "en" },
               },
               {
                 "@context": "https://schema.org", "@type": "WebSite",
                 "@id": `${SITE_URL}/#website`,
                 url: SITE_URL, name: SITE_NAME,
-                description: "Free dark fantasy wallpapers. Download HD wallpapers for iPhone, Android and PC.",
+                description: "Dark fantasy wallpapers. Download HD wallpapers for iPhone, Android and PC.",
                 publisher: { "@id": `${SITE_URL}/#organization` },
                 potentialAction: {
                   "@type": "SearchAction",

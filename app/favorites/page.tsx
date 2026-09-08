@@ -61,7 +61,7 @@ export default function FavoritesPage() {
           <span className="fav-empty-icon">🖤</span>
           <h2 className="fav-empty-title">No saved wallpapers yet</h2>
           <p className="fav-empty-sub">
-            Tap the ♡ heart on any wallpaper to save it here. No account needed — your saves stay private on this device.
+            Tap the heart on any wallpaper to save it here — your saves stay private on this device.
           </p>
           <div className="fav-empty-links">
             <Link href="/iphone" className="fav-empty-btn">Browse iPhone</Link>

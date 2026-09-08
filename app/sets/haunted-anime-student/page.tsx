@@ -22,7 +22,7 @@ const WALLPAPERS = [
     download: `${BASE_4K}/cursed-student-dark-anime-4k-desktop-background.jpg`,
     filename: "cursed-student-desktop-4k.jpg",
     phase: "Phase 1 — The Hollow Stare",
-    phaseColor: "#8888aa",
+    phaseColor: "#a99bd1",
     best: "Clean minimal desktop setups",
     seoAlt: "Dark anime cursed student 4K desktop wallpaper for gaming PC background haunted school aesthetic",
   },
@@ -37,7 +37,7 @@ const WALLPAPERS = [
     download: `${BASE_4K}/cursed-student-dark-anime-horror-wallpaper-mobile.jpg`,
     filename: "cursed-student-mobile-4k.jpg",
     phase: "Phase 2 — The Crimson Awakening",
-    phaseColor: "#c0001a",
+    phaseColor: "#ff2e9e",
     best: "iPhone lockscreen, Android lockscreen, AMOLED",
     seoAlt: "Haunted anime boy with hollow grey eyes aesthetic phone wallpaper for iPhone and Android 4K",
   },
@@ -52,7 +52,7 @@ const WALLPAPERS = [
     download: `${BASE_4K}/dark-horror-anime-boy-profile-picture-square.jpg`,
     filename: "cursed-student-avatar-4k.jpg",
     phase: "Phase 1 — The Hollow Stare",
-    phaseColor: "#8888aa",
+    phaseColor: "#a99bd1",
     best: "Profile picture, Discord, home screen icon",
     seoAlt: "Gothic anime boy horror aesthetic square PFP for Discord and social media haunted wallpaper collection",
   },
@@ -67,7 +67,7 @@ const WALLPAPERS = [
     download: `${BASE_4K}/haunted-anime-boy-red-eyes-smartwatch-wallpaper.jpg`,
     filename: "cursed-student-smartwatch-4k.jpg",
     phase: "Phase 2 — The Crimson Awakening",
-    phaseColor: "#c0001a",
+    phaseColor: "#ff2e9e",
     best: "Apple Watch, Galaxy Watch, OLED watch faces",
     seoAlt: "Creepy anime boy glowing red eyes smartwatch wallpaper and 4K horror aesthetic profile picture",
   },
@@ -114,7 +114,7 @@ export async function generateMetadata(): Promise<Metadata> {
     openGraph: {
       title: "Cursed Student — Matching Dark Anime Horror Kit | Haunted Wallpapers",
       description:
-        "Download the Cursed Student matching wallpaper set. Psychological horror anime aesthetic for PC, phone, and smartwatch. Free 4K downloads.",
+        "Download the Cursed Student matching wallpaper set. Psychological horror anime aesthetic for PC, phone, and smartwatch. 4K downloads.",
       url: `${SITE_URL}/sets/haunted-anime-student`,
       siteName: "Haunted Wallpapers",
       type: "website",
@@ -163,8 +163,8 @@ export default function CursedStudentPage() {
     <main
       style={{
         minHeight: "100vh",
-        backgroundColor: "var(--bg-primary, #0d0d14)",
-        color: "var(--text-primary, #e0e0f8)",
+        backgroundColor: "var(--bg-primary, #1a0b2e)",
+        color: "var(--text-primary, #ede4ff)",
         position: "relative",
         overflow: "hidden",
       }}
@@ -191,7 +191,7 @@ export default function CursedStudentPage() {
           position: "fixed",
           inset: 0,
           background:
-            "radial-gradient(ellipse 80% 50% at 50% 0%, rgba(192,0,26,0.08) 0%, transparent 65%)",
+            "radial-gradient(ellipse 80% 50% at 50% 0%, rgba(255,46,158,0.08) 0%, transparent 65%)",
           pointerEvents: "none",
           zIndex: 0,
         }}
@@ -222,18 +222,18 @@ export default function CursedStudentPage() {
             }}
           >
             <li>
-              <Link href="/" style={{ color: "#60608a", textDecoration: "none" }}>
+              <Link href="/" style={{ color: "#7c5cbf", textDecoration: "none" }}>
                 Home
               </Link>
             </li>
-            <li style={{ color: "#24243a" }}>›</li>
+            <li style={{ color: "#341a63" }}>›</li>
             <li>
-              <Link href="/sets" style={{ color: "#60608a", textDecoration: "none" }}>
+              <Link href="/sets" style={{ color: "#7c5cbf", textDecoration: "none" }}>
                 Matching Sets
               </Link>
             </li>
-            <li style={{ color: "#24243a" }}>›</li>
-            <li style={{ color: "#d8d8f0" }}>Cursed Student</li>
+            <li style={{ color: "#341a63" }}>›</li>
+            <li style={{ color: "#e4d4ff" }}>Cursed Student</li>
           </ol>
         </nav>
 
@@ -311,8 +311,8 @@ export default function CursedStudentPage() {
                 lineHeight: 1.0,
                 margin: "0 0 8px",
                 letterSpacing: "0.04em",
-                color: "#f0e8d8",
-                textShadow: "0 4px 40px rgba(192,0,26,0.2)",
+                color: "#fff3e0",
+                textShadow: "0 4px 40px rgba(255,46,158,0.2)",
               }}
             >
               The Cursed Student
@@ -323,7 +323,7 @@ export default function CursedStudentPage() {
                 fontSize: "0.72rem",
                 letterSpacing: "0.22em",
                 textTransform: "uppercase",
-                color: "#c0001a",
+                color: "#ff2e9e",
                 margin: "0 0 20px",
               }}
             >
@@ -337,7 +337,7 @@ export default function CursedStudentPage() {
                 fontSize: "clamp(1rem, 1.6vw, 1.15rem)",
                 lineHeight: 1.75,
                 maxWidth: "700px",
-                color: "rgba(224,224,248,0.7)",
+                color: "rgba(237,228,255,0.7)",
                 margin: 0,
               }}
             >
@@ -393,7 +393,7 @@ export default function CursedStudentPage() {
               <p className="cs-lore__body">
                 Every school has its legends, but at St. Jude Academy, the legend has a face. They
                 call him the{" "}
-                <span style={{ color: "#c0001a", fontStyle: "italic" }}>"Hollow Student."</span>
+                <span style={{ color: "#ff2e9e", fontStyle: "italic" }}>"Hollow Student."</span>
               </p>
               <p className="cs-lore__body">
                 He does not appear in the hallways or the cafeteria. He only manifests at exactly
@@ -528,14 +528,14 @@ export default function CursedStudentPage() {
               {
                 num: "01",
                 title: "Phase 1: The Hollow Stare",
-                color: "#8888aa",
+                color: "#a99bd1",
                 body: "In his first form he is almost human. His eyes are empty, reflecting the void of a soul long forgotten. This version represents the Quiet Horror — the feeling that you are being watched by something that is not quite there.",
                 best: "Clean, minimal desktop setups and phone lock screens.",
               },
               {
                 num: "02",
                 title: "Phase 2: The Crimson Awakening",
-                color: "#c0001a",
+                color: "#ff2e9e",
                 body: "Stare into his eyes long enough and the Hollow begins to fill. A deep blood-red glow ignites within his pupils — the moment the curse activates. The air grows cold. The silence is replaced by a low, vibrating hum. He is no longer just a memory; he is a hunter.",
                 best: "Smartwatch faces and high-contrast OLED phone screens.",
               },
@@ -561,7 +561,7 @@ export default function CursedStudentPage() {
                   </h3>
                   <p className="cs-phase__text">{phase.body}</p>
                   <p className="cs-phase__best">
-                    <span style={{ color: "#60608a" }}>Best for: </span>
+                    <span style={{ color: "#7c5cbf" }}>Best for: </span>
                     {phase.best}
                   </p>
                 </div>
@@ -647,14 +647,14 @@ export default function CursedStudentPage() {
         .cs-wall-item__frame {
           position: relative;
           overflow: hidden;
-          border: 1px solid rgba(192,0,26,0.2);
-          background: #080810;
+          border: 1px solid rgba(255,46,158,0.2);
+          background: #120826;
           transition: border-color 0.3s ease, box-shadow 0.3s ease;
           cursor: pointer;
         }
         .cs-wall-item__frame:hover {
-          border-color: rgba(192,0,26,0.5);
-          box-shadow: 0 0 32px rgba(192,0,26,0.1);
+          border-color: rgba(255,46,158,0.5);
+          box-shadow: 0 0 32px rgba(255,46,158,0.1);
         }
 
         /* Correct aspect ratios — no distortion */
@@ -682,7 +682,7 @@ export default function CursedStudentPage() {
         .cs-wall-item__corners span {
           position: absolute;
           width: 12px; height: 12px;
-          border-color: rgba(192,0,26,0.55);
+          border-color: rgba(255,46,158,0.55);
           border-style: solid;
         }
         .cs-wall-item__corners span:nth-child(1) { top: 6px; left: 6px; border-width: 1.5px 0 0 1.5px; }
@@ -776,7 +776,7 @@ export default function CursedStudentPage() {
           font-size: 0.58rem;
           letter-spacing: 0.26em;
           text-transform: uppercase;
-          color: #c0001a;
+          color: #ff2e9e;
           margin-bottom: 20px;
         }
 
@@ -791,16 +791,16 @@ export default function CursedStudentPage() {
           position: relative;
           border-radius: 4px;
           overflow: hidden;
-          border: 2px solid #0f0f1e;
-          box-shadow: 0 0 0 4px #0a0a14, 0 0 0 6px rgba(20,20,40,0.9), 0 0 80px rgba(0,0,0,0.7);
+          border: 2px solid #1f1040;
+          box-shadow: 0 0 0 4px #170a2e, 0 0 0 6px rgba(20,20,40,0.9), 0 0 80px rgba(0,0,0,0.7);
           animation: cs-glow-desk 4s ease-in-out infinite;
           aspect-ratio: 16/9;
-          background: #080810;
+          background: #120826;
           width: 100%;
         }
         @keyframes cs-glow-desk {
-          0%,100% { box-shadow: 0 0 0 4px #0a0a14, 0 0 0 6px rgba(20,20,40,0.9), 0 0 80px rgba(0,0,0,0.7); }
-          50%      { box-shadow: 0 0 0 4px #0a0a14, 0 0 0 6px rgba(20,20,40,0.9), 0 0 80px rgba(0,0,0,0.7), 0 0 100px rgba(10,0,40,0.2); }
+          0%,100% { box-shadow: 0 0 0 4px #170a2e, 0 0 0 6px rgba(20,20,40,0.9), 0 0 80px rgba(0,0,0,0.7); }
+          50%      { box-shadow: 0 0 0 4px #170a2e, 0 0 0 6px rgba(20,20,40,0.9), 0 0 80px rgba(0,0,0,0.7), 0 0 100px rgba(10,0,40,0.2); }
         }
         .cs-collage__bottom-row {
           display: flex;
@@ -855,14 +855,14 @@ export default function CursedStudentPage() {
           aspect-ratio: 9/16;
           border-radius: 28px;
           overflow: hidden;
-          border: 2px solid #0f0f1e;
-          background: #080810;
+          border: 2px solid #1f1040;
+          background: #120826;
           animation: cs-glow-phone 4s ease-in-out infinite 1s;
-          box-shadow: 0 0 0 3px #0a0a14, 0 0 0 5px rgba(20,20,40,0.9), 0 12px 48px rgba(0,0,0,0.8);
+          box-shadow: 0 0 0 3px #170a2e, 0 0 0 5px rgba(20,20,40,0.9), 0 12px 48px rgba(0,0,0,0.8);
         }
         @keyframes cs-glow-phone {
-          0%,100% { box-shadow: 0 0 0 3px #0a0a14, 0 0 0 5px rgba(20,20,40,0.9), 0 12px 48px rgba(0,0,0,0.8); }
-          50%      { box-shadow: 0 0 0 3px #0a0a14, 0 0 0 5px rgba(20,20,40,0.9), 0 12px 48px rgba(0,0,0,0.8), 0 0 50px rgba(10,0,40,0.2); }
+          0%,100% { box-shadow: 0 0 0 3px #170a2e, 0 0 0 5px rgba(20,20,40,0.9), 0 12px 48px rgba(0,0,0,0.8); }
+          50%      { box-shadow: 0 0 0 3px #170a2e, 0 0 0 5px rgba(20,20,40,0.9), 0 12px 48px rgba(0,0,0,0.8), 0 0 50px rgba(10,0,40,0.2); }
         }
         .cs-collage__island {
           position: absolute;
@@ -909,14 +909,14 @@ export default function CursedStudentPage() {
           aspect-ratio: 1/1;
           border-radius: 32% / 28%;
           overflow: hidden;
-          border: 2px solid #0f0f1e;
-          background: #080810;
+          border: 2px solid #1f1040;
+          background: #120826;
           animation: cs-glow-watch 4s ease-in-out infinite 2s;
-          box-shadow: 0 0 0 3px #0a0a14, 0 0 0 5px rgba(20,20,40,0.9), 0 8px 32px rgba(0,0,0,0.75);
+          box-shadow: 0 0 0 3px #170a2e, 0 0 0 5px rgba(20,20,40,0.9), 0 8px 32px rgba(0,0,0,0.75);
         }
         @keyframes cs-glow-watch {
-          0%,100% { box-shadow: 0 0 0 3px #0a0a14, 0 0 0 5px rgba(20,20,40,0.9), 0 8px 32px rgba(0,0,0,0.75); }
-          50%      { box-shadow: 0 0 0 3px #0a0a14, 0 0 0 5px rgba(20,20,40,0.9), 0 8px 32px rgba(0,0,0,0.75), 0 0 40px rgba(10,0,40,0.18); }
+          0%,100% { box-shadow: 0 0 0 3px #170a2e, 0 0 0 5px rgba(20,20,40,0.9), 0 8px 32px rgba(0,0,0,0.75); }
+          50%      { box-shadow: 0 0 0 3px #170a2e, 0 0 0 5px rgba(20,20,40,0.9), 0 8px 32px rgba(0,0,0,0.75), 0 0 40px rgba(10,0,40,0.18); }
         }
         .cs-collage__watch-crown {
           position: absolute;
@@ -951,7 +951,7 @@ export default function CursedStudentPage() {
           grid-template-columns: 3px 1fr;
           gap: 28px;
           background: rgba(255,255,255,0.02);
-          border: 1px solid rgba(192,0,26,0.15);
+          border: 1px solid rgba(255,46,158,0.15);
           padding: clamp(24px,4vw,40px);
           position: relative;
           overflow: hidden;
@@ -960,11 +960,11 @@ export default function CursedStudentPage() {
           content: '';
           position: absolute;
           inset: 0;
-          background: radial-gradient(ellipse 60% 80% at 0% 50%, rgba(192,0,26,0.04), transparent);
+          background: radial-gradient(ellipse 60% 80% at 0% 50%, rgba(255,46,158,0.04), transparent);
           pointer-events: none;
         }
         .cs-lore__bar {
-          background: linear-gradient(to bottom, transparent, #c0001a, transparent);
+          background: linear-gradient(to bottom, transparent, #ff2e9e, transparent);
           border-radius: 2px;
           flex-shrink: 0;
         }
@@ -972,7 +972,7 @@ export default function CursedStudentPage() {
           font-family: var(--font-cinzel, serif);
           font-size: clamp(1.1rem,2vw,1.5rem);
           font-weight: 700;
-          color: #f0e8d8;
+          color: #fff3e0;
           margin: 0 0 16px;
           letter-spacing: 0.04em;
         }
@@ -980,7 +980,7 @@ export default function CursedStudentPage() {
           font-family: var(--font-cormorant, serif);
           font-size: clamp(1rem,1.5vw,1.1rem);
           line-height: 1.8;
-          color: rgba(224,224,248,0.65);
+          color: rgba(237,228,255,0.65);
           margin: 0 0 12px;
         }
         .cs-lore__body:last-child { margin-bottom: 0; }
@@ -993,14 +993,14 @@ export default function CursedStudentPage() {
           font-size: 0.56rem;
           letter-spacing: 0.26em;
           text-transform: uppercase;
-          color: #c0001a;
+          color: #ff2e9e;
           margin-bottom: 10px;
         }
         .cs-section-title {
           font-family: var(--font-cinzel, serif);
           font-size: clamp(1.4rem,3vw,2.2rem);
           font-weight: 700;
-          color: #f0e8d8;
+          color: #fff3e0;
           margin: 0;
           letter-spacing: 0.04em;
         }
@@ -1033,20 +1033,20 @@ export default function CursedStudentPage() {
           font-family: var(--font-cormorant, serif);
           font-size: clamp(0.95rem,1.4vw,1.05rem);
           line-height: 1.8;
-          color: rgba(224,224,248,0.62);
+          color: rgba(237,228,255,0.62);
           margin: 0 0 10px;
         }
         .cs-phase__best {
           font-family: var(--font-space, monospace);
           font-size: 0.56rem;
           letter-spacing: 0.12em;
-          color: rgba(224,224,248,0.5);
+          color: rgba(237,228,255,0.5);
           margin: 0;
         }
 
         /* ── Why section ── */
         .cs-why {
-          border: 1px solid rgba(192,0,26,0.15);
+          border: 1px solid rgba(255,46,158,0.15);
           padding: clamp(28px,4vw,48px);
           position: relative;
           overflow: hidden;
@@ -1055,14 +1055,14 @@ export default function CursedStudentPage() {
           content: '';
           position: absolute;
           inset: 0;
-          background: radial-gradient(ellipse 70% 60% at 100% 50%, rgba(192,0,26,0.04), transparent);
+          background: radial-gradient(ellipse 70% 60% at 100% 50%, rgba(255,46,158,0.04), transparent);
           pointer-events: none;
         }
         .cs-why__title {
           font-family: var(--font-cinzel, serif);
           font-size: clamp(1.2rem,2.5vw,1.8rem);
           font-weight: 700;
-          color: #f0e8d8;
+          color: #fff3e0;
           margin: 0 0 20px;
           letter-spacing: 0.04em;
         }
@@ -1070,7 +1070,7 @@ export default function CursedStudentPage() {
           font-family: var(--font-cormorant, serif);
           font-size: clamp(0.98rem,1.5vw,1.08rem);
           line-height: 1.8;
-          color: rgba(224,224,248,0.65);
+          color: rgba(237,228,255,0.65);
           margin: 0 0 16px;
           max-width: 720px;
         }
@@ -1080,13 +1080,13 @@ export default function CursedStudentPage() {
           font-family: var(--font-space, monospace);
           font-size: 0.56rem;
           letter-spacing: 0.12em;
-          color: rgba(192,0,26,0.7);
+          color: rgba(255,46,158,0.7);
         }
 
         /* ── CTA block ── */
         .cs-cta-block {
           position: relative;
-          border: 1px solid rgba(192,0,26,0.3);
+          border: 1px solid rgba(255,46,158,0.3);
           padding: clamp(32px,5vw,56px);
           text-align: center;
           overflow: hidden;
@@ -1094,21 +1094,21 @@ export default function CursedStudentPage() {
         .cs-cta-block__glow {
           position: absolute;
           inset: 0;
-          background: radial-gradient(ellipse 60% 60% at 50% 50%, rgba(192,0,26,0.08), transparent);
+          background: radial-gradient(ellipse 60% 60% at 50% 50%, rgba(255,46,158,0.08), transparent);
           pointer-events: none;
         }
         .cs-cta-block__title {
           font-family: var(--font-cinzel, serif);
           font-size: clamp(1.4rem,3vw,2.2rem);
           font-weight: 700;
-          color: #f0e8d8;
+          color: #fff3e0;
           margin: 0 0 10px;
           position: relative;
         }
         .cs-cta-block__sub {
           font-family: var(--font-cormorant, serif);
           font-size: 1rem;
-          color: rgba(224,224,248,0.55);
+          color: rgba(237,228,255,0.55);
           margin: 0 0 28px;
           position: relative;
         }
@@ -1124,8 +1124,8 @@ export default function CursedStudentPage() {
           align-items: center;
           padding: 12px 22px;
           background: transparent;
-          color: rgba(224,224,248,0.8);
-          border: 1px solid rgba(192,0,26,0.35);
+          color: rgba(237,228,255,0.8);
+          border: 1px solid rgba(255,46,158,0.35);
           border-radius: 2px;
           font-family: var(--font-space, monospace);
           font-size: 0.6rem;
@@ -1136,10 +1136,10 @@ export default function CursedStudentPage() {
           cursor: pointer;
         }
         .cs-cta-btn:hover {
-          border-color: rgba(192,0,26,0.7);
+          border-color: rgba(255,46,158,0.7);
           color: #fff;
-          background: rgba(192,0,26,0.1);
-          box-shadow: 0 0 20px rgba(192,0,26,0.18);
+          background: rgba(255,46,158,0.1);
+          box-shadow: 0 0 20px rgba(255,46,158,0.18);
         }
 
         /* ── Set No Badge ── */
@@ -1155,15 +1155,15 @@ export default function CursedStudentPage() {
           font-size: clamp(0.75rem, 1.5vw, 0.9rem);
           letter-spacing: 0.28em;
           text-transform: uppercase;
-          color: #c0001a;
-          background: rgba(192,0,26,0.08);
-          border: 1px solid rgba(192,0,26,0.35);
+          color: #ff2e9e;
+          background: rgba(255,46,158,0.08);
+          border: 1px solid rgba(255,46,158,0.35);
           padding: 6px 16px;
           border-radius: 2px;
           font-weight: 700;
         }
         .cs-set-badge__div {
-          color: rgba(192,0,26,0.4);
+          color: rgba(255,46,158,0.4);
           font-size: 1.2rem;
         }
         .cs-set-badge__sub {
@@ -1171,7 +1171,7 @@ export default function CursedStudentPage() {
           font-size: clamp(0.9rem, 2vw, 1.2rem);
           letter-spacing: 0.12em;
           text-transform: uppercase;
-          color: #f0e8d8;
+          color: #fff3e0;
           font-weight: 700;
         }
 

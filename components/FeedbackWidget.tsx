@@ -84,8 +84,8 @@ export default function FeedbackWidget() {
           position: "relative",
           zIndex: 1,
           background: "#0f0d1a",
-          border: "1px solid #2a2535",
-          borderTop: "2px solid #c0001a",
+          border: "1px solid #341a63",
+          borderTop: "2px solid #ff2e9e",
           width: "100%",
           maxWidth: "400px",
           padding: "24px",
@@ -97,16 +97,16 @@ export default function FeedbackWidget() {
         {/* Header */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "20px" }}>
           <div>
-            <p style={{ color: "#c0001a", fontSize: "0.55rem", letterSpacing: "0.2em", textTransform: "uppercase", margin: 0 }}>
+            <p style={{ color: "#ff2e9e", fontSize: "0.55rem", letterSpacing: "0.2em", textTransform: "uppercase", margin: 0 }}>
               Haunted Wallpapers
             </p>
-            <h3 style={{ color: "#f0ecff", fontSize: "0.9rem", margin: "4px 0 0", letterSpacing: "0.05em" }}>
+            <h3 style={{ color: "#f6ecff", fontSize: "0.9rem", margin: "4px 0 0", letterSpacing: "0.05em" }}>
               Report a Problem
             </h3>
           </div>
           <button
             onClick={handleClose}
-            style={{ background: "transparent", border: "none", color: "#6b6480", cursor: "pointer", fontSize: "1.1rem", lineHeight: 1, padding: "0 0 0 12px" }}
+            style={{ background: "transparent", border: "none", color: "#8670b3", cursor: "pointer", fontSize: "1.1rem", lineHeight: 1, padding: "0 0 0 12px" }}
             aria-label="Close"
           >
             ✕
@@ -116,10 +116,10 @@ export default function FeedbackWidget() {
         {step === "done" && (
           <div style={{ textAlign: "center", padding: "20px 0" }}>
             <div style={{ fontSize: "2rem", marginBottom: "12px" }}>✓</div>
-            <p style={{ color: "#c0001a", fontSize: "0.7rem", letterSpacing: "0.1em", textTransform: "uppercase", margin: 0 }}>
+            <p style={{ color: "#ff2e9e", fontSize: "0.7rem", letterSpacing: "0.1em", textTransform: "uppercase", margin: 0 }}>
               Report received — thank you!
             </p>
-            <p style={{ color: "#6b6480", fontSize: "0.65rem", marginTop: "8px" }}>
+            <p style={{ color: "#8670b3", fontSize: "0.65rem", marginTop: "8px" }}>
               We&apos;ll look into it.
             </p>
           </div>
@@ -127,7 +127,7 @@ export default function FeedbackWidget() {
 
         {step === "error" && (
           <div style={{ textAlign: "center", padding: "20px 0" }}>
-            <p style={{ color: "#c0001a", fontSize: "0.7rem", margin: "0 0 12px" }}>Something went wrong. Please try again.</p>
+            <p style={{ color: "#ff2e9e", fontSize: "0.7rem", margin: "0 0 12px" }}>Something went wrong. Please try again.</p>
             <button onClick={() => setStep("open")} style={btnStyle}>Try Again</button>
           </div>
         )}
@@ -136,13 +136,13 @@ export default function FeedbackWidget() {
           <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
             <div>
               <label style={labelStyle}>Page</label>
-              <div style={{ ...inputStyle, color: "#6b6480", background: "#0a0814", fontSize: "0.65rem" }}>
+              <div style={{ ...inputStyle, color: "#8670b3", background: "#0a0814", fontSize: "0.65rem" }}>
                 {page}
               </div>
             </div>
 
             <div>
-              <label style={labelStyle}>What&apos;s the issue? <span style={{ color: "#c0001a" }}>*</span></label>
+              <label style={labelStyle}>What&apos;s the issue? <span style={{ color: "#ff2e9e" }}>*</span></label>
               <select
                 value={category}
                 onChange={e => setCategory(e.target.value)}
@@ -162,7 +162,7 @@ export default function FeedbackWidget() {
             </div>
 
             <div>
-              <label style={labelStyle}>Describe the problem <span style={{ color: "#c0001a" }}>*</span></label>
+              <label style={labelStyle}>Describe the problem <span style={{ color: "#ff2e9e" }}>*</span></label>
               <textarea
                 value={message}
                 onChange={e => setMessage(e.target.value)}
@@ -174,7 +174,7 @@ export default function FeedbackWidget() {
             </div>
 
             <div>
-              <label style={labelStyle}>Your email <span style={{ color: "#6b6480" }}>(optional — only if you want a reply)</span></label>
+              <label style={labelStyle}>Your email <span style={{ color: "#8670b3" }}>(optional — only if you want a reply)</span></label>
               <input
                 type="email"
                 value={email}
@@ -209,7 +209,7 @@ export default function FeedbackWidget() {
 
 const labelStyle: React.CSSProperties = {
   display: "block",
-  color: "#8a8099",
+  color: "#b39ddb",
   fontSize: "0.58rem",
   letterSpacing: "0.12em",
   textTransform: "uppercase",
@@ -219,8 +219,8 @@ const labelStyle: React.CSSProperties = {
 const inputStyle: React.CSSProperties = {
   width: "100%",
   background: "#1a1625",
-  border: "1px solid #2a2535",
-  color: "#f0ecff",
+  border: "1px solid #341a63",
+  color: "#f6ecff",
   padding: "9px 11px",
   fontSize: "0.78rem",
   fontFamily: "monospace",
@@ -229,7 +229,7 @@ const inputStyle: React.CSSProperties = {
 };
 
 const btnStyle: React.CSSProperties = {
-  background: "#c0001a",
+  background: "#ff2e9e",
   border: "none",
   color: "#fff",
   padding: "11px 20px",

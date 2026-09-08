@@ -29,7 +29,7 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
     : `Best iPhone Lock Screen Wallpapers 2026 | iOS 19, Depth Effect & Dynamic Island${pageLabel}`;
 
   const description = tag
-    ? `Free dark #${tag} lock screen wallpapers for iPhone. Composed with open space up top so the clock and notifications stay readable. Download instantly.`
+    ? `Dark #${tag} lock screen wallpapers for iPhone. Composed with open space up top so the clock and notifications stay readable. Download instantly.`
     : "iPhone wallpapers built around the lock screen clock and Dynamic Island. Dark, depth-ready backgrounds tested on iOS 19. No text overlap. No bad crops. Just clean, Apple-grade lock screens.";
 
   const canonical = tag
@@ -39,7 +39,7 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
   return {
     title,
     description,
-    keywords: ["iPhone lock screen wallpaper", "iOS 19 wallpaper", "Dynamic Island background", "depth effect wallpaper", "dark iPhone wallpaper", "Apple lock screen", "free iPhone wallpaper 2026", tag ?? "dark"].filter(Boolean),
+    keywords: ["iPhone lock screen wallpaper", "iOS 19 wallpaper", "Dynamic Island background", "depth effect wallpaper", "dark iPhone wallpaper", "Apple lock screen", "iPhone wallpaper 2026", tag ?? "dark"].filter(Boolean),
     openGraph: { title, description, url: canonical, siteName: "HAUNTED WALLPAPERS", type: "website" },
     twitter: { card: "summary_large_image", title, description },
     alternates: { canonical },
@@ -138,8 +138,8 @@ export default async function IphoneLockScreenPage({ searchParams }: PageProps) 
         <p className="device-page-tagline">Built for the notch. Designed for the glance.</p>
 
         <h1 className="font-display text-3xl md:text-4xl font-bold leading-tight">
-          <span className="text-[#c9a84c] italic">Lock Screen</span> Wallpapers for iPhone
-          {page > 1 && <span className="text-[#4a445a] text-2xl"> — Page {page}</span>}
+          <span className="text-[#ffd23f] italic">Lock Screen</span> Wallpapers for iPhone
+          {page > 1 && <span className="text-[#5c4a8a] text-2xl"> — Page {page}</span>}
         </h1>
       </section>
 
@@ -172,13 +172,13 @@ export default async function IphoneLockScreenPage({ searchParams }: PageProps) 
           </div>
         ) : (
           <>
-            <p className="font-mono text-[0.6rem] tracking-[0.2em] uppercase text-[#4a445a] mb-6">
+            <p className="font-mono text-[0.6rem] tracking-[0.2em] uppercase text-[#5c4a8a] mb-6">
               — {total} wallpapers · page {page} of {totalPages}
             </p>
             <IphoneImageGrid
               images={images}
               hrefPrefix="/iphone"
-              altSuffix="free dark iPhone lock screen wallpaper HD"
+              altSuffix="dark iPhone lock screen wallpaper HD"
               gridClassName="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3"
               priorityCount={4}
               aspectRatio="9/16"
@@ -214,7 +214,7 @@ export default async function IphoneLockScreenPage({ searchParams }: PageProps) 
           font-style: italic;
           font-size: clamp(1rem, 1.6vw + 0.5rem, 1.4rem);
           line-height: 1.4;
-          color: #c9a84c;
+          color: #ffd23f;
           letter-spacing: 0.01em;
           margin-bottom: 12px;
           max-width: 680px;
@@ -226,7 +226,7 @@ export default async function IphoneLockScreenPage({ searchParams }: PageProps) 
           max-width: 760px;
           margin: 0 auto;
           padding: 48px clamp(24px, 5vw, 60px) 72px;
-          border-top: 1px solid rgba(192,0,26,0.18);
+          border-top: 1px solid rgba(255,46,158,0.18);
         }
         .device-page-description {
           position: relative;
@@ -235,7 +235,7 @@ export default async function IphoneLockScreenPage({ searchParams }: PageProps) 
         .device-page-description::before {
           content: "✦";
           display: block;
-          color: #c9a84c;
+          color: #ffd23f;
           font-size: 0.9rem;
           margin-bottom: 20px;
           opacity: 0.7;
@@ -244,12 +244,12 @@ export default async function IphoneLockScreenPage({ searchParams }: PageProps) 
           font-family: var(--font-body, sans-serif);
           font-size: clamp(0.92rem, 0.4vw + 0.85rem, 1rem);
           line-height: 1.75;
-          color: rgba(224,224,248,0.72);
+          color: rgba(237,228,255,0.72);
           margin-bottom: 16px;
         }
         .device-page-description p:last-child { margin-bottom: 0; }
         .hw-tag-pills-wrap {
-          background-color: var(--bg-primary, #0c0b14);
+          background-color: var(--bg-primary, #190c30);
           padding: 0 clamp(24px, 5vw, 60px) 28px;
           max-width: 1280px;
           margin: 0 auto;
@@ -261,19 +261,19 @@ export default async function IphoneLockScreenPage({ searchParams }: PageProps) 
           letter-spacing: 0.16em;
           text-transform: uppercase;
           text-decoration: none;
-          color: rgba(224,224,248,0.65);
+          color: rgba(237,228,255,0.65);
           border: 1px solid rgba(255,255,255,0.1);
           background: rgba(255,255,255,0.03);
           padding: 8px 18px;
           border-radius: 2px;
           transition: all 0.2s ease;
         }
-        .hw-tag-pill:hover { border-color: rgba(192,0,26,0.6); color: #fff; background: rgba(192,0,26,0.08); }
+        .hw-tag-pill:hover { border-color: rgba(255,46,158,0.6); color: #fff; background: rgba(255,46,158,0.08); }
         .hw-tag-pill--active {
-          border-color: rgba(192,0,26,0.7);
+          border-color: rgba(255,46,158,0.7);
           color: #fff;
-          background: rgba(192,0,26,0.12);
-          box-shadow: 0 0 14px rgba(192,0,26,0.15);
+          background: rgba(255,46,158,0.12);
+          box-shadow: 0 0 14px rgba(255,46,158,0.15);
         }
       `}</style>
 

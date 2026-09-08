@@ -6,13 +6,13 @@ export default function OfflinePage() {
     <div
       style={{
         minHeight: "100vh",
-        background: "#0a0a0a",
+        background: "#140a28",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
         fontFamily: "'Courier New', monospace",
-        color: "#c0001a",
+        color: "#ff2e9e",
         textAlign: "center",
         padding: "2rem",
       }}
@@ -25,14 +25,14 @@ export default function OfflinePage() {
         xmlns="http://www.w3.org/2000/svg"
         style={{ marginBottom: "1.5rem", opacity: 0.85 }}
       >
-        <circle cx="40" cy="34" r="26" fill="#1a0005" stroke="#c0001a" strokeWidth="1.5" />
-        <ellipse cx="31" cy="32" rx="6" ry="7" fill="#0a0a0a" />
-        <ellipse cx="49" cy="32" rx="6" ry="7" fill="#0a0a0a" />
-        <rect x="27" y="56" width="26" height="10" rx="3" fill="#1a0005" stroke="#c0001a" strokeWidth="1.5" />
-        <line x1="34" y1="56" x2="34" y2="66" stroke="#c0001a" strokeWidth="1" />
-        <line x1="40" y1="56" x2="40" y2="66" stroke="#c0001a" strokeWidth="1" />
-        <line x1="46" y1="56" x2="46" y2="66" stroke="#c0001a" strokeWidth="1" />
-        <line x1="40" y1="42" x2="40" y2="56" stroke="#c0001a" strokeWidth="1" strokeDasharray="2 2" />
+        <circle cx="40" cy="34" r="26" fill="#1a0005" stroke="#ff2e9e" strokeWidth="1.5" />
+        <ellipse cx="31" cy="32" rx="6" ry="7" fill="#140a28" />
+        <ellipse cx="49" cy="32" rx="6" ry="7" fill="#140a28" />
+        <rect x="27" y="56" width="26" height="10" rx="3" fill="#1a0005" stroke="#ff2e9e" strokeWidth="1.5" />
+        <line x1="34" y1="56" x2="34" y2="66" stroke="#ff2e9e" strokeWidth="1" />
+        <line x1="40" y1="56" x2="40" y2="66" stroke="#ff2e9e" strokeWidth="1" />
+        <line x1="46" y1="56" x2="46" y2="66" stroke="#ff2e9e" strokeWidth="1" />
+        <line x1="40" y1="42" x2="40" y2="56" stroke="#ff2e9e" strokeWidth="1" strokeDasharray="2 2" />
       </svg>
 
       <h1
@@ -41,7 +41,7 @@ export default function OfflinePage() {
           letterSpacing: "0.15em",
           textTransform: "uppercase",
           marginBottom: "0.75rem",
-          color: "#c0001a",
+          color: "#ff2e9e",
         }}
       >
         You&apos;re in the dark.
@@ -65,8 +65,8 @@ export default function OfflinePage() {
         onClick={() => window.location.reload()}
         style={{
           background: "transparent",
-          border: "1px solid #c0001a",
-          color: "#c0001a",
+          border: "1px solid #ff2e9e",
+          color: "#ff2e9e",
           padding: "0.65rem 1.8rem",
           fontFamily: "'Courier New', monospace",
           fontSize: "0.85rem",
@@ -75,12 +75,12 @@ export default function OfflinePage() {
           cursor: "pointer",
         }}
         onMouseEnter={(e) => {
-          (e.currentTarget as HTMLButtonElement).style.background = "#c0001a";
-          (e.currentTarget as HTMLButtonElement).style.color = "#0a0a0a";
+          (e.currentTarget as HTMLButtonElement).style.background = "#ff2e9e";
+          (e.currentTarget as HTMLButtonElement).style.color = "#140a28";
         }}
         onMouseLeave={(e) => {
           (e.currentTarget as HTMLButtonElement).style.background = "transparent";
-          (e.currentTarget as HTMLButtonElement).style.color = "#c0001a";
+          (e.currentTarget as HTMLButtonElement).style.color = "#ff2e9e";
         }}
       >
         Try Again

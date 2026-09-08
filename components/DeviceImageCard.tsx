@@ -90,7 +90,7 @@ export default function DeviceImageCard({
             aspectRatio: aspectRatio.replace("/", " / "),
             position: "relative",
             overflow: "hidden",
-            backgroundColor: "#0a0a0a",
+            backgroundColor: "#140a28",
             cursor: "pointer",
             ...glowStyle,
           }}
@@ -134,7 +134,7 @@ export default function DeviceImageCard({
               border: "2.5px solid currentColor",
               borderRadius: "50%",
               display: "flex", alignItems: "center", justifyContent: "center",
-              color: "var(--blood, #a01818)",
+              color: "var(--blood, #c81e8c)",
               animation: "adultPulse 2s ease-in-out infinite",
             }}>
               <span style={{
@@ -147,7 +147,7 @@ export default function DeviceImageCard({
               fontSize: "0.48rem",
               letterSpacing: "0.16em",
               textTransform: "uppercase",
-              color: "#f0ecff",
+              color: "#f6ecff",
               opacity: 0.8,
             }}>
               Tap to Reveal
@@ -179,7 +179,7 @@ export default function DeviceImageCard({
           display: "block",
           position: "relative",
           overflow: "hidden",
-          backgroundColor: "#0a0a0a",
+          backgroundColor: "#140a28",
           ...glowStyle,
         }}
         onMouseEnter={() => setHovered(true)}
@@ -198,10 +198,10 @@ export default function DeviceImageCard({
         {/* ── Badge chips — derived from tags, no emojis ── */}
         {(() => {
           const BADGE_MAP: Record<string, { label: string; color: string; bg: string }> = {
-            "badge-new":       { label: "NEW",       color: "#4caf50", bg: "rgba(76,175,80,0.15)"   },
-            "badge-premium":   { label: "PREMIUM",   color: "#c9a84c", bg: "rgba(201,168,76,0.15)"  },
-            "badge-trending":  { label: "TRENDING",  color: "#ff6b35", bg: "rgba(255,107,53,0.15)"  },
-            "badge-hot":       { label: "HOT",       color: "#c0001a", bg: "rgba(192,0,26,0.15)"    },
+            "badge-new":       { label: "NEW",       color: "#4ade80", bg: "rgba(74,222,128,0.15)"   },
+            "badge-premium":   { label: "PREMIUM",   color: "#ffd23f", bg: "rgba(255,210,63,0.15)"  },
+            "badge-trending":  { label: "TRENDING",  color: "#ff8c42", bg: "rgba(255,140,66,0.15)"  },
+            "badge-hot":       { label: "HOT",       color: "#ff2e9e", bg: "rgba(255,46,158,0.15)"    },
             "badge-exclusive": { label: "EXCLUSIVE", color: "#9b59b6", bg: "rgba(155,89,182,0.15)"  },
             "badge-limited":   { label: "LIMITED",   color: "#e67e22", bg: "rgba(230,126,34,0.15)"  },
           };

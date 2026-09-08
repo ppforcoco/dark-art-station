@@ -51,13 +51,13 @@ function buildFallbackDescription(title: string, tags: string[]): string {
   const firstTag = tags[0] ?? "dark fantasy";
   const secondTag = tags[1] ?? "atmospheric";
   return (
-    title + " is a free high-resolution Android wallpaper from the Haunted Wallpapers dark art collection. " +
+    title + " is a high-resolution Android wallpaper from the Haunted Wallpapers dark art collection. " +
     "Formatted in a native 9:16 portrait aspect ratio, this piece is optimised for Android phones and fills your " +
     "lock screen and home screen with immersive dark art built around themes of " + tagList + ". " +
     "The image looks stunning on AMOLED and OLED Android displays, where true blacks create exceptional contrast. " +
     "Whether you are drawn to " + firstTag + " aesthetics or simply want a " + secondTag + " backdrop, " +
     "this wallpaper delivers bold, original artwork at no cost. " +
-    "No account or sign-up is required — tap download and the full-resolution file is yours instantly. " +
+    "Tap download and the full-resolution file is yours instantly. " +
     "Every image in our Android collection is produced exclusively for Haunted Wallpapers, " +
     "so you will not find this artwork duplicated across generic wallpaper repositories. " +
     "Scroll down to explore related wallpapers with a similar dark atmosphere and artistic style."
@@ -72,11 +72,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const tagLine = image.tags.slice(0, 3).map((t) => `#${t}`).join(" ");
   const plainDesc = (image.metaDescription ?? image.description ?? "")
     .replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim().slice(0, 200);
-  const metaDesc = plainDesc || `${image.title} — free high-res dark fantasy Android wallpaper. ${tagLine}. Download instantly, no account required.`;
+  const metaDesc = plainDesc || `${image.title} — high-res dark fantasy Android wallpaper. ${tagLine}. Download instantly.`;
   const ogImage = getPublicUrl(image.r2Key);
   return {
     metadataBase: new URL(siteUrl),
-    title: `${image.title} — Free Android Wallpaper | HAUNTED WALLPAPERS`,
+    title: `${image.title} — Android Wallpaper | HAUNTED WALLPAPERS`,
     description: metaDesc,
     keywords: ["android wallpaper", "dark wallpaper android", "hd android wallpaper", image.title, ...image.tags],
     openGraph: {
@@ -270,11 +270,11 @@ export default async function AndroidImagePage({ params }: PageProps) {
                 <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", marginTop: "8px", marginBottom: "4px" }}>
                   {image.tags.filter((t: string) => t.startsWith("badge-")).map((tag: string) => {
                     const badgeMap: Record<string, { label: string; color: string; bg: string }> = {
-                      "badge-premium":   { label: "⭐ Premium",   color: "#c9a84c", bg: "rgba(201,168,76,0.15)" },
-                      "badge-trending":  { label: "🔥 Trending",  color: "#ff6b35", bg: "rgba(255,107,53,0.15)" },
+                      "badge-premium":   { label: "⭐ Premium",   color: "#ffd23f", bg: "rgba(255,210,63,0.15)" },
+                      "badge-trending":  { label: "🔥 Trending",  color: "#ff8c42", bg: "rgba(255,140,66,0.15)" },
                       "badge-hot":       { label: "💀 Hot",        color: "#e040fb", bg: "rgba(224,64,251,0.15)" },
                       "badge-exclusive": { label: "🌙 Exclusive",  color: "#42a5f5", bg: "rgba(66,165,245,0.15)" },
-                      "badge-limited":   { label: "⏳ Limited",    color: "#ff5252", bg: "rgba(255,82,82,0.15)" },
+                      "badge-limited":   { label: "⏳ Limited",    color: "#ff6b9d", bg: "rgba(255,107,157,0.15)" },
                     };
                     const b = badgeMap[tag];
                     if (!b) return null;

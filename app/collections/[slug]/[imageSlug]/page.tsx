@@ -56,13 +56,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   const metaDesc =
     plainDesc ||
-    `${image.title} — free dark wallpaper for iPhone, Android and PC. Download instantly, no account required.`;
+    `${image.title} — dark wallpaper for iPhone, Android and PC. Download instantly.`;
 
   return {
-    title: `${image.title} — Free Dark Wallpaper | Haunted Wallpapers`,
+    title: `${image.title} — Dark Wallpaper | Haunted Wallpapers`,
     description: metaDesc,
     keywords: [
-      "dark wallpaper", "free wallpaper download", "gothic wallpaper", "horror wallpaper",
+      "dark wallpaper", "wallpaper download", "gothic wallpaper", "horror wallpaper",
       image.title, collection?.title ?? "", ...image.tags,
     ],
     openGraph: {
@@ -135,7 +135,7 @@ export default async function CollectionImagePage({ params }: PageProps) {
     .catch(() => {});
 
   const thumbUrl = getPublicUrl(image.r2Key);
-  const heroAlt = image.altText ?? `${image.title} — free dark wallpaper download`;
+  const heroAlt = image.altText ?? `${image.title} — dark wallpaper download`;
 
   const siblings = collection.images;
   const currentIdx = siblings.findIndex((s) => s.slug === imageSlug);
@@ -172,7 +172,7 @@ export default async function CollectionImagePage({ params }: PageProps) {
           <div className="shop-detail-image-wrap">
             <div style={{
               position: "relative", width: "100%", aspectRatio: "9/16",
-              background: "#070710", border: "1px solid rgba(139,0,0,0.3)",
+              background: "#100822", border: "1px solid rgba(176,23,158,0.3)",
               overflow: "hidden", borderRadius: "4px",
             }}>
               <Image
@@ -233,12 +233,12 @@ export default async function CollectionImagePage({ params }: PageProps) {
                 <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", marginTop: "10px", marginBottom: "4px" }}>
                   {image.tags.filter((t: string) => t.startsWith("badge-")).map((tag: string) => {
                     const badgeMap: Record<string, { label: string; color: string; bg: string }> = {
-                      "badge-premium":   { label: "⭐ Premium",   color: "#c9a84c", bg: "rgba(201,168,76,0.15)" },
-                      "badge-trending":  { label: "🔥 Trending",  color: "#ff6b35", bg: "rgba(255,107,53,0.15)" },
-                      "badge-new":       { label: "✨ New",        color: "#4caf50", bg: "rgba(76,175,80,0.15)" },
+                      "badge-premium":   { label: "⭐ Premium",   color: "#ffd23f", bg: "rgba(255,210,63,0.15)" },
+                      "badge-trending":  { label: "🔥 Trending",  color: "#ff8c42", bg: "rgba(255,140,66,0.15)" },
+                      "badge-new":       { label: "✨ New",        color: "#4ade80", bg: "rgba(74,222,128,0.15)" },
                       "badge-hot":       { label: "💀 Hot",        color: "#e040fb", bg: "rgba(224,64,251,0.15)" },
                       "badge-exclusive": { label: "🌙 Exclusive",  color: "#42a5f5", bg: "rgba(66,165,245,0.15)" },
-                      "badge-limited":   { label: "⏳ Limited",    color: "#ff5252", bg: "rgba(255,82,82,0.15)" },
+                      "badge-limited":   { label: "⏳ Limited",    color: "#ff6b9d", bg: "rgba(255,107,157,0.15)" },
                     };
                     const b = badgeMap[tag];
                     if (!b) return null;
@@ -256,7 +256,7 @@ export default async function CollectionImagePage({ params }: PageProps) {
 
             {image.description && (
               <div
-                className="font-body text-[1rem] text-[#a89bc0] leading-relaxed image-description-html"
+                className="font-body text-[1rem] text-[#c9a8e8] leading-relaxed image-description-html"
                 dangerouslySetInnerHTML={{ __html: sanitizeAdminHtml(image.description) }}
               />
             )}
@@ -264,7 +264,7 @@ export default async function CollectionImagePage({ params }: PageProps) {
             {image.tags.length > 0 && (
               <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
                 {image.tags.map((tag) => (
-                  <span key={tag} className="font-mono text-[0.55rem] tracking-[0.15em] uppercase border border-[#2a2535] px-3 py-1 text-[#8a8099]">
+                  <span key={tag} className="font-mono text-[0.55rem] tracking-[0.15em] uppercase border border-[#341a63] px-3 py-1 text-[#b39ddb]">
                     #{tag}
                   </span>
                 ))}
@@ -309,7 +309,7 @@ export default async function CollectionImagePage({ params }: PageProps) {
                 .replace(/&nbsp;/g, " ")
                 .replace(/\s+/g, " ")
                 .trim()
-                .slice(0, 200) || `${image.title} — free dark wallpaper.`,
+                .slice(0, 200) || `${image.title} — dark wallpaper.`,
             url: `${siteUrl}/collections/${slug}/${imageSlug}`,
             brand: { "@type": "Brand", name: "Haunted Wallpapers", url: siteUrl },
             category: "Digital Products > Wallpapers",

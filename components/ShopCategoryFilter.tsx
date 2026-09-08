@@ -37,7 +37,7 @@ export default function ShopCategoryFilter({ groups }: ShopCategoryFilterProps) 
       <div
         style={{
           display: "flex", gap: "10px", flexWrap: "wrap",
-          marginBottom: "36px", paddingBottom: "20px", borderBottom: "1px solid #2a2535",
+          marginBottom: "36px", paddingBottom: "20px", borderBottom: "1px solid #341a63",
         }}
       >
         {["All", ...categories].map(cat => {
@@ -52,9 +52,9 @@ export default function ShopCategoryFilter({ groups }: ShopCategoryFilterProps) 
                 letterSpacing: "0.1em",
                 textTransform: "uppercase",
                 padding: "9px 18px",
-                border: `1px solid ${isActive ? "#c0001a" : "#2a2535"}`,
-                background: isActive ? "#c0001a" : "transparent",
-                color: isActive ? "#ffffff" : "#a89bc0",
+                border: `1px solid ${isActive ? "#ff2e9e" : "#341a63"}`,
+                background: isActive ? "#ff2e9e" : "transparent",
+                color: isActive ? "#ffffff" : "#c9a8e8",
                 cursor: "pointer",
                 transition: "all 0.15s ease",
                 borderRadius: "2px",
@@ -72,8 +72,8 @@ export default function ShopCategoryFilter({ groups }: ShopCategoryFilterProps) 
           {active === "All" && (
             <p style={{
               fontFamily: "var(--font-space,monospace)", fontSize: "0.58rem",
-              letterSpacing: "0.3em", textTransform: "uppercase", color: "#4a445a",
-              marginBottom: "14px", paddingBottom: "8px", borderBottom: "1px solid #2a2535",
+              letterSpacing: "0.3em", textTransform: "uppercase", color: "#5c4a8a",
+              marginBottom: "14px", paddingBottom: "8px", borderBottom: "1px solid #341a63",
             }}>
               — {category}
             </p>

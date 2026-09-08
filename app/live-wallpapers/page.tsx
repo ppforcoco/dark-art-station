@@ -21,8 +21,8 @@ const faqs = [
     a: "Live wallpapers are animated wallpapers that use motion instead of a static image.",
   },
   {
-    q: "Are these live wallpapers free?",
-    a: "Many live wallpapers are available as free downloads.",
+    q: "How do live wallpapers work?",
+    a: "Many live wallpapers are available as downloads.",
   },
   {
     q: "Do live wallpapers work on iPhone?",
@@ -98,11 +98,11 @@ export default function LiveWallpapersPage() {
         @import url('https://fonts.googleapis.com/css2?family=Special+Elite&family=JetBrains+Mono:wght@400;500;700&display=swap');
 
         :root {
-          --bg: #0d0b14;
+          --bg: #180b2c;
           --panel: #16121f;
-          --accent: #c0001a;
-          --text: #e8e4f8;
-          --text-dim: #8a809a;
+          --accent: #ff2e9e;
+          --text: #f3e8ff;
+          --text-dim: #af98cf;
           --line: #2c2536;
         }
 
@@ -124,7 +124,7 @@ export default function LiveWallpapersPage() {
           padding: 96px 20px 64px;
           text-align: center;
           background:
-            radial-gradient(ellipse at 50% 0%, rgba(192,0,26,0.10), transparent 60%),
+            radial-gradient(ellipse at 50% 0%, rgba(255,46,158,0.10), transparent 60%),
             repeating-linear-gradient(
               180deg,
               rgba(255,255,255,0.012) 0px,
@@ -162,7 +162,7 @@ export default function LiveWallpapersPage() {
           line-height: 1.08;
           margin: 0 0 10px;
           letter-spacing: 0.01em;
-          text-shadow: 0 0 18px rgba(192,0,26,0.25);
+          text-shadow: 0 0 18px rgba(255,46,158,0.25);
         }
 
         .lw-sign {
@@ -176,8 +176,8 @@ export default function LiveWallpapersPage() {
           letter-spacing: 0.22em;
           text-transform: uppercase;
           color: var(--accent);
-          text-shadow: 0 0 8px rgba(192,0,26,0.7);
-          box-shadow: 0 0 14px rgba(192,0,26,0.25), inset 0 0 10px rgba(192,0,26,0.15);
+          text-shadow: 0 0 8px rgba(255,46,158,0.7);
+          box-shadow: 0 0 14px rgba(255,46,158,0.25), inset 0 0 10px rgba(255,46,158,0.15);
           transition: opacity 0.05s linear;
         }
 
@@ -255,7 +255,7 @@ export default function LiveWallpapersPage() {
 
         .lw-card:hover {
           border-color: var(--accent);
-          box-shadow: 0 8px 24px rgba(192,0,26,0.18);
+          box-shadow: 0 8px 24px rgba(255,46,158,0.18);
         }
 
         .lw-card img {
@@ -280,7 +280,7 @@ export default function LiveWallpapersPage() {
         .lw-card-overlay {
           position: absolute;
           inset: 0;
-          background: linear-gradient(to top, rgba(13,11,20,0.95) 0%, rgba(13,11,20,0.1) 55%, transparent 100%);
+          background: linear-gradient(to top, rgba(24,11,44,0.95) 0%, rgba(24,11,44,0.1) 55%, transparent 100%);
           display: flex;
           flex-direction: column;
           justify-content: flex-end;
@@ -307,7 +307,7 @@ export default function LiveWallpapersPage() {
           top: 8px;
           right: 8px;
           font-size: 0.6rem;
-          background: rgba(13,11,20,0.7);
+          background: rgba(24,11,44,0.7);
           border: 1px solid rgba(255,255,255,0.12);
           border-radius: 50%;
           width: 22px;
@@ -470,7 +470,7 @@ export default function LiveWallpapersPage() {
 
         .lw-footer-text span {
           color: var(--accent);
-          text-shadow: 0 0 10px rgba(192,0,26,0.5);
+          text-shadow: 0 0 10px rgba(255,46,158,0.5);
         }
 
         @media (prefers-reduced-motion: reduce) {

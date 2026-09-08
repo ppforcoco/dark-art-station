@@ -139,12 +139,12 @@ export default function WallpaperReactions({ imageId }: Props) {
         }
         .hw-reaction-btn:hover {
           background: rgba(255,255,255,0.08);
-          border-color: rgba(192,0,26,0.4);
+          border-color: rgba(255,46,158,0.4);
           transform: translateY(-2px);
         }
         .hw-reaction-btn--voted {
-          background: rgba(192,0,26,0.12);
-          border-color: rgba(192,0,26,0.6);
+          background: rgba(255,46,158,0.12);
+          border-color: rgba(255,46,158,0.6);
         }
         .hw-reaction-emoji {
           font-size: 2rem;

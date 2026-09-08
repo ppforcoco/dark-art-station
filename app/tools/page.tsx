@@ -78,7 +78,7 @@ function ResizerTool() {
     c.width  = Math.round(p.w * scale);
     c.height = Math.round(p.h * scale);
     const ctx = c.getContext("2d")!;
-    ctx.fillStyle = "#070710"; ctx.fillRect(0, 0, c.width, c.height);
+    ctx.fillStyle = "#100822"; ctx.fillRect(0, 0, c.width, c.height);
     if (f === "stretch") {
       ctx.drawImage(image, 0, 0, c.width, c.height);
     } else {
@@ -107,7 +107,7 @@ function ResizerTool() {
     const c = document.createElement("canvas");
     c.width = preset.w; c.height = preset.h;
     const ctx = c.getContext("2d")!;
-    ctx.fillStyle = "#070710"; ctx.fillRect(0, 0, c.width, c.height);
+    ctx.fillStyle = "#100822"; ctx.fillRect(0, 0, c.width, c.height);
     if (fit === "stretch") {
       ctx.drawImage(img, 0, 0, c.width, c.height);
     } else {
@@ -452,7 +452,7 @@ function UpscalerTool() {
               ))}
             </div>
             <p className="tool-hint">
-              Output: {img.width}×{img.height} → <strong style={{ color: "#c9a84c" }}>{outW}×{outH}px</strong>
+              Output: {img.width}×{img.height} → <strong style={{ color: "#ffd23f" }}>{outW}×{outH}px</strong>
             </p>
           </div>
 
@@ -639,7 +639,7 @@ function TextTool() {
             rows={2}
             style={{
               width: "100%", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.1)",
-              color: "#f0ecff", padding: "10px 12px", fontFamily: "var(--font-space), monospace",
+              color: "#f6ecff", padding: "10px 12px", fontFamily: "var(--font-space), monospace",
               fontSize: "0.8rem", resize: "vertical", outline: "none",
             }}
           />
@@ -655,14 +655,14 @@ function TextTool() {
                 onClick={() => update(text, f.value)}
               >
                 <span style={{ fontSize: "0.9rem" }}>{f.label}</span>
-                <span style={{ fontFamily: "var(--font-space), monospace", fontSize: "0.42rem", letterSpacing: "0.08em", color: font === f.value ? "#c9a84c" : "#4a445a", textTransform: "uppercase" }}>{f.hint}</span>
+                <span style={{ fontFamily: "var(--font-space), monospace", fontSize: "0.42rem", letterSpacing: "0.08em", color: font === f.value ? "#ffd23f" : "#5c4a8a", textTransform: "uppercase" }}>{f.hint}</span>
               </button>
             ))}
           </div>
         </div>
 
         <div className="tool-section">
-          <p className="tool-label">Font Size — <strong>{size}px</strong> <span style={{ fontFamily: "var(--font-space)", fontSize: "0.5rem", color: "#4a445a" }}>(on full image)</span></p>
+          <p className="tool-label">Font Size — <strong>{size}px</strong> <span style={{ fontFamily: "var(--font-space)", fontSize: "0.5rem", color: "#5c4a8a" }}>(on full image)</span></p>
           <input type="range" min={30} max={500} step={10} value={size} className="tool-range"
             onChange={e => update(text, font, Number(e.target.value))} />
         </div>
@@ -673,8 +673,8 @@ function TextTool() {
             <input type="color" value={color}
               onChange={e => update(text, font, size, e.target.value)}
               style={{ width: "44px", height: "36px", border: "none", background: "none", cursor: "pointer" }} />
-            <span style={{ fontFamily: "var(--font-space)", fontSize: "0.65rem", color: "#8a8099" }}>{color.toUpperCase()}</span>
-            {["#ffffff","#000000","#c0001a","#c9a84c","#8b00ff","#00cfff"].map(c => (
+            <span style={{ fontFamily: "var(--font-space)", fontSize: "0.65rem", color: "#b39ddb" }}>{color.toUpperCase()}</span>
+            {["#ffffff","#000000","#ff2e9e","#ffd23f","#8b00ff","#00cfff"].map(c => (
               <button key={c} onClick={() => update(text, font, size, c)}
                 style={{ width: "24px", height: "24px", background: c, border: color === c ? "2px solid #fff" : "1px solid rgba(255,255,255,0.2)", cursor: "pointer", borderRadius: "2px" }} />
             ))}
@@ -714,8 +714,8 @@ function TextTool() {
         <div className="tool-section">
           <label style={{ display: "flex", alignItems: "center", gap: "10px", cursor: "pointer" }}>
             <input type="checkbox" checked={shadow} onChange={e => update(text, font, size, color, opacity, align, position, e.target.checked)}
-              style={{ accentColor: "#c0001a", width: "16px", height: "16px" }} />
-            <span style={{ fontFamily: "var(--font-space)", fontSize: "0.6rem", letterSpacing: "0.12em", textTransform: "uppercase", color: "#8a8099" }}>
+              style={{ accentColor: "#ff2e9e", width: "16px", height: "16px" }} />
+            <span style={{ fontFamily: "var(--font-space)", fontSize: "0.6rem", letterSpacing: "0.12em", textTransform: "uppercase", color: "#b39ddb" }}>
               Drop Shadow (improves readability)
             </span>
           </label>
@@ -912,12 +912,12 @@ function SplitTool() {
           <div className="tool-preview-wrap" style={{ width: "100%" }}>
             <div style={{ display: "flex", gap: "12px", justifyContent: "center", alignItems: "flex-start" }}>
               <div style={{ textAlign: "center" }}>
-                <p style={{ fontFamily: "var(--font-space)", fontSize: "0.5rem", letterSpacing: "0.15em", textTransform: "uppercase", color: "#c9a84c", marginBottom: "6px" }}>Lock Screen</p>
-                <canvas ref={lockRef} className="tool-canvas" style={{ border: "1px solid rgba(192,0,26,0.4)" }} />
+                <p style={{ fontFamily: "var(--font-space)", fontSize: "0.5rem", letterSpacing: "0.15em", textTransform: "uppercase", color: "#ffd23f", marginBottom: "6px" }}>Lock Screen</p>
+                <canvas ref={lockRef} className="tool-canvas" style={{ border: "1px solid rgba(255,46,158,0.4)" }} />
               </div>
               <div style={{ textAlign: "center" }}>
-                <p style={{ fontFamily: "var(--font-space)", fontSize: "0.5rem", letterSpacing: "0.15em", textTransform: "uppercase", color: "#c9a84c", marginBottom: "6px" }}>Home Screen</p>
-                <canvas ref={homeRef} className="tool-canvas" style={{ border: "1px solid rgba(192,0,26,0.4)" }} />
+                <p style={{ fontFamily: "var(--font-space)", fontSize: "0.5rem", letterSpacing: "0.15em", textTransform: "uppercase", color: "#ffd23f", marginBottom: "6px" }}>Home Screen</p>
+                <canvas ref={homeRef} className="tool-canvas" style={{ border: "1px solid rgba(255,46,158,0.4)" }} />
               </div>
             </div>
             <p className="tool-change-hint" style={{ marginTop: "8px" }}>Click to change image</p>
@@ -949,7 +949,7 @@ function SplitTool() {
           <button className="tool-action" onClick={() => downloadSplit("home")}>
             {done === "home" ? "✓ Downloaded!" : "↓ Home Screen"}
           </button>
-          <button className="tool-action" style={{ background: "#2a2535", borderColor: "#2a2535" }}
+          <button className="tool-action" style={{ background: "#341a63", borderColor: "#341a63" }}
             onClick={() => downloadSplit("both")}>
             {done === "both" ? "✓ Both Downloaded!" : "↓ Download Both"}
           </button>
@@ -1120,8 +1120,8 @@ function LockScreenTool() {
       {imgUrl && imgTitle && (
         <div style={{
           padding: "10px 14px",
-          background: "rgba(192,0,26,0.07)",
-          border: "1px solid rgba(192,0,26,0.25)",
+          background: "rgba(255,46,158,0.07)",
+          border: "1px solid rgba(255,46,158,0.25)",
           borderRadius: "6px",
           display: "flex",
           alignItems: "center",
@@ -1129,13 +1129,13 @@ function LockScreenTool() {
         }}>
           <span style={{ fontSize: "1.1rem" }}>📱</span>
           <div>
-            <p style={{ fontFamily: "var(--font-space), monospace", fontSize: "0.52rem", letterSpacing: "0.12em", textTransform: "uppercase", color: "#c0001a", margin: "0 0 2px" }}>Previewing</p>
-            <p style={{ fontFamily: "var(--font-cormorant), serif", fontSize: "0.95rem", color: "#f0ecff", margin: 0, fontStyle: "italic" }}>{imgTitle}</p>
+            <p style={{ fontFamily: "var(--font-space), monospace", fontSize: "0.52rem", letterSpacing: "0.12em", textTransform: "uppercase", color: "#ff2e9e", margin: "0 0 2px" }}>Previewing</p>
+            <p style={{ fontFamily: "var(--font-cormorant), serif", fontSize: "0.95rem", color: "#f6ecff", margin: 0, fontStyle: "italic" }}>{imgTitle}</p>
           </div>
           <button onClick={() => { setImgUrl(null); setImgTitle(""); }} style={{
             marginLeft: "auto", padding: "4px 10px",
             background: "transparent", border: "1px solid rgba(255,255,255,0.12)",
-            color: "#6a6080", fontFamily: "var(--font-space), monospace",
+            color: "#8670b3", fontFamily: "var(--font-space), monospace",
             fontSize: "0.5rem", cursor: "pointer", letterSpacing: "0.1em",
           }}>
             Change
@@ -1181,8 +1181,8 @@ function LockScreenTool() {
           ] as const).map(o => (
             <label key={o.label} style={{ display: "flex", alignItems: "center", gap: "7px", cursor: "pointer" }}>
               <input type="checkbox" checked={o.val} onChange={e => (o.set as (v: boolean) => void)(e.target.checked)}
-                style={{ accentColor: "#c0001a", width: "15px", height: "15px" }} />
-              <span style={{ fontFamily: "var(--font-space), monospace", fontSize: "0.58rem", letterSpacing: "0.1em", textTransform: "uppercase", color: "#8a8099" }}>{o.label}</span>
+                style={{ accentColor: "#ff2e9e", width: "15px", height: "15px" }} />
+              <span style={{ fontFamily: "var(--font-space), monospace", fontSize: "0.58rem", letterSpacing: "0.1em", textTransform: "uppercase", color: "#b39ddb" }}>{o.label}</span>
             </label>
           ))}
         </div>
@@ -1256,7 +1256,7 @@ function LockScreenTool() {
               display: "flex", alignItems: "center", gap: 8 * scale,
               zIndex: 6,
             }}>
-              <div style={{ width: 22 * scale, height: 22 * scale, background: "#c0001a", borderRadius: 6 * scale, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11 * scale }}>👻</div>
+              <div style={{ width: 22 * scale, height: 22 * scale, background: "#ff2e9e", borderRadius: 6 * scale, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11 * scale }}>👻</div>
               <div style={{ display: "flex", flexDirection: "column", gap: 1 * scale }}>
                 <span style={{ fontFamily: "system-ui", fontSize: 10 * scale, fontWeight: 600, color: "#fff" }}>Haunted Wallpapers</span>
                 <span style={{ fontFamily: "system-ui", fontSize: 9 * scale, color: "rgba(255,255,255,0.7)" }}>New wallpaper: something watches.</span>
@@ -1294,7 +1294,7 @@ function LockScreenTool() {
         </div>
       </div>
 
-      <p style={{ fontFamily: "var(--font-cormorant), serif", fontSize: "0.88rem", color: "#4a445a", fontStyle: "italic", textAlign: "center", margin: 0 }}>
+      <p style={{ fontFamily: "var(--font-cormorant), serif", fontSize: "0.88rem", color: "#5c4a8a", fontStyle: "italic", textAlign: "center", margin: 0 }}>
         Toggle overlays to check if the clock or icons cover the focal point of your wallpaper.
       </p>
     </div>
@@ -1344,7 +1344,7 @@ function HauntedNameTool() {
 
     // Red glow
     const radGrad = ctx.createRadialGradient(540, 960, 0, 540, 960, 600);
-    radGrad.addColorStop(0, "rgba(192,0,26,0.12)");
+    radGrad.addColorStop(0, "rgba(255,46,158,0.12)");
     radGrad.addColorStop(1, "transparent");
     ctx.fillStyle = radGrad;
     ctx.fillRect(0, 0, 1080, 1920);
@@ -1353,15 +1353,15 @@ function HauntedNameTool() {
     const fontSize = Math.max(60, Math.min(160, Math.floor(1080 / (text.length * 0.55 + 1))));
     ctx.font = `bold ${fontSize}px monospace`;
     ctx.textAlign = "center";
-    ctx.shadowColor = "#c0001a";
+    ctx.shadowColor = "#ff2e9e";
     ctx.shadowBlur = 40;
-    ctx.fillStyle = "#f0ecff";
+    ctx.fillStyle = "#f6ecff";
     ctx.fillText(text, 540, 960);
     ctx.shadowBlur = 0;
 
     // Eyebrow
     ctx.font = "28px monospace";
-    ctx.fillStyle = "rgba(192,0,26,0.7)";
+    ctx.fillStyle = "rgba(255,46,158,0.7)";
     ctx.letterSpacing = "0.3em";
     ctx.fillText("✦ HAUNTED NAME ✦", 540, 860);
 
@@ -1387,7 +1387,7 @@ function HauntedNameTool() {
           type="text" value={name} maxLength={20}
           onChange={e => haunt(e.target.value)}
           placeholder="Type your name…"
-          style={{ width:"100%", background:"rgba(255,255,255,0.04)", border:"1px solid rgba(255,255,255,0.1)", color:"#f0ecff", padding:"10px 14px", fontFamily:"monospace", fontSize:"1rem", outline:"none" }}
+          style={{ width:"100%", background:"rgba(255,255,255,0.04)", border:"1px solid rgba(255,255,255,0.1)", color:"#f6ecff", padding:"10px 14px", fontFamily:"monospace", fontSize:"1rem", outline:"none" }}
         />
       </div>
 
@@ -1407,8 +1407,8 @@ function HauntedNameTool() {
         <>
           <div className="tool-section" style={{ textAlign:"center" }}>
             <p className="tool-label">Preview</p>
-            <div style={{ padding:"24px 16px", background:"rgba(192,0,26,0.06)", border:"1px solid rgba(192,0,26,0.2)", borderRadius:"6px" }}>
-              <p style={{ fontFamily:"monospace", fontSize:"clamp(1rem,5vw,2.2rem)", color:"#f0ecff", margin:0, textShadow:"0 0 20px rgba(192,0,26,0.6)", letterSpacing:"0.08em", wordBreak:"break-all" }}>
+            <div style={{ padding:"24px 16px", background:"rgba(255,46,158,0.06)", border:"1px solid rgba(255,46,158,0.2)", borderRadius:"6px" }}>
+              <p style={{ fontFamily:"monospace", fontSize:"clamp(1rem,5vw,2.2rem)", color:"#f6ecff", margin:0, textShadow:"0 0 20px rgba(255,46,158,0.6)", letterSpacing:"0.08em", wordBreak:"break-all" }}>
                 {haunted}
               </p>
             </div>
@@ -1573,28 +1573,28 @@ function CollageTool() {
               onClick={() => { setLayout(l.id); setSelected([]); setPreviewUrl(null); }}
             >
               <span style={{ fontSize:"1.1rem" }}>{l.icon} {l.label}</span>
-              <span style={{ fontFamily:"monospace", fontSize:"0.42rem", color:layout===l.id?"#c9a84c":"#4a445a", letterSpacing:"0.08em", textTransform:"uppercase" }}>{l.desc}</span>
+              <span style={{ fontFamily:"monospace", fontSize:"0.42rem", color:layout===l.id?"#ffd23f":"#5c4a8a", letterSpacing:"0.08em", textTransform:"uppercase" }}>{l.desc}</span>
             </button>
           ))}
         </div>
       </div>
 
       <div className="tool-section">
-        <p className="tool-label">Select {currentLayout.count} Wallpapers <span style={{color:"#4a445a"}}>({selected.length}/{currentLayout.count})</span></p>
+        <p className="tool-label">Select {currentLayout.count} Wallpapers <span style={{color:"#5c4a8a"}}>({selected.length}/{currentLayout.count})</span></p>
         {loading ? (
-          <p style={{ fontFamily:"monospace", fontSize:"0.6rem", color:"#4a445a" }}>Loading wallpapers…</p>
+          <p style={{ fontFamily:"monospace", fontSize:"0.6rem", color:"#5c4a8a" }}>Loading wallpapers…</p>
         ) : (
           <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill, minmax(72px, 1fr))", gap:"6px", maxHeight:"320px", overflowY:"auto" }}>
             {walls.map(w => (
               <div key={w.r2Key} onClick={() => toggleSelect(w.r2Key)} style={{
                 position:"relative", aspectRatio:"9/16", cursor:"pointer",
-                border: selected.includes(w.r2Key) ? "2px solid #c0001a" : "2px solid transparent",
+                border: selected.includes(w.r2Key) ? "2px solid #ff2e9e" : "2px solid transparent",
                 borderRadius:"4px", overflow:"hidden", transition:"border-color 0.15s",
               }}>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={w.url} alt={w.title} style={{ width:"100%", height:"100%", objectFit:"cover" }} loading="lazy" />
                 {selected.includes(w.r2Key) && (
-                  <div style={{ position:"absolute", inset:0, background:"rgba(192,0,26,0.3)", display:"flex", alignItems:"center", justifyContent:"center" }}>
+                  <div style={{ position:"absolute", inset:0, background:"rgba(255,46,158,0.3)", display:"flex", alignItems:"center", justifyContent:"center" }}>
                     <span style={{ fontFamily:"monospace", fontSize:"1rem", color:"#fff", fontWeight:700 }}>
                       {selected.indexOf(w.r2Key)+1}
                     </span>
@@ -1609,7 +1609,7 @@ function CollageTool() {
       {ready && (
         <div className="tool-section">
           <div style={{ display:"flex", gap:"10px", flexWrap:"wrap" }}>
-            <button className="tool-action" style={{ background:"#2a2535", borderColor:"#2a2535" }} onClick={buildPreview} disabled={previewing}>
+            <button className="tool-action" style={{ background:"#341a63", borderColor:"#341a63" }} onClick={buildPreview} disabled={previewing}>
               {previewing ? "⏳ Rendering…" : "👁 Preview Collage"}
             </button>
             <button className="tool-action" onClick={download}>
@@ -1618,7 +1618,7 @@ function CollageTool() {
           </div>
 
           {error && (
-            <p style={{ fontFamily:"monospace", fontSize:"0.58rem", color:"#c0001a", marginTop:"10px" }}>{error}</p>
+            <p style={{ fontFamily:"monospace", fontSize:"0.58rem", color:"#ff2e9e", marginTop:"10px" }}>{error}</p>
           )}
 
           {previewUrl && (
@@ -1628,7 +1628,7 @@ function CollageTool() {
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={previewUrl} alt="Collage preview" style={{
                   width:"100%", maxWidth:"270px", aspectRatio:"9/16", objectFit:"cover",
-                  border:"1px solid rgba(192,0,26,0.4)", borderRadius:"4px", cursor:"zoom-in",
+                  border:"1px solid rgba(255,46,158,0.4)", borderRadius:"4px", cursor:"zoom-in",
                 }} />
               </a>
             </div>
@@ -1730,11 +1730,11 @@ function TimerTool() {
       </p>
 
       {/* How it works */}
-      <div style={{ padding:"14px 16px", background:"rgba(201,168,76,0.07)", border:"1px solid rgba(201,168,76,0.2)", borderRadius:"6px", marginBottom:"24px", display:"flex", gap:"12px", alignItems:"flex-start" }}>
+      <div style={{ padding:"14px 16px", background:"rgba(255,210,63,0.07)", border:"1px solid rgba(255,210,63,0.2)", borderRadius:"6px", marginBottom:"24px", display:"flex", gap:"12px", alignItems:"flex-start" }}>
         <span style={{ fontSize:"1.3rem", flexShrink:0 }}>📅</span>
         <div>
-          <p style={{ fontFamily:"monospace", fontSize:"0.55rem", letterSpacing:"0.14em", textTransform:"uppercase", color:"#c9a84c", margin:"0 0 6px" }}>How it works</p>
-          <p style={{ fontFamily:"monospace", fontSize:"0.6rem", color:"#a89bc0", margin:0, lineHeight:1.8 }}>
+          <p style={{ fontFamily:"monospace", fontSize:"0.55rem", letterSpacing:"0.14em", textTransform:"uppercase", color:"#ffd23f", margin:"0 0 6px" }}>How it works</p>
+          <p style={{ fontFamily:"monospace", fontSize:"0.6rem", color:"#c9a8e8", margin:0, lineHeight:1.8 }}>
             1. Pick how often + what time<br />
             2. Hit Download — a .ics file saves to your phone<br />
             3. Tap the file → it opens in your Calendar app<br />
@@ -1764,7 +1764,7 @@ function TimerTool() {
           style={{
             background: "rgba(255,255,255,0.04)",
             border: "1px solid rgba(255,255,255,0.1)",
-            color: "#f0ecff",
+            color: "#f6ecff",
             padding: "8px 14px",
             fontFamily: "monospace",
             fontSize: "1rem",

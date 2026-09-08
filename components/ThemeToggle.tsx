@@ -4,10 +4,10 @@ import { useEffect, useState } from "react";
 import { Sun, Moon } from "lucide-react";
 
 const STORAGE_KEY = "hw-theme";
-const LIGHT_BG = "#fff6e8";
-const LIGHT_TEXT = "#2b2140";
-const DARK_BG = "#0c0b14";
-const DARK_TEXT = "#e8e4dc";
+const LIGHT_BG = "#fff3e0";
+const LIGHT_TEXT = "#35205c";
+const DARK_BG = "#190c30";
+const DARK_TEXT = "#fdf0ff";
 
 /**
  * Site-wide light/dark toggle. Writes the same "hw-theme" localStorage

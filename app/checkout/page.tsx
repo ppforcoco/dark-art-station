@@ -8,12 +8,12 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 export const dynamic = "force-static";
 
 const inputStyle: React.CSSProperties = {
-  width: "100%", background: "#0a0812", border: "1px solid #2a2535",
-  color: "#e8e4f8", padding: "12px 14px", fontSize: "0.9rem", boxSizing: "border-box",
+  width: "100%", background: "#150a2a", border: "1px solid #341a63",
+  color: "#f3e8ff", padding: "12px 14px", fontSize: "0.9rem", boxSizing: "border-box",
 };
 const labelStyle: React.CSSProperties = {
   display: "block", fontSize: "0.7rem", letterSpacing: "0.1em",
-  textTransform: "uppercase", color: "#8a809a", marginBottom: "8px",
+  textTransform: "uppercase", color: "#af98cf", marginBottom: "8px",
 };
 
 interface ShippingForm {
@@ -94,15 +94,15 @@ export default function CheckoutPage() {
           { label: "Checkout" },
         ]} />
         <section className="max-w-3xl mx-auto px-6 md:px-[60px] py-16 text-center">
-          <p style={{ color: "#c9a84c", fontSize: "0.7rem", letterSpacing: "0.2em", marginBottom: "10px" }}>
+          <p style={{ color: "#ffd23f", fontSize: "0.7rem", letterSpacing: "0.2em", marginBottom: "10px" }}>
             ORDER #{order.orderNumber}
           </p>
           <h1 className="font-display text-3xl font-bold mb-4">Order saved</h1>
-          <p style={{ color: "#8a809a", maxWidth: "480px", margin: "0 auto 24px" }}>
+          <p style={{ color: "#af98cf", maxWidth: "480px", margin: "0 auto 24px" }}>
             Your order has been recorded. Payment isn&apos;t connected yet, so nothing has
             been charged — this is a placeholder step until Paddle checkout is wired up.
           </p>
-          <Link href="/shop" style={{ color: "#c9a84c" }}>← Back to Shop</Link>
+          <Link href="/shop" style={{ color: "#ffd23f" }}>← Back to Shop</Link>
         </section>
       </div>
     );
@@ -122,12 +122,12 @@ export default function CheckoutPage() {
 
         {items.length === 0 ? (
           <div>
-            <p style={{ color: "#8a809a", marginBottom: "16px" }}>Your cart is empty.</p>
-            <Link href="/shop" style={{ color: "#c9a84c" }}>← Back to Shop</Link>
+            <p style={{ color: "#af98cf", marginBottom: "16px" }}>Your cart is empty.</p>
+            <Link href="/shop" style={{ color: "#ffd23f" }}>← Back to Shop</Link>
           </div>
         ) : (
           <>
-            <div style={{ border: "1px solid #2a2535", padding: "20px", marginBottom: "24px" }}>
+            <div style={{ border: "1px solid #341a63", padding: "20px", marginBottom: "24px" }}>
               <h2 style={{ fontSize: "0.9rem", fontWeight: 700, marginBottom: "14px" }}>Order Summary</h2>
               {items.map(item => (
                 <div key={item.key} style={{ display: "flex", justifyContent: "space-between", fontSize: "0.85rem", padding: "6px 0", color: "#c8c2d8" }}>
@@ -135,7 +135,7 @@ export default function CheckoutPage() {
                   <span>${(item.price * item.qty).toFixed(2)}</span>
                 </div>
               ))}
-              <div style={{ display: "flex", justifyContent: "space-between", borderTop: "1px solid #2a2535", marginTop: "12px", paddingTop: "12px", fontWeight: 700 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", borderTop: "1px solid #341a63", marginTop: "12px", paddingTop: "12px", fontWeight: 700 }}>
                 <span>Total</span>
                 <span>${subtotal.toFixed(2)}</span>
               </div>
@@ -153,7 +153,7 @@ export default function CheckoutPage() {
               />
             </div>
 
-            <div style={{ border: "1px solid #2a2535", padding: "20px", marginBottom: "24px" }}>
+            <div style={{ border: "1px solid #341a63", padding: "20px", marginBottom: "24px" }}>
               <h2 style={{ fontSize: "0.9rem", fontWeight: 700, marginBottom: "14px" }}>Shipping Address</h2>
 
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px", marginBottom: "14px" }}>
@@ -211,7 +211,7 @@ export default function CheckoutPage() {
               onClick={handleSubmit}
               disabled={submitting}
               style={{
-                width: "100%", padding: "16px 24px", background: "#c0001a", color: "#fff",
+                width: "100%", padding: "16px 24px", background: "#ff2e9e", color: "#fff",
                 border: "none", fontFamily: "var(--font-space,monospace)", fontSize: "0.8rem",
                 letterSpacing: "0.15em", textTransform: "uppercase", cursor: submitting ? "not-allowed" : "pointer",
                 opacity: submitting ? 0.6 : 1,
@@ -219,7 +219,7 @@ export default function CheckoutPage() {
             >
               {submitting ? "Saving order…" : "Pay with Paddle"}
             </button>
-            <p style={{ fontSize: "0.7rem", color: "#6b6480", marginTop: "10px", textAlign: "center" }}>
+            <p style={{ fontSize: "0.7rem", color: "#8670b3", marginTop: "10px", textAlign: "center" }}>
               Paddle checkout isn&apos;t connected yet — this saves your order but doesn&apos;t charge you.
             </p>
           </>

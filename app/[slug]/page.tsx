@@ -96,7 +96,7 @@ async function collectionMetadata(slug: string): Promise<Metadata> {
   const metaDesc =
     collection.metaDescription ??
     collection.description ??
-    `Download ${collection.title} wallpapers free for iPhone, Android and PC. High-quality dark art wallpapers, instant download.`;
+    `Download ${collection.title} wallpapers for iPhone, Android and PC. High-quality dark art wallpapers, instant download.`;
 
   return {
     title: `${collection.title} | Haunted Wallpapers`,
@@ -142,13 +142,13 @@ async function imageMetadata(imageSlug: string): Promise<Metadata> {
 
   const metaDesc =
     plainDesc ||
-    `${image.title} — free dark wallpaper for iPhone, Android and PC. Download instantly, no account required.`;
+    `${image.title} — dark wallpaper for iPhone, Android and PC. Download instantly.`;
 
   return {
-    title: `${image.title} — Free Dark Wallpaper | Haunted Wallpapers`,
+    title: `${image.title} — Dark Wallpaper | Haunted Wallpapers`,
     description: metaDesc,
     keywords: [
-      "dark wallpaper", "free wallpaper download", "gothic wallpaper", "horror wallpaper",
+      "dark wallpaper", "wallpaper download", "gothic wallpaper", "horror wallpaper",
       image.title, image.collection?.title ?? "", ...image.tags,
     ],
     openGraph: {
@@ -224,8 +224,8 @@ async function RootCollectionView({ slug }: { slug: string }) {
   const r2Base = process.env.NEXT_PUBLIC_R2_PUBLIC_URL ?? "";
 
   const fallbackDesc =
-    `${collection.title} is a curated collection of free dark art wallpapers from Haunted Wallpapers. ` +
-    `Each piece is available as an instant free download — no account required, no watermarks. ` +
+    `${collection.title} is a curated collection of dark art wallpapers from Haunted Wallpapers. ` +
+    `Each piece is available as an instant download — no watermarks. ` +
     `Formatted for mobile portrait screens (9:16) and optimised for AMOLED displays.`;
 
   return (
@@ -238,25 +238,25 @@ async function RootCollectionView({ slug }: { slug: string }) {
         @media (min-width: 900px) { .coll-layout { padding: 32px 60px 80px; } }
         .coll-desktop-header { text-align: center; max-width: 760px; margin: 0 auto 32px; }
         @media (min-width: 900px) { .coll-desktop-header { margin: 0 auto 48px; } }
-        .coll-info-eyebrow { font-family: monospace; font-size: 0.55rem; letter-spacing: 0.24em; text-transform: uppercase; color: #4a445a; margin: 0; }
-        .coll-desktop-title { font-family: var(--font-cinzel, serif); font-size: clamp(1.8rem, 3vw, 2.6rem); font-weight: 700; line-height: 1.18; margin: 12px 0 16px; color: var(--text-primary, #e8e4f8); }
-        .coll-desktop-count { display: inline-block; font-family: monospace; font-size: 0.58rem; letter-spacing: 0.16em; text-transform: uppercase; color: #8a809a; border: 1px solid rgba(255,255,255,0.08); padding: 5px 12px; border-radius: 3px; }
-        .coll-info-adult { background: rgba(192,0,26,0.12); border: 1px solid rgba(192,0,26,0.35); color: #c0001a; font-family: monospace; font-size: 0.55rem; letter-spacing: 0.1em; padding: 4px 10px; border-radius: 3px; }
+        .coll-info-eyebrow { font-family: monospace; font-size: 0.55rem; letter-spacing: 0.24em; text-transform: uppercase; color: #5c4a8a; margin: 0; }
+        .coll-desktop-title { font-family: var(--font-cinzel, serif); font-size: clamp(1.8rem, 3vw, 2.6rem); font-weight: 700; line-height: 1.18; margin: 12px 0 16px; color: var(--text-primary, #f3e8ff); }
+        .coll-desktop-count { display: inline-block; font-family: monospace; font-size: 0.58rem; letter-spacing: 0.16em; text-transform: uppercase; color: #af98cf; border: 1px solid rgba(255,255,255,0.08); padding: 5px 12px; border-radius: 3px; }
+        .coll-info-adult { background: rgba(255,46,158,0.12); border: 1px solid rgba(255,46,158,0.35); color: #ff2e9e; font-family: monospace; font-size: 0.55rem; letter-spacing: 0.1em; padding: 4px 10px; border-radius: 3px; }
         .coll-mockup-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 32px 20px; }
         .coll-mockup-link { display: block; text-decoration: none; transition: transform 0.22s ease; }
         .coll-mockup-link:hover { transform: translateY(-6px); }
-        .coll-phone { position: relative; width: 100%; aspect-ratio: 9 / 19.5; background: #080810; border-radius: 28px; border: 2px solid rgba(255,255,255,0.12); box-shadow: 0 0 0 1px rgba(0,0,0,0.9), 0 16px 48px rgba(0,0,0,0.85), 0 4px 12px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.08); overflow: hidden; }
+        .coll-phone { position: relative; width: 100%; aspect-ratio: 9 / 19.5; background: #120826; border-radius: 28px; border: 2px solid rgba(255,255,255,0.12); box-shadow: 0 0 0 1px rgba(0,0,0,0.9), 0 16px 48px rgba(0,0,0,0.85), 0 4px 12px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.08); overflow: hidden; }
         .coll-phone-notch { position: absolute; top: 8px; left: 50%; transform: translateX(-50%); width: 36%; height: 14px; background: #04040c; border-radius: 10px; z-index: 10; border: 1px solid rgba(255,255,255,0.05); }
         .coll-phone-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; border-radius: 26px; }
         .coll-phone-glass { position: absolute; inset: 0; border-radius: 26px; background: linear-gradient(135deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.01) 35%, transparent 60%); pointer-events: none; z-index: 5; }
-        .coll-phone-overlay { position: absolute; inset: 0; border-radius: 26px; background: linear-gradient(to top, rgba(10,8,18,0.82) 0%, transparent 50%); display: flex; align-items: flex-end; justify-content: center; padding-bottom: 18px; opacity: 0; transition: opacity 0.2s; z-index: 8; }
+        .coll-phone-overlay { position: absolute; inset: 0; border-radius: 26px; background: linear-gradient(to top, rgba(21,10,42,0.82) 0%, transparent 50%); display: flex; align-items: flex-end; justify-content: center; padding-bottom: 18px; opacity: 0; transition: opacity 0.2s; z-index: 8; }
         .coll-mockup-link:hover .coll-phone-overlay { opacity: 1; }
-        .coll-phone-overlay span { font-family: monospace; font-size: 0.5rem; letter-spacing: 0.16em; text-transform: uppercase; color: #c9a84c; }
-        .coll-phone-label { margin-top: 10px; font-family: monospace; font-size: 0.52rem; letter-spacing: 0.1em; text-transform: uppercase; color: #c4bdd8; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .coll-phone-overlay span { font-family: monospace; font-size: 0.5rem; letter-spacing: 0.16em; text-transform: uppercase; color: #ffd23f; }
+        .coll-phone-label { margin-top: 10px; font-family: monospace; font-size: 0.52rem; letter-spacing: 0.1em; text-transform: uppercase; color: #d9c8f0; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .coll-desc-section { max-width: 720px; width: 100%; margin: 48px auto 0; padding-top: 32px; border-top: 1px solid rgba(255,255,255,0.07); overflow: hidden; box-sizing: border-box; }
         .coll-desc-heading { display: flex; align-items: center; justify-content: center; gap: 10px; font-family: var(--font-cinzel, serif); font-size: 0.9rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: #ffffff; margin: 0 0 24px; }
-        .coll-desc-heading .coll-desc-accent { color: #c0001a; }
-        .coll-desc-body { font-family: monospace; font-size: 0.85rem; line-height: 1.9; color: #a89bc0; width: 100%; max-width: 100%; overflow-x: hidden; overflow-wrap: break-word; word-break: break-word; box-sizing: border-box; }
+        .coll-desc-heading .coll-desc-accent { color: #ff2e9e; }
+        .coll-desc-body { font-family: monospace; font-size: 0.85rem; line-height: 1.9; color: #c9a8e8; width: 100%; max-width: 100%; overflow-x: hidden; overflow-wrap: break-word; word-break: break-word; box-sizing: border-box; }
         .coll-desc-body p { margin: 0 0 14px; }
         .coll-desc-body p:last-child { margin: 0; }
         .coll-desc-body .admin-html-block { column-count: 1 !important; columns: auto !important; display: block !important; width: 100% !important; max-width: 100% !important; overflow-x: hidden !important; }
@@ -351,7 +351,7 @@ async function RootCollectionView({ slug }: { slug: string }) {
         <section style={{ borderTop: "1px solid rgba(255,255,255,0.06)", padding: "48px 24px 64px", background: "rgba(12,8,20,0.4)" }}>
           <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
             <h2 style={{ fontFamily: "var(--font-cinzel, serif)", fontSize: "1rem", fontWeight: 700, letterSpacing: "0.22em", textTransform: "uppercase", color: "#ffffff", marginBottom: "24px", display: "flex", alignItems: "center", gap: "10px" }}>
-              <span style={{ color: "#c0001a" }}>✦</span> You May Also Like
+              <span style={{ color: "#ff2e9e" }}>✦</span> You May Also Like
             </h2>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))", gap: "16px" }}>
               {relatedCollections.map((rc) => {
@@ -359,16 +359,16 @@ async function RootCollectionView({ slug }: { slug: string }) {
                 const rcHref = rc.rootSlug ? `/${rc.slug}` : `/collections/${rc.slug}`;
                 return (
                   <Link key={rc.slug} href={rcHref} style={{ textDecoration: "none", display: "block" }}>
-                    <div style={{ position: "relative", aspectRatio: "9/16", overflow: "hidden", background: "#0f0c1a", border: "1px solid rgba(255,255,255,0.06)", marginBottom: "10px" }}>
+                    <div style={{ position: "relative", aspectRatio: "9/16", overflow: "hidden", background: "#1d0f38", border: "1px solid rgba(255,255,255,0.06)", marginBottom: "10px" }}>
                       {thumb
                         // eslint-disable-next-line @next/next/no-img-element
                         ? <img src={thumb} alt={rc.thumbnailAlt ?? rc.title} style={{ width: "100%", height: "100%", objectFit: "cover" }} loading="lazy" />
-                        : <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", color: "rgba(192,0,26,0.25)", fontSize: "2rem" }}>✦</div>
+                        : <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", color: "rgba(255,46,158,0.25)", fontSize: "2rem" }}>✦</div>
                       }
                     </div>
-                    <span style={{ fontFamily: "monospace", fontSize: "0.48rem", letterSpacing: "0.18em", textTransform: "uppercase", color: "#c0001a", display: "block", marginBottom: "4px" }}>{rc.category}</span>
-                    <h3 style={{ fontFamily: "var(--font-cinzel, serif)", fontSize: "0.85rem", fontWeight: 700, color: "#e8e4f8", margin: "0 0 4px", lineHeight: 1.3 }}>{rc.title}</h3>
-                    <span style={{ fontFamily: "monospace", fontSize: "0.5rem", letterSpacing: "0.1em", textTransform: "uppercase", color: "#4a445a" }}>{rc._count.images} wallpapers</span>
+                    <span style={{ fontFamily: "monospace", fontSize: "0.48rem", letterSpacing: "0.18em", textTransform: "uppercase", color: "#ff2e9e", display: "block", marginBottom: "4px" }}>{rc.category}</span>
+                    <h3 style={{ fontFamily: "var(--font-cinzel, serif)", fontSize: "0.85rem", fontWeight: 700, color: "#f3e8ff", margin: "0 0 4px", lineHeight: 1.3 }}>{rc.title}</h3>
+                    <span style={{ fontFamily: "monospace", fontSize: "0.5rem", letterSpacing: "0.1em", textTransform: "uppercase", color: "#5c4a8a" }}>{rc._count.images} wallpapers</span>
                   </Link>
                 );
               })}
@@ -384,8 +384,8 @@ function LockedOverlay() {
   return (
     <div style={{ position: "absolute", inset: 0, zIndex: 5, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "8px", textAlign: "center", background: "rgba(10,8,16,0.5)" }}>
       <span style={{ fontSize: "1.6rem" }}>🔒</span>
-      <span style={{ fontSize: "0.5rem", letterSpacing: "0.2em", textTransform: "uppercase", color: "#c9a84c", fontFamily: "monospace", fontWeight: 700 }}>Back in the Vault</span>
-      <span style={{ fontSize: "0.45rem", color: "rgba(201,168,76,0.6)", fontFamily: "monospace" }}>Returns in 24h</span>
+      <span style={{ fontSize: "0.5rem", letterSpacing: "0.2em", textTransform: "uppercase", color: "#ffd23f", fontFamily: "monospace", fontWeight: 700 }}>Back in the Vault</span>
+      <span style={{ fontSize: "0.45rem", color: "rgba(255,210,63,0.6)", fontFamily: "monospace" }}>Returns in 24h</span>
     </div>
   );
 }
@@ -424,7 +424,7 @@ async function RootImageView({ imageSlug }: { imageSlug: string }) {
     .catch(() => {});
 
   const thumbUrl = getPublicUrl(image.r2Key);
-  const heroAlt = image.altText ?? `${image.title} — free dark wallpaper download`;
+  const heroAlt = image.altText ?? `${image.title} — dark wallpaper download`;
 
   const siblings = collection.images;
   const currentIdx = siblings.findIndex((s) => s.slug === imageSlug);
@@ -454,7 +454,7 @@ async function RootImageView({ imageSlug }: { imageSlug: string }) {
       <section style={{ maxWidth: "1280px", margin: "0 auto", padding: "16px 24px 0" }}>
         <div className="image-detail-grid">
           <div className="shop-detail-image-wrap">
-            <div style={{ position: "relative", width: "100%", aspectRatio: "9/16", background: "#070710", border: "1px solid rgba(139,0,0,0.3)", overflow: "hidden", borderRadius: "4px" }}>
+            <div style={{ position: "relative", width: "100%", aspectRatio: "9/16", background: "#100822", border: "1px solid rgba(176,23,158,0.3)", overflow: "hidden", borderRadius: "4px" }}>
               <Image
                 src={thumbUrl}
                 alt={heroAlt}
@@ -512,12 +512,12 @@ async function RootImageView({ imageSlug }: { imageSlug: string }) {
                 <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", marginTop: "10px", marginBottom: "4px" }}>
                   {image.tags.filter((t: string) => t.startsWith("badge-")).map((tag: string) => {
                     const badgeMap: Record<string, { label: string; color: string; bg: string }> = {
-                      "badge-premium":   { label: "⭐ Premium",   color: "#c9a84c", bg: "rgba(201,168,76,0.15)" },
-                      "badge-trending":  { label: "🔥 Trending",  color: "#ff6b35", bg: "rgba(255,107,53,0.15)" },
-                      "badge-new":       { label: "✨ New",        color: "#4caf50", bg: "rgba(76,175,80,0.15)" },
+                      "badge-premium":   { label: "⭐ Premium",   color: "#ffd23f", bg: "rgba(255,210,63,0.15)" },
+                      "badge-trending":  { label: "🔥 Trending",  color: "#ff8c42", bg: "rgba(255,140,66,0.15)" },
+                      "badge-new":       { label: "✨ New",        color: "#4ade80", bg: "rgba(74,222,128,0.15)" },
                       "badge-hot":       { label: "💀 Hot",        color: "#e040fb", bg: "rgba(224,64,251,0.15)" },
                       "badge-exclusive": { label: "🌙 Exclusive",  color: "#42a5f5", bg: "rgba(66,165,245,0.15)" },
-                      "badge-limited":   { label: "⏳ Limited",    color: "#ff5252", bg: "rgba(255,82,82,0.15)" },
+                      "badge-limited":   { label: "⏳ Limited",    color: "#ff6b9d", bg: "rgba(255,107,157,0.15)" },
                     };
                     const b = badgeMap[tag];
                     if (!b) return null;
@@ -535,7 +535,7 @@ async function RootImageView({ imageSlug }: { imageSlug: string }) {
 
             {image.description && (
               <div
-                className="font-body text-[1rem] text-[#a89bc0] leading-relaxed image-description-html"
+                className="font-body text-[1rem] text-[#c9a8e8] leading-relaxed image-description-html"
                 dangerouslySetInnerHTML={{ __html: sanitizeAdminHtml(image.description) }}
               />
             )}
@@ -543,7 +543,7 @@ async function RootImageView({ imageSlug }: { imageSlug: string }) {
             {image.tags.length > 0 && (
               <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
                 {image.tags.map((tag) => (
-                  <span key={tag} className="font-mono text-[0.55rem] tracking-[0.15em] uppercase border border-[#2a2535] px-3 py-1 text-[#8a8099]">
+                  <span key={tag} className="font-mono text-[0.55rem] tracking-[0.15em] uppercase border border-[#341a63] px-3 py-1 text-[#b39ddb]">
                     #{tag}
                   </span>
                 ))}
@@ -585,7 +585,7 @@ async function RootImageView({ imageSlug }: { imageSlug: string }) {
                 .replace(/&nbsp;/g, " ")
                 .replace(/\s+/g, " ")
                 .trim()
-                .slice(0, 200) || `${image.title} — free dark wallpaper.`,
+                .slice(0, 200) || `${image.title} — dark wallpaper.`,
             url: `${SITE_URL}/${imageSlug}`,
             brand: { "@type": "Brand", name: "Haunted Wallpapers", url: SITE_URL },
             category: "Digital Products > Wallpapers",

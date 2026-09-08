@@ -104,7 +104,7 @@ export default function DownloadButton({ href, slug, viewCount, downloadCount, l
       try {
         await navigator.share({
           title: "Haunted Wallpaper",
-          text: "Free dark wallpaper from hauntedwallpapers.com",
+          text: "Dark wallpaper from hauntedwallpapers.com",
           url: window.location.href,
         });
         return;
@@ -119,12 +119,12 @@ export default function DownloadButton({ href, slug, viewCount, downloadCount, l
     ? (state === "loading" ? "Preparing…" : state === "done" ? "✓ Download Started" : children)
     : (state === "loading" ? "Preparing…"
       : state === "done"   ? "✓ Download Started"
-      : label              ?? "↓ Download 4K · Free");
+      : label              ?? "↓ Download 4K");
 
   const bgColor =
     state === "done"     ? "#1a5c35"
     : state === "loading" ? "#6b0000"
-    : "#8b0000";
+    : "#b0179e";
 
   // ── Stats row figures ──────────────────────────────────────────────────
   // Use real counts when provided and non-zero, otherwise fall back to a

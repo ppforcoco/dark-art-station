@@ -14,13 +14,12 @@ export const metadata: Metadata = {
 
 const FAQS: { q: string; a: React.ReactNode; text: string }[] = [
   {
-    q: "Are the wallpapers really free?",
-    text: "Yes. Every wallpaper on HauntedWallpapers is completely free to download with no account required. Simply browse, tap any image, and hit the Download button — no sign-up, no payment.",
+    q: "How do downloads work?",
+    text: "Every wallpaper on HauntedWallpapers is available to download. Simply browse, tap any image, and hit the Download button.",
     a: (
       <>
-        Yes. Every wallpaper on HauntedWallpapers is completely free to download
-        with no account required. Simply browse, tap any image, and hit the
-        Download button — no sign-up, no payment.
+        Every wallpaper on HauntedWallpapers is available to download.
+        Simply browse, tap any image, and hit the Download button.
       </>
     ),
   },
@@ -132,10 +131,10 @@ const FAQS: { q: string; a: React.ReactNode; text: string }[] = [
   },
   {
     q: "Why do I see advertisements on the Site?",
-    text: "Advertising is how we keep the site free. HauntedWallpapers uses Google AdSense to display relevant ads that fund server costs, storage, and content curation.",
+    text: "HauntedWallpapers uses Google AdSense to display relevant ads that fund server costs, storage, and content curation.",
     a: (
       <>
-        Advertising is how we keep the site free. HauntedWallpapers uses Google
+        HauntedWallpapers uses Google
         AdSense to display relevant ads. These ads fund server costs, storage,
         and the time spent curating and generating new art. You can opt out of
         personalised ads via{" "}

@@ -38,9 +38,9 @@ const TAG_CONFIGS: Record<string, TagConfig> = {
     tagline: "The PFP that starts conversations before you even type.",
     description:
       "Your Discord PFP is your first impression in every server. Make it count. Browse sharp, scroll-stopping profile pictures built for desktop — crisp 1:1 avatars that get noticed in member lists, DMs, and voice chats. Fresh drops. Zero blur. Maximum respect.",
-    metaTitle: "Best Discord PFP 2026 | Free HD Profile Pictures for Desktop & PC",
+    metaTitle: "Best Discord PFP 2026 | HD Profile Pictures for Desktop & PC",
     metaDescription:
-      "Stand out in every Discord server. Download free HD profile pictures optimized for 1:1 ratio — crisp 1:1 PFPs that turn heads in member lists and DMs. No more basic avatars.",
+      "Stand out in every Discord server. Download HD profile pictures optimized for 1:1 ratio — crisp 1:1 PFPs that turn heads in member lists and DMs. No more basic avatars.",
     emptyTitle: "Coming soon",
     emptyBody: "New Discord PFPs are being tagged and added. Check back shortly.",
   },
@@ -52,9 +52,9 @@ const TAG_CONFIGS: Record<string, TagConfig> = {
     tagline: "Spawn in with an avatar worth remembering.",
     description:
       "Your gaming PFP is your banner in every lobby, server, and friends list. Stop running default. Lock in a profile picture built for Discord, Steam, Twitch, and Xbox — sharp, aggressive, and impossible to scroll past. Built for desktop. Optimized for respect.",
-    metaTitle: "Best Gaming PFP 2026 | Free HD Avatars for Discord, Steam & Twitch",
+    metaTitle: "Best Gaming PFP 2026 | HD Avatars for Discord, Steam & Twitch",
     metaDescription:
-      "Level up your presence. Download free HD gaming profile pictures optimized for Discord PFP, Steam avatar, Twitch, and every platform. Crisp 1:1 avatars that dominate on PC and desktop.",
+      "Level up your presence. Download HD gaming profile pictures optimized for Discord PFP, Steam avatar, Twitch, and every platform. Crisp 1:1 avatars that dominate on PC and desktop.",
     emptyTitle: "Coming soon",
     emptyBody: "New gaming PFPs are being tagged and added. Check back shortly.",
   },
@@ -66,9 +66,9 @@ const TAG_CONFIGS: Record<string, TagConfig> = {
     tagline: "Dark anime pfp — not the bright cartoon kind.",
     description:
       "Everyone's Discord is full of the same neon shounen avatars. These anime PFPs go the other way — shadow-heavy, moody, low-saturation, built for people who want an edge instead of a highlight reel. HD, cropped to a perfect 1:1, ready for Discord, Instagram, and Twitter in one tap.",
-    metaTitle: "Dark Anime PFP 2026 | Free Aesthetic Anime Profile Pictures HD",
+    metaTitle: "Dark Anime PFP 2026 | Aesthetic Anime Profile Pictures HD",
     metaDescription:
-      "Free dark, aesthetic anime PFPs in HD. Moody anime avatars for Discord, Instagram, and Twitter — not the bright cartoon look everyone else has. Download instantly.",
+      "Dark, aesthetic anime PFPs in HD. Moody anime avatars for Discord, Instagram, and Twitter — not the bright cartoon look everyone else has. Download instantly.",
     emptyTitle: "Coming soon",
     emptyBody: "New anime PFPs are being tagged and added. Check back shortly.",
   },
@@ -80,9 +80,9 @@ const TAG_CONFIGS: Record<string, TagConfig> = {
     tagline: "For the ones who don't do bright.",
     description:
       "No pastel, no neon, no forced smiles. Just dark, atmospheric profile pictures built for people who'd rather be noticed for restraint than volume. HD, cropped to 1:1, ready to drop straight into Discord, WhatsApp, Instagram, or wherever your face goes next.",
-    metaTitle: "Dark PFP 2026 | Free Aesthetic Dark Profile Pictures HD",
+    metaTitle: "Dark PFP 2026 | Aesthetic Dark Profile Pictures HD",
     metaDescription:
-      "Free dark aesthetic profile pictures in HD. Moody, shadow-heavy PFPs for Discord, WhatsApp, and Instagram — no pastel, no neon. Download instantly, ready to use.",
+      "Dark aesthetic profile pictures in HD. Moody, shadow-heavy PFPs for Discord, WhatsApp, and Instagram — no pastel, no neon. Download instantly, ready to use.",
     emptyTitle: "Coming soon",
     emptyBody: "New dark PFPs are being tagged and added. Check back shortly.",
   },
@@ -168,19 +168,19 @@ const AVATAR_CARD_STYLES = `
     .hw-avatars-grid { grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); }
   }
   .hw-avatar-card {
-    background: #13111e;
-    border: 1px solid #2a2535;
+    background: #211038;
+    border: 1px solid #341a63;
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
   }
   .hw-avatar-card:hover {
-    border-color: rgba(192,0,26,0.45);
-    box-shadow: 0 0 16px rgba(192,0,26,0.1);
+    border-color: rgba(255,46,158,0.45);
+    box-shadow: 0 0 16px rgba(255,46,158,0.1);
   }
   .hw-avatar-card__img-wrap {
     position: relative;
     width: 100%;
     aspect-ratio: 1 / 1;
-    background: #0a0812;
+    background: #150a2a;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -201,7 +201,7 @@ const AVATAR_CARD_STYLES = `
     font-family: var(--font-space, monospace);
     font-size: 0.7rem;
     font-weight: 600;
-    color: var(--text-primary, #e8e4dc);
+    color: var(--text-primary, #fdf0ff);
     margin-bottom: 8px;
     line-height: 1.3;
   }
@@ -221,7 +221,7 @@ const AVATAR_CARD_STYLES = `
     padding: 6px 4px;
     border: 1px solid rgba(255,255,255,0.15);
     background: rgba(255,255,255,0.04);
-    color: rgba(232,228,220,0.75);
+    color: rgba(253,240,255,0.75);
     cursor: pointer;
     transition: all 0.15s ease;
     display: flex;
@@ -230,19 +230,19 @@ const AVATAR_CARD_STYLES = `
     gap: 3px;
   }
   .hw-avatar-card__btn--dl {
-    border-color: rgba(192,0,26,0.4);
-    background: rgba(192,0,26,0.08);
-    color: #e8e4dc;
+    border-color: rgba(255,46,158,0.4);
+    background: rgba(255,46,158,0.08);
+    color: #fdf0ff;
   }
   .hw-avatar-card__btn--dl:hover {
-    background: rgba(192,0,26,0.22);
-    border-color: rgba(192,0,26,0.8);
+    background: rgba(255,46,158,0.22);
+    border-color: rgba(255,46,158,0.8);
     color: #fff;
   }
   .hw-avatar-card__btn--share:hover {
-    border-color: rgba(201,168,76,0.5);
-    color: #c9a84c;
-    background: rgba(201,168,76,0.06);
+    border-color: rgba(255,210,63,0.5);
+    color: #ffd23f;
+    background: rgba(255,210,63,0.06);
   }
   .hw-avatar-card__desc {
     margin-top: 8px;
@@ -254,7 +254,7 @@ const AVATAR_CARD_STYLES = `
     padding: 80px 24px;
   }
   .hw-avatars-empty__sigil {
-    color: #c0001a;
+    color: #ff2e9e;
     font-size: 1.4rem;
     margin-bottom: 20px;
     letter-spacing: 0.3em;
@@ -262,12 +262,12 @@ const AVATAR_CARD_STYLES = `
   .hw-avatars-empty__title {
     font-family: var(--font-display, serif);
     font-size: clamp(1.4rem, 4vw, 2rem);
-    color: var(--text-primary, #e8e4dc);
+    color: var(--text-primary, #fdf0ff);
     font-weight: 300;
     margin-bottom: 12px;
   }
   .hw-avatars-empty__sub {
-    color: rgba(232,228,220,0.45);
+    color: rgba(253,240,255,0.45);
     font-size: 0.9rem;
     max-width: 420px;
     margin: 0 auto;
@@ -404,8 +404,8 @@ export default async function AvatarTagPage({ params }: PageProps) {
       <style>{`
         .hw-tag {
           min-height: 100vh;
-          background-color: var(--bg-primary, #0c0b14);
-          color: var(--text-primary, #e8e4dc);
+          background-color: var(--bg-primary, #190c30);
+          color: var(--text-primary, #fdf0ff);
         }
 
         .hw-tag-hero {
@@ -420,8 +420,8 @@ export default async function AvatarTagPage({ params }: PageProps) {
           font-size: 0.62rem;
           letter-spacing: 0.18em;
           text-transform: uppercase;
-          color: #c9a84c;
-          border: 1px solid rgba(201,168,76,0.4);
+          color: #ffd23f;
+          border: 1px solid rgba(255,210,63,0.4);
           padding: 5px 12px;
           margin-bottom: 16px;
         }
@@ -431,10 +431,10 @@ export default async function AvatarTagPage({ params }: PageProps) {
           font-weight: 700;
           line-height: 1.2;
           margin-bottom: 16px;
-          color: var(--text-primary, #e8e4dc);
+          color: var(--text-primary, #fdf0ff);
         }
         .hw-tag-desc {
-          color: rgba(232,228,220,0.72);
+          color: rgba(253,240,255,0.72);
           font-size: clamp(0.9rem, 2vw, 1rem);
           line-height: 1.75;
         }
@@ -449,7 +449,7 @@ export default async function AvatarTagPage({ params }: PageProps) {
           font-size: 0.6rem;
           letter-spacing: 0.2em;
           text-transform: uppercase;
-          color: #4a445a;
+          color: #5c4a8a;
           margin-bottom: 20px;
         }
 

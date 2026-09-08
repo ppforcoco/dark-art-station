@@ -25,19 +25,19 @@ const AVATAR_CARD_STYLES = `
     .hw-avatars-grid { grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); }
   }
   .hw-avatar-card {
-    background: #13111e;
-    border: 1px solid #2a2535;
+    background: #211038;
+    border: 1px solid #341a63;
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
   }
   .hw-avatar-card:hover {
-    border-color: rgba(192,0,26,0.45);
-    box-shadow: 0 0 16px rgba(192,0,26,0.1);
+    border-color: rgba(255,46,158,0.45);
+    box-shadow: 0 0 16px rgba(255,46,158,0.1);
   }
   .hw-avatar-card__img-wrap {
     position: relative;
     width: 100%;
     aspect-ratio: 1 / 1;
-    background: #0a0812;
+    background: #150a2a;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -58,7 +58,7 @@ const AVATAR_CARD_STYLES = `
     font-family: var(--font-space, monospace);
     font-size: 0.7rem;
     font-weight: 600;
-    color: var(--text-primary, #e8e4dc);
+    color: var(--text-primary, #fdf0ff);
     margin-bottom: 8px;
     line-height: 1.3;
   }
@@ -78,7 +78,7 @@ const AVATAR_CARD_STYLES = `
     padding: 6px 4px;
     border: 1px solid rgba(255,255,255,0.15);
     background: rgba(255,255,255,0.04);
-    color: rgba(232,228,220,0.75);
+    color: rgba(253,240,255,0.75);
     cursor: pointer;
     transition: all 0.15s ease;
     display: flex;
@@ -87,19 +87,19 @@ const AVATAR_CARD_STYLES = `
     gap: 3px;
   }
   .hw-avatar-card__btn--dl {
-    border-color: rgba(192,0,26,0.4);
-    background: rgba(192,0,26,0.08);
-    color: #e8e4dc;
+    border-color: rgba(255,46,158,0.4);
+    background: rgba(255,46,158,0.08);
+    color: #fdf0ff;
   }
   .hw-avatar-card__btn--dl:hover {
-    background: rgba(192,0,26,0.22);
-    border-color: rgba(192,0,26,0.8);
+    background: rgba(255,46,158,0.22);
+    border-color: rgba(255,46,158,0.8);
     color: #fff;
   }
   .hw-avatar-card__btn--share:hover {
-    border-color: rgba(201,168,76,0.5);
-    color: #c9a84c;
-    background: rgba(201,168,76,0.06);
+    border-color: rgba(255,210,63,0.5);
+    color: #ffd23f;
+    background: rgba(255,210,63,0.06);
   }
   .hw-avatar-card__desc {
     margin-top: 8px;
@@ -111,7 +111,7 @@ const AVATAR_CARD_STYLES = `
     padding: 80px 24px;
   }
   .hw-avatars-empty__sigil {
-    color: #c0001a;
+    color: #ff2e9e;
     font-size: 1.4rem;
     margin-bottom: 20px;
     letter-spacing: 0.3em;
@@ -119,12 +119,12 @@ const AVATAR_CARD_STYLES = `
   .hw-avatars-empty__title {
     font-family: var(--font-display, serif);
     font-size: clamp(1.4rem, 4vw, 2rem);
-    color: var(--text-primary, #e8e4dc);
+    color: var(--text-primary, #fdf0ff);
     font-weight: 300;
     margin-bottom: 12px;
   }
   .hw-avatars-empty__sub {
-    color: rgba(232,228,220,0.45);
+    color: rgba(253,240,255,0.45);
     font-size: 0.9rem;
     max-width: 420px;
     margin: 0 auto;
@@ -137,12 +137,12 @@ export const revalidate = 60;
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
 
 export const metadata: Metadata = {
-  title: "Matching PFP 2026 | Free Dark Matching Avatars for Best Friends & Couples",
+  title: "Matching PFP 2026 | Dark Matching Avatars for Best Friends & Couples",
   description:
     "Matching pfp sets built for two. Download paired dark-aesthetic avatars for Discord, WhatsApp, and Steam — one for you, one for them.",
   keywords: ["matching pfp", "matching pfp for couples", "matching pfp for 2 friends", "matching pfp for friends", "dark matching pfp for couples", "matching avatars"],
   openGraph: {
-    title: "Matching PFP 2026 | Free Dark Matching Avatars for Best Friends & Couples",
+    title: "Matching PFP 2026 | Dark Matching Avatars for Best Friends & Couples",
     description:
       "Matching pfp sets built for two. Download paired dark-aesthetic avatars for Discord, WhatsApp, and Steam — one for you, one for them.",
     url: `${SITE_URL}/avatars/matching-pfp`,
@@ -151,7 +151,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Matching PFP 2026 | Free Dark Matching Avatars for Best Friends & Couples",
+    title: "Matching PFP 2026 | Dark Matching Avatars for Best Friends & Couples",
     description: "Matching pfp sets built for two. One for you, one for them.",
   },
   alternates: { canonical: `${SITE_URL}/avatars/matching-pfp` },
@@ -264,7 +264,7 @@ export default async function MatchingAvatarsPage() {
       </section>
 
       <style>{`
-        .hw-match { min-height: 100vh; background-color: var(--bg-primary, #0c0b14); color: var(--text-primary, #e8e4dc); }
+        .hw-match { min-height: 100vh; background-color: var(--bg-primary, #190c30); color: var(--text-primary, #fdf0ff); }
         .hw-match-hero { padding: clamp(32px, 6vw, 64px) clamp(20px, 5vw, 60px) 24px; max-width: 1280px; margin: 0 auto; }
         .hw-match-hero__inner { max-width: 700px; }
         .hw-match-pill {
@@ -285,14 +285,14 @@ export default async function MatchingAvatarsPage() {
           line-height: 1.2;
           margin-bottom: 16px;
         }
-        .hw-match-desc { color: rgba(232,228,220,0.72); font-size: clamp(0.9rem, 2vw, 1rem); line-height: 1.75; }
+        .hw-match-desc { color: rgba(253,240,255,0.72); font-size: clamp(0.9rem, 2vw, 1rem); line-height: 1.75; }
         .hw-match-section { max-width: 1280px; margin: 0 auto; padding: 0 clamp(16px, 4vw, 60px) 60px; }
         .hw-match-count {
           font-family: var(--font-space, monospace);
           font-size: 0.6rem;
           letter-spacing: 0.2em;
           text-transform: uppercase;
-          color: #4a445a;
+          color: #5c4a8a;
           margin-bottom: 20px;
         }
         ${AVATAR_CARD_STYLES}

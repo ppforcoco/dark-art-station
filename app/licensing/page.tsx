@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   title: "Licensing & Terms of Use — HauntedWallpapers",
   description:
     "Understand your rights when downloading art from HauntedWallpapers. " +
-    "Personal use is always free. Commercial use requires a licence.",
+    "Personal use is always fresh. Commercial use requires a licence.",
   robots: { index: true, follow: true },
 };
 
@@ -42,7 +42,7 @@ export default function LicensingPage() {
           </section>
 
           <section className="static-section">
-            <h2>Personal Use Licence — Free</h2>
+            <h2>Personal Use Licence</h2>
             <p>
               Every image on HauntedWallpapers may be downloaded and used for
               personal, non-commercial purposes at no cost. This includes:

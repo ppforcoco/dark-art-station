@@ -124,7 +124,7 @@ function TrailStrip({
           border-radius: 8px;
           overflow: hidden;
           border: 1px solid rgba(255,255,255,.07);
-          background: #0d0b18;
+          background: #190c30;
         }
 
         /* ── Landscape card (16:9) — PC ── */
@@ -143,13 +143,13 @@ function TrailStrip({
           border-radius: 6px;
           overflow: hidden;
           border: 1px solid rgba(255,255,255,.07);
-          background: #0d0b18;
+          background: #190c30;
         }
 
         /* ── Shared hover ── */
         .ts-card--portrait:hover .ts-thumb-wrap,
         .ts-card--landscape:hover .ts-thumb-wrap {
-          border-color: rgba(201,168,76,.5);
+          border-color: rgba(255,210,63,.5);
           transform: scale(1.03);
           transition: transform .2s, border-color .2s;
         }
@@ -198,7 +198,7 @@ function TrailStrip({
           transition: color .15s;
         }
         .ts-card--portrait:hover .ts-name,
-        .ts-card--landscape:hover .ts-name { color: #f0ecff; }
+        .ts-card--landscape:hover .ts-name { color: #f6ecff; }
       `}</style>
     </div>
   );
@@ -228,7 +228,7 @@ export default function TrailSection() {
       {/* ── Section header ── */}
       <div className="hp-trail-head" style={{ paddingRight: "clamp(16px,5vw,48px)" }}>
         <div>
-          <p className="hp-section-eye" style={{ color: "#c9a84c", marginBottom: 6 }}>
+          <p className="hp-section-eye" style={{ color: "#ffd23f", marginBottom: 6 }}>
             Your History
           </p>
           <h2 className="hp-section-title">Your Trail</h2>

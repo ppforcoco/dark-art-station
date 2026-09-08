@@ -185,7 +185,7 @@ export default function Header() {
                 <span
                   style={{
                     position: "absolute", top: "-4px", right: "-4px",
-                    background: "#c0001a", color: "#fff",
+                    background: "#ff2e9e", color: "#fff",
                     fontFamily: "var(--font-space,monospace)",
                     fontSize: "0.55rem", fontWeight: 700,
                     minWidth: "16px", height: "16px", borderRadius: "999px",

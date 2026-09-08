@@ -57,19 +57,19 @@ export default function ProtectedImg({
           transform: "translateX(-50%)",
           zIndex: 20,
           background: "rgba(10,6,20,0.96)",
-          border: "1px solid rgba(192,0,26,0.6)",
+          border: "1px solid rgba(255,46,158,0.6)",
           padding: "10px 18px",
           borderRadius: "3px",
           whiteSpace: "nowrap",
           fontFamily: "var(--font-space, monospace)",
           fontSize: "0.68rem",
           letterSpacing: "0.08em",
-          color: "#f0e8e8",
-          boxShadow: "0 0 20px rgba(192,0,26,0.25)",
+          color: "#ffe8f3",
+          boxShadow: "0 0 20px rgba(255,46,158,0.25)",
           animation: "hwToastIn 0.2s ease",
           textAlign: "center",
         }}>
-          ↓ Use the <span style={{ color: "#c0001a", fontWeight: 700 }}>Download button</span> below
+          ↓ Use the <span style={{ color: "#ff2e9e", fontWeight: 700 }}>Download button</span> below
         </div>
       )}
     </div>

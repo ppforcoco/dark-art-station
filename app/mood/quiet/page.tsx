@@ -59,10 +59,10 @@ export default async function MoodQuietPage() {
           <p style={{ fontFamily: "var(--font-space, monospace)", fontSize: "0.65rem", letterSpacing: "0.2em", textTransform: "uppercase", color: "#8888bb", marginBottom: "12px" }}>
             Mood / Quiet
           </p>
-          <h1 style={{ fontFamily: "var(--font-cinzel, serif)", fontSize: "clamp(2rem, 5vw, 3.5rem)", color: "rgba(232,228,220,0.95)", lineHeight: 1.15, marginBottom: "16px" }}>
+          <h1 style={{ fontFamily: "var(--font-cinzel, serif)", fontSize: "clamp(2rem, 5vw, 3.5rem)", color: "rgba(253,240,255,0.95)", lineHeight: 1.15, marginBottom: "16px" }}>
             The Sound of Silence.
           </h1>
-          <p style={{ fontFamily: "var(--font-space, monospace)", fontSize: "0.65rem", letterSpacing: "0.18em", textTransform: "uppercase", color: "rgba(232,228,220,0.35)" }}>
+          <p style={{ fontFamily: "var(--font-space, monospace)", fontSize: "0.65rem", letterSpacing: "0.18em", textTransform: "uppercase", color: "rgba(253,240,255,0.35)" }}>
             {images.length} wallpapers for those who need the stillness
           </p>
         </div>
@@ -77,7 +77,7 @@ export default async function MoodQuietPage() {
                 : "/collections";
             return (
             <Link key={img.id} href={href} style={{ display: "block", textDecoration: "none" }}>
-              <div style={{ aspectRatio: img.deviceType === "PC" ? "16/9" : "9/16", overflow: "hidden", background: "#0a0812" }}>
+              <div style={{ aspectRatio: img.deviceType === "PC" ? "16/9" : "9/16", overflow: "hidden", background: "#150a2a" }}>
                 <img
                   src={getPublicUrl(img.r2Key)}
                   alt={img.title}
@@ -85,7 +85,7 @@ export default async function MoodQuietPage() {
                   decoding="async"
                   className="mood-img" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}                />
               </div>
-              <p style={{ fontFamily: "var(--font-space, monospace)", fontSize: "0.6rem", color: "rgba(232,228,220,0.45)", marginTop: "6px", letterSpacing: "0.04em", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+              <p style={{ fontFamily: "var(--font-space, monospace)", fontSize: "0.6rem", color: "rgba(253,240,255,0.45)", marginTop: "6px", letterSpacing: "0.04em", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                 {img.title}
               </p>
             </Link>
@@ -97,9 +97,9 @@ export default async function MoodQuietPage() {
         <div dangerouslySetInnerHTML={{ __html: `
           <div style="border:1px solid rgba(136,136,187,0.25);background:rgba(136,136,187,0.04);padding:32px 36px;max-width:780px;line-height:1.9;">
             <p style="font-family:var(--font-space,monospace);font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:#8888bb;margin-bottom:20px;">About This Collection</p>
-            <p style="color:rgba(232,228,220,0.8);font-size:0.95rem;margin-bottom:16px;">Not every dark wallpaper needs to scream. Sometimes, the most haunting aesthetic is the one that barely whispers. This is the Quiet page — a collection dedicated to the soft gloom, the subtle sadness, and the beauty of isolation.</p>
-            <p style="color:rgba(232,228,220,0.8);font-size:0.95rem;margin-bottom:16px;">We use muted palettes: foggy grays, washed-out blues, and misty greens. The imagery often features solitary figures, empty rain-soaked streets, and windows looking out into nothing. These backgrounds are for the introverts, the daydreamers, and those who find comfort in a melancholic atmosphere. It is the perfect aesthetic for a Sunday morning rainstorm. High-quality, minimalist, and deeply emotional.</p>
-            <p style="font-family:var(--font-space,monospace);font-size:0.65rem;letter-spacing:0.12em;color:rgba(232,228,220,0.3);margin-top:20px;">Quiet wallpaper &nbsp;·&nbsp; soft gloom &nbsp;·&nbsp; melancholic aesthetic &nbsp;·&nbsp; sad art &nbsp;·&nbsp; muted wallpaper &nbsp;·&nbsp; loner wallpaper &nbsp;·&nbsp; minimalist dark</p>
+            <p style="color:rgba(253,240,255,0.8);font-size:0.95rem;margin-bottom:16px;">Not every dark wallpaper needs to scream. Sometimes, the most haunting aesthetic is the one that barely whispers. This is the Quiet page — a collection dedicated to the soft gloom, the subtle sadness, and the beauty of isolation.</p>
+            <p style="color:rgba(253,240,255,0.8);font-size:0.95rem;margin-bottom:16px;">We use muted palettes: foggy grays, washed-out blues, and misty greens. The imagery often features solitary figures, empty rain-soaked streets, and windows looking out into nothing. These backgrounds are for the introverts, the daydreamers, and those who find comfort in a melancholic atmosphere. It is the perfect aesthetic for a Sunday morning rainstorm. High-quality, minimalist, and deeply emotional.</p>
+            <p style="font-family:var(--font-space,monospace);font-size:0.65rem;letter-spacing:0.12em;color:rgba(253,240,255,0.3);margin-top:20px;">Quiet wallpaper &nbsp;·&nbsp; soft gloom &nbsp;·&nbsp; melancholic aesthetic &nbsp;·&nbsp; sad art &nbsp;·&nbsp; muted wallpaper &nbsp;·&nbsp; loner wallpaper &nbsp;·&nbsp; minimalist dark</p>
           </div>
         ` }} />
 

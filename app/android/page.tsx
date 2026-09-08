@@ -28,11 +28,11 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
 
   const title = tag
     ? `Dark #${tag} Wallpapers for Android & iPhone${pageLabel} | HAUNTED WALLPAPERS`
-    : `Dark Android Wallpapers Free Download (iPhone & Android)${pageLabel} | HAUNTED WALLPAPERS`;
+    : `Dark Android Wallpapers download (iPhone & Android)${pageLabel} | HAUNTED WALLPAPERS`;
 
   const description = tag
-    ? `Browse free AMOLED-optimised dark wallpapers for Android tagged #${tag}. Download instantly, no account required.`
-    : "Free AMOLED-optimised dark wallpapers for Android. Deep blacks, zero battery waste on OLED screens. Samsung, Pixel, OnePlus ready. No account required.";
+    ? `Browse AMOLED-optimised dark wallpapers for Android tagged #${tag}. Download instantly.`
+    : "AMOLED-optimised dark wallpapers for Android. Deep blacks, zero battery waste on OLED screens. Samsung, Pixel, OnePlus ready.";
 
   const canonical = tag ? `${siteUrl}/android?tag=${tag}` : `${siteUrl}/android`;
 
@@ -54,7 +54,7 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
   return {
     title,
     description,
-    keywords: ["android wallpaper", "dark wallpaper android", "hd android wallpaper", "free android wallpaper", tag ?? "dark", "dark fantasy"].filter(Boolean),
+    keywords: ["android wallpaper", "dark wallpaper android", "hd android wallpaper", tag ?? "dark", "dark fantasy"].filter(Boolean),
     openGraph: {
       title, description, url: canonical, siteName: "HAUNTED WALLPAPERS", type: "website",
       images: [{ url: ogImage, width: 1080, height: 1920, alt: "Dark Android Wallpapers" }],
@@ -146,7 +146,7 @@ export default async function AndroidPage({ searchParams }: PageProps) {
   const jsonLd = JSON.stringify({
     "@context": "https://schema.org",
     "@type": "ItemList",
-    name: tag ? `Dark #${tag} Android Wallpapers | Haunted Wallpapers` : "Free Dark Android Wallpapers HD | Haunted Wallpapers",
+    name: tag ? `Dark #${tag} Android Wallpapers | Haunted Wallpapers` : "Dark Android Wallpapers HD | Haunted Wallpapers",
     url: tag ? `${process.env.NEXT_PUBLIC_SITE_URL}/android?tag=${tag}` : `${process.env.NEXT_PUBLIC_SITE_URL}/android`,
     numberOfItems: total,
     itemListElement: images.map((img, i) => ({
@@ -168,13 +168,13 @@ export default async function AndroidPage({ searchParams }: PageProps) {
       <section className="max-w-7xl mx-auto px-6 md:px-[60px] pt-10 pb-8">
         <h1 className="font-display text-3xl md:text-4xl font-bold leading-tight mb-6">
           {tag ? (
-            <>Dark <span className="text-[#c9a84c] italic">#{tag}</span> Wallpapers for Android</>
+            <>Dark <span className="text-[#ffd23f] italic">#{tag}</span> Wallpapers for Android</>
           ) : pageContent?.title ? (
             <span dangerouslySetInnerHTML={{ __html: pageContent.title }} />
           ) : (
-            <>Free Dark Android <span className="text-[#c9a84c] italic">Wallpapers</span></>
+            <>Dark Android <span className="text-[#ffd23f] italic">Wallpapers</span></>
           )}
-          {page > 1 && <span className="text-[#4a445a] text-2xl"> — Page {page}</span>}
+          {page > 1 && <span className="text-[#5c4a8a] text-2xl"> — Page {page}</span>}
         </h1>
 
         {!tag && !pageContent?.body && (
@@ -187,7 +187,7 @@ export default async function AndroidPage({ searchParams }: PageProps) {
             </p>
             <p>
               Download is instant — tap any image, tap download, and it saves directly to your
-              gallery. No account, no watermarks, no limits.
+              gallery. No watermarks, no limits.
             </p>
             <div className="device-page-guide-link">
               <span>Need help setting it up?</span>
@@ -210,18 +210,18 @@ export default async function AndroidPage({ searchParams }: PageProps) {
               fontSize: "0.58rem",
               letterSpacing: "0.22em",
               textTransform: "uppercase",
-              color: "#c0001a",
-              border: "1px solid rgba(192,0,26,0.5)",
+              color: "#ff2e9e",
+              border: "1px solid rgba(255,46,158,0.5)",
               padding: "5px 12px",
-              background: "rgba(192,0,26,0.08)",
-              boxShadow: "0 0 12px rgba(192,0,26,0.15)",
+              background: "rgba(255,46,158,0.08)",
+              boxShadow: "0 0 12px rgba(255,46,158,0.15)",
             }}>★ The Most Haunted</span>
-            <div style={{ flex: 1, height: "1px", background: "linear-gradient(to right, rgba(192,0,26,0.35), transparent)" }} />
+            <div style={{ flex: 1, height: "1px", background: "linear-gradient(to right, rgba(255,46,158,0.35), transparent)" }} />
           </div>
           <IphoneImageGrid
             images={pinnedImages}
             hrefPrefix="/android"
-            altSuffix="free dark Android wallpaper HD"
+            altSuffix="dark Android wallpaper HD"
             gridStyle={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "12px", maxWidth: "480px" }}
             priorityCount={2}
             aspectRatio="9/16"
@@ -250,13 +250,13 @@ export default async function AndroidPage({ searchParams }: PageProps) {
           </div>
         ) : (
           <>
-            <p className="font-mono text-[0.6rem] tracking-[0.2em] uppercase text-[#4a445a] mb-6">
+            <p className="font-mono text-[0.6rem] tracking-[0.2em] uppercase text-[#5c4a8a] mb-6">
               — {total} wallpapers · page {page} of {totalPages}
             </p>
             <IphoneImageGrid
               images={images}
               hrefPrefix="/android"
-              altSuffix="free dark Android wallpaper HD"
+              altSuffix="dark Android wallpaper HD"
               gridClassName="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3"
               priorityCount={4}
               aspectRatio="9/16"
@@ -281,7 +281,7 @@ export default async function AndroidPage({ searchParams }: PageProps) {
         maxWidth: "860px",
         margin: "0 auto",
         padding: "40px 24px 64px",
-        borderTop: "1px solid rgba(192,0,26,0.18)",
+        borderTop: "1px solid rgba(255,46,158,0.18)",
         textAlign: "center",
       }}>
         <p style={{
@@ -289,7 +289,7 @@ export default async function AndroidPage({ searchParams }: PageProps) {
           fontSize: "0.6rem",
           letterSpacing: "0.22em",
           textTransform: "uppercase",
-          color: "#4a445a",
+          color: "#5c4a8a",
           marginBottom: "20px",
         }}>Also available for</p>
         <div style={{ display: "flex", gap: "14px", justifyContent: "center", flexWrap: "wrap" }}>
@@ -300,7 +300,7 @@ export default async function AndroidPage({ searchParams }: PageProps) {
 
       <style>{`
         .hw-tag-pills-wrap {
-          background-color: var(--bg-primary, #0c0b14);
+          background-color: var(--bg-primary, #190c30);
           padding: 0 clamp(24px, 5vw, 60px) 28px;
           max-width: 1280px;
           margin: 0 auto;
@@ -316,7 +316,7 @@ export default async function AndroidPage({ searchParams }: PageProps) {
           letter-spacing: 0.16em;
           text-transform: uppercase;
           text-decoration: none;
-          color: rgba(224,224,248,0.65);
+          color: rgba(237,228,255,0.65);
           border: 1px solid rgba(255,255,255,0.1);
           background: rgba(255,255,255,0.03);
           padding: 8px 18px;
@@ -324,36 +324,36 @@ export default async function AndroidPage({ searchParams }: PageProps) {
           transition: all 0.2s ease;
         }
         .hw-tag-pill:hover {
-          border-color: rgba(192,0,26,0.6);
+          border-color: rgba(255,46,158,0.6);
           color: #fff;
-          background: rgba(192,0,26,0.08);
+          background: rgba(255,46,158,0.08);
         }
         .hw-tag-pill--active {
-          border-color: rgba(192,0,26,0.7);
+          border-color: rgba(255,46,158,0.7);
           color: #fff;
-          background: rgba(192,0,26,0.12);
-          box-shadow: 0 0 14px rgba(192,0,26,0.15);
+          background: rgba(255,46,158,0.12);
+          box-shadow: 0 0 14px rgba(255,46,158,0.15);
         }
         .hw-crosslink-btn {
           font-family: var(--font-space, monospace);
           font-size: 0.72rem;
           letter-spacing: 0.14em;
           text-transform: uppercase;
-          color: #e8e4f8;
+          color: #f3e8ff;
           text-decoration: none;
-          border: 1px solid rgba(192,0,26,0.4);
+          border: 1px solid rgba(255,46,158,0.4);
           padding: 13px 26px;
-          background: rgba(192,0,26,0.06);
+          background: rgba(255,46,158,0.06);
           transition: all 0.25s ease;
           display: inline-flex;
           align-items: center;
           gap: 8px;
         }
         .hw-crosslink-btn:hover {
-          border-color: rgba(192,0,26,0.8);
-          background: rgba(192,0,26,0.13);
+          border-color: rgba(255,46,158,0.8);
+          background: rgba(255,46,158,0.13);
           color: #ffffff;
-          box-shadow: 0 0 22px rgba(192,0,26,0.22);
+          box-shadow: 0 0 22px rgba(255,46,158,0.22);
         }
       `}</style>
 

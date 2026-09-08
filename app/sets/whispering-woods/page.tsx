@@ -56,7 +56,7 @@ const WALLPAPERS = [
     download: `${BASE_4K}/red-eyes-monster-forest-profile-picture-squar.jpg`,
     filename: "whispering-woods-avatar-4k.jpg",
     phase: "Phase 3 — The Watcher in the Mist",
-    phaseColor: "#c0001a",
+    phaseColor: "#ff2e9e",
     seoAlt: "Red glowing eyes monster in dark forest square PFP for horror fans",
   },
   {
@@ -68,7 +68,7 @@ const WALLPAPERS = [
     download: `${BASE_4K}/yellow-glowing-eyes-mist-smartwatch-wallpaper.jpg`,
     filename: "whispering-woods-smartwatch-4k.jpg",
     phase: "Phase 3 — The Watcher in the Mist",
-    phaseColor: "#c0001a",
+    phaseColor: "#ff2e9e",
     seoAlt: "Yellow glowing eyes in the mist horror smartwatch wallpaper for Apple Watch",
   },
 ];
@@ -99,7 +99,7 @@ export async function generateMetadata(): Promise<Metadata> {
     openGraph: {
       title: "The Whispering Woods — Matching Dark Nature Horror Kit | Haunted Wallpapers",
       description:
-        "Download The Whispering Woods matching wallpaper set. Dark forest horror for iPhone, PC, and Smartwatch. Free 4K downloads.",
+        "Download The Whispering Woods matching wallpaper set. Dark forest horror for iPhone, PC, and Smartwatch. 4K downloads.",
       url: `${SITE_URL}/sets/whispering-woods`,
       siteName: "Haunted Wallpapers",
       type: "website",
@@ -148,8 +148,8 @@ export default function WhisperingWoodsPage() {
     <main
       style={{
         minHeight: "100vh",
-        backgroundColor: "var(--bg-primary, #0d0d14)",
-        color: "var(--text-primary, #e0e0f8)",
+        backgroundColor: "var(--bg-primary, #1a0b2e)",
+        color: "var(--text-primary, #ede4ff)",
         position: "relative",
         overflow: "hidden",
       }}
@@ -207,14 +207,14 @@ export default function WhisperingWoodsPage() {
             }}
           >
             <li>
-              <Link href="/" style={{ color: "#60608a", textDecoration: "none" }}>Home</Link>
+              <Link href="/" style={{ color: "#7c5cbf", textDecoration: "none" }}>Home</Link>
             </li>
-            <li style={{ color: "#24243a" }}>›</li>
+            <li style={{ color: "#341a63" }}>›</li>
             <li>
-              <Link href="/sets" style={{ color: "#60608a", textDecoration: "none" }}>Matching Sets</Link>
+              <Link href="/sets" style={{ color: "#7c5cbf", textDecoration: "none" }}>Matching Sets</Link>
             </li>
-            <li style={{ color: "#24243a" }}>›</li>
-            <li style={{ color: "#d8d8f0" }}>Whispering Woods</li>
+            <li style={{ color: "#341a63" }}>›</li>
+            <li style={{ color: "#e4d4ff" }}>Whispering Woods</li>
           </ol>
         </nav>
 
@@ -293,7 +293,7 @@ export default function WhisperingWoodsPage() {
                 lineHeight: 1.0,
                 margin: "0 0 8px",
                 letterSpacing: "0.04em",
-                color: "#f0e8d8",
+                color: "#fff3e0",
                 textShadow: "0 4px 40px rgba(30,80,20,0.25)",
               }}
             >
@@ -317,7 +317,7 @@ export default function WhisperingWoodsPage() {
                 fontSize: "clamp(1rem, 1.6vw, 1.15rem)",
                 lineHeight: 1.75,
                 maxWidth: "700px",
-                color: "rgba(224,224,248,0.7)",
+                color: "rgba(237,228,255,0.7)",
                 margin: 0,
               }}
             >
@@ -338,7 +338,7 @@ export default function WhisperingWoodsPage() {
         >
           <div className="cs-cta-block">
             <div className="cs-cta-block__glow" aria-hidden="true" />
-            <span className="cs-cta-block__eyebrow">Free. No account. No watermarks.</span>
+            <span className="cs-cta-block__eyebrow">No watermarks.</span>
             <h2 className="cs-cta-block__title">Download the Complete Kit</h2>
             <p className="cs-cta-block__sub">
               All five wallpapers. Full 4K resolution. Every device covered.
@@ -520,7 +520,7 @@ export default function WhisperingWoodsPage() {
               {
                 num: "03",
                 title: "Phase 3: The Watcher in the Mist",
-                color: "#c0001a",
+                color: "#ff2e9e",
                 body: "The final stage of the journey is the realization that you are not alone. Two eyes ignite in the darkness — sometimes yellow, sometimes a blood-red warning. The forest isn't just a place; it's a predator. These square crops are engineered for the small canvas of an Apple Watch or Galaxy Watch.",
                 best: "Smartwatch faces, Discord avatars, and home screen icons.",
               },
@@ -532,7 +532,7 @@ export default function WhisperingWoodsPage() {
                   <h3 className="cs-phase__title" style={{ color: phase.color }}>{phase.title}</h3>
                   <p className="cs-phase__text">{phase.body}</p>
                   <p className="cs-phase__best">
-                    <span style={{ color: "#60608a" }}>Best for: </span>
+                    <span style={{ color: "#7c5cbf" }}>Best for: </span>
                     {phase.best}
                   </p>
                 </div>
@@ -631,7 +631,7 @@ export default function WhisperingWoodsPage() {
           position: relative;
           overflow: hidden;
           border: 1px solid rgba(74,138,58,0.2);
-          background: #080810;
+          background: #120826;
           transition: border-color 0.3s ease, box-shadow 0.3s ease;
           cursor: pointer;
         }
@@ -766,7 +766,7 @@ export default function WhisperingWoodsPage() {
           font-family: var(--font-cinzel, serif);
           font-size: clamp(0.9rem,2vw,1.2rem);
           letter-spacing: 0.12em; text-transform: uppercase;
-          color: #f0e8d8; font-weight: 700;
+          color: #fff3e0; font-weight: 700;
         }
 
         /* ── COLLAGE ── */
@@ -776,14 +776,14 @@ export default function WhisperingWoodsPage() {
         }
         .cs-collage__desktop {
           position: relative; border-radius: 4px; overflow: hidden;
-          border: 2px solid #0f0f1e;
-          box-shadow: 0 0 0 4px #0a0a14, 0 0 0 6px rgba(20,20,40,0.9), 0 0 80px rgba(0,0,0,0.7);
+          border: 2px solid #1f1040;
+          box-shadow: 0 0 0 4px #170a2e, 0 0 0 6px rgba(20,20,40,0.9), 0 0 80px rgba(0,0,0,0.7);
           animation: cs-glow-desk 4s ease-in-out infinite;
-          aspect-ratio: 16/9; background: #080810; width: 100%;
+          aspect-ratio: 16/9; background: #120826; width: 100%;
         }
         @keyframes cs-glow-desk {
-          0%,100% { box-shadow: 0 0 0 4px #0a0a14, 0 0 0 6px rgba(20,20,40,0.9), 0 0 80px rgba(0,0,0,0.7); }
-          50%      { box-shadow: 0 0 0 4px #0a0a14, 0 0 0 6px rgba(20,20,40,0.9), 0 0 80px rgba(0,0,0,0.7), 0 0 100px rgba(0,30,0,0.2); }
+          0%,100% { box-shadow: 0 0 0 4px #170a2e, 0 0 0 6px rgba(20,20,40,0.9), 0 0 80px rgba(0,0,0,0.7); }
+          50%      { box-shadow: 0 0 0 4px #170a2e, 0 0 0 6px rgba(20,20,40,0.9), 0 0 80px rgba(0,0,0,0.7), 0 0 100px rgba(0,30,0,0.2); }
         }
         .cs-collage__bottom-row {
           display: flex; gap: 12px; align-items: flex-start;
@@ -810,13 +810,13 @@ export default function WhisperingWoodsPage() {
         .cs-collage__phone-shell {
           position: relative; width: 100%; aspect-ratio: 9/16;
           border-radius: 28px; overflow: hidden;
-          border: 2px solid #0f0f1e; background: #080810;
+          border: 2px solid #1f1040; background: #120826;
           animation: cs-glow-phone 4s ease-in-out infinite 1s;
-          box-shadow: 0 0 0 3px #0a0a14, 0 0 0 5px rgba(20,20,40,0.9), 0 12px 48px rgba(0,0,0,0.8);
+          box-shadow: 0 0 0 3px #170a2e, 0 0 0 5px rgba(20,20,40,0.9), 0 12px 48px rgba(0,0,0,0.8);
         }
         @keyframes cs-glow-phone {
-          0%,100% { box-shadow: 0 0 0 3px #0a0a14, 0 0 0 5px rgba(20,20,40,0.9), 0 12px 48px rgba(0,0,0,0.8); }
-          50%      { box-shadow: 0 0 0 3px #0a0a14, 0 0 0 5px rgba(20,20,40,0.9), 0 12px 48px rgba(0,0,0,0.8), 0 0 50px rgba(0,30,0,0.18); }
+          0%,100% { box-shadow: 0 0 0 3px #170a2e, 0 0 0 5px rgba(20,20,40,0.9), 0 12px 48px rgba(0,0,0,0.8); }
+          50%      { box-shadow: 0 0 0 3px #170a2e, 0 0 0 5px rgba(20,20,40,0.9), 0 12px 48px rgba(0,0,0,0.8), 0 0 50px rgba(0,30,0,0.18); }
         }
         .cs-collage__island {
           position: absolute; top: 8px; left: 50%; transform: translateX(-50%);
@@ -836,13 +836,13 @@ export default function WhisperingWoodsPage() {
         .cs-collage__watch-shell {
           position: relative; width: 100%; aspect-ratio: 1/1;
           border-radius: 32% / 28%; overflow: hidden;
-          border: 2px solid #0f0f1e; background: #080810;
+          border: 2px solid #1f1040; background: #120826;
           animation: cs-glow-watch 4s ease-in-out infinite 2s;
-          box-shadow: 0 0 0 3px #0a0a14, 0 0 0 5px rgba(20,20,40,0.9), 0 8px 32px rgba(0,0,0,0.75);
+          box-shadow: 0 0 0 3px #170a2e, 0 0 0 5px rgba(20,20,40,0.9), 0 8px 32px rgba(0,0,0,0.75);
         }
         @keyframes cs-glow-watch {
-          0%,100% { box-shadow: 0 0 0 3px #0a0a14, 0 0 0 5px rgba(20,20,40,0.9), 0 8px 32px rgba(0,0,0,0.75); }
-          50%      { box-shadow: 0 0 0 3px #0a0a14, 0 0 0 5px rgba(20,20,40,0.9), 0 8px 32px rgba(0,0,0,0.75), 0 0 40px rgba(0,30,0,0.18); }
+          0%,100% { box-shadow: 0 0 0 3px #170a2e, 0 0 0 5px rgba(20,20,40,0.9), 0 8px 32px rgba(0,0,0,0.75); }
+          50%      { box-shadow: 0 0 0 3px #170a2e, 0 0 0 5px rgba(20,20,40,0.9), 0 8px 32px rgba(0,0,0,0.75), 0 0 40px rgba(0,30,0,0.18); }
         }
         .cs-collage__watch-crown {
           position: absolute; right: -6px; top: 42%;
@@ -874,11 +874,11 @@ export default function WhisperingWoodsPage() {
         .cs-lore__bar { background: linear-gradient(to bottom, transparent, #3a7a2a, transparent); border-radius: 2px; flex-shrink: 0; }
         .cs-lore__title {
           font-family: var(--font-cinzel, serif); font-size: clamp(1.1rem,2vw,1.5rem);
-          font-weight: 700; color: #f0e8d8; margin: 0 0 16px; letter-spacing: 0.04em;
+          font-weight: 700; color: #fff3e0; margin: 0 0 16px; letter-spacing: 0.04em;
         }
         .cs-lore__body {
           font-family: var(--font-cormorant, serif); font-size: clamp(1rem,1.5vw,1.1rem);
-          line-height: 1.8; color: rgba(224,224,248,0.65); margin: 0 0 12px;
+          line-height: 1.8; color: rgba(237,228,255,0.65); margin: 0 0 12px;
         }
         .cs-lore__body:last-child { margin-bottom: 0; }
 
@@ -891,7 +891,7 @@ export default function WhisperingWoodsPage() {
         }
         .cs-section-title {
           font-family: var(--font-cinzel, serif); font-size: clamp(1.4rem,3vw,2.2rem);
-          font-weight: 700; color: #f0e8d8; margin: 0; letter-spacing: 0.04em;
+          font-weight: 700; color: #fff3e0; margin: 0; letter-spacing: 0.04em;
         }
 
         /* ── Phases ── */
@@ -908,11 +908,11 @@ export default function WhisperingWoodsPage() {
         }
         .cs-phase__text {
           font-family: var(--font-cormorant, serif); font-size: clamp(0.95rem,1.4vw,1.05rem);
-          line-height: 1.8; color: rgba(224,224,248,0.62); margin: 0 0 10px;
+          line-height: 1.8; color: rgba(237,228,255,0.62); margin: 0 0 10px;
         }
         .cs-phase__best {
           font-family: var(--font-space, monospace); font-size: 0.56rem;
-          letter-spacing: 0.12em; color: rgba(224,224,248,0.5); margin: 0;
+          letter-spacing: 0.12em; color: rgba(237,228,255,0.5); margin: 0;
         }
 
         /* ── Why section ── */
@@ -927,11 +927,11 @@ export default function WhisperingWoodsPage() {
         }
         .cs-why__title {
           font-family: var(--font-cinzel, serif); font-size: clamp(1.2rem,2.5vw,1.8rem);
-          font-weight: 700; color: #f0e8d8; margin: 0 0 20px; letter-spacing: 0.04em;
+          font-weight: 700; color: #fff3e0; margin: 0 0 20px; letter-spacing: 0.04em;
         }
         .cs-why__body {
           font-family: var(--font-cormorant, serif); font-size: clamp(0.98rem,1.5vw,1.08rem);
-          line-height: 1.8; color: rgba(224,224,248,0.65); margin: 0 0 16px; max-width: 720px;
+          line-height: 1.8; color: rgba(237,228,255,0.65); margin: 0 0 16px; max-width: 720px;
         }
         .cs-why__body:last-of-type { margin-bottom: 24px; }
         .cs-why__tags { display: flex; flex-wrap: wrap; gap: 8px; }
@@ -942,26 +942,26 @@ export default function WhisperingWoodsPage() {
 
         /* ── CTA block ── */
         .cs-cta-block {
-          position: relative; border: 1px solid rgba(192,0,26,0.3);
+          position: relative; border: 1px solid rgba(255,46,158,0.3);
           padding: clamp(32px,5vw,56px); text-align: center; overflow: hidden;
         }
         .cs-cta-block__glow {
           position: absolute; inset: 0;
-          background: radial-gradient(ellipse 60% 60% at 50% 50%, rgba(192,0,26,0.08), transparent);
+          background: radial-gradient(ellipse 60% 60% at 50% 50%, rgba(255,46,158,0.08), transparent);
           pointer-events: none;
         }
         .cs-cta-block__eyebrow {
           display: block; font-family: var(--font-space, monospace); font-size: 0.56rem;
-          letter-spacing: 0.24em; text-transform: uppercase; color: #60608a;
+          letter-spacing: 0.24em; text-transform: uppercase; color: #7c5cbf;
           margin-bottom: 14px; position: relative;
         }
         .cs-cta-block__title {
           font-family: var(--font-cinzel, serif); font-size: clamp(1.4rem,3vw,2.2rem);
-          font-weight: 700; color: #f0e8d8; margin: 0 0 10px; position: relative;
+          font-weight: 700; color: #fff3e0; margin: 0 0 10px; position: relative;
         }
         .cs-cta-block__sub {
           font-family: var(--font-cormorant, serif); font-size: 1rem;
-          color: rgba(224,224,248,0.55); margin: 0 0 28px; position: relative;
+          color: rgba(237,228,255,0.55); margin: 0 0 28px; position: relative;
         }
         .cs-cta-block__btns {
           display: flex; flex-wrap: wrap; gap: 12px;
@@ -969,15 +969,15 @@ export default function WhisperingWoodsPage() {
         }
         .cs-cta-btn {
           display: inline-flex; align-items: center; padding: 12px 22px;
-          background: transparent; color: rgba(224,224,248,0.8);
-          border: 1px solid rgba(192,0,26,0.35); border-radius: 2px;
+          background: transparent; color: rgba(237,228,255,0.8);
+          border: 1px solid rgba(255,46,158,0.35); border-radius: 2px;
           font-family: var(--font-space, monospace); font-size: 0.6rem;
           letter-spacing: 0.14em; text-transform: uppercase; text-decoration: none;
           transition: all 0.25s ease; cursor: pointer;
         }
         .cs-cta-btn:hover {
-          border-color: rgba(192,0,26,0.7); color: #fff;
-          background: rgba(192,0,26,0.1); box-shadow: 0 0 20px rgba(192,0,26,0.18);
+          border-color: rgba(255,46,158,0.7); color: #fff;
+          background: rgba(255,46,158,0.1); box-shadow: 0 0 20px rgba(255,46,158,0.18);
         }
 
         /* ── Explore grid ── */
@@ -998,17 +998,17 @@ export default function WhisperingWoodsPage() {
           position: absolute; top: 8px; left: 10px;
           font-family: var(--font-space, monospace); font-size: 0.48rem;
           letter-spacing: 0.18em; text-transform: uppercase;
-          color: #f0e8d8; background: rgba(0,0,0,0.75);
+          color: #fff3e0; background: rgba(0,0,0,0.75);
           border: 1px solid rgba(74,138,58,0.35); padding: 2px 7px; border-radius: 2px;
         }
         .cs-explore-card__body { padding: clamp(14px,2vw,20px); }
         .cs-explore-card__title {
           font-family: var(--font-cinzel, serif); font-size: 0.95rem;
-          font-weight: 700; color: #f0e8d8; margin: 0 0 8px; letter-spacing: 0.04em;
+          font-weight: 700; color: #fff3e0; margin: 0 0 8px; letter-spacing: 0.04em;
         }
         .cs-explore-card__desc {
           font-family: var(--font-cormorant, serif); font-size: 0.9rem;
-          line-height: 1.65; color: rgba(224,224,248,0.5); margin: 0 0 10px;
+          line-height: 1.65; color: rgba(237,228,255,0.5); margin: 0 0 10px;
         }
         .cs-explore-card__cta {
           font-family: var(--font-space, monospace); font-size: 0.56rem;

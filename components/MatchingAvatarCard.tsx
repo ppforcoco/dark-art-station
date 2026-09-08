@@ -103,7 +103,7 @@ export default function MatchingAvatarCard({ title, description, frames }: Match
           font-size: 0.62rem;
           letter-spacing: 0.08em;
           text-transform: uppercase;
-          color: rgba(232, 228, 220, 0.6);
+          color: rgba(253,240,255, 0.6);
           background: rgba(255, 255, 255, 0.04);
           border: 1px solid rgba(255, 255, 255, 0.12);
           padding: 7px 10px;

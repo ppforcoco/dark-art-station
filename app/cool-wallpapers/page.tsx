@@ -15,7 +15,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const pageContent = await getPageContent("cool-wallpapers");
   const desc =
     pageContent?.metaDesc ??
-    "Discover cool wallpapers in HD and 4K for iPhone, Android and PC — character crossovers, gaming icons and bold new drops. Free, no sign-up needed.";
+    "Discover cool wallpapers in HD and 4K for iPhone, Android and PC — character crossovers, gaming icons and bold new drops.";
   const title =
     pageContent?.title ?? "Cool Wallpapers in HD & 4K for iPhone, Android & PC | Haunted Wallpapers";
 
@@ -69,8 +69,8 @@ export default async function CoolWallpapersPage() {
   const r2Base = process.env.NEXT_PUBLIC_R2_PUBLIC_URL ?? "";
 
   const BORDER_PALETTE = [
-    { border: "#7c3aed", glow: "rgba(124,58,237,0.4)"   },
-    { border: "#c0001a", glow: "rgba(192,0,26,0.4)"     },
+    { border: "#9333ea", glow: "rgba(147,51,234,0.4)"   },
+    { border: "#ff2e9e", glow: "rgba(255,46,158,0.4)"     },
     { border: "#9aa5b4", glow: "rgba(154,165,180,0.3)"  },
     { border: "#800020", glow: "rgba(128,0,32,0.4)"     },
     { border: "#1a5c36", glow: "rgba(26,92,54,0.4)"     },
@@ -89,10 +89,10 @@ export default async function CoolWallpapersPage() {
       {/* ── Title ── */}
       <section className="max-w-7xl mx-auto px-6 md:px-[60px] pt-10 pb-4">
         <h1 className="font-display text-3xl md:text-4xl font-bold leading-tight mb-2">
-          Cool <span style={{ color: "#c9a84c", fontStyle: "italic" }}>Wallpapers</span> in HD &amp; 4K for iPhone, Android &amp; PC
+          Cool <span style={{ color: "#ffd23f", fontStyle: "italic" }}>Wallpapers</span> in HD &amp; 4K for iPhone, Android &amp; PC
         </h1>
         <p style={{ color: "#9a94a8", fontSize: "0.9rem", maxWidth: "640px" }}>
-          This is where Haunted Town gets colorful. Cool Wallpapers is home to character crossovers, gaming icons and bold, bright art you won&rsquo;t find anywhere else on the site — starting with Melodie from Brawl Stars, with new drops added regularly. Every wallpaper is free to download in HD and 4K, ready for your iPhone, Android or PC — no account required.
+          This is where Haunted Town gets colorful. Cool Wallpapers is home to character crossovers, gaming icons and bold, bright art you won&rsquo;t find anywhere else on the site — starting with Melodie from Brawl Stars, with new drops added regularly. Every wallpaper is available in HD and 4K, ready for your iPhone, Android or PC.
         </p>
       </section>
 
@@ -188,7 +188,7 @@ export default async function CoolWallpapersPage() {
                       display: "flex", alignItems: "center", justifyContent: "center",
                       background: "#000", borderTop: "2px solid #fff", padding: "4px",
                     }}>
-                      <span style={{ background: "#c0001a", color: "#fff", fontFamily: "monospace", fontSize: "0.6rem", fontWeight: 900, padding: "1px 6px" }}>16+</span>
+                      <span style={{ background: "#ff2e9e", color: "#fff", fontFamily: "monospace", fontSize: "0.6rem", fontWeight: 900, padding: "1px 6px" }}>16+</span>
                     </div>
                   )}
                 </div>

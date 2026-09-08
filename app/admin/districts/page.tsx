@@ -56,7 +56,7 @@ const DISTRICTS = [
     label: "The Character Ward",
     emoji: "🎭",
     desc: "Hooded figures, masks, shadow people & dark armor illustrations.",
-    accent: "#7b2d8b",
+    accent: "#8b2fd9",
   },
 ] as const;
 
@@ -384,7 +384,7 @@ export default function AdminDistrictsPage() {
         /* ── Layout ── */
         .dt-admin-districts {
           min-height: 100vh;
-          background: #0a0a0a;
+          background: #140a28;
           color: #e0e0e0;
           font-family: var(--font-body, system-ui, sans-serif);
           padding: 2rem;
@@ -454,7 +454,7 @@ export default function AdminDistrictsPage() {
         }
         .dt-admin-district-tab--active {
           background: #1a1a1a;
-          border-left-color: var(--tab-accent, #7b2d8b);
+          border-left-color: var(--tab-accent, #8b2fd9);
         }
         .dt-admin-district-tab__emoji {
           font-size: 1.2rem;
@@ -484,8 +484,8 @@ export default function AdminDistrictsPage() {
         .dt-admin-district-tab__count {
           font-size: 0.75rem;
           font-weight: 700;
-          color: var(--tab-accent, #7b2d8b);
-          background: color-mix(in srgb, var(--tab-accent, #7b2d8b) 15%, transparent);
+          color: var(--tab-accent, #8b2fd9);
+          background: color-mix(in srgb, var(--tab-accent, #8b2fd9) 15%, transparent);
           padding: 0.1rem 0.4rem;
           border-radius: 9px;
           flex-shrink: 0;
@@ -500,7 +500,7 @@ export default function AdminDistrictsPage() {
         .dt-admin-district-panel__head {
           background: #111;
           border: 1px solid #222;
-          border-top: 3px solid var(--panel-accent, #7b2d8b);
+          border-top: 3px solid var(--panel-accent, #8b2fd9);
           border-radius: 10px;
           padding: 1.25rem 1.5rem;
         }
@@ -535,7 +535,7 @@ export default function AdminDistrictsPage() {
           font-size: 0.75rem;
           background: #1a1a1a;
           border: 1px solid #333;
-          color: var(--panel-accent, #7b2d8b);
+          color: var(--panel-accent, #8b2fd9);
           padding: 0.2rem 0.5rem;
           border-radius: 4px;
           font-family: monospace;
@@ -630,8 +630,8 @@ export default function AdminDistrictsPage() {
           transform: translateY(-2px);
         }
         .dt-admin-img-card--selected {
-          border-color: #7b2d8b;
-          box-shadow: 0 0 0 2px #7b2d8b55;
+          border-color: #8b2fd9;
+          box-shadow: 0 0 0 2px #8b2fd955;
         }
         .dt-admin-img-card__thumb {
           width: 100%;
@@ -657,8 +657,8 @@ export default function AdminDistrictsPage() {
           transition: background 0.15s;
         }
         .dt-admin-img-card--selected .dt-admin-img-card__check-overlay {
-          background: #7b2d8b;
-          border-color: #7b2d8b;
+          background: #8b2fd9;
+          border-color: #8b2fd9;
         }
         .dt-admin-img-card__info {
           padding: 0.5rem 0.6rem;
@@ -743,7 +743,7 @@ export default function AdminDistrictsPage() {
           width: 1.2rem;
           height: 1.2rem;
           border: 2px solid #333;
-          border-top-color: #7b2d8b;
+          border-top-color: #8b2fd9;
           border-radius: 50%;
           animation: spin 0.8s linear infinite;
         }
@@ -766,7 +766,7 @@ export default function AdminDistrictsPage() {
         .dt-admin-btn:hover { opacity: 0.85; }
         .dt-admin-btn:disabled { opacity: 0.5; cursor: not-allowed; }
         .dt-admin-btn--primary {
-          background: #7b2d8b;
+          background: #8b2fd9;
           color: #fff;
         }
         .dt-admin-btn--ghost {
@@ -814,7 +814,7 @@ export default function AdminDistrictsPage() {
             border-bottom: 2px solid transparent;
           }
           .dt-admin-district-tab--active {
-            border-bottom-color: var(--tab-accent, #7b2d8b);
+            border-bottom-color: var(--tab-accent, #8b2fd9);
           }
           .dt-admin-img-grid {
             grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));

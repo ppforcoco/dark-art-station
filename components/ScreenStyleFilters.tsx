@@ -89,14 +89,14 @@ export default function ScreenStyleFilters({ rootPath, currentPath, currentTag, 
           font-size: 0.56rem;
           letter-spacing: 0.2em;
           text-transform: uppercase;
-          color: rgba(224,224,248,0.4);
+          color: rgba(237,228,255,0.4);
         }
         .hw-style-select {
           font-family: var(--font-space, monospace);
           font-size: 0.68rem;
           letter-spacing: 0.08em;
           text-transform: uppercase;
-          color: #e8e4f8;
+          color: #f3e8ff;
           background: rgba(255,255,255,0.03);
           border: 1px solid rgba(255,255,255,0.14);
           border-radius: 2px;
@@ -105,8 +105,8 @@ export default function ScreenStyleFilters({ rootPath, currentPath, currentTag, 
           max-width: 320px;
           appearance: none;
           -webkit-appearance: none;
-          background-image: linear-gradient(45deg, transparent 50%, rgba(224,224,248,0.5) 50%),
-            linear-gradient(135deg, rgba(224,224,248,0.5) 50%, transparent 50%);
+          background-image: linear-gradient(45deg, transparent 50%, rgba(237,228,255,0.5) 50%),
+            linear-gradient(135deg, rgba(237,228,255,0.5) 50%, transparent 50%);
           background-position: calc(100% - 20px) center, calc(100% - 15px) center;
           background-size: 5px 5px, 5px 5px;
           background-repeat: no-repeat;
@@ -114,12 +114,12 @@ export default function ScreenStyleFilters({ rootPath, currentPath, currentTag, 
         }
         .hw-style-select:hover,
         .hw-style-select:focus {
-          border-color: rgba(192,0,26,0.6);
+          border-color: rgba(255,46,158,0.6);
           outline: none;
         }
         .hw-style-select option {
-          background: #0c0b14;
-          color: #e8e4f8;
+          background: #190c30;
+          color: #f3e8ff;
         }
         @media (min-width: 640px) {
           .hw-filters-wrap {

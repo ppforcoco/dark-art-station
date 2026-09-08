@@ -61,7 +61,7 @@ export default function LoadingSpinner() {
         }
         .hw-top-bar-fill {
           height: 100%;
-          background: linear-gradient(90deg, #c0001a, #ff1a33, #c0001a);
+          background: linear-gradient(90deg, #ff2e9e, #ff4fa3, #ff2e9e);
           animation: hw-bar-fill 8s ease forwards;
         }
 
@@ -75,18 +75,18 @@ export default function LoadingSpinner() {
           display: flex;
           align-items: center;
           gap: 10px;
-          background: #0c0b14;
-          border: 1px solid rgba(192, 0, 26, 0.4);
+          background: #190c30;
+          border: 1px solid rgba(255,46,158, 0.4);
           border-radius: 999px;
           padding: 8px 16px 8px 10px;
-          box-shadow: 0 4px 24px rgba(0,0,0,0.7), 0 0 0 1px rgba(192,0,26,0.1);
+          box-shadow: 0 4px 24px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,46,158,0.1);
           animation: hw-fade-in 0.18s ease forwards;
         }
         .hw-spinner-ring {
           width: 18px;
           height: 18px;
-          border: 2px solid rgba(192, 0, 26, 0.2);
-          border-top-color: #c0001a;
+          border: 2px solid rgba(255,46,158, 0.2);
+          border-top-color: #ff2e9e;
           border-radius: 50%;
           flex-shrink: 0;
           animation: hw-spin 0.65s linear infinite;

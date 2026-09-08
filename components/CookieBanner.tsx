@@ -152,7 +152,7 @@ export default function CookieBanner() {
       >
         <p className="cookie-title">🍪 Cookies</p>
         <p className="cookie-desc">
-          We use AdSense to keep this site free. Personalised ads use cookies.{" "}
+          We use AdSense to display ads. Personalised ads use cookies.{" "}
           <Link prefetch={false} href="/privacy#cookies" className="cookie-link">Privacy</Link>
           {" · "}
           <Link prefetch={false} href="/terms" className="cookie-link">Terms</Link>

@@ -15,7 +15,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const pageContent = await getPageContent("obsessions");
   const desc =
     pageContent?.metaDesc ??
-    "Browse all dark fantasy wallpaper obsessions — horror, gothic, dark humor and more. Free HD downloads for iPhone, Android and PC.";
+    "Browse all dark fantasy wallpaper obsessions — horror, gothic, dark humor and more. HD downloads for iPhone, Android and PC.";
   const title =
     pageContent?.title ?? "Obsessions | Dark Wallpaper Collections | Haunted Wallpapers";
   return {
@@ -65,7 +65,7 @@ export default async function ObsessionsPage() {
       {/* ── Title ── */}
       <section className="max-w-7xl mx-auto px-6 md:px-[60px] pt-10 pb-4">
         <h1 className="font-display text-3xl md:text-4xl font-bold leading-tight mb-6">
-          Choose Your <span style={{ color: "#c9a84c", fontStyle: "italic" }}>Obsession</span>
+          Choose Your <span style={{ color: "#ffd23f", fontStyle: "italic" }}>Obsession</span>
         </h1>
       </section>
 
@@ -84,8 +84,8 @@ export default async function ObsessionsPage() {
               <div key={category} style={{ marginBottom: "48px" }}>
                 <p style={{
                   fontFamily: "var(--font-space,monospace)", fontSize: "0.58rem",
-                  letterSpacing: "0.3em", textTransform: "uppercase", color: "#4a445a",
-                  marginBottom: "14px", paddingBottom: "8px", borderBottom: "1px solid #2a2535",
+                  letterSpacing: "0.3em", textTransform: "uppercase", color: "#5c4a8a",
+                  marginBottom: "14px", paddingBottom: "8px", borderBottom: "1px solid #341a63",
                 }}>
                   — {category}
                 </p>
@@ -100,8 +100,8 @@ export default async function ObsessionsPage() {
 
                     // Rotating border palette — each card gets a distinct colored border
                     const BORDER_PALETTE = [
-                      { border: "#7c3aed", glow: "rgba(124,58,237,0.4)"   }, // purple
-                      { border: "#c0001a", glow: "rgba(192,0,26,0.4)"     }, // crimson
+                      { border: "#9333ea", glow: "rgba(147,51,234,0.4)"   }, // purple
+                      { border: "#ff2e9e", glow: "rgba(255,46,158,0.4)"     }, // crimson
                       { border: "#9aa5b4", glow: "rgba(154,165,180,0.3)"  }, // silver
                       { border: "#800020", glow: "rgba(128,0,32,0.4)"     }, // maroon
                       { border: "#1a5c36", glow: "rgba(26,92,54,0.4)"     }, // dark green
@@ -167,7 +167,7 @@ export default async function ObsessionsPage() {
                             display: "flex", alignItems: "center", justifyContent: "center",
                             background: "#000", borderTop: "2px solid #fff", padding: "4px",
                           }}>
-                            <span style={{ background: "#c0001a", color: "#fff", fontFamily: "monospace", fontSize: "0.6rem", fontWeight: 900, padding: "1px 6px" }}>16+</span>
+                            <span style={{ background: "#ff2e9e", color: "#fff", fontFamily: "monospace", fontSize: "0.6rem", fontWeight: 900, padding: "1px 6px" }}>16+</span>
                           </div>
                         )}
                       </div>

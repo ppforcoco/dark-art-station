@@ -81,7 +81,7 @@ export default function Breadcrumbs({ items }: BreadcrumbsProps) {
               rgba(20, 14, 30, 0.98),
               rgba(14, 10, 22, 0.98)
             );
-            border-bottom: 1px solid rgba(192, 0, 26, 0.15);
+            border-bottom: 1px solid rgba(255,46,158, 0.15);
             position: relative;
             overflow: visible;
           }
@@ -94,7 +94,7 @@ export default function Breadcrumbs({ items }: BreadcrumbsProps) {
             top: 0;
             bottom: 0;
             width: 2px;
-            background: linear-gradient(to bottom, transparent, #8b0000, transparent);
+            background: linear-gradient(to bottom, transparent, #b0179e, transparent);
           }
 
           /* Very faint glow */
@@ -102,7 +102,7 @@ export default function Breadcrumbs({ items }: BreadcrumbsProps) {
             content: '';
             position: absolute;
             inset: 0;
-            background: radial-gradient(ellipse 40% 100% at 0% 50%, rgba(139,0,0,0.06) 0%, transparent 70%);
+            background: radial-gradient(ellipse 40% 100% at 0% 50%, rgba(176,23,158,0.06) 0%, transparent 70%);
             pointer-events: none;
           }
 
@@ -127,7 +127,7 @@ export default function Breadcrumbs({ items }: BreadcrumbsProps) {
           .hw-breadcrumb__sep {
             display: flex;
             align-items: center;
-            color: rgba(139, 0, 0, 0.5);
+            color: rgba(176,23,158, 0.5);
             margin: 0 8px;
             flex-shrink: 0;
           }
@@ -153,8 +153,8 @@ export default function Breadcrumbs({ items }: BreadcrumbsProps) {
 
           .hw-breadcrumb__link:hover {
             color: #e0d4f8;
-            background: rgba(139, 0, 0, 0.1);
-            border-color: rgba(139, 0, 0, 0.25);
+            background: rgba(176,23,158, 0.1);
+            border-color: rgba(176,23,158, 0.25);
           }
 
           .hw-breadcrumb__home-icon {
@@ -172,7 +172,7 @@ export default function Breadcrumbs({ items }: BreadcrumbsProps) {
             font-size: 0.62rem;
             letter-spacing: 0.16em;
             text-transform: uppercase;
-            color: #c9a84c;
+            color: #ffd23f;
             padding: 4px 2px;
             white-space: normal;
             word-break: break-word;

@@ -40,9 +40,9 @@ const TAG_CONFIGS: Record<string, TagConfig> = {
     tagline: "One for you. One for your ride-or-die.",
     description:
       "Matching wallpapers made for two best friends — download both, set one each, and your lock screens tell the same story. Cute, aesthetic, and a little dramatic. Exactly how it should be.",
-    metaTitle: "Matching Wallpapers for Best Friends 2026 | Free HD Duo Downloads",
+    metaTitle: "Matching Wallpapers for Best Friends 2026 | HD Duo Downloads",
     metaDescription:
-      "Free matching wallpapers for best friends. Cute, aesthetic paired phone backgrounds — one for you, one for your bestie. Download both in HD.",
+      "Matching wallpapers for best friends. Cute, aesthetic paired phone backgrounds — one for you, one for your bestie. Download both in HD.",
     emptyTitle: "Coming soon",
     emptyBody: "New best-friend matching pairs are being tagged and added. Check back shortly.",
     aboutHeadline: "Matching wallpapers for ride-or-dies.",
@@ -57,10 +57,10 @@ const TAG_CONFIGS: Record<string, TagConfig> = {
     pillLabel: "Couples",
     tagline: "His and hers, without saying a word.",
     description:
-      "Matching wallpapers built for two — one half for you, one half for them. Set them side by side and it's obvious you're a pair, no caption needed. Free, HD, and made to be downloaded together.",
-    metaTitle: "Matching Wallpapers for Couples 2026 | Free HD His & Hers Downloads",
+      "Matching wallpapers built for two — one half for you, one half for them. Set them side by side and it's obvious you're a pair, no caption needed. HD, and made to be downloaded together.",
+    metaTitle: "Matching Wallpapers for Couples 2026 | HD His & Hers Downloads",
     metaDescription:
-      "Free matching wallpapers for couples. Aesthetic his-and-hers phone backgrounds made as a pair. Download both in HD, no explanation needed.",
+      "Matching wallpapers for couples. Aesthetic his-and-hers phone backgrounds made as a pair. Download both in HD.",
     emptyTitle: "Coming soon",
     emptyBody: "New couple matching pairs are being tagged and added. Check back shortly.",
     aboutHeadline: "Matching wallpapers for two.",
@@ -252,7 +252,7 @@ export default async function MatchingWallpaperTagPage({ params }: PageProps) {
       </section>
 
       <style>{`
-        .hw-mwtag { min-height: 100vh; background-color: var(--bg-primary, #0c0b14); color: var(--text-primary, #e8e4dc); }
+        .hw-mwtag { min-height: 100vh; background-color: var(--bg-primary, #190c30); color: var(--text-primary, #fdf0ff); }
         .hw-mwtag-hero { padding: clamp(32px, 6vw, 64px) clamp(20px, 5vw, 60px) 24px; max-width: 1280px; margin: 0 auto; }
         .hw-mwtag-hero__inner { max-width: 700px; }
         .hw-mwtag-pill {
@@ -273,14 +273,14 @@ export default async function MatchingWallpaperTagPage({ params }: PageProps) {
           line-height: 1.2;
           margin-bottom: 16px;
         }
-        .hw-mwtag-desc { color: rgba(232,228,220,0.72); font-size: clamp(0.9rem, 2vw, 1rem); line-height: 1.75; }
+        .hw-mwtag-desc { color: rgba(253,240,255,0.72); font-size: clamp(0.9rem, 2vw, 1rem); line-height: 1.75; }
         .hw-mwtag-section { max-width: 1280px; margin: 0 auto; padding: 0 clamp(16px, 4vw, 60px) 60px; }
         .hw-mwtag-count {
           font-family: var(--font-space, monospace);
           font-size: 0.6rem;
           letter-spacing: 0.2em;
           text-transform: uppercase;
-          color: #4a445a;
+          color: #5c4a8a;
           margin-bottom: 20px;
         }
         .hw-mwtag-grid {
@@ -299,7 +299,7 @@ export default async function MatchingWallpaperTagPage({ params }: PageProps) {
           padding: 80px 24px;
         }
         .hw-mwtag-empty__sigil {
-          color: #c0001a;
+          color: #ff2e9e;
           font-size: 1.4rem;
           margin-bottom: 20px;
           letter-spacing: 0.3em;
@@ -307,12 +307,12 @@ export default async function MatchingWallpaperTagPage({ params }: PageProps) {
         .hw-mwtag-empty__title {
           font-family: var(--font-display, serif);
           font-size: clamp(1.4rem, 4vw, 2rem);
-          color: var(--text-primary, #e8e4dc);
+          color: var(--text-primary, #fdf0ff);
           font-weight: 300;
           margin-bottom: 12px;
         }
         .hw-mwtag-empty__sub {
-          color: rgba(232,228,220,0.45);
+          color: rgba(253,240,255,0.45);
           font-size: 0.9rem;
           max-width: 420px;
           margin: 0 auto;
@@ -345,10 +345,10 @@ export default async function MatchingWallpaperTagPage({ params }: PageProps) {
           font-weight: 700;
           line-height: 1.4;
           margin: 0 0 14px;
-          color: var(--text-primary, #e8e4dc);
+          color: var(--text-primary, #fdf0ff);
         }
         .hw-mwtag-about__text {
-          color: rgba(232,228,220,0.68);
+          color: rgba(253,240,255,0.68);
           font-size: clamp(0.9rem, 1.8vw, 1rem);
           line-height: 1.8;
           margin: 0 0 12px;

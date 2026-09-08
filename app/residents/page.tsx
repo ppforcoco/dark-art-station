@@ -44,14 +44,14 @@ export default async function ResidentsPage() {
       <main style={{ maxWidth: "1280px", margin: "0 auto", padding: "40px clamp(16px, 5vw, 60px) 80px" }}>
 
         {/* Hero */}
-        <div style={{ marginBottom: "64px", borderLeft: "3px solid #9d4edd", paddingLeft: "28px" }}>
-          <p style={{ fontFamily: "var(--font-space, monospace)", fontSize: "0.65rem", letterSpacing: "0.2em", textTransform: "uppercase", color: "#9d4edd", marginBottom: "14px" }}>
+        <div style={{ marginBottom: "64px", borderLeft: "3px solid #a855f7", paddingLeft: "28px" }}>
+          <p style={{ fontFamily: "var(--font-space, monospace)", fontSize: "0.65rem", letterSpacing: "0.2em", textTransform: "uppercase", color: "#a855f7", marginBottom: "14px" }}>
             Characters of the Town
           </p>
-          <h1 style={{ fontFamily: "var(--font-cinzel, serif)", fontSize: "clamp(2.4rem, 6vw, 4rem)", color: "rgba(232,228,220,0.95)", lineHeight: 1.1, marginBottom: "20px" }}>
+          <h1 style={{ fontFamily: "var(--font-cinzel, serif)", fontSize: "clamp(2.4rem, 6vw, 4rem)", color: "rgba(253,240,255,0.95)", lineHeight: 1.1, marginBottom: "20px" }}>
             The Residents
           </h1>
-          <p style={{ fontFamily: "var(--font-space, monospace)", fontSize: "0.65rem", letterSpacing: "0.12em", color: "rgba(232,228,220,0.35)" }}>
+          <p style={{ fontFamily: "var(--font-space, monospace)", fontSize: "0.65rem", letterSpacing: "0.12em", color: "rgba(253,240,255,0.35)" }}>
             {residents.length} known residents · more emerge each night
           </p>
         </div>
@@ -59,7 +59,7 @@ export default async function ResidentsPage() {
         {/* Grid */}
         {residents.length === 0 ? (
           <div style={{ textAlign: "center", padding: "80px 0" }}>
-            <p style={{ fontFamily: "var(--font-space, monospace)", fontSize: "0.8rem", color: "rgba(232,228,220,0.3)", letterSpacing: "0.15em" }}>
+            <p style={{ fontFamily: "var(--font-space, monospace)", fontSize: "0.8rem", color: "rgba(253,240,255,0.3)", letterSpacing: "0.15em" }}>
               The town is still forming its residents…
             </p>
           </div>
@@ -71,7 +71,7 @@ export default async function ResidentsPage() {
                 href={`/residents/${r.slug}`}
                 style={{ display: "block", textDecoration: "none" }}
               >
-                <div style={{ aspectRatio: "9/16", overflow: "hidden", background: "#0a0812", border: "1px solid rgba(157,78,221,0.2)", marginBottom: "12px", position: "relative" }}>
+                <div style={{ aspectRatio: "9/16", overflow: "hidden", background: "#150a2a", border: "1px solid rgba(168,85,247,0.2)", marginBottom: "12px", position: "relative" }}>
                   <style>{`
                     .res-img-${r.slug.replace(/-/g, "_")} { transition: transform 0.4s ease; }
                     .res-img-${r.slug.replace(/-/g, "_")}:hover { transform: scale(1.04); }
@@ -87,15 +87,15 @@ export default async function ResidentsPage() {
                     />
                   ) : (
                     <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                      <span style={{ color: "rgba(157,78,221,0.25)", fontSize: "3rem" }}>👤</span>
+                      <span style={{ color: "rgba(168,85,247,0.25)", fontSize: "3rem" }}>👤</span>
                     </div>
                   )}
                   {/* Gradient overlay */}
                   <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(5,3,12,0.85) 0%, transparent 50%)" }} />
                   {/* Name on card */}
                   <div style={{ position: "absolute", bottom: "14px", left: "14px", right: "14px" }}>
-                    <p style={{ fontFamily: "var(--font-cinzel, serif)", fontSize: "0.85rem", color: "rgba(232,228,220,0.95)", lineHeight: 1.3, marginBottom: "4px" }}>{r.name}</p>
-                    <p style={{ fontFamily: "var(--font-space, monospace)", fontSize: "0.55rem", color: "rgba(157,78,221,0.8)", letterSpacing: "0.08em", textTransform: "uppercase", lineHeight: 1.5 }}>{r.tagline}</p>
+                    <p style={{ fontFamily: "var(--font-cinzel, serif)", fontSize: "0.85rem", color: "rgba(253,240,255,0.95)", lineHeight: 1.3, marginBottom: "4px" }}>{r.name}</p>
+                    <p style={{ fontFamily: "var(--font-space, monospace)", fontSize: "0.55rem", color: "rgba(168,85,247,0.8)", letterSpacing: "0.08em", textTransform: "uppercase", lineHeight: 1.5 }}>{r.tagline}</p>
                   </div>
                 </div>
               </Link>
@@ -104,8 +104,8 @@ export default async function ResidentsPage() {
         )}
 
         {/* Lore block */}
-        <div style={{ maxWidth: "780px", borderLeft: "3px solid rgba(157,78,221,0.4)", paddingLeft: "32px", margin: "0 auto 80px" }}>
-          <p style={{ fontFamily: "var(--font-space, monospace)", fontSize: "0.6rem", letterSpacing: "0.2em", textTransform: "uppercase", color: "#9d4edd", marginBottom: "24px" }}>
+        <div style={{ maxWidth: "780px", borderLeft: "3px solid rgba(168,85,247,0.4)", paddingLeft: "32px", margin: "0 auto 80px" }}>
+          <p style={{ fontFamily: "var(--font-space, monospace)", fontSize: "0.6rem", letterSpacing: "0.2em", textTransform: "uppercase", color: "#a855f7", marginBottom: "24px" }}>
             About This Place
           </p>
           <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
@@ -117,8 +117,8 @@ export default async function ResidentsPage() {
             ].map((para, i) => (
               <p key={i} style={{
                 color: i === 0
-                  ? "rgba(232,228,220,0.85)"
-                  : "rgba(232,228,220,0.6)",
+                  ? "rgba(253,240,255,0.85)"
+                  : "rgba(253,240,255,0.6)",
                 fontSize: i === 0 ? "1.05rem" : "0.92rem",
                 lineHeight: 1.85,
                 fontStyle: i === 0 ? "italic" : "normal",

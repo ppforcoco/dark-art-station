@@ -43,12 +43,12 @@ function buildFallbackDescription(title: string, tags: string[]): string {
   const firstTag = tags[0] ?? "dark fantasy";
   const secondTag = tags[1] ?? "atmospheric";
   return (
-    title + " is a free high-resolution PC wallpaper from the Haunted Wallpapers dark art collection. " +
+    title + " is a high-resolution PC wallpaper from the Haunted Wallpapers dark art collection. " +
     "Crafted for desktop and widescreen monitors, this piece immerses your screen in themes of " + tagList + ". " +
     "Formatted at a native 16:9 aspect ratio, it fits seamlessly across 1080p, 1440p, and 4K displays without cropping or distortion. " +
     "Whether you gravitate toward " + firstTag + " aesthetics or simply want a " + secondTag + " backdrop that stands out, " +
     "this wallpaper delivers moody, original artwork at no cost. " +
-    "No account or sign-up is required — click download and the full-resolution file is yours instantly. " +
+    "Click download and the full-resolution file is yours instantly. " +
     "Every image in our PC collection is produced exclusively for Haunted Wallpapers, " +
     "so you will not find this artwork duplicated across generic wallpaper repositories."
   );
@@ -62,12 +62,12 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const tagLine = image.tags.slice(0, 3).map((t) => `#${t}`).join(" ");
   const plainDesc = (image.metaDescription ?? image.description ?? "")
     .replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim().slice(0, 200);
-  const metaDesc = plainDesc || `${image.title} — free dark fantasy PC wallpaper. ${tagLine}. Download instantly, no account required.`;
+  const metaDesc = plainDesc || `${image.title} — dark fantasy PC wallpaper. ${tagLine}. Download instantly.`;
   const plainMetaDesc = metaDesc.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
   const ogImage = getPublicUrl(image.r2Key);
   return {
     metadataBase: new URL(siteUrl),
-    title: `${image.title} — Free PC Wallpaper | HAUNTED WALLPAPERS`,
+    title: `${image.title} — PC Wallpaper | HAUNTED WALLPAPERS`,
     description: plainMetaDesc,
     keywords: ["pc wallpaper", "dark wallpaper pc", "hd pc wallpaper", image.title, ...image.tags],
     openGraph: {
@@ -257,11 +257,11 @@ export default async function PcImagePage({ params }: PageProps) {
                 <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", marginTop: "8px", marginBottom: "4px" }}>
                   {image.tags.filter((t: string) => t.startsWith("badge-")).map((tag: string) => {
                     const badgeMap: Record<string, { label: string; color: string; bg: string }> = {
-                      "badge-premium":   { label: "⭐ Premium",   color: "#c9a84c", bg: "rgba(201,168,76,0.15)" },
-                      "badge-trending":  { label: "🔥 Trending",  color: "#ff6b35", bg: "rgba(255,107,53,0.15)" },
+                      "badge-premium":   { label: "⭐ Premium",   color: "#ffd23f", bg: "rgba(255,210,63,0.15)" },
+                      "badge-trending":  { label: "🔥 Trending",  color: "#ff8c42", bg: "rgba(255,140,66,0.15)" },
                       "badge-hot":       { label: "💀 Hot",        color: "#e040fb", bg: "rgba(224,64,251,0.15)" },
                       "badge-exclusive": { label: "🌙 Exclusive",  color: "#42a5f5", bg: "rgba(66,165,245,0.15)" },
-                      "badge-limited":   { label: "⏳ Limited",    color: "#ff5252", bg: "rgba(255,82,82,0.15)" },
+                      "badge-limited":   { label: "⏳ Limited",    color: "#ff6b9d", bg: "rgba(255,107,157,0.15)" },
                     };
                     const b = badgeMap[tag];
                     if (!b) return null;
@@ -354,8 +354,8 @@ export default async function PcImagePage({ params }: PageProps) {
           cursor: pointer;
         }
         .hw-img-arrow:hover {
-          background: rgba(139, 0, 0, 0.72);
-          border-color: rgba(192, 0, 26, 0.6);
+          background: rgba(176,23,158, 0.72);
+          border-color: rgba(255,46,158, 0.6);
           color: #fff;
         }
         .hw-img-arrow svg {
@@ -458,9 +458,9 @@ export default async function PcImagePage({ params }: PageProps) {
         .description-html { color-scheme: dark; }
         .description-html p { margin-bottom: 0.75rem; }
         .description-html p:last-child { margin-bottom: 0; }
-        .description-html a { color: #8b0000; text-decoration: underline; }
-        .description-html a:hover { color: #c0001a; }
-        .description-html strong, .description-html b { color: #f0ecff; }
+        .description-html a { color: #b0179e; text-decoration: underline; }
+        .description-html a:hover { color: #ff2e9e; }
+        .description-html strong, .description-html b { color: #f6ecff; }
         .description-html ul, .description-html ol { padding-left: 1.25rem; margin-bottom: 0.75rem; }
         .description-html li { margin-bottom: 0.25rem; }
 
@@ -471,17 +471,17 @@ export default async function PcImagePage({ params }: PageProps) {
             border-radius: 2px;
           }
           @keyframes hwDlGlowPulse {
-            0%, 100% { box-shadow: 0 0 12px rgba(192,0,26,0.35), 0 0 28px rgba(192,0,26,0.15); }
-            50%       { box-shadow: 0 0 22px rgba(192,0,26,0.65), 0 0 50px rgba(192,0,26,0.28); }
+            0%, 100% { box-shadow: 0 0 12px rgba(255,46,158,0.35), 0 0 28px rgba(255,46,158,0.15); }
+            50%       { box-shadow: 0 0 22px rgba(255,46,158,0.65), 0 0 50px rgba(255,46,158,0.28); }
           }
         }
 
         /* ── Social share ── */
         .social-share {
-          border: 1px solid rgba(192,0,26,0.25);
+          border: 1px solid rgba(255,46,158,0.25);
           border-radius: 6px;
           padding: 12px 14px;
-          background: rgba(192,0,26,0.04);
+          background: rgba(255,46,158,0.04);
         }
         .social-share-label {
           font-family: var(--font-space, monospace);
@@ -503,8 +503,8 @@ export default async function PcImagePage({ params }: PageProps) {
         }
         .social-btn svg { width: 14px; height: 14px; fill: currentColor; flex-shrink: 0; }
         .social-btn:hover { border-color: rgba(255,255,255,0.25); background: rgba(255,255,255,0.04); }
-        .social-btn--native { border-color: rgba(192,0,26,0.4); color: #f0e8e8; }
-        .social-btn--native:hover { background: rgba(192,0,26,0.1); }
+        .social-btn--native { border-color: rgba(255,46,158,0.4); color: #ffe8f3; }
+        .social-btn--native:hover { background: rgba(255,46,158,0.1); }
         .social-btn--pinterest { color: #e60023; border-color: rgba(230,0,35,0.3); }
         .social-btn--x { color: var(--text-primary); }
         .social-btn--whatsapp { color: #25d366; border-color: rgba(37,211,102,0.3); }

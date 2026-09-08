@@ -47,7 +47,7 @@
 .hp-hero-num {
   font-family: 'Arial Black', Arial, sans-serif;
   font-size: clamp(1.3rem, 3vw, 2rem);
-  font-weight: 900; color: #f0ecff;
+  font-weight: 900; color: #f6ecff;
 }
 .hp-hero-numlabel {
   font-family: Arial, sans-serif;
@@ -60,7 +60,7 @@
 /* BUTTONS */
 .hp-btn-red {
   font-family: Arial, sans-serif; font-size: clamp(.62rem,.78vw,.74rem);
-  letter-spacing: .15em; text-transform: uppercase; color: #f0ecff;
+  letter-spacing: .15em; text-transform: uppercase; color: #f6ecff;
   background: #b8001a; border: 1px solid #b8001a;
   padding: 12px 24px; text-decoration: none;
   display: inline-flex; align-items: center;
@@ -68,12 +68,12 @@
 .hp-btn-red:hover { background: #8f0013 }
 .hp-btn-ghost {
   font-family: Arial, sans-serif; font-size: clamp(.62rem,.78vw,.74rem);
-  letter-spacing: .15em; text-transform: uppercase; color: #c9a84c;
-  background: transparent; border: 1px solid rgba(201,168,76,.3);
+  letter-spacing: .15em; text-transform: uppercase; color: #ffd23f;
+  background: transparent; border: 1px solid rgba(255,210,63,.3);
   padding: 12px 24px; text-decoration: none;
   display: inline-flex; align-items: center;
 }
-.hp-btn-ghost:hover { border-color: #c9a84c }
+.hp-btn-ghost:hover { border-color: #ffd23f }
 
 /* SECTION SHELL */
 .hp-section { padding: clamp(28px,4vw,48px) clamp(16px,5vw,48px) }
@@ -90,7 +90,7 @@
 .hp-section-title {
   font-family: 'Arial Black', Arial, sans-serif;
   font-size: clamp(1.05rem,2.2vw,1.5rem);
-  font-weight: 900; color: #f0ecff; margin: 0;
+  font-weight: 900; color: #f6ecff; margin: 0;
 }
 .hp-section-sub {
   font-family: Arial, sans-serif; font-style: italic;
@@ -100,10 +100,10 @@
   font-family: Arial, sans-serif; font-size: clamp(.5rem,.62vw,.58rem);
   letter-spacing: .16em; text-transform: uppercase;
   color: #d4b85c; text-decoration: none;
-  border-bottom: 1px solid rgba(201,168,76,.4);
+  border-bottom: 1px solid rgba(255,210,63,.4);
   padding-bottom: 2px; white-space: nowrap; flex-shrink: 0;
 }
-.hp-see-all:hover { border-color: #c9a84c }
+.hp-see-all:hover { border-color: #ffd23f }
 
 .hp-new     { background: #06050e }
 .hp-premium { background: #080710 }
@@ -116,7 +116,7 @@
 .hp-worlds-head { text-align:center; margin-bottom:clamp(16px,2.5vw,26px) }
 .hp-worlds-title {
   font-family:'Arial Black', Arial, sans-serif;
-  font-size:clamp(.95rem,2.2vw,1.5rem); font-weight:900; color:#f0ecff; margin:0 0 6px;
+  font-size:clamp(.95rem,2.2vw,1.5rem); font-weight:900; color:#f6ecff; margin:0 0 6px;
 }
 .hp-worlds-sub {
   font-family:Arial, sans-serif; font-size:clamp(.5rem,.6vw,.58rem);
@@ -140,7 +140,7 @@
 }
 .hp-world-label {
   font-family:'Arial Black', Arial, sans-serif;
-  font-size:clamp(.48rem,.65vw,.58rem); font-weight:700; color:#f0ecff; text-align:center;
+  font-size:clamp(.48rem,.65vw,.58rem); font-weight:700; color:#f6ecff; text-align:center;
 }
 .hp-world-sub {
   font-family:Arial, sans-serif; font-size:clamp(.32rem,.42vw,.4rem);
@@ -182,7 +182,7 @@
 .hp-wotd-info { flex:1; display:flex; flex-direction:column; gap:10px; text-align:left }
 .hp-wotd-title {
   font-family:'Arial Black', Arial, sans-serif;
-  font-size:clamp(.95rem,2.2vw,1.5rem); font-weight:700; color:#f0e8d8; margin:0; line-height:1.25;
+  font-size:clamp(.95rem,2.2vw,1.5rem); font-weight:700; color:#fff3e0; margin:0; line-height:1.25;
 }
 .hp-wotd-note {
   font-family:Arial, sans-serif;
@@ -203,8 +203,8 @@
   display:flex; flex-direction:column; text-decoration:none; overflow:hidden;
   border:1px solid rgba(255,255,255,.06); background:#0a0818;
 }
-.hp-col-card:hover { border-color:rgba(201,168,76,.35) }
-.hp-col-thumb { position:relative; aspect-ratio:9/16; overflow:hidden; background:#0d0b18 }
+.hp-col-card:hover { border-color:rgba(255,210,63,.35) }
+.hp-col-thumb { position:relative; aspect-ratio:9/16; overflow:hidden; background:#190c30 }
 .hp-col-thumb--wide { aspect-ratio:16/9 }
 .hp-col-info { padding:6px 8px 8px; display:flex; flex-direction:column; gap:2px }
 .hp-col-cat {
@@ -264,7 +264,7 @@
 .hp-top100-name {
   font-family: 'Arial Black', Arial, sans-serif;
   font-size: clamp(.78rem,1.1vw,.95rem); font-weight: 700;
-  color: #f0e8d8; line-height: 1.2; position: relative;
+  color: #fff3e0; line-height: 1.2; position: relative;
 }
 .hp-top100-card--amoled .hp-top100-name { color: #e8e8e8; }
 .hp-top100-card--horror  .hp-top100-name { color: #ff6b6b; }
@@ -313,7 +313,7 @@
 .hp-mood-card:hover { background: #0e0b20; }
 .hp-mood-card--3am:hover     { border-color: rgba(0,200,255,.3); }
 .hp-mood-card--villain:hover { border-color: rgba(224,0,31,.35); }
-.hp-mood-card--haunted:hover { border-color: rgba(201,168,76,.3); }
+.hp-mood-card--haunted:hover { border-color: rgba(255,210,63,.3); }
 .hp-mood-card--quiet:hover   { border-color: rgba(147,51,234,.3); }
 .hp-mood-card--all:hover     { border-color: rgba(255,255,255,.2); }
 .hp-mood-icon {
@@ -322,7 +322,7 @@
 .hp-mood-label {
   font-family: 'Arial Black', Arial, sans-serif;
   font-size: clamp(.68rem,.85vw,.8rem); font-weight: 700;
-  color: #f0e8d8; text-align: center;
+  color: #fff3e0; text-align: center;
 }
 .hp-mood-sub {
   font-family: Arial, sans-serif;

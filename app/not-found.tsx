@@ -82,7 +82,7 @@ export default async function NotFound() {
                 />
                 <div className="nf-card-overlay">
                   <span className="nf-card-title">{img.title}</span>
-                  <span className="nf-card-cta">↓ Free Download</span>
+                  <span className="nf-card-cta">↓ download</span>
                 </div>
               </Link>
             ))}
@@ -92,14 +92,14 @@ export default async function NotFound() {
 
       <style>{`
         .nf-page {
-          background: #070710;
+          background: #100822;
           min-height: 100vh;
-          color: #f0ecff;
+          color: #f6ecff;
         }
         [data-theme="fog"] .nf-page { background: var(--bg-primary) !important; color: var(--text-primary) !important; }
-        [data-theme="fog"] .nf-title { color: #1a1814 !important; }
-        [data-theme="fog"] .nf-desc { color: #5a5450 !important; }
-        [data-theme="fog"] .nf-suggestions-label { color: #7a7468 !important; }
+        [data-theme="fog"] .nf-title { color: #2b1b47 !important; }
+        [data-theme="fog"] .nf-desc { color: #7c5ca0 !important; }
+        [data-theme="fog"] .nf-suggestions-label { color: #9b7fc4 !important; }
         [data-theme="fog"] .nf-card { background: #e8e3d8 !important; border-color: rgba(0,0,0,0.08) !important; }
         [data-theme="fog"] .nf-btn-secondary { color: #a07828 !important; border-color: rgba(160,120,40,0.4) !important; }
         [data-theme="fog"] .nf-btn-secondary:hover { border-color: #a07828 !important; background: rgba(160,120,40,0.08) !important; }
@@ -123,15 +123,15 @@ export default async function NotFound() {
           font-size: 0.65rem;
           letter-spacing: 0.5em;
           text-transform: uppercase;
-          color: #c0001a;
-          border: 1px solid rgba(192,0,26,0.35);
+          color: #ff2e9e;
+          border: 1px solid rgba(255,46,158,0.35);
           padding: 6px 20px;
         }
         .nf-title {
           font-family: var(--font-cinzel), cursive;
           font-size: clamp(3rem, 8vw, 6rem);
           font-weight: 900;
-          color: #f0ecff;
+          color: #f6ecff;
           line-height: 1.05;
           margin: 0;
           letter-spacing: -0.01em;
@@ -140,7 +140,7 @@ export default async function NotFound() {
           font-family: var(--font-cormorant), Georgia, serif;
           font-style: italic;
           font-size: clamp(1.1rem, 2.5vw, 1.4rem);
-          color: #6a6080;
+          color: #8670b3;
           line-height: 1.65;
           max-width: 520px;
           margin: 0;
@@ -157,9 +157,9 @@ export default async function NotFound() {
           font-size: 0.68rem;
           letter-spacing: 0.18em;
           text-transform: uppercase;
-          color: #f0ecff;
-          background: #c0001a;
-          border: 1px solid #c0001a;
+          color: #f6ecff;
+          background: #ff2e9e;
+          border: 1px solid #ff2e9e;
           padding: 16px 32px;
           text-decoration: none;
           transition: background 0.2s;
@@ -173,9 +173,9 @@ export default async function NotFound() {
           font-size: 0.68rem;
           letter-spacing: 0.18em;
           text-transform: uppercase;
-          color: #c9a84c;
+          color: #ffd23f;
           background: transparent;
-          border: 1px solid rgba(201,168,76,0.4);
+          border: 1px solid rgba(255,210,63,0.4);
           padding: 16px 32px;
           text-decoration: none;
           transition: border-color 0.2s, background 0.2s;
@@ -183,7 +183,7 @@ export default async function NotFound() {
           display: flex;
           align-items: center;
         }
-        .nf-btn-secondary:hover { border-color: #c9a84c; background: rgba(201,168,76,0.08); }
+        .nf-btn-secondary:hover { border-color: #ffd23f; background: rgba(255,210,63,0.08); }
 
         /* ── Suggestions grid ── */
         .nf-suggestions {
@@ -196,7 +196,7 @@ export default async function NotFound() {
           font-size: 0.58rem;
           letter-spacing: 0.3em;
           text-transform: uppercase;
-          color: #4a445a;
+          color: #5c4a8a;
           text-align: center;
           margin-bottom: 24px;
         }
@@ -215,12 +215,12 @@ export default async function NotFound() {
           overflow: hidden;
           display: block;
           text-decoration: none;
-          border: 1px solid #2a2535;
-          background: #0a0a0a;
+          border: 1px solid #341a63;
+          background: #140a28;
           transition: border-color 0.25s, transform 0.25s;
         }
         .nf-card:hover {
-          border-color: rgba(192,0,26,0.6);
+          border-color: rgba(255,46,158,0.6);
           transform: translateY(-4px);
         }
         .nf-card-overlay {
@@ -240,7 +240,7 @@ export default async function NotFound() {
           font-family: var(--font-cormorant), serif;
           font-style: italic;
           font-size: 0.9rem;
-          color: #f0ecff;
+          color: #f6ecff;
           line-height: 1.3;
         }
         .nf-card-cta {
@@ -248,7 +248,7 @@ export default async function NotFound() {
           font-size: 0.5rem;
           letter-spacing: 0.15em;
           text-transform: uppercase;
-          color: #c9a84c;
+          color: #ffd23f;
         }
       `}</style>
     </main>

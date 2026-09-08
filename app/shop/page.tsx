@@ -72,9 +72,9 @@ export default async function ShopPage() {
 
       <section className="max-w-7xl mx-auto px-6 md:px-[60px] pt-10 pb-4">
         <h1 className="font-display text-3xl md:text-4xl font-bold leading-tight mb-2">
-          Wear the <span style={{ color: "#c9a84c", fontStyle: "italic" }}>Darkness</span>
+          Wear the <span style={{ color: "#ffd23f", fontStyle: "italic" }}>Darkness</span>
         </h1>
-        <p style={{ color: "#a89bc0", fontSize: "0.95rem", maxWidth: "620px" }}>
+        <p style={{ color: "#c9a8e8", fontSize: "0.95rem", maxWidth: "620px" }}>
           Original dark art, printed on demand — phone cases, tees and more. Every piece made when you order it.
         </p>
       </section>

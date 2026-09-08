@@ -9,7 +9,7 @@ export default function Loading() {
       }}
     >
       {/* Breadcrumb skeleton */}
-      <div style={{ height: "40px", borderBottom: "1px solid #2a2535" }} />
+      <div style={{ height: "40px", borderBottom: "1px solid #341a63" }} />
 
       {/* Header skeleton */}
       <div style={{ maxWidth: "1280px", margin: "0 auto", padding: "40px 24px 24px" }}>
@@ -41,7 +41,7 @@ export default function Loading() {
           50%       { opacity: 0.8; }
         }
         .skel {
-          background: #2a2535;
+          background: #341a63;
           border-radius: 3px;
           animation: skel-pulse 1.6s ease-in-out infinite;
         }
@@ -49,13 +49,13 @@ export default function Loading() {
         .skel-md  { height: 16px; }
         .skel-lg  { height: 28px; }
         .skel-img {
-          background: #2a2535;
+          background: #341a63;
           width: 100%;
           aspect-ratio: 9/16;
           animation: skel-pulse 1.6s ease-in-out infinite;
         }
         .skel-btn {
-          background: #2a2535;
+          background: #341a63;
           height: 44px;
           width: 100%;
           animation: skel-pulse 1.6s ease-in-out infinite;
@@ -65,7 +65,7 @@ export default function Loading() {
           grid-template-columns: repeat(4, 1fr);
           gap: 24px;
         }
-        .skel-card { background: #1a1727; }
+        .skel-card { background: #2a1650; }
         @media (max-width: 1023px) { .skel-grid { grid-template-columns: repeat(2, 1fr); } }
         @media (max-width: 639px)  { .skel-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; } }
       `}</style>

@@ -54,7 +54,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const metaDesc =
     collection.metaDescription ??
     collection.description ??
-    `Download ${collection.title} wallpapers free for iPhone, Android and PC. High-quality dark art wallpapers, instant download.`;
+    `Download ${collection.title} wallpapers for iPhone, Android and PC. High-quality dark art wallpapers, instant download.`;
 
   return {
     title: `${collection.title} | Haunted Wallpapers`,
@@ -143,8 +143,8 @@ export default async function CollectionPage({ params }: PageProps) {
   const r2Base = process.env.NEXT_PUBLIC_R2_PUBLIC_URL ?? "";
 
   const fallbackDesc =
-    `${collection.title} is a curated collection of free dark art wallpapers from Haunted Wallpapers. ` +
-    `Each piece is available as an instant free download — no account required, no watermarks. ` +
+    `${collection.title} is a curated collection of dark art wallpapers from Haunted Wallpapers. ` +
+    `Each piece is available as an instant download — no watermarks. ` +
     `Formatted for mobile portrait screens (9:16) and optimised for AMOLED displays.`;
 
   return (
@@ -177,7 +177,7 @@ export default async function CollectionPage({ params }: PageProps) {
           font-size: 0.55rem;
           letter-spacing: 0.24em;
           text-transform: uppercase;
-          color: #4a445a;
+          color: #5c4a8a;
           margin: 0;
         }
         .coll-desktop-title {
@@ -186,7 +186,7 @@ export default async function CollectionPage({ params }: PageProps) {
           font-weight: 700;
           line-height: 1.18;
           margin: 12px 0 16px;
-          color: var(--text-primary, #e8e4f8);
+          color: var(--text-primary, #f3e8ff);
         }
         .coll-desktop-count {
           display: inline-block;
@@ -194,15 +194,15 @@ export default async function CollectionPage({ params }: PageProps) {
           font-size: 0.58rem;
           letter-spacing: 0.16em;
           text-transform: uppercase;
-          color: #8a809a;
+          color: #af98cf;
           border: 1px solid rgba(255,255,255,0.08);
           padding: 5px 12px;
           border-radius: 3px;
         }
         .coll-info-adult {
-          background: rgba(192,0,26,0.12);
-          border: 1px solid rgba(192,0,26,0.35);
-          color: #c0001a;
+          background: rgba(255,46,158,0.12);
+          border: 1px solid rgba(255,46,158,0.35);
+          color: #ff2e9e;
           font-family: monospace;
           font-size: 0.55rem;
           letter-spacing: 0.1em;
@@ -233,7 +233,7 @@ export default async function CollectionPage({ params }: PageProps) {
           position: relative;
           width: 100%;
           aspect-ratio: 9 / 19.5;
-          background: #080810;
+          background: #120826;
           border-radius: 28px;
           border: 2px solid rgba(255,255,255,0.12);
           box-shadow:
@@ -288,7 +288,7 @@ export default async function CollectionPage({ params }: PageProps) {
           position: absolute;
           inset: 0;
           border-radius: 26px;
-          background: linear-gradient(to top, rgba(10,8,18,0.82) 0%, transparent 50%);
+          background: linear-gradient(to top, rgba(21,10,42,0.82) 0%, transparent 50%);
           display: flex;
           align-items: flex-end;
           justify-content: center;
@@ -303,7 +303,7 @@ export default async function CollectionPage({ params }: PageProps) {
           font-size: 0.5rem;
           letter-spacing: 0.16em;
           text-transform: uppercase;
-          color: #c9a84c;
+          color: #ffd23f;
         }
 
         /* Title under each phone */
@@ -313,7 +313,7 @@ export default async function CollectionPage({ params }: PageProps) {
           font-size: 0.52rem;
           letter-spacing: 0.1em;
           text-transform: uppercase;
-          color: #c4bdd8;
+          color: #d9c8f0;
           text-align: center;
           white-space: nowrap;
           overflow: hidden;
@@ -343,12 +343,12 @@ export default async function CollectionPage({ params }: PageProps) {
           color: #ffffff;
           margin: 0 0 24px;
         }
-        .coll-desc-heading .coll-desc-accent { color: #c0001a; }
+        .coll-desc-heading .coll-desc-accent { color: #ff2e9e; }
         .coll-desc-body {
           font-family: monospace;
           font-size: 0.85rem;
           line-height: 1.9;
-          color: #a89bc0;
+          color: #c9a8e8;
           width: 100%;
           max-width: 100%;
           overflow-x: hidden;
@@ -515,23 +515,23 @@ export default async function CollectionPage({ params }: PageProps) {
               color: "#ffffff", marginBottom: "24px",
               display: "flex", alignItems: "center", gap: "10px",
             }}>
-              <span style={{ color: "#c0001a" }}>✦</span> You May Also Like
+              <span style={{ color: "#ff2e9e" }}>✦</span> You May Also Like
             </h2>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))", gap: "16px" }}>
               {relatedCollections.map((rc) => {
                 const thumb = rc.thumbnail ? `${r2Base}/${rc.thumbnail}` : null;
                 return (
                   <Link key={rc.slug} href={`/collections/${rc.slug}`} style={{ textDecoration: "none", display: "block" }}>
-                    <div style={{ position: "relative", aspectRatio: "9/16", overflow: "hidden", background: "#0f0c1a", border: "1px solid rgba(255,255,255,0.06)", marginBottom: "10px" }}>
+                    <div style={{ position: "relative", aspectRatio: "9/16", overflow: "hidden", background: "#1d0f38", border: "1px solid rgba(255,255,255,0.06)", marginBottom: "10px" }}>
                       {thumb
                         // eslint-disable-next-line @next/next/no-img-element
                         ? <img src={thumb} alt={rc.thumbnailAlt ?? rc.title} style={{ width: "100%", height: "100%", objectFit: "cover" }} loading="lazy" />
-                        : <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", color: "rgba(192,0,26,0.25)", fontSize: "2rem" }}>✦</div>
+                        : <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", color: "rgba(255,46,158,0.25)", fontSize: "2rem" }}>✦</div>
                       }
                     </div>
-                    <span style={{ fontFamily: "monospace", fontSize: "0.48rem", letterSpacing: "0.18em", textTransform: "uppercase", color: "#c0001a", display: "block", marginBottom: "4px" }}>{rc.category}</span>
-                    <h3 style={{ fontFamily: "var(--font-cinzel, serif)", fontSize: "0.85rem", fontWeight: 700, color: "#e8e4f8", margin: "0 0 4px", lineHeight: 1.3 }}>{rc.title}</h3>
-                    <span style={{ fontFamily: "monospace", fontSize: "0.5rem", letterSpacing: "0.1em", textTransform: "uppercase", color: "#4a445a" }}>{rc._count.images} wallpapers</span>
+                    <span style={{ fontFamily: "monospace", fontSize: "0.48rem", letterSpacing: "0.18em", textTransform: "uppercase", color: "#ff2e9e", display: "block", marginBottom: "4px" }}>{rc.category}</span>
+                    <h3 style={{ fontFamily: "var(--font-cinzel, serif)", fontSize: "0.85rem", fontWeight: 700, color: "#f3e8ff", margin: "0 0 4px", lineHeight: 1.3 }}>{rc.title}</h3>
+                    <span style={{ fontFamily: "monospace", fontSize: "0.5rem", letterSpacing: "0.1em", textTransform: "uppercase", color: "#5c4a8a" }}>{rc._count.images} wallpapers</span>
                   </Link>
                 );
               })}
@@ -553,8 +553,8 @@ function LockedOverlay() {
       background: "rgba(10,8,16,0.5)",
     }}>
       <span style={{ fontSize: "1.6rem" }}>🔒</span>
-      <span style={{ fontSize: "0.5rem", letterSpacing: "0.2em", textTransform: "uppercase", color: "#c9a84c", fontFamily: "monospace", fontWeight: 700 }}>Back in the Vault</span>
-      <span style={{ fontSize: "0.45rem", color: "rgba(201,168,76,0.6)", fontFamily: "monospace" }}>Returns in 24h</span>
+      <span style={{ fontSize: "0.5rem", letterSpacing: "0.2em", textTransform: "uppercase", color: "#ffd23f", fontFamily: "monospace", fontWeight: 700 }}>Back in the Vault</span>
+      <span style={{ fontSize: "0.45rem", color: "rgba(255,210,63,0.6)", fontFamily: "monospace" }}>Returns in 24h</span>
     </div>
   );
 }

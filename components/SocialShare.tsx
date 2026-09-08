@@ -43,7 +43,7 @@ function ShareIcon() {
 
 export default function SocialShare({ title, imageUrl, pageUrl }: SocialShareProps) {
   const url = pageUrl ?? "";
-  const text = `${title} — free dark fantasy wallpaper`;
+  const text = `${title} — dark fantasy wallpaper`;
   const encoded = {
     url:   encodeURIComponent(url),
     text:  encodeURIComponent(text),

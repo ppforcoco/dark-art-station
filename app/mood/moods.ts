@@ -6,8 +6,8 @@ export const MOODS = [
     label:    "Paranoid",
     glyph:    "",
     desc:     "Something is watching. It knows your schedule.",
-    color:    "#c0001a",
-    gradient: "radial-gradient(ellipse at 50% 0%, rgba(192,0,26,0.18) 0%, transparent 65%)",
+    color:    "#ff2e9e",
+    gradient: "radial-gradient(ellipse at 50% 0%, rgba(255,46,158,0.18) 0%, transparent 65%)",
     tags:     ["paranoid", "eye", "surveillance", "watching", "horror", "shadow", "ghost", "creepy", "unsettling"],
   },
   {
@@ -24,8 +24,8 @@ export const MOODS = [
     label:    "Powerful",
     glyph:    "",
     desc:     "You didn't survive this far to be small.",
-    color:    "#c9a84c",
-    gradient: "radial-gradient(ellipse at 50% 0%, rgba(201,168,76,0.15) 0%, transparent 65%)",
+    color:    "#ffd23f",
+    gradient: "radial-gradient(ellipse at 50% 0%, rgba(255,210,63,0.15) 0%, transparent 65%)",
     // "god" and "demon" removed
     tags:     ["powerful", "warrior", "fire", "lightning", "dragon", "dark-fantasy", "epic", "crimson", "amoled"],
   },

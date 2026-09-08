@@ -14,14 +14,14 @@ export const revalidate = 3600;
 const WORLDS = {
   purple: {
     label:      "Void",
-    dot:        "#7c3aed",
+    dot:        "#9333ea",
     accent:     "#a855f7",
     accentDim:  "#6d28d9",
     bg:         "#0a0614",
     bgDeep:     "#06030d",
     border:     "rgba(147,51,234,0.3)",
     borderHi:   "rgba(168,85,247,0.7)",
-    glow:       "rgba(124,58,237,0.35)",
+    glow:       "rgba(147,51,234,0.35)",
     text:       "#e9d5ff",
     textMuted:  "#c4b5fd",
     tags:       ["purple", "violet", "lavender", "indigo", "dark purple", "neon purple", "amethyst"],
@@ -52,13 +52,13 @@ const WORLDS = {
   red: {
     label:      "Crimson",
     dot:        "#e0001f",
-    accent:     "#ff1a33",
-    accentDim:  "#8b0000",
+    accent:     "#ff4fa3",
+    accentDim:  "#b0179e",
     bg:         "#0d0000",
     bgDeep:     "#080000",
-    border:     "rgba(192,0,26,0.3)",
-    borderHi:   "rgba(255,26,51,0.7)",
-    glow:       "rgba(192,0,26,0.35)",
+    border:     "rgba(255,46,158,0.3)",
+    borderHi:   "rgba(255,79,163,0.7)",
+    glow:       "rgba(255,46,158,0.35)",
     text:       "#ffe0e0",
     textMuted:  "#ffb3b3",
     tags:       ["red", "crimson", "scarlet", "dark red"],
@@ -209,7 +209,7 @@ export async function generateMetadata(
 
   return {
     title: `${world.label} World — Dark Wallpapers | Haunted Wallpapers`,
-    description: world.desc + " Free dark wallpapers for iPhone and Android.",
+    description: world.desc + " Dark wallpapers for iPhone and Android.",
     openGraph: {
       title: `${world.label} World | Haunted Wallpapers`,
       description: world.desc,
@@ -471,7 +471,7 @@ export default async function WorldPage({
           width: 100%;
           aspect-ratio: 9 / 16;
           overflow: hidden;
-          background: #0a0a0a;
+          background: #140a28;
         }
 
         .world-card-cap {
@@ -699,10 +699,6 @@ export default async function WorldPage({
             <div className="world-stat">
               <strong>{total}</strong>
               Wallpapers
-            </div>
-            <div className="world-stat">
-              <strong>Free</strong>
-              Always
             </div>
             <div className="world-stat">
               <strong>4K</strong>

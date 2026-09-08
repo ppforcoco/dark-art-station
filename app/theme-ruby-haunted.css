@@ -8,7 +8,7 @@
 
 /* ── 1. DESIGN TOKENS — remaps every var(--...) already used site-wide ── */
 :root {
-  --void:         #0d0b14 !important;
+  --void:         #180b2c !important;
   --black:        #161222 !important;
   --deep:         #1c1730 !important;
   --ash:          #262038 !important;
@@ -21,15 +21,15 @@
   --ember:        #b9a0f0 !important;
   --gold:         #b9a0f0 !important;
 
-  --bg-primary:   #0d0b14 !important;
+  --bg-primary:   #180b2c !important;
   --bg-secondary: #161222 !important;
   --text-primary: #f3ede1 !important;
   --text-muted:   #c9c2b4 !important;
   --border-dim:   rgba(243,237,225,0.14) !important;
-  --nav-bg:       rgba(13,11,20,0.9) !important;
+  --nav-bg:       rgba(24,11,44,0.9) !important;
 }
 
-html { color-scheme: dark; background-color: #0d0b14 !important; }
+html { color-scheme: dark; background-color: #180b2c !important; }
 body { background-color: var(--bg-primary) !important; color: var(--text-primary) !important; }
 
 /* ── 2. TYPOGRAPHY — Space Grotesk body, Anton display ── */
@@ -81,7 +81,7 @@ h1, h2, h3,
 .hw-nav__drip-drop { background: var(--ember) !important; }
 
 /* ── 3b. SEARCH OVERLAY ── */
-.hw-search-overlay { background: rgba(13,11,20,0.93) !important; }
+.hw-search-overlay { background: rgba(24,11,44,0.93) !important; }
 .hw-search-form {
   background: var(--black) !important;
   border: 1px solid var(--border-dim) !important;
@@ -361,7 +361,7 @@ h1, h2, h3,
   position: absolute; top: 10px; right: 10px; z-index: 2;
   width: 28px; height: 28px; border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
-  background: rgba(13,11,20,0.68) !important;
+  background: rgba(24,11,44,0.68) !important;
   border: 1px solid var(--border-dim) !important;
   color: var(--pale) !important;
   backdrop-filter: blur(4px);

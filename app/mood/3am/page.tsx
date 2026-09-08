@@ -59,10 +59,10 @@ export default async function Mood3amPage() {
           <p style={{ fontFamily: "var(--font-space, monospace)", fontSize: "0.65rem", letterSpacing: "0.2em", textTransform: "uppercase", color: "#00d4aa", marginBottom: "12px" }}>
             Mood / 3AM
           </p>
-          <h1 style={{ fontFamily: "var(--font-cinzel, serif)", fontSize: "clamp(2rem, 5vw, 3.5rem)", color: "rgba(232,228,220,0.95)", lineHeight: 1.15, marginBottom: "16px" }}>
+          <h1 style={{ fontFamily: "var(--font-cinzel, serif)", fontSize: "clamp(2rem, 5vw, 3.5rem)", color: "rgba(253,240,255,0.95)", lineHeight: 1.15, marginBottom: "16px" }}>
             The Witching Hour Static.
           </h1>
-          <p style={{ fontFamily: "var(--font-space, monospace)", fontSize: "0.65rem", letterSpacing: "0.18em", textTransform: "uppercase", color: "rgba(232,228,220,0.35)" }}>
+          <p style={{ fontFamily: "var(--font-space, monospace)", fontSize: "0.65rem", letterSpacing: "0.18em", textTransform: "uppercase", color: "rgba(253,240,255,0.35)" }}>
             {images.length} wallpapers for the sleepless
           </p>
         </div>
@@ -77,7 +77,7 @@ export default async function Mood3amPage() {
                 : "/collections";
             return (
             <Link key={img.id} href={href} style={{ display: "block", textDecoration: "none" }}>
-              <div style={{ aspectRatio: img.deviceType === "PC" ? "16/9" : "9/16", overflow: "hidden", background: "#0a0812" }}>
+              <div style={{ aspectRatio: img.deviceType === "PC" ? "16/9" : "9/16", overflow: "hidden", background: "#150a2a" }}>
                 <img
                   src={getPublicUrl(img.r2Key)}
                   alt={img.title}
@@ -85,7 +85,7 @@ export default async function Mood3amPage() {
                   decoding="async"
                   className="mood-img" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}                />
               </div>
-              <p style={{ fontFamily: "var(--font-space, monospace)", fontSize: "0.6rem", color: "rgba(232,228,220,0.45)", marginTop: "6px", letterSpacing: "0.04em", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+              <p style={{ fontFamily: "var(--font-space, monospace)", fontSize: "0.6rem", color: "rgba(253,240,255,0.45)", marginTop: "6px", letterSpacing: "0.04em", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                 {img.title}
               </p>
             </Link>
@@ -97,9 +97,9 @@ export default async function Mood3amPage() {
         <div dangerouslySetInnerHTML={{ __html: `
           <div style="border:1px solid rgba(0,212,170,0.25);background:rgba(0,212,170,0.04);padding:32px 36px;max-width:780px;line-height:1.9;">
             <p style="font-family:var(--font-space,monospace);font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:#00d4aa;margin-bottom:20px;">About This Collection</p>
-            <p style="color:rgba(232,228,220,0.8);font-size:0.95rem;margin-bottom:16px;">It is always 3 AM in here. This collection is not just a wallpaper; it is the visual representation of the static that fills your head when the world is asleep. For the nocturnal souls who scroll when the rest of the world is silent, these designs capture the eerie glow of a phone screen in a dark room.</p>
-            <p style="color:rgba(232,228,220,0.8);font-size:0.95rem;margin-bottom:16px;">We blend glitch art with shadowy textures to create digital artifacts that feel alive. The colors are cold — deep violets, electric neons, and absolute black — designed to save your battery while draining your sanity. These are high-contrast, 4K wallpapers for the restless. Whether you are chasing a hyperpop aesthetic or a dark grunge look, the 3 AM hour binds us all.</p>
-            <p style="font-family:var(--font-space,monospace);font-size:0.65rem;letter-spacing:0.12em;color:rgba(232,228,220,0.3);margin-top:20px;">3am aesthetic &nbsp;·&nbsp; dark wallpaper &nbsp;·&nbsp; insomnia wallpaper &nbsp;·&nbsp; glitch art &nbsp;·&nbsp; neon goth &nbsp;·&nbsp; digital artifacts</p>
+            <p style="color:rgba(253,240,255,0.8);font-size:0.95rem;margin-bottom:16px;">It is always 3 AM in here. This collection is not just a wallpaper; it is the visual representation of the static that fills your head when the world is asleep. For the nocturnal souls who scroll when the rest of the world is silent, these designs capture the eerie glow of a phone screen in a dark room.</p>
+            <p style="color:rgba(253,240,255,0.8);font-size:0.95rem;margin-bottom:16px;">We blend glitch art with shadowy textures to create digital artifacts that feel alive. The colors are cold — deep violets, electric neons, and absolute black — designed to save your battery while draining your sanity. These are high-contrast, 4K wallpapers for the restless. Whether you are chasing a hyperpop aesthetic or a dark grunge look, the 3 AM hour binds us all.</p>
+            <p style="font-family:var(--font-space,monospace);font-size:0.65rem;letter-spacing:0.12em;color:rgba(253,240,255,0.3);margin-top:20px;">3am aesthetic &nbsp;·&nbsp; dark wallpaper &nbsp;·&nbsp; insomnia wallpaper &nbsp;·&nbsp; glitch art &nbsp;·&nbsp; neon goth &nbsp;·&nbsp; digital artifacts</p>
           </div>
         ` }} />
 

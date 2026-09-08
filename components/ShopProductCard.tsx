@@ -26,9 +26,9 @@ export default function ShopProductCard({
   priority = false,
 }: ShopProductCardProps) {
   const badgeStyles: Record<string, string> = {
-    New:  "bg-[#c0001a] text-[#f0ecff]",
-    Hot:  "bg-[#ff3c00] text-[#0a0a0a]",
-    Sale: "bg-[#c9a84c] text-[#0a0a0a]",
+    New:  "bg-[#ff2e9e] text-[#f6ecff]",
+    Hot:  "bg-[#ff4d6d] text-[#140a28]",
+    Sale: "bg-[#ffd23f] text-[#140a28]",
   };
 
   return (
@@ -58,7 +58,7 @@ export default function ShopProductCard({
           </span>
         )}
 
-        <span className="absolute bottom-[-40px] group-hover:bottom-0 left-0 right-0 bg-[rgba(7,7,16,0.9)] backdrop-blur-[10px] text-center py-3 font-mono text-[0.65rem] tracking-[0.15em] uppercase text-[#c9a84c] transition-all duration-300 z-10 pointer-events-none">
+        <span className="absolute bottom-[-40px] group-hover:bottom-0 left-0 right-0 bg-[rgba(16,8,34,0.9)] backdrop-blur-[10px] text-center py-3 font-mono text-[0.65rem] tracking-[0.15em] uppercase text-[#ffd23f] transition-all duration-300 z-10 pointer-events-none">
           Quick View
         </span>
       </Link>

@@ -201,13 +201,13 @@ export default function LiveWallpaperPlayerPage() {
 
   const baseCenter: React.CSSProperties = {
     minHeight: "100dvh",
-    background: "#0d0b14",
+    background: "#180b2c",
     display: "flex",
     flexDirection: "column",
     gap: "16px",
     alignItems: "center",
     justifyContent: "center",
-    color: "#8a809a",
+    color: "#af98cf",
     fontFamily: "monospace",
     fontSize: "0.85rem",
     textAlign: "center",
@@ -225,7 +225,7 @@ export default function LiveWallpaperPlayerPage() {
         <Link
           href="/live-wallpapers"
           style={{
-            color: "#e8e4f8",
+            color: "#f3e8ff",
             border: "1px solid rgba(255,255,255,0.15)",
             borderRadius: "4px",
             padding: "10px 22px",
@@ -248,7 +248,7 @@ export default function LiveWallpaperPlayerPage() {
         <Link
           href="/live-wallpapers"
           style={{
-            color: "#e8e4f8",
+            color: "#f3e8ff",
             border: "1px solid rgba(255,255,255,0.15)",
             borderRadius: "4px",
             padding: "10px 22px",
@@ -287,9 +287,9 @@ export default function LiveWallpaperPlayerPage() {
           top: "16px",
           left: "16px",
           zIndex: 300,
-          background: "rgba(13,11,20,0.75)",
+          background: "rgba(24,11,44,0.75)",
           border: "1px solid rgba(255,255,255,0.15)",
-          color: "#e8e4f8",
+          color: "#f3e8ff",
           borderRadius: "20px",
           height: "38px",
           padding: "0 14px",
@@ -316,9 +316,9 @@ export default function LiveWallpaperPlayerPage() {
           top: "16px",
           right: "16px",
           zIndex: 300,
-          background: "rgba(13,11,20,0.75)",
+          background: "rgba(24,11,44,0.75)",
           border: "1px solid rgba(255,255,255,0.15)",
-          color: "#e8e4f8",
+          color: "#f3e8ff",
           borderRadius: "50%",
           width: "38px",
           height: "38px",
@@ -397,7 +397,7 @@ export default function LiveWallpaperPlayerPage() {
                 height: "100dvh",
                 scrollSnapAlign: "start",
                 position: "relative",
-                background: "#0d0b14",
+                background: "#180b2c",
                 flexShrink: 0,
                 overflow: "hidden",
               }}
@@ -469,7 +469,7 @@ export default function LiveWallpaperPlayerPage() {
                       {desc.length > 80 && (
                         <span
                           onClick={() => setExpandedDesc(isExpanded ? null : item.id)}
-                          style={{ color: "#c0001a", cursor: "pointer", marginLeft: "4px", fontWeight: 700 }}
+                          style={{ color: "#ff2e9e", cursor: "pointer", marginLeft: "4px", fontWeight: 700 }}
                         >
                           {isExpanded ? " less" : " more"}
                         </span>
@@ -525,7 +525,7 @@ export default function LiveWallpaperPlayerPage() {
                 <ActionBtn
                   label={isFav ? "Saved" : "Save"}
                   icon={isFav ? "❤️" : "🤍"}
-                  bg={isFav ? "rgba(192,0,26,0.85)" : "rgba(255,255,255,0.12)"}
+                  bg={isFav ? "rgba(255,46,158,0.85)" : "rgba(255,255,255,0.12)"}
                   onClick={() => toggleFavorite(item.id)}
                 />
                 <a
@@ -539,10 +539,10 @@ export default function LiveWallpaperPlayerPage() {
                   <div
                     style={{
                       width: "42px", height: "42px", borderRadius: "50%",
-                      background: "rgba(192,0,26,0.9)",
+                      background: "rgba(255,46,158,0.9)",
                       display: "flex", alignItems: "center", justifyContent: "center",
                       fontSize: "1.1rem",
-                      boxShadow: "0 2px 12px rgba(192,0,26,0.45)",
+                      boxShadow: "0 2px 12px rgba(255,46,158,0.45)",
                       border: "1px solid rgba(255,255,255,0.1)",
                     }}
                   >
@@ -624,7 +624,7 @@ export default function LiveWallpaperPlayerPage() {
           <div
             style={{
               height: "60px", display: "flex", alignItems: "center",
-              justifyContent: "center", color: "#8a809a",
+              justifyContent: "center", color: "#af98cf",
               fontFamily: "monospace", fontSize: "0.7rem",
             }}
           >

@@ -135,8 +135,8 @@ export default function CyberpunkGamingHeroPage() {
     <main
       style={{
         minHeight: "100vh",
-        backgroundColor: "var(--bg-primary, #0d0d14)",
-        color: "var(--text-primary, #e0e0f8)",
+        backgroundColor: "var(--bg-primary, #1a0b2e)",
+        color: "var(--text-primary, #ede4ff)",
         position: "relative",
         overflow: "hidden",
       }}
@@ -161,7 +161,7 @@ export default function CyberpunkGamingHeroPage() {
         style={{
           position: "fixed",
           inset: 0,
-          background: "radial-gradient(ellipse 80% 50% at 50% 0%, rgba(139,92,246,0.14) 0%, transparent 65%)",
+          background: "radial-gradient(ellipse 80% 50% at 50% 0%, rgba(167,139,250,0.14) 0%, transparent 65%)",
           pointerEvents: "none",
           zIndex: 0,
         }}
@@ -171,11 +171,11 @@ export default function CyberpunkGamingHeroPage() {
         {/* BREADCRUMBS */}
         <nav aria-label="Breadcrumb" style={{ maxWidth: "1100px", margin: "0 auto", padding: "clamp(28px,5vw,48px) clamp(20px,5vw,60px) 0" }}>
           <ol style={{ listStyle: "none", margin: 0, padding: 0, display: "flex", alignItems: "center", gap: "6px", fontFamily: "var(--font-space, monospace)", fontSize: "0.55rem", letterSpacing: "0.18em", textTransform: "uppercase" }}>
-            <li><Link href="/" style={{ color: "#60608a", textDecoration: "none" }}>Home</Link></li>
-            <li style={{ color: "#24243a" }}>›</li>
-            <li><Link href="/sets" style={{ color: "#60608a", textDecoration: "none" }}>Matching Sets</Link></li>
-            <li style={{ color: "#24243a" }}>›</li>
-            <li style={{ color: "#d8d8f0" }}>Cyberpunk Gaming Hero</li>
+            <li><Link href="/" style={{ color: "#7c5cbf", textDecoration: "none" }}>Home</Link></li>
+            <li style={{ color: "#341a63" }}>›</li>
+            <li><Link href="/sets" style={{ color: "#7c5cbf", textDecoration: "none" }}>Matching Sets</Link></li>
+            <li style={{ color: "#341a63" }}>›</li>
+            <li style={{ color: "#e4d4ff" }}>Cyberpunk Gaming Hero</li>
           </ol>
         </nav>
 
@@ -229,13 +229,13 @@ export default function CyberpunkGamingHeroPage() {
                 lineHeight: 1.0,
                 margin: "0 0 8px",
                 letterSpacing: "0.04em",
-                color: "#f0e8d8",
-                textShadow: "0 4px 40px rgba(139,92,246,0.4), 0 0 80px rgba(100,50,255,0.12)",
+                color: "#fff3e0",
+                textShadow: "0 4px 40px rgba(167,139,250,0.4), 0 0 80px rgba(100,50,255,0.12)",
               }}
             >
               Cyberpunk Horror Gaming Hero
             </h1>
-            <p style={{ fontFamily: "var(--font-cormorant, serif)", fontSize: "clamp(1rem, 1.6vw, 1.15rem)", lineHeight: 1.75, maxWidth: "700px", color: "rgba(224,224,248,0.7)", margin: 0 }}>
+            <p style={{ fontFamily: "var(--font-cormorant, serif)", fontSize: "clamp(1rem, 1.6vw, 1.15rem)", lineHeight: 1.75, maxWidth: "700px", color: "rgba(237,228,255,0.7)", margin: 0 }}>
               Download the complete matching wallpaper set. Premium 4K neon cyberpunk horror backgrounds manually optimised for OLED displays, high-end gaming setups, and every device in your ecosystem — from desktop to smartwatch.
             </p>
           </div>
@@ -251,7 +251,7 @@ export default function CyberpunkGamingHeroPage() {
         >
           <div className="cs-cta-block">
             <div className="cs-cta-block__glow" aria-hidden="true" />
-            <span className="cs-cta-block__eyebrow">Free. No account. No watermarks.</span>
+            <span className="cs-cta-block__eyebrow">No watermarks.</span>
             <h2 className="cs-cta-block__title">Download the Complete Kit</h2>
             <p className="cs-cta-block__sub">
               All six wallpapers. Full 4K resolution. Every device covered.
@@ -280,7 +280,7 @@ export default function CyberpunkGamingHeroPage() {
               <h2 className="cp-lore__title">The Ghost in the Overclocked Machine</h2>
               <p className="cp-lore__body">
                 They told him the human brain wasn&apos;t meant to sync with a 240Hz refresh rate. He didn&apos;t listen. The{" "}
-                <span style={{ color: "#8b5cf6", fontStyle: "italic" }}>Void-Frame Protocol</span>{" "}
+                <span style={{ color: "#a78bfa", fontStyle: "italic" }}>Void-Frame Protocol</span>{" "}
                 is the digital residue of a legendary pro-player who pushed his hardware into a forbidden overclock — and never came back. His consciousness didn&apos;t crash; it just migrated into the static.
               </p>
               <p className="cp-lore__body">
@@ -352,7 +352,7 @@ export default function CyberpunkGamingHeroPage() {
               {
                 num: "01",
                 title: "The Idle Terminal — Desktop PC",
-                color: "#8b5cf6",
+                color: "#a78bfa",
                 body: "The hero sits in the silent darkness of his custom-built rig, waiting. This 4K landscape view is optimised for dual-monitor setups, providing enough negative space for your desktop icons while keeping the high-contrast neon hero centered in the void.",
                 best: "Gaming desktops, dual-monitor setups, and PC gaming stations.",
               },
@@ -377,7 +377,7 @@ export default function CyberpunkGamingHeroPage() {
                 <div className="cp-phase__body">
                   <h3 className="cp-phase__title" style={{ color: phase.color }}>{phase.title}</h3>
                   <p className="cp-phase__text">{phase.body}</p>
-                  <p className="cp-phase__best"><span style={{ color: "#60608a" }}>Best for: </span>{phase.best}</p>
+                  <p className="cp-phase__best"><span style={{ color: "#7c5cbf" }}>Best for: </span>{phase.best}</p>
                 </div>
               </div>
             ))}
@@ -456,34 +456,34 @@ export default function CyberpunkGamingHeroPage() {
         .cp-set-badge { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; flex-wrap: wrap; }
         .cp-set-badge__num {
           font-family: var(--font-space, monospace); font-size: clamp(0.75rem,1.5vw,0.9rem);
-          letter-spacing: 0.28em; text-transform: uppercase; color: #8b5cf6;
-          background: rgba(139,92,246,0.08); border: 1px solid rgba(139,92,246,0.35);
+          letter-spacing: 0.28em; text-transform: uppercase; color: #a78bfa;
+          background: rgba(167,139,250,0.08); border: 1px solid rgba(167,139,250,0.35);
           padding: 6px 16px; border-radius: 2px; font-weight: 700;
         }
-        .cp-set-badge__div { color: rgba(139,92,246,0.4); font-size: 1.2rem; }
+        .cp-set-badge__div { color: rgba(167,139,250,0.4); font-size: 1.2rem; }
         .cp-set-badge__sub {
           font-family: var(--font-cinzel, serif); font-size: clamp(0.9rem,2vw,1.2rem);
-          letter-spacing: 0.12em; text-transform: uppercase; color: #f0e8d8; font-weight: 700;
+          letter-spacing: 0.12em; text-transform: uppercase; color: #fff3e0; font-weight: 700;
         }
         .cp-premium-badge {
           display: inline-flex; align-items: center; gap: 5px;
           font-family: var(--font-space, monospace); font-size: 0.52rem;
-          letter-spacing: 0.18em; text-transform: uppercase; color: #ff6a00;
-          background: linear-gradient(135deg, rgba(255,106,0,0.12), rgba(139,92,246,0.12));
-          border: 1px solid rgba(255,106,0,0.4); padding: 5px 12px; border-radius: 2px;
-          font-weight: 700; box-shadow: 0 0 16px rgba(255,106,0,0.15);
+          letter-spacing: 0.18em; text-transform: uppercase; color: #ff7a18;
+          background: linear-gradient(135deg, rgba(255,122,24,0.12), rgba(167,139,250,0.12));
+          border: 1px solid rgba(255,122,24,0.4); padding: 5px 12px; border-radius: 2px;
+          font-weight: 700; box-shadow: 0 0 16px rgba(255,122,24,0.15);
           animation: cp-premium-pulse 3s ease-in-out infinite;
         }
         @keyframes cp-premium-pulse {
-          0%,100% { box-shadow: 0 0 16px rgba(255,106,0,0.15); }
-          50% { box-shadow: 0 0 28px rgba(255,106,0,0.3), 0 0 48px rgba(139,92,246,0.15); }
+          0%,100% { box-shadow: 0 0 16px rgba(255,122,24,0.15); }
+          50% { box-shadow: 0 0 28px rgba(255,122,24,0.3), 0 0 48px rgba(167,139,250,0.15); }
         }
         .cp-tag-badge {
           display: inline-flex; align-items: center;
           font-family: var(--font-space, monospace); font-size: 0.52rem;
           letter-spacing: 0.18em; text-transform: uppercase; color: #a78bfa;
-          border: 1px solid rgba(139,92,246,0.4); padding: 5px 12px; border-radius: 2px;
-          background: rgba(139,92,246,0.08);
+          border: 1px solid rgba(167,139,250,0.4); padding: 5px 12px; border-radius: 2px;
+          background: rgba(167,139,250,0.08);
         }
 
         /* Wallpaper layout */
@@ -503,17 +503,17 @@ export default function CyberpunkGamingHeroPage() {
         .cp-wall-item { display: flex; flex-direction: column; gap: 8px; }
         .cp-wall-item__frame {
           position: relative; overflow: hidden;
-          border: 1px solid rgba(139,92,246,0.2); background: #080810;
+          border: 1px solid rgba(167,139,250,0.2); background: #120826;
           transition: border-color 0.3s, box-shadow 0.3s; cursor: pointer;
         }
-        .cp-wall-item__frame:hover { border-color: rgba(139,92,246,0.55); box-shadow: 0 0 32px rgba(139,92,246,0.12); }
+        .cp-wall-item__frame:hover { border-color: rgba(167,139,250,0.55); box-shadow: 0 0 32px rgba(167,139,250,0.12); }
         .cp-wall-item__frame--16-9 { aspect-ratio: 16/9; width: 100%; }
         .cp-wall-item__frame--9-16 { aspect-ratio: 9/16; width: 100%; }
         .cp-wall-item__frame--1-1  { aspect-ratio: 1/1; width: 100%; }
         .cp-wall-item__img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.5s; }
         .cp-wall-item__frame:hover .cp-wall-item__img { transform: scale(1.03); }
         .cp-wall-item__corners { position: absolute; inset: 0; pointer-events: none; }
-        .cp-wall-item__corners span { position: absolute; width: 12px; height: 12px; border-color: rgba(139,92,246,0.55); border-style: solid; }
+        .cp-wall-item__corners span { position: absolute; width: 12px; height: 12px; border-color: rgba(167,139,250,0.55); border-style: solid; }
         .cp-wall-item__corners span:nth-child(1) { top:6px; left:6px; border-width:1.5px 0 0 1.5px; }
         .cp-wall-item__corners span:nth-child(2) { top:6px; right:6px; border-width:1.5px 1.5px 0 0; }
         .cp-wall-item__corners span:nth-child(3) { bottom:6px; left:6px; border-width:0 0 1.5px 1.5px; }
@@ -534,13 +534,13 @@ export default function CyberpunkGamingHeroPage() {
         .cp-collage { display: flex; flex-direction: column; gap: 12px; margin-top: clamp(24px,4vw,40px); }
         .cp-collage__desktop {
           position: relative; border-radius: 4px; overflow: hidden;
-          border: 2px solid #0f0f1e;
-          box-shadow: 0 0 0 4px #0a0a14, 0 0 0 6px rgba(20,20,40,0.9), 0 0 80px rgba(0,0,0,0.7);
-          animation: cp-glow-desk 4s ease-in-out infinite; aspect-ratio: 16/9; background: #080810; width: 100%;
+          border: 2px solid #1f1040;
+          box-shadow: 0 0 0 4px #170a2e, 0 0 0 6px rgba(20,20,40,0.9), 0 0 80px rgba(0,0,0,0.7);
+          animation: cp-glow-desk 4s ease-in-out infinite; aspect-ratio: 16/9; background: #120826; width: 100%;
         }
         @keyframes cp-glow-desk {
-          0%,100% { box-shadow: 0 0 0 4px #0a0a14, 0 0 0 6px rgba(20,20,40,0.9), 0 0 80px rgba(0,0,0,0.7); }
-          50% { box-shadow: 0 0 0 4px #0a0a14, 0 0 0 6px rgba(20,20,40,0.9), 0 0 80px rgba(0,0,0,0.7), 0 0 120px rgba(139,92,246,0.18); }
+          0%,100% { box-shadow: 0 0 0 4px #170a2e, 0 0 0 6px rgba(20,20,40,0.9), 0 0 80px rgba(0,0,0,0.7); }
+          50% { box-shadow: 0 0 0 4px #170a2e, 0 0 0 6px rgba(20,20,40,0.9), 0 0 80px rgba(0,0,0,0.7), 0 0 120px rgba(167,139,250,0.18); }
         }
         .cp-collage__bottom-row { display: flex; gap: 12px; align-items: flex-start; }
         .cp-collage__device-label {
@@ -561,13 +561,13 @@ export default function CyberpunkGamingHeroPage() {
         .cp-collage__phone-wrap { position: relative; width: clamp(90px,15%,160px); flex-shrink: 0; }
         .cp-collage__phone-shell {
           position: relative; width: 100%; aspect-ratio: 9/16; border-radius: 28px; overflow: hidden;
-          border: 2px solid #0f0f1e; background: #080810;
+          border: 2px solid #1f1040; background: #120826;
           animation: cp-glow-phone 4s ease-in-out infinite 1s;
-          box-shadow: 0 0 0 3px #0a0a14, 0 0 0 5px rgba(20,20,40,0.9), 0 12px 48px rgba(0,0,0,0.8);
+          box-shadow: 0 0 0 3px #170a2e, 0 0 0 5px rgba(20,20,40,0.9), 0 12px 48px rgba(0,0,0,0.8);
         }
         @keyframes cp-glow-phone {
-          0%,100% { box-shadow: 0 0 0 3px #0a0a14, 0 0 0 5px rgba(20,20,40,0.9), 0 12px 48px rgba(0,0,0,0.8); }
-          50% { box-shadow: 0 0 0 3px #0a0a14, 0 0 0 5px rgba(20,20,40,0.9), 0 12px 48px rgba(0,0,0,0.8), 0 0 50px rgba(139,92,246,0.22); }
+          0%,100% { box-shadow: 0 0 0 3px #170a2e, 0 0 0 5px rgba(20,20,40,0.9), 0 12px 48px rgba(0,0,0,0.8); }
+          50% { box-shadow: 0 0 0 3px #170a2e, 0 0 0 5px rgba(20,20,40,0.9), 0 12px 48px rgba(0,0,0,0.8), 0 0 50px rgba(167,139,250,0.22); }
         }
         .cp-collage__island { position: absolute; top: 8px; left: 50%; transform: translateX(-50%); width: 35%; height: 10px; background: #000; border-radius: 6px; z-index: 3; }
         .cp-collage__phone-img { width: 100%; height: 100%; object-fit: cover; display: block; }
@@ -576,13 +576,13 @@ export default function CyberpunkGamingHeroPage() {
         .cp-collage__watch-wrap { width: clamp(72px,11%,124px); flex-shrink: 0; position: relative; align-self: flex-end; }
         .cp-collage__watch-shell {
           position: relative; width: 100%; aspect-ratio: 1/1; border-radius: 32%/28%; overflow: hidden;
-          border: 2px solid #0f0f1e; background: #080810;
+          border: 2px solid #1f1040; background: #120826;
           animation: cp-glow-watch 4s ease-in-out infinite 2s;
-          box-shadow: 0 0 0 3px #0a0a14, 0 0 0 5px rgba(20,20,40,0.9), 0 8px 32px rgba(0,0,0,0.75);
+          box-shadow: 0 0 0 3px #170a2e, 0 0 0 5px rgba(20,20,40,0.9), 0 8px 32px rgba(0,0,0,0.75);
         }
         @keyframes cp-glow-watch {
-          0%,100% { box-shadow: 0 0 0 3px #0a0a14, 0 0 0 5px rgba(20,20,40,0.9), 0 8px 32px rgba(0,0,0,0.75); }
-          50% { box-shadow: 0 0 0 3px #0a0a14, 0 0 0 5px rgba(20,20,40,0.9), 0 8px 32px rgba(0,0,0,0.75), 0 0 40px rgba(139,92,246,0.25); }
+          0%,100% { box-shadow: 0 0 0 3px #170a2e, 0 0 0 5px rgba(20,20,40,0.9), 0 8px 32px rgba(0,0,0,0.75); }
+          50% { box-shadow: 0 0 0 3px #170a2e, 0 0 0 5px rgba(20,20,40,0.9), 0 8px 32px rgba(0,0,0,0.75), 0 0 40px rgba(167,139,250,0.25); }
         }
         .cp-collage__watch-crown { position: absolute; right: -6px; top: 42%; width: 6px; height: 18px; background: #181828; border-radius: 0 3px 3px 0; }
         .cp-collage__watch-img { width: 100%; height: 100%; object-fit: cover; display: block; }
@@ -590,17 +590,17 @@ export default function CyberpunkGamingHeroPage() {
         @media (max-width: 480px) { .cp-collage__watch-wrap { display: none; } .cp-collage__phone-wrap { width: clamp(80px,20%,130px); } }
 
         /* Lore */
-        .cp-lore { display: grid; grid-template-columns: 3px 1fr; gap: 28px; background: rgba(255,255,255,0.02); border: 1px solid rgba(139,92,246,0.15); padding: clamp(24px,4vw,40px); position: relative; overflow: hidden; }
-        .cp-lore::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 60% 80% at 0% 50%, rgba(139,92,246,0.06), transparent); pointer-events: none; }
-        .cp-lore__bar { background: linear-gradient(to bottom, transparent, #8b5cf6, transparent); border-radius: 2px; flex-shrink: 0; }
-        .cp-lore__title { font-family: var(--font-cinzel, serif); font-size: clamp(1.1rem,2vw,1.5rem); font-weight: 700; color: #f0e8d8; margin: 0 0 16px; letter-spacing: 0.04em; }
-        .cp-lore__body { font-family: var(--font-cormorant, serif); font-size: clamp(1rem,1.5vw,1.1rem); line-height: 1.8; color: rgba(224,224,248,0.65); margin: 0 0 12px; }
+        .cp-lore { display: grid; grid-template-columns: 3px 1fr; gap: 28px; background: rgba(255,255,255,0.02); border: 1px solid rgba(167,139,250,0.15); padding: clamp(24px,4vw,40px); position: relative; overflow: hidden; }
+        .cp-lore::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 60% 80% at 0% 50%, rgba(167,139,250,0.06), transparent); pointer-events: none; }
+        .cp-lore__bar { background: linear-gradient(to bottom, transparent, #a78bfa, transparent); border-radius: 2px; flex-shrink: 0; }
+        .cp-lore__title { font-family: var(--font-cinzel, serif); font-size: clamp(1.1rem,2vw,1.5rem); font-weight: 700; color: #fff3e0; margin: 0 0 16px; letter-spacing: 0.04em; }
+        .cp-lore__body { font-family: var(--font-cormorant, serif); font-size: clamp(1rem,1.5vw,1.1rem); line-height: 1.8; color: rgba(237,228,255,0.65); margin: 0 0 12px; }
         .cp-lore__body:last-child { margin-bottom: 0; }
 
         /* Section head */
         .cp-section-head { margin-bottom: clamp(28px,4vw,48px); }
-        .cp-section-eyebrow { display: block; font-family: var(--font-space, monospace); font-size: 0.56rem; letter-spacing: 0.26em; text-transform: uppercase; color: #8b5cf6; margin-bottom: 10px; }
-        .cp-section-title { font-family: var(--font-cinzel, serif); font-size: clamp(1.4rem,3vw,2.2rem); font-weight: 700; color: #f0e8d8; margin: 0; letter-spacing: 0.04em; }
+        .cp-section-eyebrow { display: block; font-family: var(--font-space, monospace); font-size: 0.56rem; letter-spacing: 0.26em; text-transform: uppercase; color: #a78bfa; margin-bottom: 10px; }
+        .cp-section-title { font-family: var(--font-cinzel, serif); font-size: clamp(1.4rem,3vw,2.2rem); font-weight: 700; color: #fff3e0; margin: 0; letter-spacing: 0.04em; }
 
         /* Phases */
         .cp-phases { display: flex; flex-direction: column; gap: 32px; }
@@ -608,40 +608,40 @@ export default function CyberpunkGamingHeroPage() {
         .cp-phase__num { font-family: var(--font-cinzel, serif); font-size: 1rem; font-weight: 900; letter-spacing: 0.1em; line-height: 1; padding-top: 2px; }
         .cp-phase__line { width: 2px; min-height: 100%; border-radius: 1px; }
         .cp-phase__title { font-family: var(--font-cinzel, serif); font-size: clamp(0.95rem,1.6vw,1.15rem); font-weight: 700; margin: 0 0 12px; letter-spacing: 0.04em; }
-        .cp-phase__text { font-family: var(--font-cormorant, serif); font-size: clamp(0.95rem,1.4vw,1.05rem); line-height: 1.8; color: rgba(224,224,248,0.62); margin: 0 0 10px; }
-        .cp-phase__best { font-family: var(--font-space, monospace); font-size: 0.56rem; letter-spacing: 0.12em; color: rgba(224,224,248,0.5); margin: 0; }
+        .cp-phase__text { font-family: var(--font-cormorant, serif); font-size: clamp(0.95rem,1.4vw,1.05rem); line-height: 1.8; color: rgba(237,228,255,0.62); margin: 0 0 10px; }
+        .cp-phase__best { font-family: var(--font-space, monospace); font-size: 0.56rem; letter-spacing: 0.12em; color: rgba(237,228,255,0.5); margin: 0; }
 
         /* Why */
-        .cp-why { border: 1px solid rgba(139,92,246,0.15); padding: clamp(28px,4vw,48px); position: relative; overflow: hidden; }
-        .cp-why::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 70% 60% at 100% 50%, rgba(139,92,246,0.06), transparent); pointer-events: none; }
-        .cp-why__title { font-family: var(--font-cinzel, serif); font-size: clamp(1.2rem,2.5vw,1.8rem); font-weight: 700; color: #f0e8d8; margin: 0 0 20px; letter-spacing: 0.04em; }
-        .cp-why__body { font-family: var(--font-cormorant, serif); font-size: clamp(0.98rem,1.5vw,1.08rem); line-height: 1.8; color: rgba(224,224,248,0.65); margin: 0 0 16px; max-width: 720px; }
+        .cp-why { border: 1px solid rgba(167,139,250,0.15); padding: clamp(28px,4vw,48px); position: relative; overflow: hidden; }
+        .cp-why::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 70% 60% at 100% 50%, rgba(167,139,250,0.06), transparent); pointer-events: none; }
+        .cp-why__title { font-family: var(--font-cinzel, serif); font-size: clamp(1.2rem,2.5vw,1.8rem); font-weight: 700; color: #fff3e0; margin: 0 0 20px; letter-spacing: 0.04em; }
+        .cp-why__body { font-family: var(--font-cormorant, serif); font-size: clamp(0.98rem,1.5vw,1.08rem); line-height: 1.8; color: rgba(237,228,255,0.65); margin: 0 0 16px; max-width: 720px; }
         .cp-why__body:last-of-type { margin-bottom: 24px; }
         .cp-why__tags { display: flex; flex-wrap: wrap; gap: 8px; }
-        .cp-why__tag { font-family: var(--font-space, monospace); font-size: 0.56rem; letter-spacing: 0.12em; color: rgba(139,92,246,0.7); }
+        .cp-why__tag { font-family: var(--font-space, monospace); font-size: 0.56rem; letter-spacing: 0.12em; color: rgba(167,139,250,0.7); }
 
         /* CTA block */
-        .cp-cta-block { position: relative; border: 1px solid rgba(139,92,246,0.3); padding: clamp(32px,5vw,56px); text-align: center; overflow: hidden; }
-        .cp-cta-block__glow { position: absolute; inset: 0; background: radial-gradient(ellipse 60% 60% at 50% 50%, rgba(139,92,246,0.09), transparent); pointer-events: none; }
-        .cp-cta-block__eyebrow { display: block; font-family: var(--font-space, monospace); font-size: 0.56rem; letter-spacing: 0.24em; text-transform: uppercase; color: #60608a; margin-bottom: 14px; position: relative; }
-        .cp-cta-block__title { font-family: var(--font-cinzel, serif); font-size: clamp(1.4rem,3vw,2.2rem); font-weight: 700; color: #f0e8d8; margin: 0 0 10px; position: relative; }
-        .cp-cta-block__sub { font-family: var(--font-cormorant, serif); font-size: 1rem; color: rgba(224,224,248,0.55); margin: 0 0 28px; position: relative; }
+        .cp-cta-block { position: relative; border: 1px solid rgba(167,139,250,0.3); padding: clamp(32px,5vw,56px); text-align: center; overflow: hidden; }
+        .cp-cta-block__glow { position: absolute; inset: 0; background: radial-gradient(ellipse 60% 60% at 50% 50%, rgba(167,139,250,0.09), transparent); pointer-events: none; }
+        .cp-cta-block__eyebrow { display: block; font-family: var(--font-space, monospace); font-size: 0.56rem; letter-spacing: 0.24em; text-transform: uppercase; color: #7c5cbf; margin-bottom: 14px; position: relative; }
+        .cp-cta-block__title { font-family: var(--font-cinzel, serif); font-size: clamp(1.4rem,3vw,2.2rem); font-weight: 700; color: #fff3e0; margin: 0 0 10px; position: relative; }
+        .cp-cta-block__sub { font-family: var(--font-cormorant, serif); font-size: 1rem; color: rgba(237,228,255,0.55); margin: 0 0 28px; position: relative; }
         .cp-cta-block__btns { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; position: relative; }
-        .cp-cta-btn { display: inline-flex; align-items: center; padding: 12px 22px; background: transparent; color: rgba(224,224,248,0.8); border: 1px solid rgba(139,92,246,0.35); border-radius: 2px; font-family: var(--font-space, monospace); font-size: 0.6rem; letter-spacing: 0.14em; text-transform: uppercase; text-decoration: none; transition: all 0.25s; cursor: pointer; }
-        .cp-cta-btn:hover { border-color: rgba(139,92,246,0.7); color: #fff; background: rgba(139,92,246,0.1); box-shadow: 0 0 20px rgba(139,92,246,0.18); }
+        .cp-cta-btn { display: inline-flex; align-items: center; padding: 12px 22px; background: transparent; color: rgba(237,228,255,0.8); border: 1px solid rgba(167,139,250,0.35); border-radius: 2px; font-family: var(--font-space, monospace); font-size: 0.6rem; letter-spacing: 0.14em; text-transform: uppercase; text-decoration: none; transition: all 0.25s; cursor: pointer; }
+        .cp-cta-btn:hover { border-color: rgba(167,139,250,0.7); color: #fff; background: rgba(167,139,250,0.1); box-shadow: 0 0 20px rgba(167,139,250,0.18); }
 
         /* Explore grid */
         .cp-explore-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: clamp(16px,2.5vw,24px); margin-bottom: clamp(48px,8vw,80px); }
-        .cp-explore-card { background: rgba(255,255,255,0.02); border: 1px solid rgba(139,92,246,0.12); overflow: hidden; transition: border-color 0.3s, box-shadow 0.3s; text-decoration: none; display: block; }
-        .cp-explore-card:hover { border-color: rgba(139,92,246,0.35); box-shadow: 0 0 30px rgba(139,92,246,0.05); }
+        .cp-explore-card { background: rgba(255,255,255,0.02); border: 1px solid rgba(167,139,250,0.12); overflow: hidden; transition: border-color 0.3s, box-shadow 0.3s; text-decoration: none; display: block; }
+        .cp-explore-card:hover { border-color: rgba(167,139,250,0.35); box-shadow: 0 0 30px rgba(167,139,250,0.05); }
         .cp-explore-card__thumb { aspect-ratio: 16/9; background: #08060e; position: relative; overflow: hidden; }
         .cp-explore-card__img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.4s; }
         .cp-explore-card:hover .cp-explore-card__img { transform: scale(1.04); }
-        .cp-explore-card__badge { position: absolute; top: 8px; left: 10px; font-family: var(--font-space, monospace); font-size: 0.48rem; letter-spacing: 0.18em; text-transform: uppercase; color: #8b5cf6; background: rgba(0,0,0,0.75); border: 1px solid rgba(139,92,246,0.35); padding: 2px 7px; border-radius: 2px; }
+        .cp-explore-card__badge { position: absolute; top: 8px; left: 10px; font-family: var(--font-space, monospace); font-size: 0.48rem; letter-spacing: 0.18em; text-transform: uppercase; color: #a78bfa; background: rgba(0,0,0,0.75); border: 1px solid rgba(167,139,250,0.35); padding: 2px 7px; border-radius: 2px; }
         .cp-explore-card__body { padding: clamp(14px,2vw,20px); }
-        .cp-explore-card__title { font-family: var(--font-cinzel, serif); font-size: 0.95rem; font-weight: 700; color: #f0e8d8; margin: 0 0 8px; letter-spacing: 0.04em; }
-        .cp-explore-card__desc { font-family: var(--font-cormorant, serif); font-size: 0.9rem; line-height: 1.65; color: rgba(224,224,248,0.5); margin: 0 0 10px; }
-        .cp-explore-card__cta { font-family: var(--font-space, monospace); font-size: 0.56rem; letter-spacing: 0.16em; text-transform: uppercase; color: #8b5cf6; }
+        .cp-explore-card__title { font-family: var(--font-cinzel, serif); font-size: 0.95rem; font-weight: 700; color: #fff3e0; margin: 0 0 8px; letter-spacing: 0.04em; }
+        .cp-explore-card__desc { font-family: var(--font-cormorant, serif); font-size: 0.9rem; line-height: 1.65; color: rgba(237,228,255,0.5); margin: 0 0 10px; }
+        .cp-explore-card__cta { font-family: var(--font-space, monospace); font-size: 0.56rem; letter-spacing: 0.16em; text-transform: uppercase; color: #a78bfa; }
 
         @media (max-width: 500px) {
           .cp-set-badge { flex-direction: column; align-items: flex-start; gap: 8px; }

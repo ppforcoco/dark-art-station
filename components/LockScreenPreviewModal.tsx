@@ -175,7 +175,7 @@ export default function LockScreenPreviewModal({ src, title, onClose, mode: _mod
                   ))}
                 </div>
                 {clockPos === "top" && (
-                  <p style={{marginTop:"6px",fontSize:"0.5rem",fontFamily:"monospace",color:"var(--text-muted,#8888aa)",letterSpacing:"0.08em"}}>
+                  <p style={{marginTop:"6px",fontSize:"0.5rem",fontFamily:"monospace",color:"var(--text-muted,#a99bd1)",letterSpacing:"0.08em"}}>
                     Check if the clock covers your wallpaper&apos;s focal point
                   </p>
                 )}

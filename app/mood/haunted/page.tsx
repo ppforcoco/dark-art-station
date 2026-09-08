@@ -59,10 +59,10 @@ export default async function MoodHauntedPage() {
           <p style={{ fontFamily: "var(--font-space, monospace)", fontSize: "0.65rem", letterSpacing: "0.2em", textTransform: "uppercase", color: "#d4a847", marginBottom: "12px" }}>
             Mood / Haunted
           </p>
-          <h1 style={{ fontFamily: "var(--font-cinzel, serif)", fontSize: "clamp(2rem, 5vw, 3.5rem)", color: "rgba(232,228,220,0.95)", lineHeight: 1.15, marginBottom: "16px" }}>
+          <h1 style={{ fontFamily: "var(--font-cinzel, serif)", fontSize: "clamp(2rem, 5vw, 3.5rem)", color: "rgba(253,240,255,0.95)", lineHeight: 1.15, marginBottom: "16px" }}>
             There is a Ghost in the Machine.
           </h1>
-          <p style={{ fontFamily: "var(--font-space, monospace)", fontSize: "0.65rem", letterSpacing: "0.18em", textTransform: "uppercase", color: "rgba(232,228,220,0.35)" }}>
+          <p style={{ fontFamily: "var(--font-space, monospace)", fontSize: "0.65rem", letterSpacing: "0.18em", textTransform: "uppercase", color: "rgba(253,240,255,0.35)" }}>
             {images.length} wallpapers for those who feel it too
           </p>
         </div>
@@ -77,7 +77,7 @@ export default async function MoodHauntedPage() {
                 : "/collections";
             return (
             <Link key={img.id} href={href} style={{ display: "block", textDecoration: "none" }}>
-              <div style={{ aspectRatio: img.deviceType === "PC" ? "16/9" : "9/16", overflow: "hidden", background: "#0a0812" }}>
+              <div style={{ aspectRatio: img.deviceType === "PC" ? "16/9" : "9/16", overflow: "hidden", background: "#150a2a" }}>
                 <img
                   src={getPublicUrl(img.r2Key)}
                   alt={img.title}
@@ -85,7 +85,7 @@ export default async function MoodHauntedPage() {
                   decoding="async"
                   className="mood-img" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}                />
               </div>
-              <p style={{ fontFamily: "var(--font-space, monospace)", fontSize: "0.6rem", color: "rgba(232,228,220,0.45)", marginTop: "6px", letterSpacing: "0.04em", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+              <p style={{ fontFamily: "var(--font-space, monospace)", fontSize: "0.6rem", color: "rgba(253,240,255,0.45)", marginTop: "6px", letterSpacing: "0.04em", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                 {img.title}
               </p>
             </Link>
@@ -97,9 +97,9 @@ export default async function MoodHauntedPage() {
         <div dangerouslySetInnerHTML={{ __html: `
           <div style="border:1px solid rgba(212,168,71,0.25);background:rgba(212,168,71,0.04);padding:32px 36px;max-width:780px;line-height:1.9;">
             <p style="font-family:var(--font-space,monospace);font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:#d4a847;margin-bottom:20px;">About This Collection</p>
-            <p style="color:rgba(232,228,220,0.8);font-size:0.95rem;margin-bottom:16px;">This collection is haunted. Not by jump scares, but by the profound melancholy of empty halls and forgotten memories. We specialize in liminal horror — the feeling of being stuck in a space that is almost familiar, but not quite right.</p>
-            <p style="color:rgba(232,228,220,0.8);font-size:0.95rem;margin-bottom:16px;">From the fog rolling over a crumbling Victorian manor to the grainy texture of 90s analog horror, these wallpapers are designed to bring a chill to your screen. The sepia tones, the white noise, and the blurred edges create a wearable ghost story. If you are a fan of the occult, the paranormal, or just need a background that tells a story of sorrow, these eerie backgrounds are for you.</p>
-            <p style="font-family:var(--font-space,monospace);font-size:0.65rem;letter-spacing:0.12em;color:rgba(232,228,220,0.3);margin-top:20px;">Haunted wallpaper &nbsp;·&nbsp; liminal space &nbsp;·&nbsp; ghost aesthetic &nbsp;·&nbsp; horror wallpaper &nbsp;·&nbsp; paranormal art &nbsp;·&nbsp; abandoned places &nbsp;·&nbsp; analog horror</p>
+            <p style="color:rgba(253,240,255,0.8);font-size:0.95rem;margin-bottom:16px;">This collection is haunted. Not by jump scares, but by the profound melancholy of empty halls and forgotten memories. We specialize in liminal horror — the feeling of being stuck in a space that is almost familiar, but not quite right.</p>
+            <p style="color:rgba(253,240,255,0.8);font-size:0.95rem;margin-bottom:16px;">From the fog rolling over a crumbling Victorian manor to the grainy texture of 90s analog horror, these wallpapers are designed to bring a chill to your screen. The sepia tones, the white noise, and the blurred edges create a wearable ghost story. If you are a fan of the occult, the paranormal, or just need a background that tells a story of sorrow, these eerie backgrounds are for you.</p>
+            <p style="font-family:var(--font-space,monospace);font-size:0.65rem;letter-spacing:0.12em;color:rgba(253,240,255,0.3);margin-top:20px;">Haunted wallpaper &nbsp;·&nbsp; liminal space &nbsp;·&nbsp; ghost aesthetic &nbsp;·&nbsp; horror wallpaper &nbsp;·&nbsp; paranormal art &nbsp;·&nbsp; abandoned places &nbsp;·&nbsp; analog horror</p>
           </div>
         ` }} />
 

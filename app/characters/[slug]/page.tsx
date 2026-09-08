@@ -76,7 +76,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     const ogImage = getPublicUrl(image.r2Key);
     const desc = image.description
       ? image.description.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim().slice(0, 200)
-      : `${image.title} — free dark art wallpaper from Haunted Wallpapers.`;
+      : `${image.title} — dark art wallpaper from Haunted Wallpapers.`;
 
     return {
       title: `${image.title} | Haunted Wallpapers`,
@@ -127,7 +127,7 @@ export default async function CharacterWallpaperPage({ params }: PageProps) {
     const thumbUrl = getPublicUrl(image!.r2Key);
     const isPortrait = image!.deviceType !== "PC";
     const displayDescription = image!.description
-      ?? `${image!.title} — free dark art wallpaper from Haunted Wallpapers.`;
+      ?? `${image!.title} — dark art wallpaper from Haunted Wallpapers.`;
 
     return (
       <>
@@ -144,7 +144,7 @@ export default async function CharacterWallpaperPage({ params }: PageProps) {
             <div className="char-grid">
 
               <div className="char-image-wrap">
-                <div style={{ position: "relative", width: "100%", aspectRatio: isPortrait ? "9/16" : "16/9", overflow: "hidden", background: "#0a0812", borderRadius: "4px" }}>
+                <div style={{ position: "relative", width: "100%", aspectRatio: isPortrait ? "9/16" : "16/9", overflow: "hidden", background: "#150a2a", borderRadius: "4px" }}>
                   <Image
                     src={thumbUrl}
                     alt={image!.title}
@@ -168,12 +168,12 @@ export default async function CharacterWallpaperPage({ params }: PageProps) {
               </div>
 
               <div className="char-info">
-                <h1 style={{ fontFamily: "var(--font-cinzel, serif)", fontSize: "clamp(1.4rem, 4vw, 2.4rem)", lineHeight: 1.15, marginBottom: "12px", color: "rgba(232,228,220,0.97)" }}>
+                <h1 style={{ fontFamily: "var(--font-cinzel, serif)", fontSize: "clamp(1.4rem, 4vw, 2.4rem)", lineHeight: 1.15, marginBottom: "12px", color: "rgba(253,240,255,0.97)" }}>
                   {image!.title}
                 </h1>
 
                 {resident && (
-                  <a href={`/residents/${resident.slug}`} style={{ display: "inline-flex", alignItems: "center", gap: "6px", fontFamily: "var(--font-space, monospace)", fontSize: "0.62rem", letterSpacing: "0.15em", textTransform: "uppercase", color: "#9d4edd", textDecoration: "none", marginBottom: "20px" }}>
+                  <a href={`/residents/${resident.slug}`} style={{ display: "inline-flex", alignItems: "center", gap: "6px", fontFamily: "var(--font-space, monospace)", fontSize: "0.62rem", letterSpacing: "0.15em", textTransform: "uppercase", color: "#a855f7", textDecoration: "none", marginBottom: "20px" }}>
                     👤 {resident.name}
                   </a>
                 )}
@@ -203,20 +203,20 @@ export default async function CharacterWallpaperPage({ params }: PageProps) {
 
             {relatedWallpapers.length > 0 && (
               <div style={{ marginTop: "64px" }}>
-                <p style={{ fontFamily: "var(--font-space, monospace)", fontSize: "0.6rem", letterSpacing: "0.2em", textTransform: "uppercase", color: "#9d4edd", marginBottom: "20px" }}>
+                <p style={{ fontFamily: "var(--font-space, monospace)", fontSize: "0.6rem", letterSpacing: "0.2em", textTransform: "uppercase", color: "#a855f7", marginBottom: "20px" }}>
                   More from {resident?.name ?? "this resident"}
                 </p>
                 <div className="char-related-grid">
                   {relatedWallpapers.map((img) => (
                     <a key={img.id} href={`/characters/${img.slug}`} style={{ display: "block", textDecoration: "none" }}>
-                      <div style={{ aspectRatio: img.deviceType === "PC" ? "16/9" : "9/16", overflow: "hidden", background: "#0a0812", borderRadius: "3px" }}>
+                      <div style={{ aspectRatio: img.deviceType === "PC" ? "16/9" : "9/16", overflow: "hidden", background: "#150a2a", borderRadius: "3px" }}>
                         <img src={getPublicUrl(img.r2Key)} alt={img.title} loading="lazy"
                           style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", transition: "transform 0.3s ease" }}
                           onMouseOver={(e) => (e.currentTarget.style.transform = "scale(1.04)")}
                           onMouseOut={(e) => (e.currentTarget.style.transform = "scale(1)")}
                         />
                       </div>
-                      <p style={{ fontFamily: "var(--font-space, monospace)", fontSize: "0.56rem", color: "rgba(232,228,220,0.35)", marginTop: "5px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                      <p style={{ fontFamily: "var(--font-space, monospace)", fontSize: "0.56rem", color: "rgba(253,240,255,0.35)", marginTop: "5px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                         {img.title}
                       </p>
                     </a>
@@ -240,7 +240,7 @@ export default async function CharacterWallpaperPage({ params }: PageProps) {
             @media (min-width: 640px) { .char-related-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 14px; } }
             .description-html p { margin-bottom: 0.75rem; }
             .description-html p:last-child { margin-bottom: 0; }
-            .description-html strong, .description-html b { color: #f0ecff; }
+            .description-html strong, .description-html b { color: #f6ecff; }
           `}</style>
 
           <PageTracker item={{ slug: image!.slug, title: image!.title, thumb: thumbUrl, href: `/characters/${slug}` }} />

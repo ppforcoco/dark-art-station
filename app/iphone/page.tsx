@@ -28,11 +28,11 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
 
   const title = tag
     ? `Trending Dark #${tag} Wallpapers for iPhone${pageLabel} | HAUNTED WALLPAPERS`
-    : `Free Dark iPhone Wallpapers HD${pageLabel} | HAUNTED WALLPAPERS`;
+    : `Dark iPhone Wallpapers HD${pageLabel} | HAUNTED WALLPAPERS`;
 
   const description = tag
-    ? `Browse free HD dark fantasy iPhone wallpapers tagged #${tag}. Download instantly, no account required.`
-    : "Free HD dark fantasy wallpapers for iPhone. Portrait 9:16 optimised for the Super Retina XDR display. New drops daily. No account required.";
+    ? `Browse HD dark fantasy iPhone wallpapers tagged #${tag}. Download instantly.`
+    : "HD dark fantasy wallpapers for iPhone. Portrait 9:16 optimised for the Super Retina XDR display. New drops daily.";
 
   const canonical = tag ? `${siteUrl}/iphone?tag=${tag}` : `${siteUrl}/iphone`;
 
@@ -55,10 +55,10 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
   return {
     title,
     description,
-    keywords: ["iphone wallpaper", "dark wallpaper iphone", "HD iphone wallpaper", "free iphone wallpaper", tag ?? "dark", "dark fantasy"].filter(Boolean),
+    keywords: ["iphone wallpaper", "dark wallpaper iphone", "HD iphone wallpaper", tag ?? "dark", "dark fantasy"].filter(Boolean),
     openGraph: {
       title, description, url: canonical, siteName: "HAUNTED WALLPAPERS", type: "website",
-      images: [{ url: ogImage, width: 1080, height: 1920, alt: "Free Dark iPhone Wallpapers" }],
+      images: [{ url: ogImage, width: 1080, height: 1920, alt: "Dark iPhone Wallpapers" }],
     },
     twitter: { card: "summary_large_image", title, description, images: [ogImage] },
     alternates: { canonical },
@@ -174,7 +174,7 @@ export default async function IphonePage({ searchParams }: PageProps) {
   const jsonLd = JSON.stringify({
     "@context": "https://schema.org",
     "@type": "ItemList",
-    name: tag ? `Dark #${tag} iPhone Wallpapers | Haunted Wallpapers` : "Free Dark iPhone Wallpapers HD | Haunted Wallpapers",
+    name: tag ? `Dark #${tag} iPhone Wallpapers | Haunted Wallpapers` : "Dark iPhone Wallpapers HD | Haunted Wallpapers",
     url: tag ? `${process.env.NEXT_PUBLIC_SITE_URL}/iphone?tag=${tag}` : `${process.env.NEXT_PUBLIC_SITE_URL}/iphone`,
     numberOfItems: total,
     itemListElement: images.map((img, i) => ({
@@ -196,13 +196,13 @@ export default async function IphonePage({ searchParams }: PageProps) {
       <section className="max-w-7xl mx-auto px-6 md:px-[60px] pt-10 pb-8">
         <h1 className="font-display text-3xl md:text-4xl font-bold leading-tight mb-6">
           {tag ? (
-            <>Dark <span className="text-[#c9a84c] italic">#{tag}</span> Wallpapers for iPhone</>
+            <>Dark <span className="text-[#ffd23f] italic">#{tag}</span> Wallpapers for iPhone</>
           ) : pageContent?.title ? (
             <span dangerouslySetInnerHTML={{ __html: pageContent.title }} />
           ) : (
-            <>Free Dark iPhone <span className="text-[#c9a84c] italic">Wallpapers</span></>
+            <>Dark iPhone <span className="text-[#ffd23f] italic">Wallpapers</span></>
           )}
-          {page > 1 && <span className="text-[#4a445a] text-2xl"> — Page {page}</span>}
+          {page > 1 && <span className="text-[#5c4a8a] text-2xl"> — Page {page}</span>}
         </h1>
 
         {!tag && !pageContent?.body && (
@@ -214,7 +214,7 @@ export default async function IphonePage({ searchParams }: PageProps) {
               so you get maximum sharpness without jagged edges or compression artefacts.
             </p>
             <p>
-              All wallpapers are free to download. No account required, no watermarks, no paywalls.
+              Every wallpaper is available in HD. No watermarks.
               Tap any image to view it full-size and download directly to your Photos library.
               New collections drop regularly.
             </p>
@@ -239,18 +239,18 @@ export default async function IphonePage({ searchParams }: PageProps) {
               fontSize: "0.58rem",
               letterSpacing: "0.22em",
               textTransform: "uppercase",
-              color: "#c0001a",
-              border: "1px solid rgba(192,0,26,0.5)",
+              color: "#ff2e9e",
+              border: "1px solid rgba(255,46,158,0.5)",
               padding: "5px 12px",
-              background: "rgba(192,0,26,0.08)",
-              boxShadow: "0 0 12px rgba(192,0,26,0.15)",
+              background: "rgba(255,46,158,0.08)",
+              boxShadow: "0 0 12px rgba(255,46,158,0.15)",
             }}>★ The Most Haunted</span>
-            <div style={{ flex: 1, height: "1px", background: "linear-gradient(to right, rgba(192,0,26,0.35), transparent)" }} />
+            <div style={{ flex: 1, height: "1px", background: "linear-gradient(to right, rgba(255,46,158,0.35), transparent)" }} />
           </div>
           <IphoneImageGrid
             images={pinnedImages}
             hrefPrefix="/iphone"
-            altSuffix="free dark iPhone wallpaper HD"
+            altSuffix="dark iPhone wallpaper HD"
             gridStyle={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "12px", maxWidth: "480px" }}
             priorityCount={2}
             aspectRatio="9/16"
@@ -268,18 +268,18 @@ export default async function IphonePage({ searchParams }: PageProps) {
               fontSize: "0.58rem",
               letterSpacing: "0.22em",
               textTransform: "uppercase",
-              color: "#4caf50",
-              border: "1px solid rgba(76,175,80,0.5)",
+              color: "#4ade80",
+              border: "1px solid rgba(74,222,128,0.5)",
               padding: "5px 12px",
-              background: "rgba(76,175,80,0.08)",
-              boxShadow: "0 0 12px rgba(76,175,80,0.15)",
+              background: "rgba(74,222,128,0.08)",
+              boxShadow: "0 0 12px rgba(74,222,128,0.15)",
             }}>Fresh Drops</span>
-            <div style={{ flex: 1, height: "1px", background: "linear-gradient(to right, rgba(76,175,80,0.35), transparent)" }} />
+            <div style={{ flex: 1, height: "1px", background: "linear-gradient(to right, rgba(74,222,128,0.35), transparent)" }} />
             <span style={{
               fontFamily: "var(--font-space, monospace)",
               fontSize: "0.52rem",
               letterSpacing: "0.14em",
-              color: "rgba(76,175,80,0.6)",
+              color: "rgba(74,222,128,0.6)",
               textTransform: "uppercase",
             }}>{freshDrops.length} wallpaper{freshDrops.length !== 1 ? "s" : ""}</span>
           </div>
@@ -319,13 +319,13 @@ export default async function IphonePage({ searchParams }: PageProps) {
           </div>
         ) : (
           <>
-            <p className="font-mono text-[0.6rem] tracking-[0.2em] uppercase text-[#4a445a] mb-6">
+            <p className="font-mono text-[0.6rem] tracking-[0.2em] uppercase text-[#5c4a8a] mb-6">
               — {total} wallpapers · page {page} of {totalPages}
             </p>
             <IphoneImageGrid
               images={images}
               hrefPrefix="/iphone"
-              altSuffix="free dark iPhone wallpaper HD"
+              altSuffix="dark iPhone wallpaper HD"
               gridClassName="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3"
               priorityCount={4}
               aspectRatio="9/16"
@@ -350,7 +350,7 @@ export default async function IphonePage({ searchParams }: PageProps) {
         maxWidth: "860px",
         margin: "0 auto",
         padding: "40px 24px 64px",
-        borderTop: "1px solid rgba(192,0,26,0.18)",
+        borderTop: "1px solid rgba(255,46,158,0.18)",
         textAlign: "center",
       }}>
         <p style={{
@@ -358,7 +358,7 @@ export default async function IphonePage({ searchParams }: PageProps) {
           fontSize: "0.6rem",
           letterSpacing: "0.22em",
           textTransform: "uppercase",
-          color: "#4a445a",
+          color: "#5c4a8a",
           marginBottom: "20px",
         }}>Also available for</p>
         <div style={{ display: "flex", gap: "14px", justifyContent: "center", flexWrap: "wrap" }}>
@@ -373,7 +373,7 @@ export default async function IphonePage({ searchParams }: PageProps) {
 
       <style>{`
         .hw-tag-pills-wrap {
-          background-color: var(--bg-primary, #0c0b14);
+          background-color: var(--bg-primary, #190c30);
           padding: 0 clamp(24px, 5vw, 60px) 28px;
           max-width: 1280px;
           margin: 0 auto;
@@ -389,7 +389,7 @@ export default async function IphonePage({ searchParams }: PageProps) {
           letter-spacing: 0.16em;
           text-transform: uppercase;
           text-decoration: none;
-          color: rgba(224,224,248,0.65);
+          color: rgba(237,228,255,0.65);
           border: 1px solid rgba(255,255,255,0.1);
           background: rgba(255,255,255,0.03);
           padding: 8px 18px;
@@ -397,36 +397,36 @@ export default async function IphonePage({ searchParams }: PageProps) {
           transition: all 0.2s ease;
         }
         .hw-tag-pill:hover {
-          border-color: rgba(192,0,26,0.6);
+          border-color: rgba(255,46,158,0.6);
           color: #fff;
-          background: rgba(192,0,26,0.08);
+          background: rgba(255,46,158,0.08);
         }
         .hw-tag-pill--active {
-          border-color: rgba(192,0,26,0.7);
+          border-color: rgba(255,46,158,0.7);
           color: #fff;
-          background: rgba(192,0,26,0.12);
-          box-shadow: 0 0 14px rgba(192,0,26,0.15);
+          background: rgba(255,46,158,0.12);
+          box-shadow: 0 0 14px rgba(255,46,158,0.15);
         }
         .hw-crosslink-btn {
           font-family: var(--font-space, monospace);
           font-size: 0.72rem;
           letter-spacing: 0.14em;
           text-transform: uppercase;
-          color: #e8e4f8;
+          color: #f3e8ff;
           text-decoration: none;
-          border: 1px solid rgba(192,0,26,0.4);
+          border: 1px solid rgba(255,46,158,0.4);
           padding: 13px 26px;
-          background: rgba(192,0,26,0.06);
+          background: rgba(255,46,158,0.06);
           transition: all 0.25s ease;
           display: inline-flex;
           align-items: center;
           gap: 8px;
         }
         .hw-crosslink-btn:hover {
-          border-color: rgba(192,0,26,0.8);
-          background: rgba(192,0,26,0.13);
+          border-color: rgba(255,46,158,0.8);
+          background: rgba(255,46,158,0.13);
           color: #ffffff;
-          box-shadow: 0 0 22px rgba(192,0,26,0.22);
+          box-shadow: 0 0 22px rgba(255,46,158,0.22);
         }
       `}</style>
 

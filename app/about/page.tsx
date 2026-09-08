@@ -65,7 +65,7 @@ export default async function AboutPage() {
               genuine sense of what dark art should <em>feel</em> like.
             </p>
             <p>
-              Our collection includes dark fantasy, gothic, cyberpunk, horror, street art, and atmospheric wallpapers for iPhone, Android, tablets, laptops, and desktop computers. Thousands of wallpapers are available to download for free.
+              Our collection includes dark fantasy, gothic, cyberpunk, horror, street art, and atmospheric wallpapers for iPhone, Android, tablets, laptops, and desktop computers. Thousands of wallpapers are available to download.
             </p>
           </section>
 

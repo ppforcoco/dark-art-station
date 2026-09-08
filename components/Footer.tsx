@@ -34,7 +34,7 @@ export default function Footer(): JSX.Element {
             <li><Link href="/mood"            prefetch={false}>Mood Wallpapers</Link></li>
             <li><Link href="/favorites"       prefetch={false}>♥ Saved Wallpapers</Link></li>
             <li><Link href="/blog"            prefetch={false}>The Secrets</Link></li>
-            <li><Link href="/tools"           prefetch={false}>Free Tools</Link></li>
+            <li><Link href="/tools"           prefetch={false}>Tools</Link></li>
           </ul>
         </div>
 

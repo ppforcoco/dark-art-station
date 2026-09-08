@@ -33,20 +33,20 @@ function extractBodyContent(html: string): string {
 }
 
 const LABEL_COLORS: Record<string, string> = {
-  "Wallpaper Guides":   "#c0001a",
-  "How-To & Tutorials": "#c0001a",
-  "Device Setup":       "#c0001a",
-  "Dark Aesthetics":    "#7c3aed",
-  "Gothic & Horror":    "#7c3aed",
-  "Dark Fantasy":       "#7c3aed",
+  "Wallpaper Guides":   "#ff2e9e",
+  "How-To & Tutorials": "#ff2e9e",
+  "Device Setup":       "#ff2e9e",
+  "Dark Aesthetics":    "#9333ea",
+  "Gothic & Horror":    "#9333ea",
+  "Dark Fantasy":       "#9333ea",
   "AMOLED Wallpapers":  "#0891b2",
   "Minimalist Dark":    "#0891b2",
   "Cyberpunk & Neon":   "#0891b2",
-  "Halloween Special":  "#c0001a",
+  "Halloween Special":  "#ff2e9e",
   "Top Lists":          "#b45309",
   "New Releases":       "#b45309",
 };
-function lc(l: string) { return LABEL_COLORS[l] ?? "#c0001a"; }
+function lc(l: string) { return LABEL_COLORS[l] ?? "#ff2e9e"; }
 
 // ── Scroll Progress Bar ───────────────────────────────────────────────────────
 function ScrollProgress() {
@@ -67,9 +67,9 @@ function ScrollProgress() {
       style={{
         position: "fixed", top: 0, left: 0, zIndex: 9999,
         width: `${pct}%`, height: "3px", pointerEvents: "none",
-        background: "linear-gradient(90deg, #c0001a 0%, #ff3333 50%, #ff6600 100%)",
+        background: "linear-gradient(90deg, #ff2e9e 0%, #ff3333 50%, #ff6600 100%)",
         transition: "width 0.08s linear",
-        boxShadow: "0 0 8px rgba(192,0,26,0.6)",
+        boxShadow: "0 0 8px rgba(255,46,158,0.6)",
       }}
     />
   );
@@ -85,7 +85,7 @@ function RelatedPosts({ posts, currentSlug }: { posts: Post[]; currentSlug: stri
   return (
     <section className="related-posts-section">
       <h2 className="related-posts-heading">
-        <span style={{ color: "#c0001a" }}>✦</span> More Posts You&apos;ll Like
+        <span style={{ color: "#ff2e9e" }}>✦</span> More Posts You&apos;ll Like
       </h2>
       <div className="related-posts-grid">
         {related.map((p) => {

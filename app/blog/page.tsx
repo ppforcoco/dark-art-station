@@ -12,21 +12,21 @@ export const metadata: Metadata = {
 };
 
 const LABEL_COLORS: Record<string, string> = {
-  "Wallpaper Guides":   "#c0001a",
-  "How-To & Tutorials": "#c0001a",
-  "Device Setup":       "#c0001a",
-  "Dark Aesthetics":    "#7c3aed",
-  "Gothic & Horror":    "#7c3aed",
-  "Dark Fantasy":       "#7c3aed",
+  "Wallpaper Guides":   "#ff2e9e",
+  "How-To & Tutorials": "#ff2e9e",
+  "Device Setup":       "#ff2e9e",
+  "Dark Aesthetics":    "#9333ea",
+  "Gothic & Horror":    "#9333ea",
+  "Dark Fantasy":       "#9333ea",
   "AMOLED Wallpapers":  "#0891b2",
   "Minimalist Dark":    "#0891b2",
   "Cyberpunk & Neon":   "#0891b2",
-  "Halloween Special":  "#c0001a",
+  "Halloween Special":  "#ff2e9e",
   "Top Lists":          "#b45309",
   "New Releases":       "#b45309",
 };
 
-function getLabelColor(label: string) { return LABEL_COLORS[label] ?? "#c0001a"; }
+function getLabelColor(label: string) { return LABEL_COLORS[label] ?? "#ff2e9e"; }
 
 function extractFirstImageFromContent(html: string): string | null {
   const match = html.match(/<img[^>]+src=["']([^"']+)["']/i);
@@ -256,12 +256,12 @@ export default async function BlogPage() {
       <style>{`
         .blog-featured-card {
           display: block; text-decoration: none;
-          border: 1px solid rgba(192,0,26,0.2); overflow: hidden; transition: border-color 0.2s;
+          border: 1px solid rgba(255,46,158,0.2); overflow: hidden; transition: border-color 0.2s;
         }
-        .blog-featured-card:hover { border-color: rgba(192,0,26,0.5); }
+        .blog-featured-card:hover { border-color: rgba(255,46,158,0.5); }
         .blog-featured-thumb-wrap {
           position: relative; width: 100%; aspect-ratio: 16/9;
-          overflow: hidden; background: #0f0c1a;
+          overflow: hidden; background: #1d0f38;
         }
         .blog-featured-thumb-img {
           width: 100%; height: 100%; object-fit: cover; object-position: center;
@@ -270,9 +270,9 @@ export default async function BlogPage() {
         .blog-featured-card:hover .blog-featured-thumb-img { transform: scale(1.04); }
         .blog-featured-thumb-placeholder {
           width: 100%; height: 100%;
-          background: linear-gradient(135deg, #0f0c1a 0%, #1a1228 100%);
+          background: linear-gradient(135deg, #1d0f38 0%, #1a1228 100%);
           display: flex; align-items: center; justify-content: center;
-          color: rgba(192,0,26,0.3); font-size: 3rem;
+          color: rgba(255,46,158,0.3); font-size: 3rem;
         }
         .blog-featured-thumb-overlay {
           position: absolute; inset: 0;
@@ -285,10 +285,10 @@ export default async function BlogPage() {
           border: 1px solid rgba(255,255,255,0.06); overflow: hidden;
           transition: border-color 0.2s, transform 0.2s;
         }
-        .blog-post-card:hover { border-color: rgba(192,0,26,0.4); transform: translateY(-2px); }
+        .blog-post-card:hover { border-color: rgba(255,46,158,0.4); transform: translateY(-2px); }
         .blog-post-card-thumb-wrap {
           width: 100%; aspect-ratio: 16/9; overflow: hidden;
-          background: #0f0c1a; flex-shrink: 0;
+          background: #1d0f38; flex-shrink: 0;
         }
         .blog-post-card-thumb-img {
           width: 100%; height: 100%; object-fit: cover; object-position: center;
@@ -297,13 +297,13 @@ export default async function BlogPage() {
         .blog-post-card:hover .blog-post-card-thumb-img { transform: scale(1.05); }
         .blog-post-card-thumb-placeholder {
           width: 100%; aspect-ratio: 16/9;
-          background: linear-gradient(135deg, #0f0c1a 0%, #1a1228 100%);
+          background: linear-gradient(135deg, #1d0f38 0%, #1a1228 100%);
           display: flex; align-items: center; justify-content: center;
-          color: rgba(192,0,26,0.3); font-size: 2rem; flex-shrink: 0;
+          color: rgba(255,46,158,0.3); font-size: 2rem; flex-shrink: 0;
         }
         .blog-post-card-content { padding: 16px; flex: 1; display: flex; flex-direction: column; gap: 6px; }
         [data-theme="light"] .blog-post-card { border-color: rgba(0,0,0,0.08); }
-        [data-theme="light"] .blog-post-card:hover { border-color: rgba(192,0,26,0.3); }
+        [data-theme="light"] .blog-post-card:hover { border-color: rgba(255,46,158,0.3); }
         [data-theme="light"] .blog-post-card-thumb-wrap,
         [data-theme="light"] .blog-featured-thumb-wrap { background: #e8e4d8; }
         [data-theme="light"] .blog-post-card-thumb-placeholder {

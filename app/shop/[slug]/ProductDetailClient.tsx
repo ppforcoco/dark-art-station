@@ -8,11 +8,11 @@ import { useCart } from "@/lib/cart-context";
 const selectLabelStyle: CSSProperties = {
   display: "block", fontFamily: "var(--font-space,monospace)",
   fontSize: "0.6rem", letterSpacing: "0.15em", textTransform: "uppercase",
-  color: "#8a809a", marginBottom: "8px",
+  color: "#af98cf", marginBottom: "8px",
 };
 
 const selectStyle: CSSProperties = {
-  background: "#0a0812", border: "1px solid #2a2535", color: "#e8e4f8",
+  background: "#150a2a", border: "1px solid #341a63", color: "#f3e8ff",
   padding: "12px 14px", fontSize: "0.9rem", fontFamily: "var(--font-space,monospace)",
   minWidth: "140px",
 };
@@ -117,7 +117,7 @@ export default function ProductDetailClient({
                 aria-label={`View image ${i + 1}`}
                 style={{
                   width: "56px", aspectRatio: "9 / 16", position: "relative",
-                  border: i === activeImage ? "2px solid #c9a84c" : "1px solid #2a2535",
+                  border: i === activeImage ? "2px solid #ffd23f" : "1px solid #341a63",
                   overflow: "hidden", cursor: "pointer", padding: 0, background: "none",
                 }}
               >
@@ -132,7 +132,7 @@ export default function ProductDetailClient({
       <div>
         <span style={{
           fontFamily: "var(--font-space,monospace)", fontSize: "0.6rem",
-          letterSpacing: "0.2em", textTransform: "uppercase", color: "#8a809a",
+          letterSpacing: "0.2em", textTransform: "uppercase", color: "#af98cf",
         }}>
           {category}
         </span>
@@ -141,7 +141,7 @@ export default function ProductDetailClient({
         </h1>
 
         <div style={{ display: "flex", alignItems: "baseline", gap: "10px", marginBottom: "24px" }}>
-          <span style={{ fontSize: "1.6rem", fontWeight: 700, color: "#f0ecff" }}>${price.toFixed(2)}</span>
+          <span style={{ fontSize: "1.6rem", fontWeight: 700, color: "#f6ecff" }}>${price.toFixed(2)}</span>
           {compareAtPrice && compareAtPrice > price && (
             <span style={{ textDecoration: "line-through", opacity: 0.5 }}>${compareAtPrice.toFixed(2)}</span>
           )}
@@ -181,7 +181,7 @@ export default function ProductDetailClient({
             onClick={handleBuyNow}
             style={{
               flex: "1 1 200px", padding: "16px 24px",
-              background: "#c0001a", color: "#fff", border: "none",
+              background: "#ff2e9e", color: "#fff", border: "none",
               fontFamily: "var(--font-space,monospace)", fontSize: "0.75rem",
               letterSpacing: "0.15em", textTransform: "uppercase", cursor: "pointer",
             }}
@@ -192,7 +192,7 @@ export default function ProductDetailClient({
             onClick={handleAddToCart}
             style={{
               flex: "1 1 160px", padding: "16px 24px",
-              background: "transparent", color: "#e8e4f8", border: "1px solid #2a2535",
+              background: "transparent", color: "#f3e8ff", border: "1px solid #341a63",
               fontFamily: "var(--font-space,monospace)", fontSize: "0.75rem",
               letterSpacing: "0.15em", textTransform: "uppercase", cursor: "pointer",
             }}

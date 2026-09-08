@@ -16,9 +16,9 @@ export const revalidate = 60;
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
 const DEFAULT_OG_IMAGE = "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/og-image.webp";
 
-const META_TITLE = "Matching Wallpapers for Couples & Best Friends | Free HD Downloads";
+const META_TITLE = "Matching Wallpapers for Couples & Best Friends | HD Downloads";
 const META_DESCRIPTION =
-  "Download free matching wallpapers for couples, best friends & colleagues. Cute, aesthetic & funny paired phone backgrounds. Perfect for duos!";
+  "Download matching wallpapers for couples, best friends & colleagues. Cute, aesthetic & funny paired phone backgrounds. Perfect for duos!";
 
 export async function generateMetadata(): Promise<Metadata> {
   // Pull one real matching-wallpaper pair to use as the preview thumbnail
@@ -185,8 +185,8 @@ export default async function MatchingWallpapersHubPage() {
       <style>{`
         .hw-mw-hub {
           min-height: 100vh;
-          background-color: var(--bg-primary, #0c0b14);
-          color: var(--text-primary, #e8e4dc);
+          background-color: var(--bg-primary, #190c30);
+          color: var(--text-primary, #fdf0ff);
         }
 
         /* ── Hero ── */
@@ -202,7 +202,7 @@ export default async function MatchingWallpapersHubPage() {
           font-weight: 700;
           line-height: 1.15;
           margin: 0;
-          color: var(--text-primary, #e8e4dc);
+          color: var(--text-primary, #fdf0ff);
         }
 
         /* ── Category pill grid ── */
@@ -225,8 +225,8 @@ export default async function MatchingWallpapersHubPage() {
           flex-direction: column;
           text-decoration: none;
           color: inherit;
-          background: #13111e;
-          border: 1px solid #2a2535;
+          background: #211038;
+          border: 1px solid #341a63;
           border-radius: 18px;
           overflow: hidden;
           transition: border-color 0.22s ease, transform 0.22s ease, box-shadow 0.22s ease;
@@ -243,7 +243,7 @@ export default async function MatchingWallpapersHubPage() {
           grid-template-rows: repeat(2, 1fr);
           gap: 2px;
           aspect-ratio: 16 / 9;
-          background: #0a0812;
+          background: #150a2a;
         }
         .hw-mw-pill__preview-img {
           width: 100%;
@@ -274,11 +274,11 @@ export default async function MatchingWallpapersHubPage() {
           font-family: var(--font-display, serif);
           font-size: 1.4rem;
           font-weight: 700;
-          color: var(--text-primary, #e8e4dc);
+          color: var(--text-primary, #fdf0ff);
           margin: 2px 0 4px;
         }
         .hw-mw-pill__tagline {
-          color: rgba(232,228,220,0.62);
+          color: rgba(253,240,255,0.62);
           font-size: 0.88rem;
           line-height: 1.6;
           margin-bottom: 14px;
@@ -288,7 +288,7 @@ export default async function MatchingWallpapersHubPage() {
           font-size: 0.66rem;
           letter-spacing: 0.12em;
           text-transform: uppercase;
-          color: #e8e4dc;
+          color: #fdf0ff;
           border-top: 1px solid rgba(255,255,255,0.08);
           padding-top: 14px;
           transition: color 0.2s ease;
@@ -312,10 +312,10 @@ export default async function MatchingWallpapersHubPage() {
           font-weight: 700;
           line-height: 1.4;
           margin: 0 0 14px;
-          color: var(--text-primary, #e8e4dc);
+          color: var(--text-primary, #fdf0ff);
         }
         .hw-mw-about__text {
-          color: rgba(232,228,220,0.68);
+          color: rgba(253,240,255,0.68);
           font-size: clamp(0.9rem, 1.8vw, 1rem);
           line-height: 1.8;
           margin: 0 0 12px;

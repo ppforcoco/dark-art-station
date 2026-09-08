@@ -10,7 +10,7 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.
 export const metadata: Metadata = {
   title: "Matching Wallpaper Sets | Phone, Watch & Desktop Bundles | Haunted Wallpapers",
   description:
-    "Complete matching wallpaper kits for every screen. One dark aesthetic across your phone lock screen, home screen, smartwatch face, and desktop background. Free 4K downloads.",
+    "Complete matching wallpaper kits for every screen. One dark aesthetic across your phone lock screen, home screen, smartwatch face, and desktop background. 4K downloads.",
   keywords: [
     "matching wallpaper set", "phone and watch wallpaper", "dark aesthetic kit",
     "cohesive wallpaper bundle", "smartwatch wallpaper", "desktop phone matching wallpaper",
@@ -123,8 +123,8 @@ export default function SetsPage() {
     <main
       style={{
         minHeight: "100vh",
-        backgroundColor: "var(--bg-primary, #0d0d14)",
-        color: "var(--text-primary, #e0e0f8)",
+        backgroundColor: "var(--bg-primary, #1a0b2e)",
+        color: "var(--text-primary, #ede4ff)",
       }}
     >
       {/* Header */}
@@ -147,7 +147,7 @@ export default function SetsPage() {
             fontSize: "0.6rem",
             letterSpacing: "0.28em",
             textTransform: "uppercase",
-            color: "#c0001a",
+            color: "#ff2e9e",
             marginBottom: "16px",
           }}
         >
@@ -161,7 +161,7 @@ export default function SetsPage() {
             lineHeight: 1.1,
             margin: "0 0 20px",
             letterSpacing: "0.04em",
-            color: "#f0e8d8",
+            color: "#fff3e0",
           }}
         >
           Matching Wallpaper Sets
@@ -172,7 +172,7 @@ export default function SetsPage() {
             fontSize: "clamp(1rem, 1.8vw, 1.2rem)",
             lineHeight: 1.7,
             maxWidth: "580px",
-            color: "rgba(224,224,248,0.7)",
+            color: "rgba(237,228,255,0.7)",
             margin: 0,
           }}
         >
@@ -323,18 +323,18 @@ export default function SetsPage() {
           font-size: 0.5rem;
           letter-spacing: 0.16em;
           text-transform: uppercase;
-          color: #ff6a00;
-          background: linear-gradient(135deg, rgba(255,106,0,0.15) 0%, rgba(192,0,26,0.15) 100%);
-          border: 1px solid rgba(255,106,0,0.45);
+          color: #ff7a18;
+          background: linear-gradient(135deg, rgba(255,122,24,0.15) 0%, rgba(255,46,158,0.15) 100%);
+          border: 1px solid rgba(255,122,24,0.45);
           padding: 3px 9px;
           border-radius: 2px;
           font-weight: 700;
-          box-shadow: 0 0 14px rgba(255,106,0,0.18);
+          box-shadow: 0 0 14px rgba(255,122,24,0.18);
           animation: sets-premium-glow 3s ease-in-out infinite;
         }
         @keyframes sets-premium-glow {
-          0%,100% { box-shadow: 0 0 14px rgba(255,106,0,0.18); }
-          50% { box-shadow: 0 0 24px rgba(255,106,0,0.36), 0 0 40px rgba(192,0,26,0.14); }
+          0%,100% { box-shadow: 0 0 14px rgba(255,122,24,0.18); }
+          50% { box-shadow: 0 0 24px rgba(255,122,24,0.36), 0 0 40px rgba(255,46,158,0.14); }
         }
         .set-card__category-tag {
           position: absolute;
@@ -343,7 +343,7 @@ export default function SetsPage() {
           font-size: 0.48rem;
           letter-spacing: 0.16em;
           text-transform: uppercase;
-          color: rgba(224,224,248,0.8);
+          color: rgba(237,228,255,0.8);
           background: rgba(0,0,0,0.65);
           border: 1px solid rgba(255,255,255,0.18);
           padding: 3px 9px;
@@ -369,7 +369,7 @@ export default function SetsPage() {
           font-family: var(--font-cinzel, serif);
           font-size: clamp(1.05rem, 1.8vw, 1.35rem);
           font-weight: 700;
-          color: #f0e8d8;
+          color: #fff3e0;
           margin: 0;
           line-height: 1.15;
           letter-spacing: 0.04em;
@@ -386,7 +386,7 @@ export default function SetsPage() {
           font-family: var(--font-cormorant, serif);
           font-size: 0.95rem;
           line-height: 1.65;
-          color: rgba(224,224,248,0.62);
+          color: rgba(237,228,255,0.62);
           margin: 0;
           flex: 1;
         }
@@ -411,7 +411,7 @@ export default function SetsPage() {
           font-family: var(--font-space, monospace);
           font-size: 0.5rem;
           letter-spacing: 0.1em;
-          color: rgba(224,224,248,0.3);
+          color: rgba(237,228,255,0.3);
         }
         .set-card__cta {
           display: inline-block;

@@ -17,8 +17,8 @@ export default function StoryTeaser({ blogSlug = "the-skeleton-collection-4k-vis
         textDecoration: "none",
         margin: "20px 0 4px",
         padding: "14px 18px",
-        border: "1px solid rgba(139,0,0,0.45)",
-        background: "rgba(139,0,0,0.07)",
+        border: "1px solid rgba(176,23,158,0.45)",
+        background: "rgba(176,23,158,0.07)",
         borderRadius: "3px",
         position: "relative",
         overflow: "hidden",
@@ -30,7 +30,7 @@ export default function StoryTeaser({ blogSlug = "the-skeleton-collection-4k-vis
       <span style={{
         position: "absolute", top: 0, left: 0, right: 0,
         height: "1px",
-        background: "linear-gradient(90deg, transparent, rgba(192,0,26,0.6), transparent)",
+        background: "linear-gradient(90deg, transparent, rgba(255,46,158,0.6), transparent)",
       }} aria-hidden="true" />
 
       <p style={{
@@ -38,7 +38,7 @@ export default function StoryTeaser({ blogSlug = "the-skeleton-collection-4k-vis
         fontSize: "0.55rem",
         letterSpacing: "0.25em",
         textTransform: "uppercase",
-        color: "rgba(192,0,26,0.8)",
+        color: "rgba(255,46,158,0.8)",
         margin: "0 0 6px",
       }}>
         ▸ Classified — Bone Street Files
@@ -63,8 +63,8 @@ export default function StoryTeaser({ blogSlug = "the-skeleton-collection-4k-vis
         fontSize: "0.62rem",
         letterSpacing: "0.14em",
         textTransform: "uppercase",
-        color: "#c0001a",
-        borderBottom: "1px solid rgba(192,0,26,0.35)",
+        color: "#ff2e9e",
+        borderBottom: "1px solid rgba(255,46,158,0.35)",
         paddingBottom: "1px",
       }}>
         Read the story →
@@ -72,8 +72,8 @@ export default function StoryTeaser({ blogSlug = "the-skeleton-collection-4k-vis
 
       <style>{`
         .story-teaser-box:hover {
-          border-color: rgba(192,0,26,0.7) !important;
-          background: rgba(139,0,0,0.13) !important;
+          border-color: rgba(255,46,158,0.7) !important;
+          background: rgba(176,23,158,0.13) !important;
         }
       `}</style>
     </Link>

@@ -10,29 +10,29 @@
 
 /* ── 1. TOKENS ── */
 [data-theme="fog"] {
-  --void:         #fff6e8 !important;
+  --void:         #fff3e0 !important;
   --black:        #ffffff !important;
   --deep:         #fff0da !important;
   --ash:          #ffe8c9 !important;
   --smoke:        #6b5a86 !important;
   --ghost:        #4a3d63 !important;
-  --pale:         #2b2140 !important;
-  --white:        #2b2140 !important;
+  --pale:         #35205c !important;
+  --white:        #35205c !important;
   --crimson:      #ff5d7a !important;
   --blood:        #ff5d7a !important;
   --ember:        #7c5cff !important;
   --gold:         #ffb347 !important;
 
-  --bg-primary:   #fff6e8 !important;
+  --bg-primary:   #fff3e0 !important;
   --bg-secondary: #ffffff !important;
-  --text-primary: #2b2140 !important;
+  --text-primary: #35205c !important;
   --text-muted:   #6b5a86 !important;
-  --border-dim:   #2b2140 !important;
-  --nav-bg:       rgba(255,246,232,0.92) !important;
+  --border-dim:   #35205c !important;
+  --nav-bg:       rgba(255,243,224,0.92) !important;
 }
 
 [data-theme="fog"] html,
-html[data-theme="fog"] { color-scheme: light; background-color: #fff6e8 !important; }
+html[data-theme="fog"] { color-scheme: light; background-color: #fff3e0 !important; }
 [data-theme="fog"] body { background-color: var(--bg-primary) !important; color: var(--text-primary) !important; }
 
 /* Cartoon lettering everywhere headline-ish */
@@ -58,7 +58,7 @@ html[data-theme="fog"] { color-scheme: light; background-color: #fff6e8 !importa
 [data-theme="fog"] .hw-nav {
   background: var(--nav-bg) !important;
   border-bottom: 3px solid var(--pale) !important;
-  box-shadow: 0 4px 0 rgba(43,33,64,0.06);
+  box-shadow: 0 4px 0 rgba(53,32,92,0.06);
 }
 [data-theme="fog"] .hw-nav__logo,
 [data-theme="fog"] .hw-nav__link,
@@ -74,7 +74,7 @@ html[data-theme="fog"] { color-scheme: light; background-color: #fff6e8 !importa
   border-bottom: 3px solid var(--pale) !important;
 }
 [data-theme="fog"] .hp-marquee-track span {
-  color: #fff6e8 !important;
+  color: #fff3e0 !important;
   font-family: 'Baloo 2', sans-serif !important;
   -webkit-text-stroke: 0;
 }
@@ -206,7 +206,7 @@ html[data-theme="fog"] { color-scheme: light; background-color: #fff6e8 !importa
 [data-theme="fog"] .footer-ai-disclosure,
 [data-theme="fog"] .footer-col a { color: var(--smoke) !important; }
 [data-theme="fog"] .footer-col a:hover { color: var(--crimson) !important; }
-[data-theme="fog"] .footer-bottom { border-top: 1px solid rgba(43,33,64,0.15) !important; }
+[data-theme="fog"] .footer-bottom { border-top: 1px solid rgba(53,32,92,0.15) !important; }
 
 /* ── 9. GENERAL CARTOON CLEANUP — worlds / collections / top100 / mood tiles ── */
 [data-theme="fog"] .hp-world-card,

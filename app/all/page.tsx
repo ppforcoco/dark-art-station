@@ -14,7 +14,7 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.
 export const metadata: Metadata = {
   title: "The Endless — All Dark Wallpapers | HAUNTED WALLPAPERS",
   description:
-    "Every wallpaper we have ever made. iPhone, Android, and PC. Dark fantasy, gothic horror, minimal dread. Free HD downloads. Updated daily. No sign-up.",
+    "Every wallpaper we have ever made. iPhone, Android, and PC. Dark fantasy, gothic horror, minimal dread. HD downloads. Updated daily.",
   openGraph: {
     title: "The Endless — All Dark Wallpapers | HAUNTED WALLPAPERS",
     description:

@@ -99,7 +99,7 @@ export default function AmbientPlayer() {
         .amb-panel {
           pointer-events: auto;
           background: rgba(8,6,18,0.95);
-          border: 1px solid rgba(192,0,26,0.3);
+          border: 1px solid rgba(255,46,158,0.3);
           border-radius: 12px;
           padding: 14px 16px;
           backdrop-filter: blur(20px);
@@ -117,13 +117,13 @@ export default function AmbientPlayer() {
           font-size: 0.48rem;
           letter-spacing: 0.2em;
           text-transform: uppercase;
-          color: #c0001a;
+          color: #ff2e9e;
           margin: 0 0 6px;
         }
         .amb-panel-track {
           font-family: monospace;
           font-size: 0.6rem;
-          color: #e8e4f8;
+          color: #f3e8ff;
           margin: 0 0 12px;
           display: flex;
           align-items: center;
@@ -132,7 +132,7 @@ export default function AmbientPlayer() {
         .amb-panel-track .amb-dot {
           width: 6px; height: 6px;
           border-radius: 50%;
-          background: #c0001a;
+          background: #ff2e9e;
           flex-shrink: 0;
           animation: amb-pulse 1.4s ease-in-out infinite;
         }
@@ -149,7 +149,7 @@ export default function AmbientPlayer() {
         .amb-vol-icon {
           font-size: 0.75rem;
           flex-shrink: 0;
-          color: #6a6080;
+          color: #8670b3;
         }
         .amb-vol-slider {
           flex: 1;
@@ -165,13 +165,13 @@ export default function AmbientPlayer() {
           -webkit-appearance: none;
           width: 12px; height: 12px;
           border-radius: 50%;
-          background: #c0001a;
+          background: #ff2e9e;
           cursor: pointer;
         }
         .amb-vol-slider::-moz-range-thumb {
           width: 12px; height: 12px;
           border-radius: 50%;
-          background: #c0001a;
+          background: #ff2e9e;
           border: none;
           cursor: pointer;
         }
@@ -181,27 +181,27 @@ export default function AmbientPlayer() {
           pointer-events: auto;
           width: 46px; height: 46px;
           border-radius: 50%;
-          border: 1px solid rgba(192,0,26,0.5);
+          border: 1px solid rgba(255,46,158,0.5);
           background: rgba(8,6,18,0.92);
           backdrop-filter: blur(16px);
-          color: #c0001a;
+          color: #ff2e9e;
           cursor: pointer;
           display: flex;
           align-items: center;
           justify-content: center;
           font-size: 1.2rem;
-          box-shadow: 0 4px 20px rgba(0,0,0,0.6), 0 0 12px rgba(192,0,26,0.15);
+          box-shadow: 0 4px 20px rgba(0,0,0,0.6), 0 0 12px rgba(255,46,158,0.15);
           transition: transform 0.18s, box-shadow 0.18s, border-color 0.18s;
           position: relative;
         }
         .amb-btn:hover {
           transform: scale(1.08);
-          box-shadow: 0 6px 24px rgba(0,0,0,0.7), 0 0 20px rgba(192,0,26,0.3);
-          border-color: rgba(192,0,26,0.8);
+          box-shadow: 0 6px 24px rgba(0,0,0,0.7), 0 0 20px rgba(255,46,158,0.3);
+          border-color: rgba(255,46,158,0.8);
         }
         .amb-btn--playing {
-          border-color: rgba(192,0,26,0.8);
-          box-shadow: 0 4px 20px rgba(0,0,0,0.6), 0 0 20px rgba(192,0,26,0.25);
+          border-color: rgba(255,46,158,0.8);
+          box-shadow: 0 4px 20px rgba(0,0,0,0.6), 0 0 20px rgba(255,46,158,0.25);
         }
         /* Ripple when playing */
         .amb-btn--playing::before {
@@ -209,7 +209,7 @@ export default function AmbientPlayer() {
           position: absolute;
           inset: -6px;
           border-radius: 50%;
-          border: 1px solid rgba(192,0,26,0.3);
+          border: 1px solid rgba(255,46,158,0.3);
           animation: amb-ring 2s ease-out infinite;
         }
         .amb-btn--playing::after {
@@ -217,7 +217,7 @@ export default function AmbientPlayer() {
           position: absolute;
           inset: -14px;
           border-radius: 50%;
-          border: 1px solid rgba(192,0,26,0.12);
+          border: 1px solid rgba(255,46,158,0.12);
           animation: amb-ring 2s ease-out 0.6s infinite;
         }
         @keyframes amb-ring {
@@ -235,7 +235,7 @@ export default function AmbientPlayer() {
         .amb-bars span {
           display: block;
           width: 3px;
-          background: #c0001a;
+          background: #ff2e9e;
           border-radius: 1px;
           animation: amb-bar 0.8s ease-in-out infinite alternate;
         }

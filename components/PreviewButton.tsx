@@ -169,7 +169,7 @@ function LockScreenModal({
                   ))}
                 </div>
                 {clockPos === "top" && (
-                  <p style={{ marginTop: "6px", fontSize: "0.5rem", fontFamily: "monospace", color: "#8888aa", letterSpacing: "0.08em" }}>
+                  <p style={{ marginTop: "6px", fontSize: "0.5rem", fontFamily: "monospace", color: "#a99bd1", letterSpacing: "0.08em" }}>
                     Check the clock doesn&apos;t cover your wallpaper&apos;s focal point
                   </p>
                 )}

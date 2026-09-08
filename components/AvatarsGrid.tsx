@@ -149,14 +149,14 @@ export default function AvatarsGrid({ entries }: AvatarsGridProps) {
         {/* Singles SEO */}
         {tab === "singles" && (
           <>
-            <div style={{ borderLeft: "3px solid rgba(192,0,26,0.4)", paddingLeft: "24px", marginBottom: "40px" }}>
-              <p style={{ fontFamily: "var(--font-space,monospace)", fontSize: "0.6rem", letterSpacing: "0.2em", textTransform: "uppercase", color: "rgba(192,0,26,0.6)", marginBottom: "20px" }}>About This Collection</p>
-              <p style={{ fontFamily: "var(--font-cinzel,serif)", fontSize: "1.2rem", color: "rgba(232,228,220,0.9)", marginBottom: "16px", lineHeight: 1.4 }}>Every Face Has a Shadow.</p>
-              <p style={{ color: "rgba(232,228,220,0.75)", fontSize: "0.92rem", lineHeight: 1.9, marginBottom: "14px" }}>The haunted town does not just live on your screen. It lives in the faces you choose to wear. Every avatar in this collection is a fragment of that place — a reflection pulled from the fog, a silhouette that lingers a second too long.</p>
-              <p style={{ color: "rgba(232,228,220,0.75)", fontSize: "0.92rem", lineHeight: 1.9, marginBottom: "14px" }}>This is where the dark self lives. The version that walks the empty streets. The one that stares back from the glass. The collection holds faces for the quiet ones, the lonely ones, the ones who find beauty in the cold.</p>
-              <p style={{ color: "rgba(232,228,220,0.75)", fontSize: "0.92rem", lineHeight: 1.9, marginBottom: "14px" }}>The colors are drained. The edges are rough. Every avatar carries the grain of something old, something worn, something left out in the dark too long. They are the sound of static made visual.</p>
-              <p style={{ color: "rgba(232,228,220,0.75)", fontSize: "0.92rem", lineHeight: 1.9, fontStyle: "italic" }}>Choose your face. Let the haunted town wear it with you.</p>
-              <p style={{ fontFamily: "var(--font-space,monospace)", fontSize: "0.58rem", letterSpacing: "0.12em", color: "rgba(232,228,220,0.22)", marginTop: "24px" }}>dark avatar · gothic pfp · haunted profile picture · aesthetic avatar · dark fantasy avatar · horror pfp · matching avatars</p>
+            <div style={{ borderLeft: "3px solid rgba(255,46,158,0.4)", paddingLeft: "24px", marginBottom: "40px" }}>
+              <p style={{ fontFamily: "var(--font-space,monospace)", fontSize: "0.6rem", letterSpacing: "0.2em", textTransform: "uppercase", color: "rgba(255,46,158,0.6)", marginBottom: "20px" }}>About This Collection</p>
+              <p style={{ fontFamily: "var(--font-cinzel,serif)", fontSize: "1.2rem", color: "rgba(253,240,255,0.9)", marginBottom: "16px", lineHeight: 1.4 }}>Every Face Has a Shadow.</p>
+              <p style={{ color: "rgba(253,240,255,0.75)", fontSize: "0.92rem", lineHeight: 1.9, marginBottom: "14px" }}>The haunted town does not just live on your screen. It lives in the faces you choose to wear. Every avatar in this collection is a fragment of that place — a reflection pulled from the fog, a silhouette that lingers a second too long.</p>
+              <p style={{ color: "rgba(253,240,255,0.75)", fontSize: "0.92rem", lineHeight: 1.9, marginBottom: "14px" }}>This is where the dark self lives. The version that walks the empty streets. The one that stares back from the glass. The collection holds faces for the quiet ones, the lonely ones, the ones who find beauty in the cold.</p>
+              <p style={{ color: "rgba(253,240,255,0.75)", fontSize: "0.92rem", lineHeight: 1.9, marginBottom: "14px" }}>The colors are drained. The edges are rough. Every avatar carries the grain of something old, something worn, something left out in the dark too long. They are the sound of static made visual.</p>
+              <p style={{ color: "rgba(253,240,255,0.75)", fontSize: "0.92rem", lineHeight: 1.9, fontStyle: "italic" }}>Choose your face. Let the haunted town wear it with you.</p>
+              <p style={{ fontFamily: "var(--font-space,monospace)", fontSize: "0.58rem", letterSpacing: "0.12em", color: "rgba(253,240,255,0.22)", marginTop: "24px" }}>dark avatar · gothic pfp · haunted profile picture · aesthetic avatar · dark fantasy avatar · horror pfp · matching avatars</p>
             </div>
           </>
         )}
@@ -166,12 +166,12 @@ export default function AvatarsGrid({ entries }: AvatarsGridProps) {
           <>
             <div style={{ borderLeft: "3px solid rgba(236,72,153,0.4)", paddingLeft: "24px", marginBottom: "40px" }}>
               <p style={{ fontFamily: "var(--font-space,monospace)", fontSize: "0.6rem", letterSpacing: "0.2em", textTransform: "uppercase", color: "rgba(236,72,153,0.6)", marginBottom: "20px" }}>About Matching Avatars</p>
-              <p style={{ fontFamily: "var(--font-cinzel,serif)", fontSize: "1.2rem", color: "rgba(232,228,220,0.9)", marginBottom: "16px", lineHeight: 1.4 }}>Two Shadows, One Static.</p>
-              <p style={{ color: "rgba(232,228,220,0.75)", fontSize: "0.92rem", lineHeight: 1.9, marginBottom: "14px" }}>Some faces belong together. Some silences are shared. The haunted town does not call to everyone — but when it calls to two, the echo is different. It lingers. It repeats. It becomes something that belongs to both.</p>
-              <p style={{ color: "rgba(232,228,220,0.75)", fontSize: "0.92rem", lineHeight: 1.9, marginBottom: "14px" }}>The matching avatars are built for that echo. For the ones who walk the empty streets side by side. For the ones who stare into the dark and find each other there. The faces are halves of a whole — pieces that fit together even when apart.</p>
-              <p style={{ color: "rgba(232,228,220,0.75)", fontSize: "0.92rem", lineHeight: 1.9, marginBottom: "14px" }}>The tones are muted. The edges blur into each other. There is a rawness to them, a sense that they were pulled from the same fog, the same static, the same forgotten corner of the haunted town. They whisper together.</p>
-              <p style={{ color: "rgba(232,228,220,0.75)", fontSize: "0.92rem", lineHeight: 1.9, fontStyle: "italic" }}>Find the set that matches your shadow. Let the haunted town hold both.</p>
-              <p style={{ fontFamily: "var(--font-space,monospace)", fontSize: "0.58rem", letterSpacing: "0.12em", color: "rgba(232,228,220,0.22)", marginTop: "24px" }}>matching avatars · couple pfps · matching profile pictures · dark couple avatars · aesthetic matching pfp · haunted matching icons · dark matching icons</p>
+              <p style={{ fontFamily: "var(--font-cinzel,serif)", fontSize: "1.2rem", color: "rgba(253,240,255,0.9)", marginBottom: "16px", lineHeight: 1.4 }}>Two Shadows, One Static.</p>
+              <p style={{ color: "rgba(253,240,255,0.75)", fontSize: "0.92rem", lineHeight: 1.9, marginBottom: "14px" }}>Some faces belong together. Some silences are shared. The haunted town does not call to everyone — but when it calls to two, the echo is different. It lingers. It repeats. It becomes something that belongs to both.</p>
+              <p style={{ color: "rgba(253,240,255,0.75)", fontSize: "0.92rem", lineHeight: 1.9, marginBottom: "14px" }}>The matching avatars are built for that echo. For the ones who walk the empty streets side by side. For the ones who stare into the dark and find each other there. The faces are halves of a whole — pieces that fit together even when apart.</p>
+              <p style={{ color: "rgba(253,240,255,0.75)", fontSize: "0.92rem", lineHeight: 1.9, marginBottom: "14px" }}>The tones are muted. The edges blur into each other. There is a rawness to them, a sense that they were pulled from the same fog, the same static, the same forgotten corner of the haunted town. They whisper together.</p>
+              <p style={{ color: "rgba(253,240,255,0.75)", fontSize: "0.92rem", lineHeight: 1.9, fontStyle: "italic" }}>Find the set that matches your shadow. Let the haunted town hold both.</p>
+              <p style={{ fontFamily: "var(--font-space,monospace)", fontSize: "0.58rem", letterSpacing: "0.12em", color: "rgba(253,240,255,0.22)", marginTop: "24px" }}>matching avatars · couple pfps · matching profile pictures · dark couple avatars · aesthetic matching pfp · haunted matching icons · dark matching icons</p>
             </div>
           </>
         )}
@@ -190,7 +190,7 @@ export default function AvatarsGrid({ entries }: AvatarsGridProps) {
           font-size: 0.72rem;
           letter-spacing: 0.1em;
           text-transform: uppercase;
-          color: rgba(232, 228, 220, 0.65);
+          color: rgba(253,240,255, 0.65);
           background: rgba(255, 255, 255, 0.03);
           border: 1px solid rgba(255, 255, 255, 0.12);
           padding: 10px 20px;
@@ -203,8 +203,8 @@ export default function AvatarsGrid({ entries }: AvatarsGridProps) {
         }
         .hw-av-tab--active {
           color: #fff;
-          background: rgba(192, 0, 26, 0.18);
-          border-color: rgba(192, 0, 26, 0.7);
+          background: rgba(255,46,158, 0.18);
+          border-color: rgba(255,46,158, 0.7);
         }
         .hw-av-tab:hover:not(.hw-av-tab--active) {
           color: #fff;
@@ -228,7 +228,7 @@ export default function AvatarsGrid({ entries }: AvatarsGridProps) {
         .hw-pairs-tagline__main {
           font-family: var(--font-cinzel, serif);
           font-size: 1rem;
-          color: rgba(232, 228, 220, 0.92);
+          color: rgba(253,240,255, 0.92);
           letter-spacing: 0.04em;
           margin-bottom: 6px;
         }
@@ -237,7 +237,7 @@ export default function AvatarsGrid({ entries }: AvatarsGridProps) {
           font-size: 0.68rem;
           letter-spacing: 0.1em;
           text-transform: uppercase;
-          color: rgba(232, 228, 220, 0.45);
+          color: rgba(253,240,255, 0.45);
           margin-bottom: 6px;
         }
         .hw-pairs-tagline__whisper {

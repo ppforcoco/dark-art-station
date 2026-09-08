@@ -12,7 +12,7 @@ interface ProductCardProps {
   category: string;
   price: string | number;
   isFree?: boolean;
-  badge?: "New" | "Hot" | "Free";
+  badge?: "New" | "Hot" | "Featured";
   icon: string;
   bgClass?: string;
   thumbnail?: string | null;
@@ -41,9 +41,9 @@ export default function ProductCard({
   const [flipping,   setFlipping]    = useState(false);
 
   const badgeStyles: Record<string, string> = {
-    New:  "bg-[#c0001a] text-[#f0ecff]",
-    Hot:  "bg-[#ff3c00] text-[#0a0a0a]",
-    Free: "bg-[#c9a84c] text-[#0a0a0a]",
+    New:  "bg-[#ff2e9e] text-[#f6ecff]",
+    Hot:  "bg-[#ff4d6d] text-[#140a28]",
+    Featured: "bg-[#ffd23f] text-[#140a28]",
   };
 
   function formatCount(n: number): string {
@@ -77,7 +77,7 @@ export default function ProductCard({
           <div
             style={{
               background: "#0c0812",
-              border: "1px solid #c0001a",
+              border: "1px solid #ff2e9e",
               maxWidth: "400px", width: "100%",
               padding: "36px 32px",
               textAlign: "center",
@@ -89,21 +89,21 @@ export default function ProductCard({
             <div style={{
               display: "inline-flex", alignItems: "center", justifyContent: "center",
               width: "64px", height: "64px",
-              border: "3px solid #c0001a",
+              border: "3px solid #ff2e9e",
               borderRadius: "50%",
               marginBottom: "20px",
             }}>
               <span style={{
                 fontFamily: "var(--font-space), monospace",
                 fontWeight: 900, fontSize: "1.3rem",
-                color: "#c0001a", letterSpacing: "-0.02em",
+                color: "#ff2e9e", letterSpacing: "-0.02em",
               }}>16+</span>
             </div>
 
             <h2 style={{
               fontFamily: "var(--font-space), monospace",
               fontSize: "0.75rem", letterSpacing: "0.2em",
-              textTransform: "uppercase", color: "#f0ecff",
+              textTransform: "uppercase", color: "#f6ecff",
               marginBottom: "12px",
             }}>
               Mature Content Warning
@@ -111,7 +111,7 @@ export default function ProductCard({
             <p style={{
               fontFamily: "var(--font-space), monospace",
               fontSize: "0.65rem", letterSpacing: "0.06em",
-              color: "#a89bc0", lineHeight: 1.7,
+              color: "#c9a8e8", lineHeight: 1.7,
               marginBottom: "28px",
             }}>
               This collection contains mature dark art imagery.
@@ -124,8 +124,8 @@ export default function ProductCard({
                 style={{
                   flex: 1, padding: "12px",
                   background: "transparent",
-                  border: "1px solid #2a2535",
-                  color: "#6b6480",
+                  border: "1px solid #341a63",
+                  color: "#8670b3",
                   fontFamily: "var(--font-space), monospace",
                   fontSize: "0.6rem", letterSpacing: "0.15em",
                   textTransform: "uppercase", cursor: "pointer",
@@ -137,8 +137,8 @@ export default function ProductCard({
                 href={`/collections/${slug}`}
                 style={{
                   flex: 1, padding: "12px",
-                  background: "#c0001a",
-                  border: "1px solid #c0001a",
+                  background: "#ff2e9e",
+                  border: "1px solid #ff2e9e",
                   color: "#fff",
                   fontFamily: "var(--font-space), monospace",
                   fontSize: "0.6rem", letterSpacing: "0.15em",
@@ -198,16 +198,16 @@ export default function ProductCard({
               {/* Pulsing circle badge */}
               <div style={{
                 width: "56px", height: "56px",
-                border: "2.5px solid #c0001a",
+                border: "2.5px solid #ff2e9e",
                 borderRadius: "50%",
                 display: "flex", alignItems: "center", justifyContent: "center",
-                boxShadow: "0 0 18px rgba(192,0,26,0.35)",
+                boxShadow: "0 0 18px rgba(255,46,158,0.35)",
                 animation: "adultPulse 2s ease-in-out infinite",
               }}>
                 <span style={{
                   fontFamily: "var(--font-space), monospace",
                   fontWeight: 900, fontSize: "1.1rem",
-                  color: "#c0001a",
+                  color: "#ff2e9e",
                 }}>16+</span>
               </div>
               <span style={{
@@ -215,7 +215,7 @@ export default function ProductCard({
                 fontSize: "0.52rem",
                 letterSpacing: "0.18em",
                 textTransform: "uppercase",
-                color: "#f0ecff",
+                color: "#f6ecff",
                 opacity: 0.85,
               }}>
                 Tap to Reveal
@@ -224,8 +224,8 @@ export default function ProductCard({
 
             <style>{`
               @keyframes adultPulse {
-                0%, 100% { box-shadow: 0 0 12px rgba(192,0,26,0.3); }
-                50% { box-shadow: 0 0 28px rgba(192,0,26,0.6), 0 0 8px rgba(192,0,26,0.4); }
+                0%, 100% { box-shadow: 0 0 12px rgba(255,46,158,0.3); }
+                50% { box-shadow: 0 0 28px rgba(255,46,158,0.6), 0 0 8px rgba(255,46,158,0.4); }
               }
               @keyframes fadeIn { from { opacity:0 } to { opacity:1 } }
               @keyframes slideUp { from { opacity:0; transform:translateY(16px) } to { opacity:1; transform:translateY(0) } }
@@ -243,7 +243,7 @@ export default function ProductCard({
             {thumbnail ? (
               <Image
                 src={thumbnail}
-                alt={`${name} — free dark wallpaper HD`}
+                alt={`${name} — dark wallpaper HD`}
                 fill
                 loading={priority ? "eager" : "lazy"}
                 priority={false}
@@ -276,7 +276,7 @@ export default function ProductCard({
               />
             )}
 
-            <span className="absolute bottom-[-40px] group-hover:bottom-0 left-0 right-0 bg-[rgba(7,7,16,0.9)] backdrop-blur-[10px] text-center py-3 font-mono text-[0.65rem] tracking-[0.15em] uppercase text-[#c9a84c] transition-all duration-300 z-10 pointer-events-none">
+            <span className="absolute bottom-[-40px] group-hover:bottom-0 left-0 right-0 bg-[rgba(16,8,34,0.9)] backdrop-blur-[10px] text-center py-3 font-mono text-[0.65rem] tracking-[0.15em] uppercase text-[#ffd23f] transition-all duration-300 z-10 pointer-events-none">
               Quick View
             </span>
           </Link>
@@ -292,7 +292,7 @@ export default function ProductCard({
           <div className="product-card-bottom">
             <span className="product-card-price">
               {isFree
-                ? "Free"
+                ? "Featured"
                 : typeof price === "number"
                 ? `$${Number(price).toFixed(2)}`
                 : price}
@@ -301,9 +301,9 @@ export default function ProductCard({
               href={isAdult ? "#" : `/collections/${slug}`}
               onClick={isAdult ? (e) => { e.preventDefault(); setShowAgeGate(true); } : undefined}
               className="product-card-cta"
-              aria-label={isFree ? `Download ${name} free` : `View ${name} collection`}
+              aria-label={isFree ? `Download ${name}` : `View ${name} collection`}
             >
-              {isFree ? "↓ Download Free" : "View Collection →"}
+              {isFree ? "↓ Download" : "View Collection →"}
             </Link>
           </div>
         </div>

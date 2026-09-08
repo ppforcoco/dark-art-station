@@ -100,18 +100,18 @@ export default function MatchingWallpaperCard({
 
       <style>{`
         .hw-wp-pair-card {
-          background: #13111e;
-          border: 1px solid #2a2535;
+          background: #211038;
+          border: 1px solid #341a63;
           transition: border-color 0.2s ease, box-shadow 0.2s ease;
         }
         .hw-wp-pair-card:hover {
-          border-color: rgba(192,0,26,0.45);
-          box-shadow: 0 0 16px rgba(192,0,26,0.1);
+          border-color: rgba(255,46,158,0.45);
+          box-shadow: 0 0 16px rgba(255,46,158,0.1);
         }
         .hw-wp-pair-card__img-wrap {
           position: relative;
           width: 100%;
-          background: #0a0812;
+          background: #150a2a;
           overflow: hidden;
         }
         .hw-wp-pair-card__img {
@@ -128,7 +128,7 @@ export default function MatchingWallpaperCard({
           font-family: var(--font-space, monospace);
           font-size: 0.7rem;
           font-weight: 600;
-          color: var(--text-primary, #e8e4dc);
+          color: var(--text-primary, #fdf0ff);
           margin-bottom: 8px;
           line-height: 1.3;
         }
@@ -148,7 +148,7 @@ export default function MatchingWallpaperCard({
           padding: 6px 4px;
           border: 1px solid rgba(255,255,255,0.15);
           background: rgba(255,255,255,0.04);
-          color: rgba(232,228,220,0.75);
+          color: rgba(253,240,255,0.75);
           cursor: pointer;
           transition: all 0.15s ease;
           display: flex;
@@ -157,13 +157,13 @@ export default function MatchingWallpaperCard({
           gap: 3px;
         }
         .hw-wp-pair-card__btn--dl {
-          border-color: rgba(192,0,26,0.4);
-          background: rgba(192,0,26,0.08);
-          color: #e8e4dc;
+          border-color: rgba(255,46,158,0.4);
+          background: rgba(255,46,158,0.08);
+          color: #fdf0ff;
         }
         .hw-wp-pair-card__btn--dl:hover {
-          background: rgba(192,0,26,0.22);
-          border-color: rgba(192,0,26,0.8);
+          background: rgba(255,46,158,0.22);
+          border-color: rgba(255,46,158,0.8);
           color: #fff;
         }
         .hw-wp-pair-card__desc {
@@ -182,7 +182,7 @@ export default function MatchingWallpaperCard({
           font-size: 0.62rem;
           letter-spacing: 0.08em;
           text-transform: uppercase;
-          color: rgba(232, 228, 220, 0.6);
+          color: rgba(253,240,255, 0.6);
           background: rgba(255, 255, 255, 0.04);
           border: 1px solid rgba(255, 255, 255, 0.12);
           padding: 7px 10px;
