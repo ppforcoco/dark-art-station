@@ -323,3 +323,34 @@ html[data-theme="fog"] { color-scheme: light; background-color: #fff3e0 !importa
 [data-theme="fog"] .footer-brand-desc {
   font-weight: 600 !important;
 }
+
+/* Static content pages (About, Contact, Privacy, Licensing, DMCA, FAQ, etc.) —
+   .static-section headings/body copy are styled light-purple-on-dark by
+   default and had no fog-theme override at all, so they were nearly
+   invisible against the cream background. Colors hardcoded (not just
+   var(--text-primary)) so this can't silently break if a variable ever
+   fails to resolve — this has to be unmistakably dark no matter what. */
+[data-theme="fog"] .static-section h2 {
+  color: #1a0f2e !important;
+  font-weight: 900 !important;
+  font-size: 1.3rem !important;
+  border-bottom: 2px solid #1a0f2e !important;
+}
+[data-theme="fog"] .static-section h3 {
+  color: #ff5d7a !important;
+  font-weight: 800 !important;
+}
+[data-theme="fog"] .static-section p,
+[data-theme="fog"] .static-section li {
+  color: #1a0f2e !important;
+  font-weight: 600 !important;
+}
+[data-theme="fog"] .static-section strong {
+  color: #1a0f2e !important;
+  font-weight: 900 !important;
+}
+[data-theme="fog"] .static-section a {
+  color: #ff5d7a !important;
+  border-bottom-color: rgba(200,30,60,0.35) !important;
+}
+[data-theme="fog"] .static-page-meta { color: #6b5a86 !important; }

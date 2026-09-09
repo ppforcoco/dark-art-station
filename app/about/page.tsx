@@ -23,7 +23,7 @@ export default async function AboutPage() {
         ]} />
 
         <header className="static-page-header">
-          <h1 className="static-page-title">Born in the Dark,<br /><em>Built for the Dark</em></h1>
+          <h1 className="static-page-title">About <em>Us</em></h1>
         </header>
 
         <div className="static-page-body">
