@@ -34,7 +34,11 @@ const ALL_TAG_LIST=["dark","gothic","horror","fantasy","minimal","amoled","neon"
 
 async function fileToBase64(file:File):Promise<string>{const reader=new FileReader();return new Promise((resolve,reject)=>{reader.onload=()=>resolve((reader.result as string).split(",")[1]);reader.onerror=reject;reader.readAsDataURL(file);});}
 async function urlToBase64(url:string):Promise<{data:string;mediaType:string}>{const res=await fetch(url);if(!res.ok)throw new Error("Could not fetch");const blob=await res.blob();const file=new File([blob],"image.jpg",{type:blob.type||"image/jpeg"});const data=await fileToBase64(file);return{data,mediaType:file.type};}
-interface ClaudeImageAnalysis{title:string;slug:string;description:string;altText:string;metaDescription:string;tags:string[];}
+// Rebuilds a File with a new base name but the same bytes/type/extension —
+// used to apply the AI-suggested "Rename Thumbnail" / "Rename High Res"
+// filenames to the actual File objects before upload.
+function renameFile(f:File,newBaseName:string):File{if(!newBaseName)return f;const ext=f.name.includes(".")?f.name.slice(f.name.lastIndexOf(".")):"";return new File([f],`${newBaseName}${ext}`,{type:f.type,lastModified:f.lastModified});}
+interface ClaudeImageAnalysis{thumbnailFilename:string;highResFilename:string;title:string;slug:string;htmlCode:string;altText:string;metaDescription:string;tags:string[];}
 // Calls our own server route (/api/hw-admin/analyze-image), which holds the GLM API key
 // server-side and forwards the request to GLM-4.6V-Flash (Z.ai's free vision model).
 // Never call a third-party AI API with a key directly from client-side code — it would
