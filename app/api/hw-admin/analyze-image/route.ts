@@ -20,8 +20,8 @@ const GLM_API_URL = "https://api.z.ai/api/paas/v4/chat/completions";
 const GLM_MODEL = "glm-4.6v-flash";
 
 interface ImageAnalysis {
-  thumbnailName: string;
-  highResName: string;
+  thumbnailFilename: string;
+  highResFilename: string;
   title: string;
   slug: string;
   altText: string;
@@ -68,8 +68,8 @@ OUTPUT CONTRACT
 Look at the supplied wallpaper image and return ONLY valid JSON — no markdown,
 no code fences, no commentary before or after — matching exactly this shape:
 {
-  "thumbnailName": "descriptive-file-name-no-extension, kebab-case",
-  "highResName": "descriptive-file-name-no-extension, kebab-case, may differ slightly from thumbnailName (e.g. add -4k)",
+  "thumbnailFilename": "descriptive-file-name-no-extension, kebab-case",
+  "highResFilename": "descriptive-file-name-no-extension, kebab-case, may differ slightly from thumbnailFilename (e.g. add -4k)",
   "title": "Punchy SEO title for visitors / Google (under 60 characters)",
   "slug": "clean-descriptive-seo-url-slug, lowercase-hyphenated, no stopword stuffing",
   "altText": "strictly 130-150 characters, accessibility-focused description of what is visually in the image, must NOT start with the words 'Wallpaper featuring'",
@@ -182,8 +182,8 @@ export async function POST(req: NextRequest) {
         .replace(/^-+|-+$/g, "");
 
     return NextResponse.json({
-      thumbnailName: slugify(parsed.thumbnailName ?? ""),
-      highResName: slugify(parsed.highResName ?? ""),
+      thumbnailFilename: slugify(parsed.thumbnailFilename ?? ""),
+      highResFilename: slugify(parsed.highResFilename ?? ""),
       title: String(parsed.title ?? "").trim(),
       slug: slugify(parsed.slug ?? parsed.title ?? ""),
       altText: String(parsed.altText ?? "").trim(),
