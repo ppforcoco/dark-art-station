@@ -28,10 +28,8 @@ export default function Footer(): JSX.Element {
           <h3 className="footer-col-title">Company</h3>
           <ul>
             <li><Link href="/shop"            prefetch={false}>🛒 Shop</Link></li>
-            <li><Link href="/all"             prefetch={false}>All Wallpapers</Link></li>
             <li><Link href="/collections"   prefetch={false}>Collections</Link></li>
             <li><Link href="/live-wallpapers" prefetch={false}>🎬 Live Wallpapers</Link></li>
-            <li><Link href="/mood"            prefetch={false}>Mood Wallpapers</Link></li>
             <li><Link href="/favorites"       prefetch={false}>♥ Your Stash</Link></li>
             <li><Link href="/blog"            prefetch={false}>The Lowdown</Link></li>
             <li><Link href="/tools"           prefetch={false}>Tools</Link></li>

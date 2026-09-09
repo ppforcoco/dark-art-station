@@ -3,6 +3,11 @@ import React, { useState, useEffect, useCallback, useRef } from "react";
 
 export const dynamic = "force-dynamic";
 
+// Live-site base URL used for "View Live" links and the preview iframe below.
+// Reads from the same env var the rest of the app uses so it always tracks
+// whatever domain is actually deployed, instead of a hardcoded string.
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://mr4kwalls.com";
+
 interface Analytics { totalDownloads:number;todayDownloads:number;weekDownloads:number;monthDownloads:number;downloads5Min:number;downloads30Min:number;downloads24h:number;downloads30Days:number;imageDownloads:number;collectionDownloads:number;downloadsPerDay:{date:string;count:number}[];totalPageViews:number;pageViews5Min:number;pageViews30Min:number;pageViews24h:number;pageViews30Days:number;topPageViews:{title:string;slug:string;device:string|null;views:number}[];topWallpapers:{title:string;slug:string;device:string|null;downloads:number}[];topCollections:{title:string;slug:string;downloads:number}[];totalBlogPosts:number;publishedBlogPosts:number;blogPosts:{title:string;slug:string;label:string;date:string;wordCount:number}[];deviceBreakdown:{IPHONE:number;ANDROID:number;PC:number;OTHER:number};recentActivity:{time:string;title:string;slug:string;device:string|null;type:string}[]; }
 interface Post { slug:string;title:string;label:string;content?:string;featuredImage?:string|null;createdAt:string;published?:boolean; }
 // UPDATED: added downloadCount field
@@ -126,7 +131,7 @@ function AnalyticsTab({password}:{password:string}){
       <Card><p style={eyebrow}>Top Downloaded Collections</p>{data.topCollections.map((c,i)=><div key={i} style={{display:"flex",justifyContent:"space-between",padding:"8px 0",borderBottom:`1px solid ${C.border}`,fontSize:"0.82rem"}}><span style={{color:C.textPri,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap",flex:1}}>{c.title}</span><span style={{color:C.red,fontWeight:700,flexShrink:0,marginLeft:"8px"}}>{c.downloads}</span></div>)}</Card>
     </div>}
     {section==="pages"&&<Card style={{marginBottom:"24px"}}><p style={eyebrow}>Most Viewed Wallpaper Pages</p><p style={{color:C.textMut,fontSize:"0.65rem",marginBottom:"12px"}}>View counts are incremented each time a wallpaper detail page loads.</p>{data.topPageViews.map((p,i)=><div key={i} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"9px 0",borderBottom:`1px solid ${C.border}`,fontSize:"0.82rem"}}><div style={{flex:1,minWidth:0}}><span style={{color:C.textPri}}>{p.title}</span>{p.device&&<span style={{color:C.textMut,fontSize:"0.6rem",marginLeft:"8px"}}>{p.device}</span>}<br/><code style={{color:C.textMut,fontSize:"0.58rem"}}>/{p.device?.toLowerCase()??""}/{p.slug}</code></div><div style={{textAlign:"right",flexShrink:0,marginLeft:"12px"}}><span style={{color:C.gold,fontWeight:700}}>{p.views.toLocaleString()}</span><span style={{color:C.textMut,fontSize:"0.6rem",display:"block"}}>views</span></div></div>)}</Card>}
-    {section==="blog"&&<Card style={{marginBottom:"24px"}}><p style={eyebrow}>Blog Posts ({data.publishedBlogPosts} published)</p>{data.blogPosts.length===0?<p style={{color:C.textMut,padding:"20px 0",textAlign:"center"}}>No blog posts yet.</p>:data.blogPosts.map((p,i)=><div key={i} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"10px 0",borderBottom:`1px solid ${C.border}`,gap:"12px"}}><div style={{flex:1,minWidth:0}}><p style={{color:C.textPri,fontSize:"0.82rem",marginBottom:"3px",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{p.title}</p><div style={{display:"flex",gap:"8px",flexWrap:"wrap"}}><span style={{background:"rgba(147,51,234,0.2)",color:C.purple,padding:"1px 7px",fontSize:"0.58rem"}}>{p.label}</span><span style={{color:C.textMut,fontSize:"0.6rem"}}>{p.date}</span><span style={{color:p.wordCount>=800?C.green:C.gold,fontSize:"0.6rem"}}>{p.wordCount} words{p.wordCount>=800?" ✓":""}</span></div></div><a href={`https://hauntedwallpapers.com/blog/${p.slug}`} target="_blank" rel="noopener noreferrer" style={{color:C.textMut,fontSize:"0.65rem",textDecoration:"none",flexShrink:0}}>↗</a></div>)}</Card>}
+    {section==="blog"&&<Card style={{marginBottom:"24px"}}><p style={eyebrow}>Blog Posts ({data.publishedBlogPosts} published)</p>{data.blogPosts.length===0?<p style={{color:C.textMut,padding:"20px 0",textAlign:"center"}}>No blog posts yet.</p>:data.blogPosts.map((p,i)=><div key={i} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"10px 0",borderBottom:`1px solid ${C.border}`,gap:"12px"}}><div style={{flex:1,minWidth:0}}><p style={{color:C.textPri,fontSize:"0.82rem",marginBottom:"3px",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{p.title}</p><div style={{display:"flex",gap:"8px",flexWrap:"wrap"}}><span style={{background:"rgba(147,51,234,0.2)",color:C.purple,padding:"1px 7px",fontSize:"0.58rem"}}>{p.label}</span><span style={{color:C.textMut,fontSize:"0.6rem"}}>{p.date}</span><span style={{color:p.wordCount>=800?C.green:C.gold,fontSize:"0.6rem"}}>{p.wordCount} words{p.wordCount>=800?" ✓":""}</span></div></div><a href={`${SITE_URL}/blog/${p.slug}`} target="_blank" rel="noopener noreferrer" style={{color:C.textMut,fontSize:"0.65rem",textDecoration:"none",flexShrink:0}}>↗</a></div>)}</Card>}
     {section==="device"&&<Card style={{marginBottom:"24px"}}><p style={eyebrow}>Downloads by Device (last 30 days)</p><div style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:"16px",marginTop:"12px"}}>{[["📱 iPhone","IPHONE",C.red],["🤖 Android","ANDROID",C.purple],["🖥 PC","PC",C.gold],["❓ Other","OTHER",C.textMut]].map(([label,key,color])=>{const count=data.deviceBreakdown[key as keyof typeof data.deviceBreakdown];const pct=Math.round(count/devTotal*100);return<div key={key} style={{padding:"16px",border:`1px solid ${C.border}`,background:"rgba(255,255,255,0.02)"}}><p style={{color:C.textSec,fontSize:"0.7rem",marginBottom:"6px"}}>{label as string}</p><p style={{color:color as string,fontSize:"1.6rem",fontWeight:700,lineHeight:1}}>{count.toLocaleString()}</p><p style={{color:C.textMut,fontSize:"0.6rem",marginTop:"4px"}}>{pct}% of total</p></div>;})}
     </div></Card>}
     <Card style={{marginBottom:"24px"}}><p style={eyebrow}>Recent Downloads</p>{data.recentActivity.map((a,i)=><div key={i} style={{display:"flex",gap:"12px",padding:"8px 0",borderBottom:`1px solid ${C.border}`,fontSize:"0.78rem",alignItems:"center"}}><span style={{color:C.textMut,flexShrink:0,fontSize:"0.65rem"}}>{a.time}</span><span style={{flex:1,color:C.textPri,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{a.title}</span>{a.device&&<span style={{color:C.textMut,fontSize:"0.6rem",flexShrink:0}}>{a.device}</span>}<span style={{color:a.type==="image"?C.gold:C.purple,fontSize:"0.58rem",flexShrink:0}}>{a.type}</span></div>)}</Card>
@@ -190,7 +195,7 @@ function PageContentTab({password}:{password:string}){
   const hasContent=(slug:string)=>allRecords.some(r=>r.slug===slug);
   const wordCount=body.replace(/<[^>]*>/g," ").replace(/\s+/g," ").trim().split(" ").filter(Boolean).length;
   const pageInfo=PAGE_SLUGS.find(p=>p.slug===activeSlug);
-  const liveUrl=pageInfo?.url?`https://hauntedwallpapers.com${pageInfo.url}`:null;
+  const liveUrl=pageInfo?.url?`${SITE_URL}${pageInfo.url}`:null;
 
   return<div style={{display:"grid",gridTemplateColumns:"240px 1fr",gap:"24px",alignItems:"start"}}>
     <div><Card style={{padding:"0",overflow:"hidden"}}>
@@ -517,7 +522,7 @@ function BlogTab({password,prefillTitle,prefillLabel,onPrefillUsed}:{password:st
     <div style={{display:"flex",gap:"10px"}}>
       <Btn onClick={handleSave} disabled={saving}>{saving?"Saving…":"💾 Publish Post"}</Btn>
       <Btn onClick={()=>{setMode("list");setMsg(null);}} variant="ghost">Cancel</Btn>
-      {mode==="edit"&&editPost&&<a href={`https://hauntedwallpapers.com/blog/${editPost.slug}`} target="_blank" rel="noopener noreferrer" style={{display:"inline-flex",alignItems:"center",padding:"10px 16px",border:`1px solid ${C.green}`,color:C.green,textDecoration:"none",fontSize:"0.7rem",fontFamily:"monospace"}}>👁 View Live →</a>}
+      {mode==="edit"&&editPost&&<a href={`${SITE_URL}/blog/${editPost.slug}`} target="_blank" rel="noopener noreferrer" style={{display:"inline-flex",alignItems:"center",padding:"10px 16px",border:`1px solid ${C.green}`,color:C.green,textDecoration:"none",fontSize:"0.7rem",fontFamily:"monospace"}}>👁 View Live →</a>}
     </div>
   </div>;
   return<div>
@@ -743,12 +748,12 @@ function BackdateTab({password}:{password:string}){
 function LivePreviewTab(){
   const[activeUrl,setActiveUrl]=useState("/blog");const[customUrl,setCustomUrl]=useState("");const iframeRef=useRef<HTMLIFrameElement>(null);
   const QUICK_LINKS=[{label:"Home",url:"/"},{label:"Blog",url:"/blog"},{label:"iPhone",url:"/iphone"},{label:"Android",url:"/android"},{label:"PC",url:"/pc"},{label:"Collections",url:"/collections"},{label:"About",url:"/about"},{label:"FAQ",url:"/faq"},{label:"Contact",url:"/contact"},{label:"Tools",url:"/tools"}];
-  function navigate(url:string){const full=url.startsWith("http")?url:`https://hauntedwallpapers.com${url}`;setActiveUrl(url);if(iframeRef.current)iframeRef.current.src=full;}
+  function navigate(url:string){const full=url.startsWith("http")?url:`${SITE_URL}${url}`;setActiveUrl(url);if(iframeRef.current)iframeRef.current.src=full;}
   return<div>
     <Card style={{padding:"14px 18px",marginBottom:"16px",borderColor:C.red}}><strong style={{color:C.gold}}>🌐 Live Site Preview</strong><span style={{color:C.textSec,marginLeft:"8px",fontSize:"0.82rem"}}>Browse your live site in-panel.</span></Card>
     <div style={{display:"flex",flexWrap:"wrap",gap:"6px",marginBottom:"12px"}}>{QUICK_LINKS.map(({label,url})=><button key={url} onClick={()=>navigate(url)} style={{background:activeUrl===url?C.red:"transparent",border:`1px solid ${activeUrl===url?C.red:C.border}`,color:activeUrl===url?C.white:C.textSec,padding:"5px 12px",cursor:"pointer",fontSize:"0.68rem",fontFamily:"monospace"}}>{label}</button>)}</div>
-    <div style={{display:"flex",gap:"8px",marginBottom:"14px"}}><input value={customUrl} onChange={e=>setCustomUrl(e.target.value)} onKeyDown={e=>e.key==="Enter"&&navigate(customUrl)} placeholder="/blog/your-slug or full URL" style={{...inp,flex:1}}/><Btn onClick={()=>navigate(customUrl||"/blog")}>Go →</Btn><a href={`https://hauntedwallpapers.com${activeUrl.startsWith("/")?activeUrl:"/"+activeUrl}`} target="_blank" rel="noopener noreferrer" style={{display:"flex",alignItems:"center",background:"transparent",border:`1px solid ${C.border}`,color:C.textSec,padding:"10px 14px",textDecoration:"none",fontSize:"0.7rem",fontFamily:"monospace"}}>↗</a></div>
-    <div style={{border:`1px solid ${C.border}`,overflow:"hidden"}}><iframe ref={iframeRef} src="https://hauntedwallpapers.com/blog" style={{width:"100%",height:"720px",border:"none",display:"block"}} title="Live site preview"/></div>
+    <div style={{display:"flex",gap:"8px",marginBottom:"14px"}}><input value={customUrl} onChange={e=>setCustomUrl(e.target.value)} onKeyDown={e=>e.key==="Enter"&&navigate(customUrl)} placeholder="/blog/your-slug or full URL" style={{...inp,flex:1}}/><Btn onClick={()=>navigate(customUrl||"/blog")}>Go →</Btn><a href={`${SITE_URL}${activeUrl.startsWith("/")?activeUrl:"/"+activeUrl}`} target="_blank" rel="noopener noreferrer" style={{display:"flex",alignItems:"center",background:"transparent",border:`1px solid ${C.border}`,color:C.textSec,padding:"10px 14px",textDecoration:"none",fontSize:"0.7rem",fontFamily:"monospace"}}>↗</a></div>
+    <div style={{border:`1px solid ${C.border}`,overflow:"hidden"}}><iframe ref={iframeRef} src={`${SITE_URL}/blog`} style={{width:"100%",height:"720px",border:"none",display:"block"}} title="Live site preview"/></div>
     <p style={{color:C.textMut,fontSize:"0.65rem",marginTop:"8px"}}>⚠ Some pages may block iframe embedding. Use ↗ to open in a new tab.</p>
   </div>;
 }
@@ -903,7 +908,7 @@ function CollectionsTab({password}:{password:string}){
         </label>
         <label style={{display:"flex",alignItems:"center",gap:"8px",cursor:"pointer",marginBottom:"8px"}}>
           <input type="checkbox" checked={createRootSlug} onChange={e=>setCreateRootSlug(e.target.checked)} style={{accentColor:C.gold}}/>
-          <span style={{color:C.textSec,fontSize:"0.72rem"}}>Root-level URL (e.g. hauntedwallpapers.com/{createSlug||"slug"} instead of /collections/{createSlug||"slug"})</span>
+          <span style={{color:C.textSec,fontSize:"0.72rem"}}>Root-level URL (e.g. mr4kwalls.com/{createSlug||"slug"} instead of /collections/{createSlug||"slug"})</span>
         </label>
         {createMsg&&<p style={{fontSize:"0.72rem",color:createMsg.type==="ok"?C.green:C.red,margin:"0 0 6px"}}>{createMsg.text}</p>}
         <Btn onClick={handleCreate} disabled={creating||!createTitle.trim()||!createSlug.trim()}>{creating?"Creating…":"Create Collection"}</Btn>
@@ -947,10 +952,10 @@ function CollectionsTab({password}:{password:string}){
             <input value={editTitle} onChange={e=>setEditTitle(e.target.value)} style={{...inp,fontSize:"1rem",fontWeight:500,color:C.gold,marginBottom:"6px",width:"100%"}}/>
             <input value={editSlug} onChange={e=>setEditSlug(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g,"-"))} style={{...inp,fontSize:"0.65rem",color:C.textMut,marginBottom:"4px",width:"100%"}}/>
             <div style={{display:"flex",gap:"12px",marginTop:"4px",alignItems:"center",flexWrap:"wrap"}}>
-              <a href={`https://hauntedwallpapers.com/${editRootSlug?editSlug:`collections/${editSlug}`}`} target="_blank" rel="noopener noreferrer" style={{color:C.textMut,fontSize:"0.65rem",textDecoration:"none"}}>↗ View Live</a>
+              <a href={`${SITE_URL}/${editRootSlug?editSlug:`collections/${editSlug}`}`} target="_blank" rel="noopener noreferrer" style={{color:C.textMut,fontSize:"0.65rem",textDecoration:"none"}}>↗ View Live</a>
               <label style={{display:"flex",alignItems:"center",gap:"6px",cursor:"pointer"}}>
                 <input type="checkbox" checked={editRootSlug} onChange={e=>setEditRootSlug(e.target.checked)} style={{accentColor:C.gold}}/>
-                <span style={{color:C.textSec,fontSize:"0.65rem"}}>Root-level URL (hauntedwallpapers.com/{editSlug} instead of /collections/{editSlug})</span>
+                <span style={{color:C.textSec,fontSize:"0.65rem"}}>Root-level URL (mr4kwalls.com/{editSlug} instead of /collections/{editSlug})</span>
               </label>
             </div>
           </div>

@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 const LAST_UPDATED = "6 September 2026";
 const SITE_NAME     = "MR4K Walls";
-const CONTACT_EMAIL = "hello@hauntedwallpapers.com";
+const CONTACT_EMAIL = "hello@mr4kwalls.com";
 
 export default function RefundPolicyPage() {
   return (

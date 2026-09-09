@@ -7,8 +7,8 @@ export const revalidate = 3600;
 export const metadata: Metadata = {
   title: "About — MR4K Walls",
   description:
-    "Two siblings raised on horror stories, graveyard houses, and jungle spirits. " +
-    "MR4K Walls is not a studio — it's an obsession. The story behind the dark art.",
+    "Two siblings who got tired of boring default phone backgrounds and started " +
+    "generating better ones with AI. No paywalls, no subscriptions — just wallpapers.",
 };
 
 export default async function AboutPage() {
@@ -29,68 +29,64 @@ export default async function AboutPage() {
         <div className="static-page-body">
 
           <section className="static-section">
-            <h2>We Are Not a Studio. We Are Obsessed.</h2>
+            <h2>You Actually Clicked the &ldquo;About Us&rdquo; Page?</h2>
             <p>
-              MR4K Walls was built by two siblings — a brother and sister —
-              who have loved horror since before they understood why. We grew up
-              talking about ghosts, watching horror movies back to back, and
-              genuinely never being scared. Not detached — <em>obsessed</em>.
-              The dark was never something to run from. It was something to run
-              <em> toward</em>.
-            </p>
-            <p>
-              This site is the result of that obsession. Every wallpaper on here
-              was curated by people who actually feel something when they look at
-              dark art — not by an algorithm chasing clicks.
+              Let&rsquo;s be honest, you probably misclicked while looking for a
+              picture of a monkey wearing sunglasses. But since you are here, we
+              might as well tell you what is going on.
             </p>
           </section>
 
           <section className="static-section">
-            <h2>Where It Comes From</h2>
+            <h2>Why We Built This</h2>
             <p>
-              Our father used to walk kilometres through the jungle at night. He
-              described a presence that would follow him — not physical, nothing
-              you could touch, but undeniably <em>there</em>. He&apos;d arrive home
-              and the entity would stay, crying through the night, keeping him from
-              sleep. He told us these stories like they were ordinary. They were not.
+              We are a brother and sister team. We didn&rsquo;t build this site
+              because of some deep, magical calling. We built it because we
+              looked at the default backgrounds that come with a thousand-dollar
+              phone and wanted to cry. A picture of a blurry leaf? A plain blue
+              square? <strong>Absolute garbage.</strong> You pay way too much
+              money for your phone, tablet, and PC for them to look that boring.
             </p>
           </section>
 
           <section className="static-section">
-            <h2>What We Create</h2>
+            <h2>How We Make Them</h2>
             <p>
-              MR4K Walls is an independent wallpaper project created by two siblings who love horror, dark fantasy, and atmospheric artwork. Every image is
-              crafted using AI generation pipelines — diffusion models, custom-trained
-              style embeddings, iterative curation — shaped by people who have a
-              genuine sense of what dark art should <em>feel</em> like.
-            </p>
-            <p>
-              Our collection includes dark fantasy, gothic, cyberpunk, horror, street art, and atmospheric wallpapers for iPhone, Android, tablets, laptops, and desktop computers. Thousands of wallpapers are available to download.
+              We use AI to generate every single image on this site. We type
+              crazy, funny, and wild ideas into a computer, make the machine
+              sweat, and then we handpick only the absolute best results. We do
+              all the heavy lifting and sorting so you don&rsquo;t have to look
+              at trash.
             </p>
           </section>
 
           <section className="static-section">
-            <h2>Who This Is For</h2>
+            <h2>Why Choose Us? (What&rsquo;s in it for you)</h2>
             <p>
-              For the person who never related to bright, cheerful phone themes.
-              For whoever has a desktop that should feel like a statement, not a
-              screensaver. For the art lover who wants something that actually
-              unsettles them — in the best possible way — every morning. For anyone
-              who has always felt more at home in the dark.
+              Because you stare at your screen a hundred times a day. Every time
+              it lights up, it should make you laugh, feel like a total boss, or
+              heavily confuse whoever is sitting next to you on the bus.
             </p>
             <p>
-              We are funded by advertising. No paywalls. No subscriptions.
-              No dark patterns. We believe great wallpapers should be accessible to everyone.
+              We don&rsquo;t hide our stuff behind annoying paywalls or sneaky
+              monthly subscriptions. The site is paid for by ads. That means you
+              get to grab exactly what you want, totally for free, without
+              whipping out your credit card.
             </p>
           </section>
 
           <section className="static-section">
-            <h2>Contact &amp; Community</h2>
+            <h2>Real People, Real Talk</h2>
             <p>
-              Small team. Real people. If you have questions, requests, or something
-              to report — visit our{" "}
-              <a href="/contact">Contact page</a>. For licensing questions, see{" "}
-              <a href="/licensing">Licensing &amp; Terms</a>.
+              We are just two normal people making fun stuff for your devices.
+              No massive corporate team, no robots running customer service. If
+              a page breaks, you have a question, or you just want to tell us a
+              joke, hit up our{" "}
+              <a href="/contact">Contact page</a>.
+            </p>
+            <p>
+              Otherwise, stop reading this boring page and go find a wallpaper
+              that matches your ridiculous vibe.
             </p>
           </section>
 

@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   robots: { index: true, follow: true },
 };
 
-const CONTACT_EMAIL  = "hello@hauntedwallpapers.com";
+const CONTACT_EMAIL  = "hello@mr4kwalls.com";
 const LAST_UPDATED   = "23 March 2026";
 const SITE_NAME      = "MR4K Walls";
 

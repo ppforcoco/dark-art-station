@@ -40,7 +40,7 @@ function classifyReferer(raw: string | null): string {
     if (host.includes("telegram"))                                              return "Telegram";
     if (host.includes("whatsapp"))                                              return "WhatsApp";
     if (host.includes("tumblr"))                                                return "Tumblr";
-    if (host.includes("hauntedwallpapers.com"))                                 return "Internal (own site)";
+    if (host.includes("mr4kwalls.com") || host.includes("hauntedwallpapers.com")) return "Internal (own site)";
 
     return host; // Unknown external domain — show it raw so you can spot aggregators
   } catch {

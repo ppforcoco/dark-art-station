@@ -94,9 +94,9 @@ export default async function Home() {
     };
   });
 
-  // Featured wallpaper shown inside the hero phone mockup — first "Tonight's
-  // Haunting" item, so the mockup always reflects a real, current upload.
-  const featured = newItems[0];
+  // Three wallpapers shown across the hero phone mockups — pulled from the
+  // same "Tonight's Haunting" query so they're always real, current uploads.
+  const featuredItems = newItems.slice(0, 3);
 
   return (
     <>
@@ -114,6 +114,7 @@ export default async function Home() {
         <section className="hp-hero">
           <div className="hp-hero-grid">
             <div className="hp-hero-body">
+              <p className="hp-hero-seo-title">MR4K Walls</p>
               <h1 className="hp-hero-headline display">
                 Your screen
                 <br />
@@ -121,6 +122,7 @@ export default async function Home() {
                 <br />
                 <span className="hp-hero-accent">some drip.</span>
               </h1>
+              <p className="hp-hero-sub">Premium 4K wallpapers for every screen.</p>
               <p className="hp-hero-stat-line">
                 {fmt(totalImages)} wallpapers &middot; 4K quality &middot; zero cap
               </p>
@@ -134,32 +136,30 @@ export default async function Home() {
               </div>
             </div>
 
-            {/* ── Tilted phone mockup showing a real Tonight's Haunting wallpaper ── */}
-            {featured && (
-              <div className="hero-visual">
+            {/* ── Three tilted phone mockups showing real Tonight's Haunting wallpapers ── */}
+            {featuredItems.length > 0 && (
+              <div className="hero-visual hero-visual--trio">
                 <div className="glow" />
-                <div className="phone-frame">
-                  <svg className="bone-corner tl" viewBox="0 0 64 64" fill="none" stroke="currentColor" strokeWidth="1.5">
-                    <circle cx="14" cy="14" r="6" /><circle cx="50" cy="50" r="6" /><path d="M18 18 46 46" />
-                  </svg>
-                  <div className="notch" />
-                  <div className="screen">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      className="wallpaper-art"
-                      src={featured.src}
-                      alt={featured.title}
-                      loading="eager"
-                    />
+                {featuredItems.map((item, i) => (
+                  <div className={`phone-frame phone-frame--${i}`} key={item.id}>
+                    <svg className="bone-corner tl" viewBox="0 0 64 64" fill="none" stroke="currentColor" strokeWidth="1.5">
+                      <circle cx="14" cy="14" r="6" /><circle cx="50" cy="50" r="6" /><path d="M18 18 46 46" />
+                    </svg>
+                    <div className="notch" />
+                    <div className="screen">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        className="wallpaper-art"
+                        src={item.src}
+                        alt={item.title}
+                        loading={i === 0 ? "eager" : "lazy"}
+                      />
+                    </div>
+                    <svg className="bone-corner br" viewBox="0 0 64 64" fill="none" stroke="currentColor" strokeWidth="1.5">
+                      <circle cx="14" cy="14" r="6" /><circle cx="50" cy="50" r="6" /><path d="M18 18 46 46" />
+                    </svg>
                   </div>
-                  <div className="lockscreen-ui">
-                    <div className="time">9:41</div>
-                    <div className="date">Fri, Oct 31</div>
-                  </div>
-                  <svg className="bone-corner br" viewBox="0 0 64 64" fill="none" stroke="currentColor" strokeWidth="1.5">
-                    <circle cx="14" cy="14" r="6" /><circle cx="50" cy="50" r="6" /><path d="M18 18 46 46" />
-                  </svg>
-                </div>
+                ))}
               </div>
             )}
           </div>

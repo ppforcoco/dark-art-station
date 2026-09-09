@@ -112,7 +112,7 @@ const FAQS: { q: string; a: React.ReactNode; text: string }[] = [
           <li>Check your device&apos;s available storage — downloads will fail
             silently if there is insufficient space.</li>
           <li>If the issue persists, email us at{" "}
-            <a href="mailto:hello@hauntedwallpapers.com">hello@hauntedwallpapers.com</a>{" "}
+            <a href="mailto:hello@mr4kwalls.com">hello@mr4kwalls.com</a>{" "}
             and include the image name — we will resolve it promptly.</li>
         </ol>
       </>
@@ -216,7 +216,7 @@ export default async function FaqPage() {
             <h2>Still need help?</h2>
             <p>
               If you cannot find the answer you need, email us at{" "}
-              <a href="mailto:hello@hauntedwallpapers.com">hello@hauntedwallpapers.com</a>{" "}
+              <a href="mailto:hello@mr4kwalls.com">hello@mr4kwalls.com</a>{" "}
               and we will respond as soon as possible.
             </p>
           </section>

@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 };
 
 const LAST_UPDATED   = "20 March 2026";
-const CONTACT_EMAIL  = "hello@hauntedwallpapers.com";
+const CONTACT_EMAIL  = "hello@mr4kwalls.com";
 
 export default function LicensingPage() {
   return (

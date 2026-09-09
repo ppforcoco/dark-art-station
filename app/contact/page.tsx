@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   robots: { index: true, follow: true },
 };
 
-const CONTACT_EMAIL = "hello@hauntedwallpapers.com";
+const CONTACT_EMAIL = "hello@mr4kwalls.com";
 
 export default function ContactPage() {
   return (

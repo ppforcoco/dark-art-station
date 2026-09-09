@@ -102,7 +102,20 @@ Analyze this wallpaper image and return ONLY valid JSON, no markdown, no code fe
 
     let parsed: ImageAnalysis;
     try {
-      const clean = raw.replace(/^```json\n?|```$/g, "").trim();
+      // GLM doesn't always follow the "```json ... ```" format exactly — it
+      // sometimes omits the "json" language tag, sometimes adds a sentence
+      // of commentary before/after the fence despite being told not to. The
+      // previous regex only stripped an exact "```json" fence, so any of
+      // those variations left stray backticks or text around the JSON and
+      // broke JSON.parse — which is why fields silently failed to fill in.
+      // Strip any code fence variant, then fall back to just grabbing the
+      // {...} substring, which survives all of the above.
+      let clean = raw.replace(/^```[a-zA-Z]*\n?/, "").replace(/```$/, "").trim();
+      const firstBrace = clean.indexOf("{");
+      const lastBrace = clean.lastIndexOf("}");
+      if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
+        clean = clean.slice(firstBrace, lastBrace + 1);
+      }
       parsed = JSON.parse(clean);
     } catch {
       return NextResponse.json(

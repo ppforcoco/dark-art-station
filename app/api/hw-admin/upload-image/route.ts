@@ -152,7 +152,7 @@ export async function POST(req: NextRequest) {
     // (Google doesn't support IndexNow — see lib/index-now.ts for what actually
     // helps Google pick this page up faster.)
     if (deviceType) {
-      const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
+      const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://mr4kwalls.com";
       void pingIndexNow([`${siteUrl}/${deviceType.toLowerCase()}/${slug}`]);
     }
 

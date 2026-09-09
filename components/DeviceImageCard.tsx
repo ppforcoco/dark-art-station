@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import dynamic from "next/dynamic";
+import { IphoneIcon } from "@/components/icons/DeviceIcons";
 
 const LockScreenPreviewModal = dynamic(
   () => import("./LockScreenPreviewModal"),
@@ -236,7 +237,7 @@ export default function DeviceImageCard({
           aria-label="Preview on lock screen"
           tabIndex={-1}
         >
-          📱 Preview
+          <IphoneIcon size={13} /> Preview
         </button>
 
         {/* Title overlay — bottom on hover */}

@@ -92,6 +92,7 @@ html[data-theme="fog"] { color-scheme: light; background-color: #fff3e0 !importa
   text-shadow: 3px 3px 0 var(--gold);
 }
 [data-theme="fog"] .hp-hero-sub { color: var(--smoke) !important; }
+[data-theme="fog"] .hp-hero-seo-title { color: var(--crimson) !important; }
 
 /* the stat count line is hidden entirely in the cartoon theme */
 [data-theme="fog"] .hp-hero-stat-line { display: none !important; }

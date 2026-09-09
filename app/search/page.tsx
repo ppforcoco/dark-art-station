@@ -5,6 +5,7 @@ import { searchWallpapers, type SearchResultItem } from "@/lib/db";
 import Pagination from "@/components/Pagination";
 import SearchPageClient from "@/components/SearchPageClient";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import { IphoneIcon, AndroidIcon, PcIcon } from "@/components/icons/DeviceIcons";
 
 export const dynamic = "force-dynamic";
 
@@ -17,6 +18,7 @@ export async function generateMetadata(
   const q    = rawQ?.trim() ?? "";
   const page = Math.max(1, parseInt(rawPage ?? "1", 10) || 1);
   const pageLabel = page > 1 ? ` — Page ${page}` : "";
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://mr4kwalls.com";
   return {
     title: q
       ? `"${q}" — Search Results${pageLabel} | MR4K Walls`
@@ -24,10 +26,11 @@ export async function generateMetadata(
     description: q
       ? `Discover dark fantasy wallpapers matching "${q}". Curated for iPhone, Android & PC.`
       : "Search the full MR4K Walls collection.",
+    alternates: { canonical: `${siteUrl}/search` },
     openGraph: {
       title: q ? `"${q}" — Search Results | MR4K Walls` : "Search | MR4K Walls",
       description: q ? `Discover dark fantasy wallpapers matching "${q}".` : "Search the full MR4K Walls collection.",
-      images: [{ url: `${process.env.NEXT_PUBLIC_SITE_URL ?? "https://mr4kwalls.com"}/og-image.jpg`, width: 1200, height: 630 }],
+      images: [{ url: `${siteUrl}/og-image.jpg`, width: 1200, height: 630 }],
     },
   };
 }
@@ -126,10 +129,10 @@ function EmptyState({ query }: { query: string }) {
 
 // ── Category filter chips ─────────────────────────────────────
 const CATEGORY_FILTERS = [
-  { label: "All",       value: ""        },
-  { label: "📱 iPhone", value: "iphone"  },
-  { label: "🤖 Android", value: "android" },
-  { label: "🖥 PC",     value: "pc"      },
+  { label: "All",                                                       value: ""        },
+  { label: <><IphoneIcon size={14} /> iPhone</>,   value: "iphone"  },
+  { label: <><AndroidIcon size={14} /> Android</>, value: "android" },
+  { label: <><PcIcon size={14} /> PC</>,           value: "pc"      },
 ];
 
 // ── Page ──────────────────────────────────────────────────────

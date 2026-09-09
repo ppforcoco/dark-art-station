@@ -5,6 +5,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { createPortal } from "react-dom";
 import Image from "next/image";
 import { track } from "@/lib/track";
+import { IphoneIcon } from "@/components/icons/DeviceIcons";
 
 // ── Types ────────────────────────────────────────────────────────────────────
 type DeviceFrame = "iphone-di" | "iphone-notch" | "android-punch" | "android-full";
@@ -248,7 +249,7 @@ export default function PreviewButton({
         }}
         aria-label="Preview on lock screen"
       >
-        <span style={{ fontSize: "1.1rem", filter: "drop-shadow(0 0 6px rgba(180,120,255,0.5))" }}>📱</span>
+        <span style={{ display: "inline-flex", filter: "drop-shadow(0 0 6px rgba(180,120,255,0.5))" }}><IphoneIcon size={17} /></span>
         <span>{label}</span>
         {showLive && (
           <span style={{

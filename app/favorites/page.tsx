@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { getFavorites, toggleFavorite, type FavoriteItem } from "@/components/FavoriteButton";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import { IphoneIcon, PcIcon } from "@/components/icons/DeviceIcons";
 
 export const dynamic = "force-dynamic";
 
@@ -84,7 +85,7 @@ export default function FavoritesPage() {
           {portrait.length > 0 && (
             <section className="fav-section">
               {landscape.length > 0 && (
-                <h2 className="fav-section-heading">📱 Phone Wallpapers</h2>
+                <h2 className="fav-section-heading"><IphoneIcon size={18} className="fav-section-heading-icon" /> Phone Wallpapers</h2>
               )}
               <div className="fav-grid fav-grid--portrait">
                 {portrait.map(item => (
@@ -123,7 +124,7 @@ export default function FavoritesPage() {
           {/* Landscape wallpapers (PC) */}
           {landscape.length > 0 && (
             <section className="fav-section">
-              <h2 className="fav-section-heading">🖥 Desktop Wallpapers</h2>
+              <h2 className="fav-section-heading"><PcIcon size={18} className="fav-section-heading-icon" /> Desktop Wallpapers</h2>
               <div className="fav-grid fav-grid--landscape">
                 {landscape.map(item => (
                   <div key={item.slug} className="fav-card">
