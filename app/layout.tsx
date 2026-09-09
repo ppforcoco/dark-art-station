@@ -51,10 +51,10 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
-      { url: "/favicon.ico", sizes: "any" },
-      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+      { url: "/favicon.ico?v=2", sizes: "any" },
+      { url: "/favicon-32x32.png?v=2", sizes: "32x32", type: "image/png" },
     ],
-    apple: "/apple-touch-icon.png",
+    apple: "/apple-touch-icon.png?v=2",
   },
   alternates: { canonical: SITE_URL, languages: { "en-US": SITE_URL } },
   verification: { google: process.env.NEXT_PUBLIC_GSC_VERIFICATION || undefined },
@@ -85,12 +85,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <script dangerouslySetInnerHTML={{ __html: `(function(){try{var h=new Date().getHours();if(h>=20||h<6)document.documentElement.setAttribute('data-night','true');}catch(e){}})();` }} />
 
         {/* ── PWA ─────────────────────────────────────────────────────────── */}
+        {/* ?v=2 cache-busts the rebranded mustache icon — browsers cache
+            favicons very aggressively (sometimes ignoring cache headers
+            entirely), so a plain filename swap alone can silently keep
+            showing the old icon for returning visitors. Bump this query
+            param again next time the icon files change. */}
         <link rel="manifest" href="/manifest.webmanifest" />
-        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-        <link rel="icon" type="image/x-icon" href="/favicon.ico" />
-        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
-        <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png" />
-        <link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png" />
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=2" />
+        <link rel="icon" type="image/x-icon" href="/favicon.ico?v=2" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png?v=2" />
+        <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png?v=2" />
+        <link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png?v=2" />
 
         <meta name="p:domain_verify" content="6f1c92d3b0307e9bf30220a5068ce8af" />
         <meta name="b0081adf43b5553f44ff0be1b38995754b86db3d" content="b0081adf43b5553f44ff0be1b38995754b86db3d" />
