@@ -62,19 +62,9 @@ export default function LiveWallpapersPage() {
   const [items, setItems] = useState<WallpaperItem[]>([]);
   const [cursor, setCursor] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const [flicker, setFlicker] = useState(false);
 
   useEffect(() => {
     loadMore(null);
-  }, []);
-
-  // Neon sign flicker
-  useEffect(() => {
-    const id = setInterval(() => {
-      setFlicker(true);
-      setTimeout(() => setFlicker(false), 180);
-    }, 4200);
-    return () => clearInterval(id);
   }, []);
 
   async function loadMore(cur: string | null) {
@@ -173,24 +163,6 @@ export default function LiveWallpapersPage() {
           letter-spacing: 0.01em;
           text-shadow: 0 0 18px rgba(255,46,158,0.25);
         }
-
-        .lw-sign {
-          display: inline-block;
-          margin-top: 6px;
-          padding: 6px 18px;
-          border: 2px solid var(--accent);
-          border-radius: 4px;
-          font-family: 'Special Elite', monospace;
-          font-size: 0.85rem;
-          letter-spacing: 0.22em;
-          text-transform: uppercase;
-          color: var(--accent);
-          text-shadow: 0 0 8px rgba(255,46,158,0.7);
-          box-shadow: 0 0 14px rgba(255,46,158,0.25), inset 0 0 10px rgba(255,46,158,0.15);
-          transition: opacity 0.05s linear;
-        }
-
-        .lw-sign.flicker { opacity: 0.2; }
 
         .lw-desc {
           max-width: 620px;
@@ -483,7 +455,6 @@ export default function LiveWallpapersPage() {
         }
 
         @media (prefers-reduced-motion: reduce) {
-          .lw-sign.flicker { opacity: 1; }
           .lw-card { transition: none; }
         }
       `}</style>
@@ -492,9 +463,6 @@ export default function LiveWallpapersPage() {
       <section className="lw-hero">
         <div className="lw-eyebrow">Made for horror fans by horror fans</div>
         <h1 className="lw-title">MR4K Live Wallpapers</h1>
-        <span className={`lw-sign${flicker ? " flicker" : ""}`}>
-          {flicker ? "open... ish" : "town is open"}
-        </span>
       </section>
 
       {/* GRID */}

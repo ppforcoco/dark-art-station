@@ -6,7 +6,7 @@ import { db } from "@/lib/db";
 import BlogPostClient from "./BlogPostClient";
 
 export const revalidate = 3600;
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://mr4kwalls.com";
 
 // unstable_cache serializes its return value for storage/reuse across
 // requests, so Date fields come back as plain strings on cache HITS while
@@ -61,15 +61,15 @@ export async function generateMetadata(
     `${SITE_URL}/og-image.jpg`;
 
   return {
-    title: `${post.title} | Haunted Wallpapers`,
+    title: `${post.title} | MR4K Walls`,
     description: excerpt,
-    authors: [{ name: "Haunted Wallpapers", url: SITE_URL }],
+    authors: [{ name: "MR4K Walls", url: SITE_URL }],
     alternates: { canonical: `${SITE_URL}/blog/${post.slug}` },
     openGraph: {
       title: post.title,
       description: excerpt,
       url: `${SITE_URL}/blog/${post.slug}`,
-      siteName: "Haunted Wallpapers",
+      siteName: "MR4K Walls",
       type: "article",
       images: [{ url: ogImage, width: 1200, height: 630, alt: post.title }],
     },

@@ -3,11 +3,11 @@ import Link from "next/link";
 import { db, getPageContent } from "@/lib/db";
 
 export const revalidate = 3600;
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://mr4kwalls.com";
 
 export const metadata: Metadata = {
-  title: "The Secrets | Haunted Wallpapers",
-  description: "Dark wallpaper guides, gothic art deep-dives, how-to tutorials, and tips for your perfect screen — from Haunted Wallpapers.",
+  title: "The Secrets | MR4K Walls",
+  description: "Dark wallpaper guides, gothic art deep-dives, how-to tutorials, and tips for your perfect screen — from MR4K Walls.",
   alternates: { canonical: `${SITE_URL}/blog` },
 };
 
@@ -82,12 +82,12 @@ export default async function BlogPage() {
     "@context": "https://schema.org",
     "@type": "Blog",
     "@id": `${SITE_URL}/blog`,
-    name: "The Secrets | Haunted Wallpapers",
+    name: "The Secrets | MR4K Walls",
     description: "Dark wallpaper guides, gothic art deep-dives, how-to tutorials.",
     url: `${SITE_URL}/blog`,
     publisher: {
       "@type": "Organization",
-      name: "Haunted Wallpapers",
+      name: "MR4K Walls",
       logo: { "@type": "ImageObject", url: `${SITE_URL}/og-image.jpg` },
     },
     blogPost: posts.slice(0, 10).map((p) => ({
@@ -96,7 +96,7 @@ export default async function BlogPage() {
       url: `${SITE_URL}/blog/${p.slug}`,
       datePublished: p.createdAt.toISOString(),
       image: p.featuredImage ?? extractFirstImageFromContent(p.content) ?? `${SITE_URL}/og-image.jpg`,
-      author: { "@type": "Organization", name: "Haunted Wallpapers" },
+      author: { "@type": "Organization", name: "MR4K Walls" },
     })),
   };
 
@@ -118,7 +118,7 @@ export default async function BlogPage() {
       <nav className="blog-topnav">
         <div className="blog-topnav-inner">
           <Link href="/" className="blog-topnav-logo">
-            <span className="blog-topnav-logo-text">HAUNTED<span>WALLPAPERS</span></span>
+            <span className="blog-topnav-logo-text">MR4K<span>WALLS</span></span>
           </Link>
           <div className="blog-topnav-links">
             <Link href="/iphone"      className="blog-topnav-link">iPhone</Link>
