@@ -14,7 +14,7 @@ interface Post {
   updatedAt: string;
 }
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://mr4kwalls.com";
 
 function extractFirstImage(html: string): string | null {
   const m = html.match(/<img[^>]+src=["']([^"']+)["']/i);
@@ -147,10 +147,10 @@ export default function BlogPostClient({ post, allPosts }: { post: Post; allPost
     datePublished: post.createdAt,
     dateModified: post.updatedAt,
     image: ogImage,
-    author: { "@type": "Organization", name: "Haunted Wallpapers" },
+    author: { "@type": "Organization", name: "MR4K Walls" },
     publisher: {
       "@type": "Organization",
-      name: "Haunted Wallpapers",
+      name: "MR4K Walls",
       logo: { "@type": "ImageObject", url: `${SITE_URL}/og-image.jpg` },
     },
     mainEntityOfPage: { "@type": "WebPage", "@id": `${SITE_URL}/blog/${post.slug}` },
@@ -166,7 +166,7 @@ export default function BlogPostClient({ post, allPosts }: { post: Post; allPost
       <nav className="blog-topnav">
         <div className="blog-topnav-inner">
           <Link href="/" className="blog-topnav-logo">
-            <span className="blog-topnav-logo-text">HAUNTED<span>WALLPAPERS</span></span>
+            <span className="blog-topnav-logo-text">MR4K<span>WALLS</span></span>
           </Link>
           <div className="blog-topnav-links">
             <Link href="/blog"    className="blog-topnav-link">← Blog</Link>
@@ -184,7 +184,7 @@ export default function BlogPostClient({ post, allPosts }: { post: Post; allPost
           <div className="blog-author-byline">
             <span className="blog-author-avatar" aria-hidden="true">✦</span>
             <div className="blog-author-info">
-              <span className="blog-author-name">Haunted Wallpapers</span>
+              <span className="blog-author-name">MR4K Walls</span>
               <span className="blog-author-meta">
                 Published <time dateTime={post.createdAt}>{dateStr}</time>
                 {post.createdAt !== post.updatedAt && (
