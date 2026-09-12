@@ -2,10 +2,12 @@
 
 // components/ShopCategoryFilter.tsx
 //
-// Renders "All / Phone Case / T-Shirt / Hoodie ..." pills above the shop
-// grid and filters which category sections are shown. Pure client-side
-// state — no URL params, no refetch — since the full product list is
-// already fetched server-side in app/shop/page.tsx and just handed to us.
+// Renders "All / Wallpaper Pack / Single Wallpaper / Bundle ..." pills
+// above the shop grid and filters which category sections are shown. Pure
+// client-side state — no URL params, no refetch — since the full product
+// list is already fetched server-side in app/shop/page.tsx and just handed
+// to us. Category names are whatever's set in the admin panel, so this
+// stays generic rather than hardcoding a fixed list.
 
 import { useState } from "react";
 import ShopProductCard from "./ShopProductCard";

@@ -1,17 +1,25 @@
 // app/api/checkout/create-order/route.ts
 //
-// Creates a "pending" Order record from the customer's cart + shipping form.
-// This is the step BEFORE payment — nothing is charged here. Once Paddle is
-// connected, its checkout will reference this order's id/orderNumber, and a
-// webhook will flip paymentStatus to "paid" when Paddle confirms the charge.
+// Creates a "pending" Order record from the customer's cart. This is the
+// step BEFORE payment — nothing is charged here. Once Paddle is connected,
+// its checkout will reference this order's id/orderNumber, and a webhook
+// will flip paymentStatus to "paid" when Paddle confirms the charge.
 //
 // Prices and product/variant validity are re-checked against the database
 // here rather than trusted from the client, since cart contents are just
 // localStorage on the customer's browser and could be edited before this
 // request is sent.
+//
+// These are digital goods — there's no shipping address, just an email for
+// the confirmation. Since Paddle isn't wired up yet, we generate signed
+// download links immediately so the flow can be tested end-to-end. Once
+// real payment is connected, gate this download-link generation behind
+// `paymentStatus === "paid"` (e.g. only return links once a webhook has
+// confirmed the charge) instead of handing them out at order-creation time.
 
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
+import { getSignedDownloadUrl } from "@/lib/r2";
 
 interface IncomingItem {
   slug: string;
@@ -25,19 +33,14 @@ function generateOrderNumber(): string {
   return `HW-${rand}`;
 }
 
+function safeFileName(name: string): string {
+  return name.toLowerCase().replace(/[^a-z0-9]+/g, "-").slice(0, 60) || "download";
+}
+
 export async function POST(req: NextRequest) {
   let body: {
     email?: string;
     items?: IncomingItem[];
-    firstName?: string;
-    lastName?: string;
-    addressLine1?: string;
-    addressLine2?: string;
-    city?: string;
-    postCode?: string;
-    state?: string;
-    country?: string;
-    phone?: string;
   };
 
   try {
@@ -46,22 +49,12 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Bad request body." }, { status: 400 });
   }
 
-  const {
-    email, items,
-    firstName, lastName, addressLine1, addressLine2,
-    city, postCode, state, country, phone,
-  } = body;
+  const { email, items } = body;
 
   // ── Basic required-field validation ──
   const missing: string[] = [];
   if (!email?.trim()) missing.push("email");
   if (!items?.length) missing.push("items");
-  if (!firstName?.trim()) missing.push("firstName");
-  if (!lastName?.trim()) missing.push("lastName");
-  if (!addressLine1?.trim()) missing.push("addressLine1");
-  if (!city?.trim()) missing.push("city");
-  if (!postCode?.trim()) missing.push("postCode");
-  if (!country?.trim()) missing.push("country");
   if (missing.length > 0) {
     return NextResponse.json(
       { error: `Missing required field(s): ${missing.join(", ")}` },
@@ -76,6 +69,7 @@ export async function POST(req: NextRequest) {
     slug: string; name: string; category: string;
     variant: string; variantLabel: string;
     price: number; qty: number; thumbnailKey: string;
+    digitalFileKey: string;
   }> = [];
 
   for (const item of items!) {
@@ -95,6 +89,12 @@ export async function POST(req: NextRequest) {
         { status: 400 }
       );
     }
+    if (!product.digitalFileKey) {
+      return NextResponse.json(
+        { error: `"${product.name}" has no download file yet — please check back soon.` },
+        { status: 400 }
+      );
+    }
     resolvedItems.push({
       slug: product.slug,
       name: product.name,
@@ -104,6 +104,7 @@ export async function POST(req: NextRequest) {
       price: product.price, // server price wins, never trust client-sent price
       qty: item.qty,
       thumbnailKey: product.thumbnailKey,
+      digitalFileKey: product.digitalFileKey,
     });
   }
 
@@ -119,20 +120,29 @@ export async function POST(req: NextRequest) {
           items: resolvedItems,
           currency: "USD",
           subtotal,
-          firstName: firstName!.trim(),
-          lastName: lastName!.trim(),
-          addressLine1: addressLine1!.trim(),
-          addressLine2: addressLine2?.trim() || null,
-          city: city!.trim(),
-          postCode: postCode!.trim(),
-          state: state?.trim() || null,
-          country: country!.trim().toUpperCase(),
-          phone: phone?.trim() || null,
         },
       });
+
+      // Digital delivery: sign a time-limited download URL per line item.
+      // TODO(paddle): once real payment is wired up, only generate these
+      // after a webhook confirms paymentStatus === "paid".
+      const downloads = await Promise.all(
+        resolvedItems.map(async item => ({
+          slug: item.slug,
+          name: item.name,
+          variant: item.variant,
+          url: await getSignedDownloadUrl(
+            item.digitalFileKey,
+            60 * 30, // 30 minutes
+            `${safeFileName(item.name)}.zip`
+          ),
+        }))
+      );
+
       return NextResponse.json({
         orderId: order.id,
         orderNumber: order.orderNumber,
+        downloads,
       });
     } catch (err: unknown) {
       const isUniqueClash = typeof err === "object" && err !== null && "code" in err && err.code === "P2002";

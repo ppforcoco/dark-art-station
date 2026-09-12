@@ -10,12 +10,12 @@ export const revalidate = 0;
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://mr4kwalls.com";
 
 export const metadata: Metadata = {
-  title: "Shop — Dark Art Phone Cases, Tees & More | MR4K Walls",
-  description: "Wear the art. Custom print-on-demand phone cases, t-shirts and more featuring original dark, gothic and horror designs.",
+  title: "Shop — Dark Art Wallpaper Packs & Bundles | MR4K Walls",
+  description: "Premium dark, gothic and horror wallpaper packs. Instant digital download after purchase — no waiting, no shipping.",
   alternates: { canonical: `${SITE_URL}/shop` },
   openGraph: {
     title: "Shop — MR4K Walls",
-    description: "Custom print-on-demand phone cases, t-shirts and more featuring original dark art.",
+    description: "Premium dark art wallpaper packs, delivered instantly as a digital download.",
     url: `${SITE_URL}/shop`, siteName: "MR4K Walls", type: "website",
   },
 };
@@ -36,10 +36,10 @@ export default async function ShopPage() {
     return acc;
   }, {});
 
-  // Order category sections + pills consistently: Phone Case, T-Shirt, Hoodie
-  // first (in that order, if present), then anything else alphabetically —
-  // rather than whatever order they happened to be created in.
-  const PRIORITY_ORDER = ["Phone Case", "T-Shirt", "Hoodie"];
+  // Order category sections + pills consistently: Wallpaper Pack, Single
+  // Wallpaper, Bundle first (in that order, if present), then anything else
+  // alphabetically — rather than whatever order they happened to be created in.
+  const PRIORITY_ORDER = ["Wallpaper Pack", "Single Wallpaper", "Bundle"];
   const categoryNames = Object.keys(grouped).sort((a, b) => {
     const ai = PRIORITY_ORDER.indexOf(a);
     const bi = PRIORITY_ORDER.indexOf(b);
@@ -72,10 +72,10 @@ export default async function ShopPage() {
 
       <section className="max-w-7xl mx-auto px-6 md:px-[60px] pt-10 pb-4">
         <h1 className="font-display text-3xl md:text-4xl font-bold leading-tight mb-2">
-          Wear the <span style={{ color: "#ffd23f", fontStyle: "italic" }}>Darkness</span>
+          Bring the <span style={{ color: "#ffd23f", fontStyle: "italic" }}>Darkness</span> Home
         </h1>
         <p style={{ color: "#c9a8e8", fontSize: "0.95rem", maxWidth: "620px" }}>
-          Original dark art, printed on demand — phone cases, tees and more. Every piece made when you order it.
+          Original dark art wallpaper packs and bundles. Pick your format, pay, and download instantly.
         </p>
       </section>
 

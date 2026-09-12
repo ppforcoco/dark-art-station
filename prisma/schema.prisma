@@ -303,6 +303,9 @@ model Product {
 // The "notebook" that records what a customer bought. Paddle is not wired
 // up yet — orders can be created in "pending" state at checkout time, and a
 // later webhook flips paymentStatus to "paid" once Paddle confirms.
+//
+// These are digital goods delivered by download link, so there is no
+// shipping address — only an email for the order confirmation.
 model Order {
   id          String   @id @default(uuid())
   /// Short human-friendly reference shown to the customer, e.g. "HW-100042".
@@ -312,23 +315,14 @@ model Order {
 
   /// Snapshot of what was purchased at the time of order — deliberately NOT
   /// a relation to Product, so editing/deleting a product later never changes
-  /// the historical record of what this customer actually bought.
-  /// Shape: [{ slug, name, category, variant, variantLabel, price, qty, thumbnailKey }]
+  /// the historical record of what this customer actually bought, and so a
+  /// past order's download links keep working even if the product is later
+  /// unpublished or deleted.
+  /// Shape: [{ slug, name, category, variant, variantLabel, price, qty, thumbnailKey, digitalFileKey }]
   items       Json
 
   currency    String   @default("USD")
   subtotal    Float
-
-  // ── Shipping address ──
-  firstName     String
-  lastName      String
-  addressLine1  String
-  addressLine2  String?
-  city          String
-  postCode      String
-  state         String?
-  country       String   // 2-letter ISO code, e.g. "US"
-  phone         String?
 
   // ── Payment (Paddle) ──
   /// "pending" | "paid" | "failed" | "refunded"

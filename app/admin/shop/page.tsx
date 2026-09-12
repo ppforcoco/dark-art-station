@@ -1,4 +1,4 @@
-// app/admin/shop/page.tsx — Admin panel for print-on-demand shop products
+// app/admin/shop/page.tsx — Admin panel for digital-download shop products
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
