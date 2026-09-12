@@ -22,10 +22,10 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
   const { tag, page: rawPage } = await searchParams;
   const page      = Math.max(1, parseInt(rawPage ?? "1", 10) || 1);
   const pageLabel = page > 1 ? ` — Page ${page}` : "";
-  const siteUrl   = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
+  const siteUrl   = process.env.NEXT_PUBLIC_SITE_URL ?? "https://mr4kwalls.com";
 
   const title = tag
-    ? `Dark #${tag} Home Screen Wallpapers for Android${pageLabel} | HAUNTED WALLPAPERS`
+    ? `Dark #${tag} Home Screen Wallpapers for Android${pageLabel} | MR4K WALLS`
     : `Best Android Home Screen Wallpapers 2026 | Dark, Minimal & Icon-Friendly${pageLabel}`;
 
   const description = tag
@@ -40,7 +40,7 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
     title,
     description,
     keywords: ["Android home screen wallpaper", "home screen background", "minimal Android wallpaper", "dark wallpaper for apps", "launcher wallpaper", "icon-friendly background", "Android wallpaper 2026", "widget wallpaper", tag ?? "dark"].filter(Boolean),
-    openGraph: { title, description, url: canonical, siteName: "HAUNTED WALLPAPERS", type: "website" },
+    openGraph: { title, description, url: canonical, siteName: "MR4K WALLS", type: "website" },
     twitter: { card: "summary_large_image", title, description },
     alternates: { canonical },
   };
@@ -126,7 +126,7 @@ export default async function AndroidHomeScreenPage({ searchParams }: PageProps)
   const jsonLd = JSON.stringify({
     "@context": "https://schema.org",
     "@type": "ItemList",
-    name: "Home Screen Wallpapers for Android | Haunted Wallpapers",
+    name: "Home Screen Wallpapers for Android | MR4K Walls",
     url: `${process.env.NEXT_PUBLIC_SITE_URL}${baseUrl}`,
     numberOfItems: total,
     itemListElement: images.map((img, i) => ({

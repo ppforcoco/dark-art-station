@@ -13,7 +13,7 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 
 export const revalidate = 60;
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://mr4kwalls.com";
 const DEFAULT_OG_IMAGE = "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/og-image.webp";
 
 const META_TITLE = "Matching Wallpapers for Couples & Best Friends | HD Downloads";
@@ -46,9 +46,9 @@ export async function generateMetadata(): Promise<Metadata> {
       title: META_TITLE,
       description: META_DESCRIPTION,
       url: `${SITE_URL}/matching-wallpapers`,
-      siteName: "Haunted Wallpapers",
+      siteName: "MR4K Walls",
       type: "website",
-      images: [{ url: ogImage, width: 1200, height: 1200, alt: "Haunted Wallpapers Matching Wallpapers" }],
+      images: [{ url: ogImage, width: 1200, height: 1200, alt: "MR4K Walls Matching Wallpapers" }],
     },
     twitter: {
       card: "summary_large_image",

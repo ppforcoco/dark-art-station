@@ -7,21 +7,21 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 
 export const revalidate = 3600;
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://mr4kwalls.com";
 
 export const metadata: Metadata = {
-  title: "The Residents | Characters of Haunted Wallpapers",
+  title: "The Residents | Characters of MR4K Walls",
   description: "Meet the residents of the haunted town. They do not remember arriving. They only remember the fog, the flicker, the feeling of being watched from every window.",
   openGraph: {
-    title: "The Residents | Characters of Haunted Wallpapers",
+    title: "The Residents | Characters of MR4K Walls",
     description: "They do not remember arriving. They only remember the fog.",
     url: `${SITE_URL}/residents`,
-    siteName: "Haunted Wallpapers",
+    siteName: "MR4K Walls",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "The Residents | Characters of Haunted Wallpapers",
+    title: "The Residents | Characters of MR4K Walls",
     description: "They do not remember arriving. They only remember the fog.",
   },
   alternates: { canonical: `${SITE_URL}/residents` },

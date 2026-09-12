@@ -9,7 +9,7 @@ import ProductDetailClient from "./ProductDetailClient";
 
 export const revalidate = 0;
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://mr4kwalls.com";
 
 async function getProduct(slug: string) {
   return db.product.findUnique({ where: { slug } });
@@ -18,9 +18,9 @@ async function getProduct(slug: string) {
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
   const product = await getProduct(slug);
-  if (!product) return { title: "Product Not Found | HauntedWallpapers" };
+  if (!product) return { title: "Product Not Found | MR4KWalls" };
 
-  const title = `${product.name} — $${product.price.toFixed(2)} | HauntedWallpapers Shop`;
+  const title = `${product.name} — $${product.price.toFixed(2)} | MR4KWalls Shop`;
   const description = `${product.name} — digital ${product.category.toLowerCase()}. $${product.price.toFixed(2)}. Instant download after purchase.`;
   const image = product.thumbnailKey ? getPublicUrl(product.thumbnailKey) : undefined;
 
@@ -29,7 +29,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     description,
     alternates: { canonical: `${SITE_URL}/shop/${slug}` },
     openGraph: {
-      title, description, url: `${SITE_URL}/shop/${slug}`, siteName: "Haunted Wallpapers", type: "website",
+      title, description, url: `${SITE_URL}/shop/${slug}`, siteName: "MR4K Walls", type: "website",
       ...(image ? { images: [{ url: image, width: 1200, height: 1200, alt: product.name }] } : {}),
     },
   };

@@ -51,14 +51,14 @@ function buildFallbackDescription(title: string, tags: string[]): string {
   const firstTag = tags[0] ?? "dark fantasy";
   const secondTag = tags[1] ?? "atmospheric";
   return (
-    title + " is a high-resolution Android wallpaper from the Haunted Wallpapers dark art collection. " +
+    title + " is a high-resolution Android wallpaper from the MR4K Walls dark art collection. " +
     "Formatted in a native 9:16 portrait aspect ratio, this piece is optimised for Android phones and fills your " +
     "lock screen and home screen with immersive dark art built around themes of " + tagList + ". " +
     "The image looks stunning on AMOLED and OLED Android displays, where true blacks create exceptional contrast. " +
     "Whether you are drawn to " + firstTag + " aesthetics or simply want a " + secondTag + " backdrop, " +
     "this wallpaper delivers bold, original artwork at no cost. " +
     "Tap download and the full-resolution file is yours instantly. " +
-    "Every image in our Android collection is produced exclusively for Haunted Wallpapers, " +
+    "Every image in our Android collection is produced exclusively for MR4K Walls, " +
     "so you will not find this artwork duplicated across generic wallpaper repositories. " +
     "Scroll down to explore related wallpapers with a similar dark atmosphere and artistic style."
   );
@@ -66,9 +66,9 @@ function buildFallbackDescription(title: string, tags: string[]): string {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { imageSlug } = await params;
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://mr4kwalls.com";
   const image = await getCachedImage(imageSlug);
-  if (!image || image.deviceType !== "ANDROID") return { title: "Not Found | HAUNTED WALLPAPERS" };
+  if (!image || image.deviceType !== "ANDROID") return { title: "Not Found | MR4K WALLS" };
   const tagLine = image.tags.slice(0, 3).map((t) => `#${t}`).join(" ");
   const plainDesc = (image.metaDescription ?? image.description ?? "")
     .replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim().slice(0, 200);
@@ -76,20 +76,20 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const ogImage = getPublicUrl(image.r2Key);
   return {
     metadataBase: new URL(siteUrl),
-    title: `${image.title} — Android Wallpaper | HAUNTED WALLPAPERS`,
+    title: `${image.title} — Android Wallpaper | MR4K WALLS`,
     description: metaDesc,
     keywords: ["android wallpaper", "dark wallpaper android", "hd android wallpaper", image.title, ...image.tags],
     openGraph: {
-      title: `${image.title} | HAUNTED WALLPAPERS`,
+      title: `${image.title} | MR4K WALLS`,
       description: metaDesc,
       url: `${siteUrl}/android/${imageSlug}`,
-      siteName: "HAUNTED WALLPAPERS",
+      siteName: "MR4K WALLS",
       images: [{ url: ogImage, width: 1080, height: 1920, alt: image.title }],
       type: "website",
     },
     twitter: {
       card: "summary_large_image",
-      title: `${image.title} | HAUNTED WALLPAPERS`,
+      title: `${image.title} | MR4K WALLS`,
       description: metaDesc,
       images: [ogImage],
     },
@@ -104,7 +104,7 @@ export async function generateStaticParams() {
 
 export default async function AndroidImagePage({ params }: PageProps) {
   const { imageSlug } = await params;
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://mr4kwalls.com";
 
   const image = await getCachedImage(imageSlug);
 
@@ -329,7 +329,7 @@ export default async function AndroidImagePage({ params }: PageProps) {
           name: image.title,
           description: plainDescription,
           url: `${siteUrl}/android/${imageSlug}`,
-          brand: { "@type": "Brand", name: "HAUNTED WALLPAPERS", url: siteUrl },
+          brand: { "@type": "Brand", name: "MR4K WALLS", url: siteUrl },
           category: "Digital Products > Wallpapers > Android",
           image: [{ "@type": "ImageObject", url: thumbUrl, contentUrl: thumbUrl, caption: image.title }],
           additionalProperty: [
@@ -343,7 +343,7 @@ export default async function AndroidImagePage({ params }: PageProps) {
             url: `${siteUrl}/android/${imageSlug}`,
             price: "0.00", priceCurrency: "USD",
             availability: "https://schema.org/InStock",
-            seller: { "@type": "Organization", name: "HAUNTED WALLPAPERS", url: siteUrl },
+            seller: { "@type": "Organization", name: "MR4K WALLS", url: siteUrl },
           },
           potentialAction: { "@type": "DownloadAction", target: `${siteUrl}/api/download/image/${image.id}` },
         })

@@ -4,7 +4,7 @@ import Link from "next/link";
 
 export const revalidate = 3600;
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://mr4kwalls.com";
 
 const BASE =
   "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/sets/The%20Ghost%20Pitch%3A%20A%20Matching%20Dark%20Soccer%20Setup%20Kit";
@@ -70,7 +70,7 @@ const WALLPAPERS = [
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
-    title: "Ghost Pitch Matching Dark Soccer Wallpaper Set | PC, Phone, Watch | Haunted Wallpapers",
+    title: "Ghost Pitch Matching Dark Soccer Wallpaper Set | PC, Phone, Watch | MR4K Walls",
     description:
       "Download the Ghost Pitch matching soccer wallpaper set. 4K dark athletic backgrounds for iPhone, PC, and Smartwatch. The ultimate horror aesthetic for football fans.",
     keywords: [
@@ -91,11 +91,11 @@ export async function generateMetadata(): Promise<Metadata> {
       "dark athletic wallpaper set",
     ],
     openGraph: {
-      title: "The Ghost Pitch — Matching Dark Soccer Horror Kit | Haunted Wallpapers",
+      title: "The Ghost Pitch — Matching Dark Soccer Horror Kit | MR4K Walls",
       description:
         "Download the Ghost Pitch matching soccer wallpaper set. 4K dark athletic backgrounds for iPhone, PC, and Smartwatch. 4K downloads.",
       url: `${SITE_URL}/sets/ghost-pitch`,
-      siteName: "Haunted Wallpapers",
+      siteName: "MR4K Walls",
       type: "website",
       images: [
         {
@@ -108,7 +108,7 @@ export async function generateMetadata(): Promise<Metadata> {
     },
     twitter: {
       card: "summary_large_image",
-      title: "The Ghost Pitch — Matching Dark Soccer Horror Kit | Haunted Wallpapers",
+      title: "The Ghost Pitch — Matching Dark Soccer Horror Kit | MR4K Walls",
       description:
         "Download the Ghost Pitch matching soccer wallpaper set. Dark athletic horror for iPhone, PC, and Smartwatch.",
       images: [`${BASE}/haunted-soccer-stadium-midnight-4k-desktop.webp`],

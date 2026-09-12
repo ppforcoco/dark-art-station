@@ -75,7 +75,7 @@ const nextConfig: NextConfig = {
     return [
       { source: "/obsessions", destination: "/collections", permanent: true },
       { source: "/obsessions/:slug", destination: "/collections/:slug", permanent: true },
-      { source: "/ads.txt", destination: "https://srv.adstxtmanager.com/19390/hauntedwallpapers.com", permanent: true },
+      { source: "/ads.txt", destination: "https://srv.adstxtmanager.com/19390/mr4kwalls.com", permanent: true },
     ];
   },
 

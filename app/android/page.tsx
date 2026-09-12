@@ -27,8 +27,8 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
   const siteUrl   = process.env.NEXT_PUBLIC_SITE_URL ?? "https://mr4kwalls.com";
 
   const title = tag
-    ? `Dark #${tag} Wallpapers for Android & iPhone${pageLabel} | HAUNTED WALLPAPERS`
-    : `Dark Android Wallpapers download (iPhone & Android)${pageLabel} | HAUNTED WALLPAPERS`;
+    ? `Dark #${tag} Wallpapers for Android & iPhone${pageLabel} | MR4K WALLS`
+    : `Dark Android Wallpapers download (iPhone & Android)${pageLabel} | MR4K WALLS`;
 
   const description = tag
     ? `Browse AMOLED-optimised dark wallpapers for Android tagged #${tag}. Download instantly.`
@@ -56,7 +56,7 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
     description,
     keywords: ["android wallpaper", "dark wallpaper android", "hd android wallpaper", tag ?? "dark", "dark fantasy"].filter(Boolean),
     openGraph: {
-      title, description, url: canonical, siteName: "HAUNTED WALLPAPERS", type: "website",
+      title, description, url: canonical, siteName: "MR4K WALLS", type: "website",
       images: [{ url: ogImage, width: 1080, height: 1920, alt: "Dark Android Wallpapers" }],
     },
     twitter: { card: "summary_large_image", title, description, images: [ogImage] },

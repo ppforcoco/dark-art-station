@@ -27,7 +27,7 @@ interface PageProps {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://mr4kwalls.com";
 
   const collection = await db.collection.findUnique({
     where: { slug },
@@ -37,7 +37,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     },
   });
 
-  if (!collection) return { title: "Not Found | Haunted Wallpapers" };
+  if (!collection) return { title: "Not Found | MR4K Walls" };
 
   // Don't use the collection thumbnail as og:image if it's literally one of
   // the wallpapers inside the collection — that makes Google see the same
@@ -57,19 +57,19 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     `Download ${collection.title} wallpapers for iPhone, Android and PC. High-quality dark art wallpapers, instant download.`;
 
   return {
-    title: `${collection.title} | Haunted Wallpapers`,
+    title: `${collection.title} | MR4K Walls`,
     description: metaDesc,
     openGraph: {
-      title: `${collection.title} | Haunted Wallpapers`,
+      title: `${collection.title} | MR4K Walls`,
       description: metaDesc,
       url: `${siteUrl}/collections/${slug}`,
-      siteName: "Haunted Wallpapers",
+      siteName: "MR4K Walls",
       images: [{ url: ogImage, width: 1200, height: 630, alt: collection.thumbnailAlt ?? collection.title }],
       type: "website",
     },
     twitter: {
       card: "summary_large_image",
-      title: `${collection.title} | Haunted Wallpapers`,
+      title: `${collection.title} | MR4K Walls`,
       description: metaDesc,
       images: [ogImage],
     },
@@ -105,7 +105,7 @@ export default async function CollectionPage({ params }: PageProps) {
   if (!collection.isPublished) notFound();
 
   // Root-level collections (e.g. character wallpaper pages) live at
-  // hauntedwallpapers.com/{slug} — send anyone hitting the old nested
+  // mr4kwalls.com/{slug} — send anyone hitting the old nested
   // /collections/{slug} URL straight there so there's one canonical URL.
   if (collection.rootSlug) permanentRedirect(`/${slug}`);
 
@@ -143,7 +143,7 @@ export default async function CollectionPage({ params }: PageProps) {
   const r2Base = process.env.NEXT_PUBLIC_R2_PUBLIC_URL ?? "";
 
   const fallbackDesc =
-    `${collection.title} is a curated collection of dark art wallpapers from Haunted Wallpapers. ` +
+    `${collection.title} is a curated collection of dark art wallpapers from MR4K Walls. ` +
     `Each piece is available as an instant download — no watermarks. ` +
     `Formatted for mobile portrait screens (9:16) and optimised for AMOLED displays.`;
 
@@ -419,7 +419,7 @@ export default async function CollectionPage({ params }: PageProps) {
 
         {/* ══ HEADER — one copy, responsive via CSS only ══ */}
         <div className="coll-desktop-header">
-          <p className="coll-info-eyebrow">{collection.category ?? "Collection"} · Haunted Wallpapers</p>
+          <p className="coll-info-eyebrow">{collection.category ?? "Collection"} · MR4K Walls</p>
           <h1 className="coll-desktop-title">
             {collection.title}
             {collection.isAdult && (

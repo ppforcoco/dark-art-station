@@ -26,8 +26,8 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
   const siteUrl   = process.env.NEXT_PUBLIC_SITE_URL ?? "https://mr4kwalls.com";
 
   const title = tag
-    ? `Dark #${tag} Desktop Wallpapers for PC & iPhone${pageLabel} | HAUNTED WALLPAPERS`
-    : `Dark Desktop Wallpapers download (PC & iPhone)${pageLabel} | HAUNTED WALLPAPERS`;
+    ? `Dark #${tag} Desktop Wallpapers for PC & iPhone${pageLabel} | MR4K WALLS`
+    : `Dark Desktop Wallpapers download (PC & iPhone)${pageLabel} | MR4K WALLS`;
 
   const description = tag
     ? `Browse dark fantasy desktop wallpapers tagged #${tag}. Download instantly.`
@@ -56,7 +56,7 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
     description,
     keywords: ["pc wallpaper", "desktop wallpaper dark", "hd desktop wallpaper", "16:9 wallpaper", tag ?? "dark", "dark fantasy"].filter(Boolean),
     openGraph: {
-      title, description, url: canonical, siteName: "HAUNTED WALLPAPERS", type: "website",
+      title, description, url: canonical, siteName: "MR4K WALLS", type: "website",
       images: [{ url: ogImage, width: 1920, height: 1080, alt: "Dark Desktop Wallpapers" }],
     },
     twitter: { card: "summary_large_image", title, description, images: [ogImage] },

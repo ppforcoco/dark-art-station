@@ -7,8 +7,8 @@
 // don't match anything else.
 //
 // A slug here can mean one of two things:
-//   1. A root-flagged Collection  → hauntedwallpapers.com/melodie-brawl-stars-wallpaper
-//   2. One of that collection's Images → hauntedwallpapers.com/melodie-4k
+//   1. A root-flagged Collection  → mr4kwalls.com/melodie-brawl-stars-wallpaper
+//   2. One of that collection's Images → mr4kwalls.com/melodie-4k
 //
 // Both live at a single flat URL segment, matching how the admin panel's
 // "Root-level URL" toggle is described to editors.
@@ -35,7 +35,7 @@ import BirthdayComments from "@/components/BirthdayComments";
 export const revalidate = 3600;
 export const dynamicParams = true;
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://mr4kwalls.com";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -73,7 +73,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   if (kind === "collection") return collectionMetadata(slug);
   if (kind === "image") return imageMetadata(slug);
-  return { title: "Not Found | Haunted Wallpapers" };
+  return { title: "Not Found | MR4K Walls" };
 }
 
 async function collectionMetadata(slug: string): Promise<Metadata> {
@@ -84,7 +84,7 @@ async function collectionMetadata(slug: string): Promise<Metadata> {
       images: { select: { r2Key: true } },
     },
   });
-  if (!collection) return { title: "Not Found | Haunted Wallpapers" };
+  if (!collection) return { title: "Not Found | MR4K Walls" };
 
   const thumbnailIsDuplicateOfChildImage =
     !!collection.thumbnail && collection.images.some((img) => img.r2Key === collection.thumbnail);
@@ -99,19 +99,19 @@ async function collectionMetadata(slug: string): Promise<Metadata> {
     `Download ${collection.title} wallpapers for iPhone, Android and PC. High-quality dark art wallpapers, instant download.`;
 
   return {
-    title: `${collection.title} | Haunted Wallpapers`,
+    title: `${collection.title} | MR4K Walls`,
     description: metaDesc,
     openGraph: {
-      title: `${collection.title} | Haunted Wallpapers`,
+      title: `${collection.title} | MR4K Walls`,
       description: metaDesc,
       url: `${SITE_URL}/${slug}`,
-      siteName: "Haunted Wallpapers",
+      siteName: "MR4K Walls",
       images: [{ url: ogImage, width: 1200, height: 630, alt: collection.thumbnailAlt ?? collection.title }],
       type: "website",
     },
     twitter: {
       card: "summary_large_image",
-      title: `${collection.title} | Haunted Wallpapers`,
+      title: `${collection.title} | MR4K Walls`,
       description: metaDesc,
       images: [ogImage],
     },
@@ -128,7 +128,7 @@ async function imageMetadata(imageSlug: string): Promise<Metadata> {
       collection: { select: { title: true } },
     },
   });
-  if (!image) return { title: "Not Found | Haunted Wallpapers" };
+  if (!image) return { title: "Not Found | MR4K Walls" };
 
   const ogImage = getPublicUrl(image.r2Key);
   const ogAlt = image.altText ?? image.title;
@@ -145,23 +145,23 @@ async function imageMetadata(imageSlug: string): Promise<Metadata> {
     `${image.title} — dark wallpaper for iPhone, Android and PC. Download instantly.`;
 
   return {
-    title: `${image.title} — Dark Wallpaper | Haunted Wallpapers`,
+    title: `${image.title} — Dark Wallpaper | MR4K Walls`,
     description: metaDesc,
     keywords: [
       "dark wallpaper", "wallpaper download", "gothic wallpaper", "horror wallpaper",
       image.title, image.collection?.title ?? "", ...image.tags,
     ],
     openGraph: {
-      title: `${image.title} | Haunted Wallpapers`,
+      title: `${image.title} | MR4K Walls`,
       description: metaDesc,
       url: `${SITE_URL}/${imageSlug}`,
-      siteName: "Haunted Wallpapers",
+      siteName: "MR4K Walls",
       images: [{ url: ogImage, width: 1080, height: 1920, alt: ogAlt }],
       type: "website",
     },
     twitter: {
       card: "summary_large_image",
-      title: `${image.title} | Haunted Wallpapers`,
+      title: `${image.title} | MR4K Walls`,
       description: metaDesc,
       images: [ogImage],
     },
@@ -224,7 +224,7 @@ async function RootCollectionView({ slug }: { slug: string }) {
   const r2Base = process.env.NEXT_PUBLIC_R2_PUBLIC_URL ?? "";
 
   const fallbackDesc =
-    `${collection.title} is a curated collection of dark art wallpapers from Haunted Wallpapers. ` +
+    `${collection.title} is a curated collection of dark art wallpapers from MR4K Walls. ` +
     `Each piece is available as an instant download — no watermarks. ` +
     `Formatted for mobile portrait screens (9:16) and optimised for AMOLED displays.`;
 
@@ -274,7 +274,7 @@ async function RootCollectionView({ slug }: { slug: string }) {
 
       <div className="coll-layout">
         <div className="coll-desktop-header">
-          <p className="coll-info-eyebrow">{collection.category ?? "Collection"} · Haunted Wallpapers</p>
+          <p className="coll-info-eyebrow">{collection.category ?? "Collection"} · MR4K Walls</p>
           <h1 className="coll-desktop-title">
             {collection.title}
             {collection.isAdult && (
@@ -587,7 +587,7 @@ async function RootImageView({ imageSlug }: { imageSlug: string }) {
                 .trim()
                 .slice(0, 200) || `${image.title} — dark wallpaper.`,
             url: `${SITE_URL}/${imageSlug}`,
-            brand: { "@type": "Brand", name: "Haunted Wallpapers", url: SITE_URL },
+            brand: { "@type": "Brand", name: "MR4K Walls", url: SITE_URL },
             category: "Digital Products > Wallpapers",
             image: [{ "@type": "ImageObject", url: thumbUrl, contentUrl: thumbUrl, caption: image.altText ?? image.title }],
             additionalProperty: [
@@ -600,7 +600,7 @@ async function RootImageView({ imageSlug }: { imageSlug: string }) {
               url: `${SITE_URL}/${imageSlug}`,
               price: "0.00", priceCurrency: "USD",
               availability: "https://schema.org/InStock",
-              seller: { "@type": "Organization", name: "Haunted Wallpapers", url: SITE_URL },
+              seller: { "@type": "Organization", name: "MR4K Walls", url: SITE_URL },
               shippingDetails: {
                 "@type": "OfferShippingDetails",
                 shippingRate: { "@type": "MonetaryAmount", value: "0", currency: "USD" },

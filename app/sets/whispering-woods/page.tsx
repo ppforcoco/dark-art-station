@@ -4,7 +4,7 @@ import Link from "next/link";
 
 export const revalidate = 3600;
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://mr4kwalls.com";
 
 const BASE =
   "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/sets/The%20Whispering%20Woods%3A%20A%20Matching%20Dark%20Nature%20Setup%20Kit";
@@ -76,7 +76,7 @@ const WALLPAPERS = [
 export async function generateMetadata(): Promise<Metadata> {
   return {
     title:
-      "The Whispering Woods — Matching Dark Nature Horror Wallpaper Set | Haunted Wallpapers",
+      "The Whispering Woods — Matching Dark Nature Horror Wallpaper Set | MR4K Walls",
     description:
       "Download The Whispering Woods matching wallpaper set. High-contrast OLED dark forest backgrounds for iPhone, PC, and Smartwatch. A terrifying three-phase story of a forest that never sleeps.",
     keywords: [
@@ -97,11 +97,11 @@ export async function generateMetadata(): Promise<Metadata> {
       "forest cabin horror wallpaper",
     ],
     openGraph: {
-      title: "The Whispering Woods — Matching Dark Nature Horror Kit | Haunted Wallpapers",
+      title: "The Whispering Woods — Matching Dark Nature Horror Kit | MR4K Walls",
       description:
         "Download The Whispering Woods matching wallpaper set. Dark forest horror for iPhone, PC, and Smartwatch. 4K downloads.",
       url: `${SITE_URL}/sets/whispering-woods`,
-      siteName: "Haunted Wallpapers",
+      siteName: "MR4K Walls",
       type: "website",
       images: [
         {
@@ -114,7 +114,7 @@ export async function generateMetadata(): Promise<Metadata> {
     },
     twitter: {
       card: "summary_large_image",
-      title: "The Whispering Woods — Matching Dark Nature Horror Kit | Haunted Wallpapers",
+      title: "The Whispering Woods — Matching Dark Nature Horror Kit | MR4K Walls",
       description:
         "Download The Whispering Woods matching wallpaper set. Dark forest horror for iPhone, PC, and Smartwatch.",
       images: [`${BASE}/whispering-woods-foggy-horror-forest-4k-deskto.webp`],

@@ -53,7 +53,7 @@ function buildFallbackDescription(title: string, tags: string[]): string {
   const firstTag = tags[0] ?? "dark fantasy";
   const secondTag = tags[1] ?? "atmospheric";
   return (
-    title + " is a high-resolution iPhone wallpaper from the Haunted Wallpapers dark art collection. " +
+    title + " is a high-resolution iPhone wallpaper from the MR4K Walls dark art collection. " +
     "Optimised for iPhone screens in a native 9:16 portrait aspect ratio, this piece fills your lock screen and home screen " +
     "with immersive artwork rooted in themes of " + tagList + ". " +
     "The image renders crisply on all modern iPhone models including the iPhone 15, 14, and 13 series, " +
@@ -61,7 +61,7 @@ function buildFallbackDescription(title: string, tags: string[]): string {
     "Whether you are drawn to " + firstTag + " aesthetics or simply want a " + secondTag + " backdrop that reflects your taste, " +
     "this wallpaper delivers bold, original dark art at no cost. " +
     "Tap download and the full-resolution file is yours instantly. " +
-    "Every image in our iPhone collection is produced exclusively for Haunted Wallpapers, " +
+    "Every image in our iPhone collection is produced exclusively for MR4K Walls, " +
     "so you will not find this artwork duplicated across generic wallpaper repositories. " +
     "Scroll down to explore related wallpapers with a similar dark atmosphere and artistic style."
   );
@@ -69,9 +69,9 @@ function buildFallbackDescription(title: string, tags: string[]): string {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { imageSlug } = await params;
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://mr4kwalls.com";
   const image = await getCachedImage(imageSlug);
-  if (!image || image.deviceType !== "IPHONE") return { title: "Not Found | HAUNTED WALLPAPERS" };
+  if (!image || image.deviceType !== "IPHONE") return { title: "Not Found | MR4K WALLS" };
 
   const plainDesc = image.description
     ? image.description.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim().slice(0, 200)
@@ -84,20 +84,20 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   return {
     metadataBase: new URL(siteUrl),
-    title: `${image.title} — iPhone Wallpaper | HAUNTED WALLPAPERS`,
+    title: `${image.title} — iPhone Wallpaper | MR4K WALLS`,
     description: metaDesc,
     keywords: ["iphone wallpaper", "dark wallpaper iphone", "hd iphone wallpaper", image.title, ...image.tags],
     openGraph: {
-      title: `${image.title} | HAUNTED WALLPAPERS`,
+      title: `${image.title} | MR4K WALLS`,
       description: metaDesc,
       url: `${siteUrl}/iphone/${imageSlug}`,
-      siteName: "HAUNTED WALLPAPERS",
+      siteName: "MR4K WALLS",
       images: [{ url: ogImage, width: 1080, height: 1920, alt: image.title }],
       type: "website",
     },
     twitter: {
       card: "summary_large_image",
-      title: `${image.title} | HAUNTED WALLPAPERS`,
+      title: `${image.title} | MR4K WALLS`,
       description: metaDesc,
       images: [ogImage],
     },
@@ -112,7 +112,7 @@ export async function generateStaticParams() {
 
 export default async function IphoneImagePage({ params }: PageProps) {
   const { imageSlug } = await params;
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://mr4kwalls.com";
 
   const image = await getCachedImage(imageSlug);
 
@@ -633,7 +633,7 @@ export default async function IphoneImagePage({ params }: PageProps) {
           name: image.title,
           description: plainDescription,
           url: `${siteUrl}/iphone/${imageSlug}`,
-          brand: { "@type": "Brand", name: "HAUNTED WALLPAPERS", url: siteUrl },
+          brand: { "@type": "Brand", name: "MR4K WALLS", url: siteUrl },
           category: "Digital Products > Wallpapers > iPhone",
           image: [{ "@type": "ImageObject", url: thumbUrl, contentUrl: thumbUrl, caption: image.title }],
           additionalProperty: [
@@ -648,7 +648,7 @@ export default async function IphoneImagePage({ params }: PageProps) {
             price: "0.00",
             priceCurrency: "USD",
             availability: "https://schema.org/InStock",
-            seller: { "@type": "Organization", name: "HAUNTED WALLPAPERS", url: siteUrl },
+            seller: { "@type": "Organization", name: "MR4K WALLS", url: siteUrl },
           },
           potentialAction: {
             "@type": "DownloadAction",

@@ -85,7 +85,7 @@ function LoginGate({ onAuth }: { onAuth: (pw: string) => void }) {
   return (
     <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: C.bg, fontFamily: "monospace" }}>
       <div style={{ border: `1px solid ${C.border}`, padding: "48px", width: "360px", textAlign: "center", background: C.surface }}>
-        <p style={{ color: C.red, fontSize: "0.65rem", letterSpacing: "0.25em", marginBottom: "8px" }}>HAUNTED WALLPAPERS</p>
+        <p style={{ color: C.red, fontSize: "0.65rem", letterSpacing: "0.25em", marginBottom: "8px" }}>MR4K WALLS</p>
         <h1 style={{ color: C.textPri, fontSize: "1.4rem", marginBottom: "32px", fontWeight: 300 }}>Shop Admin</h1>
         <input type="password" placeholder="Enter password" value={pw} onChange={e => setPw(e.target.value)} onKeyDown={e => e.key === "Enter" && handleLogin()} style={{ ...inp, marginBottom: "16px", fontSize: "1rem", padding: "12px" }} />
         {error && <p style={{ color: C.red, marginBottom: "12px", fontSize: "0.85rem" }}>{error}</p>}
@@ -151,7 +151,7 @@ function ShopAdmin({ password }: { password: string }) {
   return (
     <div style={{ minHeight: "100vh", background: C.bg, color: C.textPri, fontFamily: "monospace", padding: "32px 24px 80px" }}>
       <div style={{ maxWidth: "760px", margin: "0 auto" }}>
-        <p style={{ color: C.red, fontSize: "0.6rem", letterSpacing: "0.25em", marginBottom: "6px" }}>HAUNTED WALLPAPERS</p>
+        <p style={{ color: C.red, fontSize: "0.6rem", letterSpacing: "0.25em", marginBottom: "6px" }}>MR4K WALLS</p>
         <h1 style={{ fontSize: "1.6rem", fontWeight: 300, marginBottom: "24px" }}>Shop Products</h1>
 
         <Msg msg={msg} />

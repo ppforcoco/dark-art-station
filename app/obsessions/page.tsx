@@ -9,7 +9,7 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 // No cache — always serve fresh so admin changes show instantly
 export const revalidate = 0;
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://mr4kwalls.com";
 
 export async function generateMetadata(): Promise<Metadata> {
   const pageContent = await getPageContent("obsessions");
@@ -17,15 +17,15 @@ export async function generateMetadata(): Promise<Metadata> {
     pageContent?.metaDesc ??
     "Browse all dark fantasy wallpaper obsessions — horror, gothic, dark humor and more. HD downloads for iPhone, Android and PC.";
   const title =
-    pageContent?.title ?? "Obsessions | Dark Wallpaper Collections | Haunted Wallpapers";
+    pageContent?.title ?? "Obsessions | Dark Wallpaper Collections | MR4K Walls";
   return {
     title,
     description: desc,
     alternates: { canonical: `${SITE_URL}/collections` },
     openGraph: {
       title, description: desc,
-      url: `${SITE_URL}/collections`, siteName: "Haunted Wallpapers", type: "website",
-      images: [{ url: `${SITE_URL}/og-image.jpg`, width: 1200, height: 630, alt: "Haunted Wallpapers — Obsessions" }],
+      url: `${SITE_URL}/collections`, siteName: "MR4K Walls", type: "website",
+      images: [{ url: `${SITE_URL}/og-image.jpg`, width: 1200, height: 630, alt: "MR4K Walls — Obsessions" }],
     },
     twitter: { card: "summary_large_image", title, description: desc, images: [`${SITE_URL}/og-image.jpg`] },
   };
@@ -198,7 +198,7 @@ export default async function ObsessionsPage() {
           __html: JSON.stringify({
             "@context": "https://schema.org",
             "@type": "CollectionPage",
-            name: "Obsessions | Haunted Wallpapers",
+            name: "Obsessions | MR4K Walls",
             url: `${SITE_URL}/collections`,
             description: "Dark fantasy wallpaper obsessions — horror, gothic, dark humor and more.",
             numberOfItems: collections.length,

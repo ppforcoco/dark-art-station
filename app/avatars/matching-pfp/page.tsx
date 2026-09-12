@@ -134,7 +134,7 @@ const AVATAR_CARD_STYLES = `
 
 export const revalidate = 60;
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://mr4kwalls.com";
 
 export const metadata: Metadata = {
   title: "Matching PFP 2026 | Dark Matching Avatars for Best Friends & Couples",
@@ -146,7 +146,7 @@ export const metadata: Metadata = {
     description:
       "Matching pfp sets built for two. Download paired dark-aesthetic avatars for Discord, WhatsApp, and Steam — one for you, one for them.",
     url: `${SITE_URL}/avatars/matching-pfp`,
-    siteName: "Haunted Wallpapers",
+    siteName: "MR4K Walls",
     type: "website",
   },
   twitter: {
@@ -199,7 +199,7 @@ export default async function MatchingAvatarsPage() {
   const jsonLd = JSON.stringify({
     "@context": "https://schema.org",
     "@type": "ItemList",
-    name: "Matching PFP | Haunted Wallpapers",
+    name: "Matching PFP | MR4K Walls",
     url: `${SITE_URL}/avatars/matching-pfp`,
     numberOfItems: pairs.length,
     itemListElement: pairs.map((p, i) => ({

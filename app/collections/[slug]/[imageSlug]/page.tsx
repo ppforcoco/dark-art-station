@@ -26,7 +26,7 @@ interface PageProps {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug, imageSlug } = await params;
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://mr4kwalls.com";
 
   const [image, collection] = await Promise.all([
     db.image.findFirst({
@@ -39,7 +39,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     }),
   ]);
 
-  if (!image) return { title: "Not Found | Haunted Wallpapers" };
+  if (!image) return { title: "Not Found | MR4K Walls" };
 
   const ogImage = getPublicUrl(image.r2Key);
   const ogAlt = image.altText ?? image.title;
@@ -59,23 +59,23 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     `${image.title} — dark wallpaper for iPhone, Android and PC. Download instantly.`;
 
   return {
-    title: `${image.title} — Dark Wallpaper | Haunted Wallpapers`,
+    title: `${image.title} — Dark Wallpaper | MR4K Walls`,
     description: metaDesc,
     keywords: [
       "dark wallpaper", "wallpaper download", "gothic wallpaper", "horror wallpaper",
       image.title, collection?.title ?? "", ...image.tags,
     ],
     openGraph: {
-      title: `${image.title} | Haunted Wallpapers`,
+      title: `${image.title} | MR4K Walls`,
       description: metaDesc,
       url: `${siteUrl}/collections/${slug}/${imageSlug}`,
-      siteName: "Haunted Wallpapers",
+      siteName: "MR4K Walls",
       images: [{ url: ogImage, width: 1080, height: 1920, alt: ogAlt }],
       type: "website",
     },
     twitter: {
       card: "summary_large_image",
-      title: `${image.title} | Haunted Wallpapers`,
+      title: `${image.title} | MR4K Walls`,
       description: metaDesc,
       images: [ogImage],
     },
@@ -90,7 +90,7 @@ export async function generateStaticParams() {
 
 export default async function CollectionImagePage({ params }: PageProps) {
   const { slug, imageSlug } = await params;
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://mr4kwalls.com";
 
   const image = await db.image.findFirst({
     where: { slug: imageSlug, collection: { slug } },
@@ -119,7 +119,7 @@ export default async function CollectionImagePage({ params }: PageProps) {
 
   if (!collection) notFound();
 
-  // Root-level collections' wallpapers live at hauntedwallpapers.com/{imageSlug}
+  // Root-level collections' wallpapers live at mr4kwalls.com/{imageSlug}
   // directly — send anyone hitting the old nested URL straight there.
   if (collection.rootSlug) permanentRedirect(`/${imageSlug}`);
 
@@ -311,7 +311,7 @@ export default async function CollectionImagePage({ params }: PageProps) {
                 .trim()
                 .slice(0, 200) || `${image.title} — dark wallpaper.`,
             url: `${siteUrl}/collections/${slug}/${imageSlug}`,
-            brand: { "@type": "Brand", name: "Haunted Wallpapers", url: siteUrl },
+            brand: { "@type": "Brand", name: "MR4K Walls", url: siteUrl },
             category: "Digital Products > Wallpapers",
             image: [{ "@type": "ImageObject", url: thumbUrl, contentUrl: thumbUrl, caption: image.altText ?? image.title }],
             additionalProperty: [
@@ -324,7 +324,7 @@ export default async function CollectionImagePage({ params }: PageProps) {
               url: `${siteUrl}/collections/${slug}/${imageSlug}`,
               price: "0.00", priceCurrency: "USD",
               availability: "https://schema.org/InStock",
-              seller: { "@type": "Organization", name: "Haunted Wallpapers", url: siteUrl },
+              seller: { "@type": "Organization", name: "MR4K Walls", url: siteUrl },
               shippingDetails: {
                 "@type": "OfferShippingDetails",
                 shippingRate: { "@type": "MonetaryAmount", value: "0", currency: "USD" },

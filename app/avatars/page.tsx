@@ -12,7 +12,7 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 
 export const revalidate = 60;
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://mr4kwalls.com";
 const DEFAULT_OG_IMAGE = "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/og-image.webp";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -46,9 +46,9 @@ export async function generateMetadata(): Promise<Metadata> {
     openGraph: {
       title, description: desc,
       url: `${SITE_URL}/avatars`,
-      siteName: "Haunted Wallpapers",
+      siteName: "MR4K Walls",
       type: "website",
-      images: [{ url: ogImage, width: 1200, height: 1200, alt: "Haunted Wallpapers Avatars" }],
+      images: [{ url: ogImage, width: 1200, height: 1200, alt: "MR4K Walls Avatars" }],
     },
     twitter: {
       card: "summary_large_image",

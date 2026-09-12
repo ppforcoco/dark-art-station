@@ -9,7 +9,7 @@ export async function GET(req: NextRequest) {
       method: "HEAD",
       redirect: "follow",
       signal: AbortSignal.timeout(8000),
-      headers: { "User-Agent": "HauntedWallpapers-LinkChecker/1.0" },
+      headers: { "User-Agent": "MR4KWalls-LinkChecker/1.0" },
     });
     return NextResponse.json({ ok: res.ok, status: res.status });
   } catch (err) {

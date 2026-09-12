@@ -16,7 +16,7 @@ import WallpaperReactions from "@/components/WallpaperReactions";
 export const dynamicParams = true;
 export const revalidate = 60;
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://mr4kwalls.com";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -68,30 +68,30 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   try {
     const { slug } = await params;
     const image = await getImage(slug);
-    if (!image) return { title: "Not Found | Haunted Wallpapers" };
+    if (!image) return { title: "Not Found | MR4K Walls" };
 
     const residentTag = image.tags.find((t) => t.startsWith("resident:"));
-    if (!residentTag) return { title: "Not Found | Haunted Wallpapers" };
+    if (!residentTag) return { title: "Not Found | MR4K Walls" };
 
     const ogImage = getPublicUrl(image.r2Key);
     const desc = image.description
       ? image.description.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim().slice(0, 200)
-      : `${image.title} — dark art wallpaper from Haunted Wallpapers.`;
+      : `${image.title} — dark art wallpaper from MR4K Walls.`;
 
     return {
-      title: `${image.title} | Haunted Wallpapers`,
+      title: `${image.title} | MR4K Walls`,
       description: desc,
       openGraph: {
-        title: `${image.title} | Haunted Wallpapers`,
+        title: `${image.title} | MR4K Walls`,
         description: desc,
         url: `${SITE_URL}/characters/${slug}`,
-        siteName: "Haunted Wallpapers",
+        siteName: "MR4K Walls",
         images: [{ url: ogImage, width: 1200, height: 630, alt: image.title }],
         type: "website",
       },
       twitter: {
         card: "summary_large_image",
-        title: `${image.title} | Haunted Wallpapers`,
+        title: `${image.title} | MR4K Walls`,
         description: desc,
         images: [ogImage],
       },
@@ -99,7 +99,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       ...(image.isAdult ? { robots: { index: false, follow: false } } : {}),
     };
   } catch {
-    return { title: "Haunted Wallpapers" };
+    return { title: "MR4K Walls" };
   }
 }
 
@@ -127,7 +127,7 @@ export default async function CharacterWallpaperPage({ params }: PageProps) {
     const thumbUrl = getPublicUrl(image!.r2Key);
     const isPortrait = image!.deviceType !== "PC";
     const displayDescription = image!.description
-      ?? `${image!.title} — dark art wallpaper from Haunted Wallpapers.`;
+      ?? `${image!.title} — dark art wallpaper from MR4K Walls.`;
 
     return (
       <>

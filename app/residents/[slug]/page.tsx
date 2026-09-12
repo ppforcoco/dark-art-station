@@ -9,7 +9,7 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 export const revalidate = 60;
 export const dynamicParams = true;
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://mr4kwalls.com";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -29,24 +29,24 @@ async function safeGetResident(slug: string) {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const resident = await safeGetResident(slug);
-  if (!resident) return { title: "Not Found | Haunted Wallpapers" };
+  if (!resident) return { title: "Not Found | MR4K Walls" };
 
   const ogImage = resident.portraitKey ? getPublicUrl(resident.portraitKey) : undefined;
 
   return {
-    title: `${resident.name} | Haunted Wallpapers Resident`,
+    title: `${resident.name} | MR4K Walls Resident`,
     description: resident.tagline,
     openGraph: {
-      title: `${resident.name} | Haunted Wallpapers`,
+      title: `${resident.name} | MR4K Walls`,
       description: resident.tagline,
       url: `${SITE_URL}/residents/${slug}`,
-      siteName: "Haunted Wallpapers",
+      siteName: "MR4K Walls",
       type: "website",
       ...(ogImage ? { images: [{ url: ogImage, width: 1080, height: 1920, alt: resident.name }] } : {}),
     },
     twitter: {
       card: "summary_large_image",
-      title: `${resident.name} | Haunted Wallpapers`,
+      title: `${resident.name} | MR4K Walls`,
       description: resident.tagline,
     },
     alternates: { canonical: `${SITE_URL}/residents/${slug}` },

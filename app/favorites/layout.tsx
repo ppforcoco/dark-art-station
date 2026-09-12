@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     index: false,
     follow: false,
   },
-  title: "My Saved Wallpapers | HAUNTED WALLPAPERS",
+  title: "My Saved Wallpapers | MR4K WALLS",
 };
 
 export default function FavoritesLayout({ children }: { children: ReactNode }) {

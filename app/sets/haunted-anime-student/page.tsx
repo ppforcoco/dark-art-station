@@ -4,7 +4,7 @@ import Link from "next/link";
 
 export const revalidate = 3600;
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://mr4kwalls.com";
 
 const BASE =
   "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/sets/The%20Cursed%20Student%3A%20A%20Matching%20Dark%20Anime%20Horror%20Kit";
@@ -91,7 +91,7 @@ const WALLPAPERS = [
 export async function generateMetadata(): Promise<Metadata> {
   return {
     title:
-      "Cursed Student Matching Dark Anime Wallpaper Set | PC, Phone, Watch | Haunted Wallpapers",
+      "Cursed Student Matching Dark Anime Wallpaper Set | PC, Phone, Watch | MR4K Walls",
     description:
       "Download the Cursed Student matching wallpaper set. A psychological horror anime aesthetic for PC, phone, and smartwatch. High-resolution 4K dark anime backgrounds with a terrifying transformation story.",
     keywords: [
@@ -112,11 +112,11 @@ export async function generateMetadata(): Promise<Metadata> {
       "4K dark anime background",
     ],
     openGraph: {
-      title: "Cursed Student — Matching Dark Anime Horror Kit | Haunted Wallpapers",
+      title: "Cursed Student — Matching Dark Anime Horror Kit | MR4K Walls",
       description:
         "Download the Cursed Student matching wallpaper set. Psychological horror anime aesthetic for PC, phone, and smartwatch. 4K downloads.",
       url: `${SITE_URL}/sets/haunted-anime-student`,
-      siteName: "Haunted Wallpapers",
+      siteName: "MR4K Walls",
       type: "website",
       images: [
         {
@@ -129,7 +129,7 @@ export async function generateMetadata(): Promise<Metadata> {
     },
     twitter: {
       card: "summary_large_image",
-      title: "Cursed Student — Matching Dark Anime Horror Kit | Haunted Wallpapers",
+      title: "Cursed Student — Matching Dark Anime Horror Kit | MR4K Walls",
       description:
         "Download the Cursed Student matching wallpaper set. Psychological horror anime aesthetic for PC, phone, and smartwatch.",
       images: [`${BASE}/cursed-student-dark-anime-4k-desktop-background.webp`],

@@ -8,7 +8,7 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 
 export const revalidate = 0;
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://mr4kwalls.com";
 // Same real, working default image used in the root layout — the old
 // `${SITE_URL}/og-image.jpg` fallback pointed at a file that doesn't exist
 // in /public, so shares/search previews for this page showed nothing.
@@ -20,7 +20,7 @@ export async function generateMetadata(): Promise<Metadata> {
     pageContent?.metaDesc ??
     "Browse all dark wallpaper collections — horror, gothic, dark fantasy and more. HD downloads for iPhone, Android and PC.";
   const title =
-    pageContent?.title ?? "Collections | Dark Wallpaper Collections | Haunted Wallpapers";
+    pageContent?.title ?? "Collections | Dark Wallpaper Collections | MR4K Walls";
 
   // Pull one real collection thumbnail — same image visitors already see
   // in the collection cards on this page — instead of the generic fallback.
@@ -44,8 +44,8 @@ export async function generateMetadata(): Promise<Metadata> {
     alternates: { canonical: `${SITE_URL}/collections` },
     openGraph: {
       title, description: desc,
-      url: `${SITE_URL}/collections`, siteName: "Haunted Wallpapers", type: "website",
-      images: [{ url: ogImage, width: 1200, height: 630, alt: "Haunted Wallpapers — Collections" }],
+      url: `${SITE_URL}/collections`, siteName: "MR4K Walls", type: "website",
+      images: [{ url: ogImage, width: 1200, height: 630, alt: "MR4K Walls — Collections" }],
     },
     twitter: { card: "summary_large_image", title, description: desc, images: [ogImage] },
   };
@@ -214,7 +214,7 @@ export default async function CollectionsPage() {
           __html: JSON.stringify({
             "@context": "https://schema.org",
             "@type": "CollectionPage",
-            name: "Collections | Haunted Wallpapers",
+            name: "Collections | MR4K Walls",
             url: `${SITE_URL}/collections`,
             description: "Dark wallpaper collections — horror, gothic, dark fantasy and more.",
             numberOfItems: collections.length,

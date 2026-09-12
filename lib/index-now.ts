@@ -26,7 +26,7 @@ const INDEXNOW_ENDPOINT = "https://api.indexnow.org/indexnow";
 
 export async function pingIndexNow(urls: string[]): Promise<void> {
   const key = process.env.INDEXNOW_KEY;
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://mr4kwalls.com";
 
   if (!key || urls.length === 0) return;
 

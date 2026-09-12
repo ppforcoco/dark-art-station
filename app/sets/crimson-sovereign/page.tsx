@@ -4,7 +4,7 @@ import Link from "next/link";
 
 export const revalidate = 3600;
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://mr4kwalls.com";
 
 const BASE =
   "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/sets/The%20Crimson%20Sovereign%20%7C%20Dark%20Fantasy%20Gaming%20Character%20Matching%20Setup%20Kit";
@@ -103,11 +103,11 @@ export async function generateMetadata(): Promise<Metadata> {
       "dark gaming aesthetic wallpaper",
     ],
     openGraph: {
-      title: "The Crimson Sovereign — Dark Fantasy Gaming Character Matching Setup Kit | Haunted Wallpapers",
+      title: "The Crimson Sovereign — Dark Fantasy Gaming Character Matching Setup Kit | MR4K Walls",
       description:
         'Download "The Crimson Sovereign" matching setup kit. Premium 4K dark fantasy gaming character wallpapers for PC, iPhone, and Smartwatch.',
       url: `${SITE_URL}/sets/crimson-sovereign`,
-      siteName: "Haunted Wallpapers",
+      siteName: "MR4K Walls",
       type: "website",
       images: [
         {

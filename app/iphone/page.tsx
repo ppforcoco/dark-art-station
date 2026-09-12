@@ -27,8 +27,8 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
   const siteUrl   = process.env.NEXT_PUBLIC_SITE_URL ?? "https://mr4kwalls.com";
 
   const title = tag
-    ? `Trending Dark #${tag} Wallpapers for iPhone${pageLabel} | HAUNTED WALLPAPERS`
-    : `Dark iPhone Wallpapers HD${pageLabel} | HAUNTED WALLPAPERS`;
+    ? `Trending Dark #${tag} Wallpapers for iPhone${pageLabel} | MR4K WALLS`
+    : `Dark iPhone Wallpapers HD${pageLabel} | MR4K WALLS`;
 
   const description = tag
     ? `Browse HD dark fantasy iPhone wallpapers tagged #${tag}. Download instantly.`
@@ -57,7 +57,7 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
     description,
     keywords: ["iphone wallpaper", "dark wallpaper iphone", "HD iphone wallpaper", tag ?? "dark", "dark fantasy"].filter(Boolean),
     openGraph: {
-      title, description, url: canonical, siteName: "HAUNTED WALLPAPERS", type: "website",
+      title, description, url: canonical, siteName: "MR4K WALLS", type: "website",
       images: [{ url: ogImage, width: 1080, height: 1920, alt: "Dark iPhone Wallpapers" }],
     },
     twitter: { card: "summary_large_image", title, description, images: [ogImage] },

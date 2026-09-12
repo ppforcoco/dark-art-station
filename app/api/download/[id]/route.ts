@@ -64,7 +64,7 @@ export async function GET(
     const ipHash = hashIp(rawIp);
     const referer = req.headers.get("referer") ?? null;
 
-    const allowedHost = "hauntedwallpapers.com";
+    const allowedHost = "mr4kwalls.com";
     if (!referer || !referer.includes(allowedHost)) {
       return NextResponse.json(
         { error: "Invalid request origin." },

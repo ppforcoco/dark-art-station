@@ -15,7 +15,7 @@ import MatchingWallpaperCard from "@/components/MatchingWallpaperCard";
 
 export const revalidate = 60;
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://mr4kwalls.com";
 const DEFAULT_OG_IMAGE = "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/og-image.webp";
 
 interface TagConfig {
@@ -105,7 +105,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       title: config.metaTitle,
       description: config.metaDescription,
       url: `${SITE_URL}/matching-wallpapers/${config.slug}`,
-      siteName: "Haunted Wallpapers",
+      siteName: "MR4K Walls",
       type: "website",
       images: [{ url: previewImage, width: 1200, height: 630, alt: config.metaTitle }],
     },

@@ -8,7 +8,7 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 
 export const revalidate = 0;
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://mr4kwalls.com";
 const DEFAULT_OG_IMAGE = "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/og-image.webp";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -17,7 +17,7 @@ export async function generateMetadata(): Promise<Metadata> {
     pageContent?.metaDesc ??
     "Discover cool wallpapers in HD and 4K for iPhone, Android and PC — character crossovers, gaming icons and bold new drops.";
   const title =
-    pageContent?.title ?? "Cool Wallpapers in HD & 4K for iPhone, Android & PC | Haunted Wallpapers";
+    pageContent?.title ?? "Cool Wallpapers in HD & 4K for iPhone, Android & PC | MR4K Walls";
 
   let ogImage: string = DEFAULT_OG_IMAGE;
   try {
@@ -39,8 +39,8 @@ export async function generateMetadata(): Promise<Metadata> {
     alternates: { canonical: `${SITE_URL}/cool-wallpapers` },
     openGraph: {
       title, description: desc,
-      url: `${SITE_URL}/cool-wallpapers`, siteName: "Haunted Wallpapers", type: "website",
-      images: [{ url: ogImage, width: 1200, height: 630, alt: "Haunted Wallpapers — Cool Wallpapers" }],
+      url: `${SITE_URL}/cool-wallpapers`, siteName: "MR4K Walls", type: "website",
+      images: [{ url: ogImage, width: 1200, height: 630, alt: "MR4K Walls — Cool Wallpapers" }],
     },
     twitter: { card: "summary_large_image", title, description: desc, images: [ogImage] },
   };
@@ -214,7 +214,7 @@ export default async function CoolWallpapersPage() {
           __html: JSON.stringify({
             "@context": "https://schema.org",
             "@type": "CollectionPage",
-            name: "Cool Wallpapers | Haunted Wallpapers",
+            name: "Cool Wallpapers | MR4K Walls",
             url: `${SITE_URL}/cool-wallpapers`,
             description: "Character crossovers, gaming icons and bright wallpaper drops.",
             numberOfItems: collections.length,

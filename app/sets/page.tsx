@@ -5,10 +5,10 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 
 export const revalidate = 3600;
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://mr4kwalls.com";
 
 export const metadata: Metadata = {
-  title: "Matching Wallpaper Sets | Phone, Watch & Desktop Bundles | Haunted Wallpapers",
+  title: "Matching Wallpaper Sets | Phone, Watch & Desktop Bundles | MR4K Walls",
   description:
     "Complete matching wallpaper kits for every screen. One dark aesthetic across your phone lock screen, home screen, smartwatch face, and desktop background. 4K downloads.",
   keywords: [
@@ -17,24 +17,24 @@ export const metadata: Metadata = {
     "dark anime wallpaper set", "horror aesthetic setup",
   ],
   openGraph: {
-    title: "Matching Wallpaper Sets | Haunted Wallpapers",
+    title: "Matching Wallpaper Sets | MR4K Walls",
     description:
       "Complete matching wallpaper kits — phone, watch, desktop and avatar. One dark aesthetic across every screen.",
     url: `${SITE_URL}/sets`,
-    siteName: "Haunted Wallpapers",
+    siteName: "MR4K Walls",
     type: "website",
     images: [
       {
         url: "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/sets/The%20Cursed%20Student%3A%20A%20Matching%20Dark%20Anime%20Horror%20Kit/cursed-student-dark-anime-4k-desktop-background.webp",
         width: 1200,
         height: 630,
-        alt: "Matching Dark Anime Wallpaper Set — Haunted Wallpapers",
+        alt: "Matching Dark Anime Wallpaper Set — MR4K Walls",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Matching Wallpaper Sets | Haunted Wallpapers",
+    title: "Matching Wallpaper Sets | MR4K Walls",
     description:
       "Complete matching wallpaper kits — phone, watch, desktop and avatar. One dark aesthetic across every screen.",
     images: [

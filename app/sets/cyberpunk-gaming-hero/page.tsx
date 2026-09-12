@@ -4,7 +4,7 @@ import Link from "next/link";
 
 export const revalidate = 3600;
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hauntedwallpapers.com";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://mr4kwalls.com";
 
 const BASE =
   "https://pub-ba82ea76f3604402b8760527cc87149c.r2.dev/sets/Cyberpunk%20Gaming%20Hero%20Matching%20Wallpaper%20Set";
@@ -72,7 +72,7 @@ const WALLPAPERS = [
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
-    title: "Cyberpunk Horror Gaming Hero Matching Wallpaper Set | Haunted Wallpapers",
+    title: "Cyberpunk Horror Gaming Hero Matching Wallpaper Set | MR4K Walls",
     description:
       "Download the Cyberpunk Horror Gaming Hero matching wallpaper set. Premium 4K neon phantom wallpapers for PC, phone, and smartwatch. OLED-optimised. The Ghost in the Overclocked Machine.",
     keywords: [
@@ -93,11 +93,11 @@ export async function generateMetadata(): Promise<Metadata> {
       "horror gaming wallpaper",
     ],
     openGraph: {
-      title: "Cyberpunk Horror Gaming Hero Matching Wallpaper Set | Haunted Wallpapers",
+      title: "Cyberpunk Horror Gaming Hero Matching Wallpaper Set | MR4K Walls",
       description:
         "The Ghost in the Overclocked Machine. Premium 4K cyberpunk neon horror wallpapers for every screen — PC, phone, smartwatch, and avatar.",
       url: `${SITE_URL}/sets/cyberpunk-gaming-hero`,
-      siteName: "Haunted Wallpapers",
+      siteName: "MR4K Walls",
       type: "website",
       images: [{ url: THUMBNAIL, width: 1200, height: 630, alt: "Cyberpunk Horror Gaming Hero Matching Wallpaper Set" }],
     },

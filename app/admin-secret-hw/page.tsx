@@ -22,7 +22,7 @@ const BADGE_TAGS = [
   { tag: "badge-trending",  label: "🔥 Trending",  color: "#ff8c42", bg: "rgba(255,140,66,0.15)", tip: "Most downloaded this week" },
   { tag: "badge-new",       label: "✨ New",        color: "#4ade80", bg: "rgba(74,222,128,0.15)",  tip: "Recently added" },
   { tag: "badge-hot",       label: "💀 Hot",        color: "#e040fb", bg: "rgba(224,64,251,0.15)", tip: "Community favourite" },
-  { tag: "badge-exclusive", label: "🌙 Exclusive",  color: "#42a5f5", bg: "rgba(66,165,245,0.15)", tip: "Only on Haunted Wallpapers" },
+  { tag: "badge-exclusive", label: "🌙 Exclusive",  color: "#42a5f5", bg: "rgba(66,165,245,0.15)", tip: "Only on MR4K Walls" },
   { tag: "badge-limited",   label: "⏳ Limited",    color: "#ff6b9d", bg: "rgba(255,107,157,0.15)",  tip: "Rare drop — grab it now" },
   { tag: "badge-editors-pick", label: "🎖 Editor's Pick", color: "#e8c97a", bg: "rgba(232,201,122,0.15)", tip: "Hand-picked by the Haunted team" },
 ];
@@ -93,7 +93,7 @@ function HtmlToolbar({textareaId,value,onChange,password}:{textareaId:string;val
 function PasswordGate({onAuth}:{onAuth:()=>void}){
   const[pw,setPw]=useState("");const[error,setError]=useState("");const[loading,setLoading]=useState(false);
   async function handleLogin(){setLoading(true);setError("");try{const res=await fetch("/api/hw-admin/auth",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({password:pw})});if(res.ok){sessionStorage.setItem("hw-admin-auth",pw);onAuth();}else setError("Wrong password.");}catch{setError("Network error.");}setLoading(false);}
-  return<div style={{minHeight:"100vh",display:"flex",alignItems:"center",justifyContent:"center",background:C.bg,fontFamily:"monospace"}}><div style={{border:`1px solid ${C.border}`,padding:"48px",width:"360px",textAlign:"center",background:C.surface}}><p style={{color:C.red,fontSize:"0.65rem",letterSpacing:"0.25em",marginBottom:"8px"}}>HAUNTED WALLPAPERS</p><h1 style={{color:C.textPri,fontSize:"1.4rem",marginBottom:"32px",fontWeight:300}}>Admin Access</h1><input type="password" placeholder="Enter password" value={pw} onChange={e=>setPw(e.target.value)} onKeyDown={e=>e.key==="Enter"&&handleLogin()} style={{...inp,marginBottom:"16px",fontSize:"1rem",padding:"12px"}} />{error&&<p style={{color:C.red,marginBottom:"12px",fontSize:"0.85rem"}}>{error}</p>}<Btn onClick={handleLogin} disabled={loading} style={{width:"100%",padding:"12px"}}>{loading?"Checking…":"Enter"}</Btn></div></div>;
+  return<div style={{minHeight:"100vh",display:"flex",alignItems:"center",justifyContent:"center",background:C.bg,fontFamily:"monospace"}}><div style={{border:`1px solid ${C.border}`,padding:"48px",width:"360px",textAlign:"center",background:C.surface}}><p style={{color:C.red,fontSize:"0.65rem",letterSpacing:"0.25em",marginBottom:"8px"}}>MR4K WALLS</p><h1 style={{color:C.textPri,fontSize:"1.4rem",marginBottom:"32px",fontWeight:300}}>Admin Access</h1><input type="password" placeholder="Enter password" value={pw} onChange={e=>setPw(e.target.value)} onKeyDown={e=>e.key==="Enter"&&handleLogin()} style={{...inp,marginBottom:"16px",fontSize:"1rem",padding:"12px"}} />{error&&<p style={{color:C.red,marginBottom:"12px",fontSize:"0.85rem"}}>{error}</p>}<Btn onClick={handleLogin} disabled={loading} style={{width:"100%",padding:"12px"}}>{loading?"Checking…":"Enter"}</Btn></div></div>;
 }
 
 function Sparkline({data}:{data:{date:string;count:number}[]}){
@@ -2410,7 +2410,7 @@ export default function AdminClient(){
     <div style={{borderBottom:`1px solid ${C.border}`,padding:"0 24px",height:"52px",display:"flex",alignItems:"center",justifyContent:"space-between",background:C.surface,flexShrink:0,position:"sticky",top:0,zIndex:100}}>
       <div style={{display:"flex",alignItems:"center",gap:"12px"}}>
         <button onClick={()=>setSidebarOpen(o=>!o)} style={{background:"transparent",border:"none",cursor:"pointer",color:C.textSec,fontSize:"1.1rem",padding:"4px"}}>☰</button>
-        <span style={{color:C.red,fontSize:"0.6rem",letterSpacing:"0.25em",textTransform:"uppercase"}}>Haunted Wallpapers</span>
+        <span style={{color:C.red,fontSize:"0.6rem",letterSpacing:"0.25em",textTransform:"uppercase"}}>MR4K Walls</span>
         <span style={{color:C.textMut,fontSize:"0.75rem"}}>/ Admin</span>
       </div>
       <div style={{display:"flex",gap:"16px",alignItems:"center"}}>
@@ -2424,7 +2424,7 @@ export default function AdminClient(){
           {NAV_ITEMS.map(([key,icon,label])=>{const active=tab===key;return<button key={key} onClick={()=>setTab(key)} style={{display:"flex",alignItems:"center",gap:"12px",width:"100%",padding:"11px 18px",background:active?"rgba(255,46,158,0.15)":"transparent",border:"none",borderLeft:`3px solid ${active?C.red:"transparent"}`,color:active?C.textPri:C.textSec,cursor:"pointer",fontSize:"0.78rem",textAlign:"left",transition:"all 0.15s",whiteSpace:"nowrap"}}><span style={{fontSize:"1rem",flexShrink:0}}>{icon}</span>{sidebarOpen&&<span>{label}</span>}</button>;})}
           <a href="/admin/shop" style={{display:"flex",alignItems:"center",gap:"12px",width:"100%",padding:"11px 18px",background:"transparent",border:"none",borderLeft:"3px solid transparent",color:C.textSec,cursor:"pointer",fontSize:"0.78rem",textAlign:"left",transition:"all 0.15s",whiteSpace:"nowrap",textDecoration:"none",boxSizing:"border-box"}}><span style={{fontSize:"1rem",flexShrink:0}}>🛒</span>{sidebarOpen&&<span>Shop</span>}</a>
         </nav>
-        {sidebarOpen&&<div style={{padding:"16px",borderTop:`1px solid ${C.border}`,fontSize:"0.6rem",color:C.textMut,lineHeight:1.7}}><p style={{color:C.red,marginBottom:"4px"}}>HAUNTED WALLPAPERS</p><p>Admin Panel v2</p></div>}
+        {sidebarOpen&&<div style={{padding:"16px",borderTop:`1px solid ${C.border}`,fontSize:"0.6rem",color:C.textMut,lineHeight:1.7}}><p style={{color:C.red,marginBottom:"4px"}}>MR4K WALLS</p><p>Admin Panel v2</p></div>}
       </div>
       <div style={{flex:1,overflowY:"auto",padding:"32px",minWidth:0}}>
         <div style={{marginBottom:"28px",paddingBottom:"16px",borderBottom:`1px solid ${C.border}`}}>
