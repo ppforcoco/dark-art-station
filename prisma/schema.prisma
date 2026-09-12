@@ -284,9 +284,9 @@ model Product {
   /// Additional R2 keys — extra angles/mockups shown in the product gallery.
   galleryKeys     String[] @default([])
 
-  /// Full-resolution print-ready file (300 DPI+) that Gelato actually prints from.
+  /// The downloadable ZIP file buyers receive after purchase.
   /// Separate from thumbnailKey, which is storefront-display quality only.
-  printFileKey    String   @default("")
+  digitalFileKey  String   @default("")
 
   badge           String?           // "New" | "Hot" | etc, same convention as Collection
   featured        Boolean  @default(false)
@@ -300,8 +300,7 @@ model Product {
 }
 
 // ── Shop Orders ────────────────────────────────────────────────────────────────
-// The "notebook" that records what a customer bought, so there's something
-// for Gelato to fulfill once a real payment has come in. Paddle is not wired
+// The "notebook" that records what a customer bought. Paddle is not wired
 // up yet — orders can be created in "pending" state at checkout time, and a
 // later webhook flips paymentStatus to "paid" once Paddle confirms.
 model Order {
@@ -336,19 +335,10 @@ model Order {
   paymentStatus       String  @default("pending")
   paddleTransactionId String?
 
-  // ── Fulfillment (Gelato) ──
-  /// "not_sent" | "sent" | "failed"
-  gelatoStatus   String  @default("not_sent")
-  gelatoOrderId  String?
-  /// Populated when Gelato rejects the order, so a failed order is visible
-  /// in the admin panel instead of silently lost.
-  gelatoError    String?
-
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([paymentStatus])
-  @@index([gelatoStatus])
   @@index([email])
   @@index([createdAt])
 }

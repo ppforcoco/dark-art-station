@@ -21,7 +21,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   if (!product) return { title: "Product Not Found | HauntedWallpapers" };
 
   const title = `${product.name} — $${product.price.toFixed(2)} | HauntedWallpapers Shop`;
-  const description = `${product.name} — custom print-on-demand ${product.category.toLowerCase()}. $${product.price.toFixed(2)}. Ships worldwide.`;
+  const description = `${product.name} — digital ${product.category.toLowerCase()}. $${product.price.toFixed(2)}. Instant download after purchase.`;
   const image = product.thumbnailKey ? getPublicUrl(product.thumbnailKey) : undefined;
 
   return {
@@ -46,6 +46,10 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
 
   const descriptionHtml = sanitizeAdminHtml(product.descriptionHtml);
 
+  // Digital good: no shipping, always "in stock" since there's nothing to
+  // run out of. Note — the GSC "missing aggregateRating/review" warnings
+  // are non-critical and unrelated to physical-vs-digital; they only go
+  // away once real customer reviews exist and are added here.
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Product",

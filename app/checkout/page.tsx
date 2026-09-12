@@ -49,7 +49,6 @@ export default function CheckoutPage() {
   // Once Paddle is connected: after create-order succeeds below, call
   // Paddle.Checkout.open({ ..., customData: { orderId: order.orderId } })
   // instead of showing the placeholder alert. A webhook on Paddle's end
-  // then flips this Order's paymentStatus to "paid" and triggers Gelato.
   async function handleSubmit() {
     setError(null);
 

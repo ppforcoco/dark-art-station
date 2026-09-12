@@ -50,11 +50,11 @@ export async function POST(req: NextRequest) {
             data: { galleryKeys: { push: r2Key } },
             select: { id: true, slug: true, galleryKeys: true },
           })
-        : kind === "print"
+        : kind === "digital"
         ? await db.product.update({
             where: { slug },
-            data: { printFileKey: r2Key },
-            select: { id: true, slug: true, printFileKey: true },
+            data: { digitalFileKey: r2Key },
+            select: { id: true, slug: true, digitalFileKey: true },
           })
         : await db.product.update({
             where: { slug },

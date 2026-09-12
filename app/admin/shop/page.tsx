@@ -2,19 +2,15 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
-import {
-  getPhoneCaseModels, getApparelColors, getApparelSizes, isVariantSupported,
-} from "@/lib/gelato-catalog";
 
 export const dynamic = "force-dynamic";
 
-// The only categories this store supports — each one has a matching UID
-// map in lib/gelato-catalog.ts. Adding a category here without a matching
-// map means nothing selected under it can ever be fulfilled.
-const CATEGORIES = ["Phone Case", "T-Shirt", "Hoodie"];
+// Digital-download categories. No fulfillment catalog to match against —
+// these are just organizational tags for the storefront.
+const CATEGORIES = ["Wallpaper Pack", "Single Wallpaper", "Bundle"];
 
-function variantLabelFor(category: string) {
-  return category === "Phone Case" ? "Phone Model" : "Size";
+function variantLabelFor(_category: string) {
+  return "Format";
 }
 
 interface Product {
@@ -29,7 +25,7 @@ interface Product {
   descriptionHtml: string;
   thumbnailKey: string;
   galleryKeys: string[];
-  printFileKey: string;
+  digitalFileKey: string;
   badge: string | null;
   featured: boolean;
   isPublished: boolean;
@@ -192,7 +188,7 @@ function ShopAdmin({ password }: { password: string }) {
                           : <span style={{ fontSize: "0.6rem", color: C.textMut, border: `1px solid ${C.border}`, padding: "1px 6px" }}>DRAFT</span>}
                       </div>
                       <div style={{ fontSize: "0.75rem", color: C.textSec }}>
-                        {p.category} · ${p.price.toFixed(2)} · {p.variants.length} {p.variantLabel.toLowerCase()} option(s) · {p.thumbnailKey ? "✓ thumbnail" : "⚠ no thumbnail"} · {p.galleryKeys.length} gallery image(s) · {p.printFileKey ? "✓ print file" : "⚠ no print file (Gelato can't fulfill)"}
+                        {p.category} · ${p.price.toFixed(2)} · {p.variants.length} {p.variantLabel.toLowerCase()} option(s) · {p.thumbnailKey ? "✓ thumbnail" : "⚠ no thumbnail"} · {p.galleryKeys.length} gallery image(s) · {p.digitalFileKey ? "✓ download file" : "⚠ no download file (buyers can't receive anything)"}
                       </div>
                     </div>
                     <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
@@ -226,63 +222,25 @@ function ProductForm({
   const [name, setName] = useState(existing?.name ?? "");
   const [slug, setSlug] = useState(existing?.slug ?? "");
   const [slugTouched, setSlugTouched] = useState(!!existing);
-  const [category, setCategory] = useState(existing?.category ?? "Phone Case");
+  const [category, setCategory] = useState(existing?.category ?? "Wallpaper Pack");
 
-  const isApparel = category === "T-Shirt" || category === "Hoodie";
+  // Digital goods have no physical catalog to validate against — formats
+  // (e.g. "4K", "8K", "AMOLED", "iPhone 15 Pro") are just free-text tags
+  // the buyer picks from, all pointing at the same downloadable file.
+  const [formatTags, setFormatTags] = useState<string[]>(existing?.variants ?? []);
+  const [formatInput, setFormatInput] = useState("");
 
-  // Every checkbox below is sourced directly from lib/gelato-catalog.ts —
-  // the same functions used to resolve a real Gelato UID at fulfillment
-  // time. There is no free-text field for sizes/models/colors anymore, so
-  // it is not possible to save an option that doesn't actually match
-  // Gelato's catalog.
-
-  // Phone Case: which models this product offers.
-  const [selectedModels, setSelectedModels] = useState<string[]>(() => {
-    if (!existing || existing.category !== "Phone Case") return [];
-    const valid = getPhoneCaseModels();
-    return existing.variants.filter(v => valid.includes(v));
-  });
-
-  // T-Shirt / Hoodie: which colors + which sizes. Every checked
-  // color × checked size combo that Gelato actually supports becomes a
-  // variant ("Black / M") when saved.
-  const [selectedColors, setSelectedColors] = useState<string[]>(() => {
-    if (!existing || !(existing.category === "T-Shirt" || existing.category === "Hoodie")) return [];
-    const valid = getApparelColors(existing.category);
-    const fromColorSize = existing.variants
-      .map(v => v.split(" / ")[0]?.trim())
-      .filter((c): c is string => !!c && valid.includes(c));
-    // Legacy plain-size products (no color in the text) were always
-    // fulfilled as one fixed color — Black for T-Shirt, White for Hoodie.
-    const hasLegacyPlain = existing.variants.some(v => !v.includes(" / "));
-    const legacyColor = existing.category === "T-Shirt" ? "Black" : "White";
-    return [...new Set([...fromColorSize, ...(hasLegacyPlain ? [legacyColor] : [])])];
-  });
-  const [selectedSizes, setSelectedSizes] = useState<string[]>(() => {
-    if (!existing || !(existing.category === "T-Shirt" || existing.category === "Hoodie")) return [];
-    const validSizes = getApparelSizes(existing.category);
-    const fromColorSize = existing.variants
-      .map(v => v.split(" / ")[1]?.trim())
-      .filter((s): s is string => !!s && validSizes.includes(s));
-    const plainSizes = existing.variants.filter(v => !v.includes(" / ") && validSizes.includes(v.trim())).map(v => v.trim());
-    return [...new Set([...fromColorSize, ...plainSizes])];
-  });
-
-  function toggle(list: string[], setList: (v: string[]) => void, value: string) {
-    setList(list.includes(value) ? list.filter(v => v !== value) : [...list, value]);
+  function addFormatTag() {
+    const v = formatInput.trim();
+    if (v && !formatTags.includes(v)) setFormatTags([...formatTags, v]);
+    setFormatInput("");
+  }
+  function removeFormatTag(tag: string) {
+    setFormatTags(formatTags.filter(t => t !== tag));
   }
 
-  // The variants actually saved: computed fresh from the checkboxes every
-  // time, always in the exact format Gelato needs. No way for this to
-  // drift out of sync with lib/gelato-catalog.ts.
   function computeVariants(): string[] {
-    if (category === "Phone Case") return selectedModels;
-    if (isApparel) {
-      return selectedColors.flatMap(c =>
-        selectedSizes.filter(s => isVariantSupported(category, `${c} / ${s}`)).map(s => `${c} / ${s}`)
-      );
-    }
-    return [];
+    return formatTags;
   }
   const [price, setPrice] = useState(existing ? String(existing.price) : "29.99");
   const [compareAtPrice, setCompareAtPrice] = useState(existing?.compareAtPrice ? String(existing.compareAtPrice) : "");
@@ -293,23 +251,18 @@ function ProductForm({
 
   const [thumbFile, setThumbFile] = useState<File | null>(null);
   const [galleryFile, setGalleryFile] = useState<File | null>(null);
-  const [printFile, setPrintFile] = useState<File | null>(null);
+  const [digitalFile, setDigitalFile] = useState<File | null>(null);
   const [uploadingThumb, setUploadingThumb] = useState(false);
   const [uploadingGallery, setUploadingGallery] = useState(false);
-  const [uploadingPrint, setUploadingPrint] = useState(false);
+  const [uploadingDigital, setUploadingDigital] = useState(false);
   const thumbInputRef = useRef<HTMLInputElement>(null);
   const galleryInputRef = useRef<HTMLInputElement>(null);
-  const printInputRef = useRef<HTMLInputElement>(null);
+  const digitalInputRef = useRef<HTMLInputElement>(null);
 
   const isEdit = !!existing;
 
   function handleCategoryChange(val: string) {
     setCategory(val);
-    if (!isEdit) {
-      setSelectedModels([]);
-      setSelectedColors([]);
-      setSelectedSizes([]);
-    }
   }
 
   async function handleSave() {
@@ -319,7 +272,7 @@ function ProductForm({
     }
     const variants = computeVariants();
     if (variants.length === 0) {
-      setMsg({ type: "err", text: `Select at least one ${variantLabelFor(category).toLowerCase()} option below.` });
+      setMsg({ type: "err", text: `Add at least one format tag below.` });
       return;
     }
     setSaving(true);
@@ -386,20 +339,20 @@ function ProductForm({
     setUploadingGallery(false);
   }
 
-  async function handleUploadPrint() {
-    if (!printFile || !existing) return;
-    setUploadingPrint(true);
+  async function handleUploadDigital() {
+    if (!digitalFile || !existing) return;
+    setUploadingDigital(true);
     try {
       const form = new FormData();
-      form.append("file", printFile);
+      form.append("file", digitalFile);
       form.append("slug", existing.slug);
-      form.append("kind", "print");
+      form.append("kind", "digital");
       const res = await fetch("/api/hw-admin/shop/upload", { method: "POST", headers: { "x-admin-password": password }, body: form });
       const j = await res.json();
-      if (res.ok) { setMsg({ type: "ok", text: "✓ Print file uploaded — ready for Gelato." }); onSaved(); }
+      if (res.ok) { setMsg({ type: "ok", text: "✓ Download file uploaded — buyers will receive this after checkout." }); onSaved(); }
       else setMsg({ type: "err", text: j.error ?? "Upload failed." });
     } catch { setMsg({ type: "err", text: "Network error." }); }
-    setUploadingPrint(false);
+    setUploadingDigital(false);
   }
 
   return (
@@ -414,7 +367,7 @@ function ProductForm({
           <input
             style={inp} value={name}
             onChange={e => { setName(e.target.value); if (!slugTouched) setSlug(slugify(e.target.value)); }}
-            placeholder="Forever Defiant Case"
+            placeholder="Forever Defiant Wallpaper Pack"
           />
         </div>
         <div>
@@ -441,61 +394,27 @@ function ProductForm({
         </div>
       </div>
 
-      {category === "Phone Case" && (
-        <div style={{ marginBottom: "16px" }}>
-          <label style={lbl}>Phone Models (check every model this listing offers)</label>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: "8px", padding: "12px", border: "1px solid #341a63" }}>
-            {getPhoneCaseModels().map(model => (
-              <label key={model} style={checkboxPill(selectedModels.includes(model))}>
-                <input
-                  type="checkbox"
-                  checked={selectedModels.includes(model)}
-                  onChange={() => toggle(selectedModels, setSelectedModels, model)}
-                  style={{ marginRight: "6px" }}
-                />
-                {model}
-              </label>
-            ))}
-          </div>
+      <div style={{ marginBottom: "16px" }}>
+        <label style={lbl}>Formats (e.g. 4K, 8K, AMOLED, iPhone 15 Pro — buyer picks one at checkout)</label>
+        <div style={{ display: "flex", gap: "8px", marginBottom: "10px" }}>
+          <input
+            style={inp}
+            value={formatInput}
+            onChange={e => setFormatInput(e.target.value)}
+            onKeyDown={e => { if (e.key === "Enter") { e.preventDefault(); addFormatTag(); } }}
+            placeholder="Type a format and press Enter"
+          />
+          <Btn variant="ghost" onClick={addFormatTag}>Add</Btn>
         </div>
-      )}
-
-      {isApparel && (
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "16px" }}>
-          <div>
-            <label style={lbl}>Colors</label>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "8px", padding: "12px", border: "1px solid #341a63" }}>
-              {getApparelColors(category).map(color => (
-                <label key={color} style={checkboxPill(selectedColors.includes(color))}>
-                  <input
-                    type="checkbox"
-                    checked={selectedColors.includes(color)}
-                    onChange={() => toggle(selectedColors, setSelectedColors, color)}
-                    style={{ marginRight: "6px" }}
-                  />
-                  {color}
-                </label>
-              ))}
-            </div>
-          </div>
-          <div>
-            <label style={lbl}>Sizes</label>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "8px", padding: "12px", border: "1px solid #341a63" }}>
-              {getApparelSizes(category).map(size => (
-                <label key={size} style={checkboxPill(selectedSizes.includes(size))}>
-                  <input
-                    type="checkbox"
-                    checked={selectedSizes.includes(size)}
-                    onChange={() => toggle(selectedSizes, setSelectedSizes, size)}
-                    style={{ marginRight: "6px" }}
-                  />
-                  {size}
-                </label>
-              ))}
-            </div>
-          </div>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+          {formatTags.map(tag => (
+            <span key={tag} style={{ ...checkboxPill(true), cursor: "pointer" }} onClick={() => removeFormatTag(tag)}>
+              {tag} ✕
+            </span>
+          ))}
+          {formatTags.length === 0 && <span style={{ fontSize: "0.7rem", color: C.textMut }}>No formats added yet.</span>}
         </div>
-      )}
+      </div>
 
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "16px" }}>
         <div>
@@ -514,7 +433,7 @@ function ProductForm({
           style={{ ...inp, minHeight: "140px", resize: "vertical", fontFamily: "monospace" }}
           value={descriptionHtml}
           onChange={e => setDescriptionHtml(e.target.value)}
-          placeholder="<p>Hand-finished dark art, printed on a premium impact-resistant case.</p>"
+          placeholder="<p>Hand-finished dark art wallpaper pack, delivered instantly as a high-res ZIP download.</p>"
         />
         <p style={{ fontSize: "0.65rem", color: C.textMut, marginTop: "6px" }}>
           Basic tags only (p, strong, em, ul/li, h3, a, img). Scripts are stripped automatically.
@@ -553,18 +472,18 @@ function ProductForm({
           </div>
 
           <div style={{ marginTop: "28px", paddingTop: "24px", borderTop: `1px solid ${C.border}` }}>
-            <h3 style={{ fontSize: "0.75rem", color: C.gold, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: "6px" }}>Print File (for Gelato fulfillment)</h3>
+            <h3 style={{ fontSize: "0.75rem", color: C.gold, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: "6px" }}>Digital Download File</h3>
             <p style={{ fontSize: "0.68rem", color: C.textMut, marginBottom: "14px", lineHeight: 1.6 }}>
-              Full-resolution, print-ready file (300 DPI+) — this is what actually gets printed on the physical product.
-              Separate from the thumbnail above, which is storefront-display quality only and is never sent to Gelato.
+              The actual deliverable (.zip) sent to the buyer after checkout. Separate from the thumbnail above,
+              which is storefront-display quality only and is never handed to the customer.
             </p>
-            {existing!.printFileKey ? (
-              <p style={{ fontSize: "0.7rem", color: C.green, marginBottom: "8px" }}>✓ Print file set — uploading a new one replaces it.</p>
+            {existing!.digitalFileKey ? (
+              <p style={{ fontSize: "0.7rem", color: C.green, marginBottom: "8px" }}>✓ Download file set — uploading a new one replaces it.</p>
             ) : (
-              <p style={{ fontSize: "0.7rem", color: C.red, marginBottom: "8px" }}>⚠ No print file yet — Gelato can't fulfill this product until one is uploaded.</p>
+              <p style={{ fontSize: "0.7rem", color: C.red, marginBottom: "8px" }}>⚠ No download file yet — buyers can't receive anything until one is uploaded.</p>
             )}
-            <input ref={printInputRef} type="file" accept="image/*" onChange={e => setPrintFile(e.target.files?.[0] ?? null)} style={{ marginBottom: "8px", fontSize: "0.75rem" }} />
-            <Btn variant="ghost" onClick={handleUploadPrint} disabled={!printFile || uploadingPrint}>{uploadingPrint ? "Uploading…" : "Upload Print File"}</Btn>
+            <input ref={digitalInputRef} type="file" accept=".zip" onChange={e => setDigitalFile(e.target.files?.[0] ?? null)} style={{ marginBottom: "8px", fontSize: "0.75rem" }} />
+            <Btn variant="ghost" onClick={handleUploadDigital} disabled={!digitalFile || uploadingDigital}>{uploadingDigital ? "Uploading…" : "Upload ZIP"}</Btn>
           </div>
         </div>
       )}
