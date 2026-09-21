@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 
 // Badge tags that auto-expire after 2 days
-const EXPIRING_BADGES = ["badge-new", "badge-premium", "badge-trending", "badge-hot", "badge-exclusive", "badge-limited"];
+const EXPIRING_BADGES = ["badge-premium", "badge-trending", "badge-hot", "badge-exclusive", "badge-limited"];
 
 // Call this from a cron job every hour:
 // GET /api/hw-admin/expire-badges?secret=YOUR_CRON_SECRET
