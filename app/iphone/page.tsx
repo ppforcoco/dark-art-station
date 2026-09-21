@@ -104,18 +104,17 @@ export default async function IphonePage({ searchParams }: PageProps) {
         { tags: { has: tag.charAt(0).toUpperCase() + tag.slice(1).toLowerCase() } },
         { title: { contains: tag, mode: Prisma.QueryMode.insensitive } },
       ],
-    } : { NOT: { tags: { has: "badge-new" } } }),
+    } : {}),
   };
 
   let pinnedImages: ImageItem[] = [];
   let images: ImageItem[] = [];
-  let freshDrops: ImageItem[] = [];
   let total = 0;
   let pageContent = null;
   let dbError = false;
 
   try {
-    const [pinnedRaw, imagesRaw, totalCount, content, freshDropsRaw] = await Promise.all([
+    const [pinnedRaw, imagesRaw, totalCount, content] = await Promise.all([
       (!tag && page === 1)
         ? db.image.findMany({
             where: { collectionId: null, deviceType: "IPHONE", sortOrder: { lt: 0 } },
@@ -133,14 +132,6 @@ export default async function IphonePage({ searchParams }: PageProps) {
       }),
       db.image.count({ where }),
       getPageContent("iphone"),
-      (!tag && page === 1)
-        ? db.image.findMany({
-            where: { tags: { has: "badge-new" }, deviceType: "IPHONE", isAdult: false, isAvatar: false },
-            orderBy: { updatedAt: "desc" },
-            take: 10,
-            select: { id: true, slug: true, title: true, r2Key: true, viewCount: true, tags: true, isAdult: true, updatedAt: true },
-          })
-        : Promise.resolve([] as RawImageRow[]),
     ]);
 
     pinnedImages = pinnedRaw.map((img) => ({
@@ -150,12 +141,6 @@ export default async function IphonePage({ searchParams }: PageProps) {
     }));
 
     images = imagesRaw.map((img) => ({
-      id: img.id, slug: img.slug, title: img.title,
-      src: getPublicUrl(img.r2Key),
-      viewCount: img.viewCount, tags: img.tags, isAdult: img.isAdult,
-    }));
-
-    freshDrops = freshDropsRaw.map((img) => ({
       id: img.id, slug: img.slug, title: img.title,
       src: getPublicUrl(img.r2Key),
       viewCount: img.viewCount, tags: img.tags, isAdult: img.isAdult,
@@ -255,46 +240,6 @@ export default async function IphonePage({ searchParams }: PageProps) {
             priorityCount={2}
             aspectRatio="9/16"
             sizes="(max-width: 640px) 33vw, 160px"
-            isLockedGlobal={locked}
-          />
-        </section>
-      )}
-
-      {freshDrops.length > 0 && (
-        <section className="max-w-7xl mx-auto px-6 md:px-[60px] pb-10">
-          <div style={{ display: "flex", alignItems: "center", gap: "14px", marginBottom: "20px" }}>
-            <span style={{
-              fontFamily: "var(--font-space, monospace)",
-              fontSize: "0.58rem",
-              letterSpacing: "0.22em",
-              textTransform: "uppercase",
-              color: "#4ade80",
-              border: "1px solid rgba(74,222,128,0.5)",
-              padding: "5px 12px",
-              background: "rgba(74,222,128,0.08)",
-              boxShadow: "0 0 12px rgba(74,222,128,0.15)",
-            }}>Fresh Drops</span>
-            <div style={{ flex: 1, height: "1px", background: "linear-gradient(to right, rgba(74,222,128,0.35), transparent)" }} />
-            <span style={{
-              fontFamily: "var(--font-space, monospace)",
-              fontSize: "0.52rem",
-              letterSpacing: "0.14em",
-              color: "rgba(74,222,128,0.6)",
-              textTransform: "uppercase",
-            }}>{freshDrops.length} wallpaper{freshDrops.length !== 1 ? "s" : ""}</span>
-          </div>
-          <IphoneImageGrid
-            images={freshDrops}
-            hrefPrefix="/iphone"
-            altSuffix="new dark iPhone wallpaper HD"
-            gridStyle={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fill, minmax(120px, 1fr))",
-              gap: "clamp(10px,1.8vw,20px)",
-            }}
-            priorityCount={2}
-            aspectRatio="9/16"
-            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 15vw"
             isLockedGlobal={locked}
           />
         </section>

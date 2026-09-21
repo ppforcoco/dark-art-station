@@ -199,7 +199,6 @@ export default function DeviceImageCard({
         {/* ── Badge chips — derived from tags, no emojis ── */}
         {(() => {
           const BADGE_MAP: Record<string, { label: string; color: string; bg: string }> = {
-            "badge-new":       { label: "NEW",       color: "#4ade80", bg: "rgba(74,222,128,0.15)"   },
             "badge-premium":   { label: "PREMIUM",   color: "#ffd23f", bg: "rgba(255,210,63,0.15)"  },
             "badge-trending":  { label: "TRENDING",  color: "#ff8c42", bg: "rgba(255,140,66,0.15)"  },
             "badge-hot":       { label: "HOT",       color: "#ff2e9e", bg: "rgba(255,46,158,0.15)"    },

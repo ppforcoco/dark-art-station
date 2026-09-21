@@ -20,7 +20,6 @@ const ALL_TAGS=["dark","gothic","horror","fantasy","minimal","amoled","neon","cy
 const BADGE_TAGS = [
   { tag: "badge-premium",   label: "⭐ Premium",   color: "#ffd23f", bg: "rgba(255,210,63,0.15)",  tip: "High-quality exclusive art" },
   { tag: "badge-trending",  label: "🔥 Trending",  color: "#ff8c42", bg: "rgba(255,140,66,0.15)", tip: "Most downloaded this week" },
-  { tag: "badge-new",       label: "✨ New",        color: "#4ade80", bg: "rgba(74,222,128,0.15)",  tip: "Recently added" },
   { tag: "badge-hot",       label: "💀 Hot",        color: "#e040fb", bg: "rgba(224,64,251,0.15)", tip: "Community favourite" },
   { tag: "badge-exclusive", label: "🌙 Exclusive",  color: "#42a5f5", bg: "rgba(66,165,245,0.15)", tip: "Only on MR4K Walls" },
   { tag: "badge-limited",   label: "⏳ Limited",    color: "#ff6b9d", bg: "rgba(255,107,157,0.15)",  tip: "Rare drop — grab it now" },

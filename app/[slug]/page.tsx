@@ -514,7 +514,6 @@ async function RootImageView({ imageSlug }: { imageSlug: string }) {
                     const badgeMap: Record<string, { label: string; cls: string }> = {
                       "badge-premium":   { label: "⭐ Premium",   cls: "quality-badge quality-badge--premium" },
                       "badge-trending":  { label: "🔥 Trending",  cls: "quality-badge quality-badge--trending" },
-                      "badge-new":       { label: "✨ New",        cls: "quality-badge quality-badge--new" },
                       "badge-hot":       { label: "💀 Hot",        cls: "quality-badge quality-badge--hot" },
                       "badge-exclusive": { label: "🌙 Exclusive",  cls: "quality-badge quality-badge--exclusive" },
                       "badge-limited":   { label: "⏳ Limited",    cls: "quality-badge quality-badge--limited" },

@@ -194,7 +194,6 @@ export default function IphoneImageGrid({
     <div className={gridClassName ?? defaultGridClass} style={gridStyle}>
       {visibleImages.map((img, idx) => {
         const isPremium = img.tags.includes("badge-premium");
-        const isNew     = img.tags.includes("badge-new");
         const showVault = false;
 
         const cardStyle: CSSProperties = {
@@ -296,21 +295,6 @@ export default function IphoneImageGrid({
                   zIndex: 10, pointerEvents: "none",
                 }}>
                   PREMIUM
-                </span>
-              )}
-
-              {/* NEW badge */}
-              {isNew && (
-                <span style={{
-                  position: "absolute", top: 7, left: isPremium && !showVault ? 70 : 7,
-                  fontFamily: "var(--font-space, monospace)",
-                  fontSize: "0.55rem", fontWeight: 700,
-                  letterSpacing: "0.12em", textTransform: "uppercase",
-                  color: "#fff", background: "#4ade80",
-                  padding: "2px 6px", borderRadius: "2px",
-                  zIndex: 10, pointerEvents: "none",
-                }}>
-                  NEW
                 </span>
               )}
 

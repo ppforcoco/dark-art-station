@@ -471,7 +471,7 @@ works on all themes */
   font-family: Arial, sans-serif;
   font-size: 0.55rem; letter-spacing: 0.15em; text-transform: uppercase;
   padding: 5px 10px; z-index: 2;
-}.badge-new { background: #ff4fa3; color: #f6ecff; }.badge-hot { background: #ff4d6d; color: #140a28; }.product-card:hover .product-quick-view { bottom: 0; }/* ──────────────────────────────────────────────────────────── */
+}.badge-hot { background: #ff4d6d; color: #140a28; }.product-card:hover .product-quick-view { bottom: 0; }/* ──────────────────────────────────────────────────────────── */
 /*  MANIFESTO                                                   */
 /* ──────────────────────────────────────────────────────────── */
 
@@ -4760,7 +4760,7 @@ needs boost */
 .pagination-ellipsis { color: #606090 !important; }/* Badge text — small text needs higher contrast */
 .product-badge {
   font-size: 0.62rem !important; /* was 0.55rem — too small for AA */
-}.badge-new { background: #d00000; color: #ffffff !important; }.badge-hot { background: #ff7a45; color: #ffffff !important; }/* Tag pills on search cards — was #8a7fa0 */
+}.badge-hot { background: #ff7a45; color: #ffffff !important; }/* Tag pills on search cards — was #8a7fa0 */
 .search-card-tag-pill { color: #bda8d9 !important; }/* Recently viewed section label */
 .rv-section-label { color: #bda8d9 !important; }/* Blog post card date — was #9c7fc9 */
 .blog-post-card-date { color: #bda8d9 !important; }.blog-category-item-date { color: #bda8d9 !important; }.blog-category-item-title { color: #d8d4ec !important; }/* Blog category label — was #8670b3 */

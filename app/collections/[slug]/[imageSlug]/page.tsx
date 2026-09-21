@@ -235,7 +235,6 @@ export default async function CollectionImagePage({ params }: PageProps) {
                     const badgeMap: Record<string, { label: string; color: string; bg: string }> = {
                       "badge-premium":   { label: "⭐ Premium",   color: "#ffd23f", bg: "rgba(255,210,63,0.15)" },
                       "badge-trending":  { label: "🔥 Trending",  color: "#ff8c42", bg: "rgba(255,140,66,0.15)" },
-                      "badge-new":       { label: "✨ New",        color: "#4ade80", bg: "rgba(74,222,128,0.15)" },
                       "badge-hot":       { label: "💀 Hot",        color: "#e040fb", bg: "rgba(224,64,251,0.15)" },
                       "badge-exclusive": { label: "🌙 Exclusive",  color: "#42a5f5", bg: "rgba(66,165,245,0.15)" },
                       "badge-limited":   { label: "⏳ Limited",    color: "#ff6b9d", bg: "rgba(255,107,157,0.15)" },
