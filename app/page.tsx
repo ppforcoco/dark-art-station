@@ -90,7 +90,7 @@ export default async function Home() {
                 {fmt(totalImages)} wallpapers &middot; 4K quality &middot; zero cap
               </p>
               <div className="hp-hero-ctas">
-                <Link prefetch={false} href="/all" className="hp-btn-primary">
+                <Link prefetch={false} href="/collections" className="hp-btn-primary">
                   Raid the collection
                 </Link>
               </div>
