@@ -85,7 +85,6 @@ export default function LiveWallpapersPage() {
   return (
     <div className="lw-page">
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Special+Elite&family=JetBrains+Mono:wght@400;500;700&display=swap');
 
         :root {
           --bg: #180b2c;
@@ -110,7 +109,7 @@ export default function LiveWallpapersPage() {
         .lw-page {
           background: var(--bg);
           color: var(--text);
-          font-family: 'JetBrains Mono', monospace;
+          font-family: monospace;
           min-height: 100vh;
           overflow-x: hidden;
         }
@@ -156,7 +155,7 @@ export default function LiveWallpapersPage() {
         }
 
         .lw-title {
-          font-family: 'Special Elite', monospace;
+          font-family: monospace;
           font-size: clamp(2.4rem, 8vw, 4.6rem);
           line-height: 1.08;
           margin: 0 0 10px;
@@ -190,7 +189,7 @@ export default function LiveWallpapersPage() {
         }
 
         .lw-section-title {
-          font-family: 'Special Elite', monospace;
+          font-family: monospace;
           font-size: 1.4rem;
           margin: 0;
         }
@@ -316,7 +315,7 @@ export default function LiveWallpapersPage() {
           background: transparent;
           border: 1px solid var(--line);
           color: var(--text);
-          font-family: 'JetBrains Mono', monospace;
+          font-family: monospace;
           font-size: 0.7rem;
           letter-spacing: 0.18em;
           text-transform: uppercase;
@@ -361,7 +360,7 @@ export default function LiveWallpapersPage() {
         }
 
         .lw-howto-title {
-          font-family: 'Special Elite', monospace;
+          font-family: monospace;
           font-size: 1.1rem;
           margin: 0 0 18px;
           color: var(--accent);
@@ -391,7 +390,7 @@ export default function LiveWallpapersPage() {
         .lw-howto-list li::before {
           content: counter(step);
           color: var(--accent);
-          font-family: 'Special Elite', monospace;
+          font-family: monospace;
           font-size: 0.8rem;
         }
 
@@ -408,7 +407,7 @@ export default function LiveWallpapersPage() {
         }
 
         .lw-faq-q {
-          font-family: 'Special Elite', monospace;
+          font-family: monospace;
           font-size: 0.95rem;
           margin: 0 0 8px;
           color: var(--text);
@@ -442,7 +441,7 @@ export default function LiveWallpapersPage() {
         }
 
         .lw-footer-text {
-          font-family: 'Special Elite', monospace;
+          font-family: monospace;
           font-size: 1rem;
           color: var(--text-dim);
           letter-spacing: 0.04em;
