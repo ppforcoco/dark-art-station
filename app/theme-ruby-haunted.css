@@ -4,7 +4,6 @@
    so it wins the cascade without needing to touch existing files.
    ════════════════════════════════════════════════════════════════════ */
 
-@import url('https://fonts.googleapis.com/css2?family=Anton&family=Space+Grotesk:wght@400;500;600;700&display=swap');
 
 /* ── 1. DESIGN TOKENS — remaps every var(--...) already used site-wide ── */
 :root {
